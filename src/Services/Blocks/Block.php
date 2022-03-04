@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Services\Blocks;
 
+use A17\Twill\Facades\TwillBlocks;
 use Exception;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
@@ -141,9 +141,9 @@ class Block
     public static function getForType(string $type, bool $repeater = false): self
     {
         if ($repeater) {
-            $blocksList = app(BlockCollection::class)->getRepeaterList();
+            $blocksList = TwillBlocks::getRepeaters();
         } else {
-            $blocksList = app(BlockCollection::class)->getBlockList();
+            $blocksList = TwillBlocks::getBlocks();
         }
 
         return $blocksList->first(function (self $blockConfig) use ($type) {
@@ -154,9 +154,9 @@ class Block
     public static function getForComponent(string $type, bool $repeater = false): self
     {
         if ($repeater) {
-            $blocksList = app(BlockCollection::class)->getRepeaterList();
+            $blocksList = TwillBlocks::getRepeaters();
         } else {
-            $blocksList = app(BlockCollection::class)->getBlockList();
+            $blocksList = TwillBlocks::getBlocks();
         }
 
         return $blocksList->first(function (self $blockConfig) use ($type) {
@@ -187,9 +187,7 @@ class Block
             '.blade.php'
         );
 
-        if ($type === self::TYPE_BLOCK
-            && config('twill.block_editor.repeaters.' . $this->name) !== null
-        ) {
+        if ($type === self::TYPE_BLOCK && config('twill.block_editor.repeaters.' . $this->name) !== null) {
             $this->type = self::TYPE_REPEATER;
         }
 

@@ -99,7 +99,7 @@ class BlockCollection extends Collection
      */
     public function readBlocks($directory, $source, $type = null)
     {
-        if (!$this->fileSystem->exists($directory)) {
+        if (! $this->fileSystem->exists($directory)) {
             $this->addMissingDirectory($directory);
 
             return collect();
@@ -189,7 +189,7 @@ class BlockCollection extends Collection
         // remove duplicate Twill blocks
         $appBlocks = $this->collect()->whereIn('source', [Block::SOURCE_APP, Block::SOURCE_CUSTOM]);
         $this->items = $this->collect()->filter(function ($item) use ($appBlocks) {
-            return !$appBlocks->contains(function ($block) use ($item) {
+            return ! $appBlocks->contains(function ($block) use ($item) {
                 return $item->source === Block::SOURCE_TWILL && $item->name === $block->name;
             });
         })->values()->toArray();
@@ -202,7 +202,7 @@ class BlockCollection extends Collection
     }
 
     /**
-     * This function will add blocks and repeaters that are only defined in the config
+     * This function will add blocks and repeaters that are only defined in the config.
      *
      * For compatibility with 2.0.2 and lower
      *

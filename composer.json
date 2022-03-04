@@ -79,7 +79,9 @@
       ],
       "aliases": {
         "TwillCapsules": "A17\\Twill\\Facades\\TwillCapsules",
-        "TwillRoutes": "A17\\Twill\\Facades\\TwillRoutes"
+        "TwillRoutes": "A17\\Twill\\Facades\\TwillRoutes",
+        "TwillBlocks": "A17\\Twill\\Facades\\TwillBlocks",
+        "TwillUtil": "A17\\Twill\\Facades\\TwillUtil"
       }
     }
   },

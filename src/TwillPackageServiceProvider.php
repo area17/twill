@@ -2,6 +2,7 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Facades\TwillBlocks;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
@@ -80,25 +81,11 @@ abstract class TwillPackageServiceProvider extends ServiceProvider
 
     protected function registerBlocksDirectory($path)
     {
-        $blocks = Config::get('twill.block_editor.directories.source.blocks');
-
-        $blocks[] = [
-            'path' => $path,
-            'source' => 'vendor',
-        ];
-
-        Config::set('twill.block_editor.directories.source.blocks', $blocks);
+        TwillBlocks::registerPackageBlocksDirectory($path);
     }
 
     protected function registerRepeatersDirectory($path)
     {
-        $repeaters = Config::get('twill.block_editor.directories.source.repeaters');
-
-        $repeaters[] = [
-            'path' => $path,
-            'source' => 'vendor',
-        ];
-
-        Config::set('twill.block_editor.directories.source.repeaters', $repeaters);
+        TwillBlocks::registerPackageRepeatersDirectory($path);
     }
 }
