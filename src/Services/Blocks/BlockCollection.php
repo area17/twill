@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Blocks;
 
+use A17\Twill\Facades\TwillBlocks;
 use Exception;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
@@ -96,6 +97,8 @@ class BlockCollection extends Collection
      * @param $source
      * @param null $type
      * @return \Illuminate\Support\Collection
+     *
+     * @deprecated Removed in 3.x
      */
     public function readBlocks($directory, $source, $type = null)
     {
@@ -105,10 +108,7 @@ class BlockCollection extends Collection
             return collect();
         }
 
-        return collect($this->fileSystem->files($directory))
-            ->map(function ($file) use ($source, $type) {
-                return Block::make($file, $type, $source);
-            });
+        return TwillBlocks::readBlocksFromDirectory($directory, $source, $type);
     }
 
     /**

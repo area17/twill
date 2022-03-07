@@ -166,7 +166,7 @@ class Block
 
     /**
      * Block constructor.
-     * @param $file
+     * @param Symfony\Component\Finder\SplFileInfo $file
      * @param $type
      * @param $source
      * @param $name
@@ -180,13 +180,15 @@ class Block
 
         $this->source = $source;
 
-        $this->fileName = $this->getFilename();
+        // @change: This now holds the full file path instead of just the fileName.
+        $this->fileName = $this->file ? $this->file->getPathName() : 'Custom vue file';
 
         $this->name = $name ?? Str::before(
             $this->file->getFilename(),
             '.blade.php'
         );
 
+        // @todo: This may not be needed.
         if ($type === self::TYPE_BLOCK && config('twill.block_editor.repeaters.' . $this->name) !== null) {
             $this->type = self::TYPE_REPEATER;
         }
@@ -525,6 +527,7 @@ class Block
 
     public function getBlockView($blockViewMappings = [])
     {
+        // @todo: Fix the getblockView for package blocks.
         $view = config('twill.block_editor.block_views_path') . '.' . $this->name;
 
         if (array_key_exists($this->name, $blockViewMappings)) {
