@@ -22,9 +22,9 @@ class TwillBlocks
     public static $repeatersDirectories = [];
 
     /**
-     * @return BlockCollection
+     * @return A17\Twill\Services\Blocks\BlockCollection
      */
-    private Collection $blockCollection;
+    private $blockCollection;
 
     /**
      * Registers a blocks directory.
