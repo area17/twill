@@ -34,7 +34,7 @@ class ListBlocks extends Command
      *
      * @var A17\Twill\Services\Blocks\BlockCollection
      */
-    protected $blockCollection;
+    public $blockCollection;
 
     public function __construct()
     {
