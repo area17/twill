@@ -101,6 +101,11 @@ class Block
     /**
      * @var string
      */
+    public $renderNamespace;
+
+    /**
+     * @var string
+     */
     public $contents;
 
     /**
@@ -120,9 +125,11 @@ class Block
      * @param $type
      * @param $source
      * @param $name
+     * @param string $renderNamespace
+     *   Mainly for packages, but this will get the preview/render view file from that namespace.
      * @return static
      */
-    public static function make($file, $type, $source, $name = null): self
+    public static function make($file, $type, $source, $name = null, string $renderNamespace = null): self
     {
         $name = $name ?? Str::before(
             $file->getFilename(),
@@ -130,12 +137,13 @@ class Block
         );
 
         $transformed = Str::studly($name) . 'Block';
+        // @todo: Package block classes?
         $className = "\App\Twill\Block\\$transformed";
         if (class_exists($className)) {
             return new $className($file, $type, $source, $name);
         }
 
-        return new self($file, $type, $source, $name);
+        return new self($file, $type, $source, $name, $renderNamespace);
     }
 
     public static function getForType(string $type, bool $repeater = false): self
@@ -170,9 +178,11 @@ class Block
      * @param $type
      * @param $source
      * @param $name
+     * @param string $renderNamespace
+     *   Mainly for packages, but this will get the preview/render view file from that namespace.
      * @throws \Exception
      */
-    public function __construct($file, $type, $source, $name = null)
+    public function __construct($file, $type, $source, $name = null, ?string $renderNamespace = null)
     {
         $this->file = $file;
 
@@ -182,6 +192,8 @@ class Block
 
         // @change: This now holds the full file path instead of just the fileName.
         $this->fileName = $this->file ? $this->file->getPathName() : 'Custom vue file';
+
+        $this->renderNamespace = $renderNamespace;
 
         $this->name = $name ?? Str::before(
             $this->file->getFilename(),
@@ -527,8 +539,11 @@ class Block
 
     public function getBlockView($blockViewMappings = [])
     {
-        // @todo: Fix the getblockView for package blocks.
-        $view = config('twill.block_editor.block_views_path') . '.' . $this->name;
+        if ($this->renderNamespace) {
+            $view = $this->renderNamespace . '::' . $this->name;
+        } else {
+            $view = config('twill.block_editor.block_views_path') . '.' . $this->name;
+        }
 
         if (array_key_exists($this->name, $blockViewMappings)) {
             $view = $blockViewMappings[$this->name];

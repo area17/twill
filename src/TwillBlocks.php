@@ -33,7 +33,7 @@ class TwillBlocks
      * If the blockCollection is not yet initialized, we add it to the local static so that we
      * can process it once the collection is needed.
      */
-    public function registerPackageBlocksDirectory(string $path): void
+    public function registerPackageBlocksDirectory(string $path, string $renderNamespace = null): void
     {
         if (! isset(self::$blockDirectories[$path])) {
             if (isset($this->blockCollection)) {
@@ -41,7 +41,10 @@ class TwillBlocks
                     $this->readBlocksFromDirectory($path, self::DIRECTORY_TYPE_VENDOR, Block::TYPE_BLOCK)
                 );
             } else {
-                self::$blockDirectories[$path] = self::DIRECTORY_TYPE_VENDOR;
+                self::$blockDirectories[$path] = [
+                    'type' => self::DIRECTORY_TYPE_VENDOR,
+                    'renderNamespace' => $renderNamespace,
+                ];
             }
         }
     }
@@ -53,7 +56,7 @@ class TwillBlocks
      * If the blockCollection is not yet initialized, we add it to the local static so that we
      * can process it once the collection is needed.
      */
-    public function registerPackageRepeatersDirectory(string $path): void
+    public function registerPackageRepeatersDirectory(string $path, string $renderNamespace = null): void
     {
         if (! isset(self::$repeatersDirectories[$path])) {
             if (isset($this->blockCollection)) {
@@ -61,7 +64,10 @@ class TwillBlocks
                     $this->readBlocksFromDirectory($path, self::DIRECTORY_TYPE_VENDOR, Block::TYPE_REPEATER)
                 );
             } else {
-                self::$repeatersDirectories[$path] = self::DIRECTORY_TYPE_VENDOR;
+                self::$repeatersDirectories[$path] = [
+                    'type' => self::DIRECTORY_TYPE_VENDOR,
+                    'renderNamespace' => $renderNamespace,
+                ];
             }
         }
     }
@@ -77,14 +83,14 @@ class TwillBlocks
 
         // Consume the repeatersDirectories. We act a bit dumb here by not taking into account duplicates
         // as a package should only register a directory once.
-        foreach (self::$repeatersDirectories as $repeaterDir => $type) {
-            foreach ($this->readBlocksFromDirectory($repeaterDir, $type, Block::TYPE_REPEATER) as $repeater) {
+        foreach (self::$repeatersDirectories as $repeaterDir => $data) {
+            foreach ($this->readBlocksFromDirectory($repeaterDir, $data['type'], Block::TYPE_REPEATER, $data['renderNamespace']) as $repeater) {
                 $this->blockCollection->add($repeater);
             }
             unset(self::$repeatersDirectories[$repeaterDir]);
         }
-        foreach (self::$blockDirectories as $blockDir => $type) {
-            foreach ($this->readBlocksFromDirectory($blockDir, $type, Block::TYPE_BLOCK) as $block) {
+        foreach (self::$blockDirectories as $blockDir => $data) {
+            foreach ($this->readBlocksFromDirectory($blockDir, $data['type'], Block::TYPE_BLOCK, $data['renderNamespace']) as $block) {
                 $this->blockCollection->add($block);
             }
             unset(self::$blockDirectories[$blockDir]);
@@ -136,15 +142,19 @@ class TwillBlocks
     /**
      * Gets the collection of Block objects from a given directory.
      */
-    public function readBlocksFromDirectory(string $directory, string $source, string $type): Collection
-    {
+    public function readBlocksFromDirectory(
+        string $directory,
+        string $source,
+        string $type,
+        ?string $renderNamespace = null
+    ): Collection {
         if (! File::exists($directory)) {
             return new Collection();
         }
 
         return collect(File::files($directory))
-            ->map(function ($file) use ($source, $type) {
-                return Block::make($file, $type, $source);
+            ->map(function ($file) use ($source, $type, $renderNamespace) {
+                return Block::make($file, $type, $source, null, $renderNamespace);
             });
     }
 }

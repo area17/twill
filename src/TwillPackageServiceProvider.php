@@ -3,7 +3,6 @@
 namespace A17\Twill;
 
 use A17\Twill\Facades\TwillBlocks;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -79,13 +78,31 @@ abstract class TwillPackageServiceProvider extends ServiceProvider
         );
     }
 
-    protected function registerBlocksDirectory($path)
+    /**
+     * Register a blocks directory.
+     *
+     * If a namespace is provided for the render, Twill will assume it to be under:
+     *   NAMESPACE::site.blocks.BLOCK-NAME
+     *
+     * Given `$this->loadViewsFrom(__DIR__ . '/../resources/views/site/blocks', 'package-name');`
+     *
+     * So if you have a block called "example" and you want your package to provide the
+     * preview. Your file should be in `resources\views\site\blocks\example.blade.php`.
+     *
+     * To make sure the end user can override the views, you should make them publishable:
+     * ```
+     *   $this->publishes([
+     *        __DIR__ . '/../resources/views' => resource_path('views/vendor/PACKAGE-NAME'),
+     *   ]);
+     * ```
+     */
+    protected function registerBlocksDirectory($path, string $renderNamespace = null)
     {
-        TwillBlocks::registerPackageBlocksDirectory($path);
+        TwillBlocks::registerPackageBlocksDirectory($path, $renderNamespace);
     }
 
-    protected function registerRepeatersDirectory($path)
+    protected function registerRepeatersDirectory($path, string $renderNamespace = null)
     {
-        TwillBlocks::registerPackageRepeatersDirectory($path);
+        TwillBlocks::registerPackageRepeatersDirectory($path, $renderNamespace);
     }
 }
