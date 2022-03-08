@@ -6,6 +6,10 @@ on:
       - 3.x
   pull_request:
 
+permissions:
+  pull-requests: write
+  issues: write
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -30,9 +34,6 @@ jobs:
 
   test:
     runs-on: ${{ matrix.os }}
-    permissions:
-      pull-requests: write
-      issues: write
     strategy:
       fail-fast: false
       matrix:
@@ -45,7 +46,7 @@ jobs:
             testbench: 7.*
           - laravel: 8.*
             testbench: 6.*
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.os }}
+    name: ${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.os }} - ${{ matrix.dbal }}
 
     steps:
       - name: Checkout code
@@ -56,7 +57,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: none
+          coverage: xdebug
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -84,23 +85,19 @@ jobs:
       - name: Execute tests
         run: vendor/bin/phpunit
 
-      - name: Parse coverage
-        env:
-          COVERAGE: php .github/generate-comment.php
-          MATRIX: '${{matrix.php}}-${{matrix.laravel}}'
-
       - uses: actions/github-script@v6
+        env:
+          MATRIX: '${{matrix.php}}-${{matrix.laravel}}-${{matrix.dbal}}'
         with:
           script: |
-            console.log(process.env.MATRIX);
-            console.log(context);
-            if (process.env.MATRIX === '8.1-9.*') {
-              const coverage = process.env.COVERAGE
+            if (process.env.MATRIX === '8.1-9.*-^3.0') {
+              const { execSync } = require('child_process');
+              let coverage = execSync('./.github/generate-comment.php').toString();
 
               github.rest.issues.createComment({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                body: `${coverage}`
-              })
+                body: coverage
+              });
             }
