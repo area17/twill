@@ -6,6 +6,9 @@ on:
       - 3.x
   pull_request:
 
+permissions:
+  issues: write
+
 jobs:
   lint:
     runs-on: ubuntu-latest
