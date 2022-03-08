@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 $baseline = __DIR__ . '/baseline_clover.xml';
