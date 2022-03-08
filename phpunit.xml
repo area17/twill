@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="tests/bootstrap.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnError="false"
-         stopOnFailure="false"
-         verbose="true"
->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" backupStaticAttributes="false" bootstrap="tests/bootstrap.php" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false" stopOnError="false" stopOnFailure="false" verbose="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+    <exclude>
+      <directory suffix=".blade.php">./tests</directory>
+    </exclude>
+    <report>
+      <clover outputFile="./.github/clover.xml"/>
+      <text outputFile="php://stdout" showUncoveredFiles="false" showOnlySummary="true"/>
+    </report>
+  </coverage>
   <testsuites>
     <testsuite name="Twill Test Suites">
       <file>tests/unit/ValidationTest.php</file>
@@ -39,19 +40,7 @@
       <file>tests/integration/SingletonModuleTest.php</file>
     </testsuite>
   </testsuites>
-  <filter>
-    <whitelist processUncoveredFilesFromWhitelist="false">
-      <directory suffix=".php">./src</directory>
-      <exclude>
-        <directory suffix=".blade.php">./tests</directory>
-      </exclude>
-    </whitelist>
-  </filter>
-  <logging>
-    <log type="coverage-html" target="tests/coverage/" lowUpperBound="35" highLowerBound="70"/>
-    <log type="coverage-clover" target="tests/coverage/coverage-clover.xml" lowUpperBound="35" highLowerBound="70"/>
-    <log type="coverage-text" target="php://stdout" showOnlySummary="true" showUncoveredFiles="false"/>
-  </logging>
+  <logging/>
   <php>
     <env name="APP_KEY" value="base64:DV8kQN5a+4MwAIQ5uk1WNafxO+/Efab0K20uVMDJ2UE="/>
     <env name="APP_ENV" value="testing"/>

@@ -17,3 +17,4 @@ tests/storage
 .env.local
 .env.*.local
 composer.lock
+.github/clover.xml
