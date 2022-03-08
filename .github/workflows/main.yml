@@ -80,3 +80,20 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/phpunit
+
+      - name: Parse coverage
+        run: |
+          cd .github/
+          export COVERAGE=`php generate-comment.php`
+
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            const coverage = process.env.COVERAGE
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `${coverage}`
+            })
