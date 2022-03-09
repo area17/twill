@@ -3,8 +3,8 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
-use A17\Twill\Models\Group;
 use A17\Twill\Models\Behaviors\HasSlug;
+use A17\Twill\Models\Group;
 use A17\Twill\Services\Blocks\BlockCollection;
 use A17\Twill\Services\Capsules\HasCapsules;
 use Illuminate\Contracts\Foundation\Application;
@@ -283,14 +283,14 @@ abstract class ModuleController extends Controller
     protected $fieldsPermissions = [];
 
     /**
-     * Array of customizable label translation keys
+     * Array of customizable label translation keys.
      *
      * @var array
      */
     protected $labels = [];
 
     /**
-     * Default label translation keys that can be overridden in the labels array
+     * Default label translation keys that can be overridden in the labels array.
      *
      * @var array
      */
@@ -320,6 +320,7 @@ abstract class ModuleController extends Controller
         $this->labels = array_merge($this->defaultLabels, $this->labels);
         $this->middleware(function ($request, $next) {
             $this->user = auth('twill_users')->user();
+
             return $next($request);
         });
 
@@ -1234,7 +1235,7 @@ abstract class ModuleController extends Controller
                 && Arr::first($this->indexColumns)['variation'] === 'rounded') ?? false;
             $hasThumb = (isset(Arr::first($this->indexColumns)['thumb'])
                 && Arr::first($this->indexColumns)['thumb']
-                && !$hasRoundedThumb);
+                && ! $hasRoundedThumb);
             $thumb = ($hasRoundedThumb || $hasThumb) ? [
                 'name' => 'thumbnail',
                 'label' => twillTrans('twill::lang.listing.columns.thumbnail'),
@@ -1646,7 +1647,7 @@ abstract class ModuleController extends Controller
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
             'saveUrl' => $itemId ? $this->getModuleRoute($itemId, 'update') : moduleRoute($this->moduleName, $this->routePrefix, 'store', [$this->submoduleParentId]),
             'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas('blocks') && ! $this->disableEditor,
-            'blockPreviewUrl' => Route::has('admin.blocks.preview') ? URL::route('admin.blocks.preview') : '#',
+            'blockPreviewUrl' => Route::has('twill.blocks.preview') ? URL::route('twill.blocks.preview') : '#',
             'availableRepeaters' => $this->getRepeaterList()->toJson(),
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
             'groupUserMapping' => $this->getGroupUserMapping(),
@@ -2045,7 +2046,8 @@ abstract class ModuleController extends Controller
     {
         if (config('twill.enabled.permissions-management')) {
             $permissionModuleName = isPermissionableModule(getModuleNameByModel($item));
-            return $permissionModuleName && !strpos($permissionModuleName, '.');
+
+            return $permissionModuleName && ! strpos($permissionModuleName, '.');
         }
 
         return false;
@@ -2062,7 +2064,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * Get translation key from labels array and attemps to return a translated string
+     * Get translation key from labels array and attemps to return a translated string.
      *
      * @param string $key
      * @param array $replace

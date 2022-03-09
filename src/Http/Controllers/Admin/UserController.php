@@ -341,7 +341,8 @@ class UserController extends ModuleController
         $user->sendWelcomeNotification(
             Password::broker('twill_users')->getRepository()->create($user)
         );
-        return redirect()->route('admin.users.edit', ['user' => $user])->with('status', 'Registration email has been sent to the user!');
+
+        return redirect()->route('twill.users.edit', ['user' => $user])->with('status', 'Registration email has been sent to the user!');
     }
 
     private function getGroupPermissionMapping()

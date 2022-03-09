@@ -9,8 +9,8 @@ class PasswordResetByAdmin extends ResetPassword
 {
     public function toMail($notifiable)
     {
-        return (new MailMessage)->markdown('twill::emails.html.email', [
-            'url' => url(request()->getScheme() . '://' . config('twill.admin_app_url') . route('admin.login.form', null, false)),
+        return (new MailMessage())->markdown('twill::emails.html.email', [
+            'url' => url(request()->getScheme() . '://' . config('twill.admin_app_url') . route('twill.login.form', null, false)),
             'actionText' => 'Login',
             'copy' => 'You are receiving this email because your password has been changed by Admin.',
         ]);
