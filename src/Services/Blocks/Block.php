@@ -345,7 +345,7 @@ class Block
             preg_match("/@{$pattern}{$bladeProperty}\(" . self::PREG_REPLACE_INNER . "\)/", $block, $matches);
 
             if (filled($matches)) {
-                return $matches[1];
+                return twillTrans($matches[1]);
             }
         }
 
