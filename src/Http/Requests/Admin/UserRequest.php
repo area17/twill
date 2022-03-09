@@ -2,11 +2,11 @@
 
 namespace A17\Twill\Http\Requests\Admin;
 
+use A17\Twill\Models\Role;
+use A17\Twill\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use PragmaRX\Google2FA\Google2FA;
-use A17\Twill\Models\Role;
-use A17\Twill\Models\User;
 
 class UserRequest extends Request
 {
@@ -45,15 +45,15 @@ class UserRequest extends Request
                             $with2faSettings = config('twill.enabled.users-2fa') && $user->id == $this->route('user');
 
                             if ($with2faSettings) {
-                                $userIsEnabling = $this->get('google_2fa_enabled') && !$user->google_2fa_enabled;
-                                $userIsDisabling = !$this->get('google_2fa_enabled') && $user->google_2fa_enabled;
+                                $userIsEnabling = $this->get('google_2fa_enabled') && ! $user->google_2fa_enabled;
+                                $userIsDisabling = ! $this->get('google_2fa_enabled') && $user->google_2fa_enabled;
 
                                 $shouldValidateOTP = $userIsEnabling || $userIsDisabling;
 
                                 if ($shouldValidateOTP) {
-                                    $valid = (new Google2FA)->verifyKey($user->google_2fa_secret, $value ?? '');
+                                    $valid = (new Google2FA())->verifyKey($user->google_2fa_secret, $value ?? '');
 
-                                    if (!$valid) {
+                                    if (! $valid) {
                                         $fail('Your one time password is invalid.');
                                     }
                                 }
@@ -74,7 +74,7 @@ class UserRequest extends Request
     {
         if (config('twill.enabled.permissions-management')) {
             // Users can't assign roles above their own
-            $accessibleRoleIds = Role::accessible()->get()->pluck('id')->toArray();
+            $accessibleRoleIds = Role::accessible()->pluck('id')->toArray();
             $baseRule[] = Rule::in($accessibleRoleIds);
         } else {
             $baseRule[] = 'not_in:SUPERADMIN';

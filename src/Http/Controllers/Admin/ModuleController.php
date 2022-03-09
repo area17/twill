@@ -72,6 +72,8 @@ abstract class ModuleController extends Controller
      */
     protected $user;
 
+    protected array $primaryNavigation = [];
+
     /**
      * Options of the index view.
      *
@@ -1273,7 +1275,7 @@ abstract class ModuleController extends Controller
         }
 
         // rounded thumb are attached to the name
-        if (isset($hasRoundedThumb) && $hasRoundedThumb) {
+        if (isset($hasRoundedThumb, $thumb) && $hasRoundedThumb) {
             array_push($tableColumns, $thumb);
             array_shift($this->indexColumns);
         }

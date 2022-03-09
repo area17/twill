@@ -361,7 +361,7 @@ class UserController extends ModuleController
     {
         if (config('twill.enabled.permissions-management')) {
             // Forget first one because it's the "Everyone" group and we don't want to show it inside admin.
-            return Group::with('permissions')->get()->pluck('name', 'id')->forget(1);
+            return Group::with('permissions')->pluck('name', 'id')->forget(1);
         }
 
         return [];

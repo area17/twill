@@ -2,19 +2,19 @@
 
 namespace A17\Twill\Models;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use A17\Twill\Models\Behaviors\HasPermissions;
 use A17\Twill\Models\Behaviors\IsTranslatable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
- * Group model
+ * Group model.
  *
  * @property-read string $titleInBrowser Title
  * @property-read string $createdAt Date of creation
- * @property-read boolean $canEdit Check if the group is editable (ie. not the Everyone group)
- * @property-read boolean $canPublish Check if the group is publishable (ie. not the Everyone group)
+ * @property-read bool $canEdit Check if the group is editable (ie. not the Everyone group)
+ * @property-read bool $canPublish Check if the group is publishable (ie. not the Everyone group)
  * @property-read string $usersCount Formatted number of users in this group (ie. '123 users')
  * @method static Builder published() Get published groups
  * @method static Builder draft() Get draft groups
@@ -22,7 +22,9 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
  */
 class Group extends BaseModel
 {
-    use HasPermissions, SoftDeletes, IsTranslatable;
+    use HasPermissions;
+    use SoftDeletes;
+    use IsTranslatable;
 
     public $timestamps = true;
 
@@ -44,7 +46,7 @@ class Group extends BaseModel
     ];
 
     /**
-     * Return the Everyone group
+     * Return the Everyone group.
      *
      * @return BaseModel
      */
@@ -54,7 +56,7 @@ class Group extends BaseModel
     }
 
     /**
-     * Return the group title
+     * Return the group title.
      *
      * @return string
      */
@@ -97,7 +99,7 @@ class Group extends BaseModel
     }
 
     /**
-     * User model relationship
+     * User model relationship.
      *
      * @return BelongsToMany|Collection|User[]
      */
@@ -107,9 +109,9 @@ class Group extends BaseModel
     }
 
     /**
-     * Check if current group is the Everyone group
+     * Check if current group is the Everyone group.
      *
-     * @return boolean
+     * @return bool
      */
     public function isEveryoneGroup()
     {
@@ -117,7 +119,7 @@ class Group extends BaseModel
     }
 
     /**
-     * Return the formatted created date
+     * Return the formatted created date.
      *
      * @return string
      */
@@ -127,27 +129,27 @@ class Group extends BaseModel
     }
 
     /**
-     * Check if the group can be edited (not a system group, ie. Everyone)
+     * Check if the group can be edited (not a system group, ie. Everyone).
      *
-     * @return boolean
+     * @return bool
      */
     public function getCanEditAttribute()
     {
-        return !$this->isEveryoneGroup();
+        return ! $this->isEveryoneGroup();
     }
 
     /**
-     * Check if the group can be published (not a system group, ie. Everyone)
+     * Check if the group can be published (not a system group, ie. Everyone).
      *
-     * @return boolean
+     * @return bool
      */
     public function getCanPublishAttribute()
     {
-        return !$this->isEveryoneGroup();
+        return ! $this->isEveryoneGroup();
     }
 
     /**
-     * Return the formatted number of users in this group
+     * Return the formatted number of users in this group.
      *
      * @return string
      */
@@ -157,19 +159,20 @@ class Group extends BaseModel
     }
 
     /**
-     * Return viewable items
+     * Return viewable items.
      *
      * @return Collection
      */
     public function viewableItems()
     {
+        /* @phpstan-ignore-next-line */
         return Permission::where('name', 'view-item')->whereHas('groups', function ($query) {
             $query->where('id', $this->id);
         })->with('permissionable')->get()->pluck('permissionable');
     }
 
     /**
-     * Return ids of permissionable items
+     * Return ids of permissionable items.
      *
      * @return int[]
      */
@@ -179,7 +182,7 @@ class Group extends BaseModel
     }
 
     /**
-     * Return permissionable items
+     * Return permissionable items.
      *
      * @return Collection
      */
