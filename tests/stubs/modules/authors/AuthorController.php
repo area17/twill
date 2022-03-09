@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Twill;
 
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Foundation\Application;

@@ -59,14 +59,14 @@ class SettingController extends Controller
      */
     public function index($section)
     {
-        return $this->viewFactory->exists('admin.settings.' . $section)
-        ? $this->viewFactory->make('admin.settings.' . $section, [
+        return $this->viewFactory->exists('twill.settings.' . $section)
+        ? $this->viewFactory->make('twill.settings.' . $section, [
             'customForm' => true,
             'editableTitle' => false,
             'customTitle' => ucfirst($section) . ' settings',
             'section' => $section,
             'form_fields' => $this->settings->getFormFields($section),
-            'saveUrl' => $this->urlGenerator->route('admin.settings.update', $section),
+            'saveUrl' => $this->urlGenerator->route('twill.settings.update', $section),
             'translate' => true,
         ])
         : $this->redirector->back();

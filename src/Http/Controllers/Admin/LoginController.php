@@ -14,22 +14,21 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Password;
 use Illuminate\View\Factory as ViewFactory;
+use Laravel\Socialite\Facades\Socialite;
 use PragmaRX\Google2FA\Google2FA;
-use Socialite;
 
+/**
+ |--------------------------------------------------------------------------
+ | Login Controller
+ |--------------------------------------------------------------------------
+ |
+ | This controller handles authenticating users for the application and
+ | redirecting them to your home screen. The controller uses a trait
+ | to conveniently provide its functionality to your applications.
+ |
+ */
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-     */
-
     use AuthenticatesUsers;
 
     /**
@@ -119,7 +118,7 @@ class LoginController extends Controller
 
         $request->session()->regenerateToken();
 
-        return $this->redirector->to(route('admin.login'));
+        return $this->redirector->to(route('twill.login'));
     }
 
     /**
@@ -139,7 +138,7 @@ class LoginController extends Controller
 
             $request->session()->put('2fa:user:id', $user->id);
 
-            return $this->redirector->to(route('admin.login-2fa.form'));
+            return $this->redirector->to(route('twill.login-2fa.form'));
         }
 
         $user->last_login_at = Carbon::now();
@@ -148,7 +147,8 @@ class LoginController extends Controller
         if ($user->require_new_password) {
             $this->logout($request);
             $token = Password::broker('twill_users')->getRepository()->create($user);
-            return $this->redirector->to(route('admin.password.reset.form', $token))->withErrors([
+
+            return $this->redirector->to(route('twill.password.reset.form', $token))->withErrors([
                 'error' => 'Your password needs to be reset before login',
             ]);
         }
@@ -169,7 +169,7 @@ class LoginController extends Controller
 
         $user = twillModel('user')::findOrFail($userId);
 
-        $valid = (new Google2FA)->verifyKey(
+        $valid = (new Google2FA())->verifyKey(
             $user->google_2fa_secret,
             $request->input('verify-code')
         );
@@ -182,7 +182,7 @@ class LoginController extends Controller
             return $this->redirector->intended($this->redirectTo);
         }
 
-        return $this->redirector->to(route('admin.login-2fa.form'))->withErrors([
+        return $this->redirector->to(route('twill.login-2fa.form'))->withErrors([
             'error' => 'Your one time password is invalid.',
         ]);
     }
@@ -205,19 +205,18 @@ class LoginController extends Controller
      */
     public function handleProviderCallback($provider, OauthRequest $request)
     {
-
         $oauthUser = Socialite::driver($provider)->user();
         $repository = App::make(UserRepository::class);
 
         // If the user with that email exists
         if ($user = $repository->oauthUser($oauthUser)) {
-
             // If that provider has been linked
             if ($repository->oauthIsUserLinked($oauthUser, $provider)) {
                 $user = $repository->oauthUpdateProvider($oauthUser, $provider);
 
                 // Login and redirect
                 $this->authManager->guard('twill_users')->login($user);
+
                 return $this->afterAuthentication($request, $user);
             } else {
                 if ($user->password) {
@@ -227,12 +226,14 @@ class LoginController extends Controller
                     $request->session()->put('oauth:user_id', $user->id);
                     $request->session()->put('oauth:user', $oauthUser);
                     $request->session()->put('oauth:provider', $provider);
-                    return $this->redirector->to(route('admin.login.oauth.showPasswordForm'));
+
+                    return $this->redirector->to(route('twill.login.oauth.showPasswordForm'));
                 } else {
                     $user->linkProvider($oauthUser, $provider);
 
                     // Login and redirect
                     $this->authManager->guard('twill_users')->login($user);
+
                     return $this->afterAuthentication($request, $user);
                 }
             }
@@ -243,6 +244,7 @@ class LoginController extends Controller
 
             // Login and redirect
             $this->authManager->guard('twill_users')->login($user);
+
             return $this->redirector->intended($this->redirectTo);
         }
     }

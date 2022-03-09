@@ -7,14 +7,14 @@ return [
     ],
     'settings' => [
         'title' => 'Settings',
-        'route' => 'admin.settings',
+        'route' => 'twill.settings',
         'params' => ['section' => 'seo'],
         'primary_navigation' => [
             'seo' => [
                 'title' => 'SEO',
-                'route' => 'admin.settings',
-                'params' => ['section' => 'seo']
+                'route' => 'twill.settings',
+                'params' => ['section' => 'seo'],
             ],
-        ]
+        ],
     ],
 ];

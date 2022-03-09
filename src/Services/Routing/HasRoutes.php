@@ -71,7 +71,7 @@ trait HasRoutes
     protected function getRouteGroupOptions(): array
     {
         $groupOptions = [
-            'as' => config('twill.admin_route_name_prefix', 'admin.'),
+            'as' => config('twill.admin_route_name_prefix', 'twill.'),
             'middleware' => [config('twill.admin_middleware_group', 'web')],
             'prefix' => rtrim(ltrim(config('twill.admin_app_path'), '/'), '/'),
         ];

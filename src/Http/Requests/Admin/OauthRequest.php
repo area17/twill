@@ -7,7 +7,7 @@ use Illuminate\Validation\Rule;
 class OauthRequest extends Request
 {
 
-    protected $redirectRoute = 'admin.login.form';
+    protected $redirectRoute = 'twill.login.form';
 
 
     /**

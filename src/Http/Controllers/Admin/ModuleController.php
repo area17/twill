@@ -3,8 +3,8 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Helpers\FlashLevel;
-use A17\Twill\Models\Group;
 use A17\Twill\Models\Behaviors\HasSlug;
+use A17\Twill\Models\Group;
 use A17\Twill\Services\Blocks\BlockCollection;
 use A17\Twill\Services\Capsules\HasCapsules;
 use Illuminate\Contracts\Foundation\Application;
@@ -72,6 +72,8 @@ abstract class ModuleController extends Controller
      */
     protected $user;
 
+    protected array $primaryNavigation = [];
+
     /**
      * Options of the index view.
      *
@@ -127,7 +129,7 @@ abstract class ModuleController extends Controller
     ];
 
     /**
-     * Relations to eager load for the index view
+     * Relations to eager load for the index view.
      *
      * @var array
      */
@@ -164,7 +166,7 @@ abstract class ModuleController extends Controller
     protected $filters = [];
 
     /**
-     * Additional links to display in the listing filter
+     * Additional links to display in the listing filter.
      *
      * @var array
      */
@@ -283,14 +285,14 @@ abstract class ModuleController extends Controller
     protected $fieldsPermissions = [];
 
     /**
-     * Array of customizable label translation keys
+     * Array of customizable label translation keys.
      *
      * @var array
      */
     protected $labels = [];
 
     /**
-     * Default label translation keys that can be overridden in the labels array
+     * Default label translation keys that can be overridden in the labels array.
      *
      * @var array
      */
@@ -320,6 +322,7 @@ abstract class ModuleController extends Controller
         $this->labels = array_merge($this->defaultLabels, $this->labels);
         $this->middleware(function ($request, $next) {
             $this->user = auth('twill_users')->user();
+
             return $next($request);
         });
 
@@ -327,7 +330,7 @@ abstract class ModuleController extends Controller
          * Default filters for the index view
          * By default, the search field will run a like query on the title field
          */
-        if (!isset($this->defaultFilters)) {
+        if (! isset($this->defaultFilters)) {
             $this->defaultFilters = [
                 'search' => ($this->moduleHas('translations') ? '' : '%') . $this->titleColumnKey,
             ];
@@ -341,7 +344,7 @@ abstract class ModuleController extends Controller
         /*
          * Available columns of the index view
          */
-        if (!isset($this->indexColumns)) {
+        if (! isset($this->indexColumns)) {
             $this->indexColumns = [
                 $this->titleColumnKey => [
                     'title' => ucfirst($this->titleColumnKey),
@@ -354,7 +357,7 @@ abstract class ModuleController extends Controller
         /*
          * Available columns of the browser view
          */
-        if (!isset($this->browserColumns)) {
+        if (! isset($this->browserColumns)) {
             $this->browserColumns = [
                 $this->titleColumnKey => [
                     'title' => ucfirst($this->titleColumnKey),
@@ -435,7 +438,7 @@ abstract class ModuleController extends Controller
         $view = Collection::make([
             "$this->viewPrefix.index",
             "twill::$this->moduleName.index",
-            "twill::layouts.listing",
+            'twill::layouts.listing',
         ])->first(function ($view) {
             return View::exists($view);
         });
@@ -549,7 +552,7 @@ abstract class ModuleController extends Controller
         $view = Collection::make([
             "$this->viewPrefix.form",
             "twill::$this->moduleName.form",
-            "twill::layouts.form",
+            'twill::layouts.form',
         ])->first(function ($view) {
             return View::exists($view);
         });
@@ -563,7 +566,7 @@ abstract class ModuleController extends Controller
      */
     public function create($parentModuleId = null)
     {
-        if (!$this->getIndexOption('skipCreateModal')) {
+        if (! $this->getIndexOption('skipCreateModal')) {
             return Redirect::to(moduleRoute(
                 $this->moduleName,
                 $this->routePrefix,
@@ -580,7 +583,7 @@ abstract class ModuleController extends Controller
         $view = Collection::make([
             "$this->viewPrefix.form",
             "twill::$this->moduleName.form",
-            "twill::layouts.form",
+            'twill::layouts.form',
         ])->first(function ($view) {
             return View::exists($view);
         });
@@ -598,7 +601,7 @@ abstract class ModuleController extends Controller
         $params = $this->request->route()->parameters();
 
         $submoduleParentId = $this->getParentModuleIdFromRequest($this->request) ?? $id;
-        $this->submodule = isset($submoduleParentId);
+        $this->submodule = $submoduleParentId;
         $this->submoduleParentId = $submoduleParentId;
 
         $id = last($params);
@@ -636,6 +639,7 @@ abstract class ModuleController extends Controller
                             'create'
                         ));
                     }
+
                     return $this->respondWithRedirect(moduleRoute(
                         $this->moduleName,
                         $this->routePrefix,
@@ -711,7 +715,7 @@ abstract class ModuleController extends Controller
         $view = Collection::make([
             "$this->viewPrefix.form",
             "twill::$this->moduleName.form",
-            "twill::layouts.form",
+            'twill::layouts.form',
         ])->first(function ($view) {
             return View::exists($view);
         });
@@ -731,7 +735,7 @@ abstract class ModuleController extends Controller
     {
         try {
             if ($this->repository->updateBasic($this->request->get('id'), [
-                'published' => !$this->request->get('active'),
+                'published' => ! $this->request->get('active'),
             ])) {
                 activity()->performedOn(
                     $this->repository->getById($this->request->get('id'))
@@ -773,6 +777,7 @@ abstract class ModuleController extends Controller
         } catch (\Exception $e) {
             \Log::error($e);
         }
+
         return $this->respondWithError(twillTrans('twill::lang.listing.bulk-publish.error', ['modelTitle' => $this->modelTitle]));
     }
 
@@ -822,6 +827,7 @@ abstract class ModuleController extends Controller
         if ($this->repository->delete($id)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('deleted');
+
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.delete.success', ['modelTitle' => $this->modelTitle]));
         }
 
@@ -835,6 +841,7 @@ abstract class ModuleController extends Controller
     {
         if ($this->repository->bulkDelete(explode(',', $this->request->get('ids')))) {
             $this->fireEvent();
+
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-delete.success', ['modelTitle' => $this->modelTitle]));
         }
 
@@ -848,6 +855,7 @@ abstract class ModuleController extends Controller
     {
         if ($this->repository->forceDelete($this->request->get('id'))) {
             $this->fireEvent();
+
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.force-delete.success', ['modelTitle' => $this->modelTitle]));
         }
 
@@ -861,6 +869,7 @@ abstract class ModuleController extends Controller
     {
         if ($this->repository->bulkForceDelete(explode(',', $this->request->get('ids')))) {
             $this->fireEvent();
+
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-force-delete.success', ['modelTitle' => $this->modelTitle]));
         }
 
@@ -875,6 +884,7 @@ abstract class ModuleController extends Controller
         if ($this->repository->restore($this->request->get('id'))) {
             $this->fireEvent();
             activity()->performedOn($this->repository->getById($this->request->get('id')))->log('restored');
+
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.restore.success', ['modelTitle' => $this->modelTitle]));
         }
 
@@ -888,6 +898,7 @@ abstract class ModuleController extends Controller
     {
         if ($this->repository->bulkRestore(explode(',', $this->request->get('ids')))) {
             $this->fireEvent();
+
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-restore.success', ['modelTitle' => $this->modelTitle]));
         }
 
@@ -901,7 +912,7 @@ abstract class ModuleController extends Controller
     {
         if (($id = $this->request->get('id'))) {
             $featuredField = $this->request->get('featureField') ?? $this->featureField;
-            $featured = !$this->request->get('active');
+            $featured = ! $this->request->get('active');
 
             if ($this->repository->isUniqueFeature()) {
                 if ($featured) {
@@ -957,9 +968,10 @@ abstract class ModuleController extends Controller
      */
     public function reorder()
     {
-        if (($values = $this->request->get('ids')) && !empty($values)) {
+        if ($values = $this->request->get('ids', null)) {
             $this->repository->setNewOrder($values);
             $this->fireEvent();
+
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.reorder.success', ['modelTitle' => $this->modelTitle]));
         }
 
@@ -1075,6 +1087,7 @@ abstract class ModuleController extends Controller
     protected function getIndexTableData($items)
     {
         $translated = $this->moduleHas('translations');
+
         return $items->map(function ($item) use ($translated) {
             $columnsData = Collection::make($this->indexColumns)->mapWithKeys(function ($column) use ($item) {
                 return $this->getItemColumnData($item, $column);
@@ -1168,7 +1181,7 @@ abstract class ModuleController extends Controller
             $module = Str::singular(last(explode('.', $this->moduleName)));
             $value = '<a href="';
             $value .= moduleRoute("$this->moduleName.$field", $this->routePrefix, 'index', [$module => $this->getItemIdentifier($item)]);
-            $value .= '">' . $nestedCount . " " . (strtolower(Str::plural($column['title'], $nestedCount))) . '</a>';
+            $value .= '">' . $nestedCount . ' ' . (strtolower(Str::plural($column['title'], $nestedCount))) . '</a>';
         } else {
             $field = $column['field'];
             $value = $item->$field;
@@ -1224,7 +1237,7 @@ abstract class ModuleController extends Controller
                 && Arr::first($this->indexColumns)['variation'] === 'rounded') ?? false;
             $hasThumb = (isset(Arr::first($this->indexColumns)['thumb'])
                 && Arr::first($this->indexColumns)['thumb']
-                && !$hasRoundedThumb);
+                && ! $hasRoundedThumb);
             $thumb = ($hasRoundedThumb || $hasThumb) ? [
                 'name' => 'thumbnail',
                 'label' => twillTrans('twill::lang.listing.columns.thumbnail'),
@@ -1262,7 +1275,7 @@ abstract class ModuleController extends Controller
         }
 
         // rounded thumb are attached to the name
-        if (isset($hasRoundedThumb) && $hasRoundedThumb) {
+        if (isset($hasRoundedThumb, $thumb) && $hasRoundedThumb) {
             array_push($tableColumns, $thumb);
             array_shift($this->indexColumns);
         }
@@ -1469,7 +1482,7 @@ abstract class ModuleController extends Controller
                 'name' => $name,
                 'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $this->getItemIdentifier($item)),
                 'endpointType' => $this->repository->getMorphClass(),
-            ] + $columnsData + ($withImage && !array_key_exists('thumbnail', $columnsData) ? [
+            ] + $columnsData + ($withImage && ! array_key_exists('thumbnail', $columnsData) ? [
                 'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
             ] : []);
         })->toArray();
@@ -1518,7 +1531,7 @@ abstract class ModuleController extends Controller
         foreach ($this->filters as $key => $field) {
             if (array_key_exists($key, $requestFilters)) {
                 $value = $requestFilters[$key];
-                if ($value == 0 || !empty($value)) {
+                if ($value == 0 || ! empty($value)) {
                     // add some syntaxic sugar to scope the same filter on multiple columns
                     $fieldSplitted = explode('|', $field);
                     if (count($fieldSplitted) > 1) {
@@ -1553,14 +1566,14 @@ abstract class ModuleController extends Controller
      */
     protected function applyFiltersDefaultOptions()
     {
-        if (!count($this->filtersDefaultOptions) || $this->request->has('search')) {
+        if (! count($this->filtersDefaultOptions) || $this->request->has('search')) {
             return;
         }
 
         $filters = $this->getRequestFilters();
 
         foreach ($this->filtersDefaultOptions as $filterName => $defaultOption) {
-            if (!isset($filters[$filterName])) {
+            if (! isset($filters[$filterName])) {
                 $filters[$filterName] = $defaultOption;
             }
         }
@@ -1577,7 +1590,7 @@ abstract class ModuleController extends Controller
         if ($this->request->has('sortKey') && $this->request->has('sortDir')) {
             if (($key = $this->request->get('sortKey')) == 'name') {
                 $sortKey = $this->titleColumnKey;
-            } elseif (!empty($key)) {
+            } elseif (! empty($key)) {
                 $sortKey = $key;
             }
 
@@ -1600,13 +1613,13 @@ abstract class ModuleController extends Controller
      */
     protected function form($id, $item = null)
     {
-        if (!$item && $id) {
+        if (! $item && $id) {
             $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
-        } elseif (!$item && !$id) {
+        } elseif (! $item && ! $id) {
             $item = $this->repository->newInstance();
         }
 
-        $fullRoutePrefix = 'admin.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
+        $fullRoutePrefix = 'twill.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
         $previewRouteName = $fullRoutePrefix . 'preview';
         $restoreRouteName = $fullRoutePrefix . 'restoreRevision';
 
@@ -1629,14 +1642,14 @@ abstract class ModuleController extends Controller
             'translate' => $this->moduleHas('translations'),
             'translateTitle' => $this->titleIsTranslatable(),
             'permalink' => $this->getIndexOption('permalink', $item),
-            'createWithoutModal' => !$itemId && $this->getIndexOption('skipCreateModal'),
+            'createWithoutModal' => ! $itemId && $this->getIndexOption('skipCreateModal'),
             'form_fields' => $this->repository->getFormFields($item),
             'baseUrl' => $baseUrl,
             'localizedPermalinkBase'=>$localizedPermalinkBase,
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
             'saveUrl' => $itemId ? $this->getModuleRoute($itemId, 'update') : moduleRoute($this->moduleName, $this->routePrefix, 'store', [$this->submoduleParentId]),
-            'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas('blocks') && !$this->disableEditor,
-            'blockPreviewUrl' => Route::has('admin.blocks.preview') ? URL::route('admin.blocks.preview') : '#',
+            'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas('blocks') && ! $this->disableEditor,
+            'blockPreviewUrl' => Route::has('twill.blocks.preview') ? URL::route('twill.blocks.preview') : '#',
             'availableRepeaters' => $this->getRepeaterList()->toJson(),
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
             'groupUserMapping' => $this->getGroupUserMapping(),
@@ -1720,7 +1733,12 @@ abstract class ModuleController extends Controller
 
     public function getFormRequestClass()
     {
-        $request = "$this->namespace\Http\Requests\Admin\\" . $this->modelName . "Request";
+        $prefix = '\Admin';
+        if ($this->namespace !== 'A17\Twill') {
+            $prefix = "\Twill";
+        }
+
+        $request = "$this->namespace\Http\Requests$prefix\\" . $this->modelName . 'Request';
 
         if (@class_exists($request)) {
             return $request;
@@ -1743,8 +1761,9 @@ abstract class ModuleController extends Controller
     protected function getRoutePrefix()
     {
         if ($this->request->route() != null) {
-            $routePrefix = ltrim(str_replace(Config::get('twill.admin_app_path'), '', $this->request->route()->getPrefix()), "/");
-            return str_replace("/", ".", $routePrefix);
+            $routePrefix = ltrim(str_replace(Config::get('twill.admin_app_path'), '', $this->request->route()->getPrefix()), '/');
+
+            return str_replace('/', '.', $routePrefix);
         }
 
         return '';
@@ -1763,11 +1782,11 @@ abstract class ModuleController extends Controller
                 $singularName = Str::singular($name);
                 $modelClass = config('twill.namespace') . '\\Models\\' . Str::studly($singularName);
 
-                if(!class_exists($modelClass)) {
+                if (! class_exists($modelClass)) {
                     $modelClass = $this->getCapsuleByModule($name)['model'];
                 }
 
-                $model = (new $modelClass)->findOrFail(request()->route()->parameter($singularName));
+                $model = (new $modelClass())->findOrFail(request()->route()->parameter($singularName));
                 $hasSlug = Arr::has(class_uses($modelClass), HasSlug::class);
 
                 $base .= $name . '/' . ($hasSlug ? $model->slug : $model->id) . '/';
@@ -1797,7 +1816,7 @@ abstract class ModuleController extends Controller
 
     public function getRepositoryClass($model)
     {
-        if (@class_exists($class = "$this->namespace\Repositories\\" . $model . "Repository")) {
+        if (@class_exists($class = "$this->namespace\Repositories\\" . $model . 'Repository')) {
             return $class;
         }
 
@@ -1809,7 +1828,7 @@ abstract class ModuleController extends Controller
      */
     protected function getViewPrefix()
     {
-        $prefix = "admin.$this->moduleName";
+        $prefix = "twill.$this->moduleName";
 
         if (view()->exists("$prefix.form")) {
             return $prefix;
@@ -1851,7 +1870,7 @@ abstract class ModuleController extends Controller
             . ($this->moduleHas('translations') ? '{language}/' : '')
             . ($this->moduleHas('revisions') ? '{preview}/' : '')
             . (empty($this->getLocalizedPermalinkBase()) ? ($this->permalinkBase ?? $this->getModulePermalinkBase()) : '')
-            . (((isset($this->permalinkBase) && empty($this->permalinkBase)) || !empty($this->getLocalizedPermalinkBase())) ? '' : '/');
+            . (((isset($this->permalinkBase) && empty($this->permalinkBase)) || ! empty($this->getLocalizedPermalinkBase())) ? '' : '/');
     }
 
     /**
@@ -1868,7 +1887,7 @@ abstract class ModuleController extends Controller
      */
     protected function getPermalinkPrefix($baseUrl)
     {
-        return rtrim(str_replace(['http://', 'https://', '{preview}/', '{language}/'], '', $baseUrl), "/") . '/';
+        return rtrim(str_replace(['http://', 'https://', '{preview}/', '{language}/'], '', $baseUrl), '/') . '/';
     }
 
     /**
@@ -1907,7 +1926,7 @@ abstract class ModuleController extends Controller
      */
     protected function setBackLink($back_link = null, $params = [])
     {
-        if (!isset($back_link)) {
+        if (! isset($back_link)) {
             if (($back_link = Session::get($this->getBackLinkSessionKey())) == null) {
                 $back_link = $this->request->headers->get('referer') ?? moduleRoute(
                     $this->moduleName,
@@ -1918,7 +1937,7 @@ abstract class ModuleController extends Controller
             }
         }
 
-        if (!Session::get($this->moduleName . '_retain')) {
+        if (! Session::get($this->moduleName . '_retain')) {
             Session::put($this->getBackLinkSessionKey(), $back_link);
         } else {
             Session::put($this->moduleName . '_retain', false);
@@ -1933,6 +1952,7 @@ abstract class ModuleController extends Controller
     protected function getBackLink($fallback = null, $params = [])
     {
         $back_link = Session::get($this->getBackLinkSessionKey(), $fallback);
+
         return $back_link ?? moduleRoute($this->moduleName, $this->routePrefix, 'index', $params);
     }
 
@@ -2028,7 +2048,8 @@ abstract class ModuleController extends Controller
     {
         if (config('twill.enabled.permissions-management')) {
             $permissionModuleName = isPermissionableModule(getModuleNameByModel($item));
-            return $permissionModuleName && !strpos($permissionModuleName, '.');
+
+            return $permissionModuleName && ! strpos($permissionModuleName, '.');
         }
 
         return false;
@@ -2045,7 +2066,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * Get translation key from labels array and attemps to return a translated string
+     * Get translation key from labels array and attemps to return a translated string.
      *
      * @param string $key
      * @param array $replace

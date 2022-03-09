@@ -389,7 +389,7 @@ publication controll in the create modal [`#1468`](https://github.com/area17/twi
 - **Self-contained blocks** (#597) [`1e95b0ac`](https://github.com/area17/twill/commit/1e95b0ac) [`9ae502a4`](https://github.com/area17/twill/commit/9ae502a46ed31f82ebda5426dbff5f56228e2d25) [`948985ef`](https://github.com/area17/twill/commit/948985ef22d70a08287ccdf7583ca802f6182833) [`66fa7c5e`](https://github.com/area17/twill/commit/66fa7c5e16c0ce34f0edc1aab74a52ef0d232401) [`c00759ee`](https://github.com/area17/twill/commit/c00759ee7cad76aea16ec7f04c693ba1cd046b9d)
   - This change allows defining blocks without adding them to the `twill.block_editor` configuration
   - This is backwards compatible with blocks already defined in configuration
-  - Repeaters are now created in a dedicated folder: `views/admin/repeaters` by default, but your existing repeaters in the `views/admin/blocks` file will still work
+  - Repeaters are now created in a dedicated folder: `views/twill/repeaters` by default, but your existing repeaters in the `views/twill/blocks` file will still work
   - Annotations are now supported in blocks and repeaters Blade files:
     - Provide a title with `@twillPropTitle` or `@twillBlockTitle` or `@twillRepeaterTitle`
     - Provide an icon with `@twillPropIcon` or `@twillBlockIcon` or `@twillRepeaterIcon`
@@ -619,7 +619,7 @@ We also namespaced our inline javascript variables to prevent any conflict in th
 
 Finally, to help custom workflows, maintainers and contributors, we made everything configurable:
 - `manifest_file`, which defaults to `twill-manifest.json`
-- `public_directory`, which defaults to `assets/admin`, like in previous versions, and can now be controlled through the `TWILL_ASSETS_DIR` environment variable
+- `public_directory`, which defaults to `assets/twill`, like in previous versions, and can now be controlled through the `TWILL_ASSETS_DIR` environment variable
 - `dev_mode`, which defaults to `false`
 - `dev_mode_url`, which defaults to  [http://localhost:8080](http://localhost:8080/)  and can be controlled through the `TWILL_DEV_MODE_URL` environment variable.
 

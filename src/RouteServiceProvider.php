@@ -2,7 +2,6 @@
 
 namespace A17\Twill;
 
-use A17\Twill\Services\Capsules\Manager;
 use A17\Twill\Http\Controllers\Front\GlideController;
 use A17\Twill\Http\Middleware\Impersonate;
 use A17\Twill\Http\Middleware\Localization;
@@ -72,8 +71,8 @@ class RouteServiceProvider extends ServiceProvider
             $groupOptions,
             $middlewares,
             $supportSubdomainRouting,
-            config('twill.namespace', 'App') . '\Http\Controllers\Admin',
-            base_path('routes/admin.php')
+            config('twill.namespace', 'App') . '\Http\Controllers\Twill',
+            base_path('routes/twill.php')
         );
     }
 
