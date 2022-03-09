@@ -327,7 +327,12 @@ module.exports = [
       {
         "title": "User Management",
         "path": "/user-management/",
-        "children": [],
+        "children": [
+          {
+            "title": "Advanced permissions",
+            "path": "/user-management/advanced-permissions.html",
+          }
+        ],
       },
       {
         "title": "OAuth Login",
