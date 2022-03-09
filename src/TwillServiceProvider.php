@@ -2,6 +2,8 @@
 
 namespace A17\Twill;
 
+
+use A17\Twill\Commands\UpgradeCommand;
 use A17\Twill\Commands\SetupDevTools;
 use Exception;
 use A17\Twill\Commands\BlockMake;
@@ -328,6 +330,7 @@ class TwillServiceProvider extends ServiceProvider
             MakeCapsule::class,
             MakeSingleton::class,
             ModuleMakeDeprecated::class,
+            UpgradeCommand::class,
             BlockMake::class,
             ListIcons::class,
             ListBlocks::class,
@@ -353,7 +356,7 @@ class TwillServiceProvider extends ServiceProvider
     {
         [$name] = str_getcsv($expression, ',', '\'');
 
-        $partialNamespace = view()->exists('admin.' . $view . $name) ? 'admin.' : 'twill::';
+        $partialNamespace = view()->exists('twill.' . $view . $name) ? 'twill.' : 'twill::';
 
         $view = $partialNamespace . $view . $name;
 
@@ -397,7 +400,7 @@ class TwillServiceProvider extends ServiceProvider
             $partialNamespace = 'twill::partials';
 
             $viewModule = "twillViewName($moduleName, '{$viewName}')";
-            $viewApplication = "'admin.partials.{$viewName}'";
+            $viewApplication = "'twill.partials.{$viewName}'";
             $viewModuleTwill = "'twill::'.$moduleName.'.{$viewName}'";
             $view = $partialNamespace . "." . $viewName;
 
@@ -459,7 +462,7 @@ class TwillServiceProvider extends ServiceProvider
     private function addViewComposers()
     {
         if (config('twill.enabled.users-management')) {
-            View::composer(['admin.*', 'twill::*'], CurrentUser::class);
+            View::composer(['twill.*', 'twill::*'], CurrentUser::class);
         }
 
         if (config('twill.enabled.media-library')) {
@@ -472,7 +475,7 @@ class TwillServiceProvider extends ServiceProvider
 
         View::composer('twill::partials.navigation.*', ActiveNavigation::class);
 
-        View::composer(['admin.*', 'templates.*', 'twill::*'], function ($view) {
+        View::composer(['twill.*', 'templates.*', 'twill::*'], function ($view) {
             $with = array_merge([
                 'renderForBlocks' => false,
                 'renderForModal' => false,
@@ -481,7 +484,7 @@ class TwillServiceProvider extends ServiceProvider
             return $view->with($with);
         });
 
-        View::composer(['admin.*', 'twill::*'], Localization::class);
+        View::composer(['twill.*', 'twill::*'], Localization::class);
     }
 
     /**

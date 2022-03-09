@@ -1,5 +1,5 @@
 @extends('twill::auth.layout', [
-    'route' => route('admin.login-2fa'),
+    'route' => route('twill.login-2fa'),
     'screenTitle' => twillTrans('twill::lang.auth.verify-login'),
 ])
 

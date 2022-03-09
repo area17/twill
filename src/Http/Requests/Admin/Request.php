@@ -19,6 +19,22 @@ abstract class Request extends FormRequest
     }
 
     /**
+     * @return array
+     */
+    public function rulesForCreate()
+    {
+        return [];
+    }
+
+    /**
+     * @return array
+     */
+    public function rulesForUpdate()
+    {
+        return [];
+    }
+
+    /**
      * Gets the validation rules that apply to the request.
      *
      * @return array
@@ -26,9 +42,12 @@ abstract class Request extends FormRequest
     public function rules()
     {
         switch ($this->method()) {
-            case 'POST':{return $this->rulesForCreate();}
-            case 'PUT':{return $this->rulesForUpdate();}
-            default:break;
+            case 'POST':
+                return $this->rulesForCreate();
+            case 'PUT':
+                return $this->rulesForUpdate();
+            default:
+                break;
         }
 
         return [];

@@ -19,12 +19,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as AuthenticatableContract;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Session;
 use PragmaRX\Google2FAQRCode\Google2FA;
 
 class User extends AuthenticatableContract
 {
-
     use Authenticatable, Authorizable, HasMedias, Notifiable, HasPresenter, HasOauth, HasPermissions, SoftDeletes, IsTranslatable;
 
     public $timestamps = true;
@@ -44,7 +44,7 @@ class User extends AuthenticatableContract
         'role_id',
         'google_2fa_enabled',
         'google_2fa_secret',
-        'language'
+        'language',
     ];
 
     protected $dates = [
@@ -54,6 +54,7 @@ class User extends AuthenticatableContract
     ];
 
     protected $hidden = ['password', 'remember_token', 'google_2fa_secret'];
+
     public $checkboxes = ['published'];
 
     public $mediasParams = [
@@ -193,7 +194,6 @@ class User extends AuthenticatableContract
         config([
             'mail.markdown.paths' => $hostAppMailConfig,
         ]);
-
     }
 
     public function sendWelcomeNotification($token)
@@ -275,12 +275,12 @@ class User extends AuthenticatableContract
 
     public function setGoogle2faSecretAttribute($secret)
     {
-        $this->attributes['google_2fa_secret'] = filled($secret) ? \Crypt::encrypt($secret) : null;
+        $this->attributes['google_2fa_secret'] = filled($secret) ? Crypt::encrypt($secret) : null;
     }
 
     public function getGoogle2faSecretAttribute($secret)
     {
-        return filled($secret) ? \Crypt::decrypt($secret) : null;
+        return filled($secret) ? Crypt::decrypt($secret) : null;
     }
 
     public function generate2faSecretKey()

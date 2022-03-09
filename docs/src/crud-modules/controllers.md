@@ -161,7 +161,7 @@ in `A17\Twill\Http\Controllers\Admin\ModuleController`.
 
 Let's say we have a controller with certain fields displayed:
 
-File: `app/Http/Controllers/Admin/PlayController.php`
+File: `app/Http/Controllers/Twill/PlayController.php`
 
 ```php
     protected $indexColumns = [
@@ -222,7 +222,7 @@ File: `app/Models/Play.php`
 
 You can override the `additionalTableActions()` method to add custom actions in your module's listing view:
 
-File: `app/Http/Controllers/Admin/NewsletterController.php`
+File: `app/Http/Controllers/Twill/NewsletterController.php`
 
 ```php
     public function additionalTableActions()

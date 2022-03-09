@@ -44,13 +44,13 @@ class ValidationServiceProvider extends ServiceProvider
 
                 $blockValidator = Validator::make(array_merge($block['content'], $cmsBlock), $rules);
 
-                if (!$blockValidator->passes()) {
+                if (! $blockValidator->passes()) {
                     foreach ($blockValidator->errors()->all() as $error) {
                         $blockMessages[] = $error;
                     }
                 }
 
-                if (!empty($blockMessages ?? [])) {
+                if (! empty($blockMessages)) {
                     array_unshift($blockMessages, 'This block has validation issues:');
                     $validator->errors()->add('block.' . $block['id'], join('<br>', $blockMessages));
                 }
@@ -67,6 +67,5 @@ class ValidationServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
     }
 }
