@@ -7,11 +7,13 @@ pageClass: twill-doc
 If you need more control over blocks, their validation or data for rendering you can use a block class.
 
 To do this create a file named after your block. (ex. for `images_grid.blade.php` your class will be
-`ImagesGrid`)
+`ImagesGridBlock`)
 
 A block class extends `A17\Twill\Services\Blocks\Block` and they are expected to be in the `App\Twill\Block` namespace:
 
 ```php
+<?php
+
 namespace App\Twill\Block;
 
 use A17\Twill\Services\Blocks\Block;
