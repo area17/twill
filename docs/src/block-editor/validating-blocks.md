@@ -43,13 +43,13 @@ namespace App\Twill\Block;
 
 use A17\Twill\Services\Blocks\Block;
 
-class HeroHeaderWithMenuBlock extends TwillBlock
+class ExampleBlock extends Block
 {
-    protected $rulesForTranslatedFields = [
+    public $rulesForTranslatedFields = [
         'title' => 'required|string',
     ];
 
-    protected $rules = [
+    public $rules = [
         'text' => 'required',
     ];
 }
