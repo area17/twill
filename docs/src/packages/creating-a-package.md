@@ -2,11 +2,16 @@
 pageClass: twill-doc
 ---
 
+::: warning
+Twill packages are new. If you found any issue please let us know by creating an issue.
+:::
+
 # Creating a package
 
 As mentioned in the introduction, a Twill package is at its core the same as a regular Laravel package.
 
-If you are new to Laravel package development you can read more about it in the [Laravel documentation](https://laravel.com/docs/9.x/packages).
+If you are new to Laravel package development you can read more about it in the
+[Laravel documentation](https://laravel.com/docs/9.x/packages).
 
 ## Generating your first Twill package
 
