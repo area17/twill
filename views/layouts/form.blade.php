@@ -47,9 +47,13 @@
                     :editable-title="{{ json_encode($editableTitle ?? true) }}"
                     :control-languages-publication="{{ json_encode($controlLanguagesPublication) }}"
                     custom-title="{{ $customTitle ?? '' }}"
-                    custom-permalink="{{ $customPermalink ?? '' }}"
+                    @isset($customPermalink)
+                        custom-permalink="{{ $customPermalink }}"
+                    @endisset
                     localized-permalinkbase="{{ json_encode($localizedPermalinkBase ?? '') }}"
-                    localized-custom-permalink="{{ json_encode($localizedCustomPermalink ?? '') }}"
+                    @isset($localizedCustomPermalink)
+                        localized-custom-permalink="{{ json_encode($localizedCustomPermalink) }}"
+                    @endisset
                     slot="title"
                     @if($createWithoutModal ?? false) :show-modal="true" @endif
                     @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif

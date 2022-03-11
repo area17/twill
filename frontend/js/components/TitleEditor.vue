@@ -7,7 +7,7 @@
         </a>
         <span v-else>{{ customTitle ? customTitle : title }}</span>
       </h2>
-      <a v-if="(permalink || customPermalink) && !showModal" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small">
+      <a v-if="(typeof permalink !== 'undefined' || typeof customPermalink !== 'undefined') && !showModal" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small">
         <span class="f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
       </a>
       <span v-if="showModal" class="titleEditor__permalink f--small f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
@@ -73,7 +73,7 @@
       },
       customPermalink: {
         type: String,
-        default: ''
+        default: undefined
       },
       localizedPermalinkbase: {
         type: String,
