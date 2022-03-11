@@ -181,6 +181,10 @@ class DashboardController extends Controller
             return null;
         }
 
+        $parentRelationship = $dashboardModule['parentRelationship'] ?? null;
+        $parent = $activity->subject->$parentRelationship;
+
+        // @todo: Improve readability of what is happening here.
         return [
             'id' => $activity->id,
             'type' => ucfirst($dashboardModule['label_singular'] ?? Str::singular($dashboardModule['name'])),
@@ -190,9 +194,14 @@ class DashboardController extends Controller
             'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description),
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
-        ] : []) + (! $activity->subject->trashed() ? [
-            'edit' => moduleRoute($dashboardModule['name'], $dashboardModule['routePrefix'] ?? null, 'edit', $activity->subject_id),
-        ] : []) + (! is_null($activity->subject->published) ? [
+        ] : []) + (!$activity->subject->trashed() ? [
+            'edit' => $parent && $parentRelationship ? moduleRoute(
+                $dashboardModule['name'],
+                $dashboardModule['routePrefix'] ?? null,
+                'edit',
+                array_merge($parentRelationship ? [$parent->id] : [], [$activity->subject_id])
+            ) : '',
+        ] : []) + (!is_null($activity->subject->published) ? [
             'published' => $activity->description === 'published' ? true : ($activity->description === 'unpublished' ? false : $activity->subject->published),
         ] : []);
     }

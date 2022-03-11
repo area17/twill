@@ -234,6 +234,23 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
+     * Login with the provided credentials.
+     *
+     * @param string $email
+     * @param string $password
+     * @return \Illuminate\Foundation\Testing\TestResponse|void
+     */
+    protected function loginAs($email, $password)
+    {
+        $this->request('/twill/login', 'POST', [
+            'email' => $email,
+            'password' => $password,
+        ]);
+
+        return $this->crawler;
+    }
+
+    /**
      * Boot the TestCase.
      *
      * @param \Illuminate\Foundation\Application $app
@@ -282,7 +299,6 @@ abstract class TestCase extends OrchestraTestCase
         );
 
         return [
-            AuthServiceProvider::class,
             RouteServiceProvider::class,
             TwillServiceProvider::class,
             ValidationServiceProvider::class,

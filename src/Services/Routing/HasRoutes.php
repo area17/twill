@@ -90,6 +90,7 @@ trait HasRoutes
             'impersonate',
             'validateBackHistory',
             'localization',
+            'permission',
         ];
 
         if ($this->supportSubdomainRouting()) {

@@ -4,6 +4,8 @@ namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\IsTranslatable;
+use A17\Twill\Models\Permission;
+use Auth;
 use A17\Twill\Services\Capsules\HasCapsules;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
@@ -15,11 +17,7 @@ use Illuminate\Support\Str;
 
 abstract class Model extends BaseModel implements TaggableInterface
 {
-    use HasPresenter;
-    use SoftDeletes;
-    use TaggableTrait;
-    use IsTranslatable;
-    use HasCapsules;
+    use HasPresenter, SoftDeletes, TaggableTrait, IsTranslatable, HasCapsules;
 
     public $timestamps = true;
 
@@ -31,6 +29,37 @@ abstract class Model extends BaseModel implements TaggableInterface
     public function scopePublished($query)
     {
         return $query->where("{$this->getTable()}.published", true);
+    }
+
+    public function scopeAccessible($query)
+    {
+        if (!config('twill.enabled.permissions-management')) {
+            return $query;
+        }
+
+        $model = get_class($query->getModel());
+        $moduleName = isPermissionableModule(getModuleNameByModel($model));
+
+        if ($moduleName && !Auth::user()->isSuperAdmin()) {
+            // Get all permissions the logged in user has regards to the model.
+            $allPermissions = Auth::user()->allPermissions();
+            $allModelPermissions = (clone $allPermissions)->ofModel($model);
+
+            // If the user has any module permissions, or global manage all modules permissions, all items will be return
+            if ((clone $allModelPermissions)->module()->whereIn('name', Permission::available(Permission::SCOPE_MODULE))->exists()
+                || (clone $allPermissions)->global()->where('name', 'manage-modules')->exists()) {
+                return $query;
+            }
+
+            // If the module is submodule, skip the scope.
+            if (strpos($moduleName, '.')) {
+                return $query;
+            };
+
+            $authorizedItemsIds = $allModelPermissions->moduleItem()->pluck('permissionable_id');
+            return $query->whereIn($this->getTable() . '.id', $authorizedItemsIds);
+        }
+        return $query;
     }
 
     public function scopePublishedInListings($query)

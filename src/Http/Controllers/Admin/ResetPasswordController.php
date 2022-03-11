@@ -6,6 +6,7 @@ use A17\Twill\Models\User;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +27,9 @@ class ResetPasswordController extends Controller
     |
      */
 
-    use ResetsPasswords;
+    use ResetsPasswords {
+        sendResetResponse as traitSendResetResponse;
+    }
 
     /**
      * @var Redirector
@@ -76,6 +79,22 @@ class ResetPasswordController extends Controller
     public function broker()
     {
         return Password::broker('twill_users');
+    }
+
+    protected function sendResetResponse(Request $request, $response)
+    {
+        $user = User::where('email', $request->input('email'))->first();
+        if (!$user->isActivated()) {
+            $user->registered_at = Carbon::now();
+            $user->save();
+        }
+
+        if ($user->require_new_password) {
+            $user->require_new_password = false;
+            $user->save();
+        }
+
+        return $this->traitSendResetResponse($request, $response);
     }
 
     /**
