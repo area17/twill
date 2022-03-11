@@ -95,6 +95,7 @@
       },
       textfieldClasses: function () {
         return {
+          'wysiwyg__outer--limitHeight': this.limitHeight,
           's--disabled': this.disabled,
           's--focus': this.focused
         }
@@ -323,6 +324,13 @@
     margin-top: 20px;
   }
 
+  .wysiwyg__outer--limitHeight {
+    .wysiwyg {
+      position: relative;
+      overflow: hidden;
+    }
+  }
+
   .wysiwyg__editor--limitHeight {
     max-height: calc(100vh - 250px);
     overflow-y: scroll;
@@ -330,7 +338,7 @@
     border: 1px solid $color__fborder;
     border-top: none;
     scroll-behavior: smooth;
-    margin-top: 32px;
+    margin-top: 52px;
     .input--error & {
       border-color: $color__error;
       border-top: none;
