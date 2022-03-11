@@ -78,12 +78,13 @@
     methods: {
       toggleVisibility: function (value) {
         if (this.isBrowser) {
-          if (this.matchEmptyBrowser && (!value || value.length === 0)) {
+          const browserLength = (value && value.length) ?? 0
+          if (this.matchEmptyBrowser && (browserLength === 0)) {
             this.open = true
             return
           }
 
-          this.open = this.matchEmptyBrowser ? false : value.length > 0
+          this.open = this.matchEmptyBrowser ? false : browserLength > 0
           return
         }
 
