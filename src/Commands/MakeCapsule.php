@@ -9,7 +9,7 @@ class MakeCapsule extends ModuleMake
      *
      * @var string
      */
-    protected $signature = 'twill:make:capsule {moduleName} {--packageDirectory=} {--packageNamespace=}
+    protected $signature = 'twill:make:capsule {moduleName} {--singleton} {--packageDirectory=} {--packageNamespace=}
         {--B|hasBlocks}
         {--T|hasTranslation}
         {--S|hasSlug}
@@ -42,4 +42,9 @@ class MakeCapsule extends ModuleMake
      * @var bool
      */
     protected $isCapsule = true;
+
+    /**
+     * @var bool
+     */
+    protected $isSingleton = false;
 }

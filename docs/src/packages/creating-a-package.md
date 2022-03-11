@@ -36,7 +36,7 @@ Then you can require it: composer require area17/twill-extension
 
 By default the package has no functionality, you can add a first capsule using (Replace YourModel with the model you want to use):
 
-php artisan twill:make:singleton-capsule YourModel --packageDirectory=./packages/twill-extension --packageNamespace=TwillExtension\\YourModel
+php artisan twill:make:capsule YourModel --singleton --packageDirectory=./packages/twill-extension --packageNamespace=TwillExtension\\YourModel
 
 Enjoy!
 ```
@@ -49,7 +49,7 @@ It is however, still empty so lets add a module as the instructions mention:
 php artisan twill:make:capsule Project --packageDirectory=./packages/twill-extension --packageNamespace=TwillExtension\\Project
 ```
 
-The command above will create a capsule, if you want to create a singleton capsule you could use `php artisan twill:make:singleton-capsule` instead.
+The command above will create a capsule, if you want to create a singleton capsule you could use `php artisan twill:make:capsule --singleton` instead.
 
 Once this is done you already can go ahead and refresh your twill admin and the new
 capsule should appear in the menu!
