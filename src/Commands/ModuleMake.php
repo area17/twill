@@ -217,8 +217,6 @@ class ModuleMake extends Command
      */
     public function handle()
     {
-        $this->isSingleton = $this->option('singleton', false);
-
         // e.g. newsItems
         $moduleName = Str::camel(Str::plural(lcfirst($this->argument('moduleName'))));
 

@@ -47,4 +47,11 @@ class MakeCapsule extends ModuleMake
      * @var bool
      */
     protected $isSingleton = false;
+
+    public function handle()
+    {
+        $this->isSingleton = $this->hasOption('singleton') ? $this->option('singleton') : $this->isSingleton;
+
+        parent::handle();
+    }
 }
