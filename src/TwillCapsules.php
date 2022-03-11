@@ -38,7 +38,7 @@ class TwillCapsules
      */
     public function makeProjectCapsule(string $name): Capsule
     {
-        return new Capsule($name, $this->capsuleNamespace($name), config("twill.capsules.path") . '/' . $name);
+        return new Capsule($name, $this->capsuleNamespace($name), config('twill.capsules.path') . '/' . $name);
     }
 
     /**
@@ -50,7 +50,7 @@ class TwillCapsules
             return $capsule->getModule() === $module;
         });
 
-        if (!$capsule) {
+        if (! $capsule) {
             throw new NoCapsuleFoundException($module);
         }
 
@@ -66,7 +66,7 @@ class TwillCapsules
             return $capsule->getSingular() === $model;
         });
 
-        if (!$capsule) {
+        if (! $capsule) {
             throw new NoCapsuleFoundException($model);
         }
 
@@ -91,6 +91,9 @@ class TwillCapsules
 
         $list
             ->where('enabled', true)
+            ->filter(function ($capsule) {
+                return ! isset($this->registeredCapsules[$capsule['name']]);
+            })
             ->map(function ($capsule) use ($path) {
                 $this->registerCapsule(
                     new Capsule(
@@ -126,11 +129,13 @@ class TwillCapsules
 
     public function getProjectCapsulesPath(): string
     {
-        return config("twill.capsules.path") . $this->getProjectCapsulesSubdirectory();
+        return config('twill.capsules.path') . $this->getProjectCapsulesSubdirectory();
     }
 
-    private function getProjectCapsulesSubdirectory(): string {
+    private function getProjectCapsulesSubdirectory(): string
+    {
         $subdirectory = config('twill.capsules.namespaces.subdir');
+
         return filled($subdirectory) ? "$subdirectory/" : '';
     }
 

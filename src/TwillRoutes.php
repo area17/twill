@@ -2,8 +2,8 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Facades\TwillRoutes as FacadesTwillRoutes;
 use A17\Twill\Helpers\Capsule;
-use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
 class TwillRoutes
@@ -61,7 +61,7 @@ class TwillRoutes
             // early.
             $callback();
         } else {
-            App::afterResolving(TwillRoutes::class, $callback);
+            FacadesTwillRoutes::resolved($callback);
         }
     }
 
