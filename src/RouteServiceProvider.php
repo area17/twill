@@ -9,6 +9,7 @@ use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
 use A17\Twill\Http\Middleware\SupportSubdomainRouting;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
 use A17\Twill\Http\Middleware\Permission;
+use A17\Twill\Http\Middleware\Authenticate;
 use A17\Twill\Services\Routing\HasRoutes;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
@@ -191,10 +192,7 @@ class RouteServiceProvider extends ServiceProvider
             SupportSubdomainRouting::class
         );
         Route::aliasMiddleware('impersonate', Impersonate::class);
-        Route::aliasMiddleware(
-            'twill_auth',
-            \Illuminate\Auth\Middleware\Authenticate::class
-        );
+        Route::aliasMiddleware('twill_auth', Authenticate::class);
         Route::aliasMiddleware('twill_guest', RedirectIfAuthenticated::class);
         Route::aliasMiddleware(
             'validateBackHistory',

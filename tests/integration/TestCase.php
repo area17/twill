@@ -586,8 +586,6 @@ abstract class TestCase extends OrchestraTestCase
                 }
 
                 $this->files->copy($source, $destination);
-
-                /* usleep(1000 * 100); // 100ms */
             });
         });
     }

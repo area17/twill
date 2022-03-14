@@ -61,7 +61,7 @@ abstract class ModuleRepository
      * @param array $orders
      * @param int $perPage
      * @param bool $forcePagination
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection|\Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function get($with = [], $scopes = [], $orders = [], $perPage = 20, $forcePagination = false)
     {
