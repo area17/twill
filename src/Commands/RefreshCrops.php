@@ -1,3 +1,4 @@
+
 <?php
 
 namespace A17\Twill\Commands;
@@ -18,7 +19,7 @@ class RefreshCrops extends Command
      * @var string
      */
     protected $signature = 'twill:refresh-crops
-        {modelName : The fully qualified model name (e.g. App\Models\Post)}
+        {modelName : The fully qualified model name (e.g. App\Models\Post, A17\Twill\Models\Block)}
         {roleName : The role name for which crops will be refreshed}
         {--dry : Print the operations that would be performed without modifying the database}
     ';
@@ -28,7 +29,7 @@ class RefreshCrops extends Command
      *
      * @var string
      */
-    protected $description = 'Refresh all crops for an existing image role';
+    protected $description = 'Refresh all crops for an existing image role. It may be crops defined in the Model or in config/twill.php';
 
     /**
      * @var DatabaseManager
@@ -109,6 +110,9 @@ class RefreshCrops extends Command
         $this->roleName = $this->argument('roleName');
 
         $mediasParams = app($this->modelName)->mediasParams;
+        if ($mediasParams === null) {
+            $mediasParams = config('twill.block_editor.crops');
+        }
 
         if (! isset($mediasParams[$this->roleName])) {
             $this->error("Role `{$this->roleName}` was not found`");
