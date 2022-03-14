@@ -90,9 +90,12 @@ class ListBlocks extends Command
                     !$this->option(Str::plural($block->type)));
             })
             ->map(function (Block $block) {
-                return $this->colorize(
+                $data = $this->colorize(
                     $this->option('short') ? $block->toShortList() : $block->toList()
                 );
+                // We do not render this.
+                unset($data['rules'], $data['rulesForTranslatedFields']);
+                return $data;
             })
             ->sortBy(function ($block) {
                 return [$block['group'], $block['title']];
@@ -153,6 +156,9 @@ class ListBlocks extends Command
             return !$block
                 ->toList()
                 ->reduce(function ($keep, $element) use ($filter) {
+                    if (is_array($element)) {
+                        return false;
+                    }
                     return $keep ||
                     Str::contains(
                         Str::lower($element),
