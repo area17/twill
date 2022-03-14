@@ -10,7 +10,7 @@ Start by enabling the `settings` feature in your `config/twill.php` configuratio
 
 If you did not enable this feature before running the `twill:install` command, you need to copy the migration in `vendor/area17/twill/migrations/create_settings_table.php` to your own `database/migrations` directory and migrate your database before continuing.
 
-To create a new settings section, add a blade file to your `resources/views/admin/settings` folder. The name of this file is the name of your new settings section.
+To create a new settings section, add a blade file to your `resources/views/twill/settings` folder. The name of this file is the name of your new settings section.
 
 In this file, you can use `@formField('input')` Blade directives to add new settings. The name attribute of each form field is the name of a setting. Wrap them like in the following example:
 
@@ -49,7 +49,7 @@ return [
 ];
 ```
 
-Each Blade file you create in `resources/views/admin/settings` creates a new section available for you to add in the `primary_navigation` array of your `config/twill-navigation.php` file.
+Each Blade file you create in `resources/views/twill/settings` creates a new section available for you to add in the `primary_navigation` array of your `config/twill-navigation.php` file.
 
 You can then retrieve the value of a specific setting by its key, which is the name of the form field you defined in your settings form, either by directly using the `A17\Twill\Models\Setting` Eloquent model or by using the provided `byKey` helper in `A17\Twill\Repositories\SettingRepository`:
 

@@ -6,7 +6,7 @@
     </div>
     <draggable class="slideshow__content" v-model="slides" :options="dragOptions" v-if="slides.length">
       <transition-group name="draggable_list" tag='div'>
-        <div class="slide" v-for="(slide, index) in slides" :key="slide.id">
+        <div class="slide" v-for="(slide, index) in slides" :key="`${slide.id}_${index}`">
             <div class="slide__handle">
               <div class="slide__handle--drag"></div>
             </div>
@@ -106,9 +106,6 @@
         // destroy all the medias of the slideshow
         this.$store.commit(MEDIA_LIBRARY.DESTROY_MEDIAS, this.name)
       }
-    },
-    beforeDestroy: function () {
-      this.deleteSlideshow()
     }
   }
 </script>

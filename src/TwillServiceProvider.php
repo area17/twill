@@ -2,6 +2,9 @@
 
 namespace A17\Twill;
 
+
+use A17\Twill\Commands\UpgradeCommand;
+use A17\Twill\Commands\SetupDevTools;
 use Exception;
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
@@ -27,6 +30,7 @@ use A17\Twill\Http\ViewComposers\Localization;
 use A17\Twill\Http\ViewComposers\MediasUploaderConfig;
 use A17\Twill\Models\Block;
 use A17\Twill\Models\File;
+use A17\Twill\Models\Group;
 use A17\Twill\Models\Media;
 use A17\Twill\Models\User;
 use A17\Twill\Services\Capsules\HasCapsules;
@@ -51,7 +55,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    const VERSION = '2.6.0';
+    const VERSION = '2.7.0';
 
     /**
      * Service providers to be registered.
@@ -60,7 +64,6 @@ class TwillServiceProvider extends ServiceProvider
      */
     protected $providers = [
         RouteServiceProvider::class,
-        AuthServiceProvider::class,
         ValidationServiceProvider::class,
         TranslatableServiceProvider::class,
         TagsServiceProvider::class,
@@ -100,6 +103,7 @@ class TwillServiceProvider extends ServiceProvider
     private function requireHelpers()
     {
         require_once __DIR__ . '/Helpers/routes_helpers.php';
+        require_once __DIR__ . '/Helpers/modules_helpers.php';
         require_once __DIR__ . '/Helpers/i18n_helpers.php';
         require_once __DIR__ . '/Helpers/media_library_helpers.php';
         require_once __DIR__ . '/Helpers/frontend_helpers.php';
@@ -124,6 +128,7 @@ class TwillServiceProvider extends ServiceProvider
             'media' => Media::class,
             'files' => File::class,
             'blocks' => Block::class,
+            'groups' => Group::class,
         ]);
 
         config(['twill.version' => $this->version()]);
@@ -136,6 +141,12 @@ class TwillServiceProvider extends ServiceProvider
      */
     private function registerProviders()
     {
+        // select auth service provider implementation
+        $this->providers[] = config('twill.custom_auth_service_provider') ?: (
+            config('twill.enabled.permissions-management') ?
+                PermissionAuthServiceProvider::class : AuthServiceProvider::class
+        );
+
         foreach ($this->providers as $provider) {
             $this->app->register($provider);
         }
@@ -182,7 +193,7 @@ class TwillServiceProvider extends ServiceProvider
         if (config('twill.enabled.users-management')) {
             config(['auth.providers.twill_users' => [
                 'driver' => 'eloquent',
-                'model' => User::class,
+                'model' => twillModel('user'),
             ]]);
 
             config(['auth.guards.twill_users' => [
@@ -221,16 +232,21 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/frontend.php', 'twill.frontend');
         $this->mergeConfigFrom(__DIR__ . '/../config/debug.php', 'twill.debug');
         $this->mergeConfigFrom(__DIR__ . '/../config/seo.php', 'twill.seo');
-        $this->mergeConfigFrom(__DIR__ . '/../config/blocks.php', 'twill.block_editor');
+        $this->mergeConfigFrom(__DIR__ . '/../config/block_editor.php', 'twill.block_editor');
         $this->mergeConfigFrom(__DIR__ . '/../config/enabled.php', 'twill.enabled');
-        $this->mergeConfigFrom(__DIR__ . '/../config/file-library.php', 'twill.file_library');
-        $this->mergeConfigFrom(__DIR__ . '/../config/media-library.php', 'twill.media_library');
+        $this->mergeConfigFrom(__DIR__ . '/../config/file_library.php', 'twill.file_library');
+        $this->mergeConfigFrom(__DIR__ . '/../config/media_library.php', 'twill.media_library');
         $this->mergeConfigFrom(__DIR__ . '/../config/imgix.php', 'twill.imgix');
         $this->mergeConfigFrom(__DIR__ . '/../config/glide.php', 'twill.glide');
         $this->mergeConfigFrom(__DIR__ . '/../config/twicpics.php', 'twill.twicpics');
         $this->mergeConfigFrom(__DIR__ . '/../config/dashboard.php', 'twill.dashboard');
+        $this->mergeConfigFrom(__DIR__ . '/../config/models.php', 'twill.models');
         $this->mergeConfigFrom(__DIR__ . '/../config/oauth.php', 'twill.oauth');
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
+
+        if (config('twill.enabled.permissions-management')) {
+            $this->mergeConfigFrom(__DIR__ . '/../config/permissions.php', 'twill.permissions');
+        }
 
         if (config('twill.media_library.endpoint_type') === 'local'
             && config('twill.media_library.disk') === 'twill_media_library') {
@@ -268,6 +284,7 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->publishOptionalMigration('users-2fa');
         $this->publishOptionalMigration('users-oauth');
+        $this->publishOptionalMigration('permissions-management');
     }
 
     private function publishOptionalMigration($feature)
@@ -313,6 +330,7 @@ class TwillServiceProvider extends ServiceProvider
             MakeCapsule::class,
             MakeSingleton::class,
             ModuleMakeDeprecated::class,
+            UpgradeCommand::class,
             BlockMake::class,
             ListIcons::class,
             ListBlocks::class,
@@ -325,6 +343,7 @@ class TwillServiceProvider extends ServiceProvider
             Dev::class,
             SyncLang::class,
             CapsuleInstall::class,
+            SetupDevTools::class
         ]);
     }
 
@@ -337,7 +356,7 @@ class TwillServiceProvider extends ServiceProvider
     {
         [$name] = str_getcsv($expression, ',', '\'');
 
-        $partialNamespace = view()->exists('admin.' . $view . $name) ? 'admin.' : 'twill::';
+        $partialNamespace = view()->exists('twill.' . $view . $name) ? 'twill.' : 'twill::';
 
         $view = $partialNamespace . $view . $name;
 
@@ -381,7 +400,7 @@ class TwillServiceProvider extends ServiceProvider
             $partialNamespace = 'twill::partials';
 
             $viewModule = "twillViewName($moduleName, '{$viewName}')";
-            $viewApplication = "'admin.partials.{$viewName}'";
+            $viewApplication = "'twill.partials.{$viewName}'";
             $viewModuleTwill = "'twill::'.$moduleName.'.{$viewName}'";
             $view = $partialNamespace . "." . $viewName;
 
@@ -443,7 +462,7 @@ class TwillServiceProvider extends ServiceProvider
     private function addViewComposers()
     {
         if (config('twill.enabled.users-management')) {
-            View::composer(['admin.*', 'twill::*'], CurrentUser::class);
+            View::composer(['twill.*', 'twill::*'], CurrentUser::class);
         }
 
         if (config('twill.enabled.media-library')) {
@@ -456,7 +475,7 @@ class TwillServiceProvider extends ServiceProvider
 
         View::composer('twill::partials.navigation.*', ActiveNavigation::class);
 
-        View::composer(['admin.*', 'templates.*', 'twill::*'], function ($view) {
+        View::composer(['twill.*', 'templates.*', 'twill::*'], function ($view) {
             $with = array_merge([
                 'renderForBlocks' => false,
                 'renderForModal' => false,
@@ -465,7 +484,7 @@ class TwillServiceProvider extends ServiceProvider
             return $view->with($with);
         });
 
-        View::composer(['admin.*', 'twill::*'], Localization::class);
+        View::composer(['twill.*', 'twill::*'], Localization::class);
     }
 
     /**

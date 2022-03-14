@@ -10,6 +10,7 @@
     $bulkEdit = $bulkEdit ?? true;
     $create = $create ?? false;
     $skipCreateModal = $skipCreateModal ?? false;
+    $controlLanguagesPublication = $controlLanguagesPublication ?? true;
 
     $requestFilter = json_decode(request()->get('filter'), true) ?? [];
 @endphp
@@ -141,10 +142,12 @@
                 ref="editionModal"
                 form-create="{{ $storeUrl }}"
                 v-on:reload="reloadDatas"
-                @if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
-                @if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
+                @if ($publishedLabel ?? false) published-label="{{ $publishedLabel }}" @endif
+                @if ($draftLabel ?? false) draft-label="{{ $draftLabel }}" @endif
             >
-                <a17-langmanager></a17-langmanager>
+                <a17-langmanager
+                    :control-publication="{{ json_encode($controlLanguagesPublication) }}"
+                ></a17-langmanager>
                 @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
             </a17-modal-create>
         @endif

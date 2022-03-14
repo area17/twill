@@ -13,6 +13,8 @@
     $border = $border ?? false;
     $columns = $columns ?? 0;
 
+    $disabled = $disabled ?? false;
+
     // do not use for now, but this will allow you to create a new option directly from the form
     $addNew = $addNew ?? false;
     $moduleName = $moduleName ?? null;
@@ -30,6 +32,7 @@
     @if ($default) selected="{{ $default }}" @endif
     :grid="false"
     :columns="{{ $columns }}"
+    :disabled="{{$disabled ? 'true' : 'false'}}"
     @if ($inline) :inline="true" @endif
     @if ($border) :border="true" @endif
     @if ($required) :required="true" @endif

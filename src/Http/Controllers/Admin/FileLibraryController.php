@@ -79,8 +79,8 @@ class FileLibraryController extends ModuleController implements SignUploadListen
         $this->responseFactory = $responseFactory;
         $this->config = $config;
 
-        $this->removeMiddleware('can:edit');
-        $this->middleware('can:edit', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
+        $this->middleware('can:access-media-library', ['only' => ['index']]);
+        $this->middleware('can:edit-media-library', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = $this->config->get('twill.file_library.endpoint_type');
     }
 
@@ -127,9 +127,9 @@ class FileLibraryController extends ModuleController implements SignUploadListen
                 return $tag->name;
             }),
             'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
-            'updateUrl' => $this->urlGenerator->route('admin.file-library.files.single-update'),
-            'updateBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-update'),
-            'deleteBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-delete'),
+            'updateUrl' => $this->urlGenerator->route('twill.file-library.files.single-update'),
+            'updateBulkUrl' => $this->urlGenerator->route('twill.file-library.files.bulk-update'),
+            'deleteBulkUrl' => $this->urlGenerator->route('twill.file-library.files.bulk-delete'),
         ];
     }
 

@@ -22,7 +22,7 @@
               </div>
               <div class="search__cell">
                 <span class="search__title">{{ item.title }}</span>
-                <p class="f--note">
+                <p class="f--note" v-if="item.date">
                   {{ item.activity }} <timeago :auto-update="1" :datetime="new Date(item.date)"></timeago> by {{ item.author }}
                   <span class="search__type">{{ item.type }}</span>
                 </p>

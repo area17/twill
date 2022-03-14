@@ -31,14 +31,14 @@ class CapsuleAutoloadTest extends TestCase
         '{$stubs}/capsules/posts/Models/PostRevision.php' =>
             '{$app}/Twill/Capsules/Posts/Models/PostRevision.php',
 
-        '{$stubs}/capsules/posts/resources/views/admin/form.blade.php' =>
-            '{$app}/Twill/Capsules/Posts/resources/views/admin/form.blade.php',
+        '{$stubs}/capsules/posts/resources/views/twill/form.blade.php' =>
+            '{$app}/Twill/Capsules/Posts/resources/views/twill/form.blade.php',
 
-        '{$stubs}/capsules/posts/resources/views/admin/create.blade.php' =>
-            '{$app}/Twill/Capsules/Posts/resources/views/admin/create.blade.php',
+        '{$stubs}/capsules/posts/resources/views/twill/create.blade.php' =>
+            '{$app}/Twill/Capsules/Posts/resources/views/twill/create.blade.php',
 
-        '{$stubs}/capsules/posts/routes/admin.php' =>
-            '{$app}/Twill/Capsules/Posts/routes/admin.php',
+        '{$stubs}/capsules/posts/routes/twill.php' =>
+            '{$app}/Twill/Capsules/Posts/routes/twill.php',
 
         '{$stubs}/capsules/posts/PostsCapsuleServiceProvider.php' =>
             '{$app}/Twill/Capsules/Posts/PostsCapsuleServiceProvider.php',

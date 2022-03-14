@@ -156,6 +156,10 @@ module.exports = [
             "path": "/form-fields/multi-select-inline.html",
           },
           {
+            "title": "Tags",
+            "path": "/form-fields/tags.html",
+          },
+          {
             "title": "Checkbox",
             "path": "/form-fields/checkbox.html",
           },
@@ -190,6 +194,10 @@ module.exports = [
           {
             "title": "Conditional Fields",
             "path": "/form-fields/conditional-fields.html",
+          },
+          {
+            "title": "Field grouping",
+            "path": "/form-fields/field-grouping.html",
           }
         ],
         "collapsable": true
@@ -277,6 +285,16 @@ module.exports = [
         "collapsable": true
       },
       {
+        "title": "Guides",
+        "path": "/guides/",
+        "children": [
+          {
+            "title": "Adding fields to the create modal",
+            "path": "/guides/adding-fields-to-the-create-modal.html",
+          }
+        ],
+      },
+      {
         "title": "Artisan Commands",
         "path": "/artisan-commands/",
         "children": [],
@@ -309,7 +327,12 @@ module.exports = [
       {
         "title": "User Management",
         "path": "/user-management/",
-        "children": [],
+        "children": [
+          {
+            "title": "Advanced permissions",
+            "path": "/user-management/advanced-permissions.html",
+          }
+        ],
       },
       {
         "title": "OAuth Login",
