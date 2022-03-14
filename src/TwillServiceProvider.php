@@ -2,9 +2,6 @@
 
 namespace A17\Twill;
 
-use A17\Twill\Commands\UpgradeCommand;
-use A17\Twill\Commands\SetupDevTools;
-use Exception;
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
 use A17\Twill\Commands\CapsuleInstall;
@@ -20,8 +17,10 @@ use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\ModuleMakeDeprecated;
 use A17\Twill\Commands\RefreshCrops;
 use A17\Twill\Commands\RefreshLQIP;
+use A17\Twill\Commands\SetupDevTools;
 use A17\Twill\Commands\SyncLang;
 use A17\Twill\Commands\Update;
+use A17\Twill\Commands\UpgradeCommand;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
 use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
@@ -346,7 +345,7 @@ class TwillServiceProvider extends ServiceProvider
             Dev::class,
             SyncLang::class,
             CapsuleInstall::class,
-            SetupDevTools::class
+            SetupDevTools::class,
         ]);
     }
 
