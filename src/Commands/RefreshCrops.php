@@ -1,4 +1,3 @@
-
 <?php
 
 namespace A17\Twill\Commands;
