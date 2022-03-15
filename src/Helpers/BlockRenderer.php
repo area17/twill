@@ -88,7 +88,7 @@ class BlockRenderer
         }
 
         $class->setRenderData(new RenderData(
-            block: A17Block::make()->fill([
+            block: (new A17Block())->fill([
                 'type' => $type,
                 'content' => $data['content'],
                 'editor_name' => $editorName,
