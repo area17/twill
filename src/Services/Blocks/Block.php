@@ -138,6 +138,14 @@ class Block
         return new self($file, $type, $source, $name);
     }
 
+    /**
+     * Gets the first match being a block or repeater.
+     */
+    public static function findFirstWithType(string $type): ?self
+    {
+        return app(BlockCollection::class)->findByName($type);
+    }
+
     public static function getForType(string $type, bool $repeater = false): self
     {
         if ($repeater) {
