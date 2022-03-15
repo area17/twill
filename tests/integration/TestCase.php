@@ -547,7 +547,7 @@ abstract class TestCase extends OrchestraTestCase
     /**
      * Freeze time.
      */
-    public function freezeTime()
+    public function freezeTime($callback = null)
     {
         Carbon::setTestNow($this->now = Carbon::now());
     }
