@@ -1188,7 +1188,7 @@ abstract class ModuleController extends Controller
 
             $tableColumns[] = [
                 'name' => $columnName,
-                'label' => $column['title'],
+                'label' => twillTrans($column['title']),
                 'visible' => $visibleColumns ? in_array($columnName, $visibleColumns) : ($column['visible'] ?? true),
                 'optional' => $column['optional'] ?? true,
                 'sortable' => $this->getIndexOption('reorder') ? false : ($column['sort'] ?? false),
