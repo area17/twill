@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use A17\Twill\Helpers\BlockRenderer;
 use A17\Twill\Models\Block;
 use A17\Twill\Services\Blocks\Block as BlockConfig;
 
@@ -22,34 +23,7 @@ trait HasBlocks
 
     public function renderNamedBlocks($name = 'default', $renderChilds = true, $blockViewMappings = [], $data = [])
     {
-        return $this->blocks
-            ->filter(function ($block) use ($name) {
-                return $name === 'default'
-                    ? ($block->editor_name === $name || $block->editor_name === null)
-                    : $block->editor_name === $name;
-            })
-            ->where('parent_id', null)
-            ->map(function ($block) use ($blockViewMappings, $renderChilds, $data) {
-                if ($renderChilds) {
-                    $childBlocks = $this->blocks->where('parent_id', $block->id);
-
-                    $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings, $data) {
-                        $class = BlockConfig::getForType($childBlock->type);
-                        $view = $class->getBlockView($blockViewMappings);
-                        $data = $class->getData($data, $childBlock);
-
-                        return view($view, $data)->with('block', $childBlock)->render();
-                    })->implode('');
-                }
-
-                $block->childs = $this->blocks->where('parent_id', $block->id);
-
-                $class = BlockConfig::getForType($block->type);
-                $view = $class->getBlockView($blockViewMappings);
-                $data = $class->getData($data, $block);
-
-                return view($view, $data)->with('block', $block)->render() . ($renderedChildViews ?? '');
-            })->implode('');
+        return BlockRenderer::fromEditor($this, $name)->render($blockViewMappings, $data, $renderChilds);
     }
 
     /**
@@ -62,6 +36,6 @@ trait HasBlocks
      */
     public function renderBlocks($renderChilds = true, $blockViewMappings = [], $data = [])
     {
-        return $this->renderNamedBlocks('default', $renderChilds, $blockViewMappings, $data);
+        return BlockRenderer::fromEditor($this, 'default')->render($blockViewMappings, $data, $renderChilds);
     }
 }

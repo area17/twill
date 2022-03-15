@@ -10,7 +10,10 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Block extends BaseModel
 {
-    use HasMedias, HasFiles, HasPresenter, HasRelated;
+    use HasMedias;
+    use HasFiles;
+    use HasPresenter;
+    use HasRelated;
 
     public $timestamps = false;
 
@@ -58,7 +61,7 @@ class Block extends BaseModel
         $value = $this->content[$name] ?? null;
 
         $locale = $forceLocale ?? (
-            config('translatable.use_property_fallback', false) && (!array_key_exists(app()->getLocale(), $value ?? []))
+            config('translatable.use_property_fallback', false) && (! array_key_exists(app()->getLocale(), $value ?? []))
             ? config('translatable.fallback_locale')
             : app()->getLocale()
         );
@@ -74,44 +77,6 @@ class Block extends BaseModel
     public function checkbox($name)
     {
         return isset($this->content[$name]) && ($this->content[$name][0] ?? $this->content[$name] ?? false);
-    }
-
-    public function renderBlocks($editor, $renderChilds = false, $blockViewMappings = [], $data = []): string
-    {
-        return $this->renderNamedBlocks($editor, $renderChilds, $blockViewMappings, $data);
-    }
-
-    public function renderNamedBlocks($editor, $renderChilds = false, $blockViewMappings = [], $data = []): string
-    {
-        $blocks = self::where('parent_id', $this->id)->where('child_key', $editor)->get();
-
-        return $blocks->map(function ($block) use ($blockViewMappings, $renderChilds, $data) {
-                if ($renderChilds) {
-                    $childBlocks = self::where('parent_id', $block->id)->get();
-
-                    $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings, $data) {
-                        $view = $this->getBlockView($childBlock->type, $blockViewMappings);
-                        return view($view, $data)->with('block', $childBlock)->render();
-                    })->implode('');
-                }
-
-                $block->childs = self::where('parent_id', $block->id)->get();
-
-                $view = $this->getBlockView($block->type, $blockViewMappings);
-
-                return view($view, $data)->with('block', $block)->render() . ($renderedChildViews ?? '');
-            })->implode('');
-    }
-
-    private function getBlockView($blockType, $blockViewMappings = []): string
-    {
-        $view = config('twill.block_editor.block_views_path') . '.' . $blockType;
-
-        if (array_key_exists($blockType, $blockViewMappings)) {
-            $view = $blockViewMappings[$blockType];
-        }
-
-        return $view;
     }
 
     public function getPresenterAttribute()

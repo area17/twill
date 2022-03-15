@@ -52,8 +52,6 @@ export const buildBlock = (block, rootState, isRepeater = false) => {
     }
   }))
 
-  console.log(blocks)
-
   return {
     id: block.id,
     type: block.type,

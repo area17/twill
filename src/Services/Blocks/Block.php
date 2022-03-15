@@ -4,6 +4,7 @@ namespace A17\Twill\Services\Blocks;
 
 use Exception;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
 /**
@@ -114,6 +115,11 @@ class Block
     public $rulesForTranslatedFields = [];
 
     /**
+     * Renderedata.
+     */
+    public ?RenderData $renderData = null;
+
+    /**
      * Make a block instance out of arguments.
      *
      * @param $file
@@ -159,9 +165,11 @@ class Block
             $blocksList = app(BlockCollection::class)->getBlockList();
         }
 
-        return $blocksList->first(function (self $blockConfig) use ($type) {
+        $result = $blocksList->first(function (self $blockConfig) use ($type) {
             return $blockConfig->component === $type;
         });
+
+        return $result;
     }
 
     /**
@@ -499,6 +507,7 @@ class Block
     }
 
     /**
+     * @todo: Rename to renderForm
      * @return string
      * @throws \Throwable
      */
@@ -534,5 +543,44 @@ class Block
         }
 
         return $view;
+    }
+
+    public function setRenderData(RenderData $renderData): void
+    {
+        $this->renderData = $renderData;
+    }
+
+    public function renderView(
+        array $blockViewMappings,
+        array $data,
+        bool $renderChildren = false,
+        bool $inEditor = false
+    ): string {
+        if (! $this->renderData) {
+            throw new \Exception('Cannot render without renderData');
+        }
+
+        $data['inEditor'] = $inEditor;
+
+        $view = $this->getBlockView($blockViewMappings);
+        $data = $this->getData($data, $this->renderData->block);
+
+        // @todo: $renderChildren
+        $data['block'] = $this->renderData->block;
+        $data['renderData'] = $this->renderData;
+
+        $exists = View::exists($view);
+
+        try {
+            return view($view, $data)->render();
+        } catch (\Exception $e) {
+            if (config('twill.debug')) {
+                $error = $e->getMessage() . ' in ' . $e->getFile();
+
+                return View::make('twill::errors.block', ['view' => $view, 'error' => $error])->render();
+            }
+        }
+
+        return '';
     }
 }

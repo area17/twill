@@ -170,7 +170,6 @@ return [
 
     'custom_auth_service_provider' => false,
 
-
     /*
     |--------------------------------------------------------------------------
     | Twill FE Application configuration
@@ -210,7 +209,7 @@ return [
         'ru',
         'tr',
         'bs',
-        'ar'
+        'ar',
     ],
 
     /*
@@ -219,6 +218,14 @@ return [
     |--------------------------------------------------------------------------
     */
     'auto_seed_singletons' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | This parameter will enable some debug views:
+    | - Shows an error if a view is missing in the editor/front-end
+    |--------------------------------------------------------------------------
+    */
+    'debug' => env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
