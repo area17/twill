@@ -157,6 +157,8 @@ class ModulesAuthorsTest extends ModulesTestBase
         $data = [
             'id' => 1,
             'type' => 'a17-block-quote',
+            'editor_name' => 'default',
+            'is_repeater' => false,
             'content' => [
                 'quote' => ($quote = $this->fakeText(70)),
             ],
@@ -286,7 +288,7 @@ class ModulesAuthorsTest extends ModulesTestBase
 
     public function testCanReturnWhenReorderingWrongAuthor()
     {
-        /**
+        /*
          * Should not return Error 500
          *
          * TODO
