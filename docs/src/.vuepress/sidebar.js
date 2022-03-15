@@ -367,6 +367,16 @@ module.exports = [
         "children": [],
       },
       {
+        "title": "Packages",
+        "path": "/packages/",
+        "children": [
+          {
+            "title": "Creating a package",
+            "path": "/packages/creating-a-package",
+          }
+        ]
+      },
+      {
         "title": "Resources",
         "path": "/resources/",
         "children": [],

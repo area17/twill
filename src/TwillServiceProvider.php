@@ -8,6 +8,7 @@ use A17\Twill\Commands\CapsuleInstall;
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\Dev;
 use A17\Twill\Commands\GenerateBlocks;
+use A17\Twill\Commands\GeneratePackageCommand;
 use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ListBlocks;
 use A17\Twill\Commands\ListIcons;
@@ -28,7 +29,6 @@ use A17\Twill\Models\Block;
 use A17\Twill\Models\File;
 use A17\Twill\Models\Media;
 use A17\Twill\Models\User;
-use A17\Twill\Services\Capsules\HasCapsules;
 use A17\Twill\Services\FileLibrary\FileService;
 use A17\Twill\Services\MediaLibrary\ImageService;
 use Astrotomic\Translatable\TranslatableServiceProvider;
@@ -38,14 +38,11 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Str;
 use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 
 class TwillServiceProvider extends ServiceProvider
 {
-    use HasCapsules;
-
     /**
      * The Twill version.
      *
@@ -68,14 +65,12 @@ class TwillServiceProvider extends ServiceProvider
         CapsulesServiceProvider::class,
     ];
 
-    private $migrationsCounter = 0;
-
     /**
      * Bootstraps the package services.
      *
      * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->requireHelpers();
 
@@ -97,7 +92,7 @@ class TwillServiceProvider extends ServiceProvider
     /**
      * @return void
      */
-    private function requireHelpers()
+    private function requireHelpers(): void
     {
         require_once __DIR__ . '/Helpers/routes_helpers.php';
         require_once __DIR__ . '/Helpers/i18n_helpers.php';
@@ -117,6 +112,8 @@ class TwillServiceProvider extends ServiceProvider
         $this->registerProviders();
         $this->registerAliases();
         $this->registerFacades();
+
+        $this->app->bind(TwillCapsules::class);
 
         Relation::morphMap([
             'users' => User::class,
@@ -162,7 +159,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function registerAliases()
+    private function registerAliases(): void
     {
         $loader = AliasLoader::getInstance();
 
@@ -180,7 +177,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function publishConfigs()
+    private function publishConfigs(): void
     {
         if (config('twill.enabled.users-management')) {
             config(['auth.providers.twill_users' => [
@@ -218,7 +215,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function mergeConfigs()
+    private function mergeConfigs(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/twill.php', 'twill');
         $this->mergeConfigFrom(__DIR__ . '/../config/frontend.php', 'twill.frontend');
@@ -248,7 +245,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/services.php', 'services');
     }
 
-    private function setLocalDiskUrl($type)
+    private function setLocalDiskUrl($type): void
     {
         config([
             'filesystems.disks.twill_' . $type . '_library.url' => request()->getScheme()
@@ -259,7 +256,7 @@ class TwillServiceProvider extends ServiceProvider
         ]);
     }
 
-    private function publishMigrations()
+    private function publishMigrations(): void
     {
         if (config('twill.load_default_migrations', true)) {
             $this->loadMigrationsFrom(__DIR__ . '/../migrations/default');
@@ -273,7 +270,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->publishOptionalMigration('users-oauth');
     }
 
-    private function publishOptionalMigration($feature)
+    private function publishOptionalMigration($feature): void
     {
         if (config('twill.enabled.' . $feature, false)) {
             $this->loadMigrationsFrom(__DIR__ . '/../migrations/optional/' . $feature);
@@ -287,7 +284,7 @@ class TwillServiceProvider extends ServiceProvider
     /**
      * @return void
      */
-    private function publishAssets()
+    private function publishAssets(): void
     {
         $this->publishes([
             __DIR__ . '/../dist' => public_path(),
@@ -297,7 +294,7 @@ class TwillServiceProvider extends ServiceProvider
     /**
      * @return void
      */
-    private function registerAndPublishViews()
+    private function registerAndPublishViews(): void
     {
         $viewPath = __DIR__ . '/../views';
 
@@ -308,7 +305,7 @@ class TwillServiceProvider extends ServiceProvider
     /**
      * @return void
      */
-    private function registerCommands()
+    private function registerCommands(): void
     {
         $this->commands([
             Install::class,
@@ -328,19 +325,28 @@ class TwillServiceProvider extends ServiceProvider
             Dev::class,
             SyncLang::class,
             CapsuleInstall::class,
+            GeneratePackageCommand::class,
         ]);
     }
 
     /**
+     * Resolve and include a given view expression in the project, Twill internals or a package.
+     *
      * @param string $view
      * @param string $expression
      * @return string
      */
-    private function includeView($view, $expression)
+    private function includeView($view, $expression): string
     {
         [$name] = str_getcsv($expression, ',', '\'');
 
-        $partialNamespace = view()->exists('admin.' . $view . $name) ? 'admin.' : 'twill::';
+        if (preg_match('/::/', $name)) {
+            // if there's a namespace separator, we'll assume it's a package
+            [$namespace, $name] = preg_split('/::/', $name);
+            $partialNamespace = "$namespace::admin.";
+        } else {
+            $partialNamespace = view()->exists('admin.' . $view . $name) ? 'admin.' : 'twill::';
+        }
 
         $view = $partialNamespace . $view . $name;
 
@@ -359,7 +365,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function extendBlade()
+    private function extendBlade(): void
     {
         $blade = $this->app['view']->getEngineResolver()->resolve('blade')->getCompiler();
 
@@ -454,7 +460,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function addViewComposers()
+    private function addViewComposers(): void
     {
         if (config('twill.enabled.users-management')) {
             View::composer(['admin.*', 'twill::*'], CurrentUser::class);
@@ -487,7 +493,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function registerAndPublishTranslations()
+    private function registerAndPublishTranslations(): void
     {
         $translationPath = __DIR__ . '/../lang';
 
@@ -500,7 +506,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @return string
      */
-    public function version()
+    public function version(): string
     {
         return static::VERSION;
     }
@@ -509,7 +515,7 @@ class TwillServiceProvider extends ServiceProvider
      * In case 2FA is enabled, we need to check if a QRCode compatible package is
      * installed.
      */
-    public function check2FA()
+    public function check2FA(): void
     {
         if (! $this->app->runningInConsole() || ! config('twill.enabled.users-2fa')) {
             return;

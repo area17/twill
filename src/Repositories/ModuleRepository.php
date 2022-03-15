@@ -9,7 +9,6 @@ use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
 use A17\Twill\Repositories\Behaviors\HandleRelatedBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleRepeaters;
-use A17\Twill\Services\Capsules\HasCapsules;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -22,7 +21,7 @@ use PDO;
 
 abstract class ModuleRepository
 {
-    use HandleDates, HandleBrowsers, HandleRelatedBrowsers, HandleRepeaters, HandleFieldsGroups, HasCapsules;
+    use HandleDates, HandleBrowsers, HandleRelatedBrowsers, HandleRepeaters, HandleFieldsGroups;
 
     /**
      * @var \A17\Twill\Models\Model
