@@ -73,7 +73,7 @@ class BlockRenderer
         string $parentEditorName = null
     ): Block {
         $type = Str::replace('a17-block-', '', $data['type']);
-        $class = Block::getForType($type);
+        $class = Block::getForType($type, $data['is_repeater']);
 
         $children = [];
 
@@ -131,7 +131,8 @@ class BlockRenderer
         Model $rootModel,
         string $editorName
     ): Block {
-        $class = Block::getForType($block->type);
+        // We do not know if the block is a repeater or block so we use the first match.
+        $class = Block::findFirstWithType($block->type);
 
         /** @var A17\Twill\Models\Block[] $childBlocks */
         $childBlocks = A17Block::whereParentId($block->id)->get();
