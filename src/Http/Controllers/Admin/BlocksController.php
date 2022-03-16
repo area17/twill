@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Facades\TwillBlocks;
+use A17\Twill\Models\Block;
 use A17\Twill\Repositories\BlockRepository;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Foundation\Application;
@@ -50,12 +52,13 @@ class BlocksController extends Controller
         $this->getChildrenPreview($block['blocks'], $blocksCollection, $newBlock->id, $blockId, $blockRepository);
 
         $renderedBlocks = $blocksCollection->where('parent_id', null)
-            ->map(function ($blockToRender) use ($block, $blocksCollection, $viewFactory, $config) {
+            ->map(function (Block $blockToRender) use ($block, $blocksCollection, $viewFactory, $config) {
                 try {
                     if ($config->get('twill.block_editor.block_preview_render_childs') ?? true) {
                         $childBlocks = $blocksCollection->where('parent_id', $blockToRender->id);
-                        $renderedChildViews = $childBlocks->map(function ($childBlock) use ($viewFactory, $config) {
-                            $view = $this->getBlockView($childBlock->type, $config);
+                        $childViews = $childBlocks->map(function (Block $childBlock) use ($viewFactory, $config) {
+                            $view = TwillBlocks::findByName($childBlock->type)
+                                ->getBlockView($config->get('twill.block_editor.block_views_mappings'));
 
                             return $viewFactory->exists($view) ? $viewFactory->make($view, [
                                 'block' => $childBlock,
@@ -70,23 +73,22 @@ class BlocksController extends Controller
 
                     $data = [
                         'block' => $blockToRender,
+                        'inEditor' => true,
                     ];
 
-                    $view = $this->getBlockView($blockToRender->type, $config);
-
+                    $view = $block['instance']->getBlockView($config->get('twill.block_editor.block_views_mappings'));
                     $data = $block['instance']->getData($data, $blockToRender);
-                    $data['inEditor'] = true;
 
                     $error = '';
 
                     if ($viewFactory->exists($view)) {
-                        return $viewFactory->make($view, $data)->render() . ($renderedChildViews ?? '');
+                        return $viewFactory->make($view, $data)->render() . ($childViews ?? '');
                     }
                 } catch (\Exception $e) {
                     $error = $e->getMessage() . ' in ' . $e->getFile();
                 }
 
-                return $viewFactory->make('twill::errors.block', ['view' => $view, 'error' => $error])->render();
+                return $viewFactory->make('twill::errors.block', ['view' => $view ?? '', 'error' => $error])->render();
             })->implode('');
 
         $view = $viewFactory->exists($config->get('twill.block_editor.block_single_layout'))
@@ -140,25 +142,5 @@ class BlocksController extends Controller
             }
             $blocksCollection->push($newChildBlock);
         });
-    }
-
-    /**
-     * Determines a view name for a given block type.
-     *
-     * @param string $blockType
-     * @param Config $config
-     * @return string
-     */
-    private function getBlockView($blockType, $config)
-    {
-        $view = $config->get('twill.block_editor.block_views_path') . '.' . $blockType;
-
-        $customViews = $config->get('twill.block_editor.block_views_mappings');
-
-        if (array_key_exists($blockType, $customViews)) {
-            $view = $customViews[$blockType];
-        }
-
-        return $view;
     }
 }

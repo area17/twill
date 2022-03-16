@@ -1,10 +1,10 @@
 <?php
 
-namespace Database\Seeders;
+namespace {{seederNamespace}};
 
 use Illuminate\Database\Seeder;
-use App\Repositories\{{repositoryClassName}};
-use App\Models\{{modelClassName}};
+use {{repositoryClass}};
+use {{modelClass}};
 
 class {{seederClassName}} extends Seeder
 {

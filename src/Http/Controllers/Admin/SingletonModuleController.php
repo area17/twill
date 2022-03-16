@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Facades\TwillCapsules;
 use Illuminate\Support\Facades\Session;
 
 abstract class SingletonModuleController extends ModuleController
@@ -16,6 +17,10 @@ abstract class SingletonModuleController extends ModuleController
     public function editSingleton()
     {
         $model = "App\\Models\\{$this->getModelName()}";
+
+        if (!class_exists($model)) {
+            $model = TwillCapsules::getCapsuleForModel($this->modelName)->getModel();
+        }
 
         $item = app($model)->first();
 

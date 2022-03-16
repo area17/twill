@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Repositories;
 
+use A17\Twill\Exceptions\NoCapsuleFoundException;
+use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Model;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
@@ -10,7 +12,6 @@ use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
 use A17\Twill\Repositories\Behaviors\HandlePermissions;
 use A17\Twill\Repositories\Behaviors\HandleRelatedBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleRepeaters;
-use A17\Twill\Services\Capsules\HasCapsules;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -23,7 +24,12 @@ use PDO;
 
 abstract class ModuleRepository
 {
-    use HandleDates, HandleBrowsers, HandleRelatedBrowsers, HandleRepeaters, HandleFieldsGroups, HasCapsules, HandlePermissions;
+    use HandleDates;
+    use HandleBrowsers;
+    use HandleRelatedBrowsers;
+    use HandleRepeaters;
+    use HandleFieldsGroups;
+    use HandlePermissions;
 
     /**
      * @var \A17\Twill\Models\Model
@@ -905,13 +911,13 @@ abstract class ModuleRepository
             return App::make($class);
         }
 
-        $capsule = $this->getCapsuleByModel($modelOrRepository);
+        try {
+            $capsule = TwillCapsules::getCapsuleForModel($modelOrRepository);
 
-        if (blank($capsule)) {
+            return App::make($capsule->getRepositoryClass());
+        } catch (NoCapsuleFoundException) {
             throw new \Exception("Repository class not found for model '{$modelOrRepository}'");
         }
-
-        return App::make($capsule['repository']);
     }
 
     /**
