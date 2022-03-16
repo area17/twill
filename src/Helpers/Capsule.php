@@ -275,7 +275,7 @@ class Capsule
 
     public function getRoutesFile(): string
     {
-        return $this->getPsr4Path() . '/routes/admin.php';
+        return $this->getPsr4Path() . '/routes/twill.php';
     }
 
     public function routesFileExists(): bool
