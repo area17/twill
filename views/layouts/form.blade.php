@@ -27,6 +27,7 @@
     $controlLanguagesPublication = $controlLanguagesPublication ?? true;
     $disableContentFieldset = $disableContentFieldset ?? false;
     $editModalTitle = ($createWithoutModal ?? false) ? twillTrans('twill::lang.modal.create.title') : null;
+    $item = isset($item) ? $item : null;
 
     if (config('twill.enabled.permissions-management')) {
         $users = app()->make('A17\Twill\Repositories\UserRepository')->published()->notSuperAdmin()->get();
@@ -114,7 +115,7 @@
 
                         @if(config('twill.enabled.permissions-management') && config('twill.permissions.level') === 'roleGroupItem')
                             @if($showPermissionFieldset ?? null)
-                                @can('manage-item', $item)
+                                @can('manage-item', isset($item) ? $item : null)
                                     <a17-fieldset title="User Permissions" id="permissions">
                                         @formField('select_permissions', [
                                             'itemsInSelectsTables' => $users,
@@ -185,20 +186,20 @@
     }
 
     window['{{ config('twill.js_namespace') }}'].STORE.publication = {
-        withPublicationToggle: {{ json_encode(($publish ?? true) && isset($item) && $item->isFillable('published')) }},
-        published: {{ isset($item) && $item->published ? 'true' : 'false' }},
+        withPublicationToggle: {{ json_encode(($publish ?? true) && $item?->isFillable('published')) }},
+        published: {{ $item?->published ? 'true' : 'false' }},
         createWithoutModal: {{ isset($createWithoutModal) && $createWithoutModal ? 'true' : 'false' }},
-        withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
+        withPublicationTimeframe: {{ json_encode(($schedule ?? true) && $item?->isFillable('publish_start_date')) }},
         publishedLabel: '{{ $publishedLabel ?? twillTrans('twill::lang.main.published') }}',
         draftLabel: '{{ $draftLabel ?? twillTrans('twill::lang.main.draft') }}',
         expiredLabel: '{{twillTrans('twill::lang.publisher.expired')}}',
         scheduledLabel: '{{twillTrans('twill::lang.publisher.scheduled')}}',
         submitDisableMessage: '{{ $submitDisableMessage ?? '' }}',
-        startDate: '{{ $item->publish_start_date ?? '' }}',
-        endDate: '{{ $item->publish_end_date ?? '' }}',
-        visibility: '{{ isset($item) && $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}',
+        startDate: '{{ $item?->publish_start_date ?? '' }}',
+        endDate: '{{ $item?->publish_end_date ?? '' }}',
+        visibility: '{{ $item?->isFillable('public') ? ($item?->public ? 'public' : 'private') : false }}',
         reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!},
-        submitOptions: @if(isset($item) && $item->cmsRestoring) {
+        submitOptions: @if($item?->cmsRestoring) {
             draft: [
                 {
                     name: 'restore',
@@ -258,10 +259,14 @@
 
     window['{{ config('twill.js_namespace') }}'].STORE.revisions = {!! json_encode($revisions ?? []) !!}
 
-    window['{{ config('twill.js_namespace') }}'].STORE.parentId = {{ $item->parent_id ?? 0 }}
+    window['{{ config('twill.js_namespace') }}'].STORE.parentId = {{ $item?->parent_id ?? 0 }}
     window['{{ config('twill.js_namespace') }}'].STORE.parents = {!! json_encode($parents ?? [])  !!}
 
-    window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(($item->getMediasParams()) + config('twill.block_editor.crops') + (config('twill.settings.crops') ?? [])) !!}
+    @if (isset($item) && classHasTrait($item, \A17\Twill\Models\Behaviors\HasMedias::class))
+        window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(($item->getMediasParams()) + config('twill.block_editor.crops') + (config('twill.settings.crops') ?? [])) !!}
+    @else
+        window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(config('twill.block_editor.crops') + (config('twill.settings.crops') ?? [])) !!}
+    @endif
     window['{{ config('twill.js_namespace') }}'].STORE.medias.selected = {}
 
     window['{{ config('twill.js_namespace') }}'].STORE.browser = {}
