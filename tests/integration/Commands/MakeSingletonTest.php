@@ -21,11 +21,11 @@ class MakeSingletonTest extends TestCase
         );
 
         $this->assertFileExists(
-            twill_path('Http/Controllers/Admin/HomepageController.php')
+            twill_path('Http/Controllers/Twill/HomepageController.php')
         );
 
         $this->assertIsObject(
-            $this->app->make(\App\Http\Controllers\Admin\HomepageController::class)
+            $this->app->make(\App\Http\Controllers\Twill\HomepageController::class)
         );
     }
 }

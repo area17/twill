@@ -52,6 +52,7 @@ import browser from '@/store/modules/browser'
 import repeaters from '@/store/modules/repeaters'
 import parents from '@/store/modules/parents'
 import attributes from '@/store/modules/attributes'
+import permissions from '@/store/modules/permissions'
 
 // mixins
 import formatPermalink from '@/mixins/formatPermalink'
@@ -73,6 +74,7 @@ store.registerModule('browser', browser)
 store.registerModule('repeaters', repeaters)
 store.registerModule('parents', parents)
 store.registerModule('attributes', attributes)
+store.registerModule('permissions', permissions)
 
 // Form components
 Vue.component('a17-fieldset', a17Fieldset)

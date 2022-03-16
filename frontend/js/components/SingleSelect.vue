@@ -1,6 +1,6 @@
 <template>
-  <div class="multiselectorOuter">
-    <a17-inputframe :error="error" :note="note" :label="label" :name="name" :add-new="addNew">
+  <div :class="outerClasses">
+    <a17-inputframe :error="error" :note="note" :label="label" :name="name" :add-new="addNew" :variant="variantInput">
       <input type="hidden" :name="name" v-model="value" />
       <div class="singleselector" :class="gridClasses">
         <div class="singleselector__outer">
@@ -55,6 +55,10 @@
       },
       inline: {
         type: Boolean,
+        default: true
+      },
+      inTable: {
+        type: Boolean,
         default: false
       },
       border: {
@@ -78,6 +82,16 @@
       }
     },
     computed: {
+      variantInput: function () {
+        return [
+          this.inTable ? 'intable' : ''
+        ].join(' ')
+      },
+      outerClasses: function () {
+        return [
+          'multiselectorOuter'
+        ]
+      },
       gridClasses: function () {
         if (this.columns >= 1) {
           return [

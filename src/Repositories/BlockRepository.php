@@ -4,10 +4,9 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Behaviors\HasMedias;
-use A17\Twill\Models\Block;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
-use A17\Twill\Services\Blocks\BlockCollection;
+use A17\Twill\Services\Blocks\Block as BlockConfig;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Collection;
 use Log;
@@ -24,11 +23,12 @@ class BlockRepository extends ModuleRepository
     protected $config;
 
     /**
-     * @param Block $model
+     * @param Config $config
      */
-    public function __construct(Block $model, Config $config)
+    public function __construct(Config $config)
     {
-        $this->model = $model;
+        $blockModel = twillModel('block');
+        $this->model = new $blockModel;
         $this->config = $config;
     }
 
@@ -101,15 +101,11 @@ class BlockRepository extends ModuleRepository
      */
     public function buildFromCmsArray($block, $repeater = false)
     {
-        if ($repeater) {
-            $blocksList = app(BlockCollection::class)->getRepeaterList();
-        } else {
-            $blocksList = app(BlockCollection::class)->getBlockList();
-        }
+        $blockInstance = BlockConfig::getForComponent($block['type'], $repeater);
 
-        $block['type'] = $blocksList->keyBy('name')->search(function ($blockConfig) use ($block) {
-            return $blockConfig['component'] === $block['type'];
-        });
+        $block['type'] = $blockInstance->name;
+
+        $block['instance'] = $blockInstance;
 
         $block['content'] = empty($block['content']) ? new \stdClass : (object) $block['content'];
 

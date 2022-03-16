@@ -27,7 +27,7 @@ Make sure to setup your .env file with your database credentials and to run it w
 :::
 
 Twill's `install` command consists of:
-- creating an `admin.php` routes files in your application's `routes` directory. This is where you will declare your own admin console routes.
+- creating an `twill.php` routes files in your application's `routes` directory. This is where you will declare your own admin console routes.
 - migrating your database with Twill's migrations.
 - publishing Twill's configuration files to your application's `config` directory.
 - publishing Twill's assets for the admin console UI.

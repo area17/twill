@@ -31,7 +31,7 @@ return [
    | This value is added to the admin route names of your Admin application.
    |
     */
-    'admin_route_name_prefix' => env('ADMIN_ROUTE_NAME_PREFIX', 'admin.'),
+    'admin_route_name_prefix' => env('ADMIN_ROUTE_NAME_PREFIX', 'twill.'),
 
     /*
     |--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ return [
     | This value is added to the title tag of your Admin application.
     |
      */
-    'admin_app_title_suffix' => env('ADMIN_APP_TITLE_SUFFIX', 'Admin'),
+    'admin_app_title_suffix' => env('ADMIN_APP_TITLE_SUFFIX', 'Twill'),
 
     /*
     |--------------------------------------------------------------------------
@@ -168,6 +168,9 @@ return [
 
     'google_maps_api_key' => env('GOOGLE_MAPS_API_KEY'),
 
+    'custom_auth_service_provider' => false,
+
+
     /*
     |--------------------------------------------------------------------------
     | Twill FE Application configuration
@@ -177,7 +180,7 @@ return [
     'js_namespace' => 'TWILL',
     'dev_mode' => env('TWILL_DEV_MODE', false),
     'dev_mode_url' => env('TWILL_DEV_MODE_URL', 'http://localhost:8080'),
-    'public_directory' => env('TWILL_ASSETS_DIR', 'assets/admin'),
+    'public_directory' => env('TWILL_ASSETS_DIR', 'assets/twill'),
     'manifest_file' => 'twill-manifest.json',
     'vendor_path' => 'vendor/area17/twill',
     'custom_components_resource_path' => 'assets/js/components',

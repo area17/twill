@@ -2,6 +2,29 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.8.0-beta.1 (2022-03-03)
+
+### Added
+
+- Laravel 9 support [`#1243`](https://github.com/area17/twill/pull/1243)
+- Added Twill block classes to support block render data, validation and more [`#1421`](https://github.com/area17/twill/pull/1421)
+- Repeaters and blocks are now updated instead of recreated [`#1431`](https://github.com/area17/twill/pull/1431)
+- Improved translatable fields validations [`1411`](https://github.com/area17/twill/pull/1411)
+
+
+### Fixed
+
+- Update Refresh Crops command to take in consideration the MorphMap [`#1485`](https://github.com/area17/twill/pull/1485)
+- Get image size from uploaded file instead of stored file [`#1412`](https://github.com/area17/twill/pull/1412)
+- Fix unauthenticated user 500 error when using custom error handler [`#1449`](https://github.com/area17/twill/pull/1449)
+- Fix exception for missing repository in related browser [`#1405`](https://github.com/area17/twill/pull/1405)
+- Do not show changed dialog when content is identical [`#1359`](https://github.com/area17/twill/pull/1359)
+- Improved performance when many fields/languages are used [`#1350`](https://github.com/area17/twill/pull/1350)
+
+### Documentation
+
+- Added more guides [`#1473`](https://github.com/area17/twill/pull/1473)
+
 ## 2.7.0 (2022-02-25)
 
 ### Added
@@ -389,7 +412,7 @@ publication controll in the create modal [`#1468`](https://github.com/area17/twi
 - **Self-contained blocks** (#597) [`1e95b0ac`](https://github.com/area17/twill/commit/1e95b0ac) [`9ae502a4`](https://github.com/area17/twill/commit/9ae502a46ed31f82ebda5426dbff5f56228e2d25) [`948985ef`](https://github.com/area17/twill/commit/948985ef22d70a08287ccdf7583ca802f6182833) [`66fa7c5e`](https://github.com/area17/twill/commit/66fa7c5e16c0ce34f0edc1aab74a52ef0d232401) [`c00759ee`](https://github.com/area17/twill/commit/c00759ee7cad76aea16ec7f04c693ba1cd046b9d)
   - This change allows defining blocks without adding them to the `twill.block_editor` configuration
   - This is backwards compatible with blocks already defined in configuration
-  - Repeaters are now created in a dedicated folder: `views/admin/repeaters` by default, but your existing repeaters in the `views/admin/blocks` file will still work
+  - Repeaters are now created in a dedicated folder: `views/twill/repeaters` by default, but your existing repeaters in the `views/twill/blocks` file will still work
   - Annotations are now supported in blocks and repeaters Blade files:
     - Provide a title with `@twillPropTitle` or `@twillBlockTitle` or `@twillRepeaterTitle`
     - Provide an icon with `@twillPropIcon` or `@twillBlockIcon` or `@twillRepeaterIcon`
@@ -619,7 +642,7 @@ We also namespaced our inline javascript variables to prevent any conflict in th
 
 Finally, to help custom workflows, maintainers and contributors, we made everything configurable:
 - `manifest_file`, which defaults to `twill-manifest.json`
-- `public_directory`, which defaults to `assets/admin`, like in previous versions, and can now be controlled through the `TWILL_ASSETS_DIR` environment variable
+- `public_directory`, which defaults to `assets/twill`, like in previous versions, and can now be controlled through the `TWILL_ASSETS_DIR` environment variable
 - `dev_mode`, which defaults to `false`
 - `dev_mode_url`, which defaults to  [http://localhost:8080](http://localhost:8080/)  and can be controlled through the `TWILL_DEV_MODE_URL` environment variable.
 

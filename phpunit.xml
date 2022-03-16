@@ -34,6 +34,8 @@
       <file>tests/integration/RoutesTest.php</file>
       <file>tests/integration/PasswordsTest.php</file>
       <file>tests/integration/CapsulesTest.php</file>
+      <file>tests/integration/PermissionsLegacyTest.php</file>
+      <file>tests/integration/PermissionsTest.php</file>
       <file>tests/integration/BrowsersTest.php</file>
       <file>tests/integration/NestedModuleTest.php</file>
       <file>tests/integration/SingletonModuleTest.php</file>

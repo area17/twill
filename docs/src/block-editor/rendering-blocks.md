@@ -50,3 +50,35 @@ If the block has a media field, you can refer to the Media Library documentation
 {{ $block->image('mediaFieldName', 'cropNameFromBlocksConfig') }}
 {{ $block->images('mediaFieldName', 'cropNameFromBlocksConfig') }}
 ```
+
+## Modifying block data
+
+Sometimes it can be useful to abstract some PHP you would usually put at the top of the blade file.
+This will keep your blade files cleaner and allow for easier logic writing.
+
+See [Block classes documentation](/block-editor/block-classes.html) for more details about the block class.
+
+```php
+<?php
+
+namespace App\Twill\Block;
+
+use A17\Twill\Services\Blocks\Block;
+
+class ImagesBlock extends Block
+{
+    public function getData(array $data, \A17\Twill\Models\Block $block): array
+    {
+        $data = parent::getData($data, $block);
+
+        foreach ($block->imagesAsArrays('blog_image', 'desktop') as $imageData) {
+            $data['images'][] = [
+                'src' => $imageData['src'],
+                'alt' => $imageData['alt']
+            ];
+        }
+
+        return $data;
+    }
+}
+```

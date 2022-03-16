@@ -3,7 +3,7 @@ $passwordText = isset($welcome) && $welcome ? twillTrans('twill::lang.auth.choos
 @endphp
 
 @extends('twill::auth.layout', [
-    'route' => route('admin.password.reset'),
+    'route' => route('twill.password.reset'),
     'screenTitle' => $passwordText
 ])
 

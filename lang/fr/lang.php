@@ -322,6 +322,7 @@ return [
     'nav' => [
         'admin' => 'Admin',
         'cms-users' => 'Utilisateurs du CMS',
+        'profile' => 'Profile',
         'logout' => 'Déconnexion',
         'media-library' => 'Galerie de médias',
         'settings' => 'Paramètres',
