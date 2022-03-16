@@ -4,8 +4,6 @@ namespace A17\Twill\Tests\Integration;
 
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Facades\TwillRoutes;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;

@@ -22,7 +22,12 @@ use PDO;
 
 abstract class ModuleRepository
 {
-    use HandleDates, HandleBrowsers, HandleRelatedBrowsers, HandleRepeaters, HandleFieldsGroups, HasCapsules, HandlePermissions;
+    use HandleDates;
+    use HandleBrowsers;
+    use HandleRelatedBrowsers;
+    use HandleRepeaters;
+    use HandleFieldsGroups;
+    use HandlePermissions;
 
     /**
      * @var \A17\Twill\Models\Model

@@ -570,7 +570,7 @@ class ModuleMake extends Command
      */
     private function createRepository($modelName = 'Item', $activeTraits = [])
     {
-        $repositoriesDir = $this->isCapsule ? $this->capsule['repositories_dir'] : 'Repositories';
+        $repositoriesDir = $this->isCapsule ? $this->capsule->getRepositoriesDir() : 'Repositories';
 
         $modelClass = $this->isCapsule ? $this->capsule->getModel() : config(
             'twill.namespace'
@@ -639,7 +639,7 @@ class ModuleMake extends Command
     {
         $controllerClassName = $modelName . 'Controller';
 
-        $dir = $this->isCapsule ? $this->capsule['controllers_dir'] : 'Http/Controllers/Twill';
+        $dir = $this->isCapsule ? $this->capsule->getControllersDir() : 'Http/Controllers/Twill';
 
         if ($this->isSingleton) {
             $baseController = config('twill.base_singleton_controller');
@@ -695,7 +695,7 @@ class ModuleMake extends Command
      */
     private function createRequest($modelName = 'Item')
     {
-        $dir = $this->isCapsule ? $this->capsule['requests_dir'] : 'Http/Requests/Twill';
+        $dir = $this->isCapsule ? $this->capsule->getRequestsDir() : 'Http/Requests/Twill';
 
         $this->makeTwillDirectory($dir);
 
@@ -955,8 +955,10 @@ class ModuleMake extends Command
 
     public function namespace($type, $suffix, $class = null)
     {
-        if (!$this->isCapsule) {
-            return $viewsPath = $this->config->get('view.paths')[0] . '/twill/admin/' . $moduleName;
+        $class = (filled($class) ? "\\$class" : '');
+
+        if (! $this->isCapsule) {
+            return "App\\{$suffix}{$class}";
         }
 
         if (! $this->isCapsule) {
