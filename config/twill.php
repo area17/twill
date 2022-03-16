@@ -170,7 +170,6 @@ return [
 
     'custom_auth_service_provider' => false,
 
-
     /*
     |--------------------------------------------------------------------------
     | Twill FE Application configuration
@@ -211,7 +210,7 @@ return [
         'ru',
         'tr',
         'bs',
-        'ar'
+        'ar',
     ],
 
     /*
@@ -220,6 +219,44 @@ return [
     |--------------------------------------------------------------------------
     */
     'auto_seed_singletons' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | The default crops that can be used in models. These can be extended by
+    | a model specific $mediasParams property, or by overriding the getMediasParams
+    | method.
+    |--------------------------------------------------------------------------
+    */
+    'default_crops' => [
+        'cover' => [
+            'default' => [
+                [
+                    'name' => 'default',
+                    'ratio' => 16 / 9,
+                ],
+            ],
+            'mobile' => [
+                [
+                    'name' => 'mobile',
+                    'ratio' => 1,
+                ],
+            ],
+            'flexible' => [
+                [
+                    'name' => 'free',
+                    'ratio' => 0,
+                ],
+                [
+                    'name' => 'landscape',
+                    'ratio' => 16 / 9,
+                ],
+                [
+                    'name' => 'portrait',
+                    'ratio' => 3 / 5,
+                ],
+            ],
+        ],
+    ],
 
     /*
     |--------------------------------------------------------------------------

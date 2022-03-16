@@ -261,7 +261,7 @@
     window['{{ config('twill.js_namespace') }}'].STORE.parentId = {{ $item->parent_id ?? 0 }}
     window['{{ config('twill.js_namespace') }}'].STORE.parents = {!! json_encode($parents ?? [])  !!}
 
-    window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(($item->mediasParams ?? []) + config('twill.block_editor.crops') + (config('twill.settings.crops') ?? [])) !!}
+    window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(($item->getMediasParams()) + config('twill.block_editor.crops') + (config('twill.settings.crops') ?? [])) !!}
     window['{{ config('twill.js_namespace') }}'].STORE.medias.selected = {}
 
     window['{{ config('twill.js_namespace') }}'].STORE.browser = {}
