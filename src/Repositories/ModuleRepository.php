@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Repositories;
 
+use A17\Twill\Exceptions\NoCapsuleFoundException;
+use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Model;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
@@ -909,13 +911,13 @@ abstract class ModuleRepository
             return App::make($class);
         }
 
-        $capsule = $this->getCapsuleByModel($modelOrRepository);
+        try {
+            $capsule = TwillCapsules::getCapsuleForModel($modelOrRepository);
 
-        if (blank($capsule)) {
+            return App::make($capsule->getRepositoryClass());
+        } catch (NoCapsuleFoundException) {
             throw new \Exception("Repository class not found for model '{$modelOrRepository}'");
         }
-
-        return App::make($capsule['repository']);
     }
 
     /**

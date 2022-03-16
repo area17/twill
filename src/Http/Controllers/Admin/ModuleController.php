@@ -1783,7 +1783,7 @@ abstract class ModuleController extends Controller
                 $modelClass = config('twill.namespace') . '\\Models\\' . Str::studly($singularName);
 
                 if (! class_exists($modelClass)) {
-                    $modelClass = $this->getCapsuleByModule($name)['model'];
+                    $modelClass = TwillCapsules::getCapsuleForModel($name)->getModel();
                 }
 
                 $model = (new $modelClass())->findOrFail(request()->route()->parameter($singularName));

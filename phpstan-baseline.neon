@@ -11,11 +11,6 @@ parameters:
 			path: src/Commands/ModuleMake.php
 
 		-
-			message: "#^Method A17\\\\Twill\\\\Commands\\\\ModuleMake\\:\\:createCapsuleRoutes\\(\\) invoked with 1 parameter, 0 required\\.$#"
-			count: 1
-			path: src/Commands/ModuleMake.php
-
-		-
 			message: "#^Variable \\$activeRepositoryTraits in empty\\(\\) always exists and is not falsy\\.$#"
 			count: 1
 			path: src/Commands/ModuleMake.php

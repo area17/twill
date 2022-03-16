@@ -44,8 +44,6 @@ class CapsuleInstall extends Command
 
     protected string $namespace;
 
-    protected Manager $manager;
-
     /**
      * @return string
      */
@@ -220,8 +218,8 @@ class CapsuleInstall extends Command
             $this->error('A capsule with this name already exists!');
 
             return false;
+        } catch (NoCapsuleFoundException $e) {
         }
-        catch (NoCapsuleFoundException $e) {}
 
         if ($this->directoryExists()) {
             $this->error(
