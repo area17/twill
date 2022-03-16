@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Services\Blocks;
 
+use A17\Twill\Facades\TwillBlocks;
 use Exception;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
@@ -101,6 +101,11 @@ class Block
     /**
      * @var string
      */
+    public $renderNamespace;
+
+    /**
+     * @var string
+     */
     public $contents;
 
     /**
@@ -120,9 +125,11 @@ class Block
      * @param $type
      * @param $source
      * @param $name
+     * @param string $renderNamespace
+     *   Mainly for packages, but this will get the preview/render view file from that namespace.
      * @return static
      */
-    public static function make($file, $type, $source, $name = null): self
+    public static function make($file, $type, $source, $name = null, string $renderNamespace = null): self
     {
         $name = $name ?? Str::before(
             $file->getFilename(),
@@ -130,20 +137,29 @@ class Block
         );
 
         $transformed = Str::studly($name) . 'Block';
+        // @todo: Package block classes?
         $className = "\App\Twill\Block\\$transformed";
         if (class_exists($className)) {
             return new $className($file, $type, $source, $name);
         }
 
-        return new self($file, $type, $source, $name);
+        return new self($file, $type, $source, $name, $renderNamespace);
+    }
+
+    /**
+     * Gets the first match being a block or repeater.
+     */
+    public static function findFirstWithType(string $type): ?self
+    {
+        return app(BlockCollection::class)->findByName($type);
     }
 
     public static function getForType(string $type, bool $repeater = false): self
     {
         if ($repeater) {
-            $blocksList = app(BlockCollection::class)->getRepeaterList();
+            $blocksList = TwillBlocks::getRepeaters();
         } else {
-            $blocksList = app(BlockCollection::class)->getBlockList();
+            $blocksList = TwillBlocks::getBlocks();
         }
 
         return $blocksList->first(function (self $blockConfig) use ($type) {
@@ -154,9 +170,9 @@ class Block
     public static function getForComponent(string $type, bool $repeater = false): self
     {
         if ($repeater) {
-            $blocksList = app(BlockCollection::class)->getRepeaterList();
+            $blocksList = TwillBlocks::getRepeaters();
         } else {
-            $blocksList = app(BlockCollection::class)->getBlockList();
+            $blocksList = TwillBlocks::getBlocks();
         }
 
         return $blocksList->first(function (self $blockConfig) use ($type) {
@@ -166,13 +182,15 @@ class Block
 
     /**
      * Block constructor.
-     * @param $file
+     * @param Symfony\Component\Finder\SplFileInfo $file
      * @param $type
      * @param $source
      * @param $name
+     * @param string $renderNamespace
+     *   Mainly for packages, but this will get the preview/render view file from that namespace.
      * @throws \Exception
      */
-    public function __construct($file, $type, $source, $name = null)
+    public function __construct($file, $type, $source, $name = null, ?string $renderNamespace = null)
     {
         $this->file = $file;
 
@@ -180,16 +198,18 @@ class Block
 
         $this->source = $source;
 
-        $this->fileName = $this->getFilename();
+        // @change: This now holds the full file path instead of just the fileName.
+        $this->fileName = $this->file ? $this->file->getPathName() : 'Custom vue file';
+
+        $this->renderNamespace = $renderNamespace;
 
         $this->name = $name ?? Str::before(
             $this->file->getFilename(),
             '.blade.php'
         );
 
-        if ($type === self::TYPE_BLOCK
-            && config('twill.block_editor.repeaters.' . $this->name) !== null
-        ) {
+        // @todo: This may not be needed.
+        if ($type === self::TYPE_BLOCK && config('twill.block_editor.repeaters.' . $this->name) !== null) {
             $this->type = self::TYPE_REPEATER;
         }
 
@@ -527,7 +547,11 @@ class Block
 
     public function getBlockView($blockViewMappings = [])
     {
-        $view = config('twill.block_editor.block_views_path') . '.' . $this->name;
+        if ($this->renderNamespace) {
+            $view = $this->renderNamespace . '::' . $this->name;
+        } else {
+            $view = config('twill.block_editor.block_views_path') . '.' . $this->name;
+        }
 
         if (array_key_exists($this->name, $blockViewMappings)) {
             $view = $blockViewMappings[$this->name];

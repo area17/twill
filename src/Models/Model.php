@@ -17,7 +17,7 @@ use Illuminate\Support\Str;
 
 abstract class Model extends BaseModel implements TaggableInterface
 {
-    use HasPresenter, SoftDeletes, TaggableTrait, IsTranslatable, HasCapsules;
+    use HasPresenter, SoftDeletes, TaggableTrait, IsTranslatable;
 
     public $timestamps = true;
 

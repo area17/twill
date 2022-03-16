@@ -34,7 +34,7 @@ trait HasBlocks
                     $childBlocks = $this->blocks->where('parent_id', $block->id);
 
                     $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings, $data) {
-                        $class = BlockConfig::getForType($childBlock->type);
+                        $class = BlockConfig::findFirstWithType($childBlock->type);
                         $view = $class->getBlockView($blockViewMappings);
                         $data = $class->getData($data, $childBlock);
 
@@ -44,7 +44,7 @@ trait HasBlocks
 
                 $block->childs = $this->blocks->where('parent_id', $block->id);
 
-                $class = BlockConfig::getForType($block->type);
+                $class = BlockConfig::findFirstWithType($block->type);
                 $view = $class->getBlockView($blockViewMappings);
                 $data = $class->getData($data, $block);
 
