@@ -369,9 +369,7 @@ class TwillServiceProvider extends ServiceProvider
     {
         $blade = $this->app['view']->getEngineResolver()->resolve('blade')->getCompiler();
 
-        $blade->directive('dd', function ($param) {
-            return "<?php dd({$param}); ?>";
-        });
+        $this->registerNullBladeDirectives($blade);
 
         $blade->directive('dumpData', function ($data) {
             return sprintf(
@@ -382,16 +380,6 @@ class TwillServiceProvider extends ServiceProvider
 
         $blade->directive('formField', function ($expression) {
             return $this->includeView('partials.form._', $expression);
-        });
-
-        /*
-         * Register the validation rules as "null" directives, so they are automatically cleaned from the view.
-         */
-        $blade->directive('twillBlockValidationRules', function () {
-            return null;
-        });
-        $blade->directive('twillBlockValidationRulesForTranslatedFields', function () {
-            return null;
         });
 
         $blade->directive('partialView', function ($expression) {
@@ -452,6 +440,36 @@ class TwillServiceProvider extends ServiceProvider
             $blade->aliasComponent('twill::partials.form.utils._collapsed_fields', 'formCollapsedFields');
             $blade->aliasComponent('twill::partials.form.utils._connected_fields', 'formConnectedFields');
             $blade->aliasComponent('twill::partials.form.utils._inline_checkboxes', 'formInlineCheckboxes');
+        }
+    }
+
+    /**
+     * Null blade directives are used for cleaning up the form, block and repeater blade files.
+     */
+    private function registerNullBladeDirectives($blade): void
+    {
+        $nullCallBack = function () {
+            return null;
+        };
+
+        $keys = ['Block', 'Repeater', 'Prop'];
+        $props = [
+            'Title',
+            'TitleField',
+            'Icon',
+            'Group',
+            'Trigger',
+            'Max',
+            'Compiled',
+            'Component',
+            'ValidationRules',
+            'ValidationRulesForTranslatedFields',
+        ];
+
+        foreach ($keys as $key) {
+            foreach ($props as $prop) {
+                $blade->directive("twill{$key}{$prop}", $nullCallBack);
+            }
         }
     }
 
