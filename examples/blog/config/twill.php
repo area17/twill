@@ -1,6 +1,13 @@
 <?php
 
 return [
+    'enabled' => [
+        'permissions-management' => true,
+    ],
+    'permissions' => [
+        'level' => 'roleGroupItem',
+        'modules' => ['blogs', 'categories'],
+    ],
     'block_editor' => [
         'use_twill_blocks' => [],
         'crops' => [
