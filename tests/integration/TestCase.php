@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use A17\Twill\AuthServiceProvider;
 use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
@@ -341,17 +340,8 @@ abstract class TestCase extends OrchestraTestCase
     {
         $connection = $app['config']['database.default'];
 
-        if (
-            $driver =
-            $app['config'][
-                'database.connections.' . $connection . '.driver'
-            ] === self::DB_CONNECTION
-        ) {
-            $this->createDatabase(
-                $app['config'][
-                    'database.connections.' . $connection . '.database'
-                ]
-            );
+        if ($app['config']['database.connections.' . $connection . '.driver'] === self::DB_CONNECTION) {
+            $this->createDatabase($app['config']['database.connections.' . $connection . '.database']);
         }
     }
 
@@ -427,10 +417,7 @@ abstract class TestCase extends OrchestraTestCase
                 );
         }
 
-        $user = User::where(
-            'email',
-            $email = $this->superAdmin()->email
-        )->first();
+        $user = User::where('email', $this->superAdmin()->email)->first();
 
         $user->setAttribute(
             'unencrypted_password',

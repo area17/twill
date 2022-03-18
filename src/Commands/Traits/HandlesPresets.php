@@ -50,7 +50,8 @@ trait HandlesPresets
      *
      * This is useful for developing examples as you can install it, update it, then copy it back.
      */
-    protected function updatePreset(string $preset): void {
+    protected function updatePreset(string $preset): void
+    {
         $examplesStorage = $this->getExamplesStorage($preset);
         $appRootStorage = $this->getAppRootStorage();
 
@@ -63,7 +64,7 @@ trait HandlesPresets
 
     private function getExamplesStorage(string $preset): FilesystemAdapter
     {
-        if (!isset($this->examplesStorage[$preset])) {
+        if (! isset($this->examplesStorage[$preset])) {
             $this->examplesStorage[$preset] = Storage::build([
                 'driver' => 'local',
                 'root' => __DIR__ . '/../../../examples/' . $preset,
@@ -83,7 +84,7 @@ trait HandlesPresets
 
     private function getAppRootStorage(): FilesystemAdapter
     {
-        if (!$this->appRootStorage) {
+        if (! $this->appRootStorage) {
             $this->appRootStorage = Storage::build([
                 'driver' => 'local',
                 'root' => base_path(),
@@ -96,7 +97,7 @@ trait HandlesPresets
     private function checkMeetsRequirementsForPreset(string $preset): void
     {
         if ($preset === 'blog') {
-            if (!\Composer\InstalledVersions::isInstalled('kalnoy/nestedset')) {
+            if (! \Composer\InstalledVersions::isInstalled('kalnoy/nestedset')) {
                 throw new \RuntimeException(
                     'Missing nestedset, please install it using "composer require kalnoy/nestedset"'
                 );
