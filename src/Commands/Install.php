@@ -9,12 +9,13 @@ use Illuminate\Filesystem\Filesystem;
 class Install extends Command
 {
     use HandlesPresets;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'twill:install {preset?}';
+    protected $signature = 'twill:install {preset? : Optional, the preset to install}';
 
     /**
      * The console command description.
@@ -58,6 +59,7 @@ class Install extends Command
             $this->db->connection()->getPdo();
         } catch (\Exception $e) {
             $this->error('Could not connect to the database, please check your configuration:' . "\n" . $e);
+
             return;
         }
 
@@ -101,11 +103,11 @@ class Install extends Command
     {
         $routesPath = base_path('routes');
 
-        if (!$this->files->exists($routesPath)) {
+        if (! $this->files->exists($routesPath)) {
             $this->files->makeDirectory($routesPath, 0755, true);
         }
 
-        if (!$this->files->exists($routesPath . '/twill.php')) {
+        if (! $this->files->exists($routesPath . '/twill.php')) {
             $stub = $this->files->get(__DIR__ . '/stubs/admin.stub');
             $this->files->put($routesPath . '/twill.php', $stub);
         }
@@ -118,7 +120,7 @@ class Install extends Command
      */
     private function createSuperAdmin()
     {
-        if (!$this->option('no-interaction')) {
+        if (! $this->option('no-interaction')) {
             $this->call('twill:superadmin');
         }
     }
