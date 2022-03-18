@@ -2,29 +2,17 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use App\Http\Controllers\Twill\NodeController;
 use App\Models\Node;
 use App\Repositories\NodeRepository;
-use App\Http\Controllers\Twill\NodeController;
 
 class NestedModuleTest extends TestCase
 {
-    protected $allFiles = [
-       '{$stubs}/nested_module/2021_09_16_230238_create_nodes_tables.php' => '{$database}/migrations/',
-       '{$stubs}/nested_module/Node.php' => '{$app}/Models/',
-       '{$stubs}/nested_module/NodeController.php' => '{$app}/Http/Controllers/Twill/',
-       '{$stubs}/nested_module/NodeRepository.php' => '{$app}/Repositories/',
-       '{$stubs}/nested_module/NodeRequest.php' => '{$app}/Http/Requests/Twill/',
-       '{$stubs}/nested_module/form.blade.php' => '{$resources}/views/twill/books/form.blade.php',
-       '{$stubs}/nested_module/admin.php' => '{$base}/routes/twill.php',
-    ];
+    public $example = 'tests-nestedmodules';
 
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->copyFiles($this->allFiles);
-
-        $this->migrate();
 
         $this->login();
     }
