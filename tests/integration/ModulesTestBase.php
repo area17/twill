@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use A17\Twill\Models\Model;
 use Illuminate\Support\Str;
 use App\Models\Translations\AuthorTranslation;
 use App\Models\Translations\CategoryTranslation;
@@ -32,12 +33,12 @@ abstract class ModulesTestBase extends TestCase
         '{$stubs}/modules/authors/2019_10_18_193753_create_authors_tables.php' =>
             '{$database}/migrations/',
 
-        '{$stubs}/modules/authors/admin.php' => '{$base}/routes/admin.php',
+        '{$stubs}/modules/authors/admin.php' => '{$base}/routes/twill.php',
 
         '{$stubs}/modules/authors/Author.php' => '{$app}/Models/',
 
         '{$stubs}/modules/authors/AuthorController.php' =>
-            '{$app}/Http/Controllers/Admin/',
+            '{$app}/Http/Controllers/Twill/',
 
         '{$stubs}/modules/authors/AuthorTranslation.php' =>
             '{$app}/Models/Translations/',
@@ -51,10 +52,10 @@ abstract class ModulesTestBase extends TestCase
             '{$app}/Repositories/',
 
         '{$stubs}/modules/authors/AuthorRequest.php' =>
-            '{$app}/Http/Requests/Admin/',
+            '{$app}/Http/Requests/Twill/',
 
         '{$stubs}/modules/authors/form.blade.php' =>
-            '{$resources}/views/admin/authors/',
+            '{$resources}/views/twill/authors/',
 
         '{$stubs}/modules/authors/translatable.php' => '{$config}/',
 
@@ -74,7 +75,7 @@ abstract class ModulesTestBase extends TestCase
         '{$stubs}/modules/categories/Category.php' => '{$app}/Models/',
 
         '{$stubs}/modules/categories/CategoryController.php' =>
-            '{$app}/Http/Controllers/Admin/',
+            '{$app}/Http/Controllers/Twill/',
 
         '{$stubs}/modules/categories/CategoryTranslation.php' =>
             '{$app}/Models/Translations/',
@@ -89,10 +90,10 @@ abstract class ModulesTestBase extends TestCase
             '{$app}/Repositories/',
 
         '{$stubs}/modules/categories/CategoryRequest.php' =>
-            '{$app}/Http/Requests/Admin/',
+            '{$app}/Http/Requests/Twill/',
 
         '{$stubs}/modules/categories/form.blade.php' =>
-            '{$resources}/views/admin/categories/',
+            '{$resources}/views/twill/categories/',
     ];
 
     public function setUp(): void
@@ -143,7 +144,7 @@ abstract class ModulesTestBase extends TestCase
          *      $this->searchReplaceFile(
          *          "'editInModal' => false",
          *          "'editInModal' => true",
-         *          twill_path('Http/Controllers/Admin/AuthorController.php')
+         *          twill_path('Http/Controllers/Twill/AuthorController.php')
          *      );
          *
          */
@@ -202,7 +203,7 @@ abstract class ModulesTestBase extends TestCase
         $this->assertEquals($data['endpointType'], 'App\Models\Author');
     }
 
-    protected function createAuthor($count = 1)
+    protected function createAuthor($count = 1): Model
     {
         foreach (range(1, $count) as $c) {
             $this->httpRequestAssert(
@@ -221,6 +222,8 @@ abstract class ModulesTestBase extends TestCase
         $this->assertNotNull($this->translation);
 
         $this->assertCount(3, $this->author->slugs);
+
+        return $this->author;
     }
 
     protected function destroyAuthor()

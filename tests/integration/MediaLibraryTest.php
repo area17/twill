@@ -4,8 +4,9 @@ namespace A17\Twill\Tests\Integration;
 
 use A17\Twill\Models\Media;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 
-class MediaLibraryTest extends TestCase
+class MediaLibraryTest extends ModulesTestBase
 {
     public function setUp(): void
     {
@@ -139,5 +140,62 @@ class MediaLibraryTest extends TestCase
             ->toArray();
 
         $this->assertEquals($tags, $tagsArray);
+    }
+
+    public function testCanAttachAndDeleteMediaWithModel(): void
+    {
+        $media = $this->createMedia();
+        /** @var \A17\Twill\Models\Behaviors\HasMedias $author */
+        $author = $this->createAuthor();
+        $author->medias()->attach($media->id, ['metadatas' => '{}']);
+        $author->save();
+
+        // Refresh the media so that its reloaded from the db after the attach.
+        $media->refresh();
+
+        $this->assertCount(1, $author->medias);
+        $this->assertEquals(0, $media->unused()->count());
+        $this->assertFalse($media->refresh()->canDeleteSafely());
+
+        // Should not be able to delete media here.
+        $this->assertFalse($media->delete());
+
+        // Check we cannot remove it via the api.
+        $this->deleteJson(route('twill.media-library.medias.destroy', ['media' => $media]))->assertJson([
+            'message' => 'Media was not moved to trash. Something wrong happened!',
+            'variant' => 'error'
+        ]);
+
+        // Delete the author and make sure media is still used.
+        $author->delete();
+        $media->refresh();
+
+        $this->assertCount(1, $author->medias);
+        $this->assertEquals(0, $media->unused()->count());
+        $this->assertFalse($media->refresh()->canDeleteSafely());
+
+        // Should not be able to delete media here.
+        $this->assertFalse($media->delete());
+
+        // Check we continue to be unable to remove.
+        $this->deleteJson(route('twill.media-library.medias.destroy', ['media' => $media]))->assertJson([
+            'message' => 'Media was not moved to trash. Something wrong happened!',
+            'variant' => 'error'
+        ]);
+
+        // Force Delete the author and make sure media is still used.
+        $this->assertTrue($author->forceDelete());
+        $media->refresh();
+
+        $this->assertEquals(1, $media->unused()->count());
+        $this->assertTrue($media->refresh()->canDeleteSafely());
+
+        // Finally delete the media.
+        $this->deleteJson(route('twill.media-library.medias.destroy', ['media' => $media]))->assertJson([
+            'message' => 'Media moved to trash!',
+            'variant' => 'success'
+        ]);
+
+        $this->assertEquals(0, $media->count());
     }
 }

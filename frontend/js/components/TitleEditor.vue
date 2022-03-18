@@ -2,10 +2,26 @@
   <div class="titleEditor" :class="titleEditorClasses">
     <div class="titleEditor__preview">
       <h2 class="titleEditor__title" :class="{ 'titleEditor__title-only' : !permalink }">
-        <a v-if="editableTitle" @click.prevent="$refs.editModal.open()" href="#">
-          <span class="f--underlined--o">{{ title }}</span> <span v-svg symbol="edit"></span>
+        <a v-if="editableTitle" @click.prevent="$refs.editModal.open()" href="#" class="titleEditor__title-wrapper">
+          <a17-avatar
+            v-if="thumbnail"
+            :name="title"
+            :thumbnail="thumbnail"
+          />
+          <span class="titleEditor__title">
+            <span class="f--underlined--o">{{ title }}</span> <span v-svg symbol="edit"></span>
+          </span>
         </a>
-        <span v-else>{{ customTitle ? customTitle : title }}</span>
+        <span v-else class="titleEditor__title-wrapper">
+          <a17-avatar
+            v-if="thumbnail"
+            :name="title"
+            :thumbnail="thumbnail"
+          />
+          <span class="titleEditor__title">
+            {{ customTitle ? customTitle : title }}
+          </span>
+        </span>
       </h2>
       <a v-if="(permalink || customPermalink) && !showModal" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small">
         <span class="f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
@@ -14,7 +30,7 @@
 
       <!-- Editing modal -->
       <a17-modal class="modal--form" ref="editModal" :title="modalTitle" :forceLock="disabled">
-        <a17-langmanager></a17-langmanager>
+        <a17-langmanager :control-publication="controlLanguagesPublication"></a17-langmanager>
         <form action="#" @submit.prevent="update" ref="modalForm">
           <slot name="modal-form"></slot>
           <a17-modal-validation :mode="mode" @disable="lockModal"></a17-modal-validation>
@@ -28,6 +44,7 @@
 <script>
   import { mapState, mapGetters } from 'vuex'
   import a17VueFilters from '@/utils/filters.js'
+  import A17Avatar from '@/components/Avatar.vue'
   import langManager from '@/components/LangManager.vue'
   import a17ModalValidationButtons from '@/components/modals/ModalValidationButtons.vue'
 
@@ -38,6 +55,7 @@
     name: 'A17TitleEditor',
     mixins: [InputframeMixin, LocaleMixin],
     components: {
+      'a17-avatar': A17Avatar,
       'a17-modal-validation': a17ModalValidationButtons,
       'a17-langmanager': langManager
     },
@@ -52,6 +70,10 @@
         type: String,
         default: 'Missing title'
       },
+      thumbnail: {
+        type: String,
+        default: ''
+      },
       showModal: {
         type: Boolean,
         default: false
@@ -60,6 +82,10 @@
         default: 'title'
       },
       editableTitle: {
+        type: Boolean,
+        default: true
+      },
+      controlLanguagesPublication: {
         type: Boolean,
         default: true
       },
@@ -173,6 +199,16 @@
 
     .stickyNav.sticky__fixedTop & {
       line-height: 35px;
+    }
+  }
+
+  .titleEditor__title-wrapper {
+    display: inline-flex;
+    align-content: center;
+    align-items: center;
+
+    > .avatar {
+      margin-right: 10px;
     }
   }
 

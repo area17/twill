@@ -1,0 +1,9 @@
+<?php
+
+namespace {{namespace}};
+
+use A17\Twill\TwillPackageServiceProvider;
+
+class {{providerName}}ServiceProvider extends TwillPackageServiceProvider
+{
+}

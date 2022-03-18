@@ -92,7 +92,7 @@ class Install extends Command
     }
 
     /**
-     * Creates the default `admin.php` route configuration file.
+     * Creates the default `twill.php` route configuration file.
      *
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
@@ -105,9 +105,9 @@ class Install extends Command
             $this->files->makeDirectory($routesPath, 0755, true);
         }
 
-        if (!$this->files->exists($routesPath . '/admin.php')) {
+        if (!$this->files->exists($routesPath . '/twill.php')) {
             $stub = $this->files->get(__DIR__ . '/stubs/admin.stub');
-            $this->files->put($routesPath . '/admin.php', $stub);
+            $this->files->put($routesPath . '/twill.php', $stub);
         }
     }
 

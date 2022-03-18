@@ -8,7 +8,7 @@ Inside a block, repeaters can be used too.
 
 - Create a *container* block file, using a repeater form field:
 
-  filename: ```views/admin/blocks/accordion.blade.php```
+  filename: ```views/twill/blocks/accordion.blade.php```
 ```php
   @twillBlockTitle('Accordion')
   ...
@@ -16,12 +16,12 @@ Inside a block, repeaters can be used too.
 ```
 You can add other fields before or after your repeater, or even multiple repeaters to the same block.
 
-- Create an *item* block, the one that will be reapeated inside the *container* block
+- Create an *item* block, the one that will be repeated inside the *container* block
 
-filename: ```views/admin/repeaters/accordion_item.blade.php```
+filename: ```views/twill/repeaters/accordion_item.blade.php```
 ```php
   @twillRepeaterTitle('Accordion item')
-  @twillRepeaterMax('10')
+  @twillRepeaterMax('10') // Optional
 
   @formField('input', [
       'name' => 'header',

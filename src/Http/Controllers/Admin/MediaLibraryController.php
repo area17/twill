@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 
 class MediaLibraryController extends ModuleController implements SignUploadListener
 {
@@ -79,8 +78,8 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         $this->responseFactory = $responseFactory;
         $this->config = $config;
 
-        $this->removeMiddleware('can:edit');
-        $this->middleware('can:edit', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
+        $this->middleware('can:access-media-library', ['only' => ['index']]);
+        $this->middleware('can:edit-media-library', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = $this->config->get('twill.media_library.endpoint_type');
         $this->customFields = $this->config->get('twill.media_library.extra_metadatas_fields');
     }
@@ -175,11 +174,11 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
         $disk = $this->config->get('twill.media_library.disk');
 
-        $request->file('qqfile')->storeAs($fileDirectory, $filename, $disk);
+        $uploadedFile = $request->file('qqfile');
 
-        $filePath = Storage::disk($disk)->path($fileDirectory . '/' . $filename);
+        list($w, $h) = getimagesize($uploadedFile->path());
 
-        list($w, $h) = getimagesize($filePath);
+        $uploadedFile->storeAs($fileDirectory, $filename, $disk);
 
         $fields = [
             'uuid' => $uuid,
