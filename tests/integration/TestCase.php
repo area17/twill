@@ -92,6 +92,7 @@ abstract class TestCase extends OrchestraTestCase
         '{$app}/Twill',
         '{$routes}',
         '{$config}/twill-navigation.php',
+        '{$config}/twill.php',
     ];
 
     protected function deleteAllTwillPaths(): void
@@ -184,25 +185,6 @@ abstract class TestCase extends OrchestraTestCase
 
         if (file_exists($logFile) && is_null(env('TRAVIS_PHP_VERSION'))) {
             unlink($logFile);
-        }
-    }
-
-    protected function loadModulesConfig($file = null)
-    {
-        if (blank($file) || Str::contains($file, 'twill.php')) {
-            $config = require $this->makeFileName(
-                $file ?? '{$stubs}/modules/authors/twill.php'
-            );
-
-            config(['twill' => $config + config('twill')]);
-        }
-
-        if (blank($file) || Str::contains($file, 'translatable.php')) {
-            $config = require $this->makeFileName(
-                $file ?? '{$stubs}/modules/authors/translatable.php'
-            );
-
-            config(['translatable' => $config]);
         }
     }
 
