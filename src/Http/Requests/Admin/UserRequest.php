@@ -62,14 +62,22 @@ class UserRequest extends Request
                         },
                         'force-2fa-disable-challenge' => function ($attribute, $value, $fail) {
                             $user = User::findOrFail($this->route('user'));
-                            $isForceDisabling2FA = !$this->get('google_2fa_enabled') && $user->google_2fa_enabled;
+                            if ($this->get('google_2fa_enabled') || !$user->google_2fa_enabled) {
+                                return;
+                            }
 
-                            if ($isForceDisabling2FA) {
-                                $challenge = twillTrans('twill::lang.user-management.force-2fa-disable-challenge', ['user' => $user->email]);
+                            $loggedInAdmin = Auth::guard('twill_users')->user();
+                            if (!$loggedInAdmin->can('manage-users')) {
+                                return $fail('Unprivileged action');
+                            }
 
-                                if ($value !== $challenge) {
-                                    $fail('Challenge mismatch');
-                                }
+                            if (!$loggedInAdmin->google_2fa_enabled) {
+                                return $fail('You must have 2FA enabled to do this action');
+                            }
+
+                            $challenge = twillTrans('twill::lang.user-management.force-2fa-disable-challenge', ['user' => $user->email]);
+                            if ($value !== $challenge) {
+                                return $fail('Challenge mismatch');
                             }
                         },
                     ];
