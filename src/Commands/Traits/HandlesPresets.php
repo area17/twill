@@ -30,6 +30,7 @@ trait HandlesPresets
         $this->checkMeetsRequirementsForPreset($preset);
 
         // First publish the config as we overwrite it later.
+        // @phpstan-ignore-next-line
         $this->publishConfig();
 
         $examplesStorage = $this->getExamplesStorage($preset);
