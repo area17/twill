@@ -208,7 +208,7 @@ return [
         'ru',
         'tr',
         'bs',
-        'ar'
+        'ar',
     ],
 
     /*
@@ -217,6 +217,17 @@ return [
     |--------------------------------------------------------------------------
     */
     'auto_seed_singletons' => false,
+
+    /*
+    |--------------------------------------------------------------------------
+    | In some cases we throw debug exceptions to help you find issues with your
+    | configuration. But in some cases this might not be desired.
+    | Here you can turn off specific development only exceptions.
+    |--------------------------------------------------------------------------
+    */
+    'skip_exceptions' => [
+        'media_not_found' => false,
+    ],
 
     /*
     |--------------------------------------------------------------------------
