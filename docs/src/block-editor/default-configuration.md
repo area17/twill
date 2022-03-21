@@ -5,6 +5,8 @@ pageClass: twill-doc
 # Default Configuration
 
 ```php
+// config/twill.php
+
 return [
     /*
     |--------------------------------------------------------------------------
