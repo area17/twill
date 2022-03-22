@@ -20,7 +20,7 @@
   <a17-textfield v-else-if="fieldType === 'text'"
                  :label="label"
                  :name="fieldName"
-                 :type="fieldType"
+                 type="text"
                  :placeholder="placeholder"
                  :initialValue="initialValue"
                  in-store="value"
