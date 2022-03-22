@@ -66,6 +66,11 @@ const state = {
    */
   selected: window[process.env.VUE_APP_NAME].STORE.medias.selected || {},
   /**
+   * An object of configs
+   * @type {Object.<string,Object>}
+   */
+  config: window[process.env.VUE_APP_NAME].STORE.medias.config || { useWysiwyg: false, wysiwygOptions: {} },
+  /**
    * An array of current uploading medias. When upload is ended, array is reset
    * @type {Array}
    */

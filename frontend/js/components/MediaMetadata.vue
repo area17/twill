@@ -1,14 +1,26 @@
 <template>
   <a17-locale v-if="languages.length > 1 && fieldType === 'text'"
-              type="a17-textfield"
+              :type="wysiwyg ? 'a17-wysiwyg' : 'a17-textfield'"
               :initialValues="initialValues"
               :attributes="attributes"
               @change="saveMetadata">
   </a17-locale>
+  <div v-else-if="fieldType === 'text' && wysiwyg">
+    <a17-wysiwyg :options="wysiwygOptions"
+               :label="label"
+               :name="fieldName"
+               :type="fieldType"
+               :initialValue="initialValue"
+               in-store="value"
+               :maxlength="maxlength"
+               @change="saveMetadata"
+    ></a17-wysiwyg>
+    <p class="f--note f--small" v-html="placeholder" />
+  </div>
   <a17-textfield v-else-if="fieldType === 'text'"
                  :label="label"
                  :name="fieldName"
-                 type="text"
+                 :type="fieldType"
                  :placeholder="placeholder"
                  :initialValue="initialValue"
                  in-store="value"
@@ -46,6 +58,17 @@
       label: {
         type: String,
         required: true
+      },
+      wysiwyg: {
+        type: Boolean,
+        default: false
+      },
+      wysiwygOptions: {
+        type: Object,
+        required: false,
+        default: function () {
+          return {}
+        }
       },
       type: {
         type: String,
