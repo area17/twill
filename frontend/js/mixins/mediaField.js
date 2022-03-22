@@ -12,6 +12,10 @@ export default {
       type: Boolean,
       default: true
     },
+    captionTextarea: {
+      type: Boolean,
+      default: false
+    },
     altTextMaxLength: {
       type: Number,
       default: 0
