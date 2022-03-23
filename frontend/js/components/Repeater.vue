@@ -7,6 +7,7 @@
             ref="blockList"
             :block="block"
             :index="index"
+            :withHandle="draggable"
             :size="blockSize"
             :opened="opened"
           >
