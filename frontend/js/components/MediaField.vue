@@ -72,6 +72,8 @@
                              :key="field.name"
                              :type="field.type"
                              :name='metadataName'
+                             :wysiwyg='field.wysiwyg || false'
+                             :wysiwyg-options='field.wysiwygOptions || wysiwygOptions'
                              :label="field.label"
                              :id="field.name"
                              :media="media"
