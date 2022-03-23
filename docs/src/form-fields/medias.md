@@ -143,6 +143,6 @@ When defining your media field you can pass the extraMetadatas:
 ])
 ```
 
-The parameters `name`, `label` and `type` are mendatory, `wysiwyg` and `wysiwygOptions` are optional.
+The parameters `name`, `label` and `type` are mandatory, `wysiwyg` and `wysiwygOptions` are optional.
 
 If no `wysiwygOptions` are provided it will fall back to the ones defined in the [media config](/getting-started/configuration.html#media-library/)
