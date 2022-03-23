@@ -16,7 +16,6 @@
     'name' => 'image',
     'label' => 'Images',
     'max' => 20,
-    'withVideoUrl' => false,
     'extraMetadatas' => [
         [
             'name' => 'show_info',

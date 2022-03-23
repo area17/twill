@@ -9,6 +9,5 @@
 
 @formField('medias', [
     'name' => 'image',
-    'label' => 'Image',
-    'withVideoUrl' => false,
+    'label' => 'Image'
 ])
