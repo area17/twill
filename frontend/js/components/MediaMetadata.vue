@@ -113,6 +113,7 @@
           name: this.fieldName,
           type: 'text',
           placeholder: this.placeholder,
+          options: this.wysiwygOptions,
           inStore: 'value',
           maxlength: this.maxlength
         }
