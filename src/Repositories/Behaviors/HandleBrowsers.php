@@ -18,7 +18,7 @@ trait HandleBrowsers
      * [
      *     'books',
      *     'publications'
-     * ]
+     * ].
      *
      * When only the browser name is given, the rest of the parameters are inferred from the name.
      * The parameters can also be overridden with an array:
@@ -75,7 +75,7 @@ trait HandleBrowsers
     public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position', $browserName = null, $pivotAttributes = [])
     {
         $browserName = $browserName ?? $relationship;
-        $fieldsHasElements = isset($fields['browsers'][$browserName]) && !empty($fields['browsers'][$browserName]);
+        $fieldsHasElements = isset($fields['browsers'][$browserName]) && ! empty($fields['browsers'][$browserName]);
         $relatedElements = $fieldsHasElements ? $fields['browsers'][$browserName] : [];
 
         $relatedElementsWithPosition = [];
@@ -168,9 +168,9 @@ trait HandleBrowsers
 
         if ($fields->isNotEmpty()) {
             return $fields->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName, $isMorphTo) {
-                if ($isMorphTo && !$moduleName) {
+                if ($isMorphTo && ! $moduleName) {
                     // @todo: Maybe there is an existing helper for this?
-                    $moduleName = Str::plural(Arr::last(explode('\\', $relatedElement::class)));
+                    $moduleName = Str::plural(Arr::last(explode('\\', get_class($relatedElement))));
                 }
 
                 return [
@@ -219,15 +219,15 @@ trait HandleBrowsers
     {
         return collect($this->browsers)->map(function ($browser, $key) {
             $browserName = is_string($browser) ? $browser : $key;
-            $moduleName = !empty($browser['moduleName']) ? $browser['moduleName'] : $this->inferModuleNameFromBrowserName($browserName);
+            $moduleName = ! empty($browser['moduleName']) ? $browser['moduleName'] : $this->inferModuleNameFromBrowserName($browserName);
 
             return [
-                'relation' => !empty($browser['relation']) ? $browser['relation'] : $this->inferRelationFromBrowserName($browserName),
+                'relation' => ! empty($browser['relation']) ? $browser['relation'] : $this->inferRelationFromBrowserName($browserName),
                 'routePrefix' => isset($browser['routePrefix']) ? $browser['routePrefix'] : null,
-                'titleKey' => !empty($browser['titleKey']) ? $browser['titleKey'] : 'title',
+                'titleKey' => ! empty($browser['titleKey']) ? $browser['titleKey'] : 'title',
                 'moduleName' => $moduleName,
-                'model' => !empty($browser['model']) ? $browser['model'] : $this->inferModelFromModuleName($moduleName),
-                'positionAttribute' => !empty($browser['positionAttribute']) ? $browser['positionAttribute'] : 'position',
+                'model' => ! empty($browser['model']) ? $browser['model'] : $this->inferModelFromModuleName($moduleName),
+                'positionAttribute' => ! empty($browser['positionAttribute']) ? $browser['positionAttribute'] : 'position',
                 'browserName' => $browserName,
             ];
         })->values();
