@@ -62,7 +62,6 @@ class RouteServiceProvider extends ServiceProvider
         $supportSubdomainRouting,
         $namespace = null
     ) {
-        ray(func_get_args());
         \A17\Twill\Facades\TwillRoutes::registerRoutes(
             $router,
             $groupOptions,
