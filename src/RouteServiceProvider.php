@@ -62,6 +62,7 @@ class RouteServiceProvider extends ServiceProvider
         $supportSubdomainRouting,
         $namespace = null
     ) {
+        ray(func_get_args());
         \A17\Twill\Facades\TwillRoutes::registerRoutes(
             $router,
             $groupOptions,
@@ -117,7 +118,7 @@ class RouteServiceProvider extends ServiceProvider
             function ($router) use ($internalRoutes, $supportSubdomainRouting) {
                 $router->group(
                     [
-                        'domain' => config('twill.admin_app_url'),
+                        'domain' => Str::beforeLast(config('twill.admin_app_url'), ':'),
                     ],
                     $internalRoutes
                 );
