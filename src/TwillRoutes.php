@@ -4,7 +4,9 @@ namespace A17\Twill;
 
 use A17\Twill\Facades\TwillRoutes as FacadesTwillRoutes;
 use A17\Twill\Helpers\Capsule;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class TwillRoutes
 {
@@ -19,7 +21,7 @@ class TwillRoutes
     ): void {
         $callback = function () use ($router, $groupOptions, $middlewares, $supportSubdomainRouting, $namespace, $routesFile) {
             if (file_exists($routesFile)) {
-                $hostRoutes = function ($router) use (
+                $hostRoutes = function (Router $router) use (
                     $middlewares,
                     $namespace,
                     $routesFile
@@ -37,7 +39,7 @@ class TwillRoutes
 
                 $router->group(
                     $groupOptions + [
-                        'domain' => config('twill.admin_app_url'),
+                        'domain' => Str::beforeLast(config('twill.admin_app_url'), ':'),
                     ],
                     $hostRoutes
                 );
