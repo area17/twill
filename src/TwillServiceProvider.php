@@ -126,19 +126,19 @@ class TwillServiceProvider extends ServiceProvider
         config(['twill.version' => $this->version()]);
 
         // Laravel 5.8 compatability.
-        if (!method_exists(Str::class, 'afterLast')) {
-            Str::macro('afterLast', function ($subject, $search) {
+        if (!method_exists(Str::class, 'beforeLast')) {
+            Str::macro('beforeLast', function ($subject, $search) {
                 if ($search === '') {
                     return $subject;
                 }
 
-                $position = strrpos($subject, (string)$search);
+                $pos = mb_strrpos($subject, $search);
 
-                if ($position === false) {
+                if ($pos === false) {
                     return $subject;
                 }
 
-                return substr($subject, $position + strlen($search));
+                return static::substr($subject, 0, $pos);
             });
         }
     }
