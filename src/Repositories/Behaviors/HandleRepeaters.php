@@ -4,7 +4,9 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillUtil;
+use A17\Twill\Models\Model;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -167,15 +169,17 @@ trait HandleRepeaters
     /**
      * Given relation, model and repeaterName, retrieve the repeater data from request and update the database record.
      *
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relation
      * @param \A17\Twill\Models\Model|\A17\Twill\Repositories\ModuleRepository|null $modelOrRepository
-     * @param string|null $repeaterName
-     * @return void
      */
-    public function updateRepeater($object, $fields, $relation, $modelOrRepository = null, $repeaterName = null)
-    {
+    public function updateRepeater(
+        Model $object,
+        array $fields,
+        string $relation,
+        $modelOrRepository = null,
+        ?string $repeaterName = null,
+        bool $withPivot = false,
+        array $pivotFields = []
+    ): void {
         if (! $repeaterName) {
             $repeaterName = $relation;
         }
@@ -184,13 +188,19 @@ trait HandleRepeaters
 
         $relationRepository = $this->getModelRepository($relation, $modelOrRepository);
 
-        // if no relation field submitted, soft deletes all associated rows
-        if (! $relationFields) {
-            $relationRepository->updateBasic(null, [
-                'deleted_at' => Carbon::now(),
-            ], [
-                $this->model->getForeignKey() => $object->id,
-            ]);
+        // If no relation field submitted, soft deletes all associated rows.
+        // We only do this when the model is already existing.
+        if (! $relationFields && !$object->wasRecentlyCreated) {
+            if ($withPivot) {
+                $object->{$relation}()->detach();
+            }
+            else {
+                $relationRepository->updateBasic(null, [
+                    'deleted_at' => Carbon::now(),
+                ], [
+                    $this->model->getForeignKey() => $object->id,
+                ]);
+            }
         }
 
         // keep a list of updated and new rows to delete (soft delete?) old rows that were deleted from the frontend
@@ -208,7 +218,7 @@ trait HandleRepeaters
 
             // Set the active data based on the parent.
             if (! isset($relationField['languages']) && isset($relationField['active'])) {
-                foreach ($relationField['active'] as $langCode => $active) {
+                foreach (array_keys($relationField['active']) as $langCode) {
                     // Add the languages field.
                     $relationField['languages'][] = [
                         'value' => $langCode,
@@ -217,11 +227,18 @@ trait HandleRepeaters
                 }
             }
 
-            // Finally store the data.
             if (isset($relationField['id']) && Str::startsWith($relationField['id'], $relation)) {
                 // row already exists, let's update
                 $id = str_replace($relation . '-', '', $relationField['id']);
                 $relationRepository->update($id, $relationField);
+
+                if ($withPivot) {
+                    $pivotFieldData = $this->encodePivotFields(collect($relationField)->only($pivotFields)->all());
+                    if (!empty($pivotFieldData)) {
+                        $object->{$relation}()->updateExistingPivot($id, $pivotFieldData);
+                    }
+                }
+
                 $currentIdList[] = $id;
             } else {
                 // new row, let's attach to our object and create
@@ -231,19 +248,43 @@ trait HandleRepeaters
                 $newRelation = $relationRepository->create($relationField);
                 $currentIdList[] = $newRelation['id'];
 
+                if ($withPivot) {
+                    $pivotFields = $this->encodePivotFields(collect($relationField)->only($pivotFields)->all());
+                    $object->{$relation}()->attach($newRelation['id'], $pivotFields);
+                }
+
                 TwillUtil::registerRepeaterId($frontEndId, $newRelation->id);
             }
         }
 
-        foreach ($object->$relation->pluck('id') as $id) {
+        foreach ($object->{$relation}()->pluck('id') as $id) {
             if (! in_array($id, $currentIdList)) {
-                $relationRepository->updateBasic(null, [
-                    'deleted_at' => Carbon::now(),
-                ], [
-                    'id' => $id,
-                ]);
+                // The pivot table is treated differently.
+                if ($withPivot) {
+                    $object->{$relation}()->detach($id);
+                } else {
+                    $relationRepository->updateBasic(null, [
+                        'deleted_at' => Carbon::now(),
+                    ], [
+                        'id' => $id,
+                    ]);
+                }
             }
         }
+    }
+
+    /**
+     * This makes sure that arrays are json encode (translations).
+     */
+    private function encodePivotFields(array $fields): array
+    {
+        foreach ($fields as $key => $pivotField) {
+            if (is_array($pivotField)) {
+                $fields[$key] = json_encode($pivotField);
+            }
+        }
+
+        return $fields;
     }
 
     /**
@@ -261,7 +302,9 @@ trait HandleRepeaters
         $fields,
         $relation,
         $modelOrRepository = null,
-        $repeaterName = null
+        $repeaterName = null,
+        bool $withPivot = false,
+        array $pivotFields = []
     ) {
         if (! $repeaterName) {
             $repeaterName = $relation;
@@ -276,7 +319,13 @@ trait HandleRepeaters
 
         $repeaterType = TwillBlocks::findRepeaterByName($repeaterName);
 
-        foreach ($object->$relation as $relationItem) {
+        if ($withPivot) {
+            $objects = $object->$relation()->withPivot($pivotFields)->get();
+        } else {
+            $objects = $object->$relation;
+        }
+
+        foreach ($objects as $relationItem) {
             $repeaters[] = [
                 'id' => $relation . '-' . $relationItem->id,
                 'type' => $repeaterType->component,
@@ -342,6 +391,10 @@ trait HandleRepeaters
             $itemFields = method_exists($relationItem, 'toRepeaterArray') ? $relationItem->toRepeaterArray(
             ) : Arr::except($relationItem->attributesToArray(), $translatedFields);
 
+            foreach ($pivotFields as $pivotField) {
+                $itemFields[$pivotField] = $this->decodePivotField($relationItem->pivot->{$pivotField} ?? null);
+            }
+
             foreach ($itemFields as $key => $value) {
                 $repeatersFields[] = [
                     'name' => "blocks[$relation-$relationItem->id][$key]",
@@ -387,6 +440,19 @@ trait HandleRepeaters
         $fields['repeaterBrowsers'][$repeaterName] = $repeatersBrowsers;
 
         return $fields;
+    }
+
+    private function decodePivotField(?string $data) {
+        if (!$data) {
+            return null;
+        }
+
+        try {
+            return json_decode($data, true, 512, JSON_THROW_ON_ERROR);
+        }
+        catch (Exception) {
+            return $data;
+        }
     }
 
     /**
