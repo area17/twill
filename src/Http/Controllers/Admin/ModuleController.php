@@ -1141,9 +1141,10 @@ abstract class ModuleController extends Controller
     {
         $tableColumns = [];
         $visibleColumns = $this->request->get('columns') ?? false;
+        $indexColumnCopy = $this->indexColumns;
 
-        if (isset(Arr::first($this->indexColumns)['thumb'])
-            && Arr::first($this->indexColumns)['thumb']
+        if (isset(Arr::first($indexColumnCopy)['thumb'])
+            && Arr::first($indexColumnCopy)['thumb']
         ) {
             $tableColumns[] = [
                 'name' => 'thumbnail',
@@ -1152,7 +1153,7 @@ abstract class ModuleController extends Controller
                 'optional' => true,
                 'sortable' => false,
             ];
-            array_shift($this->indexColumns);
+            array_shift($indexColumnCopy);
         }
 
         if ($this->getIndexOption('feature')) {
@@ -1177,15 +1178,15 @@ abstract class ModuleController extends Controller
 
         $tableColumns[] = [
             'name' => 'name',
-            'label' => $this->indexColumns[$this->titleColumnKey]['title'] ?? twillTrans('twill::lang.listing.columns.name'),
+            'label' => $indexColumnCopy[$this->titleColumnKey]['title'] ?? twillTrans('twill::lang.listing.columns.name'),
             'visible' => true,
             'optional' => false,
-            'sortable' => $this->getIndexOption('reorder') ? false : ($this->indexColumns[$this->titleColumnKey]['sort'] ?? false),
+            'sortable' => $this->getIndexOption('reorder') ? false : ($indexColumnCopy[$this->titleColumnKey]['sort'] ?? false),
         ];
 
-        unset($this->indexColumns[$this->titleColumnKey]);
+        unset($indexColumnCopy[$this->titleColumnKey]);
 
-        foreach ($this->indexColumns as $column) {
+        foreach ($indexColumnCopy as $column) {
             if (isset($column['relationship'])) {
                 $columnName = $column['relationship'] . ucfirst($column['field']);
             } elseif (isset($column['nested'])) {
