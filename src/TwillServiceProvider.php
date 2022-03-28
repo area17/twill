@@ -88,23 +88,6 @@ class TwillServiceProvider extends ServiceProvider
         $this->addViewComposers();
 
         $this->check2FA();
-
-        // Laravel 5.8 compatability.
-        if (!method_exists(Str::class, 'afterLast')) {
-            Str::macro('afterLast', function ($subject, $search) {
-                if ($search === '') {
-                    return $subject;
-                }
-
-                $position = strrpos($subject, (string)$search);
-
-                if ($position === false) {
-                    return $subject;
-                }
-
-                return substr($subject, $position + strlen($search));
-            });
-        }
     }
 
     /**
@@ -141,6 +124,23 @@ class TwillServiceProvider extends ServiceProvider
         ]);
 
         config(['twill.version' => $this->version()]);
+
+        // Laravel 5.8 compatability.
+        if (!method_exists(Str::class, 'afterLast')) {
+            Str::macro('afterLast', function ($subject, $search) {
+                if ($search === '') {
+                    return $subject;
+                }
+
+                $position = strrpos($subject, (string)$search);
+
+                if ($position === false) {
+                    return $subject;
+                }
+
+                return substr($subject, $position + strlen($search));
+            });
+        }
     }
 
     private function registerFacades(): void
