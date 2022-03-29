@@ -270,7 +270,8 @@ class Capsule
 
     public function getViewPrefix(): string
     {
-        return "{$this->getModule()}.resources.views.admin";
+        $name = Str::studly($this->name);
+        return "{$name}.resources.views.admin";
     }
 
     public function getRoutesFile(): string
