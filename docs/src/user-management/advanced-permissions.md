@@ -18,7 +18,7 @@ To enable permission management we have to add `permissions-management` to the `
 
 return [
   'enabled' => [
-    'permissions-management'
+    'permissions-management' => true
   ]
 ];
 ```
