@@ -255,7 +255,7 @@ trait HandleRepeaters
                 $pivotFields = $this->encodePivotFields(collect($relationField)->only($pivotFields)->all());
                 $object->{$relation}()->attach($newRelation['id'], $pivotFields);
 
-                $latestAttached = $object->{$relation}()->latest()->first();
+                $latestAttached = $object->{$relation}()->withPivot('id')->orderByPivot('id')->first();
 
                 TwillUtil::registerRepeaterId($frontEndId, $latestAttached->pivot->id);
             }
@@ -394,7 +394,8 @@ trait HandleRepeaters
 
         $repeaterType = TwillBlocks::findRepeaterByName($repeaterName);
 
-        $objects = $object->$relation()->withPivot($pivotFields + ['id'])->get();
+        $pivotFields[] = 'id';
+        $objects = $object->$relation()->withPivot($pivotFields)->get();
 
         foreach ($objects as $relationItem) {
             $pivotRowId = $relationItem->pivot->id;
@@ -467,6 +468,9 @@ trait HandleRepeaters
             ) : Arr::except($relationItem->attributesToArray(), $translatedFields);
 
             foreach ($pivotFields as $pivotField) {
+                if ($pivotField === 'id') {
+                    continue;
+                }
                 $itemFields[$pivotField] = $this->decodePivotField($relationItem->pivot->{$pivotField} ?? null);
             }
 
