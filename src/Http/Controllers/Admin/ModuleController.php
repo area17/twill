@@ -8,6 +8,7 @@ use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Helpers\FlashLevel;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Group;
+use A17\Twill\Models\Model;
 use A17\Twill\Services\Blocks\Block;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
@@ -1454,9 +1455,11 @@ abstract class ModuleController extends Controller
             $prependScope['exceptIds'] = $this->request->get('except');
         }
 
+        $forRepeater = $this->request->get('forRepeater', false) === 'true';
+
         $scopes = $this->filterScope($prependScope);
         $items = $this->getBrowserItems($scopes);
-        $data = $this->getBrowserTableData($items);
+        $data = $this->getBrowserTableData($items, $forRepeater);
 
         return array_replace_recursive(['data' => $data], $this->indexData($this->request));
     }
@@ -1465,11 +1468,11 @@ abstract class ModuleController extends Controller
      * @param \Illuminate\Database\Eloquent\Collection $items
      * @return array
      */
-    protected function getBrowserTableData($items)
+    protected function getBrowserTableData($items, bool $forRepeater = false)
     {
         $withImage = $this->moduleHas('medias');
 
-        return $items->map(function ($item) use ($withImage) {
+        return $items->map(function (Model $item) use ($withImage, $forRepeater) {
             $columnsData = Collection::make($this->browserColumns)->mapWithKeys(function ($column) use ($item) {
                 return $this->getItemColumnData($item, $column);
             })->toArray();
@@ -1477,11 +1480,25 @@ abstract class ModuleController extends Controller
             $name = $columnsData[$this->titleColumnKey];
             unset($columnsData[$this->titleColumnKey]);
 
+            $repeaterFields = [];
+            if ($forRepeater) {
+                $translatedAttributes = $item->getTranslatedAttributes();
+                foreach ($item->getFillable() as $field) {
+                    if (in_array($field, $translatedAttributes, true)) {
+                        $repeaterFields[$field] = $item->translatedAttribute($field);
+                    }
+                    else {
+                        $repeaterFields[$field] = $item->{$field};
+                    }
+                }
+            }
+
             return [
                 'id' => $this->getItemIdentifier($item),
                 'name' => $name,
                 'edit' => moduleRoute($this->moduleName, $this->routePrefix, 'edit', $this->getItemIdentifier($item)),
                 'endpointType' => $this->repository->getMorphClass(),
+                'repeaterFields' => $repeaterFields,
             ] + $columnsData + ($withImage && ! array_key_exists('thumbnail', $columnsData) ? [
                 'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
             ] : []);
