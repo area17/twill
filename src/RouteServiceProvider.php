@@ -117,7 +117,7 @@ class RouteServiceProvider extends ServiceProvider
             function ($router) use ($internalRoutes, $supportSubdomainRouting) {
                 $router->group(
                     [
-                        'domain' => Str::beforeLast(config('twill.admin_app_url'), ':'),
+                        'domain' => config('twill.admin_app_url'),
                     ],
                     $internalRoutes
                 );
