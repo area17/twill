@@ -25,7 +25,23 @@ In this file, you can use `@formField('input')` Blade directives to add new sett
     ])
 @stop
 ```
+In order to add a media formField, you need to add crop parameters to 'config/twill.php ', as follows:
 
+```php
+'settings'=>[
+        'crops'=>[
+            'main_slider' => [
+                'default' => [
+                    [
+                        'name' => 'Default',
+                        'ratio' => 319 / 520,
+                    ]
+                ]
+            ],
+        ],
+    ]
+```
+    
 If your `translatable.locales` configuration array contains multiple language codes, you can enable the `translated` option on your settings input form fields to make them translatable.
 
 At this point, you want to add an entry in your `config/twill-navigation.php` configuration file to show the settings section link:
