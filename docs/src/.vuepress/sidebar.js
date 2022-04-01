@@ -203,6 +203,10 @@ module.exports = [
         "collapsable": true
       },
       {
+        "title": "Relations",
+        "path": "/relations/"
+      },
+      {
         "title": "Block Editor",
         "path": "/block-editor/",
         "children": [
