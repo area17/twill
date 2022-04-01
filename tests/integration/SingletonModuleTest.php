@@ -6,27 +6,11 @@ use App\Repositories\ContactPageRepository;
 
 class SingletonModuleTest extends TestCase
 {
-    protected $allFiles = [
-        '{$stubs}/singleton/2021_09_30_202102_create_contact_pages_tables.php' => '{$database}/migrations/',
-        '{$stubs}/singleton/ContactPage.php' => '{$app}/Models/',
-        '{$stubs}/singleton/ContactPageController.php' => '{$app}/Http/Controllers/Twill/',
-        '{$stubs}/singleton/ContactPageRepository.php' => '{$app}/Repositories/',
-        '{$stubs}/singleton/ContactPageRequest.php' => '{$app}/Http/Requests/Twill/',
-        '{$stubs}/singleton/ContactPageRevision.php' => '{$app}/Models/Revisions/',
-        '{$stubs}/singleton/ContactPageSlug.php' => '{$app}/Models/Slugs/',
-        '{$stubs}/singleton/ContactPageTranslation.php' => '{$app}/Models/Translations/',
-        '{$stubs}/singleton/form.blade.php' => '{$resources}/views/twill/contactPages/form.blade.php',
-        '{$stubs}/singleton/twill-navigation.php' => '{$config}/',
-        '{$stubs}/singleton/admin.php' => '{$base}/routes/twill.php',
-    ];
+    public $example = 'tests-singleton';
 
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->copyFiles($this->allFiles);
-
-        $this->migrate();
 
         $this->login();
     }
@@ -77,7 +61,7 @@ class SingletonModuleTest extends TestCase
     {
         $this->httpRequestAssert('/twill/contactPage', 'GET', [], 500);
 
-        $this->assertSee("ContactPage is not seeded");
+        $this->assertSee('ContactPage is not seeded');
     }
 
     public function testSingletonModuleHasNoIndex()

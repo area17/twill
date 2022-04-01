@@ -31,9 +31,9 @@ class PasswordsTest extends TestCase
         ], 404);
 
         Notification::assertSentTo(
-            $user = User::where(
+            User::where(
                 'email',
-                $email = $this->superAdmin()->email
+                $this->superAdmin()->email
             )->first(),
             Reset::class
         );
