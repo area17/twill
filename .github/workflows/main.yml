@@ -85,6 +85,9 @@ jobs:
       - name: Execute tests
         run: vendor/bin/phpunit
 
+      - uses: codecov/codecov-action@v2
+        files: .github/clover.xml
+
       - uses: actions/github-script@v6
         env:
           MATRIX: '${{matrix.php}}-${{matrix.laravel}}-${{matrix.dbal}}'
