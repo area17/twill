@@ -342,6 +342,7 @@ trait HandleBlocks
                 if (isset($block->parent_id)) {
                     $fields['blocksRepeaters']["blocks-{$block->parent_id}_{$block->child_key}"][] = $blockItem + [
                             'trigger' => $blockTypeConfig->trigger,
+                            'selectTrigger' => $blockTypeConfig->selectTrigger,
                             'max' => $blockTypeConfig->max,
                         ];
                 } else {

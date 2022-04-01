@@ -90,7 +90,7 @@ const mutations = {
         state.repeaters[blockName].push(block)
       }
       else {
-        newBlocks.push(block)
+        newBlocks[blockName].push(block)
       }
     })
 

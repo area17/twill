@@ -46,8 +46,7 @@
           :variant="triggerVariant"
           @click="openBrowser()"
       >
-        <!-- @todo: make dynamic -->
-        Select existing
+        {{ blockType.selectTrigger }}
       </a17-button>
       <div class="content__note f--note f--small">
         <slot></slot>
@@ -176,7 +175,6 @@
       },
       addRepeatersFromSelection(selected) {
         this.$store.commit(FORM.ADD_REPEATER_FROM_SELECTION, { type: this.type, name: this.name, selection: selected, relation: this.relation })
-        console.log(selected)
       },
       duplicateBlock: function (index) {
         this.opened = true

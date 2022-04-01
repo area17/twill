@@ -255,7 +255,7 @@ trait HandleRepeaters
                 $pivotFields = $this->encodePivotFields(collect($relationField)->only($pivotFields)->all());
                 $object->{$relation}()->attach($newRelation['id'], $pivotFields);
 
-                $latestAttached = $object->{$relation}()->withPivot('id')->orderByPivot('id')->first();
+                $latestAttached = $object->{$relation}()->withPivot('id')->orderByPivot('id', 'desc')->get()->last();
 
                 TwillUtil::registerRepeaterId($frontEndId, $latestAttached->pivot->id);
             }

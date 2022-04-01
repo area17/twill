@@ -92,6 +92,7 @@ return [
             'open-in-editor' => 'Open in editor',
             'preview' => 'Preview',
             'add-item' => 'Add item',
+            'select-existing' => 'Select existing',
             'clone-block' => 'Clone block',
         ],
         'browser' => [
