@@ -2,6 +2,26 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.8.0-beta.3 (2022-04-01)
+
+### Added
+
+- Allows media fields to use wysiwyg [`#1540`](https://github.com/area17/twill/pull/1540)
+
+### Fixed
+
+- Reverted change that throws exception when crops are missing [`#1535`](https://github.com/area17/twill/pull/1535)
+- Fixed issue that would cause undefined index when using octane [`#1549`](https://github.com/area17/twill/pull/1549)
+- Fixed bug in singleton generator when using plural name [`#1551`](https://github.com/area17/twill/pull/1551)
+- Fixed regression for resources in capsules and packages [`#1552`](https://github.com/area17/twill/pull/1552)
+- Fixed Glide url without scheme [`#1545`](https://github.com/area17/twill/pull/1545)
+
+### Docs
+
+- Improved custom page documentation [`#1548`](https://github.com/area17/twill/pull/1548)
+- Improved config documentation [`#1537`](https://github.com/area17/twill/pull/1537)
+- Added documentation on how to use custom icons [`#1538`](https://github.com/area17/twill/pull/1538)
+
 ## 2.8.0-beta.2 (2022-03-15)
 
 ### Added
