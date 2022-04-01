@@ -86,7 +86,8 @@ jobs:
         run: vendor/bin/phpunit
 
       - uses: codecov/codecov-action@v2
-        files: .github/clover.xml
+        with:
+          files: .github/clover.xml
 
       - uses: actions/github-script@v6
         env:
