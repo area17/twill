@@ -7,7 +7,7 @@ use A17\Twill\Models\Block as A17Block;
 use A17\Twill\Models\Model;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\RenderData;
-use Illuminate\Database\Eloquent\Collection;
+use Exception;
 use Illuminate\Support\Str;
 
 /**
@@ -73,7 +73,8 @@ class BlockRenderer
         string $parentEditorName = null
     ): Block {
         $type = Str::replace('a17-block-', '', $data['type']);
-        $class = Block::getForType($type, $data['is_repeater']);
+        // It is important to always clone this as it would otherwise overwrite the renderData inside.
+        $class = clone Block::getForType($type, $data['is_repeater']);
 
         $children = [];
 
@@ -107,7 +108,7 @@ class BlockRenderer
         string $editorName,
     ): self {
         if (! isset(class_uses_recursive($model)[HasBlocks::class])) {
-            throw new \Exception('Model ' . $model::class . ' does not implement HasBlocks');
+            throw new Exception('Model ' . $model::class . ' does not implement HasBlocks');
         }
 
         $renderer = new self();
@@ -115,7 +116,7 @@ class BlockRenderer
         // Get the blocks.
         // @todo: This is a bit more strict than the old implementation. I guess that is fine
         // as we do this in 3.x.
-        /** @var A17\Twill\Models\Block[] $blocks */
+        /** @var \A17\Twill\Models\Block[] $blocks */
         $blocks = $model->blocks()->whereEditorName($editorName)->whereParentId(null)->get();
 
         foreach ($blocks as $block) {
@@ -134,7 +135,7 @@ class BlockRenderer
         // We do not know if the block is a repeater or block so we use the first match.
         $class = Block::findFirstWithType($block->type);
 
-        /** @var A17\Twill\Models\Block[] $childBlocks */
+        /** @var \A17\Twill\Models\Block[] $childBlocks */
         $childBlocks = A17Block::whereParentId($block->id)->get();
 
         $children = [];
@@ -149,9 +150,9 @@ class BlockRenderer
 
         $class->setRenderData(new RenderData(
             block: $block,
-            model: $rootModel,
             editorName: $editorName,
             children: $children,
+            model: $rootModel,
             parentEditorName: $block->child_key
         ));
 

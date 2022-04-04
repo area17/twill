@@ -591,11 +591,9 @@ class Block
         $data['block'] = $this->renderData->block;
         $data['renderData'] = $this->renderData;
 
-        $exists = View::exists($view);
-
         try {
             return view($view, $data)->render();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             if (config('twill.debug')) {
                 $error = $e->getMessage() . ' in ' . $e->getFile();
 

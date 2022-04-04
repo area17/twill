@@ -72,7 +72,7 @@ trait HandleBlocks
 
             $fakeBlockId++;
             $newChildBlock->id = $fakeBlockId;
-            if (! empty($childBlock['blocks'])) {
+            if (!empty($childBlock['blocks'])) {
                 $childBlockHydrated = $this->hydrateHandleBlocks(
                     $newChildBlock,
                     $childBlock,
@@ -147,7 +147,7 @@ trait HandleBlocks
     ): void {
         // Find an existing block id based on the frontend id.
         if (
-            ! in_array($blockData['id'] ?? null, $existingBlockIds, false) &&
+            !in_array($blockData['id'] ?? null, $existingBlockIds, false) &&
             $id = TwillUtil::hasBlockIdFor($blockData['id'])
         ) {
             $originalBlockId = $blockData['id'];
@@ -339,7 +339,7 @@ trait HandleBlocks
                     'attributes' => [],
                 ];
 
-                if (isset($block->parent_id) && $blockTypeConfig['type'] !== 'block') {
+                if (isset($block->parent_id) && $blockTypeConfig->type !== 'block') {
                     $fields['blocksRepeaters']["blocks-{$block->parent_id}_{$block->child_key}"][] = $blockItem + [
                             'trigger' => $blockTypeConfig->trigger,
                             'max' => $blockTypeConfig->max,
@@ -347,12 +347,11 @@ trait HandleBlocks
                 } else {
                     if (isset($block->parent_id)) {
                         $fields['blocks']["blocks-{$block->parent_id}_{$block->child_key}"][] = $blockItem + [
-                                'icon' => $blockTypeConfig['icon'],
+                                'icon' => $blockTypeConfig->icon,
                             ];
-                    }
-                    else {
+                    } else {
                         $fields['blocks'][$blockItem['name']][] = $blockItem + [
-                                'icon' => $blockTypeConfig['icon'],
+                                'icon' => $blockTypeConfig->icon,
                             ];
                     }
                 }
@@ -444,7 +443,7 @@ trait HandleBlocks
                     ->isNotEmpty()) {
                 $items = $this->getFormFieldsForRelatedBrowser($block, $relation);
                 foreach ($items as &$item) {
-                    if (! isset($item['edit'])) {
+                    if (!isset($item['edit'])) {
                         try {
                             $item['edit'] = moduleRoute(
                                 $relation,
