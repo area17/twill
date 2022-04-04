@@ -6,10 +6,6 @@ on:
       - 3.x
   pull_request:
 
-permissions:
-  pull-requests: write
-  issues: write
-
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -88,20 +84,3 @@ jobs:
       - uses: codecov/codecov-action@v2
         with:
           files: .github/clover.xml
-
-      - uses: actions/github-script@v6
-        env:
-          MATRIX: '${{matrix.php}}-${{matrix.laravel}}-${{matrix.dbal}}'
-        with:
-          script: |
-            if (process.env.MATRIX === '8.1-9.*-^3.0') {
-              const { execSync } = require('child_process');
-              let coverage = execSync('./.github/generate-comment.php').toString();
-
-              github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: coverage
-              });
-            }
