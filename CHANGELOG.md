@@ -2,6 +2,20 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.8.0-beta.2 (2022-03-15)
+
+### Added
+
+- Twill composer packages [`#1446`](https://github.com/area17/twill/pull/1446)
+- Url field type [`#1514`](https://github.com/area17/twill/pull/1514)
+- Browsers are now supported by connected fields [`#1399`](https://github.com/area17/twill/pull/1399)
+
+### Fixed
+
+- Fixed regression with repeaters in updated block system [`#1518`](https://github.com/area17/twill/pull/1518)
+- Fixes visual issue when using limitHeight on a wysiwyg field [`#1509`](https://github.com/area17/twill/pull/1509)
+- When refreshing crops, block crops are now included [`#1517`](https://github.com/area17/twill/pull/1517)
+
 ## 2.8.0-beta.1 (2022-03-03)
 
 ### Added

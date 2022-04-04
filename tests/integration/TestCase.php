@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use A17\Twill\AuthServiceProvider;
 use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
@@ -35,6 +34,11 @@ abstract class TestCase extends OrchestraTestCase
      * @var \Faker\Generator
      */
     public $faker;
+
+    /**
+     * @var string|null
+     */
+    public $example;
 
     /**
      * @var \A17\Twill\Tests\Integration\UserClass
@@ -88,6 +92,7 @@ abstract class TestCase extends OrchestraTestCase
         '{$app}/Twill',
         '{$routes}',
         '{$config}/twill-navigation.php',
+        '{$config}/twill.php',
     ];
 
     protected function deleteAllTwillPaths(): void
@@ -180,25 +185,6 @@ abstract class TestCase extends OrchestraTestCase
 
         if (file_exists($logFile) && is_null(env('TRAVIS_PHP_VERSION'))) {
             unlink($logFile);
-        }
-    }
-
-    protected function loadModulesConfig($file = null)
-    {
-        if (blank($file) || Str::contains($file, 'twill.php')) {
-            $config = require $this->makeFileName(
-                $file ?? '{$stubs}/modules/authors/twill.php'
-            );
-
-            config(['twill' => $config + config('twill')]);
-        }
-
-        if (blank($file) || Str::contains($file, 'translatable.php')) {
-            $config = require $this->makeFileName(
-                $file ?? '{$stubs}/modules/authors/translatable.php'
-            );
-
-            config(['translatable' => $config]);
         }
     }
 
@@ -336,17 +322,8 @@ abstract class TestCase extends OrchestraTestCase
     {
         $connection = $app['config']['database.default'];
 
-        if (
-            $driver =
-            $app['config'][
-                'database.connections.' . $connection . '.driver'
-            ] === self::DB_CONNECTION
-        ) {
-            $this->createDatabase(
-                $app['config'][
-                    'database.connections.' . $connection . '.database'
-                ]
-            );
+        if ($app['config']['database.connections.' . $connection . '.driver'] === self::DB_CONNECTION) {
+            $this->createDatabase($app['config']['database.connections.' . $connection . '.database']);
         }
     }
 
@@ -403,18 +380,26 @@ abstract class TestCase extends OrchestraTestCase
     {
         $this->truncateTwillUsers();
 
-        $this->artisan('twill:install')
-            ->expectsQuestion('Enter an email', $this->superAdmin()->email)
-            ->expectsQuestion('Enter a password', $this->superAdmin()->password)
-            ->expectsQuestion(
-                'Confirm the password',
-                $this->superAdmin()->password
-            );
+        if ($this->example) {
+            $this->artisan('twill:install ' . $this->example)
+                ->expectsConfirmation('Are you sure to install this preset? This can overwrite your models, config and routes.', 'yes')
+                ->expectsQuestion('Enter an email', $this->superAdmin()->email)
+                ->expectsQuestion('Enter a password', $this->superAdmin()->password)
+                ->expectsQuestion(
+                    'Confirm the password',
+                    $this->superAdmin()->password
+                );
+        } else {
+            $this->artisan('twill:install')
+                ->expectsQuestion('Enter an email', $this->superAdmin()->email)
+                ->expectsQuestion('Enter a password', $this->superAdmin()->password)
+                ->expectsQuestion(
+                    'Confirm the password',
+                    $this->superAdmin()->password
+                );
+        }
 
-        $user = User::where(
-            'email',
-            $email = $this->superAdmin()->email
-        )->first();
+        $user = User::where('email', $this->superAdmin()->email)->first();
 
         $user->setAttribute(
             'unencrypted_password',
@@ -563,7 +548,7 @@ abstract class TestCase extends OrchestraTestCase
     /**
      * Freeze time.
      */
-    public function freezeTime()
+    public function freezeTime($callback = null)
     {
         Carbon::setTestNow($this->now = Carbon::now());
     }

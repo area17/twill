@@ -143,6 +143,13 @@ importedComponents.keys().map(block => {
   return Vue.component(componentName, importedComponents(block).default)
 })
 
+// Vendor form components
+const importedVendorComponents = require.context('@/components/customs-vendor/', true, /\.(js|vue)$/i)
+importedVendorComponents.keys().map(block => {
+  const componentName = extractComponentNameFromContextKey(block)
+  return Vue.component(componentName, importedVendorComponents(block).default)
+})
+
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
 window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({

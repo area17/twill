@@ -87,6 +87,23 @@
         @blur="onBlur"
         @input="onInput"
       />
+      <input v-if="type === 'url'"
+        ref="input"
+        type="url"
+        :placeholder="placeholder"
+        :name="name"
+        :id="uniqId"
+        :disabled="disabled"
+        :maxlength="displayedMaxlength"
+        :required="required"
+        :readonly="readonly"
+        :autofocus="autofocus"
+        :autocomplete="autocomplete"
+        :value="value"
+        @focus="onFocus"
+        @blur="onBlur"
+        @input="onInput"
+      />
       <span class="input__limit f--tiny" :class="limitClasses" v-if="hasMaxlength">{{ counter }}</span>
       <span :class="validityClasses" v-if="type === 'email'"></span>
     </div>
@@ -311,7 +328,8 @@
     input[type="number"],
     input[type="text"],
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="url"] {
       @include resetfield;
       height:$height_input - 2px;
       line-height:$height_input - 2px;
@@ -418,7 +436,8 @@
     input[type="number"],
     input[type="text"],
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="url"] {
       height:$height_input - 10px - 2px;
       line-height:$height_input - 10px - 2px;
     }

@@ -3,8 +3,6 @@
 namespace A17\Twill\Models\Behaviors;
 
 use A17\Twill\Helpers\BlockRenderer;
-use A17\Twill\Models\Block;
-use A17\Twill\Services\Blocks\Block as BlockConfig;
 
 trait HasBlocks
 {

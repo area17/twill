@@ -6,7 +6,6 @@ use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\IsTranslatable;
 use A17\Twill\Models\Permission;
 use Auth;
-use A17\Twill\Services\Capsules\HasCapsules;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;
@@ -17,7 +16,10 @@ use Illuminate\Support\Str;
 
 abstract class Model extends BaseModel implements TaggableInterface
 {
-    use HasPresenter, SoftDeletes, TaggableTrait, IsTranslatable, HasCapsules;
+    use HasPresenter;
+    use SoftDeletes;
+    use TaggableTrait;
+    use IsTranslatable;
 
     public $timestamps = true;
 
@@ -33,14 +35,14 @@ abstract class Model extends BaseModel implements TaggableInterface
 
     public function scopeAccessible($query)
     {
-        if (!config('twill.enabled.permissions-management')) {
+        if (! config('twill.enabled.permissions-management')) {
             return $query;
         }
 
         $model = get_class($query->getModel());
         $moduleName = isPermissionableModule(getModuleNameByModel($model));
 
-        if ($moduleName && !Auth::user()->isSuperAdmin()) {
+        if ($moduleName && ! Auth::user()->isSuperAdmin()) {
             // Get all permissions the logged in user has regards to the model.
             $allPermissions = Auth::user()->allPermissions();
             $allModelPermissions = (clone $allPermissions)->ofModel($model);
@@ -54,11 +56,13 @@ abstract class Model extends BaseModel implements TaggableInterface
             // If the module is submodule, skip the scope.
             if (strpos($moduleName, '.')) {
                 return $query;
-            };
+            }
 
             $authorizedItemsIds = $allModelPermissions->moduleItem()->pluck('permissionable_id');
+
             return $query->whereIn($this->getTable() . '.id', $authorizedItemsIds);
         }
+
         return $query;
     }
 

@@ -17,6 +17,8 @@ class BlocksController extends Controller
      * @param ViewFactory $viewFactory
      * @param Request $request
      * @return string
+     *
+     * @todo: Add back 'inEditor'
      */
     public function preview(
         Application $app,

@@ -2,12 +2,11 @@
 
 namespace A17\Twill\Commands;
 
-use A17\Twill\Models\User;
-use A17\Twill\Services\Capsules\Manager;
+use A17\Twill\Exceptions\NoCapsuleFoundException;
+use A17\Twill\Facades\TwillCapsules;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class CapsuleInstall extends Command
@@ -34,6 +33,9 @@ class CapsuleInstall extends Command
 
     protected $repositoryUri;
 
+    /**
+     * @var \A17\Twill\Helpers\Capsule
+     */
     protected $capsule;
 
     protected $capsuleName;
@@ -42,26 +44,12 @@ class CapsuleInstall extends Command
 
     protected string $namespace;
 
-    protected Manager $manager;
-
-    /**
-     * Create a new console command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->manager = new Manager();
-    }
-
     /**
      * @return string
      */
     private function getUnzippedPath(): string
     {
-        return $this->capsule['base_path'] .
+        return TwillCapsules::getProjectCapsulesPath() .
             '/' .
             $this->capsuleName .
             '-' .
@@ -133,10 +121,7 @@ class CapsuleInstall extends Command
 
         $this->namespace = Str::studly($this->name);
 
-        $this->capsule = $this->manager->makeCapsule([
-            'name' => $this->namespace,
-            'enabled' => true,
-        ]);
+        $this->capsule = TwillCapsules::makeProjectCapsule($this->namespace);
     }
 
     protected function isFullUrl($capsule)
@@ -227,10 +212,13 @@ class CapsuleInstall extends Command
 
     protected function canInstallCapsule()
     {
-        if ($this->manager->capsuleExists($this->getModule())) {
+        // We know that we throw an exception if it does not exist so we use that check here.
+        try {
+            TwillCapsules::getCapsuleForModule($this->getModule());
             $this->error('A capsule with this name already exists!');
 
             return false;
+        } catch (NoCapsuleFoundException $e) {
         }
 
         if ($this->directoryExists()) {
@@ -252,7 +240,7 @@ class CapsuleInstall extends Command
             $this->download() &&
             $this->uncompress(
                 $this->getTempFileName(),
-                $this->capsule['base_path']
+                TwillCapsules::getProjectCapsulesPath()
             ) &&
             $this->renameToCapsule();
 
@@ -269,7 +257,7 @@ class CapsuleInstall extends Command
 
     protected function getCapsuleDirectory()
     {
-        return $this->capsule['root_path'];
+        return $this->capsule->getPsr4Path();
     }
 
     protected function directoryExists()
@@ -311,14 +299,14 @@ class CapsuleInstall extends Command
         return true;
     }
 
-    protected function getTempFileName()
+    protected function getTempFileName(): string
     {
-        $this->makeDir($this->capsule['base_path']);
+        $this->makeDir(TwillCapsules::getProjectCapsulesPath());
 
-        return $this->capsule['base_path'] . '/install.zip';
+        return TwillCapsules::getProjectCapsulesPath() . '/install.zip';
     }
 
-    protected function repositoryExists()
+    protected function repositoryExists(): bool
     {
         $guzzle = new Client();
 
@@ -403,7 +391,7 @@ class CapsuleInstall extends Command
 
     public function renameToCapsule()
     {
-        $destination = $this->capsule['psr4_path'];
+        $destination = $this->capsule->getPsr4Path();
 
         rename($this->getUnzippedPath(), $destination);
 

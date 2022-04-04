@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Tests\Integration\Commands;
 
-use A17\Twill\Tests\Integration\TestCase;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
+use A17\Twill\Tests\Integration\TestCase;
 
 class ListBlocksTest extends TestCase
 {
@@ -49,7 +49,7 @@ class ListBlocksTest extends TestCase
         );
 
         $this->getCommand($command)
-            ->getBlockCollection()
+            ->blockCollection
             ->load();
 
         $this->assertExitCodeIsGood($pendingCommand->run());
