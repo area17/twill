@@ -31,12 +31,14 @@ With the example above we now have 2 editors. One is named `left` and the other 
 
 Now, let's move over to the rendering aspect.
 
+## Basic usage
+
 Following the documentation of [block editors](form-fields/block-editor.html) we know already how to render
 a block.
 
 `resources/views/site/blocks/nested-block.blade.php`
 
-```
+```php
 @php
     /** @var \A17\Twill\Services\Blocks\RenderData $renderData */
 @endphp
@@ -53,3 +55,34 @@ a block.
 ```
 
 `$renderData` is new in Twill 3.x, it is a nested representation of the data to be rendered.
+
+## Manually rendering
+
+By default the solution above will render all the children next to each other. But if you wish to wrap the
+children each in their own container you can use the `getChildrenFor` method on the `$renderData`
+
+```php
+@php
+    /** @var \A17\Twill\Services\Blocks\RenderData $renderData */
+@endphp
+<div style="width: 100%">
+    <div style="width: 50%; float: left;">
+        Left
+
+        @foreach($renderData->getChildrenFor('left') as $leftBlock)
+            <div style="background-color: green; padding: 150px;">
+                {!! $leftBlock !!}
+            </div>
+        @endforeach
+    </div>
+    <div style="width: 50%; float: left;">
+        Right
+
+        @foreach($renderData->getChildrenFor('right') as $leftBlock)
+            <div style="background-color: orange; padding: 150px;">
+                {!! $leftBlock !!}
+            </div>
+        @endforeach
+    </div>
+</div>
+```

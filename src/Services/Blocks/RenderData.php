@@ -44,4 +44,25 @@ class RenderData
 
         return join('', $output);
     }
+
+    public function getChildrenFor(
+        string $editorName,
+        array $viewMapping = [],
+        array $data = [],
+    ): array {
+        $output = [];
+        /** @var \A17\Twill\Services\Blocks\Block $child */
+        foreach ($this->children as $child) {
+            if ($child->renderData->parentEditorName === $editorName) {
+                $output[] = $child->renderView(
+                    $viewMapping,
+                    $data + ['inEditor' => $this->inEditor],
+                    false,
+                    $this->inEditor
+                );
+            }
+        }
+
+        return $output;
+    }
 }
