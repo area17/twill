@@ -225,8 +225,8 @@ trait HandleRepeaters
                 $pivotRowId = str_replace($relation . '-', '', $relationField['id']);
 
                 // The id here is the one of the pivot column. From there we can update the correct target.
-                $currentRelation = $currentRelations->first(function(Model $model) use ($pivotRowId) {
-                    return (int) $pivotRowId === $model->pivot->id;
+                $currentRelation = $currentRelations->first(function (Model $model) use ($pivotRowId) {
+                    return (int)$pivotRowId === $model->pivot->id;
                 });
 
                 $relationRepository->update($currentRelation->id, $relationField);
@@ -242,9 +242,10 @@ trait HandleRepeaters
                 if ($relationField['repeater_target_id'] ?? false) {
                     // If the repeater_target_id is set we use that to create a new record based of an existing entity.
                     $newRelation = $relationRepository->findOrFail($relationField['repeater_target_id']);
+                    // Update the target.
+                    $relationRepository->update($relationField['repeater_target_id'], $relationField);
                     unset($relationField['repeater_target_id']);
-                }
-                else {
+                } else {
                     // new row, let's attach to our object and create
                     $relationField[$this->model->getForeignKey()] = $object->id;
                     unset($relationField['id']);
@@ -252,8 +253,9 @@ trait HandleRepeaters
                 }
                 $currentIdList[] = $newRelation['id'];
 
-                $pivotFields = $this->encodePivotFields(collect($relationField)->only($pivotFields)->all());
-                $object->{$relation}()->attach($newRelation['id'], $pivotFields);
+                $pivotFieldData = $this->encodePivotFields(collect($relationField)->only($pivotFields)->all());
+
+                $object->{$relation}()->attach($newRelation['id'], $pivotFieldData);
 
                 $latestAttached = $object->{$relation}()->withPivot('id')->orderByPivot('id', 'desc')->get()->last();
 
@@ -381,7 +383,7 @@ trait HandleRepeaters
         ?string $modelOrRepository = null,
         ?string $repeaterName = null
     ): array {
-         if (!$repeaterName) {
+        if (!$repeaterName) {
             $repeaterName = $relation;
         }
 
