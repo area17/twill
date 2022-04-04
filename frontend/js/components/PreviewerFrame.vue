@@ -36,15 +36,26 @@
 
         // disable button and link in preview
         const iframe = event.target
-        const buttons = iframe.contentDocument.querySelectorAll('a:not(.sf-dump-toggle),button')
+        const links = Array.from(iframe.contentDocument.querySelectorAll('a:not(.sf-dump-toggle)') || [])
 
-        for (let i = 0; i < buttons.length; i++) {
-          buttons[i].setAttribute('disabled', 'disabled')
-          buttons[i].style.pointerEvents = 'none'
-          buttons[i].onclick = function () {
-            return false
+        links.forEach((link) => {
+          // disable links behavior only for href different from current page
+          if (link.href.split('#')[0] !== window.location.href) {
+            link.setAttribute('disabled', 'disabled')
+            link.style.pointerEvents = 'none'
+            link.onclick = function () {
+              return false
+            }
           }
-        }
+        })
+
+        const forms = Array.from(iframe.contentDocument.querySelectorAll('form') || [])
+
+        forms.forEach(form => {
+          form.addEventListener('submit', (event) => {
+            event.preventDefault()
+          }, true)
+        })
 
         iframe.contentDocument.addEventListener('scroll', function (event) {
           const scrollValue = iframe.contentWindow.pageYOffset
