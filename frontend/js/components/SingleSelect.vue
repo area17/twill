@@ -1,12 +1,14 @@
 <template>
-  <div class="multiselectorOuter">
-    <a17-inputframe :error="error" :note="note" :label="label" :name="name" :add-new="addNew">
+  <div :class="outerClasses">
+    <a17-inputframe :error="error" :note="note" :label="label" :name="name" :add-new="addNew" :variant="variantInput">
       <input type="hidden" :name="name" v-model="value" />
       <div class="singleselector" :class="gridClasses">
         <div class="singleselector__outer">
           <div class="singleselector__item"
                v-for="(radio, index) in fullOptions"
-               :key="index">
+               :key="index"
+               :style="itemStyle"
+          >
             <input class="singleselector__radio" type="radio" :value="radio.value" :name="name + '[' + randKey + ']'" :id="uniqId(radio.value, index)" :disabled="radio.disabled || disabled" :class="{'singleselector__radio--checked': radio.value == selectedValue }">
             <label class="singleselector__label" :for="uniqId(radio.value, index)" @click.prevent="changeRadio(radio.value)">{{ radio.label }}</label>
             <span class="singleselector__bg"></span>
@@ -19,6 +21,12 @@
         <slot name="addModal"></slot>
       </a17-modal-add>
     </template>
+    <template v-if="requireConfirmation">
+      <a17-dialog ref="warningConfirm" modal-title="Confirm" confirm-label="Confirm">
+        <p class="modal--tiny-title"><strong>{{ confirmTitleText }}</strong></p>
+        <p>{{ confirmMessageText }}</p>
+      </a17-dialog>
+    </template>
   </div>
 </template>
 
@@ -27,10 +35,11 @@
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
   import AttributesMixin from '@/mixins/addAttributes'
+  import ConfirmationMixin from '@/mixins/confirmationMixin'
 
   export default {
     name: 'A17Singleselect',
-    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
+    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin, ConfirmationMixin],
     props: {
       name: {
         type: String,
@@ -40,7 +49,19 @@
         type: Boolean,
         default: true
       },
+      columns: {
+        type: Number,
+        default: 0
+      },
       inline: {
+        type: Boolean,
+        default: true
+      },
+      inTable: {
+        type: Boolean,
+        default: false
+      },
+      border: {
         type: Boolean,
         default: false
       },
@@ -61,11 +82,38 @@
       }
     },
     computed: {
+      variantInput: function () {
+        return [
+          this.inTable ? 'intable' : ''
+        ].join(' ')
+      },
+      outerClasses: function () {
+        return [
+          'multiselectorOuter'
+        ]
+      },
       gridClasses: function () {
+        if (this.columns >= 1) {
+          return [
+            'singleselector--columns',
+            this.grid ? 'singleselector--grid' : ''
+          ]
+        }
+
         return [
           this.grid ? 'singleselector--grid' : '',
-          this.inline ? 'singleselector--inline' : ''
+          this.inline ? 'singleselector--inline' : '',
+          this.border ? 'singleselector--border' : ''
         ]
+      },
+      itemStyle: function () {
+        if (this.columns >= 1) {
+          return {
+            width: `${100 / this.columns}%`
+          }
+        }
+
+        return {}
       },
       selectedValue: {
         get: function () {
@@ -89,7 +137,13 @@
         }
       },
       changeRadio: function (value) {
-        this.selectedValue = value
+        if (this.requireConfirmation) {
+          this.$refs.warningConfirm.open(() => {
+            this.selectedValue = value
+          })
+        } else {
+          this.selectedValue = value
+        }
       },
       uniqId: function (value, index) {
         return this.name + '_' + value + '-' + (this.randKey * (index + 1))
@@ -206,8 +260,9 @@
     border-color: $color__fborder--active;
   }
 
-  /* grid version */
-  .singleselector--grid {
+  /* grid + columns shared styles */
+  .singleselector--grid,
+  .singleselector--columns {
     border:1px solid $color__border;
     background-clip: padding-box;
     box-sizing: border-box;
@@ -266,7 +321,10 @@
       top: 50%;
       margin-top:-9px;
     }
+  }
 
+  /* grid version */
+  .singleselector--grid {
     .singleselector__bg {
       display:block;
       position:absolute;
@@ -291,35 +349,64 @@
     }
   }
 
-  /* Grid in editor */
-  .s--in-editor .singleselector--grid .singleselector__item {
-      width:100%;
-
-      @include breakpoint('small') {
-        width:100%
-      }
-
-      @include breakpoint('medium') {
-        width:100%
-      }
-
-      @include breakpoint('large') {
-        width:100%
-      }
-
-      @include breakpoint('large+') {
-        width:100%
-      }
+  /* grid or columns in editor */
+  .s--in-editor .singleselector--grid .singleselector__item,
+  .s--in-editor .singleselector--columns .singleselector__item {
+    width: 100% !important; // override inline styles, if any (@see itemStyle)
   }
 
   /* inline version */
   .singleselector--inline .singleselector__outer {
-    display:flex;
-    flex-flow: row wrap;
-    overflow:hidden;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: hidden;
   }
 
   .singleselector--inline .singleselector__item {
     margin-right:20px;
+  }
+
+  /* border version */
+  .singleselector--border {
+    border: 1px solid $color__border;
+    background-clip: padding-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 2px;
+    padding: 7px 15px;
+  }
+
+  .singleselector--border.singleselector--inline {
+    padding: 0 15px;
+
+    .singleselector__outer {
+      box-sizing: border-box;
+      overflow: hidden;
+      margin-bottom: -1px;
+      margin-right: -1px;
+    }
+
+    .singleselector__item {
+      padding: 0;
+      height: 50%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .singleselector__label {
+      padding-left: 25px;
+      height: 50px;
+      line-height: 50px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .singleselector__label::before,
+    .singleselector__label::after {
+      top: 50%;
+      margin-top: -9px;
+    }
   }
 </style>

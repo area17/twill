@@ -4,6 +4,11 @@ namespace A17\Twill\Repositories\Behaviors;
 
 trait HandleTags
 {
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return void
+     */
     public function afterSaveHandleTags($object, $fields)
     {
         if (!isset($fields['bulk_tags']) && !isset($fields['previous_common_tags'])) {
@@ -36,6 +41,11 @@ trait HandleTags
         return $this->model->allTags()->orderBy('count', 'desc');
     }
 
+    /**
+     * @param string $query
+     * @param array $ids
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getTags($query = '', $ids = [])
     {
         $tagQuery = $this->getTagsQuery();
@@ -55,6 +65,9 @@ trait HandleTags
         return $tagQuery->get();
     }
 
+    /**
+     * @return \Illuminate\Support\Collection
+     */
     public function getTagsList()
     {
         return $this->getTagsQuery()->where('count', '>', 0)->select('name', 'id')->get()->map(function ($tag) {

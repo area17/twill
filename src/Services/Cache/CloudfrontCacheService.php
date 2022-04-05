@@ -3,6 +3,7 @@
 namespace A17\Twill\Services\Cache;
 
 use Aws\CloudFront\CloudFrontClient;
+use Aws\Result;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -18,6 +19,7 @@ class CloudfrontCacheService
 
     // Added for backwards compatibility. Should be removed in future releases.
     protected static $defaultRegion = 'us-east-1';
+
     protected static $defaultSdkVersion = '2016-01-13';
 
     /**
@@ -41,17 +43,16 @@ class CloudfrontCacheService
      */
     public static function getClient()
     {
-        $cloudFront = new CloudFrontClient(array(
+        $cloudFront = new CloudFrontClient([
             'region' => self::getRegion(),
             'version' => self::getSdkVersion(),
-            'credentials' => array(
+            'credentials' => [
                 'key' => config('services.cloudfront.key'),
                 'secret' => config('services.cloudfront.secret'),
-            ),
-        ));
+            ],
+        ]);
 
         return $cloudFront;
-
     }
 
     /**
@@ -71,9 +72,9 @@ class CloudfrontCacheService
      * @param string[] $urls
      * @return void
      */
-    public function invalidate($urls = ["/*"])
+    public function invalidate($urls = ['/*'])
     {
-        if (!$this->hasInProgressInvalidation()) {
+        if (! $this->hasInProgressInvalidation()) {
             try {
                 $this->createInvalidationRequest($urls);
             } catch (\Exception $e) {
@@ -89,37 +90,33 @@ class CloudfrontCacheService
      */
     private function hasInProgressInvalidation()
     {
-        $list = $this->client->listInvalidations(array('DistributionId' => $this->config->get('services.cloudfront.distribution')))->get('InvalidationList');
-        if (isset($list['Items']) && !empty($list['Items'])) {
+        $list = $this->client->listInvalidations(['DistributionId' => $this->config->get('services.cloudfront.distribution')])->get('InvalidationList');
+        if (isset($list['Items']) && ! empty($list['Items'])) {
             return Collection::make($list['Items'])->where('Status', 'InProgress')->count() > 0;
         }
 
         return false;
     }
 
-    /**
-     * @param array $paths
-     * @return \Aws\Result
-     */
-    private function createInvalidationRequest($paths = array())
+    private function createInvalidationRequest(array $paths = []): ?Result
     {
         if (is_object($this->client) && count($paths) > 0) {
             try {
-                $result = $this->client->createInvalidation(array(
+                return $this->client->createInvalidation([
                     'DistributionId' => $this->config->get('services.cloudfront.distribution'),
-                    'InvalidationBatch' => array(
-                        'Paths' => array(
+                    'InvalidationBatch' => [
+                        'Paths' => [
                             'Quantity' => count($paths),
                             'Items' => $paths,
-                        ),
+                        ],
                         'CallerReference' => time(),
-                    ),
-                ));
-            } catch (\Exception $e) {
+                    ],
+                ]);
+            } catch (\Exception) {
                 Log::debug('Cloudfront invalidation request failed');
             }
-
-            return $result;
         }
+
+        return null;
     }
 }

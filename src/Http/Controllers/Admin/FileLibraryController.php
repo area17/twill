@@ -39,6 +39,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     protected $defaultFilters = [
         'search' => 'search',
         'tag' => 'tag_id',
+        'unused' => 'unused',
     ];
 
     /**
@@ -78,8 +79,8 @@ class FileLibraryController extends ModuleController implements SignUploadListen
         $this->responseFactory = $responseFactory;
         $this->config = $config;
 
-        $this->removeMiddleware('can:edit');
-        $this->middleware('can:edit', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
+        $this->middleware('can:access-media-library', ['only' => ['index']]);
+        $this->middleware('can:edit-media-library', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = $this->config->get('twill.file_library.endpoint_type');
     }
 
@@ -126,9 +127,9 @@ class FileLibraryController extends ModuleController implements SignUploadListen
                 return $tag->name;
             }),
             'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
-            'updateUrl' => $this->urlGenerator->route('admin.file-library.files.single-update'),
-            'updateBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-update'),
-            'deleteBulkUrl' => $this->urlGenerator->route('admin.file-library.files.bulk-delete'),
+            'updateUrl' => $this->urlGenerator->route('twill.file-library.files.single-update'),
+            'updateBulkUrl' => $this->urlGenerator->route('twill.file-library.files.bulk-update'),
+            'deleteBulkUrl' => $this->urlGenerator->route('twill.file-library.files.bulk-delete'),
         ];
     }
 
@@ -143,6 +144,10 @@ class FileLibraryController extends ModuleController implements SignUploadListen
 
         if ($this->request->has('tag')) {
             $requestFilters['tag'] = $this->request->get('tag');
+        }
+
+        if ($this->request->has('unused') && (int) $this->request->unused === 1) {
+            $requestFilters['unused'] = $this->request->get('unused');
         }
 
         return $requestFilters ?? [];
@@ -196,7 +201,14 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             'size' => $request->input('qqtotalfilesize'),
         ];
 
-        return $this->repository->create($fields);
+        if ($this->shouldReplaceFile($id = $request->input('media_to_replace_id'))) {
+            $file = $this->repository->whereId($id)->first();
+            $this->repository->afterDelete($file);
+            $file->update($fields);
+            return $file->fresh();
+        } else {
+            return $this->repository->create($fields);
+        }
     }
 
     /**
@@ -210,7 +222,14 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             'filename' => $request->input('name'),
         ];
 
-        return $this->repository->create($fields);
+        if ($this->shouldReplaceFile($id = $request->input('media_to_replace_id'))) {
+            $file = $this->repository->whereId($id)->first();
+            $this->repository->afterDelete($file);
+            $file->update($fields);
+            return $file->fresh();
+        } else {
+            return $this->repository->create($fields);
+        }
     }
 
     /**
@@ -289,5 +308,13 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     public function uploadIsNotValid()
     {
         return $this->responseFactory->json(["invalid" => true], 500);
+    }
+
+    /**
+     * @return bool
+     */
+    private function shouldReplaceFile($id)
+    {
+        return is_numeric($id) ? $this->repository->whereId($id)->exists() : false;
     }
 }

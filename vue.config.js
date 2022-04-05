@@ -1,3 +1,4 @@
+const fs = require("fs")
 const path = require('path')
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -29,8 +30,9 @@ const WebpackAssetsManifest = require('webpack-assets-manifest')
 const WebpackNotifierPlugin = require('webpack-notifier')
 
 const srcDirectory = 'frontend'
-const outputDir = 'dist'
-const assetsDir = process.env.TWILL_ASSETS_DIR || 'assets/admin'
+const partialsDirectory = '../views/partials'
+const outputDir = isProd ? 'dist' : (process.env.TWILL_DEV_ASSETS_PATH || 'dist')
+const assetsDir = process.env.TWILL_ASSETS_DIR || 'assets/twill'
 
 const pages = {
   'main-buckets': `${srcDirectory}/js/main-buckets.js`,
@@ -45,9 +47,7 @@ const svgConfig = (suffix = null) => {
 
   return {
     output: {
-      filename: isProd
-        ? `${assetsDir}/icons/icons${suffix}.[contenthash].svg`
-        : `${assetsDir}/icons/icons${suffix}.svg`,
+      filename: `${partialsDirectory}/icons/icons${suffix}-svg.blade.php`,
       chunk: {
         name: `icons${suffix}`
       }
@@ -91,6 +91,13 @@ if (!isProd) {
   }))
 }
 
+// Define npm module resolve order: 1. local (Twill), 2. root (App)
+const appModuleFolder = path.resolve(__dirname, '../../../node_modules') // vendor/area17/twill/
+const resolveModules = ['node_modules']
+if (fs.existsSync(appModuleFolder)) {
+  resolveModules.push(appModuleFolder)
+}
+
 const config = {
   // Define base outputDir of build
   outputDir: outputDir,
@@ -123,7 +130,8 @@ const config = {
         'prosemirror-state' : path.join(__dirname, 'node_modules/prosemirror-state/src/index.js'),
         'prosemirror-view' : path.join(__dirname, 'node_modules/prosemirror-view/src/index.js'),
         'prosemirror-transform' : path.join(__dirname, 'node_modules/prosemirror-transform/src/index.js')
-      }
+      },
+      modules: resolveModules
     },
     plugins,
     performance: {

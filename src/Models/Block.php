@@ -22,6 +22,7 @@ class Block extends BaseModel
         'type',
         'child_key',
         'parent_id',
+        'editor_name',
     ];
 
     protected $casts = [
@@ -30,6 +31,13 @@ class Block extends BaseModel
 
     protected $with = ['medias'];
 
+    public function scopeEditor($query, $name = 'default')
+    {
+        return $name === 'default' ?
+            $query->where('editor_name', $name)->orWhereNull('editor_name') :
+            $query->where('editor_name', $name);
+    }
+
     public function blockable()
     {
         return $this->morphTo();
@@ -37,7 +45,7 @@ class Block extends BaseModel
 
     public function children()
     {
-        return $this->hasMany('A17\Twill\Models\Block', 'parent_id');
+        return $this->hasMany(twillModel('block'), 'parent_id');
     }
 
     public function input($name)

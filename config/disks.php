@@ -1,20 +1,17 @@
 <?php
 
 $localRootPrefix = storage_path('app/public/');
-$localUrlPrefix = request()->getScheme() . '://' . str_replace(['http://', 'https://'], '', env('APP_URL')) . '/storage/';
 
 $mediaLocalConfig = [
     'driver' => 'local',
     'visibility' => 'public',
     'root' => $localRootPrefix . trim(config('twill.media_library.local_path'), '/ '),
-    'url' => $localUrlPrefix . trim(config('twill.media_library.local_path'), '/ '),
 ];
 
 $fileLocalConfig = [
     'driver' => 'local',
     'visibility' => 'public',
     'root' => $localRootPrefix . trim(config('twill.file_library.local_path'), '/ '),
-    'url' => $localUrlPrefix . trim(config('twill.file_library.local_path'), '/ '),
 ];
 
 $s3Config = [
@@ -24,7 +21,9 @@ $s3Config = [
     'region' => env('S3_REGION', env('AWS_REGION', env('AWS_DEFAULT_REGION', 'us-east-1'))),
     'bucket' => env('S3_BUCKET', env('AWS_BUCKET')),
     'root' => env('S3_ROOT', env('AWS_ROOT', '')),
-    'use_https' => env('S3_UPLOADER_USE_HTTPS', env('S3_USE_HTTPS', env('AWS_USE_HTTPS', true))),
+    'url' => env('S3_URL', env('AWS_URL')),
+    'endpoint' => env('S3_ENDPOINT', env('AWS_ENDPOINT')),
+    'use_path_style_endpoint' => env('S3_USE_PATH_STYLE_ENDPOINT', env('AWS_USE_PATH_STYLE_ENDPOINT', false)),
 ];
 
 $azureConfig = [

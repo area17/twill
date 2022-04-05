@@ -1,5 +1,6 @@
 @php
     $translated = $translated ?? false;
+    $required = $required ?? false;
     $maxlength = $maxlength ?? false;
     $options = $options ?? false;
     $placeholder = $placeholder ?? false;
@@ -58,6 +59,7 @@
             label: '{{ $label }}',
             @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
             @if ($note) note: '{{ $note }}', @endif
+            @if ($required) required: true, @endif
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
             @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
@@ -79,6 +81,7 @@
             label="{{ $label }}"
             @include('twill::partials.form.utils._field_name')
             @if ($note) note="{{ $note }}" @endif
+            @if ($required) :required="true" @endif
             @if ($options) :options='{!! json_encode($options) !!}' @endif
             @if ($placeholder) placeholder='{{ $placeholder }}' @endif
             @if ($maxlength) :maxlength='{{ $maxlength }}' @endif
@@ -103,6 +106,7 @@
             label: '{{ $label }}',
             @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
             @if ($note) note: '{{ $note }}', @endif
+            @if ($required) required: true, @endif
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
             @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
@@ -124,6 +128,7 @@
             label="{{ $label }}"
             @include('twill::partials.form.utils._field_name')
             @if ($note) note="{{ $note }}" @endif
+            @if ($required) :required="true" @endif
             @if ($options) :options='{!! json_encode($options) !!}' @endif
             @if ($placeholder) placeholder='{{ $placeholder }}' @endif
             @if ($maxlength) :maxlength='{{ $maxlength }}' @endif

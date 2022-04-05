@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 
 class MediaLibraryController extends ModuleController implements SignUploadListener
 {
@@ -41,6 +40,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     protected $defaultFilters = [
         'search' => 'search',
         'tag' => 'tag_id',
+        'unused' => 'unused',
     ];
 
     /**
@@ -78,8 +78,8 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         $this->responseFactory = $responseFactory;
         $this->config = $config;
 
-        $this->removeMiddleware('can:edit');
-        $this->middleware('can:edit', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
+        $this->middleware('can:access-media-library', ['only' => ['index']]);
+        $this->middleware('can:edit-media-library', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = $this->config->get('twill.media_library.endpoint_type');
         $this->customFields = $this->config->get('twill.media_library.extra_metadatas_fields');
     }
@@ -129,6 +129,10 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             $requestFilters['tag'] = $this->request->get('tag');
         }
 
+        if ($this->request->has('unused') && (int) $this->request->unused === 1) {
+            $requestFilters['unused'] = $this->request->get('unused');
+        }
+
         return $requestFilters ?? [];
     }
 
@@ -170,11 +174,11 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
         $disk = $this->config->get('twill.media_library.disk');
 
-        $request->file('qqfile')->storeAs($fileDirectory, $filename, $disk);
+        $uploadedFile = $request->file('qqfile');
 
-        $filePath = Storage::disk($disk)->path($fileDirectory . '/' . $filename);
+        list($w, $h) = getimagesize($uploadedFile->path());
 
-        list($w, $h) = getimagesize($filePath);
+        $uploadedFile->storeAs($fileDirectory, $filename, $disk);
 
         $fields = [
             'uuid' => $uuid,
@@ -183,7 +187,14 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             'height' => $h,
         ];
 
-        return $this->repository->create($fields);
+        if ($this->shouldReplaceMedia($id = $request->input('media_to_replace_id'))) {
+            $media = $this->repository->whereId($id)->first();
+            $this->repository->afterDelete($media);
+            $media->replace($fields);
+            return $media->fresh();
+        } else {
+            return $this->repository->create($fields);
+        }
     }
 
     /**
@@ -199,7 +210,14 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             'height' => $request->input('height'),
         ];
 
-        return $this->repository->create($fields);
+        if ($this->shouldReplaceMedia($id = $request->input('media_to_replace_id'))) {
+            $media = $this->repository->whereId($id)->first();
+            $this->repository->afterDelete($media);
+            $media->update($fields);
+            return $media->fresh();
+        } else {
+            return $this->repository->create($fields);
+        }
     }
 
     /**
@@ -313,5 +331,13 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
             return [$field['name'] => $fieldInRequest];
         });
+    }
+
+    /**
+     * @return bool
+     */
+    private function shouldReplaceMedia($id)
+    {
+        return is_numeric($id) ? $this->repository->whereId($id)->exists() : false;
     }
 }

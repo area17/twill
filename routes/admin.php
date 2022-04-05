@@ -1,10 +1,16 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Route;
 
 if (config('twill.enabled.users-management')) {
     Route::module('users', ['except' => ['sort', 'feature']]);
+    Route::name('users.resend.registrationEmail')->get('users/{user}/registration-email', 'UserController@resendRegistrationEmail');
+
+    if (config('twill.enabled.permissions-management')) {
+        Route::module('groups', ['except' => ['sort', 'feature', 'search']]);
+        Route::module('roles', ['except' => ['sort', 'feature']]);
+    }
 }
 
 if (config('twill.enabled.media-library')) {
@@ -41,7 +47,7 @@ if (config('twill.enabled.buckets')) {
     })->toArray();
 
     foreach ($bucketsRoutes as $bucketSectionKey => $routePrefix) {
-        Route::group(['prefix' => str_replace(".","/",$routePrefix), 'as' => $routePrefix . '.'], function () use ($bucketSectionKey) {
+        Route::group(['prefix' => str_replace(".", "/", $routePrefix), 'as' => $routePrefix . '.'], function () use ($bucketSectionKey) {
             Route::get($bucketSectionKey, ['as' => $bucketSectionKey, 'uses' => 'FeaturedController@index']);
             Route::group(['prefix' => $bucketSectionKey, 'as' => $bucketSectionKey . '.'], function () {
                 Route::post('save', ['as' => 'save', 'uses' => 'FeaturedController@save']);
@@ -63,3 +69,6 @@ if (config('twill.enabled.dashboard')) {
 if (config('twill.enabled.search')) {
     Route::name('search')->get('search', 'DashboardController@search');
 }
+
+Route::name('icons.index')->get('/admin/icons', 'IconsController@index');
+Route::name('icons.show')->get('/admin/icons/{file}', 'IconsController@show');

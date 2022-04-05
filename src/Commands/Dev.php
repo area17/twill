@@ -2,8 +2,6 @@
 
 namespace A17\Twill\Commands;
 
-use Illuminate\Console\Command;
-
 class Dev extends Command
 {
     /**

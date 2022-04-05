@@ -1,15 +1,21 @@
 <template>
   <div class="browserField">
+    <div class="browserField__trigger" v-if="buttonOnTop && remainingItems">
+      <a17-button type="button" :disabled="disabled" variant="ghost" @click="openBrowser">{{ addLabel }}</a17-button>
+      <input type="hidden" :name="name" :value="itemsIds"/>
+      <span class="browserField__note f--small"><slot></slot></span>
+    </div>
     <table class="browserField__table" v-if="items.length">
-      <draggable :tag="'tbody'" v-model="items">
+      <draggable :tag="'tbody'" v-model="items" :disabled="disabled">
         <a17-browseritem v-for="(item, index) in items" :key="item.endpointType + '_' + item.id" class="item__content"
-                         :name="`${name}_${item.id}`" :draggable="draggable" :item="item" @delete="deleteItem(index)"
+                         :name="`${name}_${item.id}`" :draggable="!disabled && draggable" :item="item" @delete="deleteItem(index)"
+                         :disabled="disabled"
                          :max="max"
                          :showType="endpoints.length > 0" />
       </draggable>
     </table>
-    <div class="browserField__trigger" v-if="remainingItems">
-      <a17-button type="button" variant="ghost" @click="openBrowser">{{ addLabel }}</a17-button>
+    <div class="browserField__trigger" v-if="!buttonOnTop && remainingItems">
+      <a17-button type="button" :disabled="disabled" variant="ghost" @click="openBrowser">{{ addLabel }}</a17-button>
       <input type="hidden" :name="name" :value="itemsIds"/>
       <span class="browserField__note f--small"><slot></slot></span>
     </div>
@@ -40,6 +46,10 @@
         type: String,
         default: ''
       },
+      browserNote: {
+        type: String,
+        default: ''
+      },
       itemLabel: {
         type: String,
         default: 'Item'
@@ -61,6 +71,14 @@
         default: 10
       },
       wide: {
+        type: Boolean,
+        default: false
+      },
+      buttonOnTop: {
+        type: Boolean,
+        default: false
+      },
+      disabled: {
         type: Boolean,
         default: false
       }
@@ -134,6 +152,7 @@
         }
         this.$store.commit(BROWSER.UPDATE_BROWSER_MAX, this.max)
         this.$store.commit(BROWSER.UPDATE_BROWSER_TITLE, this.browserTitle)
+        this.$store.commit(BROWSER.UPDATE_BROWSER_NOTE, this.browserNote)
 
         if (this.wide) {
           this.$root.$refs.browserWide.open(this.endpoints.length <= 0)
@@ -141,9 +160,6 @@
           this.$root.$refs.browser.open(this.endpoints.length <= 0)
         }
       }
-    },
-    beforeDestroy: function () {
-      this.deleteAll()
     }
   }
 </script>

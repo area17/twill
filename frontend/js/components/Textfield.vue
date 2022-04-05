@@ -1,6 +1,6 @@
 <template>
   <a17-inputframe :error="error" :note="note" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name" :label-for="uniqId" :required="required">
-    <div class="input__field" :class="textfieldClasses">
+    <div class="input__field" :class="textfieldClasses" :dir="dirLocale">
       <span class="input__prefix" v-if="hasPrefix">{{ prefix }}</span>
       <textarea v-if="type === 'textarea'" ref="clone" :rows="rows" class="input__clone" disabled="true" v-model="value"></textarea>
       <textarea v-if="type === 'textarea'"
@@ -87,7 +87,25 @@
         @blur="onBlur"
         @input="onInput"
       />
+      <input v-if="type === 'url'"
+        ref="input"
+        type="url"
+        :placeholder="placeholder"
+        :name="name"
+        :id="uniqId"
+        :disabled="disabled"
+        :maxlength="displayedMaxlength"
+        :required="required"
+        :readonly="readonly"
+        :autofocus="autofocus"
+        :autocomplete="autocomplete"
+        :value="value"
+        @focus="onFocus"
+        @blur="onBlur"
+        @input="onInput"
+      />
       <span class="input__limit f--tiny" :class="limitClasses" v-if="hasMaxlength">{{ counter }}</span>
+      <span :class="validityClasses" v-if="type === 'email'"></span>
     </div>
   </a17-inputframe>
 </template>
@@ -153,8 +171,15 @@
       },
       limitClasses: function () {
         return {
-          'input__limit--red': this.counter < 10
+          'input__limit--red': this.counter < (this.maxlength * 0.1)
         }
+      },
+      validityClasses: function () {
+        return [
+          'input__validity',
+          this.isFieldValid === true ? 'input__validity--valid' : '',
+          this.isFieldValid === false ? 'input__validity--error' : ''
+        ]
       }
     },
     data: function () {
@@ -162,6 +187,7 @@
         value: this.initialValue,
         lastSavedValue: this.initialValue,
         focused: false,
+        isFieldValid: null,
         counter: 0
       }
     },
@@ -204,11 +230,19 @@
         this.focused = false
         this.$emit('blur', newValue)
       },
-      onInput: debounce(function (event) {
+      onInput: function (event) {
+        this.preventSubmit()
+
+        this._onInputInternal(event)
+      },
+      _onInputInternal: debounce(function (event) {
         const newValue = event.target.value
         this.updateAndSaveValue(newValue)
+        this.checkFieldValidity(event.target)
 
         this.$emit('change', newValue)
+
+        this.allowSubmit()
       }, 250),
       resizeTextarea: function () {
         if (this.type !== 'textarea') return
@@ -219,6 +253,27 @@
         if (clone) {
           const h = clone.scrollHeight
           this.$refs.input.style.minHeight = `${h + minH}px`
+        }
+      },
+      checkFieldValidity: function (el) {
+        // Switch based on the type of the field.
+        let pattern = null
+        let re = null
+
+        switch (el.type) {
+          case 'email':
+            // If user didn't type any character, return.
+            if (el.value.length < 1) {
+              this.isFieldValid = null
+              return
+            }
+
+            pattern = el.pattern
+            re = RegExp(pattern)
+
+            // Get pattern and test validity with regex.
+            this.isFieldValid = re.test(this.value)
+            break
         }
       }
     },
@@ -273,7 +328,8 @@
     input[type="number"],
     input[type="text"],
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="url"] {
       @include resetfield;
       height:$height_input - 2px;
       line-height:$height_input - 2px;
@@ -319,6 +375,7 @@
     user-select:none;
     color:$color__icons;
     pointer-events: none;
+    white-space: nowrap;
   }
 
   .input__limit {
@@ -331,6 +388,26 @@
 
   .input__limit--red {
     color:red;
+  }
+
+  .input__validity {
+    position: absolute;
+    top: 17px;
+    right: 15px;
+    width: 10px;
+    height: 10px;
+    background-color: $color__tag--disabled;
+    border-radius: 50%;
+    user-select: none;
+    pointer-events: none;
+
+    &--valid {
+      background-color: $color__ok;
+    }
+
+    &--error {
+      background-color: $color__error;
+    }
   }
 
   .input__field--textarea {
@@ -359,9 +436,16 @@
     input[type="number"],
     input[type="text"],
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="url"] {
       height:$height_input - 10px - 2px;
       line-height:$height_input - 10px - 2px;
     }
+  }
+
+  /* RTL Direction */
+  .input__field--textarea[dir='rtl'] .input__limit {
+    left:15px;
+    right:auto;
   }
 </style>

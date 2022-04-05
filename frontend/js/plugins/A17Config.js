@@ -19,6 +19,7 @@ import a17RadioGroup from '@/components/RadioGroup.vue'
 import a17Checkbox from '@/components/Checkbox.vue'
 import a17SingleCheckbox from '@/components/SingleCheckbox.vue'
 import a17CheckboxGroup from '@/components/CheckboxGroup.vue'
+import A17SingleSelectPermissions from '@/components/SingleSelectPermissions.vue'
 import a17Multiselect from '@/components/MultiSelect.vue'
 import a17Singleselect from '@/components/SingleSelect.vue'
 import a17Dropdown from '@/components/Dropdown.vue'
@@ -30,19 +31,26 @@ import a17Slideshow from '@/components/Slideshow.vue'
 import a17BrowserField from '@/components/BrowserField.vue'
 import a17FileField from '@/components/files/FileField.vue'
 import a17DatePicker from '@/components/DatePicker.vue'
+import a17Avatar from '@/components/Avatar.vue'
 
 // Media Library
 import a17MediaLibrary from '@/components/media-library/MediaLibrary.vue'
 
+// Error handler
+import { globalError } from '@/utils/errors'
+
 // Plugins
 import VueTimeago from 'vue-timeago'
 import get from 'lodash/get'
+import mapValues from 'lodash/mapValues'
 import axios from 'axios'
 
 // Directives
 import SvgSprite from '@/directives/svg'
 import Tooltip from '@/directives/tooltip'
 import Sticky from '@/directives/sticky'
+
+import { locales } from '@/utils/locale'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -65,6 +73,7 @@ const A17Config = {
     Vue.component('a17-checkbox', a17Checkbox)
     Vue.component('a17-singlecheckbox', a17SingleCheckbox)
     Vue.component('a17-checkboxgroup', a17CheckboxGroup)
+    Vue.component('a17-singleselect-permissions', A17SingleSelectPermissions)
     Vue.component('a17-multiselect', a17Multiselect)
     Vue.component('a17-singleselect', a17Singleselect)
     Vue.component('a17-select', a17Select)
@@ -77,6 +86,7 @@ const A17Config = {
     Vue.component('a17-datepicker', a17DatePicker)
     Vue.component('a17-filefield', a17FileField)
     Vue.component('a17-colorfield', a17ColorField)
+    Vue.component('a17-avatar', a17Avatar)
 
     // Media Library
     Vue.component('a17-medialibrary', a17MediaLibrary)
@@ -89,6 +99,9 @@ const A17Config = {
           this.$store.commit(MEDIA_LIBRARY.RESET_MEDIA_TYPE) // reset to first available type
           this.$store.commit(MEDIA_LIBRARY.UPDATE_REPLACE_INDEX, -1) // we are not replacing an image here
           this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_MAX, 0) // set max to 0
+          this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_FILESIZE_MAX, 0) // set filesize max to 0
+          this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_WIDTH_MIN, 0) // set width min to 0
+          this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_HEIGHT_MIN, 0) // set height min to 0
           this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_MODE, false) // set the strict to false (you can change the active type)
 
           if (this.$root.$refs.mediaLibrary) this.$root.$refs.mediaLibrary.open()
@@ -107,13 +120,17 @@ const A17Config = {
 
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
 
+    axios.interceptors.response.use((response) => response, (error) => {
+      globalError('CONTENT', error)
+
+      return Promise.reject(error)
+    })
+
     // Plugins
     Vue.use(VueTimeago, {
       name: 'timeago', // component name
-      locale: 'en-US',
-      locales: {
-        'en-US': require('vue-timeago/locales/en-US.json')
-      }
+      locale: window[process.env.VUE_APP_NAME].twillLocalization.locale,
+      locales: mapValues(locales, 'date-fns')
     })
 
     // Directives

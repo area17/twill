@@ -19,6 +19,10 @@ export default {
       type: String,
       default: 'large' // large, small
     },
+    variant: {
+      type: String,
+      default: '' // free string
+    },
     note: {
       type: String,
       default: ''
@@ -35,9 +39,15 @@ export default {
 
       const locales = []
 
+      const supportedLanguages = this.$store.state.language.all.map(lang => lang.value)
+
       Object.keys(this.$store.state.form.errors).forEach((error) => {
         if (error.substr(0, error.indexOf('.')) === errorKeyWithoutLocale) {
-          locales.push(error.substr(error.indexOf('.') + 1, error.length))
+          const cleaned = error.substr(error.indexOf('.') + 1, error.length)
+
+          if (supportedLanguages.includes(cleaned)) {
+            locales.push(cleaned)
+          }
         }
       }, [])
 
@@ -54,8 +64,7 @@ export default {
       })) + ' language' + (this.errorLocales.length > 1 ? 's' : '') + ' missing details.'
     },
     errorMessage () {
-      const message = this.error ? this.$store.state.form.errors[this.errorKey][0] : ''
-      return message.endsWith('is required.') && !this.errorKey.startsWith('block') ? '' : message
+      return this.error ? this.$store.state.form.errors[this.errorKey][0] : ''
     },
     error () {
       return this.$store.state.form ? Object.keys(this.$store.state.form.errors).includes(this.errorKey) : false

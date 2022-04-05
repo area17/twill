@@ -10,7 +10,7 @@
       <a17-table-cell-generic v-else v-bind="currentComponentProps(col)" @editInPlace="editInPlace" @update="tableCellUpdate"/>
     </span>
     <span class="nested-item__cell nested-item__cell--actions">
-      <a17-table-cell-actions v-bind="currentComponentProps()" @editInPlace="editInPlace" @update="tableCellUpdate" @restoreRow=" restoreRow" @deleteRow="deleteRow"/>
+      <a17-table-cell-actions v-bind="currentComponentProps()" @editInPlace="editInPlace" @update="tableCellUpdate" @restoreRow=" restoreRow" @deleteRow="deleteRow" @destroyRow="destroyRow" @duplicateRow="duplicateRow"/>
     </span>
   </div>
 </template>

@@ -22,18 +22,18 @@
       <a v-if="row.hasOwnProperty('featured') && !row.hasOwnProperty('deleted')"
          href="#"
          @click.prevent="update('featured')">{{ row['featured'] ? $trans('listing.dropdown.unfeature', 'Unfeature') : $trans('listing.dropdown.feature', 'Feature') }}</a>
+      <a v-if="row.duplicate && !row.hasOwnProperty('deleted')"
+         href="#"
+         @click.prevent="duplicateRow">{{ $trans('listing.dropdown.duplicate', 'Duplicate') }}</a>
       <a v-if="row.hasOwnProperty('deleted')"
          href="#"
          @click.prevent="restoreRow">{{ $trans('listing.dropdown.restore', 'Restore') }}</a>
-      <a v-if="row.hasOwnProperty('deleted')"
+      <a v-if="row.hasOwnProperty('deleted') && row.hasOwnProperty('destroyable')"
          href="#"
          @click.prevent="destroyRow">{{ $trans('listing.dropdown.destroy', 'Destroy') }}</a>
-      <a v-else-if="row.delete"
+      <a v-else-if="row.delete && !row.hasOwnProperty('deleted')"
          href="#"
          @click.prevent="deleteRow">{{ $trans('listing.dropdown.delete', 'Delete') }}</a>
-      <a v-if="row.hasOwnProperty('duplicate')"
-         href="#"
-         @click.prevent="duplicateRow">{{ $trans('listing.dropdown.duplicate', 'Duplicate') }}</a>
     </div>
   </a17-dropdown>
 </template>

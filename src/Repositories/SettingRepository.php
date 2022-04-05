@@ -34,9 +34,15 @@ class SettingRepository extends ModuleRepository
      */
     public function byKey($key, $section = null)
     {
-        return $this->model->when($section, function ($query) use ($section) {
+        $settingQuery = $this->model->when($section, function ($query) use ($section) {
             $query->where('section', $section);
-        })->where('key', $key)->exists() ? $this->model->where('key', $key)->with('translations')->first()->value : null;
+        })->where('key', $key);
+
+        if ($settingQuery->exists()) {
+            return $settingQuery->with('translations')->first()->value;
+        }
+
+        return null;
     }
 
     /**
@@ -49,9 +55,22 @@ class SettingRepository extends ModuleRepository
             $query->where('section', $section);
         })->with('translations', 'medias')->get();
 
-        $medias = $settings->mapWithKeys(function ($setting) {
-            return [$setting->key => parent::getFormFields($setting)['medias'][$setting->key] ?? null];
-        })->filter()->toArray();
+
+        if (config('twill.media_library.translated_form_fields', false)) {
+            $medias = $settings->reduce(function ($carry, $setting) {
+                foreach (getLocales() as $locale) {
+                    if (!empty(parent::getFormFields($setting)['medias'][$locale]) && !empty(parent::getFormFields($setting)['medias'][$locale][$setting->key]))
+                    {
+                        $carry[$locale][$setting->key] = parent::getFormFields($setting)['medias'][$locale][$setting->key];
+                    }
+                }
+                return $carry;
+            });
+        } else {
+            $medias = $settings->mapWithKeys(function ($setting) {
+                return [$setting->key => parent::getFormFields($setting)['medias'][$setting->key] ?? null];
+            })->filter()->toArray();
+        }
 
         return $settings->mapWithKeys(function ($setting) {
             $settingValue = [];
@@ -100,13 +119,26 @@ class SettingRepository extends ModuleRepository
         }
 
         foreach ($settingsFields['medias'] ?? [] as $role => $mediasList) {
-            $this->updateOrCreate($section + ['key' => $role], $section + [
-                'key' => $role,
-                'medias' => [
+            $medias = [];
+
+            if (config('twill.media_library.translated_form_fields', false)) {
+                foreach (getLocales() as $locale) {
+                    $medias["{$role}[{$locale}]"] = Collection::make($settingsFields['medias'][$role][$locale])->map(function ($media) {
+                        return json_decode($media, true);
+                    })->filter()->toArray();
+                }
+            } else {
+                $medias =  [
                     $role => Collection::make($settingsFields['medias'][$role])->map(function ($media) {
                         return json_decode($media, true);
                     })->values()->filter()->toArray(),
-                ],
+                ];
+            }
+
+
+            $this->updateOrCreate($section + ['key' => $role], $section + [
+                'key' => $role,
+                'medias' => $medias,
             ]);
         }
     }

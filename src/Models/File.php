@@ -22,7 +22,15 @@ class File extends Model
 
     public function canDeleteSafely()
     {
-        return DB::table(config('twill.fileables_table', 'twill_fileables'))->where('file_id', $this->id)->count() === 0;
+        return DB::table(config('twill.fileables_table', 'twill_fileables'))
+            ->where('file_id', $this->id)->doesntExist();
+    }
+
+    public function scopeUnused($query)
+    {
+        $usedIds = DB::table(config('twill.fileables_table'))->pluck('file_id');
+
+        return $query->whereNotIn('id', $usedIds->toArray())->get();
     }
 
     public function toCmsArray()
@@ -33,6 +41,7 @@ class File extends Model
             'src' => FileService::getUrl($this->uuid),
             'original' => FileService::getUrl($this->uuid),
             'size' => $this->size,
+            'filesizeInMb' => number_format($this->attributes['size'] / 1048576, 2),
         ];
     }
 

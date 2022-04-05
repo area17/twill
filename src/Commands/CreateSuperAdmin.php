@@ -2,11 +2,11 @@
 
 namespace A17\Twill\Commands;
 
-use A17\Twill\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Factory as ValidatorFactory;
+use Carbon\Carbon;
 
 class CreateSuperAdmin extends Command
 {
@@ -15,7 +15,7 @@ class CreateSuperAdmin extends Command
      *
      * @var string
      */
-    protected $signature = 'twill:superadmin';
+    protected $signature = 'twill:superadmin {email?} {password?}';
 
     /**
      * The console command description.
@@ -57,17 +57,28 @@ class CreateSuperAdmin extends Command
         $email = $this->setEmail();
         $password = $this->setPassword();
 
-        $user = User::create([
+        $userModel = twillModel('user');
+        $user = new $userModel();
+        $user->fill([
             'name' => "Admin",
             'email' => $email,
-            'role' => 'SUPERADMIN',
             'published' => true,
         ]);
 
-        $user->password = Hash::make($password);
-        $user->save();
+        if (config('twill.enabled.permissions-management')) {
+            $user->is_superadmin = true;
+        } else {
+            $user->role = 'SUPERADMIN';
+        }
 
-        $this->info("Your account has been created");
+        $user->registered_at = Carbon::now();
+        $user->password = Hash::make($password);
+        if ($user->save()) {
+            $this->info('Your account has been created');
+            return;
+        }
+
+        $this->error('Failed creating user. Things you can check: Database permissions, run migrations');
     }
 
     /**
@@ -77,6 +88,9 @@ class CreateSuperAdmin extends Command
      */
     private function setEmail()
     {
+        if (filled($email = $this->argument('email'))) {
+            return $email;
+        }
         $email = $this->ask('Enter an email');
         if ($this->validateEmail($email)) {
             return $email;
@@ -93,6 +107,9 @@ class CreateSuperAdmin extends Command
      */
     private function setPassword()
     {
+        if (filled($email = $this->argument('password'))) {
+            return $email;
+        }
         $password = $this->secret('Enter a password');
         if ($this->validatePassword($password)) {
             $confirmPassword = $this->secret('Confirm the password');

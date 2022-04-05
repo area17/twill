@@ -2,15 +2,6 @@
 
 @section('appTypeClass', 'body--custom-page')
 
-@push('extra_css')
-    @if(app()->isProduction())
-        <link href="{{ twillAsset('main-free.css')}}" rel="preload" as="style" crossorigin/>
-    @endif
-    @unless(config('twill.dev_mode', false))
-        <link href="{{ twillAsset('main-free.css') }}" rel="stylesheet" crossorigin/>
-    @endunless
-@endpush
-
 @push('extra_js_head')
     @if(app()->isProduction())
         <link href="{{ twillAsset('main-free.js')}}" rel="preload" as="script" crossorigin/>

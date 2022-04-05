@@ -1,26 +1,26 @@
 <template>
-  <a17-overlay ref="overlay" title="Preview changes">
+  <a17-overlay ref="overlay" :title="$trans('previewer.title')">
   <div class="previewer" :class="{ 'previewer--loading' : loading }" v-if="revisions.length">
-    <a17-button @click="restoreRevision" v-if="activeRevision" class="previewer__restore" variant="warning" size="small">Restore</a17-button>
-    <a17-button @click="openEditor" v-if="!activeRevision && editor" class="previewer__restore" variant="editor" size="small"><span v-svg symbol="editor" class="hide--xsmall"></span>Editor</a17-button>
+    <a17-button @click="restoreRevision" v-if="activeRevision" class="previewer__restore" variant="warning" size="small">{{ $trans('previewer.restore') }}</a17-button>
+    <a17-button @click="openEditor" v-if="!activeRevision && editor" class="previewer__restore" variant="editor" size="small"><span v-svg symbol="editor" class="hide--xsmall"></span>{{ $trans('previewer.editor') }}</a17-button>
     <div class="previewer__frame">
       <div class="previewer__inner">
         <div class="previewer__nav">
           <div class="previewer__revisions">
-            <span class="tag tag--revision" v-if="slipScreen">Past</span>
+            <span class="tag tag--revision" v-if="slipScreen">{{ $trans('previewer.past-revision') }}</span>
             <a17-dropdown ref="previewRevisionsDropdown" position="bottom-left" :maxWidth="400" :maxHeight="300">
               <a17-button class="previewer__trigger" @click="$refs.previewRevisionsDropdown.toggle()">
                 <template v-if="activeRevision" >
                   {{ currentRevision.datetime | formatDate }} ({{ currentRevision.author }}) <span v-svg symbol="dropdown_module"></span>
                 </template>
                 <template v-else>
-                  Last edited <timeago :auto-update="1" :since="new Date(revisions[0].datetime)"></timeago> <span v-svg symbol="dropdown_module"></span>
+                  {{ $trans('previewer.last-edit') }} <timeago :auto-update="1" :datetime="new Date(revisions[0].datetime)"></timeago> <span v-svg symbol="dropdown_module"></span>
                 </template>
               </a17-button>
               <div slot="dropdown__content">
-                <button type="button" class="previewerRevision" :class="{ 'previewerRevision--active' : currentRevision.id === revision.id }" @click="toggleRevision(revision.id)" v-for="(revision, index) in revisions"  :key="revision.id">
+                <button type="button" class="previewerRevision" :class="{ 'previewerRevision--active' : currentRevision.id === revision.id }" @click="toggleRevision(revision.id)" v-for="revision in revisions"  :key="revision.id">
                   <span class="previewerRevision__author">{{ revision.author }}</span>
-                  <span class="previewerRevision__datetime"><span class="tag" v-if="index === 0">Current</span> {{ revision.datetime | formatDate }}</span>
+                  <span class="previewerRevision__datetime"><span class="tag" v-if="revision.label">{{ revision.label }}</span> {{ revision.datetime | formatDate }}</span>
                 </button>
               </div>
             </a17-dropdown>
@@ -35,8 +35,8 @@
           </ul>
 
           <div class="previewer__compare" v-if="activeRevision">
-            <a href="#" v-if="!slipScreen" @click.prevent="compareView"><span class="previewer__compareLabel">Compare view</span> <span v-svg symbol="revision-compare"></span></a>
-            <a href="#" v-else @click.prevent="singleView"><span class="previewer__compareLabel">Single view</span> <span v-svg symbol="revision-single"></span></a>
+            <a href="#" v-if="!slipScreen" @click.prevent="compareView"><span class="previewer__compareLabel">{{ $trans('previewer.compare-view') }}</span> <span v-svg symbol="revision-compare"></span></a>
+            <a href="#" v-else @click.prevent="singleView"><span class="previewer__compareLabel">{{ $trans('previewer.single-view') }}</span> <span v-svg symbol="revision-single"></span></a>
           </div>
         </div>
 
@@ -45,7 +45,7 @@
             <a17-iframe :content="activeRevision ? activeContent : currentContent" :size="activeBreakpoint" @scrollDoc="setIframeScroll" :scrollPosition="scrollPosition"></a17-iframe>
           </div>
           <div class="previewer__iframe" v-if="slipScreen">
-            <div class="previewer__iframeInfos"><span class="tag tag--revision">Current</span>Previewing with your unsaved changes</div>
+            <div class="previewer__iframeInfos"><span class="tag tag--revision">{{ $trans('previewer.current-revision') }}</span>{{ $trans('previewer.unsaved') }}</div>
             <a17-iframe :content="currentContent" @scrollDoc="setIframeScroll" :scrollPosition="scrollPosition"></a17-iframe>
           </div>
         </div>
@@ -104,7 +104,7 @@
         return Object.keys(this.currentRevision).length
       },
       ...mapState({
-        editor: state => state.content.editor,
+        editor: state => state.blocks.editor,
         loading: state => state.revision.loading,
         currentRevision: state => state.revision.active,
         activeContent: state => state.revision.activeContent,

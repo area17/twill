@@ -1,6 +1,6 @@
 <template>
   <div class="paginate">
-    <p class="paginate__offset  f--small">Rows per page:
+    <p class="paginate__offset  f--small">{{ $trans('listing.paginate.rows-per-page') }}
       <a17-dropdown ref="paginateDropdown" position="bottom-right">
         <button @click="$refs.paginateDropdown.toggle()" class="paginate__button">{{ newOffset }}</button>
         <div slot="dropdown__content">

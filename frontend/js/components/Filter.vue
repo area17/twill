@@ -1,5 +1,5 @@
 <template>
-  <form class="filter" :class="{ 'filter--opened' : opened, 'filter--single' : !withNavigation, 'filter--withHiddenFilters' : withHiddenFilters }" @submit.prevent="submitFilter" ref="form">
+  <form class="filter" :class="{ 'filter--opened' : opened, 'filter--single' : !withNavigation, 'filter--full' : !withNavigation && fullWidth, 'filter--withHiddenFilters' : withHiddenFilters }" @submit.prevent="submitFilter" ref="form">
     <div class="filter__inner">
       <div class="filter__navigation"><slot name="navigation"></slot></div>
 
@@ -7,6 +7,8 @@
         <input type="search" class="form__input form__input--small" name="search" :value="searchValue" :placeholder="placeholder" @input="onSearchInput" />
         <a17-button class="filter__toggle" variant="ghost" @click="toggleFilter" v-if="withHiddenFilters" :aria-expanded="opened ?  'true' : 'false'" >{{ $trans('filter.toggle-label', 'Filter') }} <span v-svg symbol="dropdown_module"></span></a17-button>
         <slot name="additional-actions"></slot>
+        <!-- Fix for Safari: the hidden submit button enables form submission by pressing Enter... -->
+        <button class="visually-hidden" aria-hidden="true" type="submit">{{ $trans('filter.apply-btn', 'Apply') }}</button>
       </div>
     </div>
     <transition :css='false' :duration="275" @before-enter="beforeEnter" @enter="enter" @before-leave="beforeLeave" @leave="leave">
@@ -43,6 +45,10 @@
         default: false
       },
       clearOption: {
+        type: Boolean,
+        default: false
+      },
+      fullWidth: {
         type: Boolean,
         default: false
       }
@@ -196,6 +202,18 @@
         input {
           flex-grow:1;
         }
+      }
+    }
+  }
+
+  .filter--full {
+    .filter__search {
+      display:flex;
+      width: 100%;
+
+      > div {
+        display:flex;
+        flex-direction: row-reverse;
       }
     }
   }

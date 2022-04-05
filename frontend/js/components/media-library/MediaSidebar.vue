@@ -27,15 +27,18 @@
           </button>
           <button v-else type="button" class="button--disabled" :data-tooltip-title="warningDeleteMessage" v-tooltip>
             <span v-svg symbol="trash"></span></button>
+          <button v-if="hasSingleMedia" type="button" @click="replaceMedia">
+            <span v-svg symbol="replace"></span>
+          </button>
         </a17-buttonbar>
       </div>
 
       <form v-if="hasMedia" ref="form" class="mediasidebar__inner mediasidebar__form" @submit="submit">
         <span class="mediasidebar__loader" v-if="loading"><span class="loader loader--small"><span></span></span></span>
-        <a17-vselect v-if="!fieldsRemovedFromBulkEditing.includes('tags')" label="Tags"
+        <a17-vselect v-if="!fieldsRemovedFromBulkEditing.includes('tags')" :label="$trans('media-library.sidebar.tags')"
                      :key="firstMedia.id + '-' + medias.length" name="tags" :multiple="true"
                      :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true"
-                     emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small"
+                     :emptyText="$trans('media-library.no-tags-found', 'Sorry, no tags found.')" :taggable="true" :pushTags="true" size="small"
                      :endpoint="type.tagsEndpoint" @change="save" maxHeight="175px"/>
         <span
           v-if="extraMetadatas.length && isImage && hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes('tags')"
@@ -52,15 +55,15 @@
           </div>
 
           <a17-locale type="a17-textfield" v-if="isImage && translatableMetadatas.includes('alt_text')"
-                      :attributes="{ label: 'Alt text', name: 'alt_text', type: 'text', size: 'small' }"
+                      :attributes="{ label: $trans('media-library.sidebar.alt-text', 'Alt text'), name: 'alt_text', type: 'text', size: 'small' }"
                       :initialValues="altValues" @focus="focus" @blur="blur"></a17-locale>
-          <a17-textfield v-else-if="isImage" label="Alt text" name="alt_text"
+          <a17-textfield v-else-if="isImage" :label="$trans('media-library.sidebar.alt-text', 'Alt text')" name="alt_text"
                          :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur"/>
 
           <a17-locale type="a17-textfield" v-if="isImage && translatableMetadatas.includes('caption')"
-                      :attributes="{ type: 'textarea', rows: 1, label: 'Caption', name: 'caption', size: 'small' }"
+                      :attributes="{ type: 'textarea', rows: 1, label: $trans('media-library.sidebar.caption', 'Caption'), name: 'caption', size: 'small' }"
                       :initialValues="captionValues" @focus="focus" @blur="blur"></a17-locale>
-          <a17-textfield v-else-if="isImage" type="textarea" :rows="1" size="small" label="Caption" name="caption"
+          <a17-textfield v-else-if="isImage" type="textarea" :rows="1" size="small" :label="$trans('media-library.sidebar.caption', 'Caption')" name="caption"
                          :initialValue="firstMedia.metadatas.default.caption" @focus="focus" @blur="blur"/>
 
           <template v-for="field in singleOnlyMetadatas">
@@ -105,7 +108,7 @@
     </template>
 
     <a17-modal class="modal--tiny modal--form modal--withintro" ref="warningDelete" title="Warning Delete">
-      <p class="modal--tiny-title"><strong>Are you sure ?</strong></p>
+      <p class="modal--tiny-title"><strong>{{ $trans('media-library.dialogs.delete.title', 'Are you sure ?') }}</strong></p>
       <p>{{ warningDeleteMessage }}</p>
       <a17-inputframe>
         <a17-button variant="validate" @click="deleteSelectedMedias">Delete ({{ mediasIdsToDelete.length }})
@@ -227,8 +230,19 @@
         }))
       },
       warningDeleteMessage: function () {
-        const prefix = this.hasMultipleMedias ? this.allowDelete ? 'Some files are' : 'This files are' : 'This file is'
-        return this.allowDelete ? prefix + ' used and can\'t be deleted. Do you want to delete the others ?' : prefix + ' used and can\'t be deleted.'
+        if (this.allowDelete) {
+          if (this.hasMultipleMedias) {
+            return this.$trans('media-library.dialogs.delete.allow-delete-multiple-medias', 'Some files are used and can\'t be deleted. Do you want to delete the others ?')
+          } else {
+            return this.$trans('media-library.dialogs.delete.allow-delete-one-media', 'This file is used and can\'t be deleted. Do you want to delete the others ?')
+          }
+        } else {
+          if (this.hasMultipleMedias) {
+            return this.$trans('media-library.dialogs.delete.dont-allow-delete-multiple-medias', 'This files are used and can\'t be deleted.')
+          } else {
+            return this.$trans('media-library.dialogs.delete.dont-allow-delete-one-media', 'This file is used and can\'t be deleted.')
+          }
+        }
       },
       containerClasses: function () {
         return {
@@ -247,6 +261,21 @@
       })
     },
     methods: {
+      replaceMedia: function () {
+        // Open confirm dialog if any
+        if (this.$root.$refs.replaceWarningMediaLibrary) {
+          this.$root.$refs.replaceWarningMediaLibrary.open(() => {
+            this.triggerMediaReplace()
+          })
+        } else {
+          this.triggerMediaReplace()
+        }
+      },
+      triggerMediaReplace: function () {
+        this.$emit('triggerMediaReplace', {
+          id: this.getMediaToReplaceId()
+        })
+      },
       deleteSelectedMediasValidation: function () {
         if (this.loading) return false
 
@@ -256,8 +285,8 @@
         }
 
         // Open confirm dialog if any
-        if (this.$root.$refs.warningMediaLibrary) {
-          this.$root.$refs.warningMediaLibrary.open(() => {
+        if (this.$root.$refs.deleteWarningMediaLibrary) {
+          this.$root.$refs.deleteWarningMediaLibrary.open(() => {
             this.deleteSelectedMedias()
           })
         } else {
@@ -297,6 +326,9 @@
       },
       getFormData: function (form) {
         return FormDataAsObj(form)
+      },
+      getMediaToReplaceId: function () {
+        return this.firstMedia.id
       },
       removeFieldFromBulkEditing: function (name) {
         this.fieldsRemovedFromBulkEditing.push(name)

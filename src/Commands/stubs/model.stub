@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Models;
+namespace {{namespace}};
 
 {{modelImports}}
-use A17\Twill\Models\Model;
+use {{baseModel}};
 
 class {{modelClassName}} extends Model {{modelImplements}}
 {
@@ -28,9 +28,9 @@ class {{modelClassName}} extends Model {{modelImplements}}
     {{/hasSlug}}{{hasMedias}}
     public $mediasParams = [
         'cover' => [
-            'desktop' => [
+            'default' => [
                 [
-                    'name' => 'desktop',
+                    'name' => 'default',
                     'ratio' => 16 / 9,
                 ],
             ],

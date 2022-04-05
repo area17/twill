@@ -1,4 +1,15 @@
+import config from '@/store/modules/config'
 import dateFormat from 'date-fns/format'
+
+import { locales, getCurrentLocale, getTimeFormatForCurrentLocale } from '@/utils/locale'
+
+function dateFormatLocale (date, format) {
+  const locale = locales[getCurrentLocale()]
+
+  return dateFormat(date, format, {
+    locale: locale !== undefined && locale.hasOwnProperty('date-fns') ? locale['date-fns'] : require('date-fns/locale/en')
+  })
+}
 
 const filters = {
   slugify: function (value) {
@@ -34,17 +45,21 @@ const filters = {
   formatDate: function (value) {
     if (!value) return ''
 
-    return dateFormat(value, 'MMM, DD, YYYY, hh:mm A')
+    return dateFormatLocale(value, 'MMM, DD, YYYY, ' + getTimeFormatForCurrentLocale())
+  },
+  formatDateWithFormat: function (value, format) {
+    if (!value) value = new Date()
+    return dateFormatLocale(value, format)
   },
   formatDatatableDate: function (value) {
-    const datepickerFormat = 'MMM DD, YYYY'
+    const datepickerFormat = config.state.publishDateDisplayFormat.length > 0 ? config.state.publishDateDisplayFormat : 'MMM DD, YYYY'
     if (!value) value = new Date()
-    return dateFormat(value, datepickerFormat)
+    return dateFormatLocale(value, datepickerFormat)
   },
   formatCalendarDate: function (value) {
-    const datepickerFormat = 'MMM, DD, YYYY, hh:mm A'
+    const datepickerFormat = 'MMM, DD, YYYY, ' + getTimeFormatForCurrentLocale()
     if (!value) value = new Date()
-    return dateFormat(value, datepickerFormat)
+    return dateFormatLocale(value, datepickerFormat)
   }
 }
 

@@ -4,12 +4,14 @@
                   :locale="locale"
                   @localize="updateLocale"
                   :size="size"
+                  :note="note"
                   :name="name">
     <a17-slideshow v-if="max > 1 || max === 0"
                    :name="name"
                    :cropContext="cropContext"
                    :max="max"
                    :required="required"
+                   :buttonOnTop="buttonOnTop"
                    :withAddInfo="withAddInfo"
                    :withVideoUrl="withVideoUrl"
                    :withCaption="withCaption"
@@ -57,6 +59,10 @@
       max: {
         type: Number,
         default: 1
+      },
+      buttonOnTop: {
+        type: Boolean,
+        default: false
       }
     }
   }

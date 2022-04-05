@@ -1,5 +1,5 @@
 @extends('twill::layouts.form', [
-    'contentFieldsetLabel' => $contentFieldsetLabel ?? 'Edit settings',
+    'contentFieldsetLabel' => $contentFieldsetLabel ?? twillTrans('twill::lang.settings.fieldset-label'),
     'controlLanguagesPublication' => false
 ])
 
@@ -12,11 +12,11 @@
     update: [
       {
         name: 'update',
-        text: 'Update'
+        text: {!! json_encode(twillTrans('twill::lang.settings.update')) !!}
       },
       {
         name: 'cancel',
-        text: 'Cancel'
+        text: {!! json_encode(twillTrans('twill::lang.settings.cancel')) !!}
       }
     ]
   }

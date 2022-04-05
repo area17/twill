@@ -1,13 +1,16 @@
 <template>
   <a17-accordion :open="open" @toggleVisibility="notifyOpen">
     <span slot="accordion__title"><slot></slot> <span class="f--small f--note">({{ revisions.length }})</span></span>
-    <div slot="accordion__value">Last edited <timeago :auto-update="1" :since="new Date(revisions[0].datetime)"></timeago></div>
+    <div slot="accordion__value">{{ $trans('publisher.last-edit') }} <timeago :auto-update="1" :datetime="new Date(revisions[0].datetime)"></timeago></div>
     <div class="revaccordion__scroller">
       <ul class="revaccordion__list">
-        <li class="revaccordion__item" v-for="(revision, index) in revisions" :key="revision.id">
+        <li class="revaccordion__item" v-for="revision in revisions" :key="revision.id">
           <a href="#" @click.prevent="openPreview(revision.id)">
             <span class="revaccordion__author">{{ revision.author }}</span>
-            <span class="revaccordion__datetime"><span class="tag" v-if="index === 0">Current</span> {{ revision.datetime | formatDate }}</span>
+            <span class="revaccordion__datetime">
+              <span class="tag" v-if="revision.label">{{  revision.label }}</span>
+              {{ revision.datetime | formatDate }}
+            </span>
           </a>
         </li>
       </ul>

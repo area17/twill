@@ -45,7 +45,7 @@
     },
     computed: {
       currentLabel: function () {
-        return this.currentValue.length + ' Live'
+        return this.currentValue.length + ' ' + this.$trans('publisher.languages-published')
       }
     },
     methods: {

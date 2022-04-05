@@ -1,23 +1,38 @@
 <template>
   <div class="mediagrid">
-    <div class="mediagrid__item" v-for="(item, index) in itemsLoading" :key="'mediaLoading_' + item.id">
+    <div class="mediagrid__item" v-show="!item.isReplacement" v-for="(item, index) in itemsLoading" :key="'mediaLoading_' + item.id">
       <span class="mediagrid__button s--loading">
         <span class="mediagrid__progress" v-if="!item.error"><span class="mediagrid__progressBar" :style="loadingProgress(index)"></span></span>
         <span class="mediagrid__progressError" v-else>Upload Error</span>
       </span>
     </div>
-    <div class="mediagrid__item" v-for="item in items" :key="item.id">
-      <span class="mediagrid__button" :class="{ 's--picked': isSelected(item), 's--used': isUsed(item) }" @click.exact="toggleSelection(item)" @click.shift.exact="shiftToggleSelection(item)"><img :src="item.thumbnail" class="mediagrid__img" /></span>
+    <div class="mediagrid__item" :class="{'s--hasFilename': showFileName}" v-for="item in items" :key="item.id">
+      <span class="mediagrid__button" :class="{
+          's--picked': isSelected(item),
+          's--used': isUsed(item) || !!replacingMediaIds[item.id],
+          's--disabled': item.disabled
+        }"
+        @click.exact="toggleSelection(item)"
+        @click.shift.exact="shiftToggleSelection(item)">
+          <img :src="item.thumbnail" class="mediagrid__img" />
+        </span>
+        <p v-if="showFileName" :title="item.name" class="mediagrid__name">{{ item.name }}</p>
     </div>
   </div>
 </template>
 
 <script>
   import mediaItemsMixin from '@/mixins/mediaLibrary/mediaItems'
+  import { mapState } from 'vuex'
 
   export default {
     name: 'A17Mediagrid',
     mixins: [mediaItemsMixin],
+    computed: {
+      ...mapState({
+        showFileName: state => state.mediaLibrary.showFileName
+      })
+    },
     methods: {
       loadingProgress: function (index) {
         return {
@@ -29,6 +44,7 @@
 </script>
 
 <style lang="scss" scoped>
+  $height_text: 17px;
 
   .mediagrid {
     display: block;
@@ -100,6 +116,54 @@
       width: (100% / 10);
       padding-bottom: (100% / 10);
     }
+
+    &.s--hasFilename {
+      @media (max-width: 300px) {
+        width: 100%;
+        padding-bottom: calc(100% + #{$height_text});
+      }
+
+      @media (min-width: 300px) {
+        padding-bottom: calc((100% / 2) + #{$height_text});
+      }
+
+      @media (min-width: 600px) {
+        padding-bottom: calc((100% / 2) + #{$height_text});
+      }
+
+      @media (min-width: 800px) {
+        padding-bottom: calc((100% / 3) + #{$height_text});
+      }
+
+      @media (min-width: 1000px) {
+        padding-bottom: calc((100% / 4) + #{$height_text});
+      }
+
+      @media (min-width: 1200px) {
+        padding-bottom: calc((100% / 5) + #{$height_text});
+      }
+
+      @media (min-width: 1400px) {
+        padding-bottom: calc((100% / 6) + #{$height_text});
+      }
+
+      @media (min-width: 1600px) {
+        padding-bottom: calc((100% / 7) + #{$height_text});
+      }
+
+      @media (min-width: 1800px) {
+        padding-bottom: calc((100% / 8) + #{$height_text});
+      }
+
+      @media (min-width: 2000px) {
+        padding-bottom: calc((100% / 9) + #{$height_text});
+      }
+
+      @media (min-width: 2200px) {
+        padding-bottom: calc((100% / 10) + #{$height_text});
+      }
+    }
+
   }
 
   .mediagrid__button {
@@ -108,16 +172,21 @@
 
     display: flex;
     justify-content: center; /* align horizontal */
+    flex-direction: column;
     align-items: center; /* align vertical */
     @include font-regular;
 
     user-select: none;
-    background:$color__lighter;
+    // background:$color__lighter;
 
     top: 10px;
     left: 10px;
     right: 10px;
     bottom: 10px;
+
+    .s--hasFilename & {
+      bottom: calc(10px + #{$height_text})
+    }
 
     &:before {
       content: "";
@@ -157,6 +226,27 @@
         opacity: 0.85;
       }
     }
+
+    &.s--disabled {
+      pointer-events: none;
+      opacity: 0.2;
+    }
+  }
+
+  .mediagrid__name {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    padding: 3px 20px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 13px;
+    color: $color__text--light;
+    width: 100%;
+    text-align: center;
+    cursor: default;
   }
 
   .s--loading {

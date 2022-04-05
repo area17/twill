@@ -9,6 +9,8 @@
     $nested = $nested ?? false;
     $bulkEdit = $bulkEdit ?? true;
     $create = $create ?? false;
+    $skipCreateModal = $skipCreateModal ?? false;
+    $controlLanguagesPublication = $controlLanguagesPublication ?? true;
 
     $requestFilter = json_decode(request()->get('filter'), true) ?? [];
 @endphp
@@ -45,7 +47,7 @@
                         @if (isset(${$filter.'List'}))
                             @php
                                 $list = ${$filter.'List'};
-                                $options = method_exists($list, 'map') ?
+                                $options = is_object($list) && method_exists($list, 'map') ?
                                     $list->map(function($label, $value) {
                                         return [
                                             'value' => $value,
@@ -78,7 +80,14 @@
 
                     @if($create)
                         <div slot="additional-actions">
-                            <a17-button variant="validate" size="small" v-on:click="create">{{ twillTrans('twill::lang.listing.add-new-button') }}</a17-button>
+                            <a17-button
+                                variant="validate"
+                                size="small"
+                                @if($skipCreateModal) href={{$createUrl ?? ''}} el="a" @endif
+                                @if(!$skipCreateModal) v-on:click="create" @endif
+                            >
+                                {{ twillTrans('twill::lang.listing.add-new-button') }}
+                            </a17-button>
                             @foreach($filterLinks as $link)
                                 <a17-button el="a" href="{{ $link['url'] ?? '#' }}" download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}" target="{{ $link['target'] ?? '' }}" variant="small secondary">{{ $link['label'] }}</a17-button>
                             @endforeach
@@ -87,6 +96,22 @@
                         <div slot="additional-actions">
                             @foreach($filterLinks as $link)
                                 <a17-button el="a" href="{{ $link['url'] ?? '#' }}" download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}" target="{{ $link['target'] ?? '' }}" variant="small secondary">{{ $link['label'] }}</a17-button>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    @if(isset($additionalTableActions) && count($additionalTableActions))
+                        <div slot="additional-actions">
+                            @foreach($additionalTableActions as $additionalTableAction)
+                                <a17-button
+                                    variant="{{ $additionalTableAction['variant'] ?? 'primary' }}"
+                                    size="{{ $additionalTableAction['size'] ?? 'small' }}"
+                                    el="{{ $additionalTableAction['type'] ?? 'button' }}"
+                                    href="{{ $additionalTableAction['link'] ?? '#' }}"
+                                    target="{{ $additionalTableAction['target'] ?? '_self' }}"
+                                >
+                                    {{ $additionalTableAction['name'] }}
+                                </a17-button>
                             @endforeach
                         </div>
                     @endif
@@ -117,22 +142,24 @@
                 ref="editionModal"
                 form-create="{{ $storeUrl }}"
                 v-on:reload="reloadDatas"
-                @if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
-                @if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
+                @if ($publishedLabel ?? false) published-label="{{ $publishedLabel }}" @endif
+                @if ($draftLabel ?? false) draft-label="{{ $draftLabel }}" @endif
             >
-                <a17-langmanager></a17-langmanager>
+                <a17-langmanager
+                    :control-publication="{{ json_encode($controlLanguagesPublication) }}"
+                ></a17-langmanager>
                 @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
             </a17-modal-create>
         @endif
 
-        <a17-dialog ref="warningDeleteRow" modal-title="Delete item" confirm-label="Delete">
-            <p class="modal--tiny-title"><strong>Move to trash</strong></p>
-            <p>The item won't be deleted but moved to trash.</p>
+        <a17-dialog ref="warningDeleteRow" modal-title="{{ twillTrans('twill::lang.listing.dialogs.delete.title') }}" confirm-label="{{ twillTrans('twill::lang.listing.dialogs.delete.confirm') }}">
+            <p class="modal--tiny-title"><strong>{{ twillTrans('twill::lang.listing.dialogs.delete.move-to-trash') }}</strong></p>
+            <p>{{ twillTrans('twill::lang.listing.dialogs.delete.disclaimer') }}</p>
         </a17-dialog>
 
-        <a17-dialog ref="warningDestroyRow" modal-title="Destroy item" confirm-label="Destroy">
-            <p class="modal--tiny-title"><strong>Destroy permanently</strong></p>
-            <p>The item won't be able to be restored anymore.</p>
+        <a17-dialog ref="warningDestroyRow" modal-title="{{ twillTrans('twill::lang.listing.dialogs.destroy.title') }}" confirm-label="{{ twillTrans('twill::lang.listing.dialogs.destroy.confirm') }}">
+            <p class="modal--tiny-title"><strong>{{ twillTrans('twill::lang.listing.dialogs.destroy.destroy-permanently') }}</strong></p>
+            <p>{{ twillTrans('twill::lang.listing.dialogs.destroy.disclaimer') }}</p>
         </a17-dialog>
     </div>
 @stop
@@ -148,6 +175,7 @@
         forceDelete: '{{ $forceDeleteUrl }}',
         bulkForceDelete: '{{ $bulkForceDeleteUrl }}',
         reorder: '{{ $reorderUrl }}',
+        create: '{{ $createUrl ?? '' }}',
         feature: '{{ $featureUrl }}',
         bulkFeature: '{{ $bulkFeatureUrl }}',
         bulkDelete: '{{ $bulkDeleteUrl }}'
@@ -162,11 +190,11 @@
         columns: {!! json_encode($tableColumns) !!},
         navigation: {!! json_encode($tableMainFilters) !!},
         filter: { status: '{{ $filters['status'] ?? $defaultFilterSlug ?? 'all' }}' },
-        page: {{ request('page') ?? 1 }},
-        maxPage: {{ $maxPage ?? 1 }},
-        defaultMaxPage: {{ $defaultMaxPage ?? 1 }},
-        offset: {{ request('offset') ?? $offset ?? 60 }},
-        defaultOffset: {{ $defaultOffset ?? 60 }},
+        page: '{{ request('page') ?? 1 }}',
+        maxPage: '{{ $maxPage ?? 1 }}',
+        defaultMaxPage: '{{ $defaultMaxPage ?? 1 }}',
+        offset: '{{ request('offset') ?? $offset ?? 60 }}',
+        defaultOffset: '{{ $defaultOffset ?? 60 }}',
         sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? '') }}',
         sortDir: '{{ request('sortDir') ?? 'asc' }}',
         baseUrl: '{{ rtrim(config('app.url'), '/') . '/' }}',

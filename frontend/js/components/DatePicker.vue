@@ -2,7 +2,7 @@
   <a17-inputframe :name="name" :error="error" :note="note" :label="label" :label-for="uniqId" class="datePicker" :class="{ 'datePicker--static' : staticMode, 'datePicker--mobile' : isMobile }" :required="required">
     <div class="datePicker__group" :ref="refs.flatPicker">
       <div class="form__field datePicker__field">
-        <input type="text" :name="name" :id="uniqId" :required="required" :placeholder="placeHolder" data-input @blur="onBlur" v-model="date">
+        <input type="text" :name="name" :id="uniqId" :required="required" :placeholder="placeHolder" data-input @blur="onBlur" v-model="date" :disabled="disabled">
         <a href="#" v-if="clear" class="datePicker__reset" :class="{ 'datePicker__reset--cleared' : !date }" @click.prevent="onClear"><span v-svg symbol="close_icon"></span></a>
       </div>
     </div>
@@ -13,6 +13,7 @@
   import randKeyMixin from '@/mixins/randKey'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
+  import { locales, getCurrentLocale, isCurrentLocale24HrFormatted } from '@/utils/locale'
   import FlatPickr from 'flatpickr'
   import 'flatpickr/dist/flatpickr.css'
 
@@ -47,7 +48,11 @@
       },
       time_24hr: {
         type: Boolean,
-        default: false
+        default: isCurrentLocale24HrFormatted()
+      },
+      altFormat: {
+        type: String,
+        default: null
       },
       inline: {
         type: Boolean,
@@ -77,6 +82,10 @@
         type: String,
         default: null
       },
+      disabled: {
+        type: Boolean,
+        default: false
+      },
       mode: {
         type: String,
         default: 'single',
@@ -102,14 +111,21 @@
     computed: {
       uniqId: function (value) {
         return this.name + '-' + this.randKey
+      },
+      altFormatComputed: function () {
+        if (this.altFormat !== null) {
+          return this.altFormat
+        }
+        return 'F j, Y' + (this.enableTime ? (this.time_24hr || isCurrentLocale24HrFormatted() ? ' H:i' : ' h:i K') : '')
       }
     },
     methods: {
       config: function () {
         const self = this
-        return {
+        const config = {
           wrap: true,
           altInput: true,
+          altFormat: self.altFormatComputed,
           static: self.staticMode,
           appendTo: self.staticMode ? self.$refs[self.refs.flatPicker] : undefined,
           enableTime: self.enableTime,
@@ -140,6 +156,14 @@
             })
           }
         }
+
+        const locale = locales[getCurrentLocale()]
+
+        if (locale !== undefined && locale.hasOwnProperty('flatpickr')) {
+          config.locale = locale.flatpickr
+        }
+
+        return config
       },
       updateFromStore: function (newValue) { // called from the formStore mixin
         if (newValue !== this.date) {

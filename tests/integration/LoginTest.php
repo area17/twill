@@ -9,7 +9,7 @@ class LoginTest extends TestCase
 {
     public function testCanRedirectToLogin()
     {
-        $this->request('/twill')->assertStatus(200);
+        $this->httpRequestAssert('/twill');
 
         $this->assertSame('http://twill.test/twill/login', url()->full());
 
@@ -31,7 +31,7 @@ class LoginTest extends TestCase
     {
         $this->login();
 
-        $this->request('/twill/logout');
+        $this->httpRequestAssert('/twill/logout', 'POST');
 
         $this->assertSee('Forgot password');
     }
@@ -48,17 +48,17 @@ class LoginTest extends TestCase
 
         $this->assertSee('One-time password');
 
-        $this->request('/twill/login-2fa', 'POST', [
+        $this->httpRequestAssert('/twill/login-2fa', 'POST', [
             'verify-code' => 'INVALID CODE',
         ]);
 
         $this->assertSee('Your one time password is invalid.');
 
-        $this->request('/twill/login-2fa', 'POST', [
+        $this->httpRequestAssert('/twill/login-2fa', 'POST', [
             'verify-code' => (new Google2FA())->getCurrentOtp(
                 $user->google_2fa_secret
             ),
-        ])->assertStatus(200);
+        ]);
 
         $this->assertSee('Media Library');
     }

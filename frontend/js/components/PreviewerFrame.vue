@@ -36,7 +36,7 @@
 
         // disable button and link in preview
         const iframe = event.target
-        const buttons = iframe.contentDocument.querySelectorAll('a,button')
+        const buttons = iframe.contentDocument.querySelectorAll('a:not(.sf-dump-toggle),button')
 
         for (let i = 0; i < buttons.length; i++) {
           buttons[i].setAttribute('disabled', 'disabled')

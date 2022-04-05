@@ -74,6 +74,20 @@
           // eslint-disable-next-line no-return-assign
           return this.multiple ? this.mutableValue.pop() : this.mutableValue = null
         }
+      },
+      /**
+       * Check if the given option is currently selected.
+       * @param  {Object|String}  option
+       * @return {Boolean}        True when selected | False otherwise
+       * https://github.com/sagalbot/vue-select/commit/8a601c0ac3311adb89bc6e31b8cf215b1343d93c
+       */
+      isOptionSelected (option) {
+        return this.valueAsArray.some(value => {
+          if (typeof value === 'object') {
+            return this.optionObjectComparator(value, option)
+          }
+          return value === option || value === option[this.index]
+        })
       }
     },
     mounted () {

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repositories;
+namespace {{namespace}};
 
 {{repositoryImports}}
-use A17\Twill\Repositories\ModuleRepository;
-use App\Models\{{modelName}};
+use {{baseRepository}};
+use {{modelClass}};
 
 class {{repositoryClassName}} extends ModuleRepository
 {

@@ -1,10 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace {{namespace}};
 
-use A17\Twill\Http\Controllers\Admin\ModuleController;
+use {{baseController}} as BaseModuleController;
 
-class {{controllerClassName}} extends ModuleController
+class {{controllerClassName}} extends BaseModuleController
 {
     protected $moduleName = '{{moduleName}}';
+
+    protected $indexOptions = [
+        {{permalinkOption}}
+        {{reorderOption}}
+    ];{{hasNesting}}
+
+    protected $showOnlyParentItemsInBrowsers = true;
+
+    protected $nestedItemsDepth = 1;
+    {{/hasNesting}}
 }

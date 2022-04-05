@@ -4,28 +4,72 @@ namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\IsTranslatable;
+use A17\Twill\Models\Permission;
+use Auth;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;
 use Illuminate\Database\Eloquent\Model as BaseModel;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 abstract class Model extends BaseModel implements TaggableInterface
 {
-    use HasPresenter, SoftDeletes, TaggableTrait, IsTranslatable;
+    use HasPresenter;
+    use SoftDeletes;
+    use TaggableTrait;
+    use IsTranslatable;
 
     public $timestamps = true;
 
+    protected function isTranslationModel()
+    {
+        return Str::endsWith(get_class($this), 'Translation');
+    }
+
     public function scopePublished($query)
     {
-        return $query->wherePublished(true);
+        return $query->where("{$this->getTable()}.published", true);
+    }
+
+    public function scopeAccessible($query)
+    {
+        if (! config('twill.enabled.permissions-management')) {
+            return $query;
+        }
+
+        $model = get_class($query->getModel());
+        $moduleName = isPermissionableModule(getModuleNameByModel($model));
+
+        if ($moduleName && ! Auth::user()->isSuperAdmin()) {
+            // Get all permissions the logged in user has regards to the model.
+            $allPermissions = Auth::user()->allPermissions();
+            $allModelPermissions = (clone $allPermissions)->ofModel($model);
+
+            // If the user has any module permissions, or global manage all modules permissions, all items will be return
+            if ((clone $allModelPermissions)->module()->whereIn('name', Permission::available(Permission::SCOPE_MODULE))->exists()
+                || (clone $allPermissions)->global()->where('name', 'manage-modules')->exists()) {
+                return $query;
+            }
+
+            // If the module is submodule, skip the scope.
+            if (strpos($moduleName, '.')) {
+                return $query;
+            }
+
+            $authorizedItemsIds = $allModelPermissions->moduleItem()->pluck('permissionable_id');
+
+            return $query->whereIn($this->getTable() . '.id', $authorizedItemsIds);
+        }
+
+        return $query;
     }
 
     public function scopePublishedInListings($query)
     {
         if ($this->isFillable('public')) {
-            $query->wherePublic(true);
+            $query->where("{$this->getTable()}.public", true);
         }
 
         return $query->published()->visible();
@@ -35,12 +79,12 @@ abstract class Model extends BaseModel implements TaggableInterface
     {
         if ($this->isFillable('publish_start_date')) {
             $query->where(function ($query) {
-                $query->whereNull('publish_start_date')->orWhere('publish_start_date', '<=', Carbon::now());
+                $query->whereNull("{$this->getTable()}.publish_start_date")->orWhere("{$this->getTable()}.publish_start_date", '<=', Carbon::now());
             });
 
             if ($this->isFillable('publish_end_date')) {
                 $query->where(function ($query) {
-                    $query->whereNull('publish_end_date')->orWhere('publish_end_date', '>=', Carbon::now());
+                    $query->whereNull("{$this->getTable()}.publish_end_date")->orWhere("{$this->getTable()}.publish_end_date", '>=', Carbon::now());
                 });
             }
         }
@@ -55,12 +99,12 @@ abstract class Model extends BaseModel implements TaggableInterface
 
     public function scopeDraft($query)
     {
-        return $query->wherePublished(false);
+        return $query->where("{$this->getTable()}.published", false);
     }
 
     public function scopeOnlyTrashed($query)
     {
-        return $query->whereNotNull('deleted_at');
+        return $query->whereNotNull("{$this->getTable()}.deleted_at");
     }
 
     public function getFillable()
@@ -74,16 +118,16 @@ abstract class Model extends BaseModel implements TaggableInterface
         // Use the list of translatable attributes on our base model
         if (
             blank($fillable) &&
-            Str::contains($class = get_class($this), 'Models\Translations') &&
-            property_exists($class, 'baseModuleModel')
+            $this->isTranslationModel() &&
+            property_exists($this, 'baseModuleModel')
         ) {
-            $fillable = (new $this->baseModuleModel)->getTranslatedAttributes();
+            $fillable = (new $this->baseModuleModel())->getTranslatedAttributes();
 
-            if (!collect($fillable)->contains('locale')) {
+            if (! collect($fillable)->contains('locale')) {
                 $fillable[] = 'locale';
             }
 
-            if (!collect($fillable)->contains('active')) {
+            if (! collect($fillable)->contains('active')) {
                 $fillable[] = 'active';
             }
         }
@@ -94,5 +138,24 @@ abstract class Model extends BaseModel implements TaggableInterface
     public function getTranslatedAttributes()
     {
         return $this->translatedAttributes ?? [];
+    }
+
+    protected static function bootTaggableTrait()
+    {
+        static::$tagsModel = Tag::class;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function tags(): MorphToMany
+    {
+        return $this->morphToMany(
+            static::$tagsModel,
+            'taggable',
+            config('twill.tagged_table', 'tagged'),
+            'taggable_id',
+            'tag_id'
+        );
     }
 }

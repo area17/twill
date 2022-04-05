@@ -29,6 +29,7 @@
 
 <script>
   import isEqual from 'lodash/isEqual'
+  import debounce from 'lodash/debounce'
   import InputMixin from '@/mixins/input'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
@@ -36,8 +37,8 @@
   import { loadScript } from '@/utils/loader'
 
   const MAPMESSAGE = {
-    show: 'Show&nbsp;map',
-    hide: 'Hide&nbsp;map'
+    show: window.$trans('fields.map.show'),
+    hide: window.$trans('fields.map.hide')
   }
   const GOOGLEMAPURL = 'https://maps.googleapis.com/maps/api/js?libraries=places&key='
   const APIKEY = window[process.env.VUE_APP_NAME].hasOwnProperty('APIKEYS') && window[process.env.VUE_APP_NAME].APIKEYS.hasOwnProperty('googleMapApi') ? window[process.env.VUE_APP_NAME].APIKEYS.googleMapApi : null
@@ -64,6 +65,14 @@
         type: Boolean,
         default: false
       },
+      saveExtendedData: {
+        type: Boolean,
+        default: false
+      },
+      autoDetectLatLngValue: {
+        type: Boolean,
+        default: false
+      },
       initialLat: {
         type: Number,
         default: null
@@ -79,6 +88,8 @@
         autocompletePlace: null,
         markers: [],
         address: '',
+        boundingBox: [],
+        types: [],
         beforeFocusAddress: '',
         lat: this.initialLat,
         lng: this.initialLng,
@@ -90,16 +101,28 @@
     computed: {
       value: {
         get () {
-          return {
+          const resp = {
             latlng: this.lat + '|' + this.lng,
             address: this.address
           }
+
+          if (this.saveExtendedData) {
+            resp.boundingBox = this.boundingBox
+            resp.types = this.types
+          }
+
+          return resp
         },
         set (value) {
           const coord = value.latlng.split('|')
           this.lat = parseFloat(coord[0])
           this.lng = parseFloat(coord[coord.length - 1])
           this.address = value.address
+
+          if (this.saveExtendedData) {
+            this.boundingBox = value.boundingBox
+            this.types = value.types
+          }
         }
       },
       textfieldClasses: function () {
@@ -154,6 +177,14 @@
 
         this.address = newValue
         this.$emit('change', newValue)
+
+        if (this.autoDetectLatLngValue) {
+          const latlng = newValue.match(/^(-?\d+(?:\.\d+)?),+ *(-?\d+(?:\.\d+)?)$/)
+
+          if (latlng) {
+            this.onLatLngEntered(latlng[1], latlng[2])
+          }
+        }
       },
       onPlaceChanged: function () {
         const place = this.autocompletePlace.getPlace()
@@ -167,6 +198,11 @@
           this.address = place.formatted_address
           this.setLatLng(location)
 
+          if (this.saveExtendedData) {
+            this.boundingBox = place.geometry.viewport
+            this.types = place.types
+          }
+
           if (this.map) {
             this.addMarker(location)
             this.map.panTo(location)
@@ -179,6 +215,39 @@
         // see formStore mixin
         this.saveIntoStore()
       },
+      onClick: function (event) {
+        const latlng = event.latLng
+
+        this.clearMarkers()
+        this.clearLatLng()
+
+        this.address = [latlng.lat(), latlng.lng()].join(',')
+        this.setLatLng(latlng)
+
+        if (this.map) {
+          this.addMarker(latlng)
+        }
+
+        // see formStore mixin
+        this.saveIntoStore()
+      },
+      onLatLngEntered: debounce(function (lat, lng) {
+        const latlng = new google.maps.LatLng(lat, lng)
+
+        this.clearMarkers()
+        this.clearLatLng()
+
+        this.address = [latlng.lat(), latlng.lng()].join(',')
+        this.setLatLng(latlng)
+
+        if (this.map) {
+          this.addMarker(latlng)
+          this.map.setCenter(latlng)
+        }
+
+        // see formStore mixin
+        this.saveIntoStore()
+      }, 600),
       clearMarkers: function () {
         for (let i = 0; i < this.markers.length; i++) {
           if (this.markers[i]) {
@@ -235,6 +304,8 @@
         if (preset) {
           this.addMarker(new google.maps.LatLng(this.lat, this.lng))
         }
+
+        this.map.addListener('click', this.onClick)
       },
       initGeocoder: function () {
         const self = this

@@ -2,8 +2,6 @@
 
 namespace A17\Twill\Commands;
 
-use Illuminate\Console\Command;
-
 class Update extends Command
 {
     protected $signature = 'twill:update';
@@ -19,6 +17,7 @@ class Update extends Command
     {
         $this->publishAssets();
         $this->call('cache:clear');
+        $this->call('view:clear');
     }
 
     /**

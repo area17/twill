@@ -2,107 +2,60 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use Illuminate\Support\Str;
+use A17\Twill\Models\Model;
 use App\Models\Translations\AuthorTranslation;
 use App\Models\Translations\CategoryTranslation;
+use Illuminate\Support\Str;
 
 abstract class ModulesTestBase extends TestCase
 {
     public $name;
+
     public $name_en;
+
     public $name_fr;
+
     public $slug_en;
+
     public $slug_fr;
+
     public $description_en;
+
     public $description_fr;
+
     public $bio_en;
+
     public $bio_fr;
+
     public $birthday;
+
     public $block_id;
+
+    public $block_editor_name;
+
     public $block_quote;
+
     public $translation;
+
     public $author;
+
     public $title;
+
     public $title_en;
+
     public $title_fr;
+
     public $category;
 
-    protected $allFiles = [
-        '{$stubs}/modules/authors/2019_10_18_193753_create_authors_tables.php' =>
-            '{$database}/migrations/',
-
-        '{$stubs}/modules/authors/admin.php' => '{$base}/routes/admin.php',
-
-        '{$stubs}/modules/authors/Author.php' => '{$app}/Models/',
-
-        '{$stubs}/modules/authors/AuthorController.php' =>
-            '{$app}/Http/Controllers/Admin/',
-
-        '{$stubs}/modules/authors/AuthorTranslation.php' =>
-            '{$app}/Models/Translations/',
-
-        '{$stubs}/modules/authors/AuthorRevision.php' =>
-            '{$app}/Models/Revisions/',
-
-        '{$stubs}/modules/authors/AuthorSlug.php' => '{$app}/Models/Slugs/',
-
-        '{$stubs}/modules/authors/AuthorRepository.php' =>
-            '{$app}/Repositories/',
-
-        '{$stubs}/modules/authors/AuthorRequest.php' =>
-            '{$app}/Http/Requests/Admin/',
-
-        '{$stubs}/modules/authors/form.blade.php' =>
-            '{$resources}/views/admin/authors/',
-
-        '{$stubs}/modules/authors/translatable.php' => '{$config}/',
-
-        '{$stubs}/modules/authors/twill-navigation.php' => '{$config}/',
-
-        '{$stubs}/modules/authors/site.blocks.quote.blade.php' =>
-            '{$resources}/views/site/blocks/quote.blade.php',
-
-        '{$stubs}/modules/authors/site.layouts.block.blade.php' =>
-            '{$resources}/views/site/layouts/block.blade.php',
-
-        // ------------------------------------------
-
-        '{$stubs}/modules/categories/2019_10_24_174613_create_categories_tables.php' =>
-            '{$database}/migrations/',
-
-        '{$stubs}/modules/categories/Category.php' => '{$app}/Models/',
-
-        '{$stubs}/modules/categories/CategoryController.php' =>
-            '{$app}/Http/Controllers/Admin/',
-
-        '{$stubs}/modules/categories/CategoryTranslation.php' =>
-            '{$app}/Models/Translations/',
-
-        '{$stubs}/modules/categories/CategoryRevision.php' =>
-            '{$app}/Models/Revisions/',
-
-        '{$stubs}/modules/categories/CategorySlug.php' =>
-            '{$app}/Models/Slugs/',
-
-        '{$stubs}/modules/categories/CategoryRepository.php' =>
-            '{$app}/Repositories/',
-
-        '{$stubs}/modules/categories/CategoryRequest.php' =>
-            '{$app}/Http/Requests/Admin/',
-
-        '{$stubs}/modules/categories/form.blade.php' =>
-            '{$resources}/views/admin/categories/',
-    ];
+    public $example = 'tests-modules';
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->copyFiles($this->allFiles);
+        /* $this->loadModulesConfig(); */
 
-        $this->loadConfig();
-
-        $this->migrate();
+        /* $this->migrate(); */
 
         $this->login();
     }
@@ -110,28 +63,6 @@ abstract class ModulesTestBase extends TestCase
     protected function assertSomethingWrongHappened()
     {
         $this->assertSee('Something wrong happened!');
-    }
-
-    protected function assertNothingWrongHappened()
-    {
-        $this->assertDontSee('Something wrong happened!');
-    }
-
-    protected function loadConfig($file = null)
-    {
-        $config = require $this->makeFileName(
-            $file ?? '{$stubs}/modules/authors/twill.php'
-        );
-
-        config(['twill' => $config + config('twill')]);
-    }
-
-    /**
-     * Migrate database.
-     */
-    public function migrate()
-    {
-        $this->artisan('migrate');
     }
 
     protected function fakeText(int $max = 250)
@@ -158,13 +89,13 @@ abstract class ModulesTestBase extends TestCase
 
     public function searchReplaceFile($search, $replace, $file)
     {
-        /**
+        /*
          * Usage
          *
          *      $this->searchReplaceFile(
          *          "'editInModal' => false",
          *          "'editInModal' => true",
-         *          twill_path('Http/Controllers/Admin/AuthorController.php')
+         *          twill_path('Http/Controllers/Twill/AuthorController.php')
          *      );
          *
          */
@@ -176,17 +107,24 @@ abstract class ModulesTestBase extends TestCase
 
     protected function addBlock()
     {
-        $this->request(
+        $this->httpRequestAssert(
             "/twill/personnel/authors/{$this->author->id}",
             'PUT',
             $this->getUpdateAuthorWithBlock()
-        )->assertStatus(200);
+        );
 
-        $this->assertEquals(1, $this->author->blocks->count());
+        $this->assertEquals(2, $this->author->blocks->count());
 
+        // Check default block content
         $this->assertEquals(
             $block_quote = ['quote' => $this->block_quote],
             $this->author->blocks->first()->content
+        );
+
+        // Check named block content
+        $this->assertEquals(
+            $block_quote = ['quote' => $this->block_quote],
+            $this->author->blocks()->editor($this->block_editor_name)->get()->first()->content
         );
 
         // Check if blocks are rendering
@@ -195,8 +133,14 @@ abstract class ModulesTestBase extends TestCase
             clean_file(trim($this->author->renderBlocks()))
         );
 
+        // Check if named blocks are rendering
+        $this->assertEquals(
+            clean_file(json_encode($block_quote)),
+            clean_file(trim($this->author->renderNamedBlocks($this->block_editor_name)))
+        );
+
         // Get browser data
-        $this->request('/twill/personnel/authors/browser')->assertStatus(200);
+        $this->httpRequestAssert('/twill/personnel/authors/browser');
 
         $this->assertJson($this->content());
 
@@ -210,14 +154,14 @@ abstract class ModulesTestBase extends TestCase
         $this->assertEquals($data['endpointType'], 'App\Models\Author');
     }
 
-    protected function createAuthor($count = 1)
+    protected function createAuthor($count = 1): Model
     {
         foreach (range(1, $count) as $c) {
-            $this->request(
+            $this->httpRequestAssert(
                 '/twill/personnel/authors',
                 'POST',
                 $this->getCreateAuthorData()
-            )->assertStatus(200);
+            );
         }
 
         $this->translation = AuthorTranslation::where('name', $this->name_en)
@@ -229,6 +173,8 @@ abstract class ModulesTestBase extends TestCase
         $this->assertNotNull($this->translation);
 
         $this->assertCount(3, $this->author->slugs);
+
+        return $this->author;
     }
 
     protected function destroyAuthor()
@@ -237,11 +183,11 @@ abstract class ModulesTestBase extends TestCase
 
         $this->assertNull($this->author->deleted_at);
 
-        $this->request(
+        $this->httpRequestAssert(
             "/twill/personnel/authors/{$this->author->id}",
             'DELETE',
             $this->getUpdateAuthorWithBlock()
-        )->assertStatus(200);
+        );
 
         $this->assertNothingWrongHappened();
 
@@ -249,20 +195,21 @@ abstract class ModulesTestBase extends TestCase
 
         $this->assertNotNull($this->author->deleted_at);
 
-        $this->request(
+        $this->httpRequestAssert(
             '/twill/personnel/authors/9999999',
             'DELETE',
-            $this->getUpdateAuthorWithBlock()
-        )->assertStatus(404);
+            $this->getUpdateAuthorWithBlock(),
+            404
+        );
     }
 
     protected function editAuthor()
     {
-        $this->request(
+        $this->httpRequestAssert(
             "/twill/personnel/authors/{$this->author->id}",
             'PUT',
             $this->getUpdateAuthorData()
-        )->assertStatus(200);
+        );
 
         $this->assertNothingWrongHappened();
 
@@ -388,21 +335,30 @@ abstract class ModulesTestBase extends TestCase
     {
         return $this->getUpdateAuthorData() + [
             'blocks' => [
-                [
-                    'id' => ($this->block_id = rand(
-                        1570000000000,
-                        1579999999999
-                    )),
-                    'type' => 'a17-block-quote',
-                    'content' => [
-                        'quote' => ($this->block_quote = $this->fakeText()),
-                    ],
-                    'medias' => [],
-                    'browsers' => [],
-                    'blocks' => [],
-                ],
+                $this->getAuthorBlock(),
+                $this->getAuthorBlock($this->block_editor_name = 'unique-name'),
             ],
             'repeaters' => [],
+        ];
+    }
+
+    public function getAuthorBlock($name = 'default')
+    {
+        $this->block_quote = $this->block_quote ?? $this->fakeText();
+
+        return [
+            'id' => ($this->block_id = rand(
+                1570000000000,
+                1579999999999
+            )),
+            'type' => 'a17-block-quote',
+            'content' => [
+                'quote' => $this->block_quote,
+            ],
+            'medias' => [],
+            'browsers' => [],
+            'blocks' => [],
+            'editor_name' => $name,
         ];
     }
 
@@ -452,11 +408,11 @@ abstract class ModulesTestBase extends TestCase
     protected function createCategory($count = 1)
     {
         foreach (range(1, $count) as $c) {
-            $this->request(
+            $this->httpRequestAssert(
                 '/twill/categories',
                 'POST',
                 $this->getCreateCategoryData()
-            )->assertStatus(200);
+            );
         }
 
         $this->translation = CategoryTranslation::where(

@@ -1,5 +1,5 @@
 @php
-    $options = method_exists($options, 'map') ? $options->map(function($label, $value) {
+    $options = is_object($options) && method_exists($options, 'map') ? $options->map(function($label, $value) {
         return [
             'value' => $value,
             'label' => $label
@@ -8,6 +8,8 @@
 
     $note = $note ?? false;
     $inline = $inline ?? false;
+    $border = $border ?? false;
+    $columns = $columns ?? 0;
 
     // do not use for now, but this will allow you to create a new option directly from the form
     $addNew = $addNew ?? false;
@@ -21,7 +23,9 @@
     @include('twill::partials.form.utils._field_name')
     :options="{{ json_encode($options) }}"
     :grid="false"
+    :columns="{{ $columns }}"
     :inline='{{ $inline ? 'true' : 'false' }}'
+    :border='{{ $border ? 'true' : 'false' }}'
     @if ($min ?? false) :min="{{ $min }}" @endif
     @if ($max ?? false) :max="{{ $max }}" @endif
     @if ($inModal) :in-modal="true" @endif
@@ -39,7 +43,7 @@
 @push('vuexStore')
     window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
         name: '{{ $name }}',
-        value: {!! json_encode(isset($item) && isset($item->$name) ? Arr::pluck($item->$name, 'id') : $formFieldsValue) !!}
+        value: {!! json_encode(isset($item) && isset($item->$name) ? (is_string($item->$name) ? json_decode($item->$name) : Arr::pluck($item->$name, 'id')) : $formFieldsValue) !!}
     })
 @endpush
 @endunless

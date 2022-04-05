@@ -201,6 +201,7 @@ $multiSelectHeight: 45px;
       opacity: 1;
       min-width: 200px;
       margin: 0;
+      pointer-events: none;
     }
 
     &.vselect--has-value .v-select.unsearchable input[type="search"] {
@@ -301,6 +302,16 @@ $multiSelectHeight: 45px;
         &:hover {
           background-color:$color__fborder--hover;
         }
+      }
+    }
+  }
+
+  .v-select.disabled {
+    .selected-tag {
+      padding-right: 15px;
+
+      .close {
+        display: none;
       }
     }
   }

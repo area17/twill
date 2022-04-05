@@ -17,15 +17,21 @@
       },
       modalTitle: {
         type: String,
-        default: 'Move to Trash'
+        default: function () {
+          return this.$trans('dialog.title')
+        }
       },
       confirmLabel: {
         type: String,
-        default: 'Ok'
+        default: function () {
+          return this.$trans('dialog.ok')
+        }
       },
       cancelLabel: {
         type: String,
-        default: 'Cancel'
+        default: function () {
+          return this.$trans('dialog.cancel')
+        }
       }
     },
     methods: {

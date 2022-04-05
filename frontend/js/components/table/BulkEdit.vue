@@ -2,27 +2,29 @@
   <div class="bulkEditor">
     <div class="bulkEditor__inner" v-if="bulkIds.length">
       <div class="container">
-        <p class="bulkEditor__infos">{{ bulkIds.length }} item{{ bulkIds.length > 1 ? 's' : '' }} selected</p>
+        <p class="bulkEditor__infos">
+          {{ bulkIds.length }} {{ bulkIds.length > 1 ? $trans('listing.bulk-selected-items') : $trans('listing.bulk-selected-item') }}
+        </p>
         <div class="bulkEditor__dropdown">
           <a17-dropdown ref="bulkActionsDown" position="bottom-left" width="full" :offset="0">
-            <a17-button variant="dropdown" size="small" @click="$refs.bulkActionsDown.toggle()">Bulk actions</a17-button>
+            <a17-button variant="dropdown" size="small" @click="$refs.bulkActionsDown.toggle()">{{ $trans('listing.bulk-actions') }}</a17-button>
 
             <div slot="dropdown__content">
               <ul>
                 <li>
-                  <button v-if="bulkPublishable()" @click="bulkPublish">Publish</button>
-                  <button v-if="bulkPublishable(true)" @click="bulkUnpublish">Unpublish</button>
-                  <button v-if="bulkFeaturable()" @click="bulkFeature">Feature</button>
-                  <button v-if="bulkFeaturable(true)" @click="bulkUnFeature">Unfeature</button>
-                  <button v-if="bulkDeletable()" @click="bulkDelete">Delete</button>
-                  <button v-if="bulkRestorable()" @click="bulkRestore">Restore</button>
-                  <button v-if="bulkDestroyable()" @click="bulkDestroy">Destroy</button>
+                  <button v-if="bulkPublishable()" @click="bulkPublish">{{ $trans('listing.dropdown.publish') }}</button>
+                  <button v-if="bulkPublishable(true)" @click="bulkUnpublish">{{ $trans('listing.dropdown.unpublish') }}</button>
+                  <button v-if="bulkFeaturable()" @click="bulkFeature">{{ $trans('listing.dropdown.feature') }}</button>
+                  <button v-if="bulkFeaturable(true)" @click="bulkUnFeature">{{ $trans('listing.dropdown.unfeature') }}</button>
+                  <button v-if="bulkDeletable()" @click="bulkDelete">{{ $trans('listing.dropdown.delete') }}</button>
+                  <button v-if="bulkRestorable()" @click="bulkRestore">{{ $trans('listing.dropdown.restore') }}</button>
+                  <button v-if="bulkDestroyable()" @click="bulkDestroy">{{ $trans('listing.dropdown.destroy') }}</button>
                 </li>
               </ul>
             </div>
           </a17-dropdown>
         </div>
-        <a17-button variant="ghost" @click="clearBulkSelect">Clear</a17-button>
+        <a17-button variant="ghost" @click="clearBulkSelect">{{ $trans('listing.bulk-clear') }}</a17-button>
       </div>
     </div>
   </div>
@@ -47,7 +49,8 @@
             published: status.published && (row.published || false),
             canPublish: status.canPublish && row.hasOwnProperty('published'),
             deleted: status.deleted && (row.deleted || false),
-            canDelete: status.canDelete && row.delete !== null
+            canDelete: status.canDelete && row.delete !== null,
+            canDestroy: status.canDestroy && row.hasOwnProperty('destroyable')
           }
         }, {
           featured: true,
@@ -55,7 +58,8 @@
           published: true,
           canPublish: true,
           deleted: true,
-          canDelete: true
+          canDelete: true,
+          canDestroy: true
         })
       })
     },
@@ -73,7 +77,7 @@
         return window[process.env.VUE_APP_NAME].CMS_URLS.bulkRestore !== '' && this.bulkStatus.deleted
       },
       bulkDestroyable: function () {
-        return window[process.env.VUE_APP_NAME].CMS_URLS.bulkDestroy !== '' && this.bulkStatus.deleted
+        return window[process.env.VUE_APP_NAME].CMS_URLS.bulkDestroy !== '' && this.bulkStatus.deleted && this.bulkStatus.canDestroy
       },
       clearBulkSelect: function () {
         this.$store.commit(DATATABLE.REPLACE_DATATABLE_BULK, [])

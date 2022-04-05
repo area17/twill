@@ -1,35 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="tests/bootstrap.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnError="false"
-         stopOnFailure="false"
-         verbose="true"
->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" backupStaticAttributes="false" bootstrap="tests/bootstrap.php" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false" stopOnError="false" stopOnFailure="false" verbose="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+    <exclude>
+      <directory suffix=".blade.php">./tests</directory>
+    </exclude>
+    <report>
+      <clover outputFile="./.github/clover.xml"/>
+      <text outputFile="php://stdout" showUncoveredFiles="false" showOnlySummary="true"/>
+    </report>
+  </coverage>
   <testsuites>
     <testsuite name="Twill Test Suites">
-      <directory suffix="Test.php">./tests</directory>
+      <file>tests/unit/ValidationTest.php</file>
+      <file>tests/unit/MediaLibrary/AbstractParamsProcessorTest.php</file>
+      <file>tests/unit/MediaLibrary/TwicPicsParamsProcessorTest.php</file>
+      <file>tests/integration/Commands/BuildTest.php</file>
+      <file>tests/integration/Commands/ListBlocksTest.php</file>
+      <file>tests/integration/Commands/ListIconsTest.php</file>
+      <file>tests/integration/Commands/MakeBlockTest.php</file>
+      <file>tests/integration/Commands/MakeModuleTest.php</file>
+      <file>tests/integration/Commands/MakeSingletonTest.php</file>
+      <file>tests/integration/Commands/SuperadminTest.php</file>
+      <file>tests/integration/Commands/UpdateTest.php</file>
+      <file>tests/integration/Commands/RefreshCropsTest.php</file>
+      <file>tests/integration/FileLibraryTest.php</file>
+      <file>tests/integration/LoginTest.php</file>
+      <file>tests/integration/MediaLibraryTest.php</file>
+      <file>tests/integration/ModulesAuthorsTest.php</file>
+      <file>tests/integration/ModulesCategoriesTest.php</file>
+      <file>tests/integration/UsersTest.php</file>
+      <file>tests/integration/RoutesTest.php</file>
+      <file>tests/integration/PasswordsTest.php</file>
+      <file>tests/integration/CapsulesTest.php</file>
+      <file>tests/integration/PermissionsLegacyTest.php</file>
+      <file>tests/integration/PermissionsTest.php</file>
+      <file>tests/integration/BrowsersTest.php</file>
+      <file>tests/integration/NestedModuleTest.php</file>
+      <file>tests/integration/SingletonModuleTest.php</file>
     </testsuite>
   </testsuites>
-  <filter>
-    <whitelist processUncoveredFilesFromWhitelist="true">
-      <directory suffix=".php">./src</directory>
-    </whitelist>
-  </filter>
-  <logging>
-    <log type="coverage-html" target="tests/coverage/" lowUpperBound="35" highLowerBound="70"/>
-    <log type="coverage-clover" target="tests/coverage/coverage-clover.xml" lowUpperBound="35" highLowerBound="70"/>
-    <log type="coverage-text" target="php://stdout" showOnlySummary="true" showUncoveredFiles="false"/>
-  </logging>
+  <logging/>
   <php>
     <env name="APP_KEY" value="base64:DV8kQN5a+4MwAIQ5uk1WNafxO+/Efab0K20uVMDJ2UE="/>
     <env name="APP_ENV" value="testing"/>
     <env name="APP_URL" value="http://twill.test"/>
+    <env name="APP_DEBUG" value="true"/>
     <env name="TELESCOPE_ENABLED" value="false"/>
     <env name="BCRYPT_ROUNDS" value="4"/>
     <env name="CACHE_DRIVER" value="array"/>

@@ -43,6 +43,9 @@
       },
       initialValue: {
         default: ''
+      },
+      defaultValue: {
+        default: ''
       }
     },
     components: {
@@ -52,6 +55,11 @@
       return {
         focused: false,
         value: this.initialValue
+      }
+    },
+    mounted () {
+      if (this.value === '' && this.defaultValue !== '') {
+        this.updateValue(this.defaultValue)
       }
     },
     computed: {

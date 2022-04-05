@@ -1,5 +1,5 @@
 @php
-    $options = method_exists($options, 'map') ? $options->map(function($label, $value) {
+    $options = is_object($options) && method_exists($options, 'map') ? $options->map(function($label, $value) {
         return [
             'value' => $value,
             'label' => $label
@@ -8,6 +8,7 @@
 
     $unpack = $unpack ?? true;
     $note = $note ?? false;
+    $columns = $columns ?? 0;
 
     // do not use for now, but this will allow you to create a new option directly from the form
     $addNew = $addNew ?? false;
@@ -22,6 +23,7 @@
         @include('twill::partials.form.utils._field_name')
         :options="{{ json_encode($options) }}"
         :grid="true"
+        :columns="{{ $columns }}"
         :inline="false"
         @if ($min ?? false) :min="{{ $min }}" @endif
         @if ($max ?? false) :max="{{ $max }}" @endif
@@ -39,12 +41,13 @@
     <a17-vselect
         label="{{ $label }}"
         @include('twill::partials.form.utils._field_name')
-        :options='{!! json_encode($options) !!}'
+        :options="{{ json_encode($options) }}"
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder ?? false) placeholder="{{ $placeholder }}" @endif
         @if ($inModal) :in-modal="true" @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
-        @if ($endpoint ?? false) :searchable="true" endpoint="{{ $endpoint }}" @endif
+        @if ($searchable ?? $endpoint ?? false) :searchable="true" @endif
+        @if ($endpoint ?? false) endpoint="{{ $endpoint }}" @endif
         :multiple="true"
         in-store="inputValue"
     >

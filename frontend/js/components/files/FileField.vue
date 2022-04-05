@@ -1,12 +1,17 @@
 <template>
   <a17-inputframe :error="error" :label="label" :locale="locale" @localize="updateLocale" :size="size" :name="name" :note="fieldNote">
     <div class="fileField">
+      <div class="fileField__trigger" v-if="buttonOnTop && remainingItems">
+        <input type="hidden" :name="name" :value="itemsIds"/>
+        <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingItems)">{{ addLabel }}</a17-button>
+        <span class="fileField__note f--small">{{ note }}</span>
+      </div>
       <table class="fileField__list" v-if="items.length">
         <draggable :tag="'tbody'" v-model="items">
           <a17-fileitem v-for="(item, index) in items" :key="item.id" class="item__content" :name="`${name}_${item.id}`" :draggable="isDraggable" :item="item" @delete="deleteItem(index)"></a17-fileitem>
         </draggable>
       </table>
-      <div class="fileField__trigger" v-if="remainingItems">
+      <div class="fileField__trigger" v-if="!buttonOnTop && remainingItems">
         <input type="hidden" :name="name" :value="itemsIds"/>
         <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingItems)">{{ addLabel }}</a17-button>
         <span class="fileField__note f--small">{{ note }}</span>
@@ -63,6 +68,14 @@
       fieldNote: {
         type: String,
         default: ''
+      },
+      filesizeMax: {
+        type: Number,
+        default: 0
+      },
+      buttonOnTop: {
+        type: Boolean,
+        default: false
       }
     },
     data: () => {
@@ -121,9 +134,6 @@
           index: index
         })
       }
-    },
-    beforeDestroy: function () {
-      this.deleteAll()
     }
   }
 </script>

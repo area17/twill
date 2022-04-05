@@ -16,7 +16,19 @@ if (!function_exists('getLocales')) {
      */
     function getLocales()
     {
-        return config('translatable.locales') ?? [config('app.locale')];
+        $locales = collect(config('translatable.locales'))->map(function ($locale, $index) {
+            return collect($locale)->map(function ($country) use ($locale, $index) {
+                return is_numeric($index)
+                    ? $locale
+                    : "$index-$country";
+            });
+        })->flatten()->toArray();
+
+        if (blank($locales)) {
+            $locales = [config('app.locale')];
+        }
+
+        return $locales;
     }
 }
 
@@ -30,7 +42,7 @@ if (!function_exists('getLanguagesForVueStore')) {
     {
         $manageMultipleLanguages = count(getLocales()) > 1;
         if ($manageMultipleLanguages && $translate) {
-            $allLanguages = Collection::make(config('translatable.locales'))->map(function ($locale, $index) use ($form_fields) {
+            $allLanguages = Collection::make(getLocales())->map(function ($locale, $index) use ($form_fields) {
                 return [
                     'shortlabel' => strtoupper($locale),
                     'label' => getLanguageLabelFromLocaleCode($locale),
@@ -73,11 +85,42 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             if ($native) {
                 return ucfirst(Locale::getDisplayLanguage($code, $code));
             } else {
-                return ucfirst(Locale::getDisplayLanguage($code, 'en'));
+                return ucfirst(Locale::getDisplayLanguage($code, config('twill.locale', config('twill.fallback_locale', 'en'))));
             }
         }
 
-        $codeToLanguageMappings = [
+        $codeToLanguageMappings = getCodeToLanguageMappings();
+
+        if (isset($codeToLanguageMappings[$code])) {
+            $lang = $codeToLanguageMappings[$code];
+            if (is_array($lang) && isset($lang[1]) && $native) {
+                return $lang[1];
+            }
+            return $lang;
+        }
+        return $code;
+    }
+}
+
+/**
+ * Converts camelCase string to have spaces between each.
+ * @param string $camelCaseString
+ * @return string (ex.: camel case string)
+ */
+if (!function_exists('camelCaseToWords')) {
+    function camelCaseToWords($camelCaseString)
+    {
+        $re = '/(?<=[a-z])(?=[A-Z])/x';
+        $a = preg_split($re, $camelCaseString);
+        $words = join(" ", $a);
+        return ucfirst(strtolower($words));
+    }
+}
+
+if (!function_exists('getCodeToLanguageMappings')) {
+    function getCodeToLanguageMappings()
+    {
+        return [
             'ab' => 'Abkhazian',
             'aa' => 'Afar',
             'af' => 'Afrikaans',
@@ -229,29 +272,5 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             'yo' => 'Yoruba',
             'zu' => 'Zulu',
         ];
-
-        if (isset($codeToLanguageMappings[$code])) {
-            $lang = $codeToLanguageMappings[$code];
-            if (is_array($lang) && isset($lang[1]) && $native) {
-                return $lang[1];
-            }
-            return $lang;
-        }
-        return $code;
-    }
-}
-
-/**
- * Converts camelCase string to have spaces between each.
- * @param string $camelCaseString
- * @return string (ex.: camel case string)
- */
-if (!function_exists('camelCaseToWords')) {
-    function camelCaseToWords($camelCaseString)
-    {
-        $re = '/(?<=[a-z])(?=[A-Z])/x';
-        $a = preg_split($re, $camelCaseString);
-        $words = join(" ", $a);
-        return ucfirst(strtolower($words));
     }
 }

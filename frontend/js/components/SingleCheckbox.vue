@@ -1,22 +1,29 @@
 <template>
   <a17-inputframe :error="error" :note="note" :name="name">
-    <div class="singleCheckbox">
+    <div class="singleCheckbox" :class="wrapperClasses">
       <span class="checkbox">
-        <input type="checkbox" class="checkbox__input" :class="checkboxClasses" value="true" :name="name + '[' + randKey + ']'" :id="uniqId" :disabled="disabled">
+        <input type="checkbox" class="checkbox__input" :class="checkboxClasses" value="true" :name="name + '[' + randKey + ']'" :id="uniqId" :disabled="disabled" :checked="checkedValue">
         <label class="checkbox__label" :for="uniqId" @click.prevent="changeCheckbox">{{ label }} <span class="checkbox__icon"><span v-svg symbol="check"></span></span></label>
       </span>
     </div>
+    <template v-if="requireConfirmation">
+      <a17-dialog ref="warningConfirm" modal-title="Confirm" confirm-label="Confirm">
+        <p class="modal--tiny-title"><strong>{{ confirmTitleText }}</strong></p>
+        <p>{{ confirmMessageText }}</p>
+      </a17-dialog>
+    </template>
   </a17-inputframe>
 </template>
 
 <script>
   import randKeyMixin from '@/mixins/randKey'
-  import InputframeMixin from '@/mixins/inputFrame'
   import FormStoreMixin from '@/mixins/formStore'
+  import InputframeMixin from '@/mixins/inputFrame'
+  import ConfirmationMixin from '@/mixins/confirmationMixin'
 
   export default {
     name: 'A17SingleCheckbox',
-    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin],
+    mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, ConfirmationMixin],
     props: {
       name: {
         type: String,
@@ -33,6 +40,10 @@
       disabled: {
         type: Boolean,
         default: false
+      },
+      border: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
@@ -43,6 +54,11 @@
     computed: {
       uniqId: function () {
         return this.name + '_' + this.randKey
+      },
+      wrapperClasses: function () {
+        return [
+          this.border ? 'singleCheckbox--border' : ''
+        ]
       },
       checkboxClasses: function () {
         return [
@@ -68,7 +84,13 @@
         this.checkedValue = newValue
       },
       changeCheckbox: function () {
-        this.checkedValue = !this.checkedValue
+        if (this.requireConfirmation) {
+          this.$refs.warningConfirm.open(() => {
+            this.checkedValue = !this.checkedValue
+          })
+        } else {
+          this.checkedValue = !this.checkedValue
+        }
       }
     }
   }
@@ -184,6 +206,31 @@
     // .checkbox__input:checked + .checkbox__label .checkbox__icon,
     .checkbox__input--checked + .checkbox__label .checkbox__icon {
       opacity: 0;
+    }
+  }
+
+  /* border version */
+  .singleCheckbox--border {
+    border: 1px solid $color__border;
+    background-clip: padding-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 2px;
+    padding: 0 15px;
+
+    .checkbox__label {
+      padding-left: 25px;
+      height: 50px;
+      line-height: 50px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .checkbox__label::before,
+    .checkbox__icon {
+      top: 50%;
+      margin-top: -9px;
     }
   }
 </style>
