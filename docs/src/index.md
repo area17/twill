@@ -1,6 +1,6 @@
 ---
 pageClass: twill-doc
-title: Documenation
+title: Documentation
 next: "/preface/"
 ---
 

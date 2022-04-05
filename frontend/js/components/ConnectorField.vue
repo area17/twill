@@ -39,12 +39,21 @@
       isValueEqual: { // requiredFieldValues must be equal (or different) to the stored value to show
         type: Boolean,
         default: true
+      },
+      isBrowser: {
+        type: Boolean,
+        default: false
+      },
+      matchEmptyBrowser: {
+        type: Boolean,
+        default: false
       }
     },
     computed: {
       storedValue: function () {
         if (this.inModal) return this.modalFieldValueByName(this.fieldName)
-        else return this.fieldValueByName(this.fieldName)
+        if (this.isBrowser) return this.selectedBrowser[this.fieldName]
+        return this.fieldValueByName(this.fieldName)
       },
       ...mapGetters([
         'fieldValueByName',
@@ -52,7 +61,8 @@
       ]),
       ...mapState({
         fields: state => state.form.fields, // Fields in the form
-        modalFields: state => state.form.modalFields // Fields in the create/edit modal
+        modalFields: state => state.form.modalFields, // Fields in the create/edit modal
+        selectedBrowser: state => state.browser.selected
       })
     },
     data: function () {
@@ -67,6 +77,17 @@
     },
     methods: {
       toggleVisibility: function (value) {
+        if (this.isBrowser) {
+          const browserLength = (value && value.length) ?? 0
+          if (this.matchEmptyBrowser && (browserLength === 0)) {
+            this.open = true
+            return
+          }
+
+          this.open = this.matchEmptyBrowser ? false : browserLength > 0
+          return
+        }
+
         const newValue = clone(value)
         const newFieldValues = clone(this.requiredFieldValues)
 

@@ -24,4 +24,21 @@ You can enable the content editor individual block previews by providing a `reso
 </html>
 ```
 
-If you would like to specify a custom layout view path, you can do so in `config/twill.php` at `twill.block_editor.block_single_layout`. A good way to share assets and structure from the frontend with these individual block previews is to create a parent layout and extend it from your block layout.
+If you would like to specify a custom layout view path, you can do so in `config/twill.php` at `twill.block_editor.block_single_layout`.
+A good way to share assets and structure from the frontend with these individual block previews is to create a parent layout and extend it from your block layout.
+
+## Editor preview context
+
+If needed you can use the existance of the variable `$inEditor` to conditionally add or remove items from your block
+view file.
+
+`$inEditor` is not set when not in a preview context.
+
+```html
+<div style="max-width: 500px; margin-left: auto; margin-right: auto;">
+    @isset($inEditor)
+      I am only visible in the editor
+    @endisset
+    {!! $block->translatedInput('text') !!}
+</div>
+```

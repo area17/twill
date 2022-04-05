@@ -8,6 +8,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use A17\Twill\Models\Media;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class RefreshCrops extends Command
 {
@@ -17,7 +18,7 @@ class RefreshCrops extends Command
      * @var string
      */
     protected $signature = 'twill:refresh-crops
-        {modelName : The fully qualified model name (e.g. App\Models\Post)}
+        {modelName : The fully qualified model name (e.g. App\Models\Post, A17\Twill\Models\Block)}
         {roleName : The role name for which crops will be refreshed}
         {--dry : Print the operations that would be performed without modifying the database}
     ';
@@ -27,7 +28,7 @@ class RefreshCrops extends Command
      *
      * @var string
      */
-    protected $description = 'Refresh all crops for an existing image role';
+    protected $description = 'Refresh all crops for an existing image role. It may be crops defined in the Model or in config/twill.php';
 
     /**
      * @var DatabaseManager
@@ -108,6 +109,9 @@ class RefreshCrops extends Command
         $this->roleName = $this->argument('roleName');
 
         $mediasParams = app($this->modelName)->mediasParams;
+        if ($mediasParams === null) {
+            $mediasParams = config('twill.block_editor.crops');
+        }
 
         if (! isset($mediasParams[$this->roleName])) {
             $this->error("Role `{$this->roleName}` was not found`");
@@ -117,9 +121,15 @@ class RefreshCrops extends Command
 
         $this->crops = collect($mediasParams[$this->roleName]);
 
+        // If the model exists in the Morphmap, we loop for the morphed name instead.
+        $mediableType = $this->modelName;
+        if ($morphedModelName = array_search($this->modelName, Relation::morphMap())) {
+            $mediableType = $morphedModelName;
+        }
+
         $mediables = $this->db
             ->table(config('twill.mediables_table', 'twill_mediables'))
-            ->where(['mediable_type' => $this->modelName, 'role' => $this->roleName]);
+            ->where(['mediable_type' => $mediableType, 'role' => $this->roleName]);
 
         if ($mediables->count() === 0) {
             $this->warn("No mediables found for model `$this->modelName` and role `$this->roleName`");

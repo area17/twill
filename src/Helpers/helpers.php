@@ -1,12 +1,14 @@
 <?php
 
-use A17\Twill\Services\Blocks\BlockCollection;
+use A17\Twill\Facades\TwillBlocks;
+use A17\Twill\Facades\TwillCapsules;
+use A17\Twill\Services\Blocks\Block;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
-use \Illuminate\Support\Str;
+use Illuminate\Support\Str;
 
-if (!function_exists('dumpUsableSqlQuery')) {
+if (! function_exists('dumpUsableSqlQuery')) {
     function dumpUsableSqlQuery($query)
     {
         dd(vsprintf(str_replace('?', '%s', $query->toSql()), array_map(function ($binding) {
@@ -15,7 +17,7 @@ if (!function_exists('dumpUsableSqlQuery')) {
     }
 }
 
-if (!function_exists('classUsesDeep')) {
+if (! function_exists('classUsesDeep')) {
     /**
      * @param mixed $class
      * @param bool $autoload
@@ -32,7 +34,7 @@ if (!function_exists('classUsesDeep')) {
 
         // Get traits of all parent traits
         $traitsToSearch = $traits;
-        while (!empty($traitsToSearch)) {
+        while (! empty($traitsToSearch)) {
             $newTraits = class_uses(array_pop($traitsToSearch), $autoload);
             $traits = array_merge($newTraits, $traits);
             $traitsToSearch = array_merge($newTraits, $traitsToSearch);
@@ -46,7 +48,7 @@ if (!function_exists('classUsesDeep')) {
     }
 }
 
-if (!function_exists('classHasTrait')) {
+if (! function_exists('classHasTrait')) {
     /**
      * @param mixed $class
      * @param string $trait
@@ -64,7 +66,7 @@ if (!function_exists('classHasTrait')) {
     }
 }
 
-if (!function_exists('getFormFieldsValue')) {
+if (! function_exists('getFormFieldsValue')) {
     /**
      * @param array $formFields
      * @param string $name
@@ -77,7 +79,7 @@ if (!function_exists('getFormFieldsValue')) {
     }
 }
 
-if (!function_exists('fireCmsEvent')) {
+if (! function_exists('fireCmsEvent')) {
     /**
      * @param string $eventName
      * @param array $input
@@ -90,7 +92,7 @@ if (!function_exists('fireCmsEvent')) {
     }
 }
 
-if (!function_exists('twill_path')) {
+if (! function_exists('twill_path')) {
     /**
      * @param string $path
      * @return string
@@ -132,7 +134,7 @@ if (!function_exists('twill_path')) {
     }
 }
 
-if (!function_exists('make_twill_directory')) {
+if (! function_exists('make_twill_directory')) {
     /**
      * @param string $path
      * @param bool $recursive
@@ -146,13 +148,13 @@ if (!function_exists('make_twill_directory')) {
 
         $path = twill_path($path);
 
-        if (!$fs->isDirectory($path)) {
+        if (! $fs->isDirectory($path)) {
             $fs->makeDirectory($path, 0755, $recursive);
         }
     }
 }
 
-if (!function_exists('twill_put_stub')) {
+if (! function_exists('twill_put_stub')) {
     /**
      * @param string $path
      * @param bool $recursive
@@ -170,13 +172,13 @@ if (!function_exists('twill_put_stub')) {
             $stub
         );
 
-        if (!$fs->exists($path)) {
+        if (! $fs->exists($path)) {
             $fs->put($path, $stub);
         }
     }
 }
 
-if (!function_exists('fix_directory_separator')) {
+if (! function_exists('fix_directory_separator')) {
     /**
      * @param string $path
      * @param bool $recursive
@@ -192,74 +194,69 @@ if (!function_exists('fix_directory_separator')) {
     }
 }
 
-if (!function_exists('generate_list_of_allowed_blocks')) {
+if (! function_exists('generate_list_of_allowed_blocks')) {
     /**
      * @param array $blocks
      * @param array $groups
      * @return array
      */
-    function generate_list_of_available_blocks($blocks, $groups)
+    function generate_list_of_available_blocks($blocks, $groups): array
     {
-        $blockList = app(BlockCollection::class)->getBlockList();
+        $blockList = TwillBlocks::getBlocks();
 
-        $appBlocksList = $blockList->filter(function ($block) {
-            return $block['source'] !== A17\Twill\Services\Blocks\Block::SOURCE_TWILL;
+        $appBlocksList = $blockList->filter(function (Block $block) {
+            return $block->source !== A17\Twill\Services\Blocks\Block::SOURCE_TWILL;
         });
 
         $finalBlockList = $blockList->filter(
-            function ($block) use ($blocks, $groups, $appBlocksList) {
-                if ($block['group'] === A17\Twill\Services\Blocks\Block::SOURCE_TWILL) {
-                    if (!collect(
-                        config('twill.block_editor.use_twill_blocks')
-                    )->contains($block['name'])) {
+            function (Block $block) use ($blocks, $groups, $appBlocksList) {
+                if ($block->group === A17\Twill\Services\Blocks\Block::SOURCE_TWILL) {
+                    if (! collect(config('twill.block_editor.use_twill_blocks'))->contains($block->name)) {
                         return false;
                     }
 
-                    if (count($appBlocksList) > 0 && $appBlocksList->contains(
-                        function ($appBlock) use ($block) {
-                            return $appBlock['name'] === $block['name'];
-                        })
+                    /** @var \Illuminate\Support\Collection<Block> $appBlocksList */
+                    if (
+                        count($appBlocksList) > 0 && $appBlocksList->contains(
+                            function ($appBlock) use ($block) {
+                                return $appBlock->name === $block->name;
+                            }
+                        )
                     ) {
                         return false;
                     }
                 }
 
-                return (filled($blocks) ? collect($blocks)->contains($block['name']) : true)
-                    && (filled($groups) ? collect($groups)->contains($block['group']) : true);
+                return (filled($blocks) ? collect($blocks)->contains($block->name) : true)
+                    && (filled($groups) ? collect($groups)->contains($block->group) : true);
             }
         );
 
         // Sort them by the original definition
-        $sorted = $finalBlockList->sortBy(function($b) use ($blocks) {
-            return collect($blocks)->search(function($id, $key) use ($b) {
-                return $id == $b['name'];
+        return $finalBlockList->sortBy(function (Block $b) use ($blocks) {
+            return collect($blocks)->search(function ($id, $key) use ($b) {
+                return $id == $b->name;
             });
         })->values()->toArray();
-
-        return $sorted;
     }
 }
 
-if (!function_exists('capsule_namespace')) {
-    function capsule_namespace($capsuleName, $type = null) {
-        return capsules()->capsuleNamespace($capsuleName, $type);
+if (! function_exists('capsule_namespace')) {
+    /**
+     * @deprecated use TwillCapsules::capsuleNamespace instead
+     */
+    function capsule_namespace($capsuleName, $type = null)
+    {
+        return TwillCapsules::capsuleNamespace($capsuleName, $type);
     }
 }
 
-if (!function_exists('capsule_namespace_to_path')) {
-    function capsule_namespace_to_path($namespace, $capsuleNamespace, $rootPath) {
-        return capsules()->capsuleNamespaceToPath($namespace, $capsuleNamespace, $rootPath);
-    }
-}
-
-if (!function_exists('capsules')) {
-    function capsules($capsule = null) {
-        $manager = app('twill.capsules.manager');
-
-        if (filled($capsule)) {
-            return $manager->capsule($capsule);
-        }
-
-        return $manager;
+if (! function_exists('capsule_namespace_to_path')) {
+    /**
+     * @deprecated use TwillCapsules::capsuleNamespaceToPath instead
+     */
+    function capsule_namespace_to_path($namespace, $capsuleNamespace, $rootPath)
+    {
+        return TwillCapsules::capsuleNamespaceToPath($namespace, $capsuleNamespace, $rootPath);
     }
 }
