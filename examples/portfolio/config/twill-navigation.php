@@ -9,4 +9,8 @@ return [
         'title' => 'Partners',
         'module' => true,
     ],
+    'comments' => [
+        'title' => 'Comments',
+        'module' => true,
+    ],
 ];

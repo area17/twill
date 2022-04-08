@@ -7,8 +7,9 @@ use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasRevisions;
 use A17\Twill\Models\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-class Partner extends Model 
+class Partner extends Model
 {
     use HasTranslation, HasSlug, HasMedias, HasRevisions;
 
@@ -17,45 +18,19 @@ class Partner extends Model
         'title',
         'description',
     ];
-    
+
     public $translatedAttributes = [
         'title',
         'description',
         'active',
     ];
-    
+
     public $slugAttributes = [
         'title',
     ];
-    
-    public $mediasParams = [
-        'cover' => [
-            'default' => [
-                [
-                    'name' => 'default',
-                    'ratio' => 16 / 9,
-                ],
-            ],
-            'mobile' => [
-                [
-                    'name' => 'mobile',
-                    'ratio' => 1,
-                ],
-            ],
-            'flexible' => [
-                [
-                    'name' => 'free',
-                    'ratio' => 0,
-                ],
-                [
-                    'name' => 'landscape',
-                    'ratio' => 16 / 9,
-                ],
-                [
-                    'name' => 'portrait',
-                    'ratio' => 3 / 5,
-                ],
-            ],
-        ],
-    ];
+
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
 }

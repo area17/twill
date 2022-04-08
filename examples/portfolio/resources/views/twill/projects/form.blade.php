@@ -23,4 +23,8 @@
             'name' => 'partners',
         ]
     ])
+
+    @formField('repeater', ['type' => 'comment'])
+
+    @formField('block_editor')
 @stop

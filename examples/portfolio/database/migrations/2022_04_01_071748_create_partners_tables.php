@@ -39,7 +39,6 @@ class CreatePartnersTables extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('partner_project');
         Schema::dropIfExists('partner_revisions');
         Schema::dropIfExists('partner_translations');
         Schema::dropIfExists('partner_slugs');

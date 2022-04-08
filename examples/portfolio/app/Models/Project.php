@@ -9,6 +9,7 @@ use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasRevisions;
 use A17\Twill\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Project extends Model
 {
@@ -30,11 +31,13 @@ class Project extends Model
         'title',
     ];
 
-    public $mediasParams = [];
-
     public function partners(): BelongsToMany
     {
         return $this->belongsToMany(Partner::class)->orderByPivot('position');
     }
 
+    public function comments(): MorphMany
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
 }

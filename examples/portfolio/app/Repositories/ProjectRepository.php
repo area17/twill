@@ -8,6 +8,7 @@ use A17\Twill\Repositories\Behaviors\HandleSlugs;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleRevisions;
 use A17\Twill\Repositories\ModuleRepository;
+use App\Models\Comment;
 use App\Models\Project;
 
 class ProjectRepository extends ModuleRepository
@@ -21,6 +22,15 @@ class ProjectRepository extends ModuleRepository
 
     public function afterSave($object, $fields)
     {
+        $this->updateRepeaterMorphMany(
+            $object,
+            $fields,
+            'comments',
+            'commentable',
+            'Comment',
+            'comment'
+        );
+
         $this->updateRepeaterWithPivot(
             $object,
             $fields,
@@ -35,6 +45,15 @@ class ProjectRepository extends ModuleRepository
     public function getFormFields($object)
     {
         $fields = parent::getFormFields($object);
+
+        $fields = $this->getFormFieldsForRepeater(
+            $object,
+            $fields,
+            'comments',
+            'Comment',
+            'comment'
+        );
+
         return $this->getFormFieldForRepeaterWithPivot(
             $object,
             $fields,

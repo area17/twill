@@ -1,15 +1,11 @@
 @twillRepeaterTitle('Project partner')
 @twillRepeaterTitleField('title', ['hidePrefix' => true])
 @twillRepeaterTrigger('Add partner')
-{{-- This label will be used for the button to select existing partners --}}
 @twillRepeaterSelectTrigger('Select partners')
 @twillRepeaterGroup('app')
 
 {{--
 -- We use a disabled field to show some information about the partner.
---
--- You can make it editable, then it will be overwritten in the partner model on save. But this might be confusing
--- for the content editor.
 --}}
 @formField('input', [
     'name' => 'title',
