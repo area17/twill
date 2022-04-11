@@ -75,6 +75,8 @@ trait HandleTranslations
      */
     public function getFormFieldsHandleTranslations($object, $fields)
     {
+        // Keep a copy of the slugs to add it again after.
+        $slug = $fields['translations']['slug'] ?? null;
         unset($fields['translations']);
 
         if ($object->translations != null && $object->translatedAttributes != null) {
@@ -97,6 +99,10 @@ trait HandleTranslations
                     }
                 }
             }
+        }
+
+        if ($slug) {
+            $fields['translations']['slug'] = $slug;
         }
 
         return $fields;
