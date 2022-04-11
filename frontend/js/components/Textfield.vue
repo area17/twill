@@ -31,6 +31,9 @@
         :autofocus="autofocus"
         :autocomplete="autocomplete"
         :value="value"
+        :min="min"
+        :max="max"
+        :step="step"
         @focus="onFocus"
         @blur="onBlur"
         @input="onInput"
@@ -138,6 +141,18 @@
       maxlength: {
         type: Number,
         default: 0
+      },
+      min: {
+        type: Number,
+        default: null
+      },
+      max: {
+        type: Number,
+        default: null
+      },
+      step: {
+        type: Number,
+        default: null
       },
       initialValue: {
         default: ''
