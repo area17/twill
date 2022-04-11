@@ -82,6 +82,9 @@
        * https://github.com/sagalbot/vue-select/commit/8a601c0ac3311adb89bc6e31b8cf215b1343d93c
        */
       isOptionSelected (option) {
+        if (this.valueAsArray === undefined) {
+          return false;
+        }
         return this.valueAsArray.some(value => {
           if (typeof value === 'object') {
             return this.optionObjectComparator(value, option)
