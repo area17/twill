@@ -6,6 +6,7 @@ use A17\Twill\Models\File;
 use A17\Twill\Repositories\Behaviors\HandleTags;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class FileRepository extends ModuleRepository
 {
@@ -39,6 +40,11 @@ class FileRepository extends ModuleRepository
         $storageId = $object->uuid;
         if (Config::get('twill.file_library.cascade_delete')) {
             Storage::disk(Config::get('twill.file_library.disk'))->delete($storageId);
+            // Get the folder and remove it as well if empty.
+            $folder = Str::finish(Str::beforeLast($storageId, '/'), '/');
+            if (empty(Storage::disk(Config::get('twill.file_library.disk'))->files($folder))) {
+                Storage::disk(Config::get('twill.file_library.disk'))->deleteDirectory($folder);
+            }
         }
     }
 

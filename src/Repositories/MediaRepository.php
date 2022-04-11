@@ -6,6 +6,7 @@ use A17\Twill\Models\Media;
 use A17\Twill\Repositories\Behaviors\HandleTags;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use ImageService;
 
 class MediaRepository extends ModuleRepository
@@ -31,6 +32,11 @@ class MediaRepository extends ModuleRepository
         $storageId = $object->uuid;
         if (Config::get('twill.media_library.cascade_delete')) {
             Storage::disk(Config::get('twill.media_library.disk'))->delete($storageId);
+            // Get the folder and remove it as well if empty.
+            $folder = Str::finish(Str::beforeLast($storageId, '/'), '/');
+            if (empty(Storage::disk(Config::get('twill.media_library.disk'))->files($folder))) {
+                Storage::disk(Config::get('twill.media_library.disk'))->deleteDirectory($folder);
+            }
         }
     }
 
