@@ -4,9 +4,11 @@ pageClass: twill-doc
 
 # Installation
 
+You can install Twill on an existing Laravel application or a new one.
+
 ## Composer
 
-Twill is a package for Laravel applications, installable through Composer:
+Twill package can be added to your application using Composer:
 
 ```bash
 composer require area17/twill:"^2.0"
@@ -14,7 +16,7 @@ composer require area17/twill:"^2.0"
 
 ## Artisan
 
-Run the `install` Artisan command:
+Run the `twill:install` Artisan command: 
 
 ```bash
 php artisan twill:install

@@ -22,6 +22,7 @@
     $buttonOnTop = $buttonOnTop ?? false;
     $browserNote = $browserNote ?? '';
     $disabled = $disabled ?? false;
+    $connectedBrowserField = $connectedBrowserField ?? false;
 @endphp
 
 <a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}" note="{{ $fieldNote }}">
@@ -37,6 +38,9 @@
         browser-note="{{ $browserNote }}"
         @if($buttonOnTop) :button-on-top="true" @endif
         @if($disabled) disabled @endif
+        @if($renderForBlocks && $connectedBrowserField) :connected-browser-field="fieldName('{{ $connectedBrowserField }}')"
+        @elseif($connectedBrowserField) connected-browser-field="{{ $connectedBrowserField }}"
+        @endif
     >{{ $note }}</a17-browserfield>
 </a17-inputframe>
 

@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Models\Behaviors;
 
-use A17\Twill\Exceptions\MediaCropNotFoundException;
 use A17\Twill\Models\Media;
 use A17\Twill\Services\MediaLibrary\ImageService;
 use Illuminate\Database\Eloquent\Model;
@@ -54,32 +53,18 @@ trait HasMedias
 
     private function findMedia($role, $crop = 'default')
     {
-        $foundMedia = false;
-        $media = $this->medias->first(function ($media) use ($role, $crop, &$foundMedia) {
+        $media = $this->medias->first(function ($media) use ($role, $crop) {
             if (config('twill.media_library.translated_form_fields', false)) {
                 $localeScope = $media->pivot->locale === app()->getLocale();
             }
 
-            if (! $foundMedia) {
-                $foundMedia = $media->pivot->role === $role && ($localeScope ?? true);
-            }
-
-            return $foundMedia && $media->pivot->crop === $crop;
+            return $media->pivot->role === $role && $media->pivot->crop === $crop && ($localeScope ?? true);
         });
 
         if (! $media && config('twill.media_library.translated_form_fields', false)) {
-            $media = $this->medias->first(function ($media) use ($role, $crop, &$foundMedia) {
-                if (! $foundMedia) {
-                    $foundMedia = $media->pivot->role === $role;
-                }
-
-                return $foundMedia && $media->pivot->crop === $crop;
+            $media = $this->medias->first(function ($media) use ($role, $crop) {
+                return $media->pivot->role === $role && $media->pivot->crop === $crop;
             });
-        }
-
-        if ($foundMedia && ! $media && config('app.debug')) {
-            // In this case we found the media but not the crop because our result is still empty.
-            throw new MediaCropNotFoundException($crop);
         }
 
         return $media;
