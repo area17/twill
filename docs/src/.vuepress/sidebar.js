@@ -323,6 +323,10 @@ module.exports = [
           {
             "title": "Vue.js Workflow - Creating custom components, form fields and blocks in Twill",
             "path": "/guides/creating_custom_components_form_fields_and_blocks.html"
+          },
+          {
+            "title": "Json repeaters",
+            "path": "/guides/json_repeaters.html"
           }
         ],
       },
