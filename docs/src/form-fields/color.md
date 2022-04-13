@@ -13,10 +13,11 @@ pageClass: twill-doc
 ])
 ```
 
-| Option  | Description         | Type     | Default value |
-| :------ | :------------------ | :------- | :------------ |
-| name    | Name of the field   | string   |               |
-| label   | Label of the field  | string   |               |
+| Option    | Description         | Type     | Default value |
+| :-------- | :------------------ | :------- | :------------ |
+| name      | Name of the field   | string   |               |
+| label     | Label of the field  | string   |               |
+| default   | The default value   | string   |               |
 
 A migration to save a `color` field would be:
 

@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use A17\Twill\Facades\TwillCapsules;
 use Illuminate\Support\Str;
 
 trait HasSlug
@@ -56,7 +57,7 @@ trait HasSlug
             return $slug;
         }
 
-        return $this->getCapsuleSlugClass(class_basename($this));
+        return TwillCapsules::getCapsuleForModel(class_basename($this))->getSlugModel();
     }
 
     protected function getSlugClassName()

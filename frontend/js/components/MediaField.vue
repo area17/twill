@@ -62,13 +62,18 @@
       <!-- Metadatas options -->
       <div class="media__metadatas--options" :class="{ 's--active' : metadatas.active }" v-if="hasMedia && withAddInfo">
         <a17-mediametadata :name='metadataName' :label="$trans('fields.medias.alt-text', 'Alt Text')" id="altText" :media="media" :maxlength="altTextMaxLength" @change="updateMetadata"/>
-        <a17-mediametadata v-if="withCaption" :name='metadataName' :label="$trans('fields.medias.caption', 'Caption')" id="caption" :media="media" :maxlength="captionMaxLength" @change="updateMetadata"/>
+
+        <a17-mediametadata v-if="withCaption" :wysiwyg="useWysiwyg" :wysiwyg-options="wysiwygOptions" type='text' :name='metadataName' :label="$trans('fields.medias.caption', 'Caption')" id="caption" :media="media" :maxlength="captionMaxLength" @change="updateMetadata"/>
+
         <a17-mediametadata v-if="withVideoUrl" :name='metadataName' :label="$trans('fields.medias.video-url', 'Video URL (optional)')" id="video" :media="media" @change="updateMetadata"/>
+
         <template v-for="field in extraMetadatas">
           <a17-mediametadata v-if="extraMetadatas.length > 0"
                              :key="field.name"
                              :type="field.type"
                              :name='metadataName'
+                             :wysiwyg='field.wysiwyg || false'
+                             :wysiwyg-options='field.wysiwygOptions || wysiwygOptions'
                              :label="field.label"
                              :id="field.name"
                              :media="media"
@@ -189,6 +194,10 @@
     },
     filters: a17VueFilters,
     computed: {
+      ...mapState({
+        useWysiwyg: state => state.mediaLibrary.config.useWysiwyg,
+        wysiwygOptions: state => state.mediaLibrary.config.wysiwygOptions
+      }),
       cropThumbnailStyle: function () {
         if (this.showImg) return {}
         if (!this.hasMedia) return {}

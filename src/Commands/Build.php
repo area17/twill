@@ -84,6 +84,9 @@ class Build extends Command
         $this->copyComponents();
         sleep(1);
 
+        $this->copyVendorComponents();
+        sleep(1);
+
         $this->info('');
         $progressBar->setMessage("Building assets...\n\n");
         $progressBar->advance();
@@ -208,9 +211,30 @@ class Build extends Command
         }
 
         $this->filesystem->cleanDirectory($twillCustomComponentsPath);
+        $this->filesystem->put($twillCustomComponentsPath . '/.keep', '');
 
         if ($this->filesystem->exists($localCustomComponentsPath)) {
             $this->filesystem->copyDirectory($localCustomComponentsPath, $twillCustomComponentsPath);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function copyVendorComponents()
+    {
+        $localVendorComponentsPath = resource_path(config('twill.vendor_components_resource_path', 'assets/vendor/js/components'));
+        $twillVendorComponentsPath = base_path(config('twill.vendor_path')) . '/frontend/js/components/customs-vendor';
+
+        if (!$this->filesystem->exists($twillVendorComponentsPath)) {
+            $this->filesystem->makeDirectory($twillVendorComponentsPath, 0755, true);
+        }
+
+        $this->filesystem->cleanDirectory($twillVendorComponentsPath);
+        $this->filesystem->put($twillVendorComponentsPath . '/.keep', '');
+
+        if ($this->filesystem->exists($localVendorComponentsPath)) {
+            $this->filesystem->copyDirectory($localVendorComponentsPath, $twillVendorComponentsPath);
         }
     }
 }

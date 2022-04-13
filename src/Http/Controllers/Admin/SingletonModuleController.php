@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Facades\TwillCapsules;
 use Illuminate\Support\Facades\Session;
 
 abstract class SingletonModuleController extends ModuleController
@@ -17,6 +18,10 @@ abstract class SingletonModuleController extends ModuleController
     {
         $model = "App\\Models\\{$this->getModelName()}";
 
+        if (!class_exists($model)) {
+            $model = TwillCapsules::getCapsuleForModel($this->modelName)->getModel();
+        }
+
         $item = app($model)->first();
 
         if (!$item) {
@@ -29,7 +34,7 @@ abstract class SingletonModuleController extends ModuleController
 
         Session::put('pages_back_link', url()->current());
 
-        return view("admin.{$this->moduleName}.form", $this->form($item->id));
+        return view($this->viewPrefix . ".form", $this->form($item->id));
     }
 
     private function seed(): void
