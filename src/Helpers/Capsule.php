@@ -185,7 +185,10 @@ class Capsule
 
     public function getDatabasePsr4Path(): string
     {
-        return $this->path . '/Database';
+        if (File::exists($this->path . '/Database')) {
+            return $this->path . '/Database';
+        }
+        return $this->path . '/database';
     }
 
     public function getSeedsNamespace(): string
