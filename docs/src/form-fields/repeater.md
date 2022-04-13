@@ -16,6 +16,7 @@ pageClass: twill-doc
 | name         | Name of the field                            | string  | same as `type`   |
 | max          | Maximum amount that can be created           | number  | null (unlimited) |
 | buttonAsLink | Displays the `Add` button as a centered link | boolean | false            |
+| reorder      | Allow reordering of repeater items           | boolean | true             |
 
 <br/>
 

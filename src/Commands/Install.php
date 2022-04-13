@@ -2,17 +2,20 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\Commands\Traits\HandlesPresets;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Filesystem\Filesystem;
 
 class Install extends Command
 {
+    use HandlesPresets;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'twill:install';
+    protected $signature = 'twill:install {preset? : Optional, the preset to install}';
 
     /**
      * The console command description.
@@ -56,15 +59,38 @@ class Install extends Command
             $this->db->connection()->getPdo();
         } catch (\Exception $e) {
             $this->error('Could not connect to the database, please check your configuration:' . "\n" . $e);
+
             return;
         }
 
-        $this->addRoutesFile();
+        if (filled($preset = $this->argument('preset'))) {
+            if ($this->presetExists($preset)) {
+                if ($this->confirm('Are you sure to install this preset? This can overwrite your models, config and routes.')) {
+                    $this->installPreset($preset);
+                } else {
+                    $this->warn('Cancelled.');
+                }
+            } else {
+                $this->error("Could not find preset: $preset");
+            }
+        } else {
+            $this->addRoutesFile();
+            $this->call('migrate');
+            $this->publishConfig();
+            $this->publishAssets();
+            $this->createSuperAdmin();
+            $this->info('All good!');
+        }
+    }
+
+    private function installPreset(string $preset): void
+    {
+        $this->installPresetFiles($preset);
+
         $this->call('migrate');
-        $this->publishConfig();
         $this->publishAssets();
         $this->createSuperAdmin();
-        $this->info('All good!');
+        $this->info('Finished installing preset!');
     }
 
     /**
@@ -77,11 +103,11 @@ class Install extends Command
     {
         $routesPath = base_path('routes');
 
-        if (!$this->files->exists($routesPath)) {
+        if (! $this->files->exists($routesPath)) {
             $this->files->makeDirectory($routesPath, 0755, true);
         }
 
-        if (!$this->files->exists($routesPath . '/twill.php')) {
+        if (! $this->files->exists($routesPath . '/twill.php')) {
             $stub = $this->files->get(__DIR__ . '/stubs/admin.stub');
             $this->files->put($routesPath . '/twill.php', $stub);
         }
@@ -94,7 +120,7 @@ class Install extends Command
      */
     private function createSuperAdmin()
     {
-        if (!$this->option('no-interaction')) {
+        if (! $this->option('no-interaction')) {
             $this->call('twill:superadmin');
         }
     }
@@ -124,5 +150,4 @@ class Install extends Command
             '--tag' => 'assets',
         ]);
     }
-
 }

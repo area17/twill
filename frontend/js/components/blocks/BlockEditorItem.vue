@@ -1,7 +1,7 @@
 <template>
   <div class="block" :class="blockClasses">
     <div class="block__header" @dblclick.prevent="toggleExpand()">
-      <span class="block__handle"></span>
+      <span v-if="withHandle" class="block__handle"></span>
       <div class="block__toggle">
         <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown" :maxHeight="270">
           <span class="block__counter f--tiny" @click="$refs[moveDropdown].toggle()">{{ index + 1 }}</span>
@@ -66,6 +66,10 @@
       block: {
         type: Object,
         default: () => {}
+      },
+      withHandle: {
+        type: Boolean,
+        default: true
       }
     },
     data () {

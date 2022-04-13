@@ -4,9 +4,11 @@ pageClass: twill-doc
 
 # Installation
 
+You can install Twill on an existing Laravel application or a new one.
+
 ## Composer
 
-Twill is a package for Laravel applications, installable through Composer:
+Twill package can be added to your application using Composer:
 
 ```bash
 composer require area17/twill:"^2.0"
@@ -14,7 +16,7 @@ composer require area17/twill:"^2.0"
 
 ## Artisan
 
-Run the `install` Artisan command:
+Run the `twill:install` Artisan command: 
 
 ```bash
 php artisan twill:install
@@ -32,6 +34,24 @@ Twill's `install` command consists of:
 - publishing Twill's configuration files to your application's `config` directory.
 - publishing Twill's assets for the admin console UI.
 - prompting you to create a superadmin user.
+
+## Example setup
+
+If this is your first time using Twill or you just want to experiment with a Twill installation you can use the demo
+setup to quickly get started.
+
+The demo setup is a blog. It comes with:
+
+- A blog module
+- A categories module
+- A blade based frontend
+- 2 example blocks to use in the block builder
+
+The install command is the same as above. Except that you pass the parameter `blog` to install it.
+
+```bash
+php artisan twill:install blog
+```
 
 ## .env
 

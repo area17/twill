@@ -249,6 +249,20 @@ return [
         'translated_form_fields' => false,
         'show_file_name' => false,
     ],
+    /*
+    |--------------------------------------------------------------------------
+    | Wysiwyg options for the caption field.
+    |--------------------------------------------------------------------------
+    */
+    'media_caption_use_wysiwyg' => false,
+    'media_caption_wysiwyg_options' => [
+        'modules' => [
+            'toolbar' => [
+                'bold',
+                'italic',
+            ],
+        ],
+    ],
 ];
 ```
 
