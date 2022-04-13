@@ -1093,7 +1093,7 @@ abstract class ModuleController extends Controller
                 return $this->getItemColumnData($item, $column);
             })->toArray();
 
-            $name = $columnsData[$this->titleColumnKey];
+            $name = $columnsData[$this->titleColumnKey] ?? null;
 
             if (empty($name)) {
                 if ($this->moduleHas('translations')) {
@@ -1107,7 +1107,10 @@ abstract class ModuleController extends Controller
                 $name = $name ?? ('Missing ' . $this->titleColumnKey);
             }
 
-            unset($columnsData[$this->titleColumnKey]);
+            if (isset($columnsData[$this->titleColumnKey])) {
+                unset($columnsData[$this->titleColumnKey]);
+            }
+
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
             $itemCanDelete = $this->getIndexOption('delete', $item) && ($item->canDelete ?? true);
             $canEdit = $this->getIndexOption('edit', $item);
@@ -1230,34 +1233,6 @@ abstract class ModuleController extends Controller
         $visibleColumns = $this->request->get('columns') ?? false;
         $indexColumnCopy = $this->indexColumns;
 
-        if (isset(Arr::first($indexColumnCopy)['thumb'])
-            && Arr::first($indexColumnCopy)['thumb'])
-        {
-            // Thumbnails : rounded or regular ones
-            $hasRoundedThumb = (isset(Arr::first($this->indexColumns)['thumb'])
-                && Arr::first($this->indexColumns)['thumb']
-                && isset(Arr::first($this->indexColumns)['variation'])
-                && Arr::first($this->indexColumns)['variation'] === 'rounded') ?? false;
-            $hasThumb = (isset(Arr::first($this->indexColumns)['thumb'])
-                && Arr::first($this->indexColumns)['thumb']
-                && ! $hasRoundedThumb);
-            $thumb = ($hasRoundedThumb || $hasThumb) ? [
-                'name' => 'thumbnail',
-                'label' => twillTrans('twill::lang.listing.columns.thumbnail'),
-                'visible' => $visibleColumns ? in_array('thumbnail', $visibleColumns) : true,
-                'optional' => true,
-                'sortable' => false,
-            ] + (isset(Arr::first($this->indexColumns)['variation'])
-                ? ['variation' => Arr::first($this->indexColumns)['variation']]
-                : []) : false;
-
-            if ($hasThumb) {
-                $tableColumns[] = $thumb;
-            }
-
-            array_shift($indexColumnCopy);
-        }
-
         if ($this->getIndexOption('feature')) {
             $tableColumns[] = [
                 'name' => 'featured',
@@ -1278,17 +1253,33 @@ abstract class ModuleController extends Controller
             ];
         }
 
-        $tableColumns[] = [
-            'name' => 'name',
-            'label' => $indexColumnCopy[$this->titleColumnKey]['title'] ?? twillTrans('twill::lang.listing.columns.name'),
-            'visible' => true,
-            'optional' => false,
-            'sortable' => $this->getIndexOption('reorder') ? false : ($indexColumnCopy[$this->titleColumnKey]['sort'] ?? false),
-        ];
 
-        unset($indexColumnCopy[$this->titleColumnKey]);
+        foreach ($indexColumnCopy as $key => $column) {
+            if ($key === $this->titleColumnKey) {
+                $tableColumns[] = [
+                    'name' => 'name',
+                    'label' => $column['title'] ?? twillTrans('twill::lang.listing.columns.name'),
+                    'visible' => true,
+                    'optional' => false,
+                    'sortable' => $this->getIndexOption('reorder') ? false : ($column['sort'] ?? false),
+                ];
+                continue;
+            }
 
-        foreach ($indexColumnCopy as $column) {
+            if (isset($column['thumb'])) {
+                // Thumbnails : rounded or regular ones
+                $hasRoundedThumb = isset($column['variation']) && $column['variation'] === 'rounded';
+                $tableColumns[] = [
+                    'name' => 'thumbnail',
+                    'label' => $column['title'] ?? twillTrans('twill::lang.listing.columns.thumbnail'),
+                    'visible' => !$visibleColumns || in_array('thumbnail', $visibleColumns, true),
+                    'optional' => true,
+                    'sortable' => false,
+                    'variation' => $hasRoundedThumb ? 'rounded' : 'square',
+                ];
+                continue;
+            }
+
             if (isset($column['relationship'])) {
                 $columnName = $column['relationship'] . ucfirst($column['field']);
             } elseif (isset($column['nested'])) {
