@@ -57,8 +57,17 @@ class SingletonModuleTest extends TestCase
         $this->assertSee('This is the ContactPage form');
     }
 
-    public function testSingletonRouteRequiresOneRecord()
+/** @todo: I cannot make testbench autoload the migration. */
+/*     public function testSingletonRouteAutoSeeds() */
+/*     { */
+/*         $this->httpRequestAssert('/twill/contactPage', 'GET', [], 200); */
+/*  */
+/*         $this->assertDontSee("ContactPage is not seeded"); */
+/*     } */
+
+    public function testSingletonRouteRequiresOneRecordIfNotAutoSeeded()
     {
+        $this->app->get('config')->set('twill.auto_seed_singletons', false);
         $this->httpRequestAssert('/twill/contactPage', 'GET', [], 500);
 
         $this->assertSee('ContactPage is not seeded');

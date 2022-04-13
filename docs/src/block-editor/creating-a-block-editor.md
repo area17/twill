@@ -74,7 +74,6 @@ filename: ```views/twill/blocks/media.blade.php```
 @formField('medias', [
     'name' => 'image',
     'label' => 'Images',
-    'withVideoUrl' => false,
     'max' => 20,
 ])
 

@@ -4,7 +4,7 @@
     $note = $note ?? '';
     $fieldNote = $fieldNote ?? '';
     $withAddInfo = $withAddInfo ?? true;
-    $withVideoUrl = $withVideoUrl ?? true;
+    $withVideoUrl = $withVideoUrl ?? false;
     $withCaption = $withCaption ?? true;
     $altTextMaxLength = $altTextMaxLength ?? false;
     $captionMaxLength = $captionMaxLength ?? false;

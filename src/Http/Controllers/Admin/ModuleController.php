@@ -1163,8 +1163,8 @@ abstract class ModuleController extends Controller
                 ];
             } else {
                 $variant = isset($column['variant']);
-                $role = $variant ? $column['variant']['role'] : head(array_keys($item->mediasParams));
-                $crop = $variant ? $column['variant']['crop'] : head(array_keys(head($item->mediasParams)));
+                $role = $variant ? $column['variant']['role'] : head(array_keys($item->getMediasParams()));
+                $crop = $variant ? $column['variant']['crop'] : head(array_keys(head($item->getMediasParams())));
                 $params = $variant && isset($column['variant']['params'])
                 ? $column['variant']['params']
                 : ['w' => 80, 'h' => 80, 'fit' => 'crop'];
