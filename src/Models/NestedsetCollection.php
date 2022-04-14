@@ -29,13 +29,14 @@ class NestedsetCollection extends BaseNestedsetCollection
 
         $root = $this->getRootNodeId($root);
 
-        $ids = collect($this->items)->pluck('id');
+        $ids = collect($this->items)->pluck('id')->toArray();
 
         /** @var Model|NodeTrait $node */
         foreach ($this->items as $node) {
             if ($node->getParentId() == $root) {
                 $items[] = $node;
-            } elseif (!$ids->has($node->getParentId())) {
+            }
+            elseif (!in_array($node->getParentId(), $ids)) {
                 $items[] = $node;
             }
         }
