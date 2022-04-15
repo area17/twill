@@ -1,12 +1,5 @@
 @extends('twill::layouts.form')
 
-@php
-    $timezones = DateTimeZone::listIdentifiers();
-    $timezones = array_map(function ($timezone) {
-        return ['value' => $timezone, 'label' => $timezone];
-    }, $timezones);
-@endphp
-
 @section('contentFields')
     @formField('input', [
         'name' => 'description',
@@ -65,20 +58,7 @@
     @formField('select', [
         'name' => 'timezone',
         'label' => 'Timezone',
-        'options' => [
-            [
-                'value' => 1,
-                'label' => 'New York'
-            ],
-            [
-                'value' => 2,
-                'label' => 'London'
-            ],
-            [
-                'value' => 3,
-                'label' => 'Berlin'
-            ]
-        ]
+        'options' => $timezones
     ])
 
 @stop

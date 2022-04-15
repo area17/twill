@@ -8,13 +8,12 @@ use A17\Twill\Models\Behaviors\HasPosition;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Model;
 
-class Role extends Model implements Sortable
+class Discipline extends Model implements Sortable
 {
     use HasTranslation, HasSlug, HasPosition;
 
     protected $fillable = [
         'published',
-        'title',
         'position',
     ];
 
