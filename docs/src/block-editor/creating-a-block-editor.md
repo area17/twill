@@ -74,7 +74,6 @@ filename: ```views/twill/blocks/media.blade.php```
 @formField('medias', [
     'name' => 'image',
     'label' => 'Images',
-    'withVideoUrl' => false,
     'max' => 20,
 ])
 
@@ -167,6 +166,34 @@ Using `php artisan twill:list:blocks` will list all blocks and repeaters. There 
 ##### List existing icons
 
 `php artisan twill:list:icons` will list all icons available.
+
+##### Using custom icons
+
+If you want to use custom icons in a block, you have to define the source directory's path in `config/twill.php`. Add it under `block_editor.directories.source.icons` key:
+
+filename: ```config/twill.php```
+```php
+<?php
+
+return [
+    ...
+    'block_editor' => [
+        'directories' => [
+            'source' => [
+                'icons' => [
+                    base_path('vendor/area17/twill/frontend/icons'),
+                    resource_path('assets/admin/icons'), // or any other path of your choice
+                ],
+            ],
+        ],
+    ],
+    ...
+];
+```
+See also [Default Configuration](https://twill.io/docs/block-editor/default-configuration.html).
+
+If the `resource_path('assets/admin/icons')` directory contains a `my-custom-icon.svg` file, you can use this icon in your block by using its basename: `@twillBlockIcon('my-custom-icon')`.
+
 
 #### Use Block traits in your Model and Repository
 

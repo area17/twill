@@ -137,8 +137,12 @@ trait HandleRepeaters
         // keep a list of updated and new rows to delete (soft delete?) old rows that were deleted from the frontend
         $currentIdList = [];
 
+        // @todo: This needs refactoring in 3.x
         foreach ($relationFields as $index => $relationField) {
             $relationField['position'] = $index + 1;
+            $relationField[$morphFieldId] = $object->id;
+            $relationField[$morphFieldType] = $object->getMorphClass();
+
             if (isset($relationField['id']) && Str::startsWith($relationField['id'], $relation)) {
                 // row already exists, let's update
                 $id = str_replace($relation . '-', '', $relationField['id']);
@@ -153,8 +157,8 @@ trait HandleRepeaters
             }
         }
 
-        foreach ($object->$relation->pluck('id') as $id) {
-            if (! in_array($id, $currentIdList)) {
+        foreach ($object->$relation()->pluck('id') as $id) {
+            if (!in_array($id, $currentIdList)) {
                 $relationRepository->updateBasic(null, [
                     'deleted_at' => Carbon::now(),
                 ], [

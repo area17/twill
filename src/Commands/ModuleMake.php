@@ -221,7 +221,7 @@ class ModuleMake extends Command
         $moduleName = Str::camel(Str::plural(lcfirst($this->argument('moduleName'))));
 
         // e.g. newsItem
-        $singularModuleName = Str::camel(lcfirst($this->argument('moduleName')));
+        $singularModuleName = Str::camel(Str::singular(lcfirst($this->argument('moduleName'))));
 
         // e.g. NewsItems
         $moduleTitle = Str::studly($moduleName);

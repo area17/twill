@@ -570,6 +570,10 @@ abstract class TestCase extends OrchestraTestCase
                     $this->files->makeDirectory($directory, 0755, true);
                 }
 
+                if ($this->files->exists($destination)) {
+                    $this->files->delete($destination);
+                }
+
                 $this->files->copy($source, $destination);
             });
         });

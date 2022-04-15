@@ -1163,8 +1163,8 @@ abstract class ModuleController extends Controller
                 ];
             } else {
                 $variant = isset($column['variant']);
-                $role = $variant ? $column['variant']['role'] : head(array_keys($item->mediasParams));
-                $crop = $variant ? $column['variant']['crop'] : head(array_keys(head($item->mediasParams)));
+                $role = $variant ? $column['variant']['role'] : head(array_keys($item->getMediasParams()));
+                $crop = $variant ? $column['variant']['crop'] : head(array_keys(head($item->getMediasParams())));
                 $params = $variant && isset($column['variant']['params'])
                 ? $column['variant']['params']
                 : ['w' => 80, 'h' => 80, 'fit' => 'crop'];
@@ -1228,8 +1228,11 @@ abstract class ModuleController extends Controller
     {
         $tableColumns = [];
         $visibleColumns = $this->request->get('columns') ?? false;
+        $indexColumnCopy = $this->indexColumns;
 
-        if (isset(Arr::first($this->indexColumns)['thumb']) && Arr::first($this->indexColumns)['thumb']) {
+        if (isset(Arr::first($indexColumnCopy)['thumb'])
+            && Arr::first($indexColumnCopy)['thumb'])
+        {
             // Thumbnails : rounded or regular ones
             $hasRoundedThumb = (isset(Arr::first($this->indexColumns)['thumb'])
                 && Arr::first($this->indexColumns)['thumb']
@@ -1249,9 +1252,10 @@ abstract class ModuleController extends Controller
                 : []) : false;
 
             if ($hasThumb) {
-                array_push($tableColumns, $thumb);
-                array_shift($this->indexColumns);
+                $tableColumns[] = $thumb;
             }
+
+            array_shift($indexColumnCopy);
         }
 
         if ($this->getIndexOption('feature')) {
@@ -1274,23 +1278,17 @@ abstract class ModuleController extends Controller
             ];
         }
 
-        // rounded thumb are attached to the name
-        if (isset($hasRoundedThumb, $thumb) && $hasRoundedThumb) {
-            array_push($tableColumns, $thumb);
-            array_shift($this->indexColumns);
-        }
-
         $tableColumns[] = [
             'name' => 'name',
-            'label' => $this->indexColumns[$this->titleColumnKey]['title'] ?? twillTrans('twill::lang.listing.columns.name'),
+            'label' => $indexColumnCopy[$this->titleColumnKey]['title'] ?? twillTrans('twill::lang.listing.columns.name'),
             'visible' => true,
             'optional' => false,
-            'sortable' => $this->getIndexOption('reorder') ? false : ($this->indexColumns[$this->titleColumnKey]['sort'] ?? false),
+            'sortable' => $this->getIndexOption('reorder') ? false : ($indexColumnCopy[$this->titleColumnKey]['sort'] ?? false),
         ];
 
-        unset($this->indexColumns[$this->titleColumnKey]);
+        unset($indexColumnCopy[$this->titleColumnKey]);
 
-        foreach ($this->indexColumns as $column) {
+        foreach ($indexColumnCopy as $column) {
             if (isset($column['relationship'])) {
                 $columnName = $column['relationship'] . ucfirst($column['field']);
             } elseif (isset($column['nested'])) {
