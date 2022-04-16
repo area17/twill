@@ -56,7 +56,11 @@ module.exports = [
           {
             "title": "Navigation",
             "path": "/getting-started/navigation.html",
-          }
+          },
+          {
+            "title": "Updating",
+            "path": "/getting-started/updating.html",
+          },
         ],
         "collapsable": true
       },
