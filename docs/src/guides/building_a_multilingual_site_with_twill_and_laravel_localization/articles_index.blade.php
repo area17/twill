@@ -7,7 +7,7 @@
         <ul>
             @foreach ($articles as $article)
                 <li>
-                    <a href="{{ route('article', $article->slug) }}">{{ $article->title }}</a>
+                    <a href="{{ route('articles', $article->slug) }}">{{ $article->title }}</a>
                 </li>
             @endforeach
         </ul>
