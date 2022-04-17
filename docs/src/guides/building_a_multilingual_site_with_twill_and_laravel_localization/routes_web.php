@@ -39,8 +39,8 @@ Route::group([
 // #endregion newsarticleroute
 
 // #region newsrouteupdated
+use App\Models\Article;
 use Illuminate\Support\Facades\Route;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 Route::group([
