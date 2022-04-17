@@ -2,8 +2,6 @@
 
 // #region newsroute
 use App\Models\Article;
-use App\Models\Article;
-use App\Models\Article;
 
 Route::group([
     'prefix' => LaravelLocalization::setLocale(),
