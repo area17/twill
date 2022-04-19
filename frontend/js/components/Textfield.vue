@@ -144,6 +144,14 @@
       rows: {
         type: Number,
         default: 5
+      },
+      callback: {
+        type: Boolean,
+        default: false
+      },
+      execute: {
+        type: String,
+        default: ''
       }
     },
     computed: {
@@ -226,8 +234,22 @@
 
         this._onInputInternal(event)
       },
+      _handleInputValue: function (string) {
+        return self[this.execute](string)
+      },
       _onInputInternal: debounce(function (event) {
-        const newValue = event.target.value
+        let newValue = ''
+
+        if (this.callback) {
+          newValue = this._handleInputValue(event.target.value)
+
+          if (newValue === undefined) {
+            newValue = event.target.value
+          }
+        } else {
+          newValue = event.target.value
+        }
+
         this.updateAndSaveValue(newValue)
 
         this.$emit('change', newValue)

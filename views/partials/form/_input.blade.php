@@ -15,6 +15,8 @@
     $onChangeFullAttribute = $onChangeAttribute ? "('".$onChangeAttribute."', ...arguments)" : "";
     $prefix = $prefix ?? false;
     $inModal = $fieldsInModal ?? false;
+    $callback = $callback ?? false;
+    $execute = $execute ?? '';
 @endphp
 
 @if($translated)
@@ -33,6 +35,8 @@
             @if ($rows) rows: {{ $rows }}, @endif
             @if ($prefix) prefix: '{{ $prefix }}', @endif
             @if ($inModal) inModal: true, @endif
+            @if ($callback) callback: true, @endif
+            execute: '{{ $execute }}',
             @if ($default)
                 initialValue: '{{ $default }}',
                 hasDefaultStore: true,
@@ -58,6 +62,8 @@
         @if ($onChange) v-on:change="{{ $onChange }}{{ $onChangeFullAttribute }}" @endif
         @if ($prefix) prefix="{{ $prefix }}" @endif
         @if ($inModal) :in-modal="true" @endif
+        @if ($callback) :callback="true" @endif
+        execute="{{ $execute }}"
         @if ($default)
             :initial-value="'{{ $default }}'"
             :has-default-store="true"
