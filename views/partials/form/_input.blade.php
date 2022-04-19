@@ -10,6 +10,7 @@
     $default = $default ?? false;
     $rows = $rows ?? false;
     $ref = $ref ?? false;
+    $mask = isset($mask) && $type === 'text' ? $mask : null;
     $onChange = $onChange ?? false;
     $onChangeAttribute = $onChangeAttribute ?? false;
     $onChangeFullAttribute = $onChangeAttribute ? "('".$onChangeAttribute."', ...arguments)" : "";
@@ -32,6 +33,7 @@
             @if ($readonly) readonly: true, @endif
             @if ($rows) rows: {{ $rows }}, @endif
             @if ($prefix) prefix: '{{ $prefix }}', @endif
+            @if ($mask) mask: '{{ $mask }}', @endif
             @if ($inModal) inModal: true, @endif
             @if ($default)
                 initialValue: '{{ $default }}',
@@ -57,6 +59,7 @@
         @if ($ref) ref="{{ $ref }}" @endif
         @if ($onChange) v-on:change="{{ $onChange }}{{ $onChangeFullAttribute }}" @endif
         @if ($prefix) prefix="{{ $prefix }}" @endif
+        @if ($mask) mask="{{ $mask }}" @endif
         @if ($inModal) :in-modal="true" @endif
         @if ($default)
             :initial-value="'{{ $default }}'"

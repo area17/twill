@@ -18,7 +18,7 @@
         @input="onInput"
         v-model="value"
       ></textarea>
-      <input v-if="type == 'number'"
+      <input v-if="type === 'number'"
         ref="input"
         type="number"
         :placeholder="placeholder"
@@ -35,7 +35,7 @@
         @blur="onBlur"
         @input="onInput"
       />
-      <input v-if="type == 'text'"
+      <input v-if="type === 'text'"
         ref="input"
         type="text"
         :placeholder="placeholder"
@@ -48,11 +48,12 @@
         :autofocus="autofocus"
         :autocomplete="autocomplete"
         :value="value"
+        :x-mask="mask"
         @focus="onFocus"
         @blur="onBlur"
         @input="onInput"
       />
-      <input v-if="type == 'email'"
+      <input v-if="type === 'email'"
         ref="input"
         type="email"
         :placeholder="placeholder"
@@ -70,7 +71,7 @@
         @blur="onBlur"
         @input="onInput"
       />
-      <input v-if="type == 'password'"
+      <input v-if="type === 'password'"
         ref="input"
         type="password"
         :placeholder="placeholder"
@@ -141,6 +142,10 @@
       },
       initialValue: {
         default: ''
+      },
+      mask: {
+        type: String,
+        default: null
       },
       rows: {
         type: Number,
