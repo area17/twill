@@ -2,6 +2,24 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.8.0 (2022-04-19)
+
+### Added 
+
+No new features were added in the final release. Please check rc and beta tags to see a full
+list of new features and fixes.
+
+### Fixed
+
+- Improved language label display [`#1592`](https://github.com/area17/twill/pull/1592)
+- Fixed regression in translatable settings [`#1598`](https://github.com/area17/twill/pull/1598)
+- Fixed capsule database path [`#1583`](https://github.com/area17/twill/pull/1583)
+- Fixed activity log morph size [`#1565`](https://github.com/area17/twill/pull/1565)
+
+### Docs
+
+- Added repeater guide [`#1576`](https://github.com/area17/twill/pull/1576)
+
 ## 2.8.0-rc.2 (2022-04-08)
 
 ### Added
