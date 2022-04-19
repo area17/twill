@@ -28,7 +28,7 @@ class SupportPermission extends Migration
                 createDefaultTableFields($table);
                 $table->string('name');
                 $table->string('display_name')->nullable();
-                $table->{twillIntegerMethod()}('permissionable_id')->unsigned()->nullable();
+                $table->bigInteger('permissionable_id')->unsigned()->nullable();
                 $table->string('permissionable_type')->nullable();
                 $table->boolean('is_default')->default(false);
             });
@@ -48,13 +48,13 @@ class SupportPermission extends Migration
             });
 
             Schema::create('permission_twill_user', function (Blueprint $table) {
-                $table->{twillIntegerMethod()}('twill_user_id')->unsigned()->nullable();
+                $table->bigInteger('twill_user_id')->unsigned()->nullable();
                 $table->foreign('twill_user_id')
                     ->references('id')
                     ->on(config('twill.users_table', 'twill_users'))
                     ->onDelete('cascade');
 
-                $table->{twillIntegerMethod()}('permission_id')->unsigned()->nullable();
+                $table->bigInteger('permission_id')->unsigned()->nullable();
                 $table->foreign('permission_id')
                     ->references('id')
                     ->on('permissions')
@@ -62,13 +62,13 @@ class SupportPermission extends Migration
             });
 
             Schema::create('group_twill_user', function (Blueprint $table) {
-                $table->{twillIntegerMethod()}('twill_user_id')->unsigned()->nullable();
+                $table->bigInteger('twill_user_id')->unsigned()->nullable();
                 $table->foreign('twill_user_id')
                     ->references('id')
                     ->on(config('twill.users_table', 'twill_users'))
                     ->onDelete('cascade');
 
-                $table->{twillIntegerMethod()}('group_id')->unsigned()->nullable();
+                $table->bigInteger('group_id')->unsigned()->nullable();
                 $table->foreign('group_id')
                     ->references('id')
                     ->on('groups')
@@ -78,13 +78,13 @@ class SupportPermission extends Migration
             });
 
             Schema::create('group_permission', function (Blueprint $table) {
-                $table->{twillIntegerMethod()}('permission_id')->unsigned()->nullable();
+                $table->bigInteger('permission_id')->unsigned()->nullable();
                 $table->foreign('permission_id')
                     ->references('id')
                     ->on('permissions')
                     ->onDelete('cascade');
 
-                $table->{twillIntegerMethod()}('group_id')->unsigned()->nullable();
+                $table->bigInteger('group_id')->unsigned()->nullable();
                 $table->foreign('group_id')
                     ->references('id')
                     ->on('groups')
@@ -92,13 +92,13 @@ class SupportPermission extends Migration
             });
 
             Schema::create('permission_role', function (Blueprint $table) {
-                $table->{twillIntegerMethod()}('permission_id')->unsigned()->nullable();
+                $table->bigInteger('permission_id')->unsigned()->nullable();
                 $table->foreign('permission_id')
                     ->references('id')
                     ->on('permissions')
                     ->onDelete('cascade');
 
-                $table->{twillIntegerMethod()}('role_id')->unsigned()->nullable();
+                $table->bigInteger('role_id')->unsigned()->nullable();
                 $table->foreign('role_id')
                     ->references('id')
                     ->on('roles')

@@ -18,7 +18,7 @@ class CreateTwillDefaultFilesTables extends Migration
 
         if (!Schema::hasTable($twillFilesTable)) {
             Schema::create($twillFilesTable, function (Blueprint $table) {
-                $table->{twillIncrementsMethod()}('id');
+                $table->bigIncrements('id');
                 $table->timestamps();
                 $table->softDeletes();
                 $table->text('uuid');
@@ -29,12 +29,12 @@ class CreateTwillDefaultFilesTables extends Migration
 
         if (!Schema::hasTable($twillFileablesTable)) {
             Schema::create($twillFileablesTable, function (Blueprint $table) use ($twillFilesTable) {
-                $table->{twillIncrementsMethod()}('id');
+                $table->bigIncrements('id');
                 $table->timestamps();
                 $table->softDeletes();
-                $table->{twillIntegerMethod()}('file_id')->unsigned();
+                $table->bigInteger('file_id')->unsigned();
                 $table->foreign('file_id', 'fk_files_file_id')->references('id')->on($twillFilesTable)->onDelete('cascade')->onUpdate('cascade');
-                $table->{twillIntegerMethod()}('fileable_id')->nullable()->unsigned();
+                $table->bigInteger('fileable_id')->nullable()->unsigned();
                 $table->string('fileable_type')->nullable();
                 $table->string('role')->nullable();
                 $table->string('locale', 6)->index();
