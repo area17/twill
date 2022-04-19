@@ -84,9 +84,9 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
         if (class_exists(Locale::class)) {
             if ($native) {
                 return Locale::getDisplayName($code, $code);
-            } else {
-                return Locale::getDisplayName($code, config('twill.locale', config('twill.fallback_locale', 'en')));
             }
+
+            return Locale::getDisplayName($code, config('twill.locale', config('twill.fallback_locale', 'en')));
         }
 
         $codeToLanguageMappings = getCodeToLanguageMappings();
