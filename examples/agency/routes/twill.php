@@ -17,4 +17,6 @@ Route::group(['prefix' => 'contact'], function () {
 Route::group(['prefix' => 'work'], function () {
     Route::module('sectors');
     Route::module('disciplines');
+    Route::module('works');
+    Route::module('workLinks');
 });

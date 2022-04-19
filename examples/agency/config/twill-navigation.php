@@ -3,8 +3,12 @@
 return [
     'work' => [
         'title' => 'Work',
-        'route' => 'twill.work.sectors.index',
+        'route' => 'twill.work.works.index',
         'primary_navigation' => [
+            'works' => [
+                'title' => 'Works',
+                'module' => true
+            ],
             'sectors' => [
                 'title' => 'Sectors',
                 'module' => true

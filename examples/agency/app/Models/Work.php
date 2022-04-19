@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use A17\Twill\Models\Behaviors\HasBlocks;
+use A17\Twill\Models\Behaviors\HasFiles;
+use A17\Twill\Models\Behaviors\HasRelated;
 use A17\Twill\Models\Behaviors\HasTranslation;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Behaviors\HasMedias;
@@ -11,33 +13,35 @@ use A17\Twill\Models\Behaviors\HasPosition;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Model;
 
-class Person extends Model implements Sortable
+class Work extends Model implements Sortable
 {
-    use HasBlocks, HasTranslation, HasSlug, HasMedias, HasRevisions, HasPosition;
-
+    use HasBlocks, HasTranslation, HasSlug, HasMedias, HasRevisions, HasPosition, HasFiles, HasRelated;
 
     protected $fillable = [
         'published',
-        'first_name',
-        'last_name',
-        'role_id',
-        'start_year',
-        'office_id',
         'position',
+        'video_url',
+        'autoplay',
+        'autoloop',
+        'publish_start_date',
+        'client_name',
+        'year'
     ];
 
     public $translatedAttributes = [
-        'full_name',
-        'biography',
+        'title',
+        'subtitle',
+        'description',
+        'case_study_text',
         'active',
     ];
 
     public $slugAttributes = [
-        'full_name',
+        'title',
     ];
 
     public $mediasParams = [
-        'main' => [
+        'cover' => [
             'default' => [
                 [
                     'name' => 'default',
@@ -65,7 +69,7 @@ class Person extends Model implements Sortable
                 ],
             ],
         ],
-        'search' => [
+        'homepage_slideshow' => [
             'default' => [
                 [
                     'name' => 'default',
@@ -78,50 +82,37 @@ class Person extends Model implements Sortable
                     'ratio' => 1,
                 ],
             ],
-            'flexible' => [
+        ],
+        'feature_grid' => [
+            'default' => [
                 [
-                    'name' => 'free',
-                    'ratio' => 0,
-                ],
-                [
-                    'name' => 'landscape',
+                    'name' => 'default',
                     'ratio' => 16 / 9,
                 ],
+            ],
+            'mobile' => [
                 [
-                    'name' => 'portrait',
-                    'ratio' => 3 / 5,
+                    'name' => 'mobile',
+                    'ratio' => 1,
                 ],
             ],
         ],
     ];
 
-    public function videos()
+    public $filesParams = ['video'];
+
+    public function sectors()
     {
-        return $this->hasMany(PersonVideo::class)->orderBy('position');
+        return $this->belongsToMany(Sector::class);
     }
 
-    public function office()
+    public function disciplines()
     {
-        return $this->belongsTo(Office::class);
+        return $this->belongsToMany(Discipline::class);
     }
 
-    public function role()
+    public function workLinks()
     {
-        return $this->belongsTo(Role::class);
-    }
-
-    public function getRoleNameAttribute()
-    {
-        return $this->role->title ?? '';
-    }
-
-    public function getOfficeNameAttribute()
-    {
-        return $this->office->title ?? '';
-    }
-
-    public function getTitleAttribute()
-    {
-        return $this->full_name;
+        return $this->hasMany(WorkLink::class);
     }
 }
