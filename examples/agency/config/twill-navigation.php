@@ -51,4 +51,21 @@ return [
             ]
         ]
     ],
+    'settings' => [
+        'title' => 'Settings',
+        'route' => 'twill.settings',
+        'params' => ['section' => 'seo'],
+        'primary_navigation' => [
+            'seo' => [
+                'title' => 'SEO',
+                'route' => 'twill.settings',
+                'params' => ['section' => 'seo']
+            ],
+            'social' => [
+                'title' => 'Social',
+                'route' => 'twill.settings',
+                'params' => ['section' => 'social']
+            ],
+        ]
+    ]
 ];
