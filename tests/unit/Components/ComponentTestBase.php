@@ -4,7 +4,6 @@ namespace A17\Twill\Tests\Unit\Components;
 
 use A17\Twill\Tests\Unit\TestCase;
 use A17\Twill\View\Components\TwillFormComponent;
-use Illuminate\View\Component;
 
 abstract class ComponentTestBase extends TestCase
 {
@@ -33,6 +32,8 @@ abstract class ComponentTestBase extends TestCase
         $rendered = $component->render();
 
         $this->assertEquals($rendered->getName(), $this->expectedView);
+        $this->assertArrayHasKey('name', $rendered->getData());
+        $this->assertArrayHasKey('label', $rendered->getData());
     }
 
     protected function getMakeComponent(): TwillFormComponent

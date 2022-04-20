@@ -51,6 +51,7 @@ class Medias extends TwillFormComponent
     public function render(): View
     {
         return view('twill::partials.form._medias', [
+            ... $this->data(),
             'multiple' => $this->max > 1 || $this->max === 0,
         ]);
     }

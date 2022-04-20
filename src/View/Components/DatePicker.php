@@ -46,6 +46,6 @@ class DatePicker extends TwillFormComponent
 
     public function render(): View
     {
-        return view('twill::partials.form._date_picker');
+        return view('twill::partials.form._date_picker', $this->data());
     }
 }

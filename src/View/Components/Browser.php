@@ -80,6 +80,6 @@ class Browser extends TwillFormComponent
 
     public function render(): View
     {
-        return view('twill::partials.form._browser');
+        return view('twill::partials.form._browser', $this->data());
     }
 }

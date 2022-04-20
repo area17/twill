@@ -31,6 +31,6 @@ class Map extends TwillFormComponent
 
     public function render(): View
     {
-        return view('twill::partials.form._map');
+        return view('twill::partials.form._map', $this->data());
     }
 }

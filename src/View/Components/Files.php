@@ -34,6 +34,6 @@ class Files extends TwillFormComponent
 
     public function render(): View
     {
-        return view('twill::partials.form._files');
+        return view('twill::partials.form._files', $this->data());
     }
 }

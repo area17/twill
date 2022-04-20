@@ -8,6 +8,6 @@ class Color extends TwillFormComponent
 {
     public function render(): View
     {
-        return view('twill::partials.form._color');
+        return view('twill::partials.form._color', $this->data());
     }
 }

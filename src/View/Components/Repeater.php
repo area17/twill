@@ -2,7 +2,7 @@
 
 namespace A17\Twill\View\Components;
 
-use Illuminate\View\View;
+use Illuminate\Contracts\View\View;
 
 class Repeater extends TwillFormComponent
 {
@@ -27,6 +27,6 @@ class Repeater extends TwillFormComponent
 
     public function render(): View
     {
-        return view('twill::partials.form._repeater');
+        return view('twill::partials.form._repeater', $this->data());
     }
 }
