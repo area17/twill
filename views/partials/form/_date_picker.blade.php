@@ -1,15 +1,3 @@
-@unless(\A17\Twill\TwillServiceProvider::supportsBladeComponents())
-    @php
-        $withTime = $withTime ?? true;
-        $allowInput = $allowInput ?? false;
-        $allowClear = $allowClear ?? false;
-        $note = $note ?? false;
-        $inModal = $fieldsInModal ?? false;
-        $timeOnly = $timeOnly ?? false;
-        $disabled = $disabled ?? false;
-    @endphp
-@endunless
-
 <a17-datepicker
     label="{{ $label }}"
     @include('twill::partials.form.utils._field_name')

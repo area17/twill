@@ -2,67 +2,51 @@
 
 namespace A17\Twill\View\Components;
 
+use Illuminate\Contracts\View\View;
+
 class Input extends TwillFormComponent
 {
-    public $type;
-    public $translated;
-    public $required;
-    public $placeholder;
-    public $maxlength;
-    public $readonly;
-    public $rows;
-    public $ref;
-    public $onChange;
-    public $onChangeAttribute;
-    public $prefix;
-    public $inModal;
-    public $note;
-    public $disabled;
-    public $default;
-
     public function __construct(
-        $name,
-        $label,
-        $type = 'text',
-        $translated = false,
-        $required = false,
-        $note = null,
-        $placeholder = null,
-        $maxlength = null,
-        $disabled = false,
-        $readonly = false,
-        $default = null,
-        $rows = null,
-        $ref = null,
-        $onChange = null,
-        $onChangeAttribute = null,
-        $prefix = null,
-        $inModal = false,
-        $renderForBlocks = false,
-        $renderForModal = false
+        string $name,
+        string $label,
+        bool $renderForBlocks = false,
+        bool $renderForModal = false,
+        bool $translated = false,
+        bool $required = false,
+        string $note = '',
+        mixed $default = null,
+        bool $disabled = false,
+        bool $readOnly = false,
+        bool $inModal = false,
+        // Component specific
+        public string $type = 'text',
+        public string $placeholder = '',
+        public ?int $maxlength = null,
+        public ?int $rows = null,
+        public ?string $ref = null,
+        public ?string $onChange = null,
+        public ?string $onChangeAttribute = null,
+        public ?string $prefix = null,
     ) {
-        parent::__construct($name, $label, $renderForBlocks, $renderForModal);
-
-        $this->type = $type;
-        $this->translated = $translated;
-        $this->required = $required;
-        $this->note = $note;
-        $this->placeholder = $placeholder;
-        $this->maxlength = $maxlength;
-        $this->disabled = $disabled;
-        $this->readonly = $readonly;
-        $this->default = $default;
-        $this->rows = $rows;
-        $this->ref = $ref;
-        $this->onChange = $onChange;
-        $this->onChangeAttribute = $onChangeAttribute;
-        $this->prefix = $prefix;
-        $this->inModal = $inModal;
+        parent::__construct(
+            name: $name,
+            label: $label,
+            note: $note,
+            inModal: $inModal,
+            readOnly: $readOnly,
+            renderForBlocks: $renderForBlocks,
+            renderForModal: $renderForModal,
+            disabled: $disabled,
+            required: $required,
+            translated: $translated,
+            default: $default
+        );
     }
 
-    public function render()
+    public function render(): View
     {
         return view('twill::partials.form._input', [
+            ... $this->data(),
             'onChangeFullAttribute' => $this->onChangeAttribute ? "('".$this->onChangeAttribute."', ...arguments)" : "",
         ]);
     }

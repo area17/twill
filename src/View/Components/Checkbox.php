@@ -2,44 +2,45 @@
 
 namespace A17\Twill\View\Components;
 
+use Illuminate\Contracts\View\View;
+
 class Checkbox extends TwillFormComponent
 {
-    public $note;
-    public $default;
-    public $fieldsInModal;
-    public $disabled;
-    public $border;
-    public $confirmMessageText;
-    public $confirmTitleText;
-    public $requireConfirmation;
-
     public function __construct(
-        $name,
-        $label,
-        $renderForBlocks = false,
-        $renderForModal = false,
-        $note = false,
-        $default = false,
-        $fieldsInModal = false,
-        $disabled = false,
-        $border = false,
-        $confirmMessageText = false,
-        $confirmTitleText = false,
-        $requireConfirmation = false
+        string $name,
+        string $label,
+        bool $renderForBlocks = false,
+        bool $renderForModal = false,
+        bool $translated = false,
+        bool $required = false,
+        string $note = '',
+        mixed $default = null,
+        bool $disabled = false,
+        bool $readOnly = false,
+        bool $inModal = false,
+        // Component specific
+        public bool $border = false,
+        public ?string $confirmMessageText = null,
+        public ?string $confirmTitleText = null,
+        public bool $requireConfirmation = false
     ) {
-        parent::__construct($name, $label, $renderForBlocks, $renderForModal);
-        $this->note = $note;
-        $this->default = $default;
-        $this->fieldsInModal = $fieldsInModal;
-        $this->disabled = $disabled;
-        $this->border = $border;
-        $this->confirmMessageText = $confirmMessageText;
-        $this->confirmTitleText = $confirmTitleText;
-        $this->requireConfirmation = $requireConfirmation;
+        parent::__construct(
+            name: $name,
+            label: $label,
+            note: $note,
+            inModal: $inModal,
+            readOnly: $readOnly,
+            renderForBlocks: $renderForBlocks,
+            renderForModal: $renderForModal,
+            disabled: $disabled,
+            required: $required,
+            translated: $translated,
+            default: $default
+        );
     }
 
-    public function render()
+    public function render(): View
     {
-        return view('twill::partials.form._checkbox');
+        return view('twill::partials.form._checkbox', [... $this->data()]);
     }
 }

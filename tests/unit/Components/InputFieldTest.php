@@ -1,0 +1,15 @@
+<?php
+
+namespace A17\Twill\Tests\Unit\Components;
+
+use A17\Twill\View\Components\Input;
+
+class InputFieldTest extends ComponentTestBase
+{
+    public string $component = Input::class;
+    public array $data = [
+        'name' => 'name',
+        'label' => 'label',
+    ];
+    public string $expectedView = 'twill::partials.form._input';
+}

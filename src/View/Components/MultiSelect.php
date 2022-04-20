@@ -2,58 +2,62 @@
 
 namespace A17\Twill\View\Components;
 
+use Illuminate\Contracts\View\View;
+
 class MultiSelect extends FieldWithOptions
 {
-    public $min;
-    public $max;
-
     public function __construct(
-        $name,
-        $label,
-        $renderForBlocks = false,
-        $renderForModal = false,
-        $options = [],
-        $unpack = false,
-        $columns = 0,
-        $searchable = false,
-        $note = null,
-        $placeholder = null,
-        $disabled = false,
-        $addNew = false,
-        $moduleName = null,
-        $default = false,
-        $storeUrl = null,
-        $fieldsInModal = false,
-        $min = null,
-        $max = null
+        string $name,
+        string $label,
+        bool $renderForBlocks = false,
+        bool $renderForModal = false,
+        bool $translated = false,
+        bool $required = false,
+        string $note = '',
+        mixed $default = null,
+        bool $disabled = false,
+        bool $readOnly = false,
+        bool $inModal = false,
+        // FieldWithOptions
+        mixed $options = null,
+        bool $unpack = false,
+        int $columns = 0,
+        bool $searchable = false,
+        string $placeholder = '',
+        bool $addNew = false,
+        ?string $moduleName = null,
+        ?string $storeUrl = null,
+        // Component specific
+        public ?int $min = null,
+        public ?int $max = null,
     ) {
         parent::__construct(
-            $name,
-            $label,
-            $renderForBlocks,
-            $renderForModal,
-            $options,
-            $unpack,
-            $columns,
-            $searchable,
-            $note,
-            $placeholder,
-            $disabled,
-            $addNew,
-            $moduleName,
-            $storeUrl,
-            $default,
-            $fieldsInModal
+            name: $name,
+            label: $label,
+            renderForBlocks: $renderForBlocks,
+            renderForModal: $renderForModal,
+            translated: $translated,
+            required: $required,
+            note: $note,
+            default: $default,
+            disabled: $disabled,
+            readOnly: $readOnly,
+            inModal: $inModal,
+            options: $options,
+            unpack: $unpack,
+            columns: $columns,
+            searchable: $searchable,
+            placeholder: $placeholder,
+            addNew: $addNew,
+            moduleName: $moduleName,
+            storeUrl: $storeUrl,
         );
-        $this->min = $min;
-        $this->max = $max;
     }
 
-    public function render()
+    public function render(): View
     {
         return view('twill::partials.form._multi_select', [
-            'options' => $this->options,
-            'inModal' => $this->isInModal()
+            ... $this->data(),
         ]);
     }
 }

@@ -120,11 +120,7 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->app->bind(TwillCapsules::class);
 
-        // Only works as of laravel 7.
-        // @todo: remove
-        if (self::supportsBladeComponents()) {
-            Blade::componentNamespace('A17\\Twill\\View\\Components', 'twill');
-        }
+        Blade::componentNamespace('A17\\Twill\\View\\Components', 'twill');
 
         Relation::morphMap([
             'users' => User::class,
@@ -135,10 +131,6 @@ class TwillServiceProvider extends ServiceProvider
         ]);
 
         config(['twill.version' => $this->version()]);
-    }
-
-    public static function supportsBladeComponents(): bool {
-        return (int)explode('.', app()->version())[0] >= 8;
     }
 
     private function registerFacades(): void
@@ -380,10 +372,7 @@ class TwillServiceProvider extends ServiceProvider
 
         $view = $partialNamespace . $view . $name;
 
-        if (
-            self::supportsBladeComponents() &&
-            class_exists(Blade::getClassComponentNamespaces()['twill'] . '\\' . Str::studly($name))
-        ) {
+        if (class_exists(Blade::getClassComponentNamespaces()['twill'] . '\\' . Str::studly($name))) {
             $expression = explode(',', $expression);
             array_shift($expression);
             $expression = implode(',', $expression);

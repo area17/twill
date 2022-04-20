@@ -3,61 +3,52 @@
 namespace A17\Twill\View\Components;
 
 use Illuminate\Support\Str;
+use Illuminate\View\View;
 
 class Browser extends TwillFormComponent
 {
-    public $moduleName;
-    public $modules;
-    public $endpoints;
-    public $max;
-    public $note;
-    public $fieldNote;
-    public $browserNote;
-    public $itemLabel;
-    public $buttonOnTop;
-    public $wide;
-    public $sortable;
-    public $endpoint;
-    public $routePrefix;
-    public $params;
-
     public function __construct(
-        $label,
-        $name = null,
-        $renderForBlocks = false,
-        $renderForModal = false,
-        $moduleName = null,
-        $modules = [],
-        $endpoints = [],
-        $endpoint = null,
-        $max = 1,
-        $note = null,
-        $fieldNote = null,
-        $browserNote = null,
-        $itemLabel = null,
-        $buttonOnTop = false,
-        $wide = false,
-        $sortable = true,
-        $routePrefix = null,
-        $params = []
+        string $label,
+        bool $renderForBlocks = false,
+        bool $renderForModal = false,
+        bool $translated = false,
+        bool $required = false,
+        string $note = '',
+        mixed $default = null,
+        bool $disabled = false,
+        bool $readOnly = false,
+        bool $inModal = false,
+        ?string $name = null,
+        // Component specific
+        public ?string $moduleName = null,
+        public array $modules = [],
+        public array $endpoints = [],
+        public ?string $endpoint = null,
+        public int $max = 1,
+        public ?string $fieldNote = null,
+        public ?string $browserNote = null,
+        public ?string $itemLabel = null,
+        public bool $buttonOnTop = false,
+        public bool $wide = false,
+        public bool $sortable = true,
+        public ?string $routePrefix = null,
+        public array $params = [],
+        public ?string $connectedBrowserField = null,
     ) {
         $name = $name ?? $moduleName;
-        parent::__construct($name, $label, $renderForBlocks, $renderForModal);
-        $this->name = $name;
-        $this->moduleName = $moduleName;
-        $this->modules = $modules;
-        $this->endpoints = $endpoints;
-        $this->endpoint = $endpoint;
-        $this->max = $max;
-        $this->note = $note;
-        $this->fieldNote = $fieldNote;
-        $this->browserNote = $browserNote;
-        $this->itemLabel = $itemLabel;
-        $this->buttonOnTop = $buttonOnTop;
-        $this->wide = $wide;
-        $this->sortable = $sortable;
-        $this->routePrefix = $routePrefix;
-        $this->params = $params;
+        parent::__construct(
+            name: $name ?? $moduleName,
+            label: $label,
+            note: $note,
+            inModal: $inModal,
+            readOnly: $readOnly,
+            renderForBlocks: $renderForBlocks,
+            renderForModal: $renderForModal,
+            disabled: $disabled,
+            required: $required,
+            translated: $translated,
+            default: $default
+        );
 
         $endpointsFromModules = isset($this->modules) ? collect($this->modules)->map(function ($module) {
             return [
@@ -87,7 +78,7 @@ class Browser extends TwillFormComponent
             'Add' . ($this->max > 1 ? " up to {$this->max} " . $itemLabel : ' one ' . Str::singular($this->itemLabel));
     }
 
-    public function render()
+    public function render(): View
     {
         return view('twill::partials.form._browser');
     }

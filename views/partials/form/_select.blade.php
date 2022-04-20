@@ -1,29 +1,3 @@
-@unless(\A17\Twill\TwillServiceProvider::supportsBladeComponents())
-    @php
-        $options = is_object($options) && method_exists($options, 'map') ? $options->map(function($label, $value) {
-            return [
-                'value' => $value,
-                'label' => $label
-            ];
-        })->values()->toArray() : $options;
-
-        $note = $note ?? false;
-        $placeholder = $placeholder ?? false;
-        $required = $required ?? false;
-        $searchable = $searchable ?? false;
-        $disabled = $disabled ?? false;
-        $inTable = $inTable ?? false;
-        $inGrid = $inGrid ?? true;
-        $columns = $columns ?? 0;
-
-        // do not use for now, but this will allow you to create a new option directly from the form
-        $addNew = $addNew ?? false;
-        $moduleName = $moduleName ?? null;
-        $storeUrl = $storeUrl ?? '';
-        $inModal = $fieldsInModal ?? false;
-    @endphp
-@endunless
-
 @if ($unpack ?? false)
     <a17-singleselect
         label="{{ $label }}"

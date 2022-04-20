@@ -558,7 +558,7 @@ abstract class ModuleController extends Controller
         });
 
         View::share('form', $this->form($id));
-        return View::make($view, $this->form($id));
+        return View::make($view, $this->form($id))->with('renderFields', $this->getForm());
     }
 
     /**
@@ -2077,5 +2077,9 @@ abstract class ModuleController extends Controller
     protected function getTransLabel($key, $replace = [])
     {
         return twillTrans(Arr::has($this->labels, $key) ? Arr::get($this->labels, $key) : $key, $replace);
+    }
+
+    public function getForm(): array {
+        return [];
     }
 }

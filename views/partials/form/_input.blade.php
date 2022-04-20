@@ -1,24 +1,3 @@
-@unless(\A17\Twill\TwillServiceProvider::supportsBladeComponents())
-    @php
-        $type = $type ?? 'text';
-        $translated = $translated ?? false;
-        $required = $required ?? false;
-        $note = $note ?? false;
-        $placeholder = $placeholder ?? false;
-        $maxlength = $maxlength ?? false;
-        $disabled = $disabled ?? false;
-        $readonly = $readonly ?? false;
-        $default = $default ?? false;
-        $rows = $rows ?? false;
-        $ref = $ref ?? false;
-        $onChange = $onChange ?? false;
-        $onChangeAttribute = $onChangeAttribute ?? false;
-        $onChangeFullAttribute = $onChangeAttribute ? "('".$onChangeAttribute."', ...arguments)" : "";
-        $prefix = $prefix ?? false;
-        $inModal = $fieldsInModal ?? false;
-    @endphp
-@endunless
-
 @if($translated)
     <a17-locale
         type="a17-textfield"
@@ -31,7 +10,7 @@
             @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($disabled) disabled: true, @endif
-            @if ($readonly) readonly: true, @endif
+            @if ($readOnly) readonly: true, @endif
             @if ($rows) rows: {{ $rows }}, @endif
             @if ($prefix) prefix: '{{ $prefix }}', @endif
             @if ($inModal) inModal: true, @endif
@@ -54,7 +33,7 @@
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         @if ($maxlength) :maxlength="{{ $maxlength }}" @endif
         @if ($disabled) disabled @endif
-        @if ($readonly) readonly @endif
+        @if ($readOnly) readonly @endif
         @if ($rows) :rows="{{ $rows }}" @endif
         @if ($ref) ref="{{ $ref }}" @endif
         @if ($onChange) v-on:change="{{ $onChange }}{{ $onChangeFullAttribute }}" @endif

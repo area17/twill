@@ -1,52 +1,3 @@
-@unless(\A17\Twill\TwillServiceProvider::supportsBladeComponents())
-    @php
-        $translated = $translated ?? false;
-        $required = $required ?? false;
-        $maxlength = $maxlength ?? false;
-        $options = $options ?? false;
-        $placeholder = $placeholder ?? false;
-        $note = $note ?? false;
-        $disabled = $disabled ?? false;
-        $readonly = $readonly ?? false;
-        $editSource = $editSource ?? false;
-        $toolbarOptions = $toolbarOptions ?? false;
-        $inModal = $fieldsInModal ?? false;
-        $default = $default ?? false;
-        $hideCounter = $hideCounter ?? false;
-        $type = $type ?? 'quill';
-        $limitHeight = $limitHeight ?? false;
-
-        // quill.js options
-        $activeSyntax = $syntax ?? false;
-        $theme = $customTheme ?? 'github';
-        if ($toolbarOptions) {
-            $toolbarOptions = array_map(function ($option) {
-                if ($option === 'list-unordered') {
-                    return (object) ['list' => 'bullet'];
-                }
-                if ($option === 'list-ordered') {
-                    return (object) ['list' => 'ordered'];
-                }
-                if ($option === 'h1') {
-                    return (object) ['header' => 1];
-                }
-                if ($option === 'h2') {
-                    return (object) ['header' => 2];
-                }
-                return $option;
-            }, $toolbarOptions);
-
-            $toolbarOptions = [
-                'modules' => [
-                    'toolbar' => $toolbarOptions,
-                    'syntax' => $activeSyntax
-                ]
-            ];
-        }
-        $options = $customOptions ?? $toolbarOptions ?? false;
-    @endphp
-@endunless
-
 @if($activeSyntax)
     @pushonce('extra_css:wysiwyg')
         <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/{{$theme}}.min.css">
@@ -67,7 +18,7 @@
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($hideCounter) showCounter: false, @endif
             @if ($disabled) disabled: true, @endif
-            @if ($readonly) readonly: true, @endif
+            @if ($readOnly) readonly: true, @endif
             @if ($editSource) editSource: true, @endif
             @if ($inModal) inModal: true, @endif
             @if ($limitHeight) limitHeight: true, @endif
@@ -89,7 +40,7 @@
             @if ($maxlength) :maxlength='{{ $maxlength }}' @endif
             @if ($hideCounter) :showCounter='false' @endif
             @if ($disabled) disabled @endif
-            @if ($readonly) readonly @endif
+            @if ($readOnly) readonly @endif
             @if ($editSource) :edit-source='true' @endif
             @if ($limitHeight) :limit-height='true' @endif
             @if ($default)
@@ -114,7 +65,7 @@
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($hideCounter) showCounter: false, @endif
             @if ($disabled) disabled: true, @endif
-            @if ($readonly) readonly: true, @endif
+            @if ($readOnly) readonly: true, @endif
             @if ($editSource) editSource: true, @endif
             @if ($inModal) inModal: true, @endif
             @if ($limitHeight) limitHeight: true, @endif
@@ -136,7 +87,7 @@
             @if ($maxlength) :maxlength='{{ $maxlength }}' @endif
             @if ($hideCounter) :showCounter='false' @endif
             @if ($disabled) disabled @endif
-            @if ($readonly) readonly @endif
+            @if ($readOnly) readonly @endif
             @if ($editSource) :edit-source='true' @endif
             @if ($limitHeight) :limit-height='true' @endif
             @if ($default)

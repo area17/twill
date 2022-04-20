@@ -2,55 +2,49 @@
 
 namespace A17\Twill\View\Components;
 
+use Illuminate\Contracts\View\View;
+
 class DatePicker extends TwillFormComponent
 {
-    public $withTime;
-    public $allowInput;
-    public $allowClear;
-    public $note;
-    public $inModal;
-    public $timeOnly;
-    public $placeholder;
-    public $required;
-    public $time24Hr;
-    public $altFormat;
-    public $hourIncrement;
-    public $minuteIncrement;
-
     public function __construct(
-        $name,
-        $label,
-        $renderForBlocks = false,
-        $renderForModal = false,
-        $withTime = true,
-        $allowInput = false,
-        $allowClear = false,
-        $note = null,
-        $inModal = false,
-        $placeholder = '',
-        $timeOnly = false,
-        $required = false,
-        $time24Hr = false,
-        $altFormat = null,
-        $hourIncrement = null,
-        $minuteIncrement = null
+        string $name,
+        string $label,
+        bool $renderForBlocks = false,
+        bool $renderForModal = false,
+        bool $translated = false,
+        bool $required = false,
+        string $note = '',
+        mixed $default = null,
+        bool $disabled = false,
+        bool $readOnly = false,
+        bool $inModal = false,
+        // Component specific
+        public bool $withTime = true,
+        public bool $allowInput = false,
+        public bool $allowClear = false,
+        public string $placeholder = '',
+        public bool $timeOnly = false,
+        public bool $time24Hr = false,
+        public ?string $altFormat = null,
+        public ?int $hourIncrement = null,
+        public ?int $minuteIncrement = null
     ) {
-        parent::__construct($name, $label, $renderForBlocks, $renderForModal);
-        $this->withTime = $withTime;
-        $this->allowInput = $allowInput;
-        $this->allowClear = $allowClear;
-        $this->note = $note;
-        $this->inModal = $inModal;
-        $this->timeOnly = $timeOnly;
-        $this->placeholder = $placeholder;
-        $this->required = $required;
-        $this->time24Hr = $time24Hr;
-        $this->altFormat = $altFormat;
-        $this->hourIncrement = $hourIncrement;
-        $this->minuteIncrement = $minuteIncrement;
+        parent::__construct(
+            name: $name,
+            label: $label,
+            note: $note,
+            inModal: $inModal,
+            readOnly: $readOnly,
+            renderForBlocks: $renderForBlocks,
+            renderForModal: $renderForModal,
+            disabled: $disabled,
+            required: $required,
+            translated: $translated,
+            default: $default
+        );
     }
 
-    public function render()
+    public function render(): View
     {
         return view('twill::partials.form._date_picker');
     }

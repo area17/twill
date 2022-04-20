@@ -1,12 +1,3 @@
-@unless(\A17\Twill\TwillServiceProvider::supportsBladeComponents())
-    @php
-        $name = $name ?? $type;
-        $buttonAsLink = $buttonAsLink ?? false;
-        $max = $max ?? null;
-        $reorder = $reorder ?? true;
-    @endphp
-@endunless
-
 <a17-repeater
     type="{{ $type }}"
     @if ($max) :max="{{$max}}" @endif

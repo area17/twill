@@ -2,34 +2,34 @@
 
 namespace A17\Twill\View\Components;
 
+use Illuminate\Contracts\View\View;
+
 class Map extends TwillFormComponent
 {
-    public $showMap;
-    public $openMap;
-    public $inModal;
-    public $saveExtendedData;
-    public $autoDetectLatLngValue;
-
     public function __construct(
-        $name,
-        $label,
-        $renderForBlocks = false,
-        $renderForModal = false,
-        $showMap = true,
-        $openMap = false,
-        $fieldsInModal = false,
-        $saveExtendedData = false,
-        $autoDetectLatLngValue = false
+        string $name,
+        string $label,
+        bool $renderForBlocks = false,
+        bool $renderForModal = false,
+        string $note = '',
+        bool $inModal = false,
+        // Component specific
+        public bool $showMap = true,
+        public bool $openMap = false,
+        public bool $saveExtendedData = false,
+        public bool $autoDetectLatLngValue = false
     ) {
-        parent::__construct($name, $label, $renderForBlocks, $renderForModal);
-        $this->showMap = $showMap;
-        $this->openMap = $openMap;
-        $this->inModal = $fieldsInModal ?? false;
-        $this->saveExtendedData = $saveExtendedData;
-        $this->autoDetectLatLngValue = $autoDetectLatLngValue;
+        parent::__construct(
+            name: $name,
+            label: $label,
+            note: $note,
+            inModal: $inModal,
+            renderForBlocks: $renderForBlocks,
+            renderForModal: $renderForModal
+        );
     }
 
-    public function render()
+    public function render(): View
     {
         return view('twill::partials.form._map');
     }

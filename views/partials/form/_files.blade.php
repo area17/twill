@@ -1,14 +1,3 @@
-@unless(\A17\Twill\TwillServiceProvider::supportsBladeComponents())
-    @php
-        $max = $max ?? 1;
-        $itemLabel = $itemLabel ?? strtolower($label);
-        $note = $note ?? 'Add' . ($max > 1 ? " up to $max $itemLabel" : ' one ' . Str::singular($itemLabel));
-        $fieldNote = $fieldNote ?? '';
-        $filesizeMax = $filesizeMax ?? 0;
-        $buttonOnTop = $buttonOnTop ?? false;
-    @endphp
-@endunless
-
 <a17-locale
     type="a17-filefield"
     :attributes="{

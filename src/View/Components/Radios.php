@@ -2,59 +2,62 @@
 
 namespace A17\Twill\View\Components;
 
+use Illuminate\Contracts\View\View;
+
 class Radios extends FieldWithOptions
 {
-    public $inline;
-    public $border;
-
     public function __construct(
-        $name,
-        $label,
-        $options = [],
-        $unpack = false,
-        $columns = 0,
-        $searchable = false,
-        $note = null,
-        $placeholder = null,
-        $disabled = false,
-        $addNew = false,
-        $moduleName = null,
-        $default = false,
-        $storeUrl = null,
-        $fieldsInModal = false,
-        $inline = false,
-        $border = false,
-        $renderForBlocks = false,
-        $renderForModal = false
+        string $name,
+        string $label,
+        bool $renderForBlocks = false,
+        bool $renderForModal = false,
+        bool $translated = false,
+        bool $required = false,
+        string $note = '',
+        mixed $default = null,
+        bool $disabled = false,
+        bool $readOnly = false,
+        bool $inModal = false,
+        // FieldWithOptions
+        mixed $options = null,
+        bool $unpack = false,
+        int $columns = 0,
+        bool $searchable = false,
+        string $placeholder = '',
+        bool $addNew = false,
+        ?string $moduleName = null,
+        ?string $storeUrl = null,
+        // Component specific
+        public bool $inline = false,
+        public bool $border = false,
     ) {
         parent::__construct(
-            $name,
-            $label,
-            $renderForBlocks,
-            $renderForModal,
-            $options,
-            $unpack,
-            $columns,
-            $searchable,
-            $note,
-            $placeholder,
-            $disabled,
-            $addNew,
-            $moduleName,
-            $storeUrl,
-            $default,
-            $fieldsInModal,
+            name: $name,
+            label: $label,
+            renderForBlocks: $renderForBlocks,
+            renderForModal: $renderForModal,
+            translated: $translated,
+            required: $required,
+            note: $note,
+            default: $default,
+            disabled: $disabled,
+            readOnly: $readOnly,
+            inModal: $inModal,
+            options: $options,
+            unpack: $unpack,
+            columns: $columns,
+            searchable: $searchable,
+            placeholder: $placeholder,
+            addNew: $addNew,
+            moduleName: $moduleName,
+            storeUrl: $storeUrl
         );
-
-        $this->inline = $inline;
-        $this->border = $border;
     }
 
-    public function render()
+    public function render(): View
     {
         return view('twill::partials.form._radios', [
-            'options' => $this->options,
-            'inModal' => $this->isInModal()
+            ... $this->data(),
         ]);
     }
 }

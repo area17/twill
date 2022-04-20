@@ -1,7 +1,3 @@
-@php
-    $value = $value ?? false;
-@endphp
-
 <a17-hiddenfield
     @include('twill::partials.form.utils._field_name')
     @if ($value) :initial-value="'{{ $value }}'" @endif

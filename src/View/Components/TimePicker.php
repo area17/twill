@@ -2,9 +2,11 @@
 
 namespace A17\Twill\View\Components;
 
+use Illuminate\Contracts\View\View;
+
 class TimePicker extends DatePicker
 {
-    public function render()
+    public function render(): View
     {
         $this->timeOnly = true;
         $this->withTime = true;

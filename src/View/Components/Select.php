@@ -2,13 +2,14 @@
 
 namespace A17\Twill\View\Components;
 
+use Illuminate\Contracts\View\View;
+
 class Select extends FieldWithOptions
 {
-    public function render()
+    public function render(): View
     {
         return view('twill::partials.form._select', [
-            'options' => $this->options,
-            'inModal' => $this->isInModal()
+            ... $this->data(),
         ]);
     }
 }

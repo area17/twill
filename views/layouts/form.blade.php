@@ -109,7 +109,13 @@
                     <section class="col col--primary" data-sticky-top="publisher">
                         @unless($disableContentFieldset)
                             <a17-fieldset title="{{ $contentFieldsetLabel ?? twillTrans('twill::lang.form.content') }}" id="content">
-                                @yield('contentFields')
+                                @if (!empty($renderFields))
+                                    @foreach($renderFields as $field)
+                                        {!! $field->render() !!}
+                                    @endforeach
+                                @else
+                                    @yield('contentFields')
+                                @endif
                             </a17-fieldset>
                         @endunless
 

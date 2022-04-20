@@ -2,62 +2,53 @@
 
 namespace A17\Twill\View\Components;
 
+use Illuminate\View\View;
+
 class Medias extends TwillFormComponent
 {
-    public $max;
-    public $required;
-    public $note;
-    public $fieldNote;
-    public $withAddInfo;
-    public $withVideoUrl;
-    public $withCaption;
-    public $altTextMaxLength;
-    public $captionMaxLength;
-    public $extraMetadatas;
-    public $widthMin;
-    public $heightMin;
-    public $buttonOnTop;
-    public $activeCrop;
-
     public function __construct(
-        $name,
-        $label,
-        $renderForBlocks = false,
-        $renderForModal = false,
-        $max = 1,
-        $required = false,
-        $note = null,
-        $fieldNote = null,
-        $withAddInfo = true,
-        $withVideoUrl = true,
-        $withCaption = true,
-        $altTextMaxLength = false,
-        $captionMaxLength = false,
-        $extraMetadatas = [],
-        $widthMin = 0,
-        $heightMin = 0,
-        $buttonOnTop = false,
-        $activeCrop = true
+        string $name,
+        string $label,
+        bool $renderForBlocks = false,
+        bool $renderForModal = false,
+        bool $translated = false,
+        bool $required = false,
+        string $note = '',
+        mixed $default = null,
+        bool $disabled = false,
+        bool $readOnly = false,
+        bool $inModal = false,
+        // Component specific
+        public int $max = 1,
+        public ?string $fieldNote = null,
+        public bool $withAddInfo = true,
+        public bool $withVideoUrl = true,
+        public bool $withCaption = true,
+        public bool $altTextMaxLength = false,
+        public bool $captionMaxLength = false,
+        public array $extraMetadatas = [],
+        public int $widthMin = 0,
+        public int $heightMin = 0,
+        public bool $buttonOnTop = false,
+        public bool $activeCrop = true
     )
     {
-        parent::__construct($name, $label, $renderForBlocks, $renderForModal);
-        $this->max = $max;
-        $this->required = $required;
-        $this->note = $note;
-        $this->fieldNote = $fieldNote;
-        $this->withAddInfo = $withAddInfo;
-        $this->withVideoUrl = $withVideoUrl;
-        $this->withCaption = $withCaption;
-        $this->altTextMaxLength = $altTextMaxLength;
-        $this->captionMaxLength = $captionMaxLength;
-        $this->extraMetadatas = $extraMetadatas;
-        $this->widthMin = $widthMin;
-        $this->heightMin = $heightMin;
-        $this->buttonOnTop = $buttonOnTop;
-        $this->activeCrop = $activeCrop;
+        parent::__construct(
+            name: $name,
+            label: $label,
+            note: $note,
+            inModal: $inModal,
+            readOnly: $readOnly,
+            renderForBlocks: $renderForBlocks,
+            renderForModal: $renderForModal,
+            disabled: $disabled,
+            required: $required,
+            translated: $translated,
+            default: $default
+        );
     }
 
-    public function render()
+    public function render(): View
     {
         return view('twill::partials.form._medias', [
             'multiple' => $this->max > 1 || $this->max === 0,

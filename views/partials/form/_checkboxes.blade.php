@@ -1,25 +1,3 @@
-@unless(\A17\Twill\TwillServiceProvider::supportsBladeComponents())
-    @php
-        $options = is_object($options) && method_exists($options, 'map') ? $options->map(function($label, $value) {
-            return [
-                'value' => $value,
-                'label' => $label
-            ];
-        })->values()->toArray() : $options;
-
-        $note = $note ?? false;
-        $inline = $inline ?? false;
-        $border = $border ?? false;
-        $columns = $columns ?? 0;
-
-        // do not use for now, but this will allow you to create a new option directly from the form
-        $addNew = $addNew ?? false;
-        $moduleName = $moduleName ?? null;
-        $storeUrl = $storeUrl ?? '';
-        $inModal = $fieldsInModal ?? false;
-    @endphp
-@endunless
-
 <a17-multiselect
     label="{{ $label }}"
     @include('twill::partials.form.utils._field_name')

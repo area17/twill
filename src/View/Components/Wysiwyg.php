@@ -2,73 +2,51 @@
 
 namespace A17\Twill\View\Components;
 
+use Illuminate\Contracts\View\View;
+
 class Wysiwyg extends TwillFormComponent
 {
-    public $translated;
-    public $required;
-    public $maxlength;
-    public $options;
-    public $placeholder;
-    public $note;
-    public $disabled;
-    public $readonly;
-    public $editSource;
-    public $toolbarOptions;
-    public $inModal;
-    public $hideCounter;
-    public $type;
-    public $limitHeight;
-    public $syntax;
-    public $customTheme;
-    public $customOptions;
-    public $default;
-
     public function __construct(
-        $name,
-        $label,
-        $renderForBlocks = false,
-        $renderForModal = false,
-        $translated = false,
-        $required = false,
-        $maxlength = null,
-        $options = null,
-        $placeholder = null,
-        $note = null,
-        $default = null,
-        $disabled = false,
-        $readonly = false,
-        $editSource = false,
-        $toolbarOptions = null,
-        $inModal = false,
-        $hideCounter = false,
-        $type = 'quill',
-        $limitHeight = false,
-        $syntax = false,
-        $customTheme = 'github',
-        $customOptions = null
+        string $name,
+        string $label,
+        bool $renderForBlocks = false,
+        bool $renderForModal = false,
+        bool $translated = false,
+        bool $required = false,
+        string $note = '',
+        mixed $default = null,
+        bool $disabled = false,
+        bool $readOnly = false,
+        bool $inModal = false,
+        // Component specific
+        public bool $hideCounter = false,
+        public string $placeholder = '',
+        public bool $editSource = false,
+        public ?array $toolbarOptions = null,
+        public ?int $maxlength = null,
+        public ?array $options = null,
+        public string $type = 'quill',
+        public bool $limitHeight = false,
+        public bool $syntax = false,
+        public string $customTheme = 'github',
+        public ?array $customOptions = null
     ) {
-        parent::__construct($name, $label, $renderForBlocks, $renderForModal);
-        $this->translated = $translated;
-        $this->required = $required;
-        $this->maxlength = $maxlength;
-        $this->options = $options;
-        $this->placeholder = $placeholder;
-        $this->note = $note;
-        $this->disabled = $disabled;
-        $this->readonly = $readonly;
-        $this->editSource = $editSource;
-        $this->toolbarOptions = $toolbarOptions;
-        $this->inModal = $inModal;
-        $this->hideCounter = $hideCounter;
-        $this->type = $type;
-        $this->limitHeight = $limitHeight;
-        $this->syntax = $syntax;
-        $this->customTheme = $customTheme;
-        $this->customOptions = $customOptions;
-        $this->default = $default;
+        parent::__construct(
+            name: $name,
+            label: $label,
+            note: $note,
+            inModal: $inModal,
+            readOnly: $readOnly,
+            renderForBlocks: $renderForBlocks,
+            renderForModal: $renderForModal,
+            disabled: $disabled,
+            required: $required,
+            translated: $translated,
+            default: $default
+        );
     }
 
-    public function render()
+    public function render(): View
     {
         if ($this->toolbarOptions) {
             $toolbarOptions = array_map(static function ($option) {
@@ -98,6 +76,7 @@ class Wysiwyg extends TwillFormComponent
         $options = $this->customOptions ?? $toolbarOptions ?? false;
 
         return view('twill::partials.form._wysiwyg', [
+            ... $this->data(),
             'theme' => $this->customTheme,
             'activeSyntax' => $this->syntax,
             'options' => $options,
