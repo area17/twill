@@ -2,8 +2,6 @@
 
 namespace A17\Twill;
 
-use A17\Twill\View\Components\BlockEditor;
-use A17\Twill\View\Components\Checkbox;
 use Exception;
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
@@ -11,7 +9,6 @@ use A17\Twill\Commands\CapsuleInstall;
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\Dev;
 use A17\Twill\Commands\GenerateBlocks;
-use A17\Twill\Commands\GeneratePackageCommand;
 use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ListBlocks;
 use A17\Twill\Commands\ListIcons;
@@ -40,7 +37,6 @@ use A17\Twill\Services\FileLibrary\FileService;
 use A17\Twill\Services\MediaLibrary\ImageService;
 use Astrotomic\Translatable\TranslatableServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;
-use Exception;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Blade;
