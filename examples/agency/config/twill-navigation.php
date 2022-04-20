@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'homepage' => [
+        'title' => 'Homepage',
+        'route' => 'twill.featured.homepage',
+    ],
     'work' => [
         'title' => 'Work',
         'route' => 'twill.work.works.index',
