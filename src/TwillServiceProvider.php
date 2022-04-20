@@ -42,6 +42,7 @@ use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 
