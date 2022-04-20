@@ -13,6 +13,35 @@ class WorkController extends BaseModuleController
     protected $indexOptions = [
     ];
 
+    protected $indexColumns = [
+        'image' => [
+            'thumb' => true,
+            'variant' => [
+                'role' => 'cover',
+                'crop' => 'default'
+            ]
+        ],
+        'title' => [
+            'title' => 'Title',
+            'field' => 'title',
+            'sort' => true
+        ],
+        'client' => [
+            'title' => 'Client',
+            'field' => 'client_name',
+            'sort' => true
+        ],
+        'year' => [
+            'title' => 'Year',
+            'field' => 'year',
+            'sort' => true
+        ],
+        'publication_date' => [
+            'title' => 'Publication date',
+            'field' => 'publish_start_date',
+        ]
+    ];
+
     protected function formData($request)
     {
         $years = array_map(function ($year) {
