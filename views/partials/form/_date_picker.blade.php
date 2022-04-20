@@ -6,6 +6,7 @@
         $note = $note ?? false;
         $inModal = $fieldsInModal ?? false;
         $timeOnly = $timeOnly ?? false;
+        $disabled = $disabled ?? false;
     @endphp
 @endunless
 
@@ -13,6 +14,7 @@
     label="{{ $label }}"
     @include('twill::partials.form.utils._field_name')
     place-holder="{{ $placeholder ?? $label }}"
+    @if ($disabled) disabled @endif
     @if ($withTime) enable-time @endif
     @if ($timeOnly) no-calendar @endif
     @if ($allowInput) allow-input @endif

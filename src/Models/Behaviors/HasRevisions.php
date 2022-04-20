@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use A17\Twill\Facades\TwillCapsules;
+
 trait HasRevisions
 {
     /**
@@ -34,11 +36,12 @@ trait HasRevisions
      */
     public function revisionsArray()
     {
-        return $this->revisions->map(function ($revision) {
+        return $this->revisions->map(function ($revision, $index) {
             return [
                 'id' => $revision->id,
                 'author' => $revision->user->name ?? 'Unknown',
                 'datetime' => $revision->created_at->toIso8601String(),
+                'label' => $index === 0 ? twillTrans('twill::lang.publisher.current') : '',
             ];
         })->toArray();
     }
@@ -52,6 +55,6 @@ trait HasRevisions
             return $revision;
         }
 
-        return $this->getCapsuleRevisionClass(class_basename($this));
+        return TwillCapsules::getCapsuleForModel(class_basename($this))->getRevisionModel();
     }
 }

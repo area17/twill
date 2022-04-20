@@ -46,7 +46,8 @@
                     @yield('content')
                     @if (config('twill.enabled.media-library') || config('twill.enabled.file-library'))
                         <a17-medialibrary ref="mediaLibrary"
-                                          :authorized="{{ json_encode(auth('twill_users')->user()->can('upload')) }}" :extra-metadatas="{{ json_encode(array_values(config('twill.media_library.extra_metadatas_fields', []))) }}"
+                                          :authorized="{{ json_encode(auth('twill_users')->user()->can('edit-media-library')) }}"
+                                          :extra-metadatas="{{ json_encode(array_values(config('twill.media_library.extra_metadatas_fields', []))) }}"
                                           :translatable-metadatas="{{ json_encode(array_values(config('twill.media_library.translatable_metadatas_fields', []))) }}"
                         ></a17-medialibrary>
                         <a17-dialog ref="deleteWarningMediaLibrary" modal-title="{{ twillTrans("twill::lang.media-library.dialogs.delete.delete-media-title") }}" confirm-label="{{ twillTrans("twill::lang.media-library.dialogs.delete.delete-media-confirm") }}">
@@ -72,7 +73,7 @@
             </section>
         </div>
 
-        <form style="display: none" method="POST" action="{{ route('admin.logout') }}" data-logout-form>
+        <form style="display: none" method="POST" action="{{ route('twill.logout') }}" data-logout-form>
             @csrf
         </form>
 
@@ -82,8 +83,15 @@
             window['{{ config('twill.js_namespace') }}'].twillLocalization = {!! json_encode($twillLocalization) !!};
             window['{{ config('twill.js_namespace') }}'].STORE = {};
             window['{{ config('twill.js_namespace') }}'].STORE.form = {};
+            window['{{ config('twill.js_namespace') }}'].STORE.config = {
+                publishDateDisplayFormat: '{{config('twill.publish_date_display_format')}}',
+            };
             window['{{ config('twill.js_namespace') }}'].STORE.medias = {};
             window['{{ config('twill.js_namespace') }}'].STORE.medias.types = [];
+            window['{{ config('twill.js_namespace') }}'].STORE.medias.config = {
+                useWysiwyg: {{ config('twill.media_library.media_caption_use_wysiwyg') ? 'true' : 'false' }},
+                wysiwygOptions: {!! json_encode(config('twill.media_library.media_caption_wysiwyg_options')) !!}
+            };
             window['{{ config('twill.js_namespace') }}'].STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!};
 
             @if (config('twill.enabled.media-library'))
@@ -91,8 +99,8 @@
                     value: 'image',
                     text: '{{ twillTrans("twill::lang.media-library.images") }}',
                     total: {{ \A17\Twill\Models\Media::count() }},
-                    endpoint: '{{ route('admin.media-library.medias.index') }}',
-                    tagsEndpoint: '{{ route('admin.media-library.medias.tags') }}',
+                    endpoint: '{{ route('twill.media-library.medias.index') }}',
+                    tagsEndpoint: '{{ route('twill.media-library.medias.tags') }}',
                     uploaderConfig: {!! json_encode($mediasUploaderConfig) !!}
                 });
                 window['{{ config('twill.js_namespace') }}'].STORE.medias.showFileName = !!'{{ config('twill.media_library.show_file_name') }}';
@@ -103,8 +111,8 @@
                     value: 'file',
                     text: '{{ twillTrans("twill::lang.media-library.files") }}',
                     total: {{ \A17\Twill\Models\File::count() }},
-                    endpoint: '{{ route('admin.file-library.files.index') }}',
-                    tagsEndpoint: '{{ route('admin.file-library.files.tags') }}',
+                    endpoint: '{{ route('twill.file-library.files.index') }}',
+                    tagsEndpoint: '{{ route('twill.file-library.files.tags') }}',
                     uploaderConfig: {!! json_encode($filesUploaderConfig) !!}
                 });
             @endif

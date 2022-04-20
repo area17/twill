@@ -22,5 +22,10 @@ export function globalError (component = null, error = { message: '', value: nul
       message: 'Your session has expired, please <a href="' + document.location + '" target="_blank">login in another tab</a>. You can then continue working here.',
       variant: 'warning'
     })
+  } else if (statusCode === 403) {
+    window[process.env.VUE_APP_NAME].vm.notif({
+      message: 'You don\'t have permission to perform this action.',
+      variant: 'warning'
+    })
   }
 }

@@ -264,7 +264,7 @@ return [
         'files' => 'Dateien',
         'filter-select-label' => 'Nach Tags filtern',
         'images' => 'Bilder',
-        'insert' => 'Einfügen: ',
+        'insert' => 'Einfügen:',
         'sidebar' => [
             'alt-text' => 'Alternativtext',
             'caption' => 'Bildunterschrift',
@@ -275,7 +275,7 @@ return [
             'tags' => 'Tags',
         ],
         'title' => 'Medien',
-        'update' => 'Aktualisieren: ',
+        'update' => 'Aktualisieren:',
         'unused-filter-label' => 'Nur ungenutzte anzeigen',
         'no-tags-found' => 'Leider keine Tags gefunden.',
         'dialogs' => [
@@ -326,7 +326,8 @@ return [
     ],
     'nav' => [
         'admin' => 'Admin',
-        'cms-users' => 'CMS-Benutzer',
+        'cms-users' => 'CMS Benutzer',
+        'profile' => 'Profile',
         'logout' => 'Abmelden',
         'media-library' => 'Medien',
         'settings' => 'Einstellungen',

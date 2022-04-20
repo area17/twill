@@ -19,6 +19,7 @@ import a17RadioGroup from '@/components/RadioGroup.vue'
 import a17Checkbox from '@/components/Checkbox.vue'
 import a17SingleCheckbox from '@/components/SingleCheckbox.vue'
 import a17CheckboxGroup from '@/components/CheckboxGroup.vue'
+import A17SingleSelectPermissions from '@/components/SingleSelectPermissions.vue'
 import a17Multiselect from '@/components/MultiSelect.vue'
 import a17Singleselect from '@/components/SingleSelect.vue'
 import a17Dropdown from '@/components/Dropdown.vue'
@@ -30,6 +31,7 @@ import a17Slideshow from '@/components/Slideshow.vue'
 import a17BrowserField from '@/components/BrowserField.vue'
 import a17FileField from '@/components/files/FileField.vue'
 import a17DatePicker from '@/components/DatePicker.vue'
+import a17Avatar from '@/components/Avatar.vue'
 
 // Media Library
 import a17MediaLibrary from '@/components/media-library/MediaLibrary.vue'
@@ -71,6 +73,7 @@ const A17Config = {
     Vue.component('a17-checkbox', a17Checkbox)
     Vue.component('a17-singlecheckbox', a17SingleCheckbox)
     Vue.component('a17-checkboxgroup', a17CheckboxGroup)
+    Vue.component('a17-singleselect-permissions', A17SingleSelectPermissions)
     Vue.component('a17-multiselect', a17Multiselect)
     Vue.component('a17-singleselect', a17Singleselect)
     Vue.component('a17-select', a17Select)
@@ -83,6 +86,7 @@ const A17Config = {
     Vue.component('a17-datepicker', a17DatePicker)
     Vue.component('a17-filefield', a17FileField)
     Vue.component('a17-colorfield', a17ColorField)
+    Vue.component('a17-avatar', a17Avatar)
 
     // Media Library
     Vue.component('a17-medialibrary', a17MediaLibrary)

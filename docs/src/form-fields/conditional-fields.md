@@ -54,3 +54,41 @@ Here's an example based on a checkbox field where the value is either true or fa
     ])
 @endformConnectedFields
 ```
+
+Here's an example based on a browser field where the fields are displayed only when the browser field is not empty:
+
+```php
+@formField('browser', [
+    'moduleName' => 'publications',
+    'name' => 'related_publications',
+    'label' => 'Related publications',
+    'max' => 4,
+])
+
+@formConnectedFields([
+    'fieldName' => 'publications',
+    'isBrowser' => true,
+    'keepAlive' => true,
+])
+    @formField('input', [
+        'name' => 'related_publications_header',
+        'label' => 'Related publications header',
+    ])
+
+    @formField('textarea', [
+        'name' => 'related_publications_copy',
+        'label' => 'Related publications copy',
+    ])
+@endformConnectedFields
+```
+
+
+| Option            | Description                                                                                      | Type              | Default value |
+|:------------------|:-------------------------------------------------------------------------------------------------|:------------------|:--------------|
+| fieldName         | Name of the connected field                                                                      | string            |               |
+| fieldValues       | Value or values of the connected field that will reveal the fields in this component's slot      | string&vert;array |               |
+| isEqual           | Controls how `fieldValues` are evaluated against the connected field                             | boolean           | true          |
+| isBrowser         | Indicates that the connected field is a `browser` field                                          | boolean           | false         |
+| matchEmptyBrowser | When set to true, the fields in this component's slot will be revealed when the browser is empty | boolean           | false         |
+| keepAlive         | When set to true, the state of the hidden fields is preserved                                    | boolean           | false         |
+| renderForBlocks   | When used inside a block, this needs to be set to true                                           | string            | false         |

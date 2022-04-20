@@ -3,7 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Behaviors\HasMedias;
-use Analytics;
+use A17\Twill\Repositories\ModuleRepository;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
@@ -13,6 +13,7 @@ use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
 use Psr\Log\LoggerInterface as Logger;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Analytics\Analytics;
 use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Analytics\Period;
 
@@ -109,7 +110,7 @@ class DashboardController extends Controller
         $modules = Collection::make($this->config->get('twill.dashboard.modules'));
 
         return $modules->filter(function ($module) {
-            return ($module['search'] ?? false);
+            return $module['search'] ?? false;
         })->map(function ($module) use ($request) {
             $repository = $this->getRepository($module['name'], $module['repository'] ?? null);
 
@@ -118,15 +119,14 @@ class DashboardController extends Controller
             return $found->map(function ($item) use ($module) {
                 try {
                     $author = $item->revisions()->latest()->first()->user->name ?? 'Admin';
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     $author = 'Admin';
                 }
 
                 $date = null;
                 if ($item->updated_at) {
                     $date = $item->updated_at->toIso8601String();
-                }
-                elseif ($item->created_at) {
+                } elseif ($item->created_at) {
                     $date = $item->created_at->toIso8601String();
                 }
 
@@ -173,7 +173,7 @@ class DashboardController extends Controller
     {
         $dashboardModule = $this->config->get('twill.dashboard.modules.' . $activity->subject_type);
 
-        if (!$dashboardModule || !$dashboardModule['activity'] ?? false) {
+        if (! $dashboardModule || ! $dashboardModule['activity'] ?? false) {
             return null;
         }
 
@@ -181,17 +181,26 @@ class DashboardController extends Controller
             return null;
         }
 
+        $parentRelationship = $dashboardModule['parentRelationship'] ?? null;
+        $parent = $activity->subject->$parentRelationship;
+
+        // @todo: Improve readability of what is happening here.
         return [
             'id' => $activity->id,
             'type' => ucfirst($dashboardModule['label_singular'] ?? Str::singular($dashboardModule['name'])),
             'date' => $activity->created_at->toIso8601String(),
             'author' => $activity->causer->name ?? twillTrans('twill::lang.dashboard.unknown-author'),
             'name' => $activity->subject->titleInDashboard ?? $activity->subject->title,
-            'activity' => twillTrans('twill::lang.dashboard.activities.'.$activity->description),
+            'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description),
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
         ] : []) + (!$activity->subject->trashed() ? [
-            'edit' => moduleRoute($dashboardModule['name'], $dashboardModule['routePrefix'] ?? null, 'edit', $activity->subject_id),
+            'edit' => $parent && $parentRelationship ? moduleRoute(
+                $dashboardModule['name'],
+                $dashboardModule['routePrefix'] ?? null,
+                'edit',
+                array_merge($parentRelationship ? [$parent->id] : [], [$activity->subject_id])
+            ) : '',
         ] : []) + (!is_null($activity->subject->published) ? [
             'published' => $activity->description === 'published' ? true : ($activity->description === 'unpublished' ? false : $activity->subject->published),
         ] : []);
@@ -202,14 +211,17 @@ class DashboardController extends Controller
      */
     private function getFacts()
     {
+        /** @var Analytics $analytics */
+        $analytics = app(Analytics::class);
         try {
-            $response = Analytics::performQuery(
+            $response = $analytics->performQuery(
                 Period::days(60),
                 'ga:users,ga:pageviews,ga:bouncerate,ga:pageviewsPerSession',
                 ['dimensions' => 'ga:date']
             );
         } catch (InvalidConfiguration $exception) {
             $this->logger->error($exception);
+
             return [];
         }
 
@@ -223,13 +235,40 @@ class DashboardController extends Controller
             ];
         })->reverse()->values();
 
+        $dummyData = null;
+        if ($statsByDate->isEmpty()) {
+            $dummyData = [
+                [
+                    'label' => 'Users',
+                    'figure' => 0,
+                    'insight' => '0% Bounce rate',
+                    'trend' => __('None'),
+                    'data' => [0 => 0],
+                    'url' => 'https://analytics.google.com/analytics/web',
+                ],
+                [
+                    'label' => 'Pageviews',
+                    'figure' => 0,
+                    'insight' => '0 Pages / Session',
+                    'trend' => __('None'),
+                    'data' => [0 => 0],
+                    'url' => 'https://analytics.google.com/analytics/web',
+                ],
+            ];
+        }
+
         return Collection::make([
             'today',
             'yesterday',
             'week',
             'month',
-        ])->mapWithKeys(function ($period) use ($statsByDate) {
+        ])->mapWithKeys(function ($period) use ($statsByDate, $dummyData) {
+            if ($dummyData) {
+                return [$period => $dummyData];
+            }
+
             $stats = $this->getPeriodStats($period, $statsByDate);
+
             return [
                 $period => [
                     [
@@ -255,7 +294,7 @@ class DashboardController extends Controller
 
     /**
      * @param string $period
-     * @param \Illuminate\Database\Query\Builder $statsByDate
+     * @param \Illuminate\Support\Collection $statsByDate
      * @return array
      */
     private function getPeriodStats($period, $statsByDate)
@@ -337,6 +376,8 @@ class DashboardController extends Controller
                 }),
             ];
         }
+
+        return [];
     }
 
     /**
@@ -346,17 +387,13 @@ class DashboardController extends Controller
     private function formatStat($count)
     {
         if ($count >= 1000) {
-            return round($count / 1000, 1) . "k";
+            return round($count / 1000, 1) . 'k';
         }
 
         return $count;
     }
 
-    /**
-     * @param array $modules
-     * @return array
-     */
-    private function getShortcuts($modules)
+    private function getShortcuts(Collection $modules): Collection
     {
         return $modules->filter(function ($module) {
             return ($module['count'] ?? false) || ($module['create'] ?? false);
@@ -374,7 +411,8 @@ class DashboardController extends Controller
                 'label' => ucfirst($moduleOptions['label']),
                 'singular' => ucfirst($moduleOptions['singular']),
                 'number' => $moduleOptions['count'] ? $repository->getCountByStatusSlug(
-                    'all', $module['countScope'] ?? []
+                    'all',
+                    $module['countScope'] ?? []
                 ) : null,
                 'url' => moduleRoute(
                     $module['name'],
@@ -386,19 +424,15 @@ class DashboardController extends Controller
                     $module['routePrefix'] ?? null,
                     'index',
                     ['openCreate' => true]
-                ) : null
+                ) : null,
             ];
         })->values();
     }
 
-    /**
-     * @param array $modules
-     * @return array
-     */
-    private function getDrafts($modules)
+    private function getDrafts(Collection $modules): Collection
     {
         return $modules->filter(function ($module) {
-            return ($module['draft'] ?? false);
+            return $module['draft'] ?? false;
         })->map(function ($module) {
             $repository = $this->getRepository($module['name'], $module['repository'] ?? null);
 
@@ -420,12 +454,8 @@ class DashboardController extends Controller
         })->collapse()->values();
     }
 
-    /**
-     * @param string $module
-     * @return \A17\Twill\Repositories\ModuleRepository
-     */
-    private function getRepository($module, $forModule = null)
+    private function getRepository(string $module, string $forModule = null): ModuleRepository
     {
-        return $this->app->make($forModule ?: $this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($module)) . "Repository");
+        return $this->app->make($forModule ?? $this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($module)) . 'Repository');
     }
 }

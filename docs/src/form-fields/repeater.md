@@ -16,6 +16,7 @@ pageClass: twill-doc
 | name         | Name of the field                            | string  | same as `type`   |
 | max          | Maximum amount that can be created           | number  | null (unlimited) |
 | buttonAsLink | Displays the `Add` button as a centered link | boolean | false            |
+| reorder      | Allow reordering of repeater items           | boolean | true             |
 
 <br/>
 
@@ -111,7 +112,7 @@ class TeamRepository extends ModuleRepository
 
 - Add the repeater Blade template:
 
-Create file `resources/views/admin/repeaters/team-member.blade.php`:
+Create file `resources/views/twill/repeaters/team-member.blade.php`:
 
 ```php
 @twillRepeaterTitle('Team Member')
@@ -129,7 +130,7 @@ Create file `resources/views/admin/repeaters/team-member.blade.php`:
 
 - Add the repeater field to the form:
 
-Update file `resources/views/admin/teams/form.blade.php`:
+Update file `resources/views/twill/teams/form.blade.php`:
 
 ```php
 @extends('twill::layouts.form')
@@ -143,7 +144,7 @@ Update file `resources/views/admin/teams/form.blade.php`:
 
 - Finishing up:
 
-Add both modules to your `admin.php` routes. Add the `Team` module to your `twill-navigation.php` config and you are done!
+Add both modules to your `twill.php` routes. Add the `Team` module to your `twill-navigation.php` config and you are done!
 
 ## Dynamic repeater titles
 

@@ -6,27 +6,11 @@ use App\Repositories\ContactPageRepository;
 
 class SingletonModuleTest extends TestCase
 {
-    protected $allFiles = [
-        '{$stubs}/singleton/2021_09_30_202102_create_contact_pages_tables.php' => '{$database}/migrations/',
-        '{$stubs}/singleton/ContactPage.php' => '{$app}/Models/',
-        '{$stubs}/singleton/ContactPageController.php' => '{$app}/Http/Controllers/Admin/',
-        '{$stubs}/singleton/ContactPageRepository.php' => '{$app}/Repositories/',
-        '{$stubs}/singleton/ContactPageRequest.php' => '{$app}/Http/Requests/Admin/',
-        '{$stubs}/singleton/ContactPageRevision.php' => '{$app}/Models/Revisions/',
-        '{$stubs}/singleton/ContactPageSlug.php' => '{$app}/Models/Slugs/',
-        '{$stubs}/singleton/ContactPageTranslation.php' => '{$app}/Models/Translations/',
-        '{$stubs}/singleton/form.blade.php' => '{$resources}/views/admin/contactPages/form.blade.php',
-        '{$stubs}/singleton/twill-navigation.php' => '{$config}/',
-        '{$stubs}/singleton/admin.php' => '{$base}/routes/admin.php',
-    ];
+    public $example = 'tests-singleton';
 
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->copyFiles($this->allFiles);
-
-        $this->migrate();
 
         $this->login();
     }
@@ -73,11 +57,20 @@ class SingletonModuleTest extends TestCase
         $this->assertSee('This is the ContactPage form');
     }
 
-    public function testSingletonRouteRequiresOneRecord()
+/** @todo: I cannot make testbench autoload the migration. */
+/*     public function testSingletonRouteAutoSeeds() */
+/*     { */
+/*         $this->httpRequestAssert('/twill/contactPage', 'GET', [], 200); */
+/*  */
+/*         $this->assertDontSee("ContactPage is not seeded"); */
+/*     } */
+
+    public function testSingletonRouteRequiresOneRecordIfNotAutoSeeded()
     {
+        $this->app->get('config')->set('twill.auto_seed_singletons', false);
         $this->httpRequestAssert('/twill/contactPage', 'GET', [], 500);
 
-        $this->assertSee("ContactPage is missing");
+        $this->assertSee('ContactPage is not seeded');
     }
 
     public function testSingletonModuleHasNoIndex()
@@ -86,7 +79,7 @@ class SingletonModuleTest extends TestCase
 
         $this->httpRequestAssert('/twill/contactPages', 'GET', [], 500);
 
-        $this->assertSee('ContactPage as no index');
+        $this->assertSee('ContactPage has no index');
     }
 
     public function testSingletonModuleHasStandardRoutes()

@@ -95,6 +95,7 @@
       },
       textfieldClasses: function () {
         return {
+          'wysiwyg__outer--limitHeight': this.limitHeight,
           's--disabled': this.disabled,
           's--focus': this.focused
         }
@@ -123,6 +124,7 @@
         activeSource: false,
         quill: null,
         counter: 0,
+        localOptions: {},
         defaultModules: {
           toolbar: ['bold', 'italic', 'underline', 'link'],
           // Complete Toolbar example :
@@ -155,9 +157,9 @@
       }
     },
     methods: {
-      initQuill () {
+      initQuill (options) {
         // init Quill
-        this.quill = new QuillConfiguration.Quill(this.$refs.editor, this.options)
+        this.quill = new QuillConfiguration.Quill(this.$refs.editor, options)
 
         // set editor content
         if (this.value) this.updateEditor(this.value)
@@ -275,25 +277,27 @@
     mounted: function () {
       if (this.quill) return
 
+      const localOptions = JSON.parse(JSON.stringify(this.options))
+
       /* global hljs */
-      this.options.theme = this.options.theme || 'snow'
-      this.options.boundary = this.options.boundary || document.body
-      this.options.modules = this.options.modules || this.defaultModules
+      localOptions.theme = localOptions.theme || 'snow'
+      localOptions.boundary = localOptions.boundary || document.body
+      localOptions.modules = localOptions.modules || this.defaultModules
       const toolbar = {
-        container: this.options.modules.toolbar !== undefined ? this.options.modules.toolbar : this.defaultModules.toolbar,
+        container: localOptions.modules.toolbar !== undefined ? localOptions.modules.toolbar : this.defaultModules.toolbar,
         handlers: {}
       }
-      this.options.modules.clipboard = this.options.modules.clipboard !== undefined ? this.options.modules.clipboard : this.defaultModules.clipboard
-      this.options.modules.keyboard = this.options.modules.keyboard !== undefined ? this.options.modules.keyboard : this.defaultModules.keyboard
-      this.options.modules.syntax = this.options.modules.syntax !== undefined && this.options.modules.syntax ? { highlight: text => hljs.highlightAuto(text).value } : this.defaultModules.syntax
-      this.options.placeholder = this.options.placeholder || this.placeholder
-      this.options.readOnly = this.options.readOnly !== undefined ? this.options.readOnly : this.readonly
-      this.options.formats = QuillConfiguration.getFormats(this.options.modules.toolbar) // Formats are based on current toolbar configuration
-      this.options.bounds = this.$refs.editor
+      localOptions.modules.clipboard = localOptions.modules.clipboard !== undefined ? localOptions.modules.clipboard : this.defaultModules.clipboard
+      localOptions.modules.keyboard = localOptions.modules.keyboard !== undefined ? localOptions.modules.keyboard : this.defaultModules.keyboard
+      localOptions.modules.syntax = localOptions.modules.syntax !== undefined && localOptions.modules.syntax ? { highlight: text => hljs.highlightAuto(text).value } : this.defaultModules.syntax
+      localOptions.placeholder = localOptions.placeholder || this.placeholder
+      localOptions.readOnly = localOptions.readOnly !== undefined ? localOptions.readOnly : this.readonly
+      localOptions.formats = QuillConfiguration.getFormats(localOptions.modules.toolbar) // Formats are based on current toolbar configuration
+      localOptions.bounds = this.$refs.editor
 
       // Ensure pasting content do not make editor scroll to the top
       // @see https://github.com/quilljs/quill/issues/1374#issuecomment-545112021
-      this.options.scrollingContainer = 'html'
+      localOptions.scrollingContainer = 'html'
 
       // register custom handlers
       // register anchor toolbar handler
@@ -301,15 +305,17 @@
         toolbar.handlers.anchor = this.anchorHandler
       }
 
-      this.options.modules.toolbar = toolbar
+      localOptions.modules.toolbar = toolbar
 
-      if (this.options.modules.syntax && typeof hljs === 'undefined') {
+      this.localOptions = localOptions
+
+      if (localOptions.modules.syntax && typeof hljs === 'undefined') {
         const id = 'highlight-js-script'
         loadScript(id, HIGHLIGHT, 'text/javascript').then(() => {
-          this.initQuill()
+          this.initQuill(localOptions)
         })
       } else {
-        this.initQuill()
+        this.initQuill(localOptions)
       }
     },
     beforeDestroy () {
@@ -323,6 +329,13 @@
     margin-top: 20px;
   }
 
+  .wysiwyg__outer--limitHeight {
+    .wysiwyg {
+      position: relative;
+      overflow: hidden;
+    }
+  }
+
   .wysiwyg__editor--limitHeight {
     max-height: calc(100vh - 250px);
     overflow-y: scroll;
@@ -330,7 +343,7 @@
     border: 1px solid $color__fborder;
     border-top: none;
     scroll-behavior: smooth;
-    margin-top: 32px;
+    margin-top: 52px;
     .input--error & {
       border-color: $color__error;
       border-top: none;

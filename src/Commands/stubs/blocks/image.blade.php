@@ -7,7 +7,6 @@
 @formField('medias', [
     'name' => 'image',  // role
     'label' => 'Image',
-    'withVideoUrl' => false,
     'translated' => false,
 ])
 

@@ -1,13 +1,9 @@
-### General
-trailingComma: all
+trailingComma: none
 printWidth: 80
-tabWidth: 4
+tabWidth: 2
 useTabs: false
 singleQuote: true
 requirePragma: false
 insertPragma: false
 semi: false
-
-### PHP
-trailingCommaPHP: true
-braceStyle: psr-2
+vueIndentScriptAndStyle: true

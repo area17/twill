@@ -328,6 +328,7 @@ return [
     'nav' => [
         'admin' => 'Admin',
         'cms-users' => 'CMS Users',
+        'profile' => 'Profile',
         'logout' => 'Logout',
         'media-library' => 'Media Library',
         'settings' => 'Settings',
@@ -348,6 +349,18 @@ return [
     ],
     'overlay' => [
         'close' => 'Close',
+    ],
+    'permissions' => [
+        'groups' => [
+            'title' => 'Groups',
+            'published' => 'Enabled',
+            'draft' => 'Disabled',
+        ],
+        'roles' => [
+            'title' => 'Roles',
+            'published' => 'Enabled',
+            'draft' => 'Disabled',
+        ],
     ],
     'previewer' => [
         'compare-view' => 'Compare view',
@@ -372,6 +385,8 @@ return [
         'last-edit' => 'Last edited',
         'preview' => 'Preview changes',
         'publish' => 'Publish',
+        'scheduled' => 'Scheduled',
+        'expired' => 'Expired',
         'publish-close' => 'Publish and close',
         'publish-new' => 'Publish and create new',
         'published-on' => 'Published on',
@@ -396,6 +411,7 @@ return [
         'parent-page' => 'Parent page',
         'review-status' => 'Review status',
         'visibility' => 'Visibility',
+        'unsaved-changes' => 'There are unsaved changes',
     ],
     'select' => [
         'empty-text' => 'Sorry, no matching options.',
@@ -409,8 +425,11 @@ return [
         '2fa-description' => 'Please scan this QR code with a Google Authenticator compatible application and enter your one time password below before submitting. See a list of compatible applications <a href=":link" target="_blank" rel="noopener">here</a>.',
         '2fa-disable' => 'Enter your one time password to disable the 2-factor authentication',
         'active' => 'Active',
+        'pending' => 'Pending',
+        'activation-pending' => 'Pending activation',
+        'user-image' => 'Image',
+        'content-fieldset-label' => 'Account',
         'cancel' => 'Cancel',
-        'content-fieldset-label' => 'User settings',
         'description' => 'Description',
         'disabled' => 'Disabled',
         'edit-modal-title' => 'Edit user name',

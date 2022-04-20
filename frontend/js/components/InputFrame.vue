@@ -28,10 +28,18 @@
     },
     computed: {
       textfieldClasses: function () {
-        return {
-          'input--error': this.error,
-          'input--small': this.size === 'small'
+        const classes = [
+          this.size === 'small' ? 'input--small' : '',
+          this.error ? 'input--error' : ''
+        ]
+
+        if (this.variant) {
+          this.variant.split(' ').forEach((val) => {
+            classes.push(`input--${val}`)
+          })
         }
+
+        return classes
       }
     },
     methods: {
@@ -65,6 +73,7 @@
     display:block;
     color:$color__text;
     margin-bottom:10px;
+    word-wrap:break-word;
     position:relative;
   }
 
@@ -120,8 +129,22 @@
     }
   }
 
-  /* small variant */
+  /* Variant input in table */
+  .input--intable {
+    margin-top:0;
 
+    @include breakpoint('large+') {
+      display: flex;
+      align-items: center;
+
+      .input__label {
+        flex-grow: 1;
+        margin-bottom:0;
+      }
+    }
+  }
+
+  /* small variant */
   .input--small {
     margin-top:16px;
 
