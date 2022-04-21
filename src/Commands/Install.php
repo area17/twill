@@ -88,6 +88,7 @@ class Install extends Command
         $this->installPresetFiles($preset);
 
         $this->call('migrate');
+        $this->call('db:seed');
         $this->publishAssets();
         $this->createSuperAdmin();
         $this->info('Finished installing preset!');
