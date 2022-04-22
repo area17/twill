@@ -6,6 +6,18 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/medias.png)
 
+```php 
+<x-twill::medias name="cover" label="Cover image"
+                 note="Also used in listings"
+                 field-note="Minimum image width: 1500px"/>
+
+<x-twill::medias name="cover" label="Cover image"
+                 note="Also used in listings"
+                 :max="5"
+                 field-note="Minimum image width: 1500px"/>
+```
+
+::: details Old method
 ```php
 @formField('medias', [
     'name' => 'cover',
@@ -21,9 +33,10 @@ pageClass: twill-doc
     'fieldNote' => 'Minimum image width: 1500px'
 ])
 ```
+:::
 
 | Option         | Description                                          | Type/values    | Default value |
-| :------------- | :--------------------------------------------------- | :------------- | :------------ |
+|:---------------|:-----------------------------------------------------|:---------------|:--------------|
 | name           | Name of the field                                    | string         |               |
 | label          | Label of the field                                   | string         |               |
 | translated     | Defines if the field is translatable                 | true<br/>false | false         |
@@ -118,13 +131,9 @@ There are currently 2 supported field types:
 
 When defining your media field you can pass the extraMetadatas:
 
-```
-@formField('medias', [
-    'name' => 'images',
-    'label' => 'Images',
-    'max' => 5,
-    'fieldNote' => 'Minimum image width: 1500px',
-    'extraMetadatas' => [
+```php
+@php
+    $extraMetadata = [
         [
             'name' => 'credits_list',
             'label' => 'Credits list',
@@ -139,8 +148,13 @@ When defining your media field you can pass the extraMetadatas:
                 ]
             ],
         ],
-    ],
-])
+    ];
+@endphp
+
+<x-twill::medias name="cover" label="Cover image"
+                 note="Also used in listings"
+                 :extra-metadatas="$extraMetadata"
+                 field-note="Minimum image width: 1500px"/>
 ```
 
 The parameters `name`, `label` and `type` are mandatory, `wysiwyg` and `wysiwygOptions` are optional.

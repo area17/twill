@@ -7,6 +7,13 @@ pageClass: twill-doc
 ![screenshot](/docs/_media/input.png)
 
 
+```html
+<x-twill::input name="subtitle" label="Subtitle" :maxlength="100" :required="true" note="Hint message goes here" placeholder="Placeholder goes here" />
+
+<x-twill::input name="subtitle_translated" label="Subtitle Translated" :maxlength="100" :required="true" type="textarea" :rows="3" :translated="true"/>
+```
+
+::: details Old method
 ```php
 @formField('input', [
     'name' => 'subtitle',
@@ -29,16 +36,10 @@ pageClass: twill-doc
     'rows' => 3
 ])
 ```
-
-::: details Alternative using Blade-x components
-```html
-<x-twill::input name="subtitle" label="Subtitle" :maxlength="100" :required="true" note="Hint message goes here" placeholder="Placeholder goes here" />
-<x-twill::input name="subtitle_translated" label="Subtitle Translated" :maxlength="100" :required="true" type="textarea" :rows="3" :translated="true"/>
-```
 :::
 
 | Option      | Description                                                                                                              | Type/values                                                 | Default value |
-| :---------- | :------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------| :------------ |
+|:------------|:-------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------|:--------------|
 | name        | Name of the field                                                                                                        | string                                                      |               |
 | label       | Label of the field                                                                                                       | string                                                      |               |
 | type        | Type of input field                                                                                                      | text<br/>textarea<br/>email<br/>number<br/>password<br/>url | text          |
