@@ -4,12 +4,57 @@ pageClass: twill-doc
 
 # Form Fields
 
+## Using controller method
+
+Since Twill 3.0 there is also a possibility to define your forms from the module controller:
+
+`app/Http/Controllers/Twill/ProjectController.php`
+
+// Todo: Fieldsets
+   Todo: Conditional fields
+
+```php
+<?php
+
+namespace App\Http\Controllers\Twill;
+
+use A17\Twill\Http\Controllers\Admin\ModuleController as BaseModuleController;
+use A17\Twill\View\Components\BlockEditor;
+use A17\Twill\View\Components\Checkbox;
+use A17\Twill\View\Components\Input;
+use A17\Twill\View\Components\Wysiwyg;
+
+class ProjectController extends BaseModuleController
+{
+    protected $moduleName = 'projects';
+
+    public function getForm(): array
+    {
+        return [
+            new Input(name: 'demo', label: 'demo'),
+            new Wysiwyg(
+                name: 'description2',
+                label: __('Description2')
+            ),
+            new Checkbox(name: 'bar', label: 'foo'),
+            new Wysiwyg(
+                name: 'description',
+                label: __('Description')
+            ),
+            new BlockEditor(),
+        ];
+    }
+}
+```
+
+## Using form views
+
 Your module `form` view should look something like this (`resources/views/twill/moduleName/form.blade.php`):
 
 ```php
 @extends('twill::layouts.form')
 @section('contentFields')
-    @formField('...', [...])
+    <x-twill::input ... />
     ...
 @stop
 ```
@@ -29,13 +74,13 @@ like in the following example:
 ])
 
 @section('contentFields')
-    @formField('...', [...])
+    <x-twill::input ... />
     ...
 @stop
 
 @section('fieldsets')
     @formFieldset(['id' => 'attributes', 'title' => 'Attributes', 'open' => false])
-        @formField('...', [...])
+        <x-twill::input ... />
         ...
     @endformFieldset
 @stop
@@ -66,12 +111,12 @@ If you use the `sideFieldset` it will automatically be embedded into a collapsib
 
 ```php
 @section('sideFieldset')
-    @formField('input', [
-        'name' => 'description',
-        'label' => 'Description',
-        'translated' => true,
-        'maxlength' => 100
-    ])
+    <x-twill::input
+        name="description"
+        label="Description"
+        :translated="true"
+        :maxLenght="100"
+    />
 @endsection
 ```
 
@@ -80,18 +125,18 @@ alternatively, or if you need more control, you can use the `sideFieldsets` sect
 ```php
 @section('sideFieldsets')
     <a17-fieldset title="SEO" id="seo">
-        @formField('input', [
-            'name' => 'description',
-            'label' => 'Description',
-            'translated' => true,
-            'maxlength' => 100
-        ])
-        @formField('input', [
-            'name' => 'meta',
-            'label' => 'Meta',
-            'translated' => true,
-            'maxlength' => 100
-        ])
+        <x-twill::input
+            name="description"
+            label="Description"
+            :translated="true"
+            :maxLenght="100"
+        />
+        <x-twill::input
+            name="meta"
+            label="Meta"
+            :translated="true"
+            :maxLenght="100"
+        />
     </a17-fieldset>
 @endsection
 ```
