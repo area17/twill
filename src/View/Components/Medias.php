@@ -51,9 +51,12 @@ class Medias extends TwillFormComponent
     {
         return view(
             'twill::partials.form._medias',
-            array_merge($this->data, [
-                'multiple' => $this->max > 1 || $this->max === 0,
-            ])
+            array_merge(
+                $this->data(),
+                [
+                    'multiple' => $this->max > 1 || $this->max === 0,
+                ]
+            )
         );
     }
 }
