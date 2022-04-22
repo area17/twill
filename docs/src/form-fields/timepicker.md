@@ -5,7 +5,10 @@ pageClass: twill-doc
 # Timepicker
 
 ```php
-<x-twill::time-picker name="event_time" label="Event time"/>
+<x-twill::time-picker 
+    name="event_time" 
+    label="Event time"
+/>
 ```
 
 ::: details Old method

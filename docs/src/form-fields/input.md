@@ -8,9 +8,24 @@ pageClass: twill-doc
 
 
 ```html
-<x-twill::input name="subtitle" label="Subtitle" :maxlength="100" :required="true" note="Hint message goes here" placeholder="Placeholder goes here" />
+<x-twill::input 
+    name="subtitle"
+    label="Subtitle"
+    :maxlength="100"
+    :required="true"
+    note="Hint message goes here"
+    placeholder="Placeholder goes here" 
+/>
 
-<x-twill::input name="subtitle_translated" label="Subtitle Translated" :maxlength="100" :required="true" type="textarea" :rows="3" :translated="true"/>
+<x-twill::input 
+    name="subtitle_translated"
+    label="Subtitle Translated"
+    :maxlength="100"
+    :required="true"
+    type="textarea"
+    :rows="3"
+    :translated="true"
+/>
 ```
 
 ::: details Old method

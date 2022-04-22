@@ -7,19 +7,29 @@ pageClass: twill-doc
 ![screenshot](/docs/_media/map.png)
 
 ```php
+<x-twill::map
+    name="location"
+    label="Location"
+    :show-map="true"
+/>
+```
+
+::: details Old method
+```php
 @formField('map', [
     'name' => 'location',
     'label' => 'Location',
     'showMap' => true,
 ])
 ```
+:::
 
 | Option           | Description                                                 | Type/values     | Default value |
-| :--------------- | :---------------------------------------------------------- | :-------------- | :------------ |
+|:-----------------|:------------------------------------------------------------|:----------------|:--------------|
 | name             | Name of the field                                           | string          |               |
 | label            | Label of the field                                          | string          |               |
 | showMap          | Adds a button to toggle the map visibility                  | true<br />false | true          |
-| openMap          | Used with `showMap`, initialize the field with the map open | true<br />false | false          |
+| openMap          | Used with `showMap`, initialize the field with the map open | true<br />false | false         |
 | saveExtendedData | Enables saving Bounding Box Coordinates and Location types  | true<br />false | false         |
 
 This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .env file.

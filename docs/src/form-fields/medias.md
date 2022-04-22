@@ -7,14 +7,20 @@ pageClass: twill-doc
 ![screenshot](/docs/_media/medias.png)
 
 ```php 
-<x-twill::medias name="cover" label="Cover image"
-                 note="Also used in listings"
-                 field-note="Minimum image width: 1500px"/>
+<x-twill::medias 
+    name="cover" 
+    label="Cover image"
+    note="Also used in listings"
+    field-note="Minimum image width: 1500px"
+/>
 
-<x-twill::medias name="cover" label="Cover image"
-                 note="Also used in listings"
-                 :max="5"
-                 field-note="Minimum image width: 1500px"/>
+<x-twill::medias 
+    name="cover" 
+    label="Cover image"
+    note="Also used in listings"
+    :max="5"
+    field-note="Minimum image width: 1500px"
+/>
 ```
 
 ::: details Old method

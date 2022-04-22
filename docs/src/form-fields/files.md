@@ -7,10 +7,17 @@ pageClass: twill-doc
 ![screenshot](/docs/_media/files.png)
 
 ```php
-<x-twill::files name="single_file" label="Single file"
-                note="Add one file (per language)" />
+<x-twill::files 
+    name="single_file" 
+    label="Single file"
+    note="Add one file (per language)" 
+/>
 
-<x-twill::files name="files" label="files" :max="4" />
+<x-twill::files 
+    name="files" 
+    label="files" 
+    :max="4" 
+/>
 ```
 
 ::: details Old method

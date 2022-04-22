@@ -7,17 +7,25 @@ pageClass: twill-doc
 ![screenshot](/docs/_media/wysiwyg.png)
 
 ```php
-<x-twill::wysiwyg name="case_study" :label="__('Case study text')"
-                  :toolbar-options="['list-ordered', 'list-unordered']" 
-                  :placeholder="__('Case study placeholder')"
-                  :maxlength="200" :note="__('Help text')"/>
+<x-twill::wysiwyg 
+    name="case_study" 
+    :label="__('Case study text')"
+    :toolbar-options="['list-ordered', 'list-unordered']" 
+    :placeholder="__('Case study placeholder')"
+    :maxlength="200" 
+    :note="__('Help text')"
+/>
 
-<x-twill::wysiwyg name="case_study" :label="__('Case study text')"
-                  :toolbar-options="[ [ 'header' => [1, 2, false] ], 'list-ordered', 'list-unordered', [ 'indent' => '-1'], [ 'indent' => '+1' ] ]" 
-                  :placeholder="__('Case study placeholder')"
-                  :edit-source="true"
-                  :translated="true"
-                  :maxlength="200" :note="__('Help text')"/>
+<x-twill::wysiwyg 
+    name="case_study" 
+    :label="__('Case study text')"
+    :toolbar-options="[ [ 'header' => [1, 2, false] ], 'list-ordered', 'list-unordered', [ 'indent' => '-1'], [ 'indent' => '+1' ] ]" 
+    :placeholder="__('Case study placeholder')"
+    :edit-source="true"
+    :translated="true"
+    :maxlength="200" 
+    :note="__('Help text')"
+/>
 ```
 
 ::: details Old method
@@ -72,11 +80,15 @@ $wysiwygOptions = [
 ];
 @endphp
 
-<x-twill::wysiwyg name="case_study" :label="__('Case study text')"
-                  :toolbar-options="$wysiwygOptions"
-                  :placeholder="__('Case study placeholder')"
-                  :edit-source="true"
-                  :maxlength="200" :note="__('Help text')"/>
+<x-twill::wysiwyg 
+    name="case_study" 
+    :label="__('Case study text')"
+    :toolbar-options="$wysiwygOptions"
+    :placeholder="__('Case study placeholder')"
+    :edit-source="true"
+    :maxlength="200" 
+    :note="__('Help text')"
+/>
 ```
 
 ::: details Old method

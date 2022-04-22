@@ -7,6 +7,33 @@ pageClass: twill-doc
 ![screenshot](/docs/_media/select.png)
 
 ```php
+@php
+    $selectOptions = [
+        [
+            'value' => 1,
+            'label' => 'New York'
+        ],
+        [
+            'value' => 2,
+            'label' => 'London'
+        ],
+        [
+            'value' => 3,
+            'label' => 'Berlin'
+        ]
+    ];
+@endphp
+
+<x-twill::select 
+    name="office"
+    label="office"
+    placeholder="Select an office"
+    :options="$selectOptions"
+/>
+```
+
+::: details Old method
+```php
 @formField('select', [
     'name' => 'office',
     'label' => 'Office',
@@ -27,6 +54,7 @@ pageClass: twill-doc
     ]
 ])
 ```
+:::
 
 | Option      | Description                                                  | Type/values     | Default value |
 | :---------- | :----------------------------------------------------------- | :-------------- | :------------ |

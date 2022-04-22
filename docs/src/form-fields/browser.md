@@ -7,6 +7,16 @@ pageClass: twill-doc
 ![screenshot](/docs/_media/browser.png)
 
 ```php
+<x-twill::browser
+    module-name="publications"
+    name="publications"
+    label="Publications"
+    :max="4"
+/>
+```
+
+::: details Old method
+```php
 @formField('browser', [
     'moduleName' => 'publications',
     'name' => 'publications',
@@ -14,6 +24,7 @@ pageClass: twill-doc
     'max' => 4,
 ])
 ```
+:::
 
 | Option                | Description                                                                     | Type    | Default value |
 |:----------------------|:--------------------------------------------------------------------------------|:--------|:--------------|

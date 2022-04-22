@@ -7,9 +7,12 @@ pageClass: twill-doc
 ![screenshot](/docs/_media/datepicker.png)
 
 ```php
-<x-twill::date-picker name="event_date" label="Event date"
-                      :minDate="\Carbon\Carbon::now()->format('Y-m-d H:i)"
-                      maxDate="2030-01-01 12:00"/>
+<x-twill::date-picker 
+    name="event_date" 
+    label="Event date"
+    :minDate="\Carbon\Carbon::now()->format('Y-m-d H:i)"
+    maxDate="2030-01-01 12:00"
+/>
 ```
 
 ::: details Old method

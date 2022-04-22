@@ -7,17 +7,26 @@ pageClass: twill-doc
 ![screenshot](/docs/_media/color.png)
 
 ```php
+<x-twill::color
+    name="main_color"
+    label="Main color"
+/>
+```
+
+::: details Old method
+```php
 @formField('color', [
     'name' => 'main_color',
     'label' => 'Main color'
 ])
 ```
+:::
 
-| Option    | Description         | Type     | Default value |
-| :-------- | :------------------ | :------- | :------------ |
-| name      | Name of the field   | string   |               |
-| label     | Label of the field  | string   |               |
-| default   | The default value   | string   |               |
+| Option  | Description        | Type   | Default value |
+|:--------|:-------------------|:-------|:--------------|
+| name    | Name of the field  | string |               |
+| label   | Label of the field | string |               |
+| default | The default value  | string |               |
 
 A migration to save a `color` field would be:
 

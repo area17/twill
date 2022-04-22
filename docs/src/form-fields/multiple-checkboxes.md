@@ -7,6 +7,36 @@ pageClass: twill-doc
 ![screenshot](/docs/_media/checkboxes.png)
 
 ```php
+@php
+    $options = [
+        [
+            'value' => 'arts',
+            'label' => 'Arts & Culture'
+        ],
+        [
+            'value' => 'finance',
+            'label' => 'Banking & Finance'
+        ],
+        [
+            'value' => 'civic',
+            'label' => 'Civic & Public'
+        ],
+    ];
+@endphp
+
+<x-twill::checkboxes
+    name="sectors"
+    label="Sectors"
+    note="3 sectors max"
+    :min="1"
+    :max="3"
+    :inline="true"
+    :options="$options"
+/>
+```
+
+::: details Old method
+```php
 @formField('checkboxes', [
     'name' => 'sectors',
     'label' => 'Sectors',
@@ -30,9 +60,10 @@ pageClass: twill-doc
     ]
 ])
 ```
+:::
 
 | Option  | Description                                                         | Type    | Default value |
-| :------ | :------------------------------------------------------------------ | :-------| :------------ |
+|:--------|:--------------------------------------------------------------------|:--------|:--------------|
 | name    | Name of the field                                                   | string  |               |
 | label   | Label of the field                                                  | string  |               |
 | min     | Minimum number of selectable options                                | integer |               |

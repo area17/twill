@@ -7,38 +7,56 @@ pageClass: twill-doc
 ![screenshot](/docs/_media/selectunpacked.png)
 
 ```php
+@php
+    $selectOptions = [
+        [
+            'value' => 1,
+            'label' => 'New York'
+        ],
+        [
+            'value' => 2,
+            'label' => 'London'
+        ],
+        [
+            'value' => 3,
+            'label' => 'Berlin'
+        ]
+    ];
+@endphp
+
+<x-twill::select 
+    name="office"
+    label="office"
+    placeholder="Select an office"
+    :unpack="true"
+    :options="$selectOptions"
+/>
+```
+
+::: details Old method
+```php
 @formField('select', [
-    'name' => 'discipline',
-    'label' => 'Discipline',
+    'name' => 'office',
+    'label' => 'Office',
+    'placeholder' => 'Select an office',
     'unpack' => true,
     'options' => [
         [
-            'value' => 'arts',
-            'label' => 'Arts & Culture'
+            'value' => 1,
+            'label' => 'New York'
         ],
         [
-            'value' => 'finance',
-            'label' => 'Banking & Finance'
+            'value' => 2,
+            'label' => 'London'
         ],
         [
-            'value' => 'civic',
-            'label' => 'Civic & Public'
-        ],
-        [
-            'value' => 'design',
-            'label' => 'Design & Architecture'
-        ],
-        [
-            'value' => 'education',
-            'label' => 'Education'
-        ],
-        [
-            'value' => 'entertainment',
-            'label' => 'Entertainment'
-        ],
+            'value' => 3,
+            'label' => 'Berlin'
+        ]
     ]
 ])
 ```
+:::
 
 A migration to save the above `select` field would be:
 
