@@ -2,8 +2,8 @@
 
 namespace A17\Twill\View\Components;
 
-use A17\Twill\Models\Model;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\View as ViewFacade;
 use Illuminate\View\Component;
 
