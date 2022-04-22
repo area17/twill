@@ -45,9 +45,11 @@ class Input extends TwillFormComponent
 
     public function render(): View
     {
-        return view('twill::partials.form._input', [
-            ... $this->data(),
-            'onChangeFullAttribute' => $this->onChangeAttribute ? "('".$this->onChangeAttribute."', ...arguments)" : "",
-        ]);
+        return view(
+            'twill::partials.form._input',
+            array_merge($this->data(), [
+                'onChangeFullAttribute' => $this->onChangeAttribute ? "('" . $this->onChangeAttribute . "', ...arguments)" : "",
+            ])
+        );
     }
 }

@@ -41,6 +41,6 @@ class Checkbox extends TwillFormComponent
 
     public function render(): View
     {
-        return view('twill::partials.form._checkbox', [... $this->data()]);
+        return view('twill::partials.form._checkbox', $this->data());
     }
 }

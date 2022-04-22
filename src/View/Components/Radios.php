@@ -56,8 +56,6 @@ class Radios extends FieldWithOptions
 
     public function render(): View
     {
-        return view('twill::partials.form._radios', [
-            ... $this->data(),
-        ]);
+        return view('twill::partials.form._radios', $this->data());
     }
 }

@@ -2,7 +2,7 @@
 
 namespace A17\Twill\View\Components;
 
-use Illuminate\View\View;
+use Illuminate\Contracts\View\View;
 
 class Medias extends TwillFormComponent
 {
@@ -31,8 +31,7 @@ class Medias extends TwillFormComponent
         public int $heightMin = 0,
         public bool $buttonOnTop = false,
         public bool $activeCrop = true
-    )
-    {
+    ) {
         parent::__construct(
             name: $name,
             label: $label,
@@ -50,9 +49,11 @@ class Medias extends TwillFormComponent
 
     public function render(): View
     {
-        return view('twill::partials.form._medias', [
-            ... $this->data(),
-            'multiple' => $this->max > 1 || $this->max === 0,
-        ]);
+        return view(
+            'twill::partials.form._medias',
+            array_merge($this->data, [
+                'multiple' => $this->max > 1 || $this->max === 0,
+            ])
+        );
     }
 }

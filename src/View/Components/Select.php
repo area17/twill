@@ -8,8 +8,6 @@ class Select extends FieldWithOptions
 {
     public function render(): View
     {
-        return view('twill::partials.form._select', [
-            ... $this->data(),
-        ]);
+        return view('twill::partials.form._select', $this->data());
     }
 }

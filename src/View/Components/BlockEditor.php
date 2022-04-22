@@ -36,16 +36,18 @@ class BlockEditor extends TwillFormComponent
         } elseif ($this->groups) {
             $groups = $this->groups;
         }
-        return view('twill::partials.form._block_editor', [
-            ... $this->data(),
-            'allowedBlocks' => generate_list_of_available_blocks(
-                $this->blocks ?? null,
-                $groups
-            ),
-            'editorName' => [
-                'label' => $this->label,
-                'value' => $this->name,
-            ],
-        ]);
+        return view(
+            'twill::partials.form._block_editor',
+            array_merge($this->data(), [
+                'allowedBlocks' => generate_list_of_available_blocks(
+                    $this->blocks ?? null,
+                    $groups
+                ),
+                'editorName' => [
+                    'label' => $this->label,
+                    'value' => $this->name,
+                ],
+            ])
+        );
     }
 }
