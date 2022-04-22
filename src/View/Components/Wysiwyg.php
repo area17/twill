@@ -73,7 +73,7 @@ class Wysiwyg extends TwillFormComponent
             ];
         }
 
-        $this->options = $this->customOptions ?? $toolbarOptions ?? false;
+        $this->options = $this->customOptions ?? $toolbarOptions ?? null;
 
         return view(
             'twill::partials.form._wysiwyg',
