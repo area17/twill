@@ -46,7 +46,7 @@ abstract class Request extends FormRequest
 
         if ($this->request->has('languages')) {
             foreach ($locales as $locale) {
-                $language = Collection::make($this->request->get('languages'))->where('value', $locale)->first();
+                $language = Collection::make($this->request->all('languages'))->where('value', $locale)->first();
                 $currentLocaleActive = $language['published'] ?? false;
                 $rules = $this->updateRules($rules, $fields, $locale, $currentLocaleActive);
 
