@@ -523,9 +523,9 @@ class Block
      * @return string
      * @throws \Throwable
      */
-    public function render()
+    public function render(array $consumedData)
     {
-        View::share('TwillUntilConsumed', ['renderForBlocks' => true]);
+        View::share('TwillUntilConsumed', array_merge($consumedData, ['renderForBlocks' => true]));
         $block = BladeCompiler::render(
             self::removeSpecialBladeTags($this->contents),
             [

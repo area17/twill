@@ -2,6 +2,7 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Http\Livewire\Form;
 use Exception;
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
@@ -40,9 +41,11 @@ use Cartalyst\Tags\TagsServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Livewire\Livewire;
 use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 
@@ -76,6 +79,11 @@ class TwillServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // LIVEWIRE
+        Livewire::component('livewire-twill-form', Form::class);
+        // ENDLIVEWIRE
+
+
         $this->requireHelpers();
 
         $this->publishConfigs();

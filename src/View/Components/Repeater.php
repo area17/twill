@@ -2,6 +2,7 @@
 
 namespace A17\Twill\View\Components;
 
+use A17\Twill\Facades\TwillBlocks;
 use Illuminate\Contracts\View\View;
 
 class Repeater extends TwillFormComponent
@@ -28,5 +29,14 @@ class Repeater extends TwillFormComponent
     public function render(): View
     {
         return view('twill::partials.form._repeater', $this->data());
+    }
+
+    public function repeaterForm(int $index, array $fields): string {
+        $consumedData = [
+            'repeaterKey' => 'form.repeaters.' . $this->type . '.' . $index,
+        ];
+
+        $repeater = TwillBlocks::findRepeaterByName($this->type);
+        return $repeater->render($consumedData);
     }
 }

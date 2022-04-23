@@ -15,6 +15,7 @@ abstract class TwillFormComponent extends Component
 {
     public ?Model $item;
     public array $form_fields;
+    public ?string $fieldKey = null;
 
     public function __construct(
         public string $name,
@@ -36,7 +37,17 @@ abstract class TwillFormComponent extends Component
 
         $shared = ViewFacade::shared('TwillUntilConsumed', []);
         foreach ($shared as $key => $value) {
-            $this->{$key} = $value;
+            // This is a bit "hackish" but we only want to set the fieldKey to the repeater key if it is shared with
+            // TwillUntilConsumed
+            if ($key === 'repeaterKey') {
+                $this->fieldKey = $value;
+            } else {
+                $this->{$key} = $value;
+            }
+        }
+
+        if (!$this->fieldKey) {
+            $this->fieldKey = 'form';
         }
     }
 

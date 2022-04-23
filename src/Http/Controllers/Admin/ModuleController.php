@@ -6,6 +6,7 @@ use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Helpers\FlashLevel;
+use A17\Twill\Http\Livewire\Form;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Group;
 use A17\Twill\Services\Blocks\Block;
@@ -70,7 +71,7 @@ abstract class ModuleController extends Controller
     /**
      * @var \A17\Twill\Models\User
      */
-    protected $user;
+    public $user;
 
     protected array $primaryNavigation = [];
 
@@ -538,6 +539,11 @@ abstract class ModuleController extends Controller
 
         $id = last($params);
 
+
+        // LIVEWIRE
+        return view('twill::layouts.livewire.form', ['itemId' => $id]);
+        // ENDLIVEWIRE
+
         $item = $this->repository->getById($submoduleId ?? $id);
         $this->authorizeOption('edit', $item);
 
@@ -549,16 +555,21 @@ abstract class ModuleController extends Controller
 
         $this->setBackLink();
 
-        $view = Collection::make([
-            "$this->viewPrefix.form",
-            "twill::$this->moduleName.form",
-            'twill::layouts.form',
-        ])->first(function ($view) {
-            return View::exists($view);
-        });
+//        $view = Collection::make([
+//            "$this->viewPrefix.form",
+//            "twill::$this->moduleName.form",
+//            'twill::layouts.form',
+//        ])->first(function ($view) {
+//            return View::exists($view);
+//        });
+//
+//        View::share('form', $this->form($id));
+//        View::share('livewire', true);
+//        $form = View::make($view, $this->form($id))->with('renderFields', $this->getForm())->render();
 
-        View::share('form', $this->form($id));
-        return View::make($view, $this->form($id))->with('renderFields', $this->getForm());
+        // LIVEWIRE
+        return view('twill::layouts.livewire.form', ['itemId' => $id]);
+        // ENDLIVEWIRE
     }
 
     /**
@@ -1612,7 +1623,7 @@ abstract class ModuleController extends Controller
      * @param \A17\Twill\Models\Model|null $item
      * @return array
      */
-    protected function form($id, $item = null)
+    public function form($id, $item = null)
     {
         if (! $item && $id) {
             $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);

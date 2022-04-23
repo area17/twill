@@ -280,28 +280,29 @@ trait HandleRepeaters
 
         $repeaterType = TwillBlocks::findRepeaterByName($repeaterName);
 
-        foreach ($object->$relation as $relationItem) {
-            $repeaters[] = [
+        foreach ($object->$relation as $index => $relationItem) {
+            $repeaters[$index] = [
                 'id' => $relation . '-' . $relationItem->id,
                 'type' => $repeaterType->component,
-                'title' => $repeaterType->title,
-                'titleField' => $repeaterType->titleField,
+                'repeaterTitle' => $repeaterType->title,
+                'repeaterTitleField' => $repeaterType->titleField,
                 'hideTitlePrefix' => $repeaterType->hideTitlePrefix,
             ];
 
             $relatedItemFormFields = $relationRepository->getFormFields($relationItem);
             $translatedFields = [];
 
-            if (isset($relatedItemFormFields['translations'])) {
-                foreach ($relatedItemFormFields['translations'] as $key => $values) {
-                    $repeatersFields[] = [
-                        'name' => "blocks[$relation-$relationItem->id][$key]",
-                        'value' => $values,
-                    ];
-
-                    $translatedFields[] = $key;
-                }
-            }
+//            if (isset($relatedItemFormFields['translations'])) {
+//                foreach ($relatedItemFormFields['translations'] as $key => $values) {
+//                    // @todo: this
+//                    $repeaters[$index][$key] = [
+//                        'name' => "blocks[$relation-$relationItem->id][$key]",
+//                        'value' => $values,
+//                    ];
+//
+//                    $translatedFields[] = $key;
+//                }
+//            }
 
             if (isset($relatedItemFormFields['medias'])) {
                 if (config('twill.media_library.translated_form_fields', false)) {
@@ -347,10 +348,11 @@ trait HandleRepeaters
             ) : Arr::except($relationItem->attributesToArray(), $translatedFields);
 
             foreach ($itemFields as $key => $value) {
-                $repeatersFields[] = [
-                    'name' => "blocks[$relation-$relationItem->id][$key]",
-                    'value' => $value,
-                ];
+                $repeaters[$index][$key] = $value;
+//                $repeatersFields[] = [
+//                    'name' => "blocks[$relation-$relationItem->id][$key]",
+//                    'value' => $value,
+//                ];
             }
 
             if (isset($relatedItemFormFields['repeaters'])) {
@@ -385,10 +387,10 @@ trait HandleRepeaters
         }
 
         $fields['repeaters'][$repeaterName] = $repeaters;
-        $fields['repeaterFields'][$repeaterName] = $repeatersFields;
-        $fields['repeaterMedias'][$repeaterName] = $repeatersMedias;
-        $fields['repeaterFiles'][$repeaterName] = $repeatersFiles;
-        $fields['repeaterBrowsers'][$repeaterName] = $repeatersBrowsers;
+//        $fields['repeaterFields'][$repeaterName] = $repeatersFields;
+//        $fields['repeaterMedias'][$repeaterName] = $repeatersMedias;
+//        $fields['repeaterFiles'][$repeaterName] = $repeatersFiles;
+//        $fields['repeaterBrowsers'][$repeaterName] = $repeatersBrowsers;
 
         return $fields;
     }
