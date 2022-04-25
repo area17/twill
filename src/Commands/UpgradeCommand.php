@@ -112,7 +112,7 @@ class UpgradeCommand extends Command
         $this->info('Running rector refactorings');
 
         $process = new \Symfony\Component\Process\Process(
-            ['php', 'vendor/bin/rector', 'process', '--config=vendor/area17/twill/rector.php'],
+            ['php', 'vendor/bin/rector', 'process', '--config=vendor/area17/twill/rector-upgrade.php'],
             null,
             null,
             null,

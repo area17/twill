@@ -2,28 +2,13 @@
 
 declare(strict_types=1);
 
-use A17\Twill\Rector\RenameRoutes;
-use A17\Twill\Rector\RenameViews;
-use Rector\Core\Configuration\Option;
-use Rector\Renaming\Rector\Namespace_\RenameNamespaceRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Rector\Set\ValueObject\SetList;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
-    // Refactoring for Twill 2.6 to Twill 3.0.
-    $parameters = $containerConfigurator->parameters();
-    $parameters->set(Option::PATHS, [
-        getcwd() . '/app',
-        getcwd() . '/resources',
-        getcwd() . '/routes',
-        getcwd() . '/config',
-    ]);
-
-    $services = $containerConfigurator->services();
-    $services->set(RenameRoutes::class)->configure(['path' =>  getcwd()]);
-    $services->set(RenameViews::class)->configure(['path' =>  getcwd()]);
-    $services->set(RenameNamespaceRector::class)->configure([
-        'App\Http\Controllers\Admin' => 'App\Http\Controllers\Twill',
-        'App\Http\Requests\Admin' => 'App\Http\Requests\Twill'
-    ]);
+/**
+ * This rector file is the one used by Twill internally to handle automated upgrades of code.
+ */
+return static function (\Rector\Config\RectorConfig $rectorConfig): void {
+    $rectorConfig->import(SetList::PHP_80);
+    $rectorConfig->import(SetList::PHP_81);
 };
 
