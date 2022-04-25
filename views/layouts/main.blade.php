@@ -134,5 +134,7 @@
         <script src="{{ twillAsset('chunk-vendors.js') }}"></script>
         <script src="{{ twillAsset('chunk-common.js') }}"></script>
         @stack('extra_js')
+        @livewireScripts
+        @livewireStyles
     </body>
 </html>

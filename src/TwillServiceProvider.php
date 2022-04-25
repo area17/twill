@@ -83,7 +83,6 @@ class TwillServiceProvider extends ServiceProvider
         Livewire::component('livewire-twill-form', Form::class);
         // ENDLIVEWIRE
 
-
         $this->requireHelpers();
 
         $this->publishConfigs();

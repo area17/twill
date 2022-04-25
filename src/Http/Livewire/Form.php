@@ -25,8 +25,7 @@ class Form extends Component
     {
         if ($itemId) {
             $this->model = $this->getRepo()->getById($itemId);
-        }
-        else {
+        } else {
             $this->model = $this->getRepo()->newInstance();
         }
 
@@ -59,7 +58,7 @@ class Form extends Component
         \Illuminate\Support\Facades\View::share('twillFormLocales', config('translatable.locales'));
         \Illuminate\Support\Facades\View::share('twillFormCurrentLocale', $this->currentLang);
         \Illuminate\Support\Facades\View::share('livewire', true);
-        return \Illuminate\Support\Facades\View::make($view)->render();
+        return \Illuminate\Support\Facades\View::make($view, ['langCodes' => config('translatable.locales')])->render();
     }
 
     public function save(): void
@@ -67,7 +66,8 @@ class Form extends Component
         $this->getRepo()->update($this->model->id, $this->form);
     }
 
-    public function addRepeater(string $type): void {
+    public function addRepeater(string $type): void
+    {
         $this->form['repeaters'][$type][] = [
             'id' => time(),
         ];
@@ -117,7 +117,8 @@ class Form extends Component
         return array_replace_recursive($data, $this->formData());
     }
 
-    private function formData(): array {
+    private function formData(): array
+    {
         // @todo: Request
         return [];
     }

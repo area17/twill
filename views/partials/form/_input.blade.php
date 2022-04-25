@@ -1,17 +1,19 @@
 @if(isset($livewire) && $livewire)
     @if ($translated)
-        @foreach($twillFormLocales as $locale)
-            @if ($twillFormCurrentLocale === $locale)
-                <label for="{{$name}}">{{$label}} ({{$locale}})</label>
-                <input name="{{$name}}" wire:model.defer="{{$fieldKey}}.{{$name}}.{{$locale}}" type="{{$type}}"/>
-            @endif
-        @endforeach
+        <x-twill::field-wrapper :label="$label" :name="$name" :locale="$twillFormCurrentLocale">
+            <x-twill::fields.basic-input name="{{$name}}"
+                                         wire:model="{{$fieldKey}}.{{$name}}.{{$twillFormCurrentLocale}}"
+                                         type="{{$type}}"
+            />
+        </x-twill::field-wrapper>
     @else
-        <label for="{{$name}}">{{$label}}</label>
-        <input name="{{$name}}" wire:model.defer="{{$fieldKey}}.{{$name}}" type="{{$type}}"/>
+        <x-twill::field-wrapper :label="$label" :name="$name">
+            <x-twill::fields.basic-input name="{{$name}}"
+                                         wire:model.defer="{{$fieldKey}}.{{$name}}"
+                                         type="{{$type}}"
+            />
+        </x-twill::field-wrapper>
     @endif
-    @error($name) <span class="error">{{ $message }}</span> @enderror
-    <br />
 @else
     @if($translated)
         <a17-locale
