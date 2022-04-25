@@ -17,42 +17,12 @@ class Glide implements ImageServiceInterface
 {
     use ImageServiceDefaults;
 
-    /**
-     * @var Config
-     */
-    protected $config;
+    private \League\Glide\Server $server;
 
-    /**
-     * @var Application
-     */
-    protected $app;
+    private \League\Glide\Urls\UrlBuilder $urlBuilder;
 
-    /**
-     * @var Request
-     */
-    protected $request;
-
-    /**
-     * @var \League\Glide\Server
-     */
-    private $server;
-
-    /**
-     * @var \League\Glide\Urls\UrlBuilder
-     */
-    private $urlBuilder;
-
-    /**
-     * @param Config $config
-     * @param Application $app
-     * @param Request $request
-     */
-    public function __construct(Config $config, Application $app, Request $request)
+    public function __construct(protected Config $config, protected Application $app, protected Request $request)
     {
-        $this->config = $config;
-        $this->app = $app;
-        $this->request = $request;
-
         $baseUrlHost = $this->config->get(
             'twill.glide.base_url',
             $this->request->getScheme() . '://' . str_replace(
@@ -62,7 +32,7 @@ class Glide implements ImageServiceInterface
             )
         );
 
-        $baseUrl = join('/', [
+        $baseUrl = implode('/', [
             rtrim($baseUrlHost, '/'),
             ltrim($this->config->get('twill.glide.base_path'), '/'),
         ]);
@@ -88,10 +58,9 @@ class Glide implements ImageServiceInterface
     }
 
     /**
-     * @param string $path
      * @return mixed
      */
-    public function render($path)
+    public function render(string $path)
     {
         if ($this->config->get('twill.glide.use_signed_urls')) {
             SignatureFactory::create($this->config->get('twill.glide.sign_key'))->validateRequest($this->config->get('twill.glide.base_path') . '/' . $path, $this->request->all());
@@ -102,10 +71,8 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
-     * @return string
      */
-    public function getUrl($id, array $params = [])
+    public function getUrl($id, array $params = []): string
     {
         $defaultParams = config('twill.glide.default_params');
 
@@ -115,34 +82,26 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $cropParams
-     * @param array $params
-     * @return string
      */
-    public function getUrlWithCrop($id, array $cropParams, array $params = [])
+    public function getUrlWithCrop($id, array $cropParams, array $params = []): string
     {
         return $this->getUrl($id, $this->getCrop($cropParams) + $params);
     }
 
     /**
      * @param string $id
-     * @param array $cropParams
      * @param mixed $width
      * @param mixed $height
-     * @param array $params
-     * @return string
      */
-    public function getUrlWithFocalCrop($id, array $cropParams, $width, $height, array $params = [])
+    public function getUrlWithFocalCrop($id, array $cropParams, $width, $height, array $params = []): string
     {
         return $this->getUrl($id, $this->getFocalPointCrop($cropParams, $width, $height) + $params);
     }
 
     /**
      * @param string $id
-     * @param array $params
-     * @return string
      */
-    public function getLQIPUrl($id, array $params = [])
+    public function getLQIPUrl($id, array $params = []): string
     {
         $defaultParams = config('twill.glide.lqip_default_params');
 
@@ -155,10 +114,8 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
-     * @return string
      */
-    public function getSocialUrl($id, array $params = [])
+    public function getSocialUrl($id, array $params = []): string
     {
         $defaultParams = config('twill.glide.social_default_params');
 
@@ -171,9 +128,8 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @return string
      */
-    public function getCmsUrl($id, array $params = [])
+    public function getCmsUrl($id, array $params = []): string
     {
         $defaultParams = config('twill.glide.cms_default_params');
 
@@ -186,27 +142,25 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id, string $preset
-     * @return string
      */
-    public function getPresetUrl($id, $preset)
+    public function getPresetUrl(string $id, $preset): string
     {
         return $this->getRawUrl($id) . '?p=' . $preset;
     }
 
     /**
      * @param string $id
-     * @return string
      */
-    public function getRawUrl($id)
+    public function getRawUrl($id): string
     {
         return $this->getOriginalMediaUrl($id) ?? $this->urlBuilder->getUrl($id);
     }
 
     /**
      * @param string $id
-     * @return array
+     * @return array<string, int>|array<string, mixed>
      */
-    public function getDimensions($id)
+    public function getDimensions($id): array
     {
         $url = $this->urlBuilder->getUrl($id);
 
@@ -217,7 +171,7 @@ class Glide implements ImageServiceInterface
                 'width' => $w,
                 'height' => $h,
             ];
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return [
                 'width' => 0,
                 'height' => 0,
@@ -226,10 +180,10 @@ class Glide implements ImageServiceInterface
     }
 
     /**
-     * @param array $crop_params
-     * @return array
+     * @param mixed[] $crop_params
+     * @return mixed[]
      */
-    protected function getCrop($crop_params)
+    protected function getCrop(array $crop_params): array
     {
         if (!empty($crop_params)) {
             return ['crop' =>
@@ -244,12 +198,10 @@ class Glide implements ImageServiceInterface
     }
 
     /**
-     * @param array $crop_params
-     * @param int $width
-     * @param int $height
-     * @return array
+     * @param mixed[] $crop_params
+     * @return mixed[]
      */
-    protected function getFocalPointCrop($crop_params, $width, $height)
+    protected function getFocalPointCrop(array $crop_params, int $width, int $height): array
     {
         if (!empty($crop_params)) {
             // determine center coordinates of user crop and express it in term of original image width and height percentage
@@ -274,10 +226,9 @@ class Glide implements ImageServiceInterface
     }
 
     /**
-     * @param string $id
      * @return string
      */
-    private function getOriginalMediaUrl($id)
+    private function getOriginalMediaUrl(string $id)
     {
         $originalMediaForExtensions = $this->config->get('twill.glide.original_media_for_extensions');
         $addParamsToSvgs = $this->config->get('twill.glide.add_params_to_svgs', false);

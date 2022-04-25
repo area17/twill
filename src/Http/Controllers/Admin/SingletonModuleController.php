@@ -7,16 +7,22 @@ use Illuminate\Support\Facades\Session;
 
 abstract class SingletonModuleController extends ModuleController
 {
+    /**
+     * @var string
+     */
     protected $permalinkBase = '';
 
+    /**
+     * @return never
+     */
     public function index($parentModuleId = null)
     {
-        throw new \Exception("{$this->getModelName()} has no index");
+        throw new \Exception(sprintf('%s has no index', $this->getModelName()));
     }
 
     public function editSingleton()
     {
-        $model = "App\\Models\\{$this->getModelName()}";
+        $model = sprintf('App\Models\%s', $this->getModelName());
 
         if (!class_exists($model)) {
             $model = TwillCapsules::getCapsuleForModel($this->modelName)->getModel();
@@ -29,20 +35,22 @@ abstract class SingletonModuleController extends ModuleController
                 $this->seed();
                 return $this->editSingleton();
             }
-            throw new \Exception("$model is not seeded");
+
+            throw new \Exception(sprintf('%s is not seeded', $model));
         }
 
         Session::put('pages_back_link', url()->current());
 
-        return view("twill.{$this->moduleName}.form", $this->form($item->id));
+        return view(sprintf('twill.%s.form', $this->moduleName), $this->form($item->id));
     }
 
     private function seed(): void
     {
         $seederName = '\\Database\\Seeders\\' . $this->getModelName() . 'Seeder';
         if (!class_exists($seederName)) {
-            throw new \Exception("$seederName is missing");
+            throw new \Exception(sprintf('%s is missing', $seederName));
         }
+
         $seeder = new $seederName();
         $seeder->run();
     }

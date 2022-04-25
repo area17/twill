@@ -6,20 +6,29 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class RelatedItem extends BaseModel
 {
+    /**
+     * @var mixed[]
+     */
     protected $guarded = [];
 
-    protected $primaryKey = null;
+    protected $primaryKey;
 
+    /**
+     * @var bool
+     */
     public $incrementing = false;
 
+    /**
+     * @var bool
+     */
     public $timestamps = false;
 
-    public function related()
+    public function related(): \Illuminate\Database\Eloquent\Relations\MorphTo
     {
         return $this->morphTo('related');
     }
 
-    public function subject()
+    public function subject(): \Illuminate\Database\Eloquent\Relations\MorphTo
     {
         return $this->morphTo('subject');
     }

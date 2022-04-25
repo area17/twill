@@ -11,11 +11,10 @@ trait HandleRolePermissions
     /**
      * Retrieve role permissions fields
      *
-     * @param Model|Role $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function getFormFieldsHandleRolePermissions($object, $fields)
+    public function getFormFieldsHandleRolePermissions(\Model|\A17\Twill\Models\Role $object, array $fields)
     {
         $object->permissions()->get();
 
@@ -25,11 +24,7 @@ trait HandleRolePermissions
 
         foreach (Permission::permissionableModules() as $moduleName) {
             $modulePermission = $object->permissions()->module()->ofModuleName($moduleName)->first();
-            if ($modulePermission) {
-                $fields['module_' . $moduleName . '_permissions'] = $modulePermission->name;
-            } else {
-                $fields['module_' . $moduleName . '_permissions'] = 'none';
-            }
+            $fields['module_' . $moduleName . '_permissions'] = $modulePermission ? $modulePermission->name : 'none';
         }
 
         return $fields;
@@ -38,10 +33,9 @@ trait HandleRolePermissions
     /**
      * Function executed after save on role form
      *
-     * @param Model|Role $object
-     * @param array $fields
+     * @param mixed[] $fields
      */
-    public function afterSaveHandleRolePermissions($object, $fields)
+    public function afterSaveHandleRolePermissions(\Model|\A17\Twill\Models\Role $object, array $fields)
     {
         $this->addOrRemoveUsersToEveryoneGroup($object);
 

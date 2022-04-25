@@ -7,24 +7,16 @@ use Illuminate\Contracts\Auth\Factory as AuthFactory;
 
 class Impersonate
 {
-    /**
-     * @var AuthFactory
-     */
-    protected $authFactory;
-
-    public function __construct(AuthFactory $authFactory)
+    public function __construct(protected AuthFactory $authFactory)
     {
-        $this->authFactory = $authFactory;
     }
 
     /**
      * Handles an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(\Illuminate\Http\Request $request, Closure $next)
     {
         if ($request->session()->has('impersonate')) {
             $this->authFactory->guard('twill_users')->onceUsingId($request->session()->get('impersonate'));

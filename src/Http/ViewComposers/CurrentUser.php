@@ -7,29 +7,17 @@ use Illuminate\Contracts\View\View;
 
 class CurrentUser
 {
-    /**
-     * @var AuthFactory
-     */
-    protected $authFactory;
-
-    /**
-     * @param AuthFactory $authFactory
-     */
-    public function __construct(AuthFactory $authFactory)
+    public function __construct(protected AuthFactory $authFactory)
     {
-        $this->authFactory = $authFactory;
     }
 
     /**
      * Binds data to the view.
-     *
-     * @param View $view
-     * @return void
      */
-    public function compose(View $view)
+    public function compose(View $view): void
     {
         $currentUser = $this->authFactory->guard('twill_users')->user();
 
-        $view->with(compact('currentUser'));
+        $view->with(['currentUser' => $currentUser]);
     }
 }

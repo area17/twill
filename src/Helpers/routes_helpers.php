@@ -5,15 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
 if (! function_exists('moduleRoute')) {
-    /**
-     * @param string $moduleName
-     * @param string $prefix
-     * @param string $action
-     * @param array $parameters
-     * @param bool $absolute
-     * @return string
-     */
-    function moduleRoute($moduleName, $prefix, $action = '', $parameters = [], $absolute = true)
+    function moduleRoute(string $moduleName, ?string $prefix, string $action = '', array $parameters = [], bool $absolute = true): string
     {
         // Fix module name case
         $moduleName = Str::camel($moduleName);
@@ -32,11 +24,11 @@ if (! function_exists('moduleRoute')) {
             ($prefix !== $moduleName &&
                 ! Str::endsWith($prefix, '.' . $moduleName))
         ) {
-            $routeName .= "{$moduleName}";
+            $routeName .= $moduleName;
         }
 
         //  Add the action name
-        $routeName .= $action ? ".{$action}" : '';
+        $routeName .= $action !== '' && $action !== '0' ? sprintf('.%s', $action) : '';
 
         // Build the route
         return route($routeName, $parameters, $absolute);
@@ -45,12 +37,9 @@ if (! function_exists('moduleRoute')) {
 
 if (! function_exists('getNavigationUrl')) {
     /**
-     * @param array $element
-     * @param string $key
      * @param string|null $prefix
-     * @return string
      */
-    function getNavigationUrl($element, $key, $prefix = null)
+    function getNavigationUrl(array $element, string $key, $prefix = null): string
     {
         $isModule = $element['module'] ?? false;
         $isSingleton = $element['singleton'] ?? false;
@@ -62,10 +51,10 @@ if (! function_exists('getNavigationUrl')) {
         } elseif ($isSingleton) {
             return moduleRoute($key, $prefix);
         } elseif ($element['raw'] ?? false) {
-            return ! empty($element['route']) ? $element['route'] : '#';
+            return empty($element['route']) ? '#' : $element['route'];
         }
 
-        return ! empty($element['route']) ? route($element['route'], $element['params'] ?? []) : '#';
+        return empty($element['route']) ? '#' : route($element['route'], $element['params'] ?? []);
     }
 }
 
@@ -78,8 +67,6 @@ if (! function_exists('isActiveNavigation')) {
             return true;
         }
 
-        $urlsAreMatching = ($navigationElement['raw'] ?? false) && Str::endsWith(Request::url(), $navigationElement['route']);
-
-        return $urlsAreMatching;
+        return ($navigationElement['raw'] ?? false) && Str::endsWith(Request::url(), $navigationElement['route']);
     }
 }

@@ -11,8 +11,14 @@ use Illuminate\View\Factory as ViewFactory;
 
 class GenerateBlocks extends Command
 {
+    /**
+     * @var string
+     */
     public const NO_BLOCKS_DEFINED = 'There are no blocks defined yet. Please refer to https://twill.io/docs/#block-editor-3 in order to create blocks.';
 
+    /**
+     * @var string
+     */
     public const SCANNING_BLOCKS = 'Starting to scan block views directory...';
 
     /**
@@ -29,26 +35,9 @@ class GenerateBlocks extends Command
      */
     protected $description = 'Generate blocks as single file Vue components from blade views';
 
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
-
-    /**
-     * @var ViewFactory
-     */
-    protected $viewFactory;
-
-    /**
-     * @param Filesystem $filesystem
-     * @param ViewFactory $viewFactory
-     */
-    public function __construct(Filesystem $filesystem, ViewFactory $viewFactory)
+    public function __construct(protected Filesystem $filesystem, protected ViewFactory $viewFactory)
     {
         parent::__construct();
-
-        $this->filesystem = $filesystem;
-        $this->viewFactory = $viewFactory;
     }
 
     /**
@@ -56,7 +45,7 @@ class GenerateBlocks extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         if (!$this->filesystem->exists($path = resource_path('views/twill/blocks'))) {
             $this->error(self::NO_BLOCKS_DEFINED);
@@ -71,7 +60,7 @@ class GenerateBlocks extends Command
             ->collect()
             ->where('compiled', true)
             ->whereIn('source', [Block::SOURCE_APP, Block::SOURCE_CUSTOM])
-            ->map(function ($block) {
+            ->map(function ($block): void {
                 $blockName = str_replace('a17-block-', '', $block->component);
                 $basename = str_replace('.blade.php', '', $block->fileName);
 
@@ -86,7 +75,7 @@ class GenerateBlocks extends Command
                 $write = ! $this->filesystem->exists($vueBlockPath);
 
                 if (! $write) {
-                    $write = $this->confirm("[$vueBlockPath] exists, overwrite?", false);
+                    $write = $this->confirm(sprintf('[%s] exists, overwrite?', $vueBlockPath), false);
                 }
 
                 if ($write) {
@@ -102,11 +91,8 @@ class GenerateBlocks extends Command
 
     /**
      * Recursively make a directory.
-     *
-     * @param string $directory
-     * @return string
      */
-    public function makeDirectory($directory)
+    public function makeDirectory(string $directory): string
     {
         if (! $this->filesystem->exists($directory)) {
             $this->filesystem->makeDirectory($directory, 0755, true);
@@ -117,11 +103,8 @@ class GenerateBlocks extends Command
 
     /**
      * Sanitizes the given HTML code by removing redundant spaces and comments.
-     *
-     * @param string $html
-     * @return string
      */
-    private function sanitize($html)
+    private function sanitize(string $html): ?string
     {
         $search = [
             '/\>[^\S ]+/s', // strip whitespaces after tags, except space

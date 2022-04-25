@@ -6,20 +6,17 @@ trait HandleOauth
 {
 
     /**
-     * @param \Laravel\Socialite\Contracts\User $oauthUser
      * @return \A17\Twill\Models\User
      */
-    public function oauthUser($oauthUser)
+    public function oauthUser(\Laravel\Socialite\Contracts\User $oauthUser)
     {
         return $this->model->whereEmail($oauthUser->email)->first();
     }
 
     /**
-     * @param \Laravel\Socialite\Contracts\User $oauthUser
-     * @param string $provider
      * @return boolean
      */
-    public function oauthIsUserLinked($oauthUser, $provider)
+    public function oauthIsUserLinked(\Laravel\Socialite\Contracts\User $oauthUser, string $provider)
     {
         $user = $this->model->whereEmail($oauthUser->email)->first();
 
@@ -29,11 +26,9 @@ trait HandleOauth
     }
 
     /**
-     * @param \Laravel\Socialite\Contracts\User $oauthUser
-     * @param string $provider
      * @return \A17\Twill\Models\User
      */
-    public function oauthUpdateProvider($oauthUser, $provider)
+    public function oauthUpdateProvider(\Laravel\Socialite\Contracts\User $oauthUser, string $provider)
     {
         $user = $this->model->whereEmail($oauthUser->email)->first();
         $provider = $user->providers()
@@ -48,10 +43,9 @@ trait HandleOauth
     }
 
     /**
-     * @param \Laravel\Socialite\Contracts\User $oauthUser
      * @return \A17\Twill\Models\User
      */
-    public function oauthCreateUser($oauthUser)
+    public function oauthCreateUser(\Laravel\Socialite\Contracts\User $oauthUser)
     {
         if (config('twill.enabled.permissions-management')) {
             $defaultRole = twillModel('role')::where('name', config('twill.oauth.permissions_default_role'))->first();

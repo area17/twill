@@ -12,10 +12,8 @@ class UserRequest extends Request
 {
     /**
      * Determines if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -23,9 +21,9 @@ class UserRequest extends Request
     /**
      * Gets the validation rules that apply to the request.
      *
-     * @return array
+     * @return mixed[]
      */
-    public function rules()
+    public function rules(): array
     {
         switch ($this->method()) {
             case 'POST':
@@ -40,7 +38,7 @@ class UserRequest extends Request
                     return [
                         'name' => 'required',
                         'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email,' . $this->route('user'),
-                        'verify-code' => function ($attribute, $value, $fail) {
+                        'verify-code' => function ($attribute, $value, $fail): void {
                             $user = Auth::guard('twill_users')->user();
                             $with2faSettings = config('twill.enabled.users-2fa') && $user->id == $this->route('user');
 
@@ -68,9 +66,9 @@ class UserRequest extends Request
     }
 
     /**
-     * @return array
+     * @return array<int|string, mixed>
      */
-    private function getRoleValidator($baseRule = [])
+    private function getRoleValidator($baseRule = []): array
     {
         if (config('twill.enabled.permissions-management')) {
             // Users can't assign roles above their own

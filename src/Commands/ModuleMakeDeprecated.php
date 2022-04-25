@@ -33,7 +33,7 @@ class ModuleMakeDeprecated extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $options = collect($this->options());
 
@@ -43,8 +43,8 @@ class ModuleMakeDeprecated extends Command
 
         $this->call('twill:make:module', [
             'moduleName' => $this->argument('moduleName'),
-        ] + $options->mapWithKeys(function ($value, $key) {
-            return ["--{$key}" => $value];
+        ] + $options->mapWithKeys(function ($value, $key): array {
+            return [sprintf('--%s', $key) => $value];
         })->toArray());
     }
 }

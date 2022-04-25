@@ -17,19 +17,19 @@ class TwillRoutes
         $routesFile,
         $instant = false
     ): void {
-        $callback = function () use ($router, $groupOptions, $middlewares, $supportSubdomainRouting, $namespace, $routesFile) {
+        $callback = function () use ($router, $groupOptions, $middlewares, $supportSubdomainRouting, $namespace, $routesFile): void {
             if (file_exists($routesFile)) {
                 $hostRoutes = function ($router) use (
                     $middlewares,
                     $namespace,
                     $routesFile
-                ) {
+                ): void {
                     $router->group(
                         [
                             'namespace' => $namespace,
                             'middleware' => $middlewares,
                         ],
-                        function () use ($routesFile) {
+                        function () use ($routesFile): void {
                             require $routesFile;
                         }
                     );
@@ -67,17 +67,15 @@ class TwillRoutes
 
     public function registerRoutePatterns(): void
     {
-        if (($patterns = config('twill.admin_route_patterns')) != null) {
-            if (is_array($patterns)) {
-                foreach ($patterns as $label => $pattern) {
-                    Route::pattern($label, $pattern);
-                }
+        if (($patterns = config('twill.admin_route_patterns')) != null && is_array($patterns)) {
+            foreach ($patterns as $label => $pattern) {
+                Route::pattern($label, $pattern);
             }
         }
     }
 
     /**
-     * @return array
+     * @return array<string, mixed>
      */
     public function getRouteGroupOptions(): array
     {

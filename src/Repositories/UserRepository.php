@@ -15,49 +15,23 @@ use Illuminate\Database\DatabaseManager as DB;
 
 class UserRepository extends ModuleRepository
 {
-    use HandleMedias, HandleOauth, HandleUserPermissions;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * @var DB
-     */
-    protected $db;
-
-    /**
-     * @var PasswordBrokerManager
-     */
-    protected $passwordBrokerManager;
-
-    /**
-     * @var AuthFactory
-     */
-    protected $authFactory;
-
-    /**
-     * @param DB $db
-     * @param Config $config
-     * @param PasswordBrokerManager $passwordBrokerManager
-     * @param AuthFactory $authFactory
-     */
+    use HandleMedias;
+    use HandleOauth;
+    use HandleUserPermissions;
     public function __construct(
-        DB $db,
-        Config $config,
-        PasswordBrokerManager $passwordBrokerManager,
-        AuthFactory $authFactory
+        protected DB $db,
+        protected Config $config,
+        protected PasswordBrokerManager $passwordBrokerManager,
+        protected AuthFactory $authFactory
     ) {
         $userModel = twillModel('user');
         $this->model = new $userModel;
-        $this->passwordBrokerManager = $passwordBrokerManager;
-        $this->authFactory = $authFactory;
-        $this->config = $config;
-        $this->db = $db;
     }
 
-    public function getFormFields($user)
+    /**
+     * @return mixed[]
+     */
+    public function getFormFields($user): array
     {
         $fields = parent::getFormFields($user);
 
@@ -72,27 +46,26 @@ class UserRepository extends ModuleRepository
         return $fields;
     }
 
-    /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param array $scopes
-     * @return \Illuminate\Database\Query\Builder
-     */
-    public function filter($query, array $scopes = [])
+    public function filter(\Illuminate\Database\Eloquent\Builder $query, array $scopes = []): \Illuminate\Database\Eloquent\Builder
     {
         if (config('twill.enabled.permissions-management')) {
             $query->where('is_superadmin', '<>', true);
             $this->searchIn($query, $scopes, 'search', ['name', 'email']);
         } else {
-            $query->when(isset($scopes['role']), function ($query) use ($scopes) {
+            $query->when(isset($scopes['role']), function ($query) use ($scopes): void {
                 $query->where('role', $scopes['role']);
             });
             $query->where('role', '<>', 'SUPERADMIN');
             $this->searchIn($query, $scopes, 'search', ['name', 'email', 'role']);
         }
+
         return parent::filter($query, $scopes);
     }
 
-    public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
+    /**
+     * @return mixed[]
+     */
+    public function getFormFieldsForBrowser(\A17\Twill\Models\Model $object, string $relation, $routePrefix = null, string $titleKey = 'title', $moduleName = null): array
     {
         $browserFields = parent::getFormFieldsForBrowser($object, $relation, $routePrefix, $titleKey, $moduleName);
 
@@ -106,14 +79,14 @@ class UserRepository extends ModuleRepository
                 }
             }
         }
+
         return $browserFields;
     }
 
     /**
-     * @param \A17\Twill\Models\Model $user
-     * @param array $fields
+     * @param mixed[] $fields
      */
-    public function afterUpdateBasic($user, $fields)
+    public function afterUpdateBasic(\A17\Twill\Models\Model $user, array $fields): void
     {
         $this->sendWelcomeEmail($user);
         parent::afterUpdateBasic($user, $fields);
@@ -121,46 +94,41 @@ class UserRepository extends ModuleRepository
 
     /**
      * @deprecated To be removed in Twill 3.0
-     * @return int
      */
-    public function getCountForAll()
+    public function getCountForAll(): int
     {
         return $this->model->notSuperAdmin()->count();
     }
 
     /**
      * @deprecated To be removed in Twill 3.0
-     * @return int
      */
-    public function getCountForPublished()
+    public function getCountForPublished(): int
     {
         return $this->model->notSuperAdmin()->published()->count();
     }
 
     /**
      * @deprecated To be removed in Twill 3.0
-     * @return int
      */
-    public function getCountForDraft()
+    public function getCountForDraft(): int
     {
         return $this->model->notSuperAdmin()->draft()->count();
     }
 
     /**
      * @deprecated To be removed in Twill 3.0
-     * @return int
      */
-    public function getCountForTrash()
+    public function getCountForTrash(): int
     {
         return $this->model->notSuperAdmin()->onlyTrashed()->count();
     }
 
     /**
-     * @param \A17\Twill\Models\Model $user
-     * @param array $fields
      * @return string[]
+     * @param mixed[] $fields
      */
-    public function prepareFieldsBeforeSave($user, $fields)
+    public function prepareFieldsBeforeSave(\A17\Twill\Models\Model $user, array $fields): array
     {
         $editor = $this->authFactory->guard('twill_users')->user();
         $with2faSettings = $this->config->get('twill.enabled.users-2fa', false) && $editor->id === $user->id;
@@ -177,10 +145,9 @@ class UserRepository extends ModuleRepository
 
     /**
      * @param \A17\Twill\Models\Model|User $user
-     * @param array $fields
-     * @return void
+     * @param mixed[] $fields
      */
-    public function afterSave($user, $fields)
+    public function afterSave($user, array $fields): void
     {
         $this->sendWelcomeEmail($user);
 
@@ -210,14 +177,10 @@ class UserRepository extends ModuleRepository
         parent::afterSave($user, $fields);
     }
 
-    /**
-     * @param User $user
-     * @return void
-     */
-    private function sendWelcomeEmail($user)
+    private function sendWelcomeEmail(\A17\Twill\Models\User $user): void
     {
         if (empty($user->password)
-            && $user->published
+            && $user->isPublished()
             && !$this->db
             ->table($this->config->get('twill.password_resets_table', 'twill_password_resets'))
             ->where('email', $user->email)

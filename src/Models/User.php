@@ -23,6 +23,9 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Session;
 use PragmaRX\Google2FAQRCode\Google2FA;
 
+/**
+ * @property-read string $name Name
+ */
 class User extends AuthenticatableContract
 {
     use Authenticatable;
@@ -35,13 +38,22 @@ class User extends AuthenticatableContract
     use SoftDeletes;
     use IsTranslatable;
 
+    /**
+     * @var bool
+     */
     public $timestamps = true;
 
+    /**
+     * @var array<string, string>
+     */
     protected $casts = [
         'is_superadmin' => 'boolean',
         'published' => 'boolean',
     ];
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'email',
         'name',
@@ -55,15 +67,21 @@ class User extends AuthenticatableContract
         'language',
     ];
 
+    /**
+     * @var string[]
+     */
     protected $dates = [
         'deleted_at',
         'registered_at',
         'last_login_at',
     ];
 
+    /**
+     * @var string[]
+     */
     protected $hidden = ['password', 'remember_token', 'google_2fa_secret'];
 
-    public $checkboxes = ['published'];
+    public array $checkboxes = ['published'];
 
     public array $mediasParams = [
         'profile' => [
@@ -103,7 +121,7 @@ class User extends AuthenticatableContract
         return $query->whereIn('role_id', $accessibleRoleIds);
     }
 
-    public static function getRoleColumnName()
+    public static function getRoleColumnName(): string
     {
         if (config('twill.enabled.permissions-management')) {
             return 'role_id';
@@ -112,7 +130,7 @@ class User extends AuthenticatableContract
         return 'role';
     }
 
-    public function getTitleInBrowserAttribute()
+    public function getTitleInBrowserAttribute(): string
     {
         return $this->name;
     }
@@ -134,7 +152,7 @@ class User extends AuthenticatableContract
         return null;
     }
 
-    public function getCanDeleteAttribute()
+    public function getCanDeleteAttribute(): bool
     {
         return auth('twill_users')->user()->id !== $this->id;
     }
@@ -173,22 +191,22 @@ class User extends AuthenticatableContract
         return $query->where('role', '<>', 'SUPERADMIN');
     }
 
-    public function setImpersonating($id)
+    public function setImpersonating($id): void
     {
         Session::put('impersonate', $id);
     }
 
-    public function stopImpersonating()
+    public function stopImpersonating(): void
     {
         Session::forget('impersonate');
     }
 
-    public function isImpersonating()
+    public function isImpersonating(): bool
     {
         return Session::has('impersonate');
     }
 
-    public function notifyWithCustomMarkdownTheme($instance)
+    public function notifyWithCustomMarkdownTheme($instance): void
     {
         $hostAppMailConfig = config('mail.markdown.paths') ?? [];
 
@@ -206,12 +224,12 @@ class User extends AuthenticatableContract
         ]);
     }
 
-    public function sendWelcomeNotification($token)
+    public function sendWelcomeNotification($token): void
     {
         $this->notifyWithCustomMarkdownTheme(new WelcomeNotification($token));
     }
 
-    public function sendPasswordResetNotification($token)
+    public function sendPasswordResetNotification($token): void
     {
         $this->notifyWithCustomMarkdownTheme(new ResetNotification($token));
     }
@@ -225,27 +243,27 @@ class User extends AuthenticatableContract
         return $this->role === 'SUPERADMIN';
     }
 
-    public function isPublished()
+    public function isPublished(): bool
     {
         return (bool) $this->published;
     }
 
-    public function isActivated()
+    public function isActivated(): bool
     {
         return (bool) $this->registered_at;
     }
 
-    public function sendTemporaryPasswordNotification($password)
+    public function sendTemporaryPasswordNotification($password): void
     {
         $this->notify(new TemporaryPasswordNotification($password));
     }
 
-    public function sendPasswordResetByAdminNotification($password)
+    public function sendPasswordResetByAdminNotification($password): void
     {
         $this->notify(new PasswordResetByAdminNotification($password));
     }
 
-    public function groups()
+    public function groups(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Group::class, 'group_twill_user', 'twill_user_id', 'group_id');
     }
@@ -255,25 +273,23 @@ class User extends AuthenticatableContract
         return $this->groups()->published();
     }
 
-    public function role()
+    public function role(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Role::class);
     }
 
     public function allPermissions()
     {
-        $permissions = Permission::whereHas('users', function ($query) {
+        return Permission::whereHas('users', function ($query): void {
             $query->where('id', $this->id);
-        })->orWhereHas('roles', function ($query) {
+        })->orWhereHas('roles', function ($query): void {
             $query->where('id', $this->role->id);
-        })->orWhereHas('groups', function ($query) {
+        })->orWhereHas('groups', function ($query): void {
             $query
                 ->join('group_twill_user', 'groups.id', '=', 'group_twill_user.group_id')
                 ->where('group_twill_user.twill_user_id', $this->id)
                 ->where('published', 1);
         });
-
-        return $permissions;
     }
 
     public function getLastLoginColumnValueAttribute()
@@ -283,7 +299,7 @@ class User extends AuthenticatableContract
             ($this->isActivated() ? '&mdash;' : twillTrans('twill::lang.user-management.activation-pending'));
     }
 
-    public function setGoogle2faSecretAttribute($secret)
+    public function setGoogle2faSecretAttribute($secret): void
     {
         $this->attributes['google_2fa_secret'] = filled($secret) ? Crypt::encrypt($secret) : null;
     }
@@ -293,7 +309,7 @@ class User extends AuthenticatableContract
         return filled($secret) ? Crypt::decrypt($secret) : null;
     }
 
-    public function generate2faSecretKey()
+    public function generate2faSecretKey(): void
     {
         if (is_null($this->google_2fa_secret)) {
             $secret = (new Google2FA())->generateSecretKey();
@@ -304,7 +320,7 @@ class User extends AuthenticatableContract
         }
     }
 
-    public function get2faQrCode()
+    public function get2faQrCode(): string
     {
         return (new Google2FA())->getQRCodeInline(
             config('app.name'),

@@ -64,14 +64,12 @@ abstract class ModuleRepository
     public $fieldsGroupsFormFieldNameSeparator = '_';
 
     /**
-     * @param array $with
-     * @param array $scopes
-     * @param array $orders
-     * @param int $perPage
-     * @param bool $forcePagination
      * @return \Illuminate\Support\Collection|\Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @param mixed[] $with
+     * @param mixed[] $scopes
+     * @param mixed[] $orders
      */
-    public function get($with = [], $scopes = [], $orders = [], $perPage = 20, $forcePagination = false)
+    public function get(array $with = [], array $scopes = [], array $orders = [], int $perPage = 20, bool $forcePagination = false)
     {
         $query = $this->model->with($with);
 
@@ -90,11 +88,10 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param string $slug
-     * @param array $scope
      * @return int
+     * @param mixed[] $scope
      */
-    public function getCountByStatusSlug($slug, $scope = [])
+    public function getCountByStatusSlug(string $slug, array $scope = [])
     {
         $query = $this->model->where($scope);
 
@@ -170,23 +167,20 @@ abstract class ModuleRepository
 
     /**
      * @param $id
-     * @param array $with
-     * @param array $withCount
      * @return \A17\Twill\Models\Model
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function getById($id, $with = [], $withCount = [])
+    public function getById($id, array $with = [], array $withCount = [])
     {
         return $this->model->with($with)->withCount($withCount)->findOrFail($id);
     }
 
     /**
-     * @param string $column
-     * @param array $orders
      * @param null $exceptId
      * @return \Illuminate\Support\Collection
+     * @param mixed[] $orders
      */
-    public function listAll($column = 'title', $orders = [], $exceptId = null)
+    public function listAll(string $column = 'title', array $orders = [], $exceptId = null)
     {
         $query = $this->model->newQuery();
 
@@ -209,22 +203,21 @@ abstract class ModuleRepository
 
     /**
      * @param $search
-     * @param array $fields
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function cmsSearch($search, $fields = [])
+    public function cmsSearch($search, array $fields = [])
     {
         $query = $this->model->latest();
 
-        $translatedAttributes = $this->model->translatedAttributes ?? [];
+        $translatedAttributes = $this->model->getTranslatedAttributes() ?? [];
 
         foreach ($fields as $field) {
             if (in_array($field, $translatedAttributes)) {
                 $query->orWhereHas('translations', function ($q) use ($field, $search) {
-                    $q->where($field, $this->getLikeOperator(), "%{$search}%");
+                    $q->where($field, $this->getLikeOperator(), sprintf('%%%s%%', $search));
                 });
             } else {
-                $query->orWhere($field, $this->getLikeOperator(), "%{$search}%");
+                $query->orWhere($field, $this->getLikeOperator(), sprintf('%%%s%%', $search));
             }
         }
 
@@ -245,7 +238,7 @@ abstract class ModuleRepository
      * @param string[] $fields
      * @return \A17\Twill\Models\Model
      */
-    public function create($fields)
+    public function create(array $fields)
     {
         return DB::transaction(function () use ($fields) {
             $original_fields = $fields;
@@ -267,10 +260,10 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param array $fields
      * @return \A17\Twill\Models\Model
+     * @param mixed[] $fields
      */
-    public function createForPreview($fields)
+    public function createForPreview(array $fields)
     {
         $fields = $this->prepareFieldsBeforeCreate($fields);
 
@@ -294,10 +287,10 @@ abstract class ModuleRepository
 
     /**
      * @param mixed $id
-     * @param array $fields
      * @return void
+     * @param mixed[] $fields
      */
-    public function update($id, $fields)
+    public function update($id, array $fields)
     {
         DB::transaction(function () use ($id, $fields) {
             $object = $this->model->findOrFail($id);
@@ -316,13 +309,13 @@ abstract class ModuleRepository
 
     /**
      * @param mixed $id
-     * @param array $values
-     * @param array $scopes
      * @return mixed
+     * @param mixed[] $values
+     * @param mixed[] $scopes
      */
-    public function updateBasic($id, $values, $scopes = [])
+    public function updateBasic($id, array $values, array $scopes = [])
     {
-        return DB::transaction(function () use ($id, $values, $scopes) {
+        return DB::transaction(function () use ($id, $values, $scopes): bool {
             // apply scopes if no id provided
             if (is_null($id)) {
                 $query = $this->model->query();
@@ -364,10 +357,10 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param array $ids
      * @return void
+     * @param mixed[] $ids
      */
-    public function setNewOrder($ids)
+    public function setNewOrder(array $ids)
     {
         DB::transaction(function () use ($ids) {
             $this->model->setNewOrder($ids);
@@ -408,7 +401,7 @@ abstract class ModuleRepository
      */
     public function delete($id)
     {
-        return DB::transaction(function () use ($id) {
+        return DB::transaction(function () use ($id): bool {
             if (($object = $this->model->find($id)) === null) {
                 return false;
             }
@@ -425,20 +418,20 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param array $ids
      * @return mixed
+     * @param mixed[] $ids
      */
-    public function bulkDelete($ids)
+    public function bulkDelete(array $ids)
     {
-        return DB::transaction(function () use ($ids) {
+        return DB::transaction(function () use ($ids): bool {
             try {
                 Collection::make($ids)->each(function ($id) {
                     $this->delete($id);
                 });
-            } catch (Exception $e) {
-                Log::error($e);
+            } catch (Exception $exception) {
+                Log::error($exception);
                 if (config('app.debug')) {
-                    throw $e;
+                    throw $exception;
                 }
 
                 return false;
@@ -472,7 +465,7 @@ abstract class ModuleRepository
      */
     public function bulkForceDelete($ids)
     {
-        return DB::transaction(function () use ($ids) {
+        return DB::transaction(function () use ($ids): bool {
             try {
                 $query = $this->model->onlyTrashed()->whereIn('id', $ids);
                 $objects = $query->get();
@@ -482,8 +475,8 @@ abstract class ModuleRepository
                 $objects->each(function ($object) {
                     $this->afterDelete($object);
                 });
-            } catch (Exception $e) {
-                Log::error($e);
+            } catch (Exception $exception) {
+                Log::error($exception);
 
                 return false;
             }
@@ -498,7 +491,7 @@ abstract class ModuleRepository
      */
     public function restore($id)
     {
-        return DB::transaction(function () use ($id) {
+        return DB::transaction(function () use ($id): bool {
             if (($object = $this->model->withTrashed()->find($id)) != null) {
                 $object->restore();
                 $this->afterRestore($object);
@@ -511,12 +504,12 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param array $ids
      * @return mixed
+     * @param mixed[] $ids
      */
-    public function bulkRestore($ids)
+    public function bulkRestore(array $ids)
     {
-        return DB::transaction(function () use ($ids) {
+        return DB::transaction(function () use ($ids): bool {
             try {
                 $query = $this->model->withTrashed()->whereIn('id', $ids);
                 $objects = $query->get();
@@ -526,8 +519,8 @@ abstract class ModuleRepository
                 $objects->each(function ($object) {
                     $this->afterRestore($object);
                 });
-            } catch (Exception $e) {
-                Log::error($e);
+            } catch (Exception $exception) {
+                Log::error($exception);
 
                 return false;
             }
@@ -537,20 +530,15 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function cleanupFields($object, $fields)
+    public function cleanupFields(\A17\Twill\Models\Model $object, array $fields)
     {
         if (property_exists($this->model, 'checkboxes')) {
             foreach ($this->model->checkboxes as $field) {
                 if (! $this->shouldIgnoreFieldBeforeSave($field)) {
-                    if (! isset($fields[$field])) {
-                        $fields[$field] = false;
-                    } else {
-                        $fields[$field] = ! empty($fields[$field]);
-                    }
+                    $fields[$field] = isset($fields[$field]) && ! empty($fields[$field]);
                 }
             }
         }
@@ -565,9 +553,10 @@ abstract class ModuleRepository
 
         foreach ($fields as $key => $value) {
             if (! $this->shouldIgnoreFieldBeforeSave($key)) {
-                if (is_array($value) && empty($value)) {
+                if ($value === []) {
                     $fields[$key] = null;
                 }
+
                 if ($value === '') {
                     $fields[$key] = null;
                 }
@@ -578,10 +567,10 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function prepareFieldsBeforeCreate($fields)
+    public function prepareFieldsBeforeCreate(array $fields)
     {
         $fields = $this->cleanupFields(null, $fields);
 
@@ -593,11 +582,10 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return string[]
+     * @param mixed[] $fields
      */
-    public function prepareFieldsBeforeSave($object, $fields)
+    public function prepareFieldsBeforeSave(\A17\Twill\Models\Model $object, array $fields)
     {
         $fields = $this->cleanupFields($object, $fields);
 
@@ -609,11 +597,10 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return void
+     * @param mixed[] $fields
      */
-    public function afterUpdateBasic($object, $fields)
+    public function afterUpdateBasic(\A17\Twill\Models\Model $object, array $fields)
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object, $fields);
@@ -621,11 +608,10 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return void
+     * @param mixed[] $fields
      */
-    public function beforeSave($object, $fields)
+    public function beforeSave(\A17\Twill\Models\Model $object, array $fields)
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object, $fields);
@@ -633,11 +619,10 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return void
+     * @param mixed[] $fields
      */
-    public function afterSave($object, $fields)
+    public function afterSave(\A17\Twill\Models\Model $object, array $fields)
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object, $fields);
@@ -645,10 +630,9 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
      * @return void
      */
-    public function afterDelete($object)
+    public function afterDelete(\A17\Twill\Models\Model $object)
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object);
@@ -656,10 +640,9 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
      * @return void
      */
-    public function afterRestore($object)
+    public function afterRestore(\A17\Twill\Models\Model $object)
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object);
@@ -667,11 +650,10 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return \A17\Twill\Models\Model
+     * @param mixed[] $fields
      */
-    public function hydrate($object, $fields)
+    public function hydrate(\A17\Twill\Models\Model $object, array $fields)
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $object = $this->$method($object, $fields);
@@ -681,10 +663,9 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
      * @return array
      */
-    public function getFormFields($object)
+    public function getFormFields(\A17\Twill\Models\Model $object)
     {
         $fields = $object->attributesToArray();
 
@@ -696,11 +677,9 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param array $scopes
-     * @return \Illuminate\Database\Query\Builder
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function filter($query, array $scopes = [])
+    public function filter(\Illuminate\Database\Eloquent\Builder $query, array $scopes = [])
     {
         $likeOperator = $this->getLikeOperator();
 
@@ -718,16 +697,14 @@ abstract class ModuleRepository
         foreach ($scopes as $column => $value) {
             if (method_exists($this->model, 'scope' . ucfirst($column))) {
                 $query->$column();
-            } else {
-                if (is_array($value)) {
-                    $query->whereIn($column, $value);
-                } elseif ($column[0] == '%') {
-                    $value && ($value[0] == '!') ? $query->where(substr($column, 1), "not $likeOperator", '%' . substr($value, 1) . '%') : $query->where(substr($column, 1), $likeOperator, '%' . $value . '%');
-                } elseif (isset($value[0]) && $value[0] == '!') {
-                    $query->where($column, '<>', substr($value, 1));
-                } elseif ($value !== '') {
-                    $query->where($column, $value);
-                }
+            } elseif (is_array($value)) {
+                $query->whereIn($column, $value);
+            } elseif ($column[0] == '%') {
+                $value && ($value[0] == '!') ? $query->where(substr($column, 1), sprintf('not %s', $likeOperator), '%' . substr($value, 1) . '%') : $query->where(substr($column, 1), $likeOperator, '%' . $value . '%');
+            } elseif (isset($value[0]) && $value[0] == '!') {
+                $query->where($column, '<>', substr($value, 1));
+            } elseif ($value !== '') {
+                $query->where($column, $value);
             }
         }
 
@@ -735,11 +712,9 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param array $orders
-     * @return \Illuminate\Database\Query\Builder
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function order($query, array $orders = [])
+    public function order(\Illuminate\Database\Eloquent\Builder $query, array $orders = [])
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($query, $orders);
@@ -753,14 +728,10 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relationship
-     * @param string $formField
-     * @param string $attribute
      * @return void
+     * @param mixed[] $fields
      */
-    public function updateOneToMany($object, $fields, $relationship, $formField, $attribute)
+    public function updateOneToMany(\A17\Twill\Models\Model $object, array $fields, string $relationship, string $formField, string $attribute)
     {
         if (isset($fields[$formField])) {
             foreach ($fields[$formField] as $id) {
@@ -778,24 +749,19 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relationship
      * @return void
+     * @param mixed[] $fields
      */
-    public function updateMultiSelect($object, $fields, $relationship)
+    public function updateMultiSelect(\A17\Twill\Models\Model $object, array $fields, string $relationship)
     {
         $object->$relationship()->sync($fields[$relationship] ?? []);
     }
 
     /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param array $scopes
-     * @param string $scopeField
-     * @param string $scopeRelation
      * @return void
+     * @param mixed[] $scopes
      */
-    public function addRelationFilterScope($query, &$scopes, $scopeField, $scopeRelation)
+    public function addRelationFilterScope(\Illuminate\Database\Eloquent\Builder $query, array &$scopes, string $scopeField, string $scopeRelation)
     {
         if (isset($scopes[$scopeField])) {
             $id = $scopes[$scopeField];
@@ -807,12 +773,10 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param array $scopes
-     * @param string $scopeField
      * @return void
+     * @param mixed[] $scopes
      */
-    public function addLikeFilterScope($query, &$scopes, $scopeField)
+    public function addLikeFilterScope(\Illuminate\Database\Eloquent\Builder $query, array &$scopes, string $scopeField)
     {
         if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
             $query->where($scopeField, $this->getLikeOperator(), '%' . $scopes[$scopeField] . '%');
@@ -821,12 +785,10 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param array $scopes
-     * @param string $scopeField
      * @param string[] $orFields
+     * @param mixed[] $scopes
      */
-    public function searchIn($query, &$scopes, $scopeField, $orFields = [])
+    public function searchIn(\Illuminate\Database\Eloquent\Builder $query, array &$scopes, string $scopeField, array $orFields = [])
     {
         if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
             $query->where(function ($query) use (&$scopes, $scopeField, $orFields) {
@@ -847,10 +809,10 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param array $ignore
      * @return void
+     * @param mixed[] $ignore
      */
-    public function addIgnoreFieldsBeforeSave($ignore = [])
+    public function addIgnoreFieldsBeforeSave(array $ignore = [])
     {
         $this->ignoreFieldsBeforeSave = is_array($ignore)
         ? array_merge($this->ignoreFieldsBeforeSave, $ignore)
@@ -858,10 +820,9 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param string $ignore
      * @return bool
      */
-    public function shouldIgnoreFieldBeforeSave($ignore)
+    public function shouldIgnoreFieldBeforeSave(string $ignore)
     {
         return in_array($ignore, $this->ignoreFieldsBeforeSave);
     }
@@ -880,13 +841,12 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param string $relation
      * @param \A17\Twill\Models\Model|\A17\Twill\Repositories\ModuleRepository|null $modelOrRepository
      * @return mixed
      */
-    protected function getModelRepository($relation, $modelOrRepository = null)
+    protected function getModelRepository(string $relation, $modelOrRepository = null)
     {
-        if (! $modelOrRepository) {
+        if ($modelOrRepository === null) {
             if (class_exists($relation) && (new $relation()) instanceof Model) {
                 $modelOrRepository = Str::afterLast($relation, '\\');
             } else {
@@ -918,7 +878,7 @@ abstract class ModuleRepository
 
             return App::make($capsule->getRepositoryClass());
         } catch (NoCapsuleFoundException) {
-            throw new \Exception("Repository class not found for model '{$modelOrRepository}'");
+            throw new \Exception(sprintf('Repository class not found for model \'%s\'', $modelOrRepository));
         }
     }
 
@@ -934,11 +894,11 @@ abstract class ModuleRepository
 
         $uniqueTraits = array_unique(array_map('class_basename', $traits));
 
-        $methods = array_map(function (string $trait) use ($method) {
+        $methods = array_map(function (string $trait) use ($method): string {
             return $method . $trait;
         }, $uniqueTraits);
 
-        return array_filter($methods, function (string $method) {
+        return array_filter($methods, function (string $method): bool {
             return method_exists(get_called_class(), $method);
         });
     }
@@ -966,10 +926,9 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param string $behavior
      * @return bool
      */
-    public function hasBehavior($behavior)
+    public function hasBehavior(string $behavior)
     {
         $hasBehavior = classHasTrait($this, 'A17\Twill\Repositories\Behaviors\Handle' . ucfirst($behavior));
 

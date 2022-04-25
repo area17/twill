@@ -7,20 +7,19 @@ use Carbon\Carbon;
 trait HandleDates
 {
     /**
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function prepareFieldsBeforeCreateHandleDates($fields)
+    public function prepareFieldsBeforeCreateHandleDates(array $fields)
     {
         return $this->prepareFieldsBeforeSaveHandleDates(null, $fields);
     }
 
     /**
-     * @param \A17\Twill\Models\Model|null $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function prepareFieldsBeforeSaveHandleDates($object, $fields)
+    public function prepareFieldsBeforeSaveHandleDates(?\A17\Twill\Models\Model $object, array $fields)
     {
         foreach ($this->model->getDates() as $f) {
             if (isset($fields[$f])) {
@@ -31,21 +30,17 @@ trait HandleDates
                 }
             }
         }
+
         return $fields;
     }
 
     /**
-     * @param array $fields
-     * @param string $f
      * @return array
+     * @param mixed[] $fields
      */
-    public function prepareDatesField($fields, $f)
+    public function prepareDatesField(array $fields, string $f)
     {
-        if ($date = Carbon::parse($fields[$f])) {
-            $fields[$f] = $date->format("Y-m-d H:i:s");
-        } else {
-            $fields[$f] = null;
-        }
+        $fields[$f] = ($date = Carbon::parse($fields[$f])) ? $date->format("Y-m-d H:i:s") : null;
 
         return $fields;
     }

@@ -16,12 +16,6 @@ class BlocksController extends Controller
     /**
      * Render an HTML preview of a single block.
      * This is used by the full screen content editor.
-     *
-     * @param BlockRepository $blockRepository
-     * @param Application $app
-     * @param ViewFactory $viewFactory
-     * @param Request $request
-     * @return string
      */
     public function preview(
         BlockRepository $blockRepository,
@@ -29,7 +23,7 @@ class BlocksController extends Controller
         ViewFactory $viewFactory,
         Request $request,
         Config $config
-    ) {
+    ): string {
         $blocksCollection = Collection::make();
 
         if ($request->has('activeLanguage')) {
@@ -52,11 +46,11 @@ class BlocksController extends Controller
         $this->getChildrenPreview($block['blocks'], $blocksCollection, $newBlock->id, $blockId, $blockRepository);
 
         $renderedBlocks = $blocksCollection->where('parent_id', null)
-            ->map(function (Block $blockToRender) use ($block, $blocksCollection, $viewFactory, $config) {
+            ->map(function (Block $blockToRender) use ($block, $blocksCollection, $viewFactory, $config): string {
                 try {
                     if ($config->get('twill.block_editor.block_preview_render_childs') ?? true) {
                         $childBlocks = $blocksCollection->where('parent_id', $blockToRender->id);
-                        $childViews = $childBlocks->map(function (Block $childBlock) use ($viewFactory, $config) {
+                        $childViews = $childBlocks->map(function (Block $childBlock) use ($viewFactory, $config): string {
                             $view = TwillBlocks::findByName($childBlock->type)
                                 ->getBlockView($config->get('twill.block_editor.block_views_mappings'));
 
@@ -84,8 +78,8 @@ class BlocksController extends Controller
                     if ($viewFactory->exists($view)) {
                         return $viewFactory->make($view, $data)->render() . ($childViews ?? '');
                     }
-                } catch (\Exception $e) {
-                    $error = $e->getMessage() . ' in ' . $e->getFile();
+                } catch (\Exception $exception) {
+                    $error = $exception->getMessage() . ' in ' . $exception->getFile();
                 }
 
                 return $viewFactory->make('twill::errors.block', ['view' => $view ?? '', 'error' => $error])->render();
@@ -104,7 +98,7 @@ class BlocksController extends Controller
         return html_entity_decode($view->render());
     }
 
-    protected function getChildrenBlock($block, $blockRepository)
+    protected function getChildrenBlock($block, $blockRepository): \Illuminate\Support\Collection
     {
         $childBlocksList = Collection::make();
         foreach ($block['blocks'] as $childKey => $childBlocks) {
@@ -115,6 +109,7 @@ class BlocksController extends Controller
                 if (! empty($childBlock['blocks'])) {
                     $childBlock['children'] = $this->getChildrenBlock($childBlock, $blockRepository);
                 }
+
                 $childBlocksList->push($childBlock);
             }
         }
@@ -122,11 +117,11 @@ class BlocksController extends Controller
         return $childBlocksList;
     }
 
-    protected function getChildrenPreview($blocks, $blocksCollection, $parentId, &$blockId, $blockRepository)
+    protected function getChildrenPreview($blocks, $blocksCollection, $parentId, &$blockId, $blockRepository): void
     {
-        $blocks->each(function ($childBlock) use (&$blockId, $parentId, $blocksCollection, $blockRepository) {
+        $blocks->each(function ($childBlock) use (&$blockId, $parentId, $blocksCollection, $blockRepository): void {
             $childBlock['parent_id'] = $parentId;
-            $blockId++;
+            ++$blockId;
             $newChildBlock = $blockRepository->createForPreview($childBlock);
             $newChildBlock->id = $blockId;
             if (! empty($childBlock['children'])) {
@@ -140,6 +135,7 @@ class BlocksController extends Controller
                 );
                 $newChildBlock->setRelation('children', $childrenCollection);
             }
+
             $blocksCollection->push($newChildBlock);
         });
     }

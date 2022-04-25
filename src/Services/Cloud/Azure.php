@@ -6,7 +6,10 @@ use Exception;
 
 class Azure
 {
-    public function filesystemFactory($prefix)
+    /**
+     * @return never
+     */
+    public function filesystemFactory($prefix): void
     {
         throw new Exception('Azure is not implemented yey.');
     }

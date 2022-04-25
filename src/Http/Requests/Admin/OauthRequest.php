@@ -7,15 +7,18 @@ use Illuminate\Validation\Rule;
 class OauthRequest extends Request
 {
 
+    /**
+     * @var string
+     */
     protected $redirectRoute = 'twill.login.form';
 
 
     /**
      * Include route parameters for validation
      *
-     * @return array
+     * @return mixed[]
      */
-    public function all($keys = null)
+    public function all($keys = null): array
     {
 
         $data = parent::all();
@@ -28,9 +31,9 @@ class OauthRequest extends Request
     /**
      * Gets the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, array<string|\Illuminate\Validation\Rules\In>>
      */
-    public function rules()
+    public function rules(): array
     {
 
         return [

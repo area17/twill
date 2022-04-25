@@ -14,13 +14,12 @@ trait HandleNesting
     protected $reorderNestedModuleItemsJobQueue = 'default';
 
     /**
-     * @param string $nestedSlug
-     * @param array $with
-     * @param array $withCount
-     * @param array $scopes
      * @return \A17\Twill\Models\Model|null
+     * @param mixed[] $with
+     * @param mixed[] $withCount
+     * @param mixed[] $scopes
      */
-    public function forNestedSlug($nestedSlug, $with = [], $withCount = [], $scopes = [])
+    public function forNestedSlug(string $nestedSlug, array $with = [], array $withCount = [], array $scopes = [])
     {
         $targetSlug = collect(explode('/', $nestedSlug))->last();
 

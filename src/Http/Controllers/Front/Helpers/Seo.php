@@ -34,22 +34,14 @@ class Seo
      */
     public $height;
 
-    /**
-     * @param string $title
-     * @return void
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): void
     {
         if (!empty($title)) {
             $this->title = $title;
         }
     }
 
-    /**
-     * @param string $description
-     * @return void
-     */
-    public function setDescription($description)
+    public function setDescription(string $description): void
     {
         if (!empty($description)) {
             $this->description = $description;

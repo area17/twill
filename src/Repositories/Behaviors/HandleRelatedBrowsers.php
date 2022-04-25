@@ -34,11 +34,10 @@ trait HandleRelatedBrowsers
     protected $relatedBrowsers = [];
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return void
+     * @param mixed[] $fields
      */
-    public function afterSaveHandleRelatedBrowsers($object, $fields)
+    public function afterSaveHandleRelatedBrowsers(\A17\Twill\Models\Model $object, array $fields)
     {
         foreach ($this->getRelatedBrowsers() as $browser) {
             $this->updateRelatedBrowser($object, $fields, $browser['browserName']);
@@ -46,11 +45,10 @@ trait HandleRelatedBrowsers
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function getFormFieldsHandleRelatedBrowsers($object, $fields)
+    public function getFormFieldsHandleRelatedBrowsers(\A17\Twill\Models\Model $object, array $fields)
     {
         foreach ($this->getRelatedBrowsers() as $browser) {
             $fields['browsers'][$browser['browserName']] = $this->getFormFieldsForRelatedBrowser($object, $browser['relation'], $browser['titleKey']);
@@ -67,13 +65,13 @@ trait HandleRelatedBrowsers
      */
     protected function getRelatedBrowsers()
     {
-        return collect($this->relatedBrowsers)->map(function ($browser, $key) {
+        return collect($this->relatedBrowsers)->map(function ($browser, $key): array {
             $browserName = is_string($browser) ? $browser : $key;
-            $moduleName = !empty($browser['moduleName']) ? $browser['moduleName'] : $this->inferModuleNameFromBrowserName($browserName);
+            $moduleName = empty($browser['moduleName']) ? $this->inferModuleNameFromBrowserName($browserName) : $browser['moduleName'];
 
             return [
-                'relation' => !empty($browser['relation']) ? $browser['relation'] : $this->inferRelationFromBrowserName($browserName),
-                'model' => !empty($browser['model']) ? $browser['model'] : $this->inferModelFromModuleName($moduleName),
+                'relation' => empty($browser['relation']) ? $this->inferRelationFromBrowserName($browserName) : $browser['relation'],
+                'model' => empty($browser['model']) ? $this->inferModelFromModuleName($moduleName) : $browser['model'],
                 'browserName' => $browserName,
                 'titleKey' => $browser['titleKey'] ?? 'title',
             ];

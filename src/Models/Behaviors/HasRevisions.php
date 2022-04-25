@@ -19,12 +19,11 @@ trait HasRevisions
     /**
      * Scope a query to only include the current user's revisions.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeMine($query)
+    public function scopeMine(\Illuminate\Database\Eloquent\Builder $query)
     {
-        return $query->whereHas('revisions', function ($query) {
+        return $query->whereHas('revisions', function ($query): void {
             $query->where('user_id', auth('twill_users')->user()->id);
         });
     }
@@ -36,7 +35,7 @@ trait HasRevisions
      */
     public function revisionsArray()
     {
-        return $this->revisions->map(function ($revision, $index) {
+        return $this->revisions->map(function ($revision, $index): array {
             return [
                 'id' => $revision->id,
                 'author' => $revision->user->name ?? 'Unknown',

@@ -32,31 +32,6 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     /**
-     * @var AuthManager
-     */
-    protected $authManager;
-
-    /**
-     * @var Encrypter
-     */
-    protected $encrypter;
-
-    /**
-     * @var Redirector
-     */
-    protected $redirector;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * @var ViewFactory
-     */
-    protected $viewFactory;
-
-    /**
      * The path the user should be redirected to.
      *
      * @var string
@@ -64,53 +39,34 @@ class LoginController extends Controller
     protected $redirectTo;
 
     public function __construct(
-        Config $config,
-        AuthManager $authManager,
-        Encrypter $encrypter,
-        Redirector $redirector,
-        ViewFactory $viewFactory
+        protected Config $config,
+        protected AuthManager $authManager,
+        protected Encrypter $encrypter,
+        protected Redirector $redirector,
+        protected ViewFactory $viewFactory
     ) {
         parent::__construct();
-
-        $this->authManager = $authManager;
-        $this->encrypter = $encrypter;
-        $this->redirector = $redirector;
-        $this->viewFactory = $viewFactory;
-        $this->config = $config;
 
         $this->middleware('twill_guest', ['except' => 'logout']);
         $this->redirectTo = $config->get('twill.auth_login_redirect_path', '/');
     }
 
-    /**
-     * @return \Illuminate\Contracts\Auth\Guard
-     */
-    protected function guard()
+    protected function guard(): \Illuminate\Contracts\Auth\Guard
     {
         return $this->authManager->guard('twill_users');
     }
 
-    /**
-     * @return \Illuminate\View\View
-     */
-    public function showLoginForm()
+    public function showLoginForm(): \Illuminate\Contracts\View\View
     {
         return $this->viewFactory->make('twill::auth.login');
     }
 
-    /**
-     * @return \Illuminate\View\View
-     */
-    public function showLogin2FaForm()
+    public function showLogin2FaForm(): \Illuminate\Contracts\View\View
     {
         return $this->viewFactory->make('twill::auth.2fa');
     }
 
-    /**
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function logout(Request $request)
+    public function logout(Request $request): \Illuminate\Http\RedirectResponse
     {
         $this->guard()->logout();
 
@@ -121,17 +77,12 @@ class LoginController extends Controller
         return $this->redirector->to(route('twill.login'));
     }
 
-    /**
-     * @param Request $request
-     * @param \Illuminate\Foundation\Auth\User $user
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    protected function authenticated(Request $request, $user)
+    protected function authenticated(Request $request, \Illuminate\Foundation\Auth\User $user): \Illuminate\Http\RedirectResponse
     {
         return $this->afterAuthentication($request, $user);
     }
 
-    protected function afterAuthentication(Request $request, $user)
+    protected function afterAuthentication(Request $request, $user): \Illuminate\Http\RedirectResponse
     {
         if ($user->google_2fa_secret && $user->google_2fa_enabled) {
             $this->guard()->logout();
@@ -157,13 +108,11 @@ class LoginController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
      * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
      */
-    public function login2Fa(Request $request)
+    public function login2Fa(Request $request): \Illuminate\Http\RedirectResponse
     {
         $userId = $request->session()->get('2fa:user:id');
 
@@ -189,9 +138,8 @@ class LoginController extends Controller
 
     /**
      * @param string $provider Socialite provider
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function redirectToProvider($provider, OauthRequest $request)
+    public function redirectToProvider(string $provider, OauthRequest $request): \Illuminate\Http\RedirectResponse
     {
         return Socialite::driver($provider)
             ->scopes($this->config->get('twill.oauth.' . $provider . '.scopes', []))
@@ -203,7 +151,7 @@ class LoginController extends Controller
      * @param string $provider Socialite provider
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function handleProviderCallback($provider, OauthRequest $request)
+    public function handleProviderCallback(string $provider, OauthRequest $request)
     {
         $oauthUser = Socialite::driver($provider)->user();
         $repository = App::make(UserRepository::class);
@@ -213,29 +161,23 @@ class LoginController extends Controller
             // If that provider has been linked
             if ($repository->oauthIsUserLinked($oauthUser, $provider)) {
                 $user = $repository->oauthUpdateProvider($oauthUser, $provider);
+                // Login and redirect
+                $this->authManager->guard('twill_users')->login($user);
+                return $this->afterAuthentication($request, $user);
+            } elseif ($user->password) {
+                // If the user has a password then redirect to a form to ask for it
+                // before linking a provider to that email
+                $request->session()->put('oauth:user_id', $user->id);
+                $request->session()->put('oauth:user', $oauthUser);
+                $request->session()->put('oauth:provider', $provider);
+                return $this->redirector->to(route('twill.login.oauth.showPasswordForm'));
+            } else {
+                $user->linkProvider($oauthUser, $provider);
 
                 // Login and redirect
                 $this->authManager->guard('twill_users')->login($user);
 
                 return $this->afterAuthentication($request, $user);
-            } else {
-                if ($user->password) {
-                    // If the user has a password then redirect to a form to ask for it
-                    // before linking a provider to that email
-
-                    $request->session()->put('oauth:user_id', $user->id);
-                    $request->session()->put('oauth:user', $oauthUser);
-                    $request->session()->put('oauth:provider', $provider);
-
-                    return $this->redirector->to(route('twill.login.oauth.showPasswordForm'));
-                } else {
-                    $user->linkProvider($oauthUser, $provider);
-
-                    // Login and redirect
-                    $this->authManager->guard('twill_users')->login($user);
-
-                    return $this->afterAuthentication($request, $user);
-                }
             }
         } else {
             // If the user doesn't exist, create it
@@ -249,10 +191,7 @@ class LoginController extends Controller
         }
     }
 
-    /**
-     * @return \Illuminate\View\View
-     */
-    public function showPasswordForm(Request $request)
+    public function showPasswordForm(Request $request): \Illuminate\Contracts\View\View
     {
         $userId = $request->session()->get('oauth:user_id');
         $user = twillModel('user')::findOrFail($userId);

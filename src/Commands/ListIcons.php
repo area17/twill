@@ -24,29 +24,12 @@ class ListIcons extends Command
      */
     protected $description = 'List available icons';
 
-    /**
-     * @var Filesystem
-     */
-    protected $files;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * @param Filesystem $files
-     * @param Config $config
-     */
-    public function __construct(Filesystem $files, Config $config)
+    public function __construct(protected Filesystem $files, protected Config $config)
     {
         parent::__construct();
-
-        $this->files = $files;
-        $this->config = $config;
     }
 
-    private function isAllowed($icon)
+    private function isAllowed($icon): bool
     {
         if (filled($filter = $this->argument('filter'))) {
             return Str::contains(
@@ -54,31 +37,23 @@ class ListIcons extends Command
                 Str::lower($filter)
             );
         }
-
-        if (in_array($icon['name'] . '.svg', config('twill.internal_icons'))) {
-            return false;
-        }
-
-        return true;
+        return !in_array($icon['name'] . '.svg', config('twill.internal_icons'));
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    protected function getIconList()
+    protected function getIconList(): \Illuminate\Support\Collection
     {
         return collect(
             config('twill.block_editor.directories.source.icons')
-        )->reduce(function (Collection $keep, $path) {
+        )->reduce(function (Collection $keep, $path): \Illuminate\Support\Collection {
             if (! $this->files->exists($path)) {
-                $this->error("Directory not found: $path");
+                $this->error(sprintf('Directory not found: %s', $path));
 
                 return $keep;
             }
 
             $files = collect($this->files->files($path))->map(function (
                 SplFileInfo $file
-            ) {
+            ): array {
                 return [
                     'name' => Str::before($file->getFilename(), '.svg'),
                     'url' => route('twill.icons.show', [
@@ -96,7 +71,7 @@ class ListIcons extends Command
      */
     public function handle()
     {
-        $icons = $this->getIconList()->filter(function ($icon) {
+        $icons = $this->getIconList()->filter(function ($icon): bool {
             return $this->isAllowed($icon);
         });
 

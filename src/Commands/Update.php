@@ -4,8 +4,14 @@ namespace A17\Twill\Commands;
 
 class Update extends Command
 {
+    /**
+     * @var string
+     */
     protected $signature = 'twill:update';
 
+    /**
+     * @var string
+     */
     protected $description = 'Publish new updated Twill assets';
 
     /**
@@ -13,7 +19,7 @@ class Update extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $this->publishAssets();
         $this->call('cache:clear');
@@ -22,13 +28,11 @@ class Update extends Command
 
     /**
      * Publishes the package frontend assets.
-     *
-     * @return void
      */
-    private function publishAssets()
+    private function publishAssets(): void
     {
         $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--provider' => \A17\Twill\TwillServiceProvider::class,
             '--tag' => 'assets',
             '--force' => true,
         ]);

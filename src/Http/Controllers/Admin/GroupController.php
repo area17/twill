@@ -9,22 +9,43 @@ use Illuminate\Contracts\Foundation\Application;
 
 class GroupController extends ModuleController
 {
+    /**
+     * @var string
+     */
     protected $namespace = 'A17\Twill';
 
+    /**
+     * @var string
+     */
     protected $moduleName = 'groups';
 
+    /**
+     * @var array<string, string>
+     */
     protected $defaultOrders = ['name' => 'asc'];
 
+    /**
+     * @var array<string, string>
+     */
     protected $defaultFilters = [
         'search' => 'search',
     ];
 
+    /**
+     * @var string
+     */
     protected $titleColumnKey = 'name';
 
+    /**
+     * @var array<string, false>
+     */
     protected $indexOptions = [
         'permalink' => false,
     ];
 
+    /**
+     * @var array<string, mixed[]>
+     */
     protected $labels = [
         'published' => 'twill::lang.permissions.groups.published',
         'draft' => 'twill::lang.permissions.groups.draft',
@@ -61,6 +82,9 @@ class GroupController extends ModuleController
         ];
     }
 
+    /**
+     * @var array<string, mixed[]>
+     */
     protected $indexColumns = [
         'name' => [
             'title' => 'Name',
@@ -79,7 +103,10 @@ class GroupController extends ModuleController
         ]
     ];
 
-    protected function indexData($request)
+    /**
+     * @return array<string, mixed[]>
+     */
+    protected function indexData($request): array
     {
         return [
             'primary_navigation' => $this->primaryNavigation,
@@ -95,7 +122,10 @@ class GroupController extends ModuleController
         return parent::getIndexOption($option);
     }
 
-    protected function formData($request)
+    /**
+     * @return array<string, \A17\Twill\Models\Collection>|array<string, mixed[]>
+     */
+    protected function formData($request): array
     {
         return [
             'primary_navigation' => $this->primaryNavigation,
@@ -103,35 +133,38 @@ class GroupController extends ModuleController
         ];
     }
 
-    protected function indexItemData($item)
+    /**
+     * @return null[]|array<string, string>
+     */
+    protected function indexItemData($item): array
     {
         $canEdit = auth('twill_users')->user()->can('edit-user-groups') && ($item->canEdit ?? true);
 
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }
 
-    protected function getIndexItems($scopes = [], $forcePagination = false)
+    protected function getIndexItems($scopes = [], $forcePagination = false): \Illuminate\Support\Collection
     {
         // Everyone group should always be on top
         return parent::getIndexItems($scopes, $forcePagination)->sortByDesc('is_everyone_group')->values();
     }
 
-    protected function getBrowserItems($scopes = [])
+    protected function getBrowserItems($scopes = []): \Illuminate\Support\Collection
     {
         // Exclude everyone group from browsers
-        return parent::getBrowserItems($scopes)->filter(function ($item) {
+        return parent::getBrowserItems($scopes)->filter(function ($item): bool {
             return !$item->isEveryoneGroup();
         })->values();
     }
 
-    public function edit($id, $submoduleId = null)
+    public function edit($id, $submoduleId = null): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
     {
         $this->authorizableOptions['edit'] = 'edit-group';
 
         return parent::edit($id, $submoduleId);
     }
 
-    public function update($id, $submoduleId = null)
+    public function update($id, $submoduleId = null): \Illuminate\Http\JsonResponse
     {
         $this->authorizableOptions['edit'] = 'edit-group';
 

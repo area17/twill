@@ -6,10 +6,19 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 
 abstract class Revision extends BaseModel
 {
+    /**
+     * @var bool
+     */
     public $timestamps = true;
 
+    /**
+     * @var string[]
+     */
     protected $with = ['user'];
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'payload',
         'user_id',
@@ -26,13 +35,13 @@ abstract class Revision extends BaseModel
         }
     }
 
-    public function user()
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
     public function getByUserAttribute()
     {
-        return isset($this->user) ? $this->user->name : 'System';
+        return property_exists($this, 'user') && $this->user !== null ? $this->user->name : 'System';
     }
 }

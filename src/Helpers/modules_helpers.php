@@ -15,16 +15,14 @@ if (! function_exists('getAllModules')) {
         });
 
         $moduleRepositories = $repositories->filter(function ($repository) {
-            return is_subclass_of($repository, 'A17\Twill\Repositories\ModuleRepository');
+            return is_subclass_of($repository, \A17\Twill\Repositories\ModuleRepository::class);
         });
 
-        $modules = $moduleRepositories->map(function ($repository) {
+        return $moduleRepositories->map(function ($repository) {
             $modelName = str_replace('Repository', '', str_replace('App\\Repositories\\', '', $repository));
 
             return Str::plural(lcfirst($modelName));
         });
-
-        return $modules;
     }
 }
 
@@ -60,6 +58,7 @@ if (! function_exists('getModelRepository')) {
         if (! $model) {
             $model = ucfirst(Str::singular($relation));
         }
+
         $repository = config('twill.namespace') . '\\Repositories\\' . ucfirst($model) . 'Repository';
 
         if (! class_exists($repository)) {
@@ -73,11 +72,8 @@ if (! function_exists('getModelRepository')) {
 if (! function_exists('isPermissionableModule')) {
     /**
      * Return the module name if the module is permissionable, otherwise return false.
-     *
-     * @param string $moduleName
-     * @return string|bool
      */
-    function isPermissionableModule($moduleName)
+    function isPermissionableModule(string $moduleName): bool|string
     {
         $submodule = Permission::permissionableModules()->filter(function ($module) use ($moduleName) {
             return strpos($module, '.') && explode('.', $module)[1] === $moduleName;
@@ -100,33 +96,31 @@ if (! function_exists('updatePermissionOptions')) {
 
         if ($user->role) {
             $permissions = $user->role->permissions()->module()->pluck('name', 'permissionable_type')->all();
-            if (empty($permissions)) {
-                if ($user->role->permissions()->global()->where('name', 'manage-modules')->first()) {
-                    $permissions[get_class($item)] = 'manage-item';
-                }
+            if (empty($permissions) && $user->role->permissions()->global()->where('name', 'manage-modules')->first()) {
+                $permissions[$item::class] = 'manage-item';
             }
         }
 
         // looking for group permissions belonging to the user
         foreach ($user->publishedGroups as $group) {
             if (($permission = $group->permissions()->ofItem($item)->first()) != null) {
-                if (isset($permissions[get_class($item)])) {
+                if (isset($permissions[$item::class])) {
                     $scopes = Permission::available(Permission::SCOPE_ITEM);
-                    $previous = array_search($permissions[get_class($item)], $scopes);
+                    $previous = array_search($permissions[$item::class], $scopes);
                     $current = array_search($permission->name, $scopes);
 
                     // check permission level
                     if ($current > $previous) {
-                        $permissions[get_class($item)] = $permission->name;
+                        $permissions[$item::class] = $permission->name;
                     }
                 } else {
-                    $permissions[get_class($item)] = $permission->name;
+                    $permissions[$item::class] = $permission->name;
                 }
             }
         }
 
-        if (isset($permissions[get_class($item)])) {
-            $globalPermission = str_replace('-module', '-item', $permissions[get_class($item)]);
+        if (isset($permissions[$item::class])) {
+            $globalPermission = str_replace('-module', '-item', $permissions[$item::class]);
             foreach ($options as &$option) {
                 if ($option['value'] != $globalPermission || $globalPermission == 'manage-item') {
                     $option['disabled'] = true;
@@ -166,10 +160,8 @@ if (! function_exists('isUserGroupPermissionModuleExists')) {
         foreach ($user->publishedGroups as $group) {
             if ($moduleName == 'global') {
                 return $group->permissions()->global()->where('name', 'manage-modules')->exists();
-            } else {
-                if (in_array($permission, $group->permissions()->OfModuleName($moduleName)->get()->pluck('name')->all())) {
-                    return true;
-                }
+            } elseif (in_array($permission, $group->permissions()->OfModuleName($moduleName)->get()->pluck('name')->all())) {
+                return true;
             }
         }
 

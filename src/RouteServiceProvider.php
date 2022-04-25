@@ -19,26 +19,23 @@ use Illuminate\Support\Str;
 
 class RouteServiceProvider extends ServiceProvider
 {
+    /**
+     * @var string
+     */
     protected $namespace = 'A17\Twill\Http\Controllers';
 
     /**
      * Bootstraps the package services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->registerMacros();
-        $this->registerRouteMiddlewares($this->app->get('router'));
+        $this->registerRouteMiddlewares();
         $this->app->bind(TwillRoutes::class);
         parent::boot();
     }
 
-    /**
-     * @param Router $router
-     * @return void
-     */
-    public function map(Router $router)
+    public function map(Router $router): void
     {
         \A17\Twill\Facades\TwillRoutes::registerRoutePatterns();
 
@@ -61,9 +58,8 @@ class RouteServiceProvider extends ServiceProvider
         $router,
         $groupOptions,
         $middlewares,
-        $supportSubdomainRouting,
-        $namespace = null
-    ) {
+        $supportSubdomainRouting
+    ): void {
         \A17\Twill\Facades\TwillRoutes::registerRoutes(
             $router,
             $groupOptions,
@@ -80,12 +76,12 @@ class RouteServiceProvider extends ServiceProvider
         $groupOptions,
         $middlewares,
         $supportSubdomainRouting
-    ) {
+    ): void {
         $internalRoutes = function ($router) use (
             $middlewares,
             $supportSubdomainRouting
-        ) {
-            $router->group(['middleware' => $middlewares], function ($router) {
+        ): void {
+            $router->group(['middleware' => $middlewares], function ($router): void {
                 require __DIR__ . '/../routes/admin.php';
             });
 
@@ -95,7 +91,7 @@ class RouteServiceProvider extends ServiceProvider
                     ? ['supportSubdomainRouting']
                     : [],
                 ],
-                function ($router) {
+                function ($router): void {
                     require __DIR__ . '/../routes/auth.php';
                 }
             );
@@ -106,7 +102,7 @@ class RouteServiceProvider extends ServiceProvider
                     ? ['twill_auth:twill_users']
                     : [],
                 ],
-                function ($router) {
+                function ($router): void {
                     require __DIR__ . '/../routes/templates.php';
                 }
             );
@@ -116,7 +112,7 @@ class RouteServiceProvider extends ServiceProvider
             $groupOptions + [
                 'namespace' => $this->namespace . '\Admin',
             ],
-            function ($router) use ($internalRoutes, $supportSubdomainRouting) {
+            function ($router) use ($internalRoutes, $supportSubdomainRouting): void {
                 $router->group(
                     [
                         'domain' => config('twill.admin_app_url'),
@@ -146,7 +142,7 @@ class RouteServiceProvider extends ServiceProvider
                         config('twill.admin_middleware_group', 'web'),
                     ],
                 ],
-                function ($router) {
+                function ($router): void {
                     $router->group(
                         [
                             'middleware' => $this->app->environment(
@@ -155,7 +151,7 @@ class RouteServiceProvider extends ServiceProvider
                             ? ['twill_auth:twill_users']
                             : [],
                         ],
-                        function ($router) {
+                        function ($router): void {
                             require __DIR__ . '/../routes/templates.php';
                         }
                     );
@@ -165,7 +161,7 @@ class RouteServiceProvider extends ServiceProvider
 
         if (
             config('twill.media_library.image_service') ===
-            'A17\Twill\Services\MediaLibrary\Glide'
+            \A17\Twill\Services\MediaLibrary\Glide::class
         ) {
             $router
                 ->get(
@@ -178,11 +174,8 @@ class RouteServiceProvider extends ServiceProvider
 
     /**
      * Register Route middleware.
-     *
-     * @param Router $router
-     * @return void
      */
-    private function registerRouteMiddlewares(Router $router)
+    private function registerRouteMiddlewares(): void
     {
         Route::aliasMiddleware(
             'supportSubdomainRouting',
@@ -201,16 +194,14 @@ class RouteServiceProvider extends ServiceProvider
 
     /**
      * Registers Route macros.
-     *
-     * @return void
      */
-    protected function registerMacros()
+    protected function registerMacros(): void
     {
         Route::macro('moduleShowWithPreview', function (
             $moduleName,
             $routePrefix = null,
             $controllerName = null
-        ) {
+        ): void {
             if ($routePrefix === null) {
                 $routePrefix = $moduleName;
             }
@@ -245,18 +236,35 @@ class RouteServiceProvider extends ServiceProvider
             $options = [],
             $resource_options = [],
             $resource = true
-        ) {
+        ): void {
             $slugs = explode('.', $slug);
             $prefixSlug = str_replace('.', '/', $slug);
-            $_slug = Arr::last($slugs);
+            Arr::last($slugs);
             $className = implode(
                 '',
-                array_map(function ($s) {
+                array_map(function ($s): string {
                     return ucfirst(Str::singular($s));
                 }, $slugs)
             );
 
-            $customRoutes = $defaults = [
+            $customRoutes = [
+                'reorder',
+                'publish',
+                'bulkPublish',
+                'browser',
+                'feature',
+                'bulkFeature',
+                'tags',
+                'preview',
+                'restore',
+                'bulkRestore',
+                'forceDelete',
+                'bulkForceDelete',
+                'bulkDelete',
+                'restoreRevision',
+                'duplicate',
+            ];
+            $defaults = [
                 'reorder',
                 'publish',
                 'bulkPublish',
@@ -292,8 +300,8 @@ class RouteServiceProvider extends ServiceProvider
 
             // Check if name will be a duplicate, and prevent if needed/allowed
             if (RouteServiceProvider::shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)) {
-                $customRoutePrefix = "{$groupPrefix}.{$slug}";
-                $resourceCustomGroupPrefix = "{$groupPrefix}.";
+                $customRoutePrefix = sprintf('%s.%s', $groupPrefix, $slug);
+                $resourceCustomGroupPrefix = sprintf('%s.', $groupPrefix);
             } else {
                 $customRoutePrefix = $slug;
 
@@ -302,17 +310,17 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             foreach ($customRoutes as $route) {
-                $routeSlug = "{$prefixSlug}/{$route}";
+                $routeSlug = sprintf('%s/%s', $prefixSlug, $route);
                 $mapping = [
-                    'as' => $customRoutePrefix . ".{$route}",
-                    'uses' => "{$className}Controller@{$route}",
+                    'as' => $customRoutePrefix . sprintf('.%s', $route),
+                    'uses' => sprintf('%sController@%s', $className, $route),
                 ];
 
                 if (in_array($route, ['browser', 'tags'])) {
                     Route::get($routeSlug, $mapping);
                 }
 
-                if (in_array($route, ['restoreRevision'])) {
+                if ($route == 'restoreRevision') {
                     Route::get($routeSlug . '/{id}', $mapping);
                 }
 
@@ -327,11 +335,11 @@ class RouteServiceProvider extends ServiceProvider
                     Route::put($routeSlug, $mapping);
                 }
 
-                if (in_array($route, ['duplicate'])) {
+                if ($route == 'duplicate') {
                     Route::put($routeSlug . '/{id}', $mapping);
                 }
 
-                if (in_array($route, ['preview'])) {
+                if ($route == 'preview') {
                     Route::put($routeSlug . '/{id}', $mapping);
                 }
 
@@ -352,10 +360,10 @@ class RouteServiceProvider extends ServiceProvider
             if ($resource) {
                 Route::group(
                     ['as' => $resourceCustomGroupPrefix],
-                    function () use ($slug, $className, $resource_options) {
+                    function () use ($slug, $className, $resource_options): void {
                         Route::resource(
                             $slug,
-                            "{$className}Controller",
+                            sprintf('%sController', $className),
                             $resource_options
                         );
                     }
@@ -368,7 +376,7 @@ class RouteServiceProvider extends ServiceProvider
             $options = [],
             $resource_options = [],
             $resource = true
-        ) {
+        ): void {
             $pluralSlug = Str::plural($slug);
             $modelName = Str::studly($slug);
 
@@ -380,7 +388,7 @@ class RouteServiceProvider extends ServiceProvider
 
             // Check if name will be a duplicate, and prevent if needed/allowed
             if (RouteServiceProvider::shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)) {
-                $singletonRouteName = "{$groupPrefix}.{$slug}";
+                $singletonRouteName = sprintf('%s.%s', $groupPrefix, $slug);
             } else {
                 $singletonRouteName = $slug;
             }
@@ -389,11 +397,11 @@ class RouteServiceProvider extends ServiceProvider
         });
     }
 
-    public static function shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)
+    public static function shouldPrefixRouteName($groupPrefix, $lastRouteGroupName): bool
     {
         return ! empty($groupPrefix) && (blank($lastRouteGroupName) ||
             config('twill.allow_duplicates_on_route_names', true) ||
-            (! Str::endsWith($lastRouteGroupName, ".{$groupPrefix}.")));
+            (! Str::endsWith($lastRouteGroupName, sprintf('.%s.', $groupPrefix))));
     }
 
     public static function getLastRouteGroupName()
@@ -405,7 +413,7 @@ class RouteServiceProvider extends ServiceProvider
         return end($routeGroups)['as'] ?? '';
     }
 
-    public static function getGroupPrefix()
+    public static function getGroupPrefix(): string
     {
         $groupPrefix = trim(
             str_replace('/', '.', Route::getLastGroupPrefix()),

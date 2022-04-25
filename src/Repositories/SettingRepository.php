@@ -12,29 +12,18 @@ class SettingRepository extends ModuleRepository
 {
     use HandleMedias;
 
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * @param Setting $model
-     * @param Config $config
-     */
-    public function __construct(Setting $model, Config $config)
+    public function __construct(Setting $model, protected Config $config)
     {
         $this->model = $model;
-        $this->config = $config;
     }
 
     /**
-     * @param string $key
      * @param string|null $section
      * @return string|null
      */
-    public function byKey($key, $section = null)
+    public function byKey(string $key, $section = null)
     {
-        $settingQuery = $this->model->when($section, function ($query) use ($section) {
+        $settingQuery = $this->model->when($section, function ($query) use ($section): void {
             $query->where('section', $section);
         })->where('key', $key);
 
@@ -47,11 +36,11 @@ class SettingRepository extends ModuleRepository
 
     /**
      * @param string|null $section
-     * @return array
+     * @return mixed[]
      */
-    public function getFormFields($section = null)
+    public function getFormFields($section = null): array
     {
-        $settings = $this->model->when($section, function ($query) use ($section) {
+        $settings = $this->model->when($section, function ($query) use ($section): void {
             $query->where('section', $section);
         })->with('translations', 'medias')->get();
 
@@ -64,15 +53,16 @@ class SettingRepository extends ModuleRepository
                         $carry[$locale][$setting->key] = parent::getFormFields($setting)['medias'][$locale][$setting->key];
                     }
                 }
+
                 return $carry;
             });
         } else {
-            $medias = $settings->mapWithKeys(function ($setting) {
+            $medias = $settings->mapWithKeys(function ($setting): array {
                 return [$setting->key => parent::getFormFields($setting)['medias'][$setting->key] ?? null];
             })->filter()->toArray();
         }
 
-        return $settings->mapWithKeys(function ($setting) {
+        return $settings->mapWithKeys(function ($setting): array {
             $settingValue = [];
 
             foreach ($setting->translations as $translation) {
@@ -84,11 +74,10 @@ class SettingRepository extends ModuleRepository
     }
 
     /**
-     * @param array $settingsFields
      * @param string|null $section
-     * @return void
+     * @param mixed[] $settingsFields
      */
-    public function saveAll($settingsFields, $section = null)
+    public function saveAll(array $settingsFields, $section = null): void
     {
         $section = $section ? ['section' => $section] : [];
 
@@ -123,7 +112,7 @@ class SettingRepository extends ModuleRepository
 
             if (config('twill.media_library.translated_form_fields', false)) {
                 foreach (getLocales() as $locale) {
-                    $medias["{$role}[{$locale}]"] = Collection::make($settingsFields['medias'][$role][$locale])->map(function ($media) {
+                    $medias[sprintf('%s[%s]', $role, $locale)] = Collection::make($settingsFields['medias'][$role][$locale])->map(function ($media) {
                         return json_decode($media, true);
                     })->filter()->toArray();
                 }
@@ -144,10 +133,9 @@ class SettingRepository extends ModuleRepository
     }
 
     /**
-     * @param string $role
-     * @return array
+     * @return mixed[]
      */
-    public function getCrops($role)
+    public function getCrops(string $role): array
     {
         return $this->config->get('twill.settings.crops')[$role];
     }

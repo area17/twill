@@ -70,8 +70,6 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Bootstraps the package services.
-     *
-     * @return void
      */
     public function boot(): void
     {
@@ -92,9 +90,6 @@ class TwillServiceProvider extends ServiceProvider
         $this->check2FA();
     }
 
-    /**
-     * @return void
-     */
     private function requireHelpers(): void
     {
         require_once __DIR__ . '/Helpers/routes_helpers.php';
@@ -132,7 +127,7 @@ class TwillServiceProvider extends ServiceProvider
 
     private function registerFacades(): void
     {
-        $this->app->bind('twill_util', function () {
+        $this->app->bind('twill_util', function (): \A17\Twill\TwillUtil {
             return new TwillUtil();
         });
     }
@@ -167,8 +162,6 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Registers the package facade aliases.
-     *
-     * @return void
      */
     private function registerAliases(): void
     {
@@ -185,8 +178,6 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Defines the package configuration files for publishing.
-     *
-     * @return void
      */
     private function publishConfigs(): void
     {
@@ -223,8 +214,6 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Merges the package configuration files into the given configuration namespaces.
-     *
-     * @return void
      */
     private function mergeConfigs(): void
     {
@@ -298,9 +287,6 @@ class TwillServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * @return void
-     */
     private function publishAssets(): void
     {
         $this->publishes([
@@ -308,9 +294,6 @@ class TwillServiceProvider extends ServiceProvider
         ], 'assets');
     }
 
-    /**
-     * @return void
-     */
     private function registerAndPublishViews(): void
     {
         $viewPath = __DIR__ . '/../views';
@@ -319,9 +302,6 @@ class TwillServiceProvider extends ServiceProvider
         $this->publishes([$viewPath => resource_path('views/vendor/twill')], 'views');
     }
 
-    /**
-     * @return void
-     */
     private function registerCommands(): void
     {
         $this->commands([
@@ -350,19 +330,15 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Resolve and include a given view expression in the project, Twill internals or a package.
-     *
-     * @param string $view
-     * @param string $expression
-     * @return string
      */
-    private function includeView($view, $expression): string
+    private function includeView(string $view, string $expression): string
     {
-        [$name] = str_getcsv($expression, ',', '\'');
+        [$name] = str_getcsv($expression, ',', "'");
 
-        if (preg_match('/::/', $name)) {
+        if (preg_match('#::#', $name)) {
             // if there's a namespace separator, we'll assume it's a package
-            [$namespace, $name] = preg_split('/::/', $name);
-            $partialNamespace = "$namespace::admin.";
+            [$namespace, $name] = preg_split('#::#', $name);
+            $partialNamespace = sprintf('%s::admin.', $namespace);
         } else {
             $partialNamespace = view()->exists('twill.' . $view . $name) ? 'twill.' : 'twill::';
         }
@@ -376,30 +352,28 @@ class TwillServiceProvider extends ServiceProvider
             $expression = '([])';
         }
 
-        return "<?php echo \$__env->make('{$view}', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render(); ?>";
+        return sprintf('<?php echo $__env->make(\'%s\', \Illuminate\Support\Arr::except(get_defined_vars(), [\'__data\', \'__path\']))->with%s->render(); ?>', $view, $expression);
     }
 
     /**
      * Defines the package additional Blade Directives.
-     *
-     * @return void
      */
     private function extendBlade(): void
     {
         $blade = $this->app['view']->getEngineResolver()->resolve('blade')->getCompiler();
 
-        $blade->directive('dd', function ($param) {
-            return "<?php dd({$param}); ?>";
+        $blade->directive('dd', function ($param): string {
+            return sprintf('<?php dd(%s); ?>', $param);
         });
 
-        $blade->directive('dumpData', function ($data) {
+        $blade->directive('dumpData', function ($data): string {
             return sprintf(
                 "<?php (new Symfony\Component\VarDumper\VarDumper)->dump(%s); exit; ?>",
                 null != $data ? $data : 'get_defined_vars()'
             );
         });
 
-        $blade->directive('formField', function ($expression) {
+        $blade->directive('formField', function ($expression): string {
             return $this->includeView('partials.form._', $expression);
         });
 
@@ -414,14 +388,14 @@ class TwillServiceProvider extends ServiceProvider
         });
 
         $blade->directive('partialView', function ($expression) {
-            $expressionAsArray = str_getcsv($expression, ',', '\'');
+            $expressionAsArray = str_getcsv($expression, ',', "'");
 
             [$moduleName, $viewName] = $expressionAsArray;
             $partialNamespace = 'twill::partials';
 
-            $viewModule = "twillViewName($moduleName, '{$viewName}')";
-            $viewApplication = "'twill.partials.{$viewName}'";
-            $viewModuleTwill = "'twill::'.$moduleName.'.{$viewName}'";
+            $viewModule = sprintf('twillViewName(%s, \'%s\')', $moduleName, $viewName);
+            $viewApplication = sprintf('\'twill.partials.%s\'', $viewName);
+            $viewModuleTwill = sprintf('\'twill::\'.%s.\'.%s\'', $moduleName, $viewName);
             $view = $partialNamespace . '.' . $viewName;
 
             if (! isset($moduleName) || is_null($moduleName)) {
@@ -436,26 +410,26 @@ class TwillServiceProvider extends ServiceProvider
             }
 
             return "<?php
-            if( view()->exists($viewModule)) {
-                echo \$__env->make($viewModule, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
-            } elseif( view()->exists($viewApplication)) {
-                echo \$__env->make($viewApplication, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
-            } elseif( view()->exists($viewModuleTwill)) {
-                echo \$__env->make($viewModuleTwill, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
-            } elseif( view()->exists('$view')) {
-                echo \$__env->make('$view', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
+            if( view()->exists({$viewModule})) {
+                echo \$__env->make({$viewModule}, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
+            } elseif( view()->exists({$viewApplication})) {
+                echo \$__env->make({$viewApplication}, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
+            } elseif( view()->exists({$viewModuleTwill})) {
+                echo \$__env->make({$viewModuleTwill}, \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
+            } elseif( view()->exists('{$view}')) {
+                echo \$__env->make('{$view}', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             }
             ?>";
         });
 
-        $blade->directive('pushonce', function ($expression) {
+        $blade->directive('pushonce', function ($expression): string {
             [$pushName, $pushSub] = explode(':', trim(substr($expression, 1, -1)));
             $key = '__pushonce_' . $pushName . '_' . str_replace('-', '_', $pushSub);
 
-            return "<?php if(! isset(\$__env->{$key})): \$__env->{$key} = 1; \$__env->startPush('{$pushName}'); ?>";
+            return sprintf('<?php if(! isset($__env->%s)): $__env->%s = 1; $__env->startPush(\'%s\'); ?>', $key, $key, $pushName);
         });
 
-        $blade->directive('endpushonce', function () {
+        $blade->directive('endpushonce', function (): string {
             return '<?php $__env->stopPush(); endif; ?>';
         });
 
@@ -476,8 +450,6 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Registers the package additional View Composers.
-     *
-     * @return void
      */
     private function addViewComposers(): void
     {
@@ -509,8 +481,6 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Registers and publishes the package additional translations.
-     *
-     * @return void
      */
     private function registerAndPublishTranslations(): void
     {
@@ -522,8 +492,6 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Get the version number of Twill.
-     *
-     * @return string
      */
     public function version(): string
     {

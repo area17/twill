@@ -8,11 +8,9 @@ use Illuminate\Support\Str;
 trait HandleFieldsGroups
 {
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array|null $fields
      * @return \A17\Twill\Models\Model
      */
-    public function hydrateHandleFieldsGroups($object, $fields)
+    public function hydrateHandleFieldsGroups(\A17\Twill\Models\Model $object, ?array $fields)
     {
         foreach ($this->fieldsGroups as $group => $groupFields) {
             if ($object->$group) {
@@ -27,30 +25,28 @@ trait HandleFieldsGroups
     }
 
     /**
-     * @param \A17\Twill\Models\Model|null $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function prepareFieldsBeforeSaveHandleFieldsGroups($object, $fields)
+    public function prepareFieldsBeforeSaveHandleFieldsGroups(?\A17\Twill\Models\Model $object, array $fields)
     {
         return $this->handleFieldsGroups($fields);
     }
 
     /**
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function prepareFieldsBeforeCreateHandleFieldsGroups($fields)
+    public function prepareFieldsBeforeCreateHandleFieldsGroups(array $fields)
     {
         return $this->handleFieldsGroups($fields);
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function getFormFieldsHandleFieldsGroups($object, $fields)
+    public function getFormFieldsHandleFieldsGroups(\A17\Twill\Models\Model $object, array $fields)
     {
         foreach ($this->fieldsGroups as $group => $groupFields) {
             if ($object->$group) {
@@ -74,6 +70,7 @@ trait HandleFieldsGroups
                         $object->setAttribute($field_name, $field_value);
                     }
                 }
+
                 $fields = array_merge($fields, $decoded_fields);
             }
         }
@@ -85,12 +82,12 @@ trait HandleFieldsGroups
     {
         foreach ($this->fieldsGroups as $group => $groupFields) {
             if ($this->fieldsGroupsFormFieldNamesAutoPrefix) {
-                $groupFields = array_map(function ($field_name) use ($group) {
+                $groupFields = array_map(function ($field_name) use ($group): string {
                     return $group . $this->fieldsGroupsFormFieldNameSeparator . $field_name;
                 }, $groupFields);
             }
 
-            $fields[$group] = Arr::where(Arr::only($fields, $groupFields), function ($value, $key) {
+            $fields[$group] = Arr::where(Arr::only($fields, $groupFields), function ($value, $key): bool {
                 return !empty($value);
             });
 
@@ -99,6 +96,7 @@ trait HandleFieldsGroups
                 foreach ($fields[$group] as $key => $value) {
                     $fieldsGroupWithGroupSeparator[Str::replaceFirst($group . $this->fieldsGroupsFormFieldNameSeparator, '', $key)] = $value;
                 }
+
                 $fields[$group] = $fieldsGroupWithGroupSeparator;
             }
 
@@ -109,6 +107,7 @@ trait HandleFieldsGroups
                         $fieldForTranslationTrait[$locale][$field] = $value;
                     }
                 }
+
                 $fields[$group] = $fieldForTranslationTrait;
             }
 
@@ -123,14 +122,13 @@ trait HandleFieldsGroups
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
      * @return array
      */
-    protected function getModelCasts($object)
+    protected function getModelCasts(\A17\Twill\Models\Model $object)
     {
         $casts = $object->getCasts();
         if ($this->model->isTranslatable()) {
-            $casts = $casts + app()->make($this->model->getTranslationModelNameDefault())->getCasts();
+            $casts += app()->make($this->model->getTranslationModelNameDefault())->getCasts();
         }
 
         return $casts;

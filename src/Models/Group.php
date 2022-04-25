@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  *
  * @property-read string $titleInBrowser Title
  * @property-read string $createdAt Date of creation
+ * @property-read string $name Name
  * @property-read bool $canEdit Check if the group is editable (ie. not the Everyone group)
  * @property-read bool $canPublish Check if the group is publishable (ie. not the Everyone group)
  * @property-read string $usersCount Formatted number of users in this group (ie. '123 users')
@@ -26,8 +27,14 @@ class Group extends BaseModel
     use SoftDeletes;
     use IsTranslatable;
 
+    /**
+     * @var bool
+     */
     public $timestamps = true;
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'name',
         'description',
@@ -35,12 +42,18 @@ class Group extends BaseModel
         'subdomains_access',
     ];
 
+    /**
+     * @var string[]
+     */
     protected $dates = [
         'deleted_at',
     ];
 
-    public $checkboxes = ['published'];
+    public array $checkboxes = ['published'];
 
+    /**
+     * @var array<string, string>
+     */
     protected $casts = [
         'subdomains_access' => 'array',
     ];
@@ -50,50 +63,39 @@ class Group extends BaseModel
      *
      * @return BaseModel
      */
-    public static function getEveryoneGroup()
+    public static function getEveryoneGroup(): BaseModel
     {
         return Group::where([['is_everyone_group', true], ['name', 'Everyone']])->firstOrFail();
     }
 
     /**
      * Return the group title.
-     *
-     * @return string
      */
-    public function getTitleInBrowserAttribute()
+    public function getTitleInBrowserAttribute(): string
     {
         return $this->name;
     }
 
     /**
      * Scope published groups.
-     *
-     * @param Builder $query
-     * @return Builder
      */
-    public function scopePublished($query)
+    public function scopePublished(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
     {
         return $query->wherePublished(true);
     }
 
     /**
      * Scope unpublished (draft) groups.
-     *
-     * @param Builder $query
-     * @return Builder
      */
-    public function scopeDraft($query)
+    public function scopeDraft(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
     {
         return $query->wherePublished(false);
     }
 
     /**
      * Scope trashed groups.
-     *
-     * @param Builder $query
-     * @return Builder
      */
-    public function scopeOnlyTrashed($query)
+    public function scopeOnlyTrashed(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
     {
         return $query->whereNotNull('deleted_at');
     }
@@ -103,70 +105,58 @@ class Group extends BaseModel
      *
      * @return BelongsToMany|Collection|User[]
      */
-    public function users()
+    public function users(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(twillModel('user'), 'group_twill_user', 'group_id', 'twill_user_id');
     }
 
     /**
      * Check if current group is the Everyone group.
-     *
-     * @return bool
      */
-    public function isEveryoneGroup()
+    public function isEveryoneGroup(): bool
     {
         return $this->id === $this->getEveryoneGroup()->id;
     }
 
     /**
      * Return the formatted created date.
-     *
-     * @return string
      */
-    public function getCreatedAtAttribute($value)
+    public function getCreatedAtAttribute($value): string
     {
         return \Carbon\Carbon::parse($value)->format('d M Y');
     }
 
     /**
      * Check if the group can be edited (not a system group, ie. Everyone).
-     *
-     * @return bool
      */
-    public function getCanEditAttribute()
+    public function getCanEditAttribute(): bool
     {
         return ! $this->isEveryoneGroup();
     }
 
     /**
      * Check if the group can be published (not a system group, ie. Everyone).
-     *
-     * @return bool
      */
-    public function getCanPublishAttribute()
+    public function getCanPublishAttribute(): bool
     {
         return ! $this->isEveryoneGroup();
     }
 
     /**
      * Return the formatted number of users in this group.
-     *
-     * @return string
      */
-    public function getUsersCountAttribute()
+    public function getUsersCountAttribute(): string
     {
         return $this->users->count() . ' users';
     }
 
     /**
      * Return viewable items.
-     *
-     * @return Collection
      */
-    public function viewableItems()
+    public function viewableItems(): \Collection
     {
         /* @phpstan-ignore-next-line */
-        return Permission::where('name', 'view-item')->whereHas('groups', function ($query) {
+        return Permission::where('name', 'view-item')->whereHas('groups', function ($query): void {
             $query->where('id', $this->id);
         })->with('permissionable')->get()->pluck('permissionable');
     }
@@ -176,19 +166,17 @@ class Group extends BaseModel
      *
      * @return int[]
      */
-    public function permissionableIds()
+    public function permissionableIds(): array
     {
         return $this->permissions->pluck('id')->toArray();
     }
 
     /**
      * Return permissionable items.
-     *
-     * @return Collection
      */
-    public function permissionableItems()
+    public function permissionableItems(): \Collection
     {
-        return Permission::whereHas('groups', function ($query) {
+        return Permission::whereHas('groups', function ($query): void {
             $query->where('id', $this->id);
         })->with('permissionable')->get()->pluck('permissionable');
     }

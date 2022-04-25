@@ -24,6 +24,9 @@ namespace A17\Twill\Services\MediaLibrary;
  */
 abstract class AbstractParamsProcessor
 {
+    /**
+     * @var array<string, string>
+     */
     const COMPATIBLE_PARAMS = [
         'w' => 'width',
         'h' => 'height',
@@ -33,10 +36,15 @@ abstract class AbstractParamsProcessor
     ];
 
     protected $params;
+
     protected $width;
+
     protected $height;
+
     protected $format;
+
     protected $quality;
+
     protected $fit;
 
     /**
@@ -44,24 +52,24 @@ abstract class AbstractParamsProcessor
      * This method is called after all parameters have been processed and
      * must return a finalized params array to generate the image URL.
      *
-     * @return array
+     * @return mixed[]
      */
-    abstract public function finalizeParams();
+    abstract public function finalizeParams(): array;
 
     /**
      * Receives the original params array and calls the appropriate handler method
      * for each param. Custom handlers can be defined by following this naming
      * convention: `handleParamNAME`, where NAME is the name of the param.
      *
-     * @param array $params
-     * @return array
+     * @param mixed[] $params
+     * @return mixed[]
      */
-    public function process($params)
+    public function process(array $params): array
     {
         $this->params = $params;
 
         foreach ($params as $key => $value) {
-            $handler = "handleParam{$key}";
+            $handler = sprintf('handleParam%s', $key);
 
             if (method_exists($this, $handler)) {
                 $this->{$handler}($key, $value);
@@ -78,11 +86,9 @@ abstract class AbstractParamsProcessor
      * corresponding properties as defined in COMPATIBLE_PARAMS. Unknown params
      * will remain untouched.
      *
-     * @param string $key
      * @param mixed $value
-     * @return void
      */
-    protected function handleParam($key, $value)
+    protected function handleParam(string $key, $value): void
     {
         if ($property = static::COMPATIBLE_PARAMS[$key] ?? false) {
             $this->{$property} = $value;

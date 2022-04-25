@@ -11,23 +11,10 @@ class Imgix implements ImageServiceInterface
 {
     use ImageServiceDefaults;
 
-    /**
-     * @var UrlBuilder
-     */
-    private $urlBuilder;
+    private \Imgix\UrlBuilder $urlBuilder;
 
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * @param Config $config
-     */
-    public function __construct(Config $config)
+    public function __construct(protected Config $config)
     {
-        $this->config = $config;
-
         $urlBuilder = new UrlBuilder(
             $this->config->get('twill.imgix.source_host') ?? 'example.imgix.net',
             $this->config->get('twill.imgix.use_https'),
@@ -44,10 +31,8 @@ class Imgix implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
-     * @return string
      */
-    public function getUrl($id, array $params = [])
+    public function getUrl($id, array $params = []): string
     {
         $defaultParams = $this->config->get('twill.imgix.default_params');
         $addParamsToSvgs = config('twill.imgix.add_params_to_svgs', false);
@@ -61,34 +46,26 @@ class Imgix implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $cropParams
-     * @param array $params
-     * @return string
      */
-    public function getUrlWithCrop($id, array $cropParams, array $params = [])
+    public function getUrlWithCrop($id, array $cropParams, array $params = []): string
     {
         return $this->getUrl($id, $this->getCrop($cropParams) + $params);
     }
 
     /**
      * @param string $id
-     * @param array $cropParams
      * @param mixed $width
      * @param mixed $height
-     * @param array $params
-     * @return string
      */
-    public function getUrlWithFocalCrop($id, array $cropParams, $width, $height, array $params = [])
+    public function getUrlWithFocalCrop($id, array $cropParams, $width, $height, array $params = []): string
     {
         return $this->getUrl($id, $this->getFocalPointCrop($cropParams, $width, $height) + $params);
     }
 
     /**
      * @param string $id
-     * @param array $params
-     * @return string
      */
-    public function getLQIPUrl($id, array $params = [])
+    public function getLQIPUrl($id, array $params = []): string
     {
         $defaultParams = $this->config->get('twill.imgix.lqip_default_params');
 
@@ -101,10 +78,8 @@ class Imgix implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
-     * @return string
      */
-    public function getSocialUrl($id, array $params = [])
+    public function getSocialUrl($id, array $params = []): string
     {
         $defaultParams = $this->config->get('twill.imgix.social_default_params');
 
@@ -117,10 +92,8 @@ class Imgix implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
-     * @return string
      */
-    public function getCmsUrl($id, array $params = [])
+    public function getCmsUrl($id, array $params = []): string
     {
         $defaultParams = $this->config->get('twill.imgix.cms_default_params');
 
@@ -133,9 +106,8 @@ class Imgix implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @return string
      */
-    public function getRawUrl($id)
+    public function getRawUrl($id): string
     {
         return $this->urlBuilder->createURL($id);
     }
@@ -155,7 +127,7 @@ class Imgix implements ImageServiceInterface
                 'width' => $imageMetadata['PixelWidth'],
                 'height' => $imageMetadata['PixelHeight'],
             ];
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             try {
                 list($width, $height) = getimagesize($url);
 
@@ -163,7 +135,7 @@ class Imgix implements ImageServiceInterface
                     'width' => $width,
                     'height' => $height,
                 ];
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 return [
                     'width' => 0,
                     'height' => 0,
@@ -173,10 +145,10 @@ class Imgix implements ImageServiceInterface
     }
 
     /**
-     * @param array $crop_params
-     * @return array
+     * @param mixed[] $crop_params
+     * @return mixed[]
      */
-    protected function getCrop($crop_params)
+    protected function getCrop(array $crop_params): array
     {
         if (! empty($crop_params)) {
             return ['rect' => $crop_params['crop_x'] . ',' .
@@ -190,12 +162,10 @@ class Imgix implements ImageServiceInterface
     }
 
     /**
-     * @param array $crop_params
-     * @param int $width
-     * @param int $height
-     * @return array
+     * @param mixed[] $crop_params
+     * @return array<string, string>
      */
-    protected function getFocalPointCrop($crop_params, $width, $height)
+    protected function getFocalPointCrop(array $crop_params, int $width, int $height): array
     {
         if (! empty($crop_params)) {
             // determine center coordinates of user crop and express it in term of original image width and height percentage

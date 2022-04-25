@@ -12,12 +12,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 trait ShowWithPreview
 {
     /**
-     * @param string $slug
-     * @param Request $request
-     * @param Redirector $redirector
-     * @param ViewFactory $viewFactory
-     * @param Config $config
-     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      * @throws \Exception
      */
     public function show(
@@ -26,16 +20,16 @@ trait ShowWithPreview
         Redirector $redirector,
         ViewFactory $viewFactory,
         Config $config
-    ) {
-        if (!isset($this->moduleName) || !isset($this->repository)) {
+    ): \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse {
+        if (!(property_exists($this, 'moduleName') && $this->moduleName !== null) || !(property_exists($this, 'repository') && $this->repository !== null)) {
             throw new \Exception("You should at least provide a module name and inject a repository.");
         }
 
-        if (!isset($this->routeName)) {
+        if (!(property_exists($this, 'routeName') && $this->routeName !== null)) {
             $this->routeName = $this->moduleName;
         }
 
-        if (!isset($this->showViewName)) {
+        if (!(property_exists($this, 'showViewName') && $this->showViewName !== null)) {
             $this->showViewName = $config->get('twill.frontend.views_path', 'site') . '.' . Str::singular($this->moduleName);
         }
 
@@ -59,10 +53,9 @@ trait ShowWithPreview
     }
 
     /**
-     * @param string $slug
      * @return \A17\Twill\Models\Model|null
      */
-    protected function getItem($slug)
+    protected function getItem(string $slug)
     {
         return $this->repository->forSlug(
             $slug,
@@ -86,11 +79,10 @@ trait ShowWithPreview
     }
 
     /**
-     * @param string $slug
      * @param mixed $item
      * @return array
      */
-    protected function showData($slug, $item)
+    protected function showData(string $slug, $item)
     {
         return [];
     }

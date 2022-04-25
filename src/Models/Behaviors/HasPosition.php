@@ -7,7 +7,7 @@ trait HasPosition
 
     protected static function bootHasPosition()
     {
-        static::creating(function ($model) {
+        static::creating(function ($model): void {
             $model->setToLastPosition();
         });
     }
@@ -19,24 +19,22 @@ trait HasPosition
 
     protected function getCurrentLastPosition()
     {
-        return ((int) static::max("{$this->getTable()}.position"));
+        return ((int) static::max(sprintf('%s.position', $this->getTable())));
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOrdered($query)
+    public function scopeOrdered(\Illuminate\Database\Eloquent\Builder $query)
     {
-        return $query->orderBy("{$this->getTable()}.position");
+        return $query->orderBy(sprintf('%s.position', $this->getTable()));
     }
 
     /**
-     * @param array $ids
-     * @param int $startOrder
      * @return void
+     * @param mixed[] $ids
      */
-    public static function setNewOrder($ids, $startOrder = 1)
+    public static function setNewOrder(array $ids, int $startOrder = 1)
     {
         if (!is_array($ids)) {
             throw new \Exception('You must pass an array to setNewOrder');

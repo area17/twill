@@ -7,7 +7,7 @@ use Illuminate\Console\Command as IlluminateCommand;
 
 abstract class Command extends IlluminateCommand
 {
-    protected $exitCode = 0;
+    protected int $exitCode = 0;
 
     public function __call($method, $parameters)
     {

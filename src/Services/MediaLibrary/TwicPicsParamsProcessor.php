@@ -6,7 +6,7 @@ class TwicPicsParamsProcessor extends AbstractParamsProcessor
 {
     protected $cropFit;
 
-    public function finalizeParams()
+    public function finalizeParams(): ?array
     {
         if ($this->format) {
             $this->params['output'] = $this->format;
@@ -21,16 +21,16 @@ class TwicPicsParamsProcessor extends AbstractParamsProcessor
             $this->height = $this->height ?: '-';
 
             if ($this->cropFit) {
-                $this->params['crop'] = "{$this->width}x{$this->height}";
+                $this->params['crop'] = sprintf('%sx%s', $this->width, $this->height);
             } else {
-                $this->params['resize'] = "{$this->width}x{$this->height}";
+                $this->params['resize'] = sprintf('%sx%s', $this->width, $this->height);
             }
         }
 
         return $this->params;
     }
 
-    protected function handleParamFit($key, $value)
+    protected function handleParamFit($key, $value): void
     {
         if ($value !== 'crop') {
             return;

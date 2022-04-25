@@ -11,28 +11,26 @@ class ValidationServiceProvider extends ServiceProvider
 {
     /**
      * Registers the package additional validation rules.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        Validator::extend('absolute_or_relative_url', function ($attribute, $value, $parameters, $validator) {
+        Validator::extend('absolute_or_relative_url', function ($attribute, $value, $parameters, $validator): bool {
             return Str::startsWith($value, '/') || Validator::make([$attribute => $value], [$attribute => 'url'])->passes();
         }, 'The :attribute should be a valid url (absolute or relative)');
 
-        Validator::extend('relative_or_secure_url', function ($attribute, $value, $parameters) {
+        Validator::extend('relative_or_secure_url', function ($attribute, $value, $parameters): bool {
             return Str::startsWith($value, '/') || filter_var($value, FILTER_VALIDATE_URL) !== false && Str::startsWith($value, 'https');
         }, 'The :attribute should be a valid url (relative or https)');
 
-        Validator::extend('web_color', function ($attribute, $value, $parameters, $validator) {
-            return preg_match('/^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i', $value);
+        Validator::extend('web_color', function ($attribute, $value, $parameters, $validator): bool|int {
+            return preg_match('#^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$#i', $value);
         });
 
-        Validator::extend('phone_number', function ($attribute, $value, $parameters) {
-            return preg_match("/^[+]?[0-9\-\ ]*$/", $value);
+        Validator::extend('phone_number', function ($attribute, $value, $parameters): bool|int {
+            return preg_match("#^[+]?[0-9\-\ ]*$#", $value);
         });
 
-        Validator::extend('validBlocks', function ($attribute, $value, $parameters, $validator) {
+        Validator::extend('validBlocks', function ($attribute, $value, $parameters, $validator): bool {
             $blockMessages = [];
 
             foreach ($value as $block) {
@@ -52,7 +50,7 @@ class ValidationServiceProvider extends ServiceProvider
 
                 if (! empty($blockMessages)) {
                     array_unshift($blockMessages, 'This block has validation issues:');
-                    $validator->errors()->add('block.' . $block['id'], join('<br>', $blockMessages));
+                    $validator->errors()->add('block.' . $block['id'], implode('<br>', $blockMessages));
                 }
 
                 $blockMessages = [];
@@ -62,10 +60,7 @@ class ValidationServiceProvider extends ServiceProvider
         });
     }
 
-    /**
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
     }
 }

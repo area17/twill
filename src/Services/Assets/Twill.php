@@ -22,7 +22,7 @@ class Twill
         return '/' . config('twill.public_directory', 'twill') . '/' . $file;
     }
 
-    public function getManifestFilename()
+    public function getManifestFilename(): string
     {
         $fileName =
             public_path(config('twill.public_directory', 'twill')) .
@@ -38,7 +38,7 @@ class Twill
         );
     }
 
-    public function devAsset($file)
+    public function devAsset($file): ?string
     {
         if (!$this->devMode()) {
             return null;
@@ -52,10 +52,8 @@ class Twill
                     '/' .
                     config('twill.manifest_file', 'twill-manifest.json')
             );
-        } catch (\Exception $e) {
-            throw new \Exception(
-                'Twill dev assets manifest is missing. Make sure you are running the npm run serve command inside Twill.'
-            );
+        } catch (\Exception $exception) {
+            throw new \Exception('Twill dev assets manifest is missing. Make sure you are running the npm run serve command inside Twill.', $exception->getCode(), $exception);
         }
 
         return $devServerUrl . ($manifest[$file] ?? '/' . $file);
@@ -70,10 +68,8 @@ class Twill
             return Cache::rememberForever('twill-manifest', function () {
                 return $this->readJson($this->getManifestFilename());
             });
-        } catch (\Exception $e) {
-            throw new \Exception(
-                'Twill assets manifest is missing. Make sure you published/updated Twill assets using the "php artisan twill:update" command.'
-            );
+        } catch (\Exception $exception) {
+            throw new \Exception('Twill assets manifest is missing. Make sure you published/updated Twill assets using the "php artisan twill:update" command.', $exception->getCode(), $exception);
         }
     }
 
@@ -82,7 +78,7 @@ class Twill
         return json_decode(file_get_contents($fileName), true);
     }
 
-    private function devMode()
+    private function devMode(): bool
     {
         return app()->environment('local', 'development') &&
             config('twill.dev_mode', false);

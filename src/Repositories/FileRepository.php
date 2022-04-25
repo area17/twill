@@ -11,30 +11,18 @@ class FileRepository extends ModuleRepository
 {
     use HandleTags;
 
-    /**
-     * @param File $model
-     */
     public function __construct(File $model)
     {
         $this->model = $model;
     }
 
-    /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param array $scopes
-     * @return \Illuminate\Database\Query\Builder
-     */
-    public function filter($query, array $scopes = [])
+    public function filter(\Illuminate\Database\Eloquent\Builder $query, array $scopes = []): \Illuminate\Database\Eloquent\Builder
     {
         $this->searchIn($query, $scopes, 'search', ['filename']);
         return parent::filter($query, $scopes);
     }
 
-    /**
-     * @param A17\Twill\Models\File $object
-     * @return void
-     */
-    public function afterDelete($object)
+    public function afterDelete(\A17\Twill\Models\File $object): void
     {
         $storageId = $object->uuid;
         if (Config::get('twill.file_library.cascade_delete')) {
@@ -43,10 +31,10 @@ class FileRepository extends ModuleRepository
     }
 
     /**
-     * @param array $fields
-     * @return array
+     * @param mixed[] $fields
+     * @return mixed[]
      */
-    public function prepareFieldsBeforeCreate($fields)
+    public function prepareFieldsBeforeCreate(array $fields): array
     {
         if (!isset($fields['size'])) {
             $uuid = str_replace(Config::get('filesystems.disks.twill_file_library.root'), '', $fields['uuid']);

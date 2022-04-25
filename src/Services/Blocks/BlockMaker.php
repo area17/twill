@@ -11,16 +11,6 @@ use SplFileInfo;
 class BlockMaker
 {
     /**
-     * @var Filesystem
-     */
-    protected $files;
-
-    /**
-     * @var \A17\Twill\Services\Blocks\BlockCollection
-     */
-    protected $blockCollection;
-
-    /**
      * @var \Illuminate\Console\Command
      */
     protected $command;
@@ -35,23 +25,11 @@ class BlockMaker
      */
     protected $icon;
 
-    /**
-     * @param Filesystem $files
-     * @param \A17\Twill\Services\Blocks\BlockCollection $blockCollection
-     */
-    public function __construct(
-        Filesystem $files,
-        BlockCollection $blockCollection
-    ) {
-        $this->files = $files;
-
-        $this->blockCollection = $blockCollection;
+    public function __construct(protected Filesystem $files, protected BlockCollection $blockCollection)
+    {
     }
 
-    /**
-     * @return \A17\Twill\Services\Blocks\BlockCollection
-     */
-    public function getBlockCollection()
+    public function getBlockCollection(): \A17\Twill\Services\Blocks\BlockCollection
     {
         return $this->blockCollection;
     }
@@ -66,7 +44,7 @@ class BlockMaker
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      * @throws \Exception
      */
-    public function make($blockName, $baseName, $iconName)
+    public function make($blockName, $baseName, $iconName): bool
     {
         $this->info('Creating block...');
 
@@ -118,13 +96,12 @@ class BlockMaker
 
     /**
      * @param $baseName
-     * @return bool
      * @throws \Exception
      */
-    protected function checkBlockStub($baseName)
+    protected function checkBlockStub($baseName): bool
     {
         if (blank($this->blockBase = $this->getBlockByName($baseName))) {
-            $this->error("Block '{$baseName}' doesn't exists.");
+            $this->error(sprintf('Block \'%s\' doesn\'t exists.', $baseName));
 
             return false;
         }
@@ -134,12 +111,11 @@ class BlockMaker
 
     /**
      * @param $iconName
-     * @return bool
      */
-    protected function checkIconFile($iconName)
+    protected function checkIconFile($iconName): bool
     {
         if (blank($this->icon = $this->getIconFile($iconName))) {
-            $this->error("Icon '{$iconName}' doesn't exists.");
+            $this->error(sprintf('Icon \'%s\' doesn\'t exists.', $iconName));
 
             return false;
         }
@@ -149,11 +125,10 @@ class BlockMaker
 
     /**
      * @param $blockFile
-     * @return bool
      */
-    protected function checkBlockFile($blockFile)
+    protected function checkBlockFile($blockFile): bool
     {
-        $this->info("File: {$blockFile}");
+        $this->info(sprintf('File: %s', $blockFile));
 
         if ($this->files->exists($blockFile)) {
             $this->error('A file with the same name already exists.');
@@ -164,11 +139,11 @@ class BlockMaker
         return true;
     }
 
-    protected function checkBlockBaseFormat($stubFileName)
+    protected function checkBlockBaseFormat($stubFileName): bool
     {
         if (!$this->blockBase->isNewFormat) {
             $this->error(
-                "The block file '{$stubFileName}' format is the old one."
+                sprintf('The block file \'%s\' format is the old one.', $stubFileName)
             );
 
             $this->error('Please upgrade it before using as template.');
@@ -179,10 +154,10 @@ class BlockMaker
         return true;
     }
 
-    protected function checkRepeaters($repeaters)
+    protected function checkRepeaters($repeaters): bool
     {
         foreach ($repeaters as $repeater) {
-            $this->info("Repeater file: {$repeater['newRepeaterPath']}");
+            $this->info(sprintf('Repeater file: %s', $repeater['newRepeaterPath']));
 
             if ($this->files->exists($repeater['newRepeaterPath'])) {
                 $this->error(
@@ -209,7 +184,7 @@ class BlockMaker
         $iconName,
         $stubFileName = null,
         $stub = null
-    ) {
+    ): ?string {
         $stub = $stub ?? $this->files->get($stubFileName);
 
         $title = $this->makeBlockTitle($blockName);
@@ -221,9 +196,9 @@ class BlockMaker
                 "/@twillRepeaterTitle\('(.*)'\)/",
             ],
             [
-                "@twillPropTitle('{$title}')",
-                "@twillBlockTitle('{$title}')",
-                "@twillRepeaterTitle('{$title}')",
+                sprintf('@twillPropTitle(\'%s\')', $title),
+                sprintf('@twillBlockTitle(\'%s\')', $title),
+                sprintf('@twillRepeaterTitle(\'%s\')', $title),
             ],
             $stub
         );
@@ -248,8 +223,8 @@ class BlockMaker
                 "/@twillBlockIcon\('(.*)'\)/",
             ],
             [
-                "@twillPropIcon('{$iconName}')",
-                "@twillBlockIcon('{$iconName}')",
+                sprintf('@twillPropIcon(\'%s\')', $iconName),
+                sprintf('@twillBlockIcon(\'%s\')', $iconName),
             ],
             $stub
         );
@@ -264,7 +239,7 @@ class BlockMaker
             $stub
         );
 
-        $stub = preg_replace(
+        return preg_replace(
             [
                 "/@twillPropComponent\('(.*)'\)\n/",
                 "/@twillBlockComponent\('(.*)'\)\n/",
@@ -273,16 +248,13 @@ class BlockMaker
             "",
             $stub
         );
-
-        return $stub;
     }
 
     /**
      * @param $blockName
-     * @return string
      * @throws \Exception
      */
-    protected function makeBlockIdentifier($blockName)
+    protected function makeBlockIdentifier($blockName): string
     {
         return (new Block(
             $this->blockBase->file,
@@ -291,15 +263,10 @@ class BlockMaker
         ))->makeName($blockName);
     }
 
-    /**
-     * @param string $blockIdentifier
-     * @param string $type
-     * @return string
-     */
-    protected function makeBlockPath(string $blockIdentifier, $type = 'block')
+    protected function makeBlockPath(string $blockIdentifier, string $type = 'block'): string
     {
         $destination = config(
-            "twill.block_editor.directories.destination.{$type}s"
+            sprintf('twill.block_editor.directories.destination.%ss', $type)
         );
 
         if (!$this->files->exists($destination)) {
@@ -307,21 +274,20 @@ class BlockMaker
                 !config('twill.block_editor.directories.destination.make_dir')
             ) {
                 throw new Exception(
-                    "Destination directory does not exists: {$destination}"
+                    sprintf('Destination directory does not exists: %s', $destination)
                 );
             }
 
             $this->files->makeDirectory($destination, 0755, true);
         }
 
-        return "{$destination}/{$blockIdentifier}.blade.php";
+        return sprintf('%s/%s.blade.php', $destination, $blockIdentifier);
     }
 
     /**
      * @param $string
-     * @return string
      */
-    public function makeBlockTitle($string)
+    public function makeBlockTitle($string): string
     {
         $string = Str::kebab($string);
 
@@ -332,11 +298,10 @@ class BlockMaker
 
     /**
      * @param $block
-     * @param array $sources
      * @return mixed
      * @throws \Exception
      */
-    public function getBlockByName($block, $sources = [])
+    public function getBlockByName($block, array $sources = [])
     {
         return $this->blockCollection->findByName($block, $sources);
     }
@@ -377,13 +342,12 @@ class BlockMaker
      * @param $baseName
      * @param $blockName
      * @param $blockBase
-     * @return \Illuminate\Support\Collection
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function generateRepeaters($baseName, $blockName, &$blockBase)
+    public function generateRepeaters($baseName, $blockName, &$blockBase): ?\Illuminate\Support\Collection
     {
         preg_match_all(
-            '/@formField(.*\'repeater\'.*\[.*=>.*\'(.*)\'].*)/',
+            '#@formField(.*\'repeater\'.*\[.*=>.*\'(.*)\'].*)#',
             $blockBase,
             $matches
         );
@@ -409,8 +373,8 @@ class BlockMaker
 
                 $oldRepeaterTag = $matches[0][0];
                 $newRepeaterTag = str_replace(
-                    "'{$repeaterName}'",
-                    "'{$newRepeater['newRepeaterName']}'",
+                    sprintf('\'%s\'', $repeaterName),
+                    sprintf('\'%s\'', $newRepeater['newRepeaterName']),
                     $oldRepeaterTag
                 );
 
@@ -433,9 +397,9 @@ class BlockMaker
      * @param $blockName
      * @param $blockBase
      * @param $blockString
-     * @return array
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      * @throws \Exception
+     * @return array<string, mixed>
      */
     public function createRepeater(
         $repeaterName,
@@ -443,7 +407,7 @@ class BlockMaker
         $blockName,
         $blockBase,
         $blockString
-    ) {
+    ): array {
         $baseRepeater = $this->blockCollection->findByName($repeaterName);
 
         return [
@@ -467,8 +431,8 @@ class BlockMaker
             ),
 
             'newBlockString' => ($newBlockString = str_replace(
-                "'{$repeaterName}'",
-                "'{$newRepeaterName}'",
+                sprintf('\'%s\'', $repeaterName),
+                sprintf('\'%s\'', $newRepeaterName),
                 $blockString
             )),
 
@@ -480,7 +444,7 @@ class BlockMaker
         ];
     }
 
-    public function put($filePath, $contents)
+    public function put($filePath, $contents): void
     {
         $directory = dirname($filePath);
 
@@ -493,20 +457,16 @@ class BlockMaker
 
     /**
      * @param $blockName
-     * @param string $blockFile
-     * @param \Illuminate\Support\Collection $repeaters
-     * @param string $blockIdentifier
-     * @return bool
      */
     protected function saveAllFiles(
         $blockName,
         string $blockFile,
-        $repeaters,
+        \Illuminate\Support\Collection $repeaters,
         string $blockIdentifier
-    ) {
+    ): bool {
         $this->put($blockFile, $this->blockBase);
 
-        $this->info("Block {$blockName} was created.");
+        $this->info(sprintf('Block %s was created.', $blockName));
 
         foreach ($repeaters as $repeater) {
             $this->put(
@@ -515,16 +475,12 @@ class BlockMaker
             );
         }
 
-        $this->info("Block is ready to use with the name '{$blockIdentifier}'");
+        $this->info(sprintf('Block is ready to use with the name \'%s\'', $blockIdentifier));
 
         return true;
     }
 
-    /**
-     * @param \Illuminate\Console\Command $command
-     * @return BlockMaker
-     */
-    public function setCommand(Command $command)
+    public function setCommand(Command $command): static
     {
         $this->command = $command;
 
@@ -534,7 +490,7 @@ class BlockMaker
     /**
      * @param $message
      */
-    public function info($message)
+    public function info($message): void
     {
         if ($this->command) {
             $this->command->displayInfo($message);
@@ -544,7 +500,7 @@ class BlockMaker
     /**
      * @param $message
      */
-    public function error($message)
+    public function error($message): void
     {
         if ($this->command) {
             $this->command->displayError($message);

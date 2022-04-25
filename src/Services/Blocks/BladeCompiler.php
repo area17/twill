@@ -20,11 +20,9 @@ class BladeCompiler
     }
 
     /**
-     * @param string $php
-     * @param array $data
      * @throws \Throwable
      */
-    protected static function compile(string $php, array $data)
+    protected static function compile(string $php, array $data): void
     {
         $obLevel = self::initializeOutputBuffering();
 
@@ -32,26 +30,21 @@ class BladeCompiler
             extract(self::absorbApplicationEnvironment($data), EXTR_SKIP);
 
             eval('?' . '>' . $php);
-        } catch (Throwable $e) {
+        } catch (Throwable $throwable) {
             while (ob_get_level() > $obLevel) {
                 ob_end_clean();
             }
-            throw $e;
+
+            throw $throwable;
         }
     }
 
-    /**
-     * @return false|string
-     */
-    protected static function getRendered()
+    protected static function getRendered(): bool|string
     {
         return ob_get_clean();
     }
 
-    /**
-     * @return int
-     */
-    protected static function initializeOutputBuffering()
+    protected static function initializeOutputBuffering(): int
     {
         $obLevel = ob_get_level();
 
@@ -63,10 +56,9 @@ class BladeCompiler
     /**
      * @param $string
      * @param $data
-     * @return false|string
      * @throws \Throwable
      */
-    public static function render($string, $data)
+    public static function render($string, array $data): bool|string
     {
         self::compile(Blade::compileString($string), $data);
 

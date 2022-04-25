@@ -19,7 +19,10 @@ abstract class NestedModuleController extends ModuleController
      */
     protected $nestedItemsDepth = 1;
 
-    protected function indexData($request)
+    /**
+     * @return bool[]|int[]
+     */
+    protected function indexData($request): array
     {
         return [
             'nested' => true,
@@ -39,7 +42,7 @@ abstract class NestedModuleController extends ModuleController
         ] : []);
     }
 
-    protected function getBrowserItems($scopes = [])
+    protected function getBrowserItems($scopes = []): \Illuminate\Contracts\Pagination\LengthAwarePaginator|\Illuminate\Database\Eloquent\Collection|\Illuminate\Support\Collection
     {
         if ($this->showOnlyParentItemsInBrowsers) {
             return $this->getIndexItems($scopes, true);

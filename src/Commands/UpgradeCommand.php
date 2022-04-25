@@ -9,16 +9,22 @@ use Illuminate\Support\Str;
 
 class UpgradeCommand extends Command
 {
+    /**
+     * @var string
+     */
     protected $signature = 'twill:upgrade';
 
+    /**
+     * @var string
+     */
     protected $description = 'Performs the required changes to upgrade twill to version 3.x';
 
     /**
      * @var \Illuminate\Filesystem\FilesystemAdapter
      */
-    protected $fsAsStorage = null;
+    protected $fsAsStorage;
 
-    public function handle()
+    public function handle(): void
     {
         $this->fsAsStorage = Storage::build([
             'driver' => 'local',
@@ -31,10 +37,12 @@ class UpgradeCommand extends Command
             $this->line('Then rerun the command.');
             exit(1);
         }
+
         if (config('app.env') === 'production') {
             $this->error('Do not run this on production.');
             exit(1);
         }
+
         $this->info('This command will refactor code in your codebase.');
         $this->info(
             'Before you start the upgrade, please make sure you have a backup. Do not run this command on production!'
@@ -58,6 +66,7 @@ class UpgradeCommand extends Command
             $this->warn('Not moving routes/admin.php, file not present.');
             return;
         }
+
         $this->info('Moving routes/admin.php to routes/twill.php');
         $this->fsAsStorage->move('routes/admin.php', 'routes/twill.php');
         $this->newLine();
@@ -69,6 +78,7 @@ class UpgradeCommand extends Command
             $this->warn('Not moving resources/views/admin, resources/views/twill already exists.');
             return;
         }
+
         $this->info('Moving resources/views/admin/* to resources/views/twill*');
         $this->fsAsStorage->move('resources/views/admin', 'resources/views/twill');
         $this->newLine();
@@ -80,6 +90,7 @@ class UpgradeCommand extends Command
             $this->warn('Not moving app/Http/Controllers/Admin, app/Http/Controllers/Twill already exists.');
             return;
         }
+
         $this->info('Moving app/Http/Controllers/Admin to app/Http/Controllers/Twill');
         $this->fsAsStorage->move('app/Http/Controllers/Admin', 'app/Http/Controllers/Twill');
         $this->info('Moving app/Http/Requests/Admin to app/Http/Requests/Twill');

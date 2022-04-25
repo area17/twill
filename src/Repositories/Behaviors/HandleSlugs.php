@@ -5,11 +5,10 @@ namespace A17\Twill\Repositories\Behaviors;
 trait HandleSlugs
 {
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return void
+     * @param mixed[] $fields
      */
-    public function afterSaveHandleSlugs($object, $fields)
+    public function afterSaveHandleSlugs(\A17\Twill\Models\Model $object, array $fields)
     {
         if (property_exists($this->model, 'slugAttributes')) {
             foreach (getLocales() as $locale) {
@@ -27,29 +26,26 @@ trait HandleSlugs
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
      * @return void
      */
-    public function afterDeleteHandleSlugs($object)
+    public function afterDeleteHandleSlugs(\A17\Twill\Models\Model $object)
     {
         $object->slugs()->delete();
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
      * @return void
      */
-    public function afterRestoreHandleSlugs($object)
+    public function afterRestoreHandleSlugs(\A17\Twill\Models\Model $object)
     {
         $object->slugs()->restore();
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function getFormFieldsHandleSlugs($object, $fields)
+    public function getFormFieldsHandleSlugs(\A17\Twill\Models\Model $object, array $fields)
     {
         unset($fields['slugs']);
 
@@ -65,12 +61,11 @@ trait HandleSlugs
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param array $slug
      * @return array
+     * @param mixed[] $fields
+     * @param mixed[] $slug
      */
-    public function getSlugParameters($object, $fields, $slug)
+    public function getSlugParameters(\A17\Twill\Models\Model $object, array $fields, array $slug)
     {
         $slugParams = $object->getSlugParams($slug['locale']);
 
@@ -86,13 +81,12 @@ trait HandleSlugs
     }
 
     /**
-     * @param string $slug
-     * @param array $with
-     * @param array $withCount
-     * @param array $scopes
      * @return \A17\Twill\Models\Model|null
+     * @param mixed[] $with
+     * @param mixed[] $withCount
+     * @param mixed[] $scopes
      */
-    public function forSlug($slug, $with = [], $withCount = [], $scopes = [])
+    public function forSlug(string $slug, array $with = [], array $withCount = [], array $scopes = [])
     {
         $query = $this->model->where($scopes)->scopes(['published', 'visible']);
 
@@ -123,12 +117,11 @@ trait HandleSlugs
     }
 
     /**
-     * @param string $slug
-     * @param array $with
-     * @param array $withCount
      * @return \A17\Twill\Models\Model
+     * @param mixed[] $with
+     * @param mixed[] $withCount
      */
-    public function forSlugPreview($slug, $with = [], $withCount = [])
+    public function forSlugPreview(string $slug, array $with = [], array $withCount = [])
     {
         return $this->model->forInactiveSlug($slug)->with($with)->withCount($withCount)->first();
     }

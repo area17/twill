@@ -6,11 +6,7 @@ use Illuminate\Support\Facades\Cache;
 use A17\Twill\Services\Assets\Twill as TwillAssets;
 
 if (!function_exists('revAsset')) {
-    /**
-     * @param string $file
-     * @return string
-     */
-    function revAsset($file)
+    function revAsset(string $file): string
     {
         if (!app()->environment('local', 'development')) {
             try {
@@ -21,7 +17,7 @@ if (!function_exists('revAsset')) {
                 if (isset($manifest[$file])) {
                     return (rtrim(config('twill.frontend.dist_assets_path'), '/') . '/') . $manifest[$file];
                 }
-            } catch (Exception $e) {
+            } catch (Exception) {
                 return '/' . $file;
             }
         }
@@ -31,11 +27,7 @@ if (!function_exists('revAsset')) {
 }
 
 if (!function_exists('twillAsset')) {
-    /**
-     * @param string $file
-     * @return string
-     */
-    function twillAsset($file)
+    function twillAsset(string $file): string
     {
         return app(TwillAssets::class)->asset($file);
     }
@@ -44,12 +36,8 @@ if (!function_exists('twillAsset')) {
 if (!function_exists('icon')) {
     /**
      * ARIA roles memo: 'presentation' means merely decoration. Otherwise, use role="img".
-     *
-     * @param string $name
-     * @param array $opts
-     * @return string
      */
-    function icon($name, $opts = [])
+    function icon(string $name, array $opts = []): string
     {
         $title = isset($opts['title']) ? ' title="' . htmlentities($opts['title'], ENT_QUOTES, 'UTF-8') . '" ' : '';
         $role = isset($opts['role']) ? ' role="' . htmlentities(
@@ -58,17 +46,17 @@ if (!function_exists('icon')) {
                 'UTF-8'
             ) . '" ' : ' role="presentation" ';
         $css_class = isset($opts['css_class']) ? htmlentities($opts['css_class'], ENT_QUOTES, 'UTF-8') : '';
-        $svg_link = config('twill.frontend.svg_sprites_use_hash_only') ? "#icon--$name" : revAsset(
+        $svg_link = config('twill.frontend.svg_sprites_use_hash_only') ? sprintf('#icon--%s', $name) : revAsset(
                 config('twill.frontend.svg_sprites_path')
-            ) . "#icon--$name";
-        return "<svg class=\"icon--$name $css_class\" $title $role><use xlink:href=\"" . $svg_link . "\"></use></svg>";
+            ) . sprintf('#icon--%s', $name);
+        return sprintf('<svg class="icon--%s %s" %s %s><use xlink:href="', $name, $css_class, $title, $role) . $svg_link . '"></use></svg>';
     }
 }
 
 if (!function_exists('twillViewName')) {
     function twillViewName($module, $suffix)
     {
-        $view = "twill.{$module}.{$suffix}";
+        $view = sprintf('twill.%s.%s', $module, $suffix);
 
         if (view()->exists($view)) {
             return $view;
@@ -76,15 +64,15 @@ if (!function_exists('twillViewName')) {
 
         // No module is set.
         if (!$module) {
-            return ".$suffix";
+            return sprintf('.%s', $suffix);
         }
 
         try {
             $prefix = TwillCapsules::getCapsuleForModule($module)->getViewPrefix();
-        } catch (NoCapsuleFoundException $e) {
+        } catch (NoCapsuleFoundException) {
             $prefix = null;
         }
 
-        return "$prefix.$suffix";
+        return sprintf('%s.%s', $prefix, $suffix);
     }
 }

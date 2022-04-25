@@ -31,11 +31,6 @@ class RefreshCrops extends Command
     protected $description = 'Refresh all crops for an existing image role. It may be crops defined in the Model or in config/twill.php';
 
     /**
-     * @var DatabaseManager
-     */
-    protected $db;
-
-    /**
      * The model FQCN for this operation.
      *
      * @var string
@@ -84,14 +79,9 @@ class RefreshCrops extends Command
      */
     protected $mediaCache = [];
 
-    /**
-     * @param DatabaseManager $db
-     */
-    public function __construct(DatabaseManager $db)
+    public function __construct(protected DatabaseManager $db)
     {
         parent::__construct();
-
-        $this->db = $db;
     }
 
     public function handle()
@@ -101,7 +91,7 @@ class RefreshCrops extends Command
         $this->modelName = $this->locateModel($this->argument('modelName'));
 
         if (! $this->modelName) {
-            $this->error("Model `{$this->argument('modelName')}` was not found`");
+            $this->error(sprintf('Model `%s` was not found`', $this->argument('modelName')));
 
             return 1;
         }
@@ -114,7 +104,7 @@ class RefreshCrops extends Command
         }
 
         if (! isset($mediasParams[$this->roleName])) {
-            $this->error("Role `{$this->roleName}` was not found`");
+            $this->error(sprintf('Role `%s` was not found`', $this->roleName));
 
             return 1;
         }
@@ -132,7 +122,7 @@ class RefreshCrops extends Command
             ->where(['mediable_type' => $mediableType, 'role' => $this->roleName]);
 
         if ($mediables->count() === 0) {
-            $this->warn("No mediables found for model `$this->modelName` and role `$this->roleName`");
+            $this->warn(sprintf('No mediables found for model `%s` and role `%s`', $this->modelName, $this->roleName));
 
             return 1;
         }
@@ -149,10 +139,8 @@ class RefreshCrops extends Command
 
     /**
      * Print a summary of all crops created and deleted at the end of the command.
-     *
-     * @return void
      */
-    protected function printSummary()
+    protected function printSummary(): void
     {
         if ($this->cropsCreated + $this->cropsDeleted === 0) {
             $this->info('');
@@ -168,31 +156,28 @@ class RefreshCrops extends Command
 
         if ($this->cropsCreated > 0) {
             $noun = Str::plural('crop', $this->cropsCreated);
-            $this->info("{$this->cropsCreated} {$noun} {$actionPrefix}created");
+            $this->info(sprintf('%d %s %screated', $this->cropsCreated, $noun, $actionPrefix));
         }
 
         if ($this->cropsDeleted > 0) {
             $noun = Str::plural('crop', $this->cropsDeleted);
-            $this->info("{$this->cropsDeleted} {$noun} {$actionPrefix}deleted");
+            $this->info(sprintf('%d %s %sdeleted', $this->cropsDeleted, $noun, $actionPrefix));
         }
     }
 
     /**
      * Process a set of mediable items.
-     *
-     * @param Builder $mediables
-     * @return void
      */
-    protected function processMediables(Builder $mediables)
+    protected function processMediables(Builder $mediables): void
     {
         // Handle locales separately because not all items have a 1-1 match in other locales
-        foreach ($mediables->get()->groupBy('locale') as $locale => $itemsByLocale) {
+        foreach ($mediables->get()->groupBy('locale') as $itemsByLocale) {
 
             // Group items by mediable_id to get related crops
-            foreach ($itemsByLocale->groupBy('mediable_id') as $mediableId => $itemsByMediableId) {
+            foreach ($itemsByLocale->groupBy('mediable_id') as $itemsByMediableId) {
 
                 // Then, group by media_id to handle slideshows (multiple entries for one role)
-                foreach ($itemsByMediableId->groupBy('media_id') as $mediaId => $items) {
+                foreach ($itemsByMediableId->groupBy('media_id') as $items) {
                     $existingCrops = $items->keyBy('crop')->keys();
                     $allCrops = $this->crops->keys();
 
@@ -212,17 +197,15 @@ class RefreshCrops extends Command
      * Create missing crops for a given mediable item, preserving existing metadata.
      *
      * @param string[] $crops List of crop names to create.
-     * @param object $baseItem Base mediable object from which to pull information.
-     * @return void
      */
-    protected function createCrops($crops, $baseItem)
+    protected function createCrops(array $crops, object $baseItem): void
     {
         $this->cropsCreated += count($crops);
 
         if ($this->isDryRun) {
             $cropNames = collect($crops)->join(', ');
             $noun = Str::plural('crop', count($crops));
-            $this->info("Create {$noun} `{$cropNames}` for mediable_id=`{$baseItem->mediable_id}` and media_id=`{$baseItem->media_id}`");
+            $this->info(sprintf('Create %s `%s` for mediable_id=`%s` and media_id=`%s`', $noun, $cropNames, $baseItem->mediable_id, $baseItem->media_id));
 
             return;
         }
@@ -253,17 +236,15 @@ class RefreshCrops extends Command
      * Delete unused crops for a given mediable item.
      *
      * @param string[] $crops List of crop names to create.
-     * @param object $baseItem Base mediable object from which to pull information.
-     * @return void
      */
-    protected function deleteCrops($crops, $baseItem)
+    protected function deleteCrops(array $crops, object $baseItem): void
     {
         $this->cropsDeleted += count($crops);
 
         if ($this->isDryRun) {
             $cropNames = collect($crops)->join(', ');
             $noun = Str::plural('crop', count($crops));
-            $this->info("Delete {$noun} `$cropNames` for mediable_id=`$baseItem->mediable_id` and media_id=`$baseItem->media_id`");
+            $this->info(sprintf('Delete %s `%s` for mediable_id=`%s` and media_id=`%s`', $noun, $cropNames, $baseItem->mediable_id, $baseItem->media_id));
 
             return;
         }
@@ -283,10 +264,9 @@ class RefreshCrops extends Command
     /**
      * Attempt to locate the model from the given command argument.
      *
-     * @param string $modelName
      * @return string|null  The model FQCN.
      */
-    protected function locateModel($modelName)
+    protected function locateModel(string $modelName)
     {
         $modelName = ltrim($modelName, '\\');
         $modelStudly = Str::studly($modelName);
@@ -295,8 +275,8 @@ class RefreshCrops extends Command
 
         $attempts = [
             $modelName,
-            "$namespace\\Models\\$modelStudly",
-            "$namespace\\Twill\\Capsules\\$moduleName\\Models\\$modelStudly",
+            sprintf('%s\Models\%s', $namespace, $modelStudly),
+            sprintf('%s\Twill\Capsules\%s\Models\%s', $namespace, $moduleName, $modelStudly),
         ];
 
         foreach ($attempts as $phpClass) {
@@ -311,11 +291,9 @@ class RefreshCrops extends Command
     /**
      * Calculate crop params for a media from a given ratio.
      *
-     * @param int $mediaId
-     * @param float $ratio
-     * @return array
+     * @return array<string, mixed>
      */
-    protected function getCropParams($mediaId, $ratio)
+    protected function getCropParams(int $mediaId, float $ratio): array
     {
         if (! isset($this->mediaCache[$mediaId])) {
             $this->mediaCache[$mediaId] = Media::find($mediaId);
@@ -342,6 +320,6 @@ class RefreshCrops extends Command
             $crop_x = ($width - $crop_w) / 2;
         }
 
-        return compact('crop_w', 'crop_h', 'crop_x', 'crop_y');
+        return ['crop_w' => $crop_w, 'crop_h' => $crop_h, 'crop_x' => $crop_x, 'crop_y' => $crop_y];
     }
 }

@@ -14,11 +14,8 @@ class Handler extends ExceptionHandler
 {
     /**
      * Get the view used to render HTTP exceptions.
-     *
-     * @param  \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface  $e
-     * @return string
      */
-    protected function getHttpExceptionView(HttpExceptionInterface $e)
+    protected function getHttpExceptionView(HttpExceptionInterface $e): string
     {
         $usesAdminPath = !empty(config('twill.admin_app_path'));
         $adminAppUrl = config('twill.admin_app_url');
@@ -26,29 +23,26 @@ class Handler extends ExceptionHandler
         $isSubdomainAdmin = !$usesAdminPath && Str::contains(Request::url(), $adminAppUrl);
         $isSubdirectoryAdmin = $usesAdminPath && Str::startsWith(Request::path(), config('twill.admin_app_path'));
 
-        return $this->getTwillErrorView($e->getStatusCode(), !($isSubdomainAdmin || $isSubdirectoryAdmin));
+        return $this->getTwillErrorView($e->getStatusCode(), !$isSubdomainAdmin && !$isSubdirectoryAdmin);
     }
 
     /**
      * Get the Twill error view used to render a specified HTTP status code.
-     *
-     * @param  integer $statusCode
-     * @return string
      */
-    protected function getTwillErrorView($statusCode, $frontend = false)
+    protected function getTwillErrorView(int $statusCode, $frontend = false): string
     {
         if ($frontend) {
-            $view = config('twill.frontend.views_path') . ".errors.$statusCode";
+            $view = config('twill.frontend.views_path') . sprintf('.errors.%d', $statusCode);
 
-            return view()->exists($view)? $view : "errors::{$statusCode}";
+            return view()->exists($view)? $view : sprintf('errors::%d', $statusCode);
         }
 
-        $view = "twill.errors.$statusCode";
+        $view = sprintf('twill.errors.%d', $statusCode);
 
-        return view()->exists($view) ? $view : "twill::errors.$statusCode";
+        return view()->exists($view) ? $view : sprintf('twill::errors.%d', $statusCode);
     }
 
-    protected function invalidJson($request, ValidationException $exception)
+    protected function invalidJson($request, ValidationException $exception): \Illuminate\Http\JsonResponse
     {
         return response()->json($exception->errors(), $exception->status);
     }

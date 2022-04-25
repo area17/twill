@@ -5,29 +5,21 @@ namespace A17\Twill\Repositories\Behaviors;
 trait HandleTags
 {
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return void
+     * @param mixed[] $fields
      */
-    public function afterSaveHandleTags($object, $fields)
+    public function afterSaveHandleTags(\A17\Twill\Models\Model $object, array $fields)
     {
         if (!isset($fields['bulk_tags']) && !isset($fields['previous_common_tags'])) {
             if (!$this->shouldIgnoreFieldBeforeSave('tags')) {
                 $object->setTags($fields['tags'] ?? []);
             }
-
-        } else {
-            if (!$this->shouldIgnoreFieldBeforeSave('bulk_tags')) {
-                $previousCommonTags = $fields['previous_common_tags']->pluck('name')->toArray();
-
-                if (!empty($previousCommonTags)) {
-                    if (!empty($difference = array_diff($previousCommonTags, $fields['bulk_tags'] ?? []))) {
-                        $object->untag($difference);
-                    }
-                }
-
-                $object->tag($fields['bulk_tags'] ?? []);
+        } elseif (!$this->shouldIgnoreFieldBeforeSave('bulk_tags')) {
+            $previousCommonTags = $fields['previous_common_tags']->pluck('name')->toArray();
+            if (!empty($previousCommonTags) && !empty($difference = array_diff($previousCommonTags, $fields['bulk_tags'] ?? []))) {
+                $object->untag($difference);
             }
+            $object->tag($fields['bulk_tags'] ?? []);
         }
     }
 
@@ -42,11 +34,10 @@ trait HandleTags
     }
 
     /**
-     * @param string $query
-     * @param array $ids
      * @return \Illuminate\Database\Eloquent\Collection
+     * @param mixed[] $ids
      */
-    public function getTags($query = '', $ids = [])
+    public function getTags(string $query = '', array $ids = [])
     {
         $tagQuery = $this->getTagsQuery();
 
@@ -54,12 +45,10 @@ trait HandleTags
             $tagQuery->where('slug', 'like', '%' . $query . '%');
         }
 
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $tagQuery->whereHas('tagged', function ($query) use ($id) {
-                    $query->where('taggable_id', $id);
-                });
-            }
+        foreach ($ids as $id) {
+            $tagQuery->whereHas('tagged', function ($query) use ($id): void {
+                $query->where('taggable_id', $id);
+            });
         }
 
         return $tagQuery->get();
@@ -70,7 +59,7 @@ trait HandleTags
      */
     public function getTagsList()
     {
-        return $this->getTagsQuery()->where('count', '>', 0)->select('name', 'id')->get()->map(function ($tag) {
+        return $this->getTagsQuery()->where('count', '>', 0)->select('name', 'id')->get()->map(function ($tag): array {
             return [
                 'label' => $tag->name,
                 'value' => $tag->id,

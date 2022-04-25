@@ -32,51 +32,26 @@ class ResetPasswordController extends Controller
     }
 
     /**
-     * @var Redirector
-     */
-    protected $redirector;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
      * The path the user should be redirected to.
      *
      * @var string
      */
     protected $redirectTo;
 
-    /**
-     * @var ViewFactory
-     */
-    protected $viewFactory;
-
-    public function __construct(Config $config, Redirector $redirector, ViewFactory $viewFactory)
+    public function __construct(protected Config $config, protected Redirector $redirector, protected ViewFactory $viewFactory)
     {
         parent::__construct();
-
-        $this->redirector = $redirector;
-        $this->viewFactory = $viewFactory;
-        $this->config = $config;
 
         $this->redirectTo = $this->config->get('twill.auth_login_redirect_path', '/');
         $this->middleware('twill_guest');
     }
 
-    /**
-     * @return \Illuminate\Contracts\Auth\Guard
-     */
-    protected function guard()
+    protected function guard(): \Illuminate\Contracts\Auth\Guard
     {
         return Auth::guard('twill_users');
     }
 
-    /**
-     * @return \Illuminate\Contracts\Auth\PasswordBroker
-     */
-    public function broker()
+    public function broker(): \Illuminate\Contracts\Auth\PasswordBroker
     {
         return Password::broker('twill_users');
     }
@@ -98,11 +73,10 @@ class ResetPasswordController extends Controller
     }
 
     /**
-     * @param Request $request
      * @param string|null $token
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function showResetForm(Request $request, $token = null)
+    public function showResetForm(Request $request, $token = null): \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
     {
         $user = $this->getUserFromToken($token);
 
@@ -121,16 +95,15 @@ class ResetPasswordController extends Controller
     }
 
     /**
-     * @param Request $request
      * @param string|null $token
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function showWelcomeForm(Request $request, $token = null)
+    public function showWelcomeForm(Request $request, $token = null): \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
     {
         $user = $this->getUserFromToken($token);
 
         // we don't call exists on the Password repository here because we don't want to expire the token for welcome emails
-        if ($user) {
+        if ($user !== null) {
             return $this->viewFactory->make('twill::auth.passwords.reset')->with([
                 'token' => $token,
                 'email' => $user->email,
@@ -152,11 +125,11 @@ class ResetPasswordController extends Controller
      * @param string $token
      * @return \A17\Twill\Models\User|null
      */
-    private function getUserFromToken($token)
+    private function getUserFromToken(string $token)
     {
         $clearToken = DB::table($this->config->get('auth.passwords.twill_users.table', 'twill_password_resets'))->where('token', $token)->first();
 
-        if ($clearToken) {
+        if ($clearToken !== null) {
             return User::where('email', $clearToken->email)->first();
         }
 

@@ -10,20 +10,19 @@ trait HandleTranslations
     protected $nullableFields = [];
 
     /**
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function prepareFieldsBeforeCreateHandleTranslations($fields)
+    public function prepareFieldsBeforeCreateHandleTranslations(array $fields)
     {
         return $this->prepareFieldsBeforeSaveHandleTranslations(null, $fields);
     }
 
     /**
-     * @param \A17\Twill\Models\Model|null $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function prepareFieldsBeforeSaveHandleTranslations($object, $fields)
+    public function prepareFieldsBeforeSaveHandleTranslations(?\A17\Twill\Models\Model $object, array $fields)
     {
         if ($this->model->isTranslatable()) {
             $locales = getLocales();
@@ -37,7 +36,7 @@ trait HandleTranslations
             });
 
             foreach ($locales as $index => $locale) {
-                $submittedLanguage = Arr::first($submittedLanguages->filter(function ($lang) use ($locale) {
+                $submittedLanguage = Arr::first($submittedLanguages->filter(function ($lang) use ($locale): bool {
                     return $lang['value'] == $locale;
                 }));
 
@@ -47,7 +46,7 @@ trait HandleTranslations
 
                 $fields[$locale] = [
                     'active' => $activeField,
-                ] + $attributes->mapWithKeys(function ($attribute) use (&$fields, $locale, $localesCount, $index) {
+                ] + $attributes->mapWithKeys(function ($attribute) use (&$fields, $locale, $localesCount, $index): array {
                     $attributeValue = $fields[$attribute] ?? null;
 
                     // if we are at the last locale,
@@ -69,19 +68,18 @@ trait HandleTranslations
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function getFormFieldsHandleTranslations($object, $fields)
+    public function getFormFieldsHandleTranslations(\A17\Twill\Models\Model $object, array $fields)
     {
         // Keep a copy of the slugs to add it again after.
         $slug = $fields['translations']['slug'] ?? null;
         unset($fields['translations']);
 
-        if ($object->translations != null && $object->translatedAttributes != null) {
+        if ($object->translations != null && $object->getTranslatedAttributes() != null) {
             foreach ($object->translations as $translation) {
-                foreach ($object->translatedAttributes as $attribute) {
+                foreach ($object->getTranslatedAttributes() as $attribute) {
                     unset($fields[$attribute]);
                     if (array_key_exists($attribute, $this->fieldsGroups) && is_array($translation->{$attribute})) {
                         foreach ($this->fieldsGroups[$attribute] as $field_name) {
@@ -93,6 +91,7 @@ trait HandleTranslations
                                 }
                             }
                         }
+
                         unset($fields['translations'][$attribute]);
                     } else {
                         $fields['translations'][$attribute][$translation->locale] = $translation->{$attribute};
@@ -112,7 +111,7 @@ trait HandleTranslations
     {
         if ($this->model->isTranslatable()) {
             $attributes = $this->model->translatedAttributes;
-            $query->whereHas('translations', function ($q) use ($scopes, $attributes) {
+            $query->whereHas('translations', function ($q) use ($scopes, $attributes): void {
                 foreach ($attributes as $attribute) {
                     if (isset($scopes[$attribute]) && is_string($scopes[$attribute])) {
                         $q->where($attribute, $this->getLikeOperator(), '%' . $scopes[$attribute] . '%');
@@ -129,11 +128,10 @@ trait HandleTranslations
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param array $orders
      * @return void
+     * @param mixed[] $orders
      */
-    public function orderHandleTranslations($query, &$orders)
+    public function orderHandleTranslations(\Illuminate\Database\Eloquent\Builder $query, array &$orders)
     {
         if ($this->model->isTranslatable()) {
             $attributes = $this->model->translatedAttributes;

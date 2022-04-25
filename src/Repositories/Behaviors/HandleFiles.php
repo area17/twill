@@ -10,11 +10,10 @@ use Illuminate\Support\Collection;
 trait HandleFiles
 {
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return \A17\Twill\Models\Model
+     * @param mixed[] $fields
      */
-    public function hydrateHandleFiles($object, $fields)
+    public function hydrateHandleFiles(\A17\Twill\Models\Model $object, array $fields)
     {
         if ($this->shouldIgnoreFieldBeforeSave('files')) {
             return $object;
@@ -23,7 +22,7 @@ trait HandleFiles
         $filesCollection = Collection::make();
         $filesFromFields = $this->getFiles($fields);
 
-        $filesFromFields->each(function ($file) use ($object, $filesCollection) {
+        $filesFromFields->each(function ($file) use ($object, $filesCollection): void {
             $newFile = File::withTrashed()->find($file['id']);
             $pivot = $newFile->newPivot($object, Arr::except($file, ['id']), 'fileables', true);
             $newFile->setRelation('pivot', $pivot);
@@ -36,11 +35,10 @@ trait HandleFiles
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return void
+     * @param mixed[] $fields
      */
-    public function afterSaveHandleFiles($object, $fields)
+    public function afterSaveHandleFiles(\A17\Twill\Models\Model $object, array $fields)
     {
         if ($this->shouldIgnoreFieldBeforeSave('files')) {
             return;
@@ -48,16 +46,16 @@ trait HandleFiles
 
         $object->files()->sync([]);
 
-        $this->getFiles($fields)->each(function ($file) use ($object) {
+        $this->getFiles($fields)->each(function ($file) use ($object): void {
             $object->files()->attach($file['id'], Arr::except($file, ['id']));
         });
     }
 
     /**
-     * @param array $fields
      * @return \Illuminate\Support\Collection
+     * @param mixed[] $fields
      */
-    private function getFiles($fields)
+    private function getFiles(array $fields)
     {
         $files = Collection::make();
 
@@ -74,7 +72,7 @@ trait HandleFiles
                 if (in_array($role, $this->model->filesParams ?? [])
                     || in_array($role, config('twill.block_editor.files', []))) {
 
-                    Collection::make($filesForRole)->each(function ($file) use (&$files, $role, $locale) {
+                    Collection::make($filesForRole)->each(function ($file) use (&$files, $role, $locale): void {
                         $files->push([
                             'id' => $file['id'],
                             'role' => $role,
@@ -89,11 +87,10 @@ trait HandleFiles
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function getFormFieldsHandleFiles($object, $fields)
+    public function getFormFieldsHandleFiles(\A17\Twill\Models\Model $object, array $fields)
     {
         $fields['files'] = null;
         if ($object->has('files')) {
@@ -105,6 +102,7 @@ trait HandleFiles
                 }
             }
         }
+
         return $fields;
     }
 }

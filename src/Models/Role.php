@@ -25,10 +25,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  */
 class Role extends BaseModel implements Sortable
 {
-    use HasMedias, SoftDeletes, HasPermissions, IsTranslatable, HasPosition;
-
+    use HasMedias;
+    use SoftDeletes;
+    use HasPermissions;
+    use IsTranslatable;
+    use HasPosition;
+    /**
+     * @var bool
+     */
     public $timestamps = true;
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'name',
         'published',
@@ -36,23 +45,26 @@ class Role extends BaseModel implements Sortable
         'position',
     ];
 
+    /**
+     * @var string[]
+     */
     protected $dates = [
         'deleted_at',
     ];
 
-    public $checkboxes = ['published'];
+    public array $checkboxes = ['published'];
 
+    /**
+     * @var array<string, string>
+     */
     protected $casts = [
         'in_everyone_group' => 'boolean',
     ];
 
     /**
      * Scope accessible roles for the current user.
-     *
-     * @param Builder $query
-     * @return Builder
      */
-    public function scopeAccessible($query)
+    public function scopeAccessible(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Builder
     {
         $currentUser = auth('twill_users')->user();
 
@@ -67,33 +79,24 @@ class Role extends BaseModel implements Sortable
 
     /**
      * Scope published roles.
-     *
-     * @param Builder $query
-     * @return Builder
      */
-    public function scopePublished($query)
+    public function scopePublished(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
     {
         return $query->wherePublished(true);
     }
 
     /**
      * Scope unpublished (draft) roles.
-     *
-     * @param Builder $query
-     * @return Builder
      */
-    public function scopeDraft($query)
+    public function scopeDraft(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
     {
         return $query->wherePublished(false);
     }
 
     /**
      * Scope trashed roles.
-     *
-     * @param Builder $query
-     * @return Builder
      */
-    public function scopeOnlyTrashed($query)
+    public function scopeOnlyTrashed(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
     {
         return $query->whereNotNull('deleted_at');
     }
@@ -103,37 +106,31 @@ class Role extends BaseModel implements Sortable
      *
      * @return BelongsToMany|Collection|User[]
      */
-    public function users()
+    public function users(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(User::class);
     }
 
     /**
      * Return the formatted created date
-     *
-     * @return string
      */
-    public function getCreatedAtAttribute($value)
+    public function getCreatedAtAttribute($value): string
     {
         return \Carbon\Carbon::parse($value)->format('d M Y');
     }
 
     /**
      * Return the formatted number of users in this group
-     *
-     * @return string
      */
-    public function getUsersCountAttribute($value)
+    public function getUsersCountAttribute($value): string
     {
         return $this->users->count() . ' users';
     }
 
     /**
      * Return the roles that are considered accessible for this role
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAccessibleRolesAttribute()
+    public function getAccessibleRolesAttribute(): \Illuminate\Database\Eloquent\Collection
     {
         return static::where('position', '>=', $this->position)->get();
     }

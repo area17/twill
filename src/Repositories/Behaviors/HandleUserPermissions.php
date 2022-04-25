@@ -13,11 +13,10 @@ trait HandleUserPermissions
     /**
      * Retrieve user permissions fields.
      *
-     * @param Model|User $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function getFormFieldsHandleUserPermissions($object, $fields)
+    public function getFormFieldsHandleUserPermissions(\A17\Twill\Models\Model|\A17\Twill\Models\User $object, array $fields)
     {
         if (! config('twill.enabled.permissions-management')) {
             return $fields;
@@ -29,7 +28,7 @@ trait HandleUserPermissions
             $fields[$moduleName . '_' . $model->id . '_permission'] = $permission->name;
         }
 
-        Session::put("user-{$object->id}", $fields = $this->getUserPermissionsFields($object, $fields));
+        Session::put(sprintf('user-%s', $object->id), $fields = $this->getUserPermissionsFields($object, $fields));
 
         return $fields;
     }
@@ -37,10 +36,9 @@ trait HandleUserPermissions
     /**
      * Function executed after save on user form.
      *
-     * @param Model|User $object
-     * @param array $fields
+     * @param mixed[] $fields
      */
-    public function afterSaveHandleUserPermissions($object, $fields)
+    public function afterSaveHandleUserPermissions(\A17\Twill\Models\Model|\A17\Twill\Models\User $object, array $fields)
     {
         if (! config('twill.enabled.permissions-management')) {
             return;
@@ -64,7 +62,7 @@ trait HandleUserPermissions
 
     private function updateUserItemPermissions($user, $fields)
     {
-        $oldFields = \Session::get("user-{$user->id}");
+        $oldFields = \Session::get(sprintf('user-%s', $user->id));
 
         foreach ($fields as $key => $value) {
             if (Str::endsWith($key, '_permission')) {
@@ -90,11 +88,10 @@ trait HandleUserPermissions
     /**
      * Get user permissions fields.
      *
-     * @param Model|User $user
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    protected function getUserPermissionsFields($user, $fields)
+    protected function getUserPermissionsFields(\A17\Twill\Models\Model|\A17\Twill\Models\User $user, array $fields)
     {
         if (! config('twill.enabled.permissions-management')) {
             return $fields;
@@ -153,14 +150,14 @@ trait HandleUserPermissions
                 foreach ($moduleItems as $moduleItem) {
                     $index = $moduleName . '_' . $moduleItem->id . '_permission';
                     if (! isset($fields[$index])) {
-                        $fields[$index] = "{$permission}";
+                        $fields[$index] = sprintf('%s', $permission);
                     } else {
                         $current = array_search($fields[$index], $itemScopes);
                         $global = array_search($permission, $itemScopes);
 
                         // check permission level
                         if ($global > $current) {
-                            $fields[$index] = "{$permission}";
+                            $fields[$index] = sprintf('%s', $permission);
                         }
                     }
                 }
@@ -173,11 +170,9 @@ trait HandleUserPermissions
     /**
      * Retrieve count of user for 'activated' and 'pending' status slug.
      *
-     * @param string $slug
-     * @param array $scope
-     * @return int|bool
+     * @param mixed[] $scope
      */
-    public function getCountByStatusSlugHandleUserPermissions($slug, $scope = [])
+    public function getCountByStatusSlugHandleUserPermissions(string $slug, array $scope = []): bool|int
     {
         $query = $this->model->where($scope);
 
@@ -185,7 +180,7 @@ trait HandleUserPermissions
             $query = $query->accessible();
         }
 
-        if (get_class($this->model) === twillModel('user')) {
+        if ($this->model::class === twillModel('user')) {
             if ($slug === 'activated') {
                 return $query->notSuperAdmin()->activated()->count();
             }

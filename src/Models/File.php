@@ -7,20 +7,26 @@ use Illuminate\Support\Facades\DB;
 
 class File extends Model
 {
+    /**
+     * @var bool
+     */
     public $timestamps = true;
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'uuid',
         'filename',
         'size',
     ];
 
-    public function getSizeAttribute($value)
+    public function getSizeAttribute(float $value): string
     {
         return bytesToHuman($value);
     }
 
-    public function canDeleteSafely()
+    public function canDeleteSafely(): bool
     {
         return DB::table(config('twill.fileables_table', 'twill_fileables'))
             ->where('file_id', $this->id)->doesntExist();
@@ -33,7 +39,10 @@ class File extends Model
         return $query->whereNotIn('id', $usedIds->toArray())->get();
     }
 
-    public function toCmsArray()
+    /**
+     * @return array<string, mixed>
+     */
+    public function toCmsArray(): array
     {
         return [
             'id' => $this->id,

@@ -7,12 +7,11 @@ trait HasPresenter
     protected $presenterInstance;
 
     /**
-     * @param string $presenter
      * @return object
      */
-    public function present($presenter = 'presenter')
+    public function present(string $presenter = 'presenter')
     {
-        if (!$this->$presenter or !class_exists($this->$presenter)) {
+        if (!$this->$presenter || !class_exists($this->$presenter)) {
             throw new \Exception('Please set the Presenter path to your Presenter :' . $presenter . ' FQN');
         }
 
@@ -32,23 +31,21 @@ trait HasPresenter
     }
 
     /**
-     * @param string $presenter
-     * @param string $presenterProperty
      * @return $this
      */
-    public function setPresenter($presenter, $presenterProperty = 'presenter')
+    public function setPresenter(string $presenter, string $presenterProperty = 'presenter')
     {
         if (!$this->$presenterProperty) {
             $this->$presenterProperty = $presenter;
         }
+
         return $this;
     }
 
     /**
-     * @param string $presenter
      * @return $this
      */
-    public function setPresenterAdmin($presenter)
+    public function setPresenterAdmin(string $presenter)
     {
         return $this->setPresenter($presenter, 'presenterAdmin');
     }

@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Feature extends BaseModel
 {
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'featured_id',
         'featured_type',
@@ -14,7 +17,7 @@ class Feature extends BaseModel
         'starred',
     ];
 
-    public function featured()
+    public function featured(): \Illuminate\Database\Eloquent\Relations\MorphTo
     {
         return $this->morphTo();
     }

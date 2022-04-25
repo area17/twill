@@ -25,39 +25,22 @@ class RefreshLQIP extends Command
      */
     protected $description = 'Refresh Low Quality Image Placeholders.';
 
-    /**
-     * @var DatabaseManager
-     */
-    protected $db;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    protected $cropParamsKeys = [
+    protected array $cropParamsKeys = [
         'crop_x',
         'crop_y',
         'crop_w',
         'crop_h',
     ];
 
-    /**
-     * @param DatabaseManager $db
-     * @param Config $config
-     */
-    public function __construct(DatabaseManager $db, Config $config)
+    public function __construct(protected DatabaseManager $db, protected Config $config)
     {
         parent::__construct();
-
-        $this->db = $db;
-        $this->config = $config;
     }
 
     // TODO: document this and actually think about moving to queuable job after content type updates
-    public function handle()
+    public function handle(): void
     {
-        $this->db->table(config('twill.mediables_table', 'twill_mediables'))->orderBy('id')->chunk(100, function ($attached_medias) {
+        $this->db->table(config('twill.mediables_table', 'twill_mediables'))->orderBy('id')->chunk(100, function ($attached_medias): void {
             foreach ($attached_medias as $attached_media) {
                 $uuid = Media::withTrashed()->find($attached_media->media_id, ['uuid'])->uuid;
 
@@ -80,8 +63,8 @@ class RefreshLQIP extends Command
                         $data = file_get_contents($url);
                         $dataUri = 'data:image/gif;base64,' . base64_encode($data);
                         $this->db->table(config('twill.mediables_table', 'twill_mediables'))->where('id', $attached_media->id)->update(['lqip_data' => $dataUri]);
-                    } catch (\Exception $e) {
-                        $this->info("LQIP was not generated for $uuid because {$e->getMessage()}");
+                    } catch (\Exception $exception) {
+                        $this->info(sprintf('LQIP was not generated for %s because %s', $uuid, $exception->getMessage()));
                     }
                 }
             }

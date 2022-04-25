@@ -11,8 +11,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 class RenameViews extends LaravelAwareRectorRule
 {
-    public static $ROUTES = null;
-    public $baseDir = null;
+    public static $ROUTES;
+
+    public $baseDir;
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -26,12 +27,15 @@ class RenameViews extends LaravelAwareRectorRule
         );
     }
 
+    /**
+     * @return class-string[]
+     */
     public function getNodeTypes(): array
     {
         return [Node\Expr\FuncCall::class, Node\Expr\StaticCall::class];
     }
 
-    public function refactor(Node $node)
+    public function refactor(Node $node): ?\PhpParser\Node
     {
         $isViewCall = false;
         if ($node instanceof Node\Expr\StaticCall) {

@@ -11,43 +11,50 @@ class GeneratePackageCommand extends Command
 {
     use HandlesStubs;
 
-    protected $signature = 'twill:make:package';
-
-    protected $description = 'Make a new twill package';
     /**
      * @var string
+     */
+    protected $signature = 'twill:make:package';
+
+    /**
+     * @var string
+     */
+    protected $description = 'Make a new twill package';
+
+    /**
+     * @var mixed|null
      */
     private $packageName;
 
     /**
-     * @var string
+     * @var mixed|null
      */
     private $packageVendor;
 
     /**
-     * @var string
+     * @var mixed|null
      */
     private $homepage;
 
     /**
-     * @var string
+     * @var mixed|null
      */
     private $licence;
 
     /**
-     * @var string
+     * @var mixed|null
      */
     private $psr4Base;
 
     /**
-     * @var string
+     * @var mixed|null
      */
     private $targetDirectory;
 
     public function handle(): void
     {
-        $this->packageName = $this->ask('What\'s the package name', 'twill-extension');
-        $this->packageVendor = $this->ask('What\'s the package vendor', 'area17');
+        $this->packageName = $this->ask("What's the package name", 'twill-extension');
+        $this->packageVendor = $this->ask("What's the package vendor", 'area17');
         $this->homepage = $this->ask(
             'The package homepage',
             'https://github.com/' . $this->packageVendor . '/' . $this->packageName
@@ -98,7 +105,7 @@ class GeneratePackageCommand extends Command
             'providerName' => $providerName,
         ], $stub);
 
-        file_put_contents($this->targetDirectory . "/src/{$providerName}ServiceProvider.php", $stub);
+        file_put_contents($this->targetDirectory . sprintf('/src/%sServiceProvider.php', $providerName), $stub);
     }
 
     protected function displayMessage(): void
@@ -121,7 +128,7 @@ class GeneratePackageCommand extends Command
         $this->line($stub);
     }
 
-    protected function getProviderName()
+    protected function getProviderName(): string
     {
         return Str::afterLast($this->psr4Base, '\\');
     }

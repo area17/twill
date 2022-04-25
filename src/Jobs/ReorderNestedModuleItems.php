@@ -12,20 +12,20 @@ use A17\Twill\Models\Model;
 
 class ReorderNestedModuleItems implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
     protected $modelClass;
-    protected $ids;
 
-    public function __construct(Model $model, array $ids)
+
+    public function __construct(Model $model, protected array $ids)
     {
-        $this->modelClass = get_class($model);
-        $this->ids = $ids;
+        $this->modelClass = $model::class;
     }
 
-    public function handle()
+    public function handle(): void
     {
-        DB::transaction(function () {
+        DB::transaction(function (): void {
             app($this->modelClass)->saveTreeFromIds($this->ids);
         }, 3);
     }

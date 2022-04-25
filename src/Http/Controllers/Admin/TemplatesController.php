@@ -7,47 +7,26 @@ use Illuminate\View\Factory as ViewFactory;
 
 class TemplatesController extends Controller
 {
-    /**
-     * @var ViewFactory
-     */
-    protected $viewFactory;
-
-    /**
-     * @var ResponseFactory
-     */
-    protected $responseFactory;
-
-    public function __construct(ViewFactory $viewFactory, ResponseFactory $responseFactory)
+    public function __construct(protected ViewFactory $viewFactory, protected ResponseFactory $responseFactory)
     {
         parent::__construct();
-
-        $this->viewFactory = $viewFactory;
-        $this->responseFactory = $responseFactory;
     }
 
-    /**
-     * @return \Illuminate\View\View
-     */
-    public function index()
+    public function index(): \Illuminate\Contracts\View\View
     {
         return $this->viewFactory->make('templates.index');
     }
 
-    /**
-     * @param string $view
-     * @return \Illuminate\View\View
-     */
-    public function view($view)
+    public function view(string $view): \Illuminate\Contracts\View\View
     {
         return $this->viewFactory->make('templates.' . $view);
     }
 
     /**
      * @param string view
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Throwable
      */
-    public function xhr($view)
+    public function xhr($view): \Illuminate\Http\JsonResponse
     {
         $response = [
             'data' => $this->viewFactory->make('templates.' . $view)->render(),

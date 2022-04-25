@@ -9,36 +9,16 @@ use Illuminate\Routing\Redirector;
 
 class RedirectIfAuthenticated
 {
-    /**
-     * @var AuthFactory
-     */
-    protected $authFactory;
-
-    /**
-     * @var Redirector
-     */
-    protected $redirector;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    public function __construct(AuthFactory $authFactory, Redirector $redirector, Config $config)
+    public function __construct(protected AuthFactory $authFactory, protected Redirector $redirector, protected Config $config)
     {
-        $this->authFactory = $authFactory;
-        $this->redirector = $redirector;
-        $this->config = $config;
     }
 
     /**
      * Handles an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next, $guard = 'twill_users')
+    public function handle(\Illuminate\Http\Request $request, Closure $next, $guard = 'twill_users')
     {
         if ($this->authFactory->guard($guard)->check()) {
             return $this->redirector->to($this->config->get('twill.auth_login_redirect_path', '/'));

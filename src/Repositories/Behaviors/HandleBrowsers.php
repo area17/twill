@@ -34,11 +34,10 @@ trait HandleBrowsers
     protected $browsers = [];
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return void
+     * @param mixed[] $fields
      */
-    public function afterSaveHandleBrowsers($object, $fields)
+    public function afterSaveHandleBrowsers(\A17\Twill\Models\Model $object, array $fields)
     {
         foreach ($this->getBrowsers() as $browser) {
             $this->updateBrowser($object, $fields, $browser['relation'], $browser['positionAttribute'], $browser['browserName']);
@@ -46,15 +45,14 @@ trait HandleBrowsers
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function getFormFieldsHandleBrowsers($object, $fields)
+    public function getFormFieldsHandleBrowsers(\A17\Twill\Models\Model $object, array $fields)
     {
         foreach ($this->getBrowsers() as $browser) {
             $relation = $browser['relation'];
-            if (collect($object->$relation)->isNotEmpty()) {
+            if (collect($object->getRelation())->isNotEmpty()) {
                 $fields['browsers'][$browser['browserName']] = $this->getFormFieldsForBrowser($object, $relation, $browser['routePrefix'], $browser['titleKey'], $browser['moduleName']);
             }
         }
@@ -63,15 +61,12 @@ trait HandleBrowsers
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relationship
-     * @param string $positionAttribute
      * @param string|null $browserName
-     * @param array $pivotAttributes
      * @return void
+     * @param mixed[] $fields
+     * @param mixed[] $pivotAttributes
      */
-    public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position', $browserName = null, $pivotAttributes = [])
+    public function updateBrowser(\A17\Twill\Models\Model $object, array $fields, string $relationship, string $positionAttribute = 'position', $browserName = null, array $pivotAttributes = [])
     {
         $browserName = $browserName ?? $relationship;
         $fieldsHasElements = isset($fields['browsers'][$browserName]) && !empty($fields['browsers'][$browserName]);
@@ -117,42 +112,34 @@ trait HandleBrowsers
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relationship
-     * @param string $positionAttribute
      * @return void
+     * @param mixed[] $fields
      */
-    public function updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position')
+    public function updateOrderedBelongsTomany(\A17\Twill\Models\Model $object, array $fields, string $relationship, string $positionAttribute = 'position')
     {
         $this->updateBrowser($object, $fields, $relationship, $positionAttribute);
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $browserName
      * @return void
+     * @param mixed[] $fields
      */
-    public function updateRelatedBrowser($object, $fields, $browserName)
+    public function updateRelatedBrowser(\A17\Twill\Models\Model $object, array $fields, string $browserName)
     {
         $object->saveRelated($fields['browsers'][$browserName] ?? [], $browserName);
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param string $relation
      * @param string|null $routePrefix
-     * @param string $titleKey
      * @param string|null $moduleName
      * @return array
      */
-    public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
+    public function getFormFieldsForBrowser(\A17\Twill\Models\Model $object, string $relation, $routePrefix = null, string $titleKey = 'title', $moduleName = null)
     {
         $fields = $this->getRelatedElementsAsCollection($object, $relation);
 
         if ($fields->isNotEmpty()) {
-            return $fields->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName) {
+            return $fields->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName): array {
                 return [
                     'id' => $relatedElement->id,
                     'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
@@ -168,13 +155,11 @@ trait HandleBrowsers
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param string $relation
      * @return array
      */
-    public function getFormFieldsForRelatedBrowser($object, $relation, $titleKey = 'title')
+    public function getFormFieldsForRelatedBrowser(\A17\Twill\Models\Model $object, string $relation, $titleKey = 'title')
     {
-        return $object->getRelated($relation)->map(function ($relatedElement) use ($titleKey) {
+        return $object->getRelated($relation)->map(function ($relatedElement) use ($titleKey): array {
             return ($relatedElement != null) ? [
                 'id' => $relatedElement->id,
                 'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
@@ -184,7 +169,7 @@ trait HandleBrowsers
             ]) + (classHasTrait($relatedElement, HasMedias::class) ? [
                 'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
             ] : []) : [];
-        })->reject(function ($item) {
+        })->reject(function ($item): bool {
             return empty($item);
         })->values()->toArray();
     }
@@ -197,17 +182,17 @@ trait HandleBrowsers
      */
     protected function getBrowsers()
     {
-        return collect($this->browsers)->map(function ($browser, $key) {
+        return collect($this->browsers)->map(function ($browser, $key): array {
             $browserName = is_string($browser) ? $browser : $key;
-            $moduleName = !empty($browser['moduleName']) ? $browser['moduleName'] : $this->inferModuleNameFromBrowserName($browserName);
+            $moduleName = empty($browser['moduleName']) ? $this->inferModuleNameFromBrowserName($browserName) : $browser['moduleName'];
 
             return [
-                'relation' => !empty($browser['relation']) ? $browser['relation'] : $this->inferRelationFromBrowserName($browserName),
+                'relation' => empty($browser['relation']) ? $this->inferRelationFromBrowserName($browserName) : $browser['relation'],
                 'routePrefix' => isset($browser['routePrefix']) ? $browser['routePrefix'] : null,
-                'titleKey' => !empty($browser['titleKey']) ? $browser['titleKey'] : 'title',
+                'titleKey' => empty($browser['titleKey']) ? 'title' : $browser['titleKey'],
                 'moduleName' => $moduleName,
-                'model' => !empty($browser['model']) ? $browser['model'] : $this->inferModelFromModuleName($moduleName),
-                'positionAttribute' => !empty($browser['positionAttribute']) ? $browser['positionAttribute'] : 'position',
+                'model' => empty($browser['model']) ? $this->inferModelFromModuleName($moduleName) : $browser['model'],
+                'positionAttribute' => empty($browser['positionAttribute']) ? 'position' : $browser['positionAttribute'],
                 'browserName' => $browserName,
             ];
         })->values();
@@ -215,9 +200,6 @@ trait HandleBrowsers
 
     /**
      * Guess the browser's relation name (shoud be lower camel case, ex. userGroup, contactOffice).
-     *
-     * @param string $browserName
-     * @return string
      */
     protected function inferRelationFromBrowserName(string $browserName): string
     {
@@ -226,9 +208,6 @@ trait HandleBrowsers
 
     /**
      * Guess the module's model name (should be singular upper camel case, ex. User, ArticleType).
-     *
-     * @param string $moduleName
-     * @return string
      */
     protected function inferModelFromModuleName(string $moduleName): string
     {
@@ -237,9 +216,6 @@ trait HandleBrowsers
 
     /**
      * Guess the browser's module name (should be plural lower camel case, ex. userGroups, contactOffices).
-     *
-     * @param string $browserName
-     * @return string
      */
     protected function inferModuleNameFromBrowserName(string $browserName): string
     {

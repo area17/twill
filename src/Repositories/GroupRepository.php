@@ -14,7 +14,10 @@ class GroupRepository extends ModuleRepository
         $this->model = $model;
     }
 
-    public function getFormFields($group)
+    /**
+     * @return mixed[]
+     */
+    public function getFormFields($group): array
     {
         $fields = parent::getFormFields($group);
 
@@ -23,7 +26,7 @@ class GroupRepository extends ModuleRepository
         return $fields;
     }
 
-    public function afterSave($group, $fields)
+    public function afterSave($group, $fields): void
     {
         $this->updateBrowser($group, $fields, 'users');
 
@@ -52,7 +55,7 @@ class GroupRepository extends ModuleRepository
         return parent::bulkDelete($ids);
     }
 
-    public function filter($query, array $scopes = [])
+    public function filter($query, array $scopes = []): \Illuminate\Database\Eloquent\Builder
     {
         $this->searchIn($query, $scopes, 'search', ['name']);
 

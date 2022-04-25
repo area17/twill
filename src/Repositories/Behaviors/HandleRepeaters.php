@@ -33,11 +33,10 @@ trait HandleRepeaters
     protected $repeaters = [];
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return void
+     * @param mixed[] $fields
      */
-    public function afterSaveHandleRepeaters($object, $fields)
+    public function afterSaveHandleRepeaters(\A17\Twill\Models\Model $object, array $fields)
     {
         foreach ($this->getRepeaters() as $repeater) {
             $this->updateRepeater(
@@ -51,11 +50,10 @@ trait HandleRepeaters
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function getFormFieldsHandleRepeaters($object, $fields)
+    public function getFormFieldsHandleRepeaters(\A17\Twill\Models\Model $object, array $fields)
     {
         foreach ($this->getRepeaters() as $repeater) {
             $fields = $this->getFormFieldsForRepeater(
@@ -71,20 +69,17 @@ trait HandleRepeaters
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relation
-     * @param bool $keepExisting
      * @param \A17\Twill\Models\Model|null $model
      * @return void
+     * @param mixed[] $fields
      */
-    public function updateRepeaterMany($object, $fields, $relation, $keepExisting = true, $model = null)
+    public function updateRepeaterMany(\A17\Twill\Models\Model $object, array $fields, string $relation, bool $keepExisting = true, $model = null)
     {
         $relationFields = $fields['repeaters'][$relation] ?? [];
         $relationRepository = getModelRepository($relation, $model);
 
         if (! $keepExisting) {
-            $object->$relation()->each(function ($repeaterElement) {
+            $object->$relation()->each(function ($repeaterElement): void {
                 $repeaterElement->forceDelete();
             });
         }
@@ -96,18 +91,16 @@ trait HandleRepeaters
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relation
      * @param string|null $morph
      * @param \A17\Twill\Models\Model|null $model
      * @param string|null $repeaterName
      * @return void
+     * @param mixed[] $fields
      */
     public function updateRepeaterMorphMany(
-        $object,
-        $fields,
-        $relation,
+        \A17\Twill\Models\Model $object,
+        array $fields,
+        string $relation,
         $morph = null,
         $model = null,
         $repeaterName = null
@@ -171,14 +164,12 @@ trait HandleRepeaters
     /**
      * Given relation, model and repeaterName, retrieve the repeater data from request and update the database record.
      *
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relation
      * @param \A17\Twill\Models\Model|\A17\Twill\Repositories\ModuleRepository|null $modelOrRepository
      * @param string|null $repeaterName
      * @return void
+     * @param mixed[] $fields
      */
-    public function updateRepeater($object, $fields, $relation, $modelOrRepository = null, $repeaterName = null)
+    public function updateRepeater(\A17\Twill\Models\Model $object, array $fields, string $relation, $modelOrRepository = null, $repeaterName = null)
     {
         if (! $repeaterName) {
             $repeaterName = $relation;
@@ -239,7 +230,7 @@ trait HandleRepeaters
             }
         }
 
-        foreach ($object->$relation->pluck('id') as $id) {
+        foreach ($object->getRelation()->pluck('id') as $id) {
             if (! in_array($id, $currentIdList)) {
                 $relationRepository->updateBasic(null, [
                     'deleted_at' => Carbon::now(),
@@ -253,17 +244,15 @@ trait HandleRepeaters
     /**
      * Given relation, model and repeaterName, get the necessary fields for rendering a repeater.
      *
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relation
      * @param \A17\Twill\Models\Model|\A17\Twill\Repositories\ModuleRepository|null $modelOrRepository
      * @param string|null $repeaterName
      * @return array
+     * @param mixed[] $fields
      */
     public function getFormFieldsForRepeater(
-        $object,
-        $fields,
-        $relation,
+        \A17\Twill\Models\Model $object,
+        array $fields,
+        string $relation,
         $modelOrRepository = null,
         $repeaterName = null
     ) {
@@ -295,7 +284,7 @@ trait HandleRepeaters
             if (isset($relatedItemFormFields['translations'])) {
                 foreach ($relatedItemFormFields['translations'] as $key => $values) {
                     $repeatersFields[] = [
-                        'name' => "blocks[$relation-$relationItem->id][$key]",
+                        'name' => sprintf('blocks[%s-%s][%s]', $relation, $relationItem->id, $key),
                         'value' => $values,
                     ];
 
@@ -306,11 +295,11 @@ trait HandleRepeaters
             if (isset($relatedItemFormFields['medias'])) {
                 if (config('twill.media_library.translated_form_fields', false)) {
                     Collection::make($relatedItemFormFields['medias'])->each(
-                        function ($rolesWithMedias, $locale) use (&$repeatersMedias, $relation, $relationItem) {
+                        function ($rolesWithMedias, $locale) use (&$repeatersMedias, $relation, $relationItem): void {
                             $repeatersMedias[] = Collection::make($rolesWithMedias)->mapWithKeys(
-                                function ($medias, $role) use ($locale, $relation, $relationItem) {
+                                function ($medias, $role) use ($locale, $relation, $relationItem): array {
                                     return [
-                                        "blocks[$relation-$relationItem->id][$role][$locale]" => $medias,
+                                        sprintf('blocks[%s-%s][%s][%s]', $relation, $relationItem->id, $role, $locale) => $medias,
                                     ];
                                 }
                             )->toArray();
@@ -318,18 +307,18 @@ trait HandleRepeaters
                     );
                 } else {
                     foreach ($relatedItemFormFields['medias'] as $key => $values) {
-                        $repeatersMedias["blocks[$relation-$relationItem->id][$key]"] = $values;
+                        $repeatersMedias[sprintf('blocks[%s-%s][%s]', $relation, $relationItem->id, $key)] = $values;
                     }
                 }
             }
 
             if (isset($relatedItemFormFields['files'])) {
                 Collection::make($relatedItemFormFields['files'])->each(
-                    function ($rolesWithFiles, $locale) use (&$repeatersFiles, $relation, $relationItem) {
+                    function ($rolesWithFiles, $locale) use (&$repeatersFiles, $relation, $relationItem): void {
                         $repeatersFiles[] = Collection::make($rolesWithFiles)->mapWithKeys(
-                            function ($files, $role) use ($locale, $relation, $relationItem) {
+                            function ($files, $role) use ($locale, $relation, $relationItem): array {
                                 return [
-                                    "blocks[$relation-$relationItem->id][$role][$locale]" => $files,
+                                    sprintf('blocks[%s-%s][%s][%s]', $relation, $relationItem->id, $role, $locale) => $files,
                                 ];
                             }
                         )->toArray();
@@ -339,7 +328,7 @@ trait HandleRepeaters
 
             if (isset($relatedItemFormFields['browsers'])) {
                 foreach ($relatedItemFormFields['browsers'] as $key => $values) {
-                    $repeatersBrowsers["blocks[$relation-$relationItem->id][$key]"] = $values;
+                    $repeatersBrowsers[sprintf('blocks[%s-%s][%s]', $relation, $relationItem->id, $key)] = $values;
                 }
             }
 
@@ -348,14 +337,14 @@ trait HandleRepeaters
 
             foreach ($itemFields as $key => $value) {
                 $repeatersFields[] = [
-                    'name' => "blocks[$relation-$relationItem->id][$key]",
+                    'name' => sprintf('blocks[%s-%s][%s]', $relation, $relationItem->id, $key),
                     'value' => $value,
                 ];
             }
 
             if (isset($relatedItemFormFields['repeaters'])) {
                 foreach ($relatedItemFormFields['repeaters'] as $childRepeaterName => $childRepeaterItems) {
-                    $fields['repeaters']["blocks-$relation-{$relationItem->id}_$childRepeaterName"] = $childRepeaterItems;
+                    $fields['repeaters'][sprintf('blocks-%s-%s_%s', $relation, $relationItem->id, $childRepeaterName)] = $childRepeaterItems;
                     $repeatersFields = array_merge(
                         $repeatersFields,
                         $relatedItemFormFields['repeaterFields'][$childRepeaterName]
@@ -377,11 +366,11 @@ trait HandleRepeaters
         }
 
         if (! empty($repeatersMedias) && config('twill.media_library.translated_form_fields', false)) {
-            $repeatersMedias = call_user_func_array('array_merge', $repeatersMedias);
+            $repeatersMedias = array_merge(...$repeatersMedias);
         }
 
         if (! empty($repeatersFiles)) {
-            $repeatersFiles = call_user_func_array('array_merge', $repeatersFiles);
+            $repeatersFiles = array_merge(...$repeatersFiles);
         }
 
         $fields['repeaters'][$repeaterName] = $repeaters;
@@ -401,16 +390,16 @@ trait HandleRepeaters
      */
     protected function getRepeaters()
     {
-        return collect($this->repeaters)->map(function ($repeater, $key) {
+        return collect($this->repeaters)->map(function ($repeater, $key): array {
             $repeaterName = is_string($repeater) ? $repeater : $key;
 
             return [
-                'relation' => ! empty($repeater['relation']) ? $repeater['relation'] : $this->inferRelationFromRepeaterName(
+                'relation' => empty($repeater['relation']) ? $this->inferRelationFromRepeaterName(
                     $repeaterName
-                ),
-                'model' => ! empty($repeater['model']) ? $repeater['model'] : $this->inferModelFromRepeaterName(
+                ) : $repeater['relation'],
+                'model' => empty($repeater['model']) ? $this->inferModelFromRepeaterName(
                     $repeaterName
-                ),
+                ) : $repeater['model'],
                 'repeaterName' => $repeaterName,
             ];
         })->values();
@@ -418,9 +407,6 @@ trait HandleRepeaters
 
     /**
      * Guess the relation name (shoud be lower camel case, ex. userGroup, contactOffice).
-     *
-     * @param string $repeaterName
-     * @return string
      */
     protected function inferRelationFromRepeaterName(string $repeaterName): string
     {
@@ -429,9 +415,6 @@ trait HandleRepeaters
 
     /**
      * Guess the model name (should be singular upper camel case, ex. User, ArticleType).
-     *
-     * @param string $repeaterName
-     * @return string
      */
     protected function inferModelFromRepeaterName(string $repeaterName): string
     {

@@ -12,11 +12,10 @@ trait HandleGroupPermissions
     /**
      * Retrieve group permissions fields
      *
-     * @param Model|Group $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function getFormFieldsHandleGroupPermissions($object, $fields)
+    public function getFormFieldsHandleGroupPermissions(\A17\Twill\Models\Group|\A17\Twill\Models\Model $object, array $fields)
     {
         if (config('twill.permissions.level') == 'roleGroup') {
             // Add active global permissions
@@ -27,11 +26,7 @@ trait HandleGroupPermissions
             // Add active module permissions
             foreach (Permission::permissionableModules() as $moduleName) {
                 $modulePermission = $object->permissions()->module()->ofModuleName($moduleName)->first();
-                if ($modulePermission) {
-                    $fields['module_' . $moduleName . '_permissions'] = $modulePermission->name;
-                } else {
-                    $fields['module_' . $moduleName . '_permissions'] = 'none';
-                }
+                $fields['module_' . $moduleName . '_permissions'] = $modulePermission ? $modulePermission->name : 'none';
             }
         } elseif (config('twill.permissions.level') == 'roleGroupItem') {
             // Add active item permissions
@@ -53,10 +48,9 @@ trait HandleGroupPermissions
     /**
      * Function executed after save on group form
      *
-     * @param Model|Group $object
-     * @param array $fields
+     * @param mixed[] $fields
      */
-    public function afterSaveHandleGroupPermissions($object, $fields)
+    public function afterSaveHandleGroupPermissions(\A17\Twill\Models\Group|\A17\Twill\Models\Model $object, array $fields)
     {
         // Assign global permissions
         foreach (Permission::available(Permission::SCOPE_GLOBAL) as $permissionName) {
@@ -99,7 +93,7 @@ trait HandleGroupPermissions
                     $object->revokeModuleItemAllPermissions($item);
                 }
             } elseif (Str::startsWith($key, 'subdomain_access_') && $permissionName) {
-                array_push($subdomainsAccess, substr($key, strlen('subdomain_access_')));
+                $subdomainsAccess[] = substr($key, strlen('subdomain_access_'));
             }
         }
 

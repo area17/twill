@@ -23,11 +23,10 @@ use Illuminate\Support\Arr;
 trait HandleJsonRepeaters
 {
     /**
-     * @param \A17\Twill\Models\Model|null $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function prepareFieldsBeforeSaveHandleJsonRepeaters($object, $fields)
+    public function prepareFieldsBeforeSaveHandleJsonRepeaters(?\A17\Twill\Models\Model $object, array $fields)
     {
         foreach ($this->jsonRepeaters as $repeater) {
             if (isset($fields['repeaters'][$repeater])) {
@@ -39,11 +38,10 @@ trait HandleJsonRepeaters
     }
 
     /**
-     * @param \A17\Twill\Models\Model|null $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function getFormFieldsHandleJsonRepeaters($object, $fields)
+    public function getFormFieldsHandleJsonRepeaters(?\A17\Twill\Models\Model $object, array $fields)
     {
         foreach ($this->jsonRepeaters as $repeater) {
             if (isset($fields[$repeater]) && ! empty($fields[$repeater])) {
@@ -55,12 +53,11 @@ trait HandleJsonRepeaters
     }
 
     /**
-     * @param array $fields
-     * @param string $repeaterName
-     * @param array $serializedData
      * @return array
+     * @param mixed[] $fields
+     * @param mixed[] $serializedData
      */
-    public function getJsonRepeater($fields, $repeaterName, $serializedData)
+    public function getJsonRepeater(array $fields, string $repeaterName, array $serializedData)
     {
         $repeatersFields = [];
         $repeatersBrowsers = [];
@@ -79,7 +76,7 @@ trait HandleJsonRepeaters
 
             if (isset($repeaterItem['browsers'])) {
                 foreach ($repeaterItem['browsers'] as $key => $values) {
-                    $repeatersBrowsers["blocks[$id][$key]"] = $values;
+                    $repeatersBrowsers[sprintf('blocks[%s][%s]', $id, $key)] = $values;
                 }
             }
 
@@ -87,7 +84,7 @@ trait HandleJsonRepeaters
 
             foreach ($itemFields as $index => $value) {
                 $repeatersFields[] = [
-                    'name' => "blocks[$id][$index]",
+                    'name' => sprintf('blocks[%s][%s]', $id, $index),
                     'value' => $value,
                 ];
             }

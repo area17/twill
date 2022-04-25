@@ -26,12 +26,12 @@ trait HasFiles
     {
         $locale = $locale ?? app()->getLocale();
 
-        $file = $this->files->first(function ($file) use ($role, $locale) {
+        $file = $this->files->first(function ($file) use ($role, $locale): bool {
             return $file->pivot->role === $role && $file->pivot->locale === $locale;
         });
 
         if (!$file && config('translatable.use_property_fallback', false)) {
-            $file = $this->files->first(function ($file) use ($role) {
+            $file = $this->files->first(function ($file) use ($role): bool {
                 return $file->pivot->role === $role && $file->pivot->locale === config('translatable.fallback_locale');
             });
         }
@@ -47,10 +47,10 @@ trait HasFiles
      * @param File|null $file Provide a file object if you already retrieved one to prevent more SQL queries.
      * @return string|null
      */
-    public function file($role, $locale = null, $file = null)
+    public function file(string $role, $locale = null, $file = null)
     {
 
-        if (!$file) {
+        if ($file === null) {
             $file = $this->findFile($role, $locale);
         }
 
@@ -68,11 +68,11 @@ trait HasFiles
      * @param string|null $locale Locale of the file if your site has multiple languages.
      * @return array
      */
-    public function filesList($role, $locale = null)
+    public function filesList(string $role, $locale = null)
     {
         $locale = $locale ?? app()->getLocale();
 
-        $files = $this->files->filter(function ($file) use ($role, $locale) {
+        $files = $this->files->filter(function ($file) use ($role, $locale): bool {
             return $file->pivot->role === $role && $file->pivot->locale === $locale;
         });
 
@@ -92,7 +92,7 @@ trait HasFiles
      * @param string|null $locale Locale of the file if your site has multiple languages.
      * @return File|null
      */
-    public function fileObject($role, $locale = null)
+    public function fileObject(string $role, $locale = null)
     {
         return $this->findFile($role, $locale);
     }

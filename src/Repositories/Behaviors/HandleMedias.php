@@ -10,11 +10,10 @@ use Illuminate\Support\Str;
 trait HandleMedias
 {
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return \A17\Twill\Models\Model
+     * @param mixed[] $fields
      */
-    public function hydrateHandleMedias($object, $fields)
+    public function hydrateHandleMedias(\A17\Twill\Models\Model $object, array $fields)
     {
         if ($this->shouldIgnoreFieldBeforeSave('medias')) {
             return $object;
@@ -23,7 +22,7 @@ trait HandleMedias
         $mediasCollection = Collection::make();
         $mediasFromFields = $this->getMedias($fields);
 
-        $mediasFromFields->each(function ($media) use ($object, $mediasCollection) {
+        $mediasFromFields->each(function ($media) use ($object, $mediasCollection): void {
             $newMedia = Media::withTrashed()->find(is_array($media['id']) ? Arr::first($media['id']) : $media['id']);
             $pivot = $newMedia->newPivot($object, Arr::except($media, ['id']), config('twill.mediables_table', 'twill_mediables'), true);
             $newMedia->setRelation('pivot', $pivot);
@@ -36,11 +35,10 @@ trait HandleMedias
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return void
+     * @param mixed[] $fields
      */
-    public function afterSaveHandleMedias($object, $fields)
+    public function afterSaveHandleMedias(\A17\Twill\Models\Model $object, array $fields)
     {
         if ($this->shouldIgnoreFieldBeforeSave('medias')) {
             return;
@@ -48,36 +46,34 @@ trait HandleMedias
 
         $object->medias()->sync([]);
 
-        $this->getMedias($fields)->each(function ($media) use ($object) {
+        $this->getMedias($fields)->each(function ($media) use ($object): void {
             $object->medias()->attach($media['id'], Arr::except($media, ['id']));
         });
     }
 
     /**
-     * @param array $fields
      * @return \Illuminate\Support\Collection
+     * @param mixed[] $fields
      */
-    private function getMedias($fields)
+    private function getMedias(array $fields)
     {
         $medias = Collection::make();
 
         if (isset($fields['medias'])) {
             foreach ($fields['medias'] as $role => $mediasForRole) {
-                if (config('twill.media_library.translated_form_fields', false)) {
-                    if (Str::contains($role, ['[', ']'])) {
-                        $start = strpos($role, '[') + 1;
-                        $finish = strpos($role, ']', $start);
-                        $locale = substr($role, $start, $finish - $start);
-                        $role = strtok($role, '[');
-                    }
+                if (config('twill.media_library.translated_form_fields', false) && Str::contains($role, ['[', ']'])) {
+                    $start = strpos($role, '[') + 1;
+                    $finish = strpos($role, ']', $start);
+                    $locale = substr($role, $start, $finish - $start);
+                    $role = strtok($role, '[');
                 }
 
                 $locale = $locale ?? config('app.locale');
 
-                if (in_array($role, array_keys($this->model->getMediasParams()))
-                    || in_array($role, array_keys(config('twill.block_editor.crops', [])))
-                    || in_array($role, array_keys(config('twill.settings.crops', [])))) {
-                    Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {
+                if (array_key_exists($role, $this->model->getMediasParams())
+                    || array_key_exists($role, config('twill.block_editor.crops', []))
+                    || array_key_exists($role, config('twill.settings.crops', []))) {
+                    Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale): void {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
                         if (isset($media['crops']) && ! empty($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
@@ -119,11 +115,10 @@ trait HandleMedias
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function getFormFieldsHandleMedias($object, $fields)
+    public function getFormFieldsHandleMedias(\A17\Twill\Models\Model $object, array $fields)
     {
         $fields['medias'] = null;
 
@@ -147,10 +142,9 @@ trait HandleMedias
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Collection $medias
      * @return array
      */
-    private function getMediaFormItems($medias)
+    private function getMediaFormItems(\Illuminate\Database\Eloquent\Collection $medias)
     {
         $itemsForForm = [];
 
@@ -179,10 +173,9 @@ trait HandleMedias
     }
 
     /**
-     * @param string $role
      * @return array
      */
-    public function getCrops($role)
+    public function getCrops(string $role)
     {
         return $this->model->getMediasParams()[$role];
     }

@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 class UserOauth extends BaseModel
 {
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'token',
         'provider',
@@ -23,7 +26,7 @@ class UserOauth extends BaseModel
         parent::__construct($attributes);
     }
 
-    public function user()
+    public function user(): void
     {
         $this->belongsTo(User::class, 'user_id');
     }

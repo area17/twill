@@ -10,10 +10,18 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Block extends BaseModel
 {
-    use HasMedias, HasFiles, HasPresenter, HasRelated;
-
+    use HasMedias;
+    use HasFiles;
+    use HasPresenter;
+    use HasRelated;
+    /**
+     * @var bool
+     */
     public $timestamps = false;
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'blockable_id',
         'blockable_type',
@@ -25,10 +33,16 @@ class Block extends BaseModel
         'editor_name',
     ];
 
+    /**
+     * @var array<string, string>
+     */
     protected $casts = [
         'content' => 'array',
     ];
 
+    /**
+     * @var string[]
+     */
     protected $with = ['medias'];
 
     public function scopeEditor($query, $name = 'default')
@@ -38,12 +52,12 @@ class Block extends BaseModel
             $query->where('editor_name', $name);
     }
 
-    public function blockable()
+    public function blockable(): \Illuminate\Database\Eloquent\Relations\MorphTo
     {
         return $this->morphTo();
     }
 
-    public function children()
+    public function children(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(twillModel('block'), 'parent_id');
     }
@@ -71,7 +85,7 @@ class Block extends BaseModel
         return isset($this->content['browsers']) ? ($this->content['browsers'][$name] ?? []) : [];
     }
 
-    public function checkbox($name)
+    public function checkbox($name): bool
     {
         return isset($this->content[$name]) && ($this->content[$name][0] ?? $this->content[$name] ?? false);
     }

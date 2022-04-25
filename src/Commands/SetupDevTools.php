@@ -23,29 +23,30 @@ class SetupDevTools extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         if (! $this->confirm('This command is only intended for a development environment and will change and create files in your project, do you want to continue?')) {
             $this->error('cancelled');
 
             return;
         }
+
         $basePath = base_path();
         $this->line('Installing php cs fixer');
-        exec("cd $basePath && composer require friendsofphp/php-cs-fixer");
+        exec(sprintf('cd %s && composer require friendsofphp/php-cs-fixer', $basePath));
 
         $source = __DIR__ . '/../../.php-cs-fixer.dist.php';
-        exec("cp $source $basePath/.php-cs-fixer.dist.php");
+        exec(sprintf('cp %s %s/.php-cs-fixer.dist.php', $source, $basePath));
 
         $this->line('Installing prettier and eslint');
         exec(
-            "cd $basePath && npm i --save-dev prettier eslint eslint-config-prettier"
+            sprintf('cd %s && npm i --save-dev prettier eslint eslint-config-prettier', $basePath)
         );
 
         $source = __DIR__ . '/../../.prettierrc.yml';
-        exec("cp $source $basePath/.prettierrc.yml");
+        exec(sprintf('cp %s %s/.prettierrc.yml', $source, $basePath));
 
         $source = __DIR__ . '/../../.eslintrc.js';
-        exec("cp $source $basePath/.eslintrc.js");
+        exec(sprintf('cp %s %s/.eslintrc.js', $source, $basePath));
     }
 }

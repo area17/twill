@@ -9,40 +9,14 @@ use Illuminate\Session\Store as SessionStore;
 
 class MediasUploaderConfig
 {
-    /**
-     * @var UrlGenerator
-     */
-    protected $urlGenerator;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * @var SessionStore
-     */
-    protected $sessionStore;
-
-    /**
-     * @param UrlGenerator $urlGenerator
-     * @param Config $config
-     * @param SessionStore $sessionStore
-     */
-    public function __construct(UrlGenerator $urlGenerator, Config $config, SessionStore $sessionStore)
+    public function __construct(protected UrlGenerator $urlGenerator, protected Config $config, protected SessionStore $sessionStore)
     {
-        $this->urlGenerator = $urlGenerator;
-        $this->config = $config;
-        $this->sessionStore = $sessionStore;
     }
 
     /**
      * Binds data to the view.
-     *
-     * @param View $view
-     * @return void
      */
-    public function compose(View $view)
+    public function compose(View $view): void
     {
         $libraryDisk = $this->config->get('twill.media_library.disk');
         $endpointType = $this->config->get('twill.media_library.endpoint_type');
@@ -51,13 +25,13 @@ class MediasUploaderConfig
         // anonymous functions are used to let configuration dictate
         // the execution of the appropriate implementation
         $endpointByType = [
-            'local' => function () {
+            'local' => function (): string {
                 return $this->urlGenerator->route('twill.media-library.medias.store');
             },
-            's3' => function () use ($libraryDisk) {
+            's3' => function () use ($libraryDisk): string {
                 return s3Endpoint($libraryDisk);
             },
-            'azure' => function () use ($libraryDisk) {
+            'azure' => function () use ($libraryDisk): string {
                 return azureEndpoint($libraryDisk);
             },
         ];
@@ -83,6 +57,6 @@ class MediasUploaderConfig
             'allowedExtensions' => $allowedExtensions,
         ];
 
-        $view->with(compact('mediasUploaderConfig'));
+        $view->with(['mediasUploaderConfig' => $mediasUploaderConfig]);
     }
 }

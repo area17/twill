@@ -16,16 +16,6 @@ use Illuminate\Support\Facades\Password;
 class UserController extends ModuleController
 {
     /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * @var AuthFactory
-     */
-    protected $authFactory;
-
-    /**
      * @var string
      */
     protected $namespace = 'A17\Twill';
@@ -102,6 +92,9 @@ class UserController extends ModuleController
         'role' => 'manage-users',
     ];
 
+    /**
+     * @var array<string, mixed[]>
+     */
     protected $labels = [
         'published' => 'twill::lang.user-management.enabled',
         'draft' => 'twill::lang.user-management.disabled',
@@ -113,12 +106,10 @@ class UserController extends ModuleController
         ],
     ];
 
-    public function __construct(Application $app, Request $request, AuthFactory $authFactory, Config $config)
+    public function __construct(Application $app, Request $request, protected AuthFactory $authFactory, protected Config $config)
     {
         parent::__construct($app, $request);
         $this->middleware('can:edit-users', ['except' => ['edit', 'update']]);
-        $this->authFactory = $authFactory;
-        $this->config = $config;
 
         if ($this->config->get('twill.enabled.users-image')) {
             $this->indexColumns = [
@@ -160,10 +151,9 @@ class UserController extends ModuleController
     }
 
     /**
-     * @param Request $request
-     * @return array
+     * @return array<string, mixed>
      */
-    protected function indexData($request)
+    protected function indexData(\Illuminate\Http\Request $request): array
     {
         return [
             'defaultFilterSlug' => 'activated',
@@ -174,26 +164,23 @@ class UserController extends ModuleController
     }
 
     /**
-     * @param array $scopes
-     * @param bool $forcePagination
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @param mixed[] $scopes
      */
-    protected function getIndexItems($scopes = [], $forcePagination = false)
+    protected function getIndexItems(array $scopes = [], bool $forcePagination = false): \Illuminate\Database\Eloquent\Collection
     {
         if (config('twill.enabled.permissions-management')) {
-            $scopes = $scopes + ['accessible' => true];
+            $scopes += ['accessible' => true];
         }
 
         return parent::getIndexItems($scopes, $forcePagination);
     }
 
     /**
-     * @param Request $request
-     * @return array
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+     * @return array<string, mixed>
      */
-    protected function formData($request)
+    protected function formData(\Illuminate\Http\Request $request): array
     {
         $currentUser = $this->authFactory->guard('twill_users')->user();
         $with2faSettings = $this->config->get('twill.enabled.users-2fa') && $currentUser->id == $this->request->get('user');
@@ -238,50 +225,44 @@ class UserController extends ModuleController
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Collection $items
-     * @param array $scopes
-     * @return array
+     * @param mixed[] $scopes
+     * @return array<int, array{name: mixed, slug: string, number: int}>
      */
-    public function getIndexTableMainFilters($items, $scopes = [])
+    protected function getIndexTableMainFilters(\Illuminate\Database\Eloquent\Collection $items, array $scopes = []): array
     {
         $statusFilters = [];
-
-        if (config('twill.enabled.permissions-management')) {
-            $roleScope = ['is_superadmin', false];
-        } else {
-            $roleScope = ['role', '<>', 'SUPERADMIN'];
-        }
-
-        array_push($statusFilters, [
+        $roleScope = config('twill.enabled.permissions-management') ? ['is_superadmin', false] : ['role', '<>', 'SUPERADMIN'];
+        $statusFilters[] = [
             'name' => twillTrans('twill::lang.user-management.active'),
             'slug' => 'activated',
             'number' => $this->repository->getCountByStatusSlug('activated', [$roleScope]),
-        ], [
+        ];
+        $statusFilters[] = [
             'name' => twillTrans('twill::lang.user-management.pending'),
             'slug' => 'pending',
             'number' => $this->repository->getCountByStatusSlug('pending', [$roleScope]),
-        ], [
+        ];
+        $statusFilters[] = [
             'name' => twillTrans('twill::lang.user-management.disabled'),
             'slug' => 'draft',
             'number' => $this->repository->getCountByStatusSlug('draft', [$roleScope]),
-        ]);
+        ];
 
         if ($this->getIndexOption('restore')) {
-            array_push($statusFilters, [
+            $statusFilters[] = [
                 'name' => twillTrans('twill::lang.user-management.trash'),
                 'slug' => 'trash',
                 'number' => $this->repository->getCountByStatusSlug('trash', [$roleScope]),
-            ]);
+            ];
         }
 
         return $statusFilters;
     }
 
     /**
-     * @param string $option
      * @return bool
      */
-    protected function getIndexOption($option, $item = null)
+    protected function getIndexOption(string $option, $item = null)
     {
         if (in_array($option, ['publish', 'bulkEdit', 'create'])) {
             return $this->authFactory->guard('twill_users')->user()->can('edit-users');
@@ -291,51 +272,50 @@ class UserController extends ModuleController
     }
 
     /**
-     * @param \A17\Twill\Models\Model $item
-     * @return array
+     * @return null[]|array<string, string>
      */
-    protected function indexItemData($item)
+    protected function indexItemData(\A17\Twill\Models\Model $item): array
     {
         $canEdit = $this->user->can('edit-users');
 
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }
 
-    protected function filterScope($prepend = [])
+    /**
+     * @return mixed[]
+     */
+    protected function filterScope($prepend = []): array
     {
         $scope = [];
 
         $requestFilters = $this->getRequestFilters();
 
         if (array_key_exists('status', $requestFilters)) {
-            switch ($requestFilters['status']) {
-                case 'activated':
-                    $scope['activated'] = true;
-                    break;
-                case 'pending':
-                    $scope['pending'] = true;
-                    break;
+            if ($requestFilters['status'] == 'activated') {
+                $scope['activated'] = true;
+            } elseif ($requestFilters['status'] == 'pending') {
+                $scope['pending'] = true;
             }
         }
 
         return parent::filterScope($prepend + $scope);
     }
 
-    public function edit($id, $submoduleId = null)
+    public function edit($id, $submoduleId = null): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
     {
         $this->authorizableOptions['edit'] = 'edit-user';
 
         return parent::edit($id, $submoduleId);
     }
 
-    public function update($id, $submoduleId = null)
+    public function update($id, $submoduleId = null): \Illuminate\Http\JsonResponse
     {
         $this->authorizableOptions['edit'] = 'edit-user';
 
         return parent::update($id, $submoduleId);
     }
 
-    public function resendRegistrationEmail($userId)
+    public function resendRegistrationEmail($userId): \Illuminate\Http\RedirectResponse
     {
         $user = twillModel('user')::findOrFail($userId);
         $user->sendWelcomeNotification(
@@ -349,7 +329,7 @@ class UserController extends ModuleController
     {
         if (config('twill.enabled.permissions-management')) {
             return Group::with('permissions')->get()
-                ->mapWithKeys(function ($group) {
+                ->mapWithKeys(function ($group): array {
                     return [$group->id => $group->permissions];
                 })->toArray();
         }
@@ -370,12 +350,12 @@ class UserController extends ModuleController
     private function getRoleList()
     {
         if (config('twill.enabled.permissions-management')) {
-            return Role::accessible()->published()->get()->map(function ($role) {
+            return Role::accessible()->published()->get()->map(function ($role): array {
                 return ['value' => $role->id, 'label' => $role->name];
             })->toArray();
         }
 
-        return collect(UserRole::toArray())->map(function ($item, $key) {
+        return collect(UserRole::toArray())->map(function ($item, $key): array {
             return ['value' => $key, 'label' => $item];
         })->values()->toArray();
     }

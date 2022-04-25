@@ -12,21 +12,18 @@ class MediaRepository extends ModuleRepository
 {
     use HandleTags;
 
-    /**
-     * @param Media $model
-     */
     public function __construct(Media $model)
     {
         $this->model = $model;
     }
 
-    public function filter($query, array $scopes = [])
+    public function filter($query, array $scopes = []): \Illuminate\Database\Eloquent\Builder
     {
         $this->searchIn($query, $scopes, 'search', ['alt_text', 'filename', 'caption']);
         return parent::filter($query, $scopes);
     }
 
-    public function afterDelete($object)
+    public function afterDelete($object): void
     {
         $storageId = $object->uuid;
         if (Config::get('twill.media_library.cascade_delete')) {
@@ -34,7 +31,10 @@ class MediaRepository extends ModuleRepository
         }
     }
 
-    public function prepareFieldsBeforeCreate($fields)
+    /**
+     * @return mixed[]
+     */
+    public function prepareFieldsBeforeCreate($fields): array
     {
         if (Config::get('twill.media_library.init_alt_text_from_filename', true)) {
             $fields['alt_text'] = $this->model->altTextFrom($fields['filename']);

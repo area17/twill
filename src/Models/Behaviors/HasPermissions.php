@@ -13,14 +13,14 @@ trait HasPermissions
      *
      * @return BelongsToMany|Collection|Permission[]
      */
-    public function permissions()
+    public function permissions(): array|\Illuminate\Database\Eloquent\Relations\BelongsToMany|\Illuminate\Support\Collection
     {
         if (config('twill.enabled.permissions-management')) {
             // Deal with the situation that twill user's table has been renamed.
-            if (get_class($this) === twillModel('user')) {
-                return $this->belongsToMany('A17\Twill\Models\Permission', 'permission_twill_user', 'twill_user_id', 'permission_id');
+            if ($this::class === twillModel('user')) {
+                return $this->belongsToMany(\A17\Twill\Models\Permission::class, 'permission_twill_user', 'twill_user_id', 'permission_id');
             } else {
-                return $this->belongsToMany('A17\Twill\Models\Permission');
+                return $this->belongsToMany(\A17\Twill\Models\Permission::class);
             }
         }
 
@@ -31,10 +31,9 @@ trait HasPermissions
      * Add global permission to item, after making sure the permission is
      * valid
      *
-     * @param string $name
      * @return void
      */
-    public function grantGlobalPermission($name)
+    public function grantGlobalPermission(string $name)
     {
         $this->checkPermissionAvailable($name, Permission::SCOPE_GLOBAL);
 
@@ -50,10 +49,9 @@ trait HasPermissions
      * Revoke global permission from the item, after making sure the permission is
      * valid
      *
-     * @param string $name
      * @return void
      */
-    public function revokeGlobalPermission($name)
+    public function revokeGlobalPermission(string $name)
     {
         $this->checkPermissionAvailable($name, Permission::SCOPE_GLOBAL);
 
@@ -65,11 +63,10 @@ trait HasPermissions
      * Add module permission to item, after making sure the permission is
      * valid
      *
-     * @param string $name
      * @param string|object $permissionableType
      * @return void
      */
-    public function grantModulePermission($name, $permissionableType)
+    public function grantModulePermission(string $name, object|string $permissionableType)
     {
         $this->checkPermissionAvailable($name, Permission::SCOPE_MODULE);
 
@@ -86,15 +83,14 @@ trait HasPermissions
      * Revoke module permission from the item, after making sure the permission is
      * valid
      *
-     * @param string $name
      * @param string|object $permissionableType
      * @return void
      */
-    public function revokeModulePermission($name, $permissionableType)
+    public function revokeModulePermission(string $name, object|string $permissionableType)
     {
         $this->checkPermissionAvailable($name, Permission::SCOPE_MODULE);
         $permission = Permission::ofModel($permissionableType)->where('name', $name)->first();
-        if ($permission) {
+        if ($permission !== null) {
             $this->permissions()->module()->detach($permission->id);
         }
     }
@@ -106,7 +102,7 @@ trait HasPermissions
      * @param string|object $permissionableType
      * @return void
      */
-    public function revokeAllModulePermission($permissionableType)
+    public function revokeAllModulePermission(object|string $permissionableType)
     {
         foreach(Permission::ofModel($permissionableType)->get() as $permission) {
             $this->permissions()->module()->detach($permission->id);
@@ -117,11 +113,9 @@ trait HasPermissions
      * Add module item permission, after making sure the permission is
      * valid
      *
-     * @param string $name
-     * @param object $permissionableItem
      * @return void
      */
-    public function grantModuleItemPermission($name, $permissionableItem)
+    public function grantModuleItemPermission(string $name, object $permissionableItem)
     {
         // First find or create the corresponding permission
         // If the object haven't been given this permission, give it
@@ -130,7 +124,7 @@ trait HasPermissions
 
         $permission = Permission::firstOrCreate([
             'name' => $name,
-            'permissionable_type' => $permissionableItem ? get_class($permissionableItem) : null,
+            'permissionable_type' => $permissionableItem ? $permissionableItem::class : null,
             'permissionable_id' => $permissionableItem ? $permissionableItem->id : null,
         ]);
 
@@ -142,16 +136,14 @@ trait HasPermissions
      * Revoke module item permissions, after making sure the permission is
      * valid
      *
-     * @param string $name
-     * @param object $permissionableItem
      * @return void
      */
-    public function revokeModuleItemPermission($name, $permissionableItem)
+    public function revokeModuleItemPermission(string $name, object $permissionableItem)
     {
         $this->checkPermissionAvailable($name, Permission::SCOPE_ITEM);
 
         $permission = Permission::ofItem($permissionableItem)->where('name', $name)->first();
-        if ($permission) {
+        if ($permission !== null) {
             $this->permissions()->ofItem($permissionableItem)->detach($permission->id);
         }
     }
@@ -159,10 +151,9 @@ trait HasPermissions
     /**
      * Revoke all module item permissions
      *
-     * @param object $permissionableItem
      * @return void
      */
-    public function revokeModuleItemAllPermissions($permissionableItem)
+    public function revokeModuleItemAllPermissions(object $permissionableItem)
     {
         $this->removePermissions(Permission::ofItem($permissionableItem)->pluck('id')->toArray());
     }
@@ -184,7 +175,7 @@ trait HasPermissions
      * @param int[] $permissionableIds
      * @return void
      */
-    public function removePermissions($permissionableIds)
+    public function removePermissions(array $permissionableIds)
     {
         if (!empty($permissionableIds)) {
             $this->permissions()->detach($permissionableIds);
@@ -198,11 +189,9 @@ trait HasPermissions
      * @see Permission::SCOPE_MODULE
      * @see Permission::SCOPE_ITEM
      *
-     * @param string $name
-     * @param string $scope
      * @return void
      */
-    protected function checkPermissionAvailable($name, $scope)
+    protected function checkPermissionAvailable(string $name, string $scope)
     {
         if (!in_array($name, Permission::available($scope))) {
             abort(400, 'Operation failed, permission ' . $name . ' not available on ' . $scope);

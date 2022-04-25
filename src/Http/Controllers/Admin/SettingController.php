@@ -11,53 +11,21 @@ use Illuminate\View\Factory as ViewFactory;
 
 class SettingController extends Controller
 {
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * @var SettingRepository
-     */
-    protected $settings;
-
-    /**
-     * @var Redirector
-     */
-    protected $redirector;
-
-    /**
-     * @var UrlGenerator
-     */
-    protected $urlGenerator;
-
-    /**
-     * @var ViewFactory
-     */
-    protected $viewFactory;
-
     public function __construct(
-        Config $config,
-        SettingRepository $settings,
-        Redirector $redirector,
-        UrlGenerator $urlGenerator,
-        ViewFactory $viewFactory
+        protected Config $config,
+        protected SettingRepository $settings,
+        protected Redirector $redirector,
+        protected UrlGenerator $urlGenerator,
+        protected ViewFactory $viewFactory
     ) {
         parent::__construct();
-
-        $this->config = $config;
-        $this->settings = $settings;
         $this->middleware('can:edit-settings');
-        $this->redirector = $redirector;
-        $this->urlGenerator = $urlGenerator;
-        $this->viewFactory = $viewFactory;
     }
 
     /**
-     * @param string $section
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function index($section)
+    public function index(string $section): \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
     {
         return $this->viewFactory->exists('twill.settings.' . $section)
         ? $this->viewFactory->make('twill.settings.' . $section, [
@@ -74,10 +42,8 @@ class SettingController extends Controller
 
     /**
      * @param mixed $section
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function update($section, Request $request)
+    public function update($section, Request $request): \Illuminate\Http\RedirectResponse
     {
         if (array_key_exists('cancel', $request->all())) {
             return $this->redirector->back();

@@ -44,9 +44,6 @@ class CapsuleInstall extends Command
 
     protected string $namespace;
 
-    /**
-     * @return string
-     */
     private function getUnzippedPath(): string
     {
         return TwillCapsules::getProjectCapsulesPath() .
@@ -58,10 +55,8 @@ class CapsuleInstall extends Command
 
     /**
      * Create super admin account.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): int
     {
         if (! $this->checkParameters()) {
             return 255;
@@ -76,7 +71,7 @@ class CapsuleInstall extends Command
         return 0;
     }
 
-    protected function checkParameters()
+    protected function checkParameters(): bool
     {
         if (! $this->option('require') && ! $this->option('copy')) {
             $this->error('Missing mandatory strategy: --require or --copy.');
@@ -93,7 +88,7 @@ class CapsuleInstall extends Command
         return true;
     }
 
-    protected function configureInstaller()
+    protected function configureInstaller(): void
     {
         $capsule = $this->argument('capsule');
 
@@ -105,10 +100,10 @@ class CapsuleInstall extends Command
             $capsule = Str::snake(Str::kebab($capsule));
 
             if (! Str::contains($capsule, '/')) {
-                $capsule = $this->getRepositoryPrefix() . "-$capsule";
+                $capsule = $this->getRepositoryPrefix() . sprintf('-%s', $capsule);
             }
 
-            $url = $this->getRepositoryUrlPrefix() . "/$capsule";
+            $url = $this->getRepositoryUrlPrefix() . sprintf('/%s', $capsule);
         }
 
         $this->repositoryUri = $capsule;
@@ -124,12 +119,12 @@ class CapsuleInstall extends Command
         $this->capsule = TwillCapsules::makeProjectCapsule($this->namespace);
     }
 
-    protected function isFullUrl($capsule)
+    protected function isFullUrl($capsule): bool
     {
         return false;
     }
 
-    protected function getRepositoryUrlPrefix()
+    protected function getRepositoryUrlPrefix(): string
     {
         return 'https://' . $this->getService();
     }
@@ -150,7 +145,7 @@ class CapsuleInstall extends Command
         return $this->option('branch');
     }
 
-    protected function getZipAddress()
+    protected function getZipAddress(): string
     {
         return sprintf(
             '%s/archive/refs/heads/%s.zip',
@@ -159,7 +154,7 @@ class CapsuleInstall extends Command
         );
     }
 
-    protected function makeCapsuleName($capsule)
+    protected function makeCapsuleName($capsule): string
     {
         $capsule = Str::afterLast($capsule, '/');
 
@@ -176,7 +171,7 @@ class CapsuleInstall extends Command
         return $this->option('service');
     }
 
-    protected function displayConfigurationSummary()
+    protected function displayConfigurationSummary(): void
     {
         $this->info('Configuration summary');
 
@@ -184,33 +179,33 @@ class CapsuleInstall extends Command
 
         $this->info('Name prefix: ' . $this->getCapsulePrefix());
 
-        $this->info("Capsule repository URI: {$this->repositoryUri}");
+        $this->info(sprintf('Capsule repository URI: %s', $this->repositoryUri));
 
-        $this->info("Capsule name: {$this->capsuleName}");
+        $this->info(sprintf('Capsule name: %s', $this->capsuleName));
 
-        $this->info("Name: {$this->name}");
+        $this->info(sprintf('Name: %s', $this->name));
 
         $this->info('Module: ' . $this->getModule());
 
-        $this->info("Namespace: {$this->namespace}");
+        $this->info(sprintf('Namespace: %s', $this->namespace));
 
         $this->info('Service: ' . $this->getService());
 
         $this->info('Branch: ' . $this->getBranch());
 
-        $this->info("Repository URL: {$this->repositoryUrl}");
+        $this->info(sprintf('Repository URL: %s', $this->repositoryUrl));
 
         $this->info('Zip URL: ' . $this->getZipAddress());
 
         $this->info('Temporary file: ' . $this->getTempFileName());
     }
 
-    protected function getModule()
+    protected function getModule(): string
     {
         return Str::camel($this->name);
     }
 
-    protected function canInstallCapsule()
+    protected function canInstallCapsule(): bool
     {
         // We know that we throw an exception if it does not exist so we use that check here.
         try {
@@ -218,7 +213,7 @@ class CapsuleInstall extends Command
             $this->error('A capsule with this name already exists!');
 
             return false;
-        } catch (NoCapsuleFoundException $e) {
+        } catch (NoCapsuleFoundException) {
         }
 
         if ($this->directoryExists()) {
@@ -233,7 +228,7 @@ class CapsuleInstall extends Command
         return true;
     }
 
-    protected function installCapsule()
+    protected function installCapsule(): int
     {
         $installed =
             $this->canInstallCapsule() &&
@@ -255,17 +250,17 @@ class CapsuleInstall extends Command
         return $installed ? 0 : 255;
     }
 
-    protected function getCapsuleDirectory()
+    protected function getCapsuleDirectory(): string
     {
         return $this->capsule->getPsr4Path();
     }
 
-    protected function directoryExists()
+    protected function directoryExists(): bool
     {
         return file_exists($this->getCapsuleDirectory());
     }
 
-    protected function download()
+    protected function download(): bool
     {
         if (! $this->cleanTempFile() || ! $this->repositoryExists()) {
             return false;
@@ -281,7 +276,7 @@ class CapsuleInstall extends Command
         return true;
     }
 
-    protected function cleanTempFile()
+    protected function cleanTempFile(): bool
     {
         if (file_exists($this->getTempFileName())) {
             unlink($this->getTempFileName());
@@ -327,7 +322,7 @@ class CapsuleInstall extends Command
         return true;
     }
 
-    protected function uncompress($zip, $directory)
+    protected function uncompress($zip, $directory): bool
     {
         $this->info('Unzipping file...');
 
@@ -346,31 +341,31 @@ class CapsuleInstall extends Command
         return false;
     }
 
-    protected function unzipShellCommandExists()
+    protected function unzipShellCommandExists(): bool
     {
         $return = shell_exec('which unzip');
 
         return ! empty($return);
     }
 
-    protected function unzipWithExtension($zip, $directory)
+    protected function unzipWithExtension($zip, $directory): bool
     {
         $this->info('Unzipping with PHP zip extension...');
 
         $unzip = new \ZipArchive();
 
-        $success = $unzip->open($zip) && $unzip->extractTo("$directory/");
+        $success = $unzip->open($zip) && $unzip->extractTo(sprintf('%s/', $directory));
 
         try {
             $unzip->close();
-        } catch (Exception $exception) {
+        } catch (Exception) {
             //
         }
 
         unlink($zip);
 
         if (! $success) {
-            $this->error("Cound not read zip file: $zip");
+            $this->error(sprintf('Cound not read zip file: %s', $zip));
 
             return false;
         }
@@ -378,7 +373,7 @@ class CapsuleInstall extends Command
         return true;
     }
 
-    protected function unzipWithShell($zip, $directory)
+    protected function unzipWithShell($zip, $directory): bool
     {
         $this->info('Unzipping with unzip shell command...');
 
@@ -389,7 +384,7 @@ class CapsuleInstall extends Command
         return file_exists($this->getUnzippedPath());
     }
 
-    public function renameToCapsule()
+    public function renameToCapsule(): bool
     {
         $destination = $this->capsule->getPsr4Path();
 
@@ -398,7 +393,7 @@ class CapsuleInstall extends Command
         return file_exists($destination);
     }
 
-    public function makeDir($path)
+    public function makeDir($path): void
     {
         if (! file_exists($path)) {
             mkdir($path, 0775, true);

@@ -11,8 +11,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 class RenameRoutes extends LaravelAwareRectorRule
 {
-    public static $ROUTES = null;
-    public $baseDir = null;
+    public static $ROUTES;
+
+    public $baseDir;
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -26,12 +27,15 @@ class RenameRoutes extends LaravelAwareRectorRule
         );
     }
 
+    /**
+     * @return class-string[]
+     */
     public function getNodeTypes(): array
     {
         return [Node\Expr\FuncCall::class, Node\Expr\StaticCall::class];
     }
 
-    public function refactor(Node $node)
+    public function refactor(Node $node): ?\PhpParser\Node
     {
         $isRouteCall = false;
         if ($node instanceof Node\Expr\StaticCall) {
@@ -58,11 +62,11 @@ class RenameRoutes extends LaravelAwareRectorRule
         return null;
     }
 
-    private function loadRoutes(): array
+    private function loadRoutes(): ?array
     {
         if (self::$ROUTES === null) {
             // Get all twill routes so we can process them properly.
-            $app = $this->getLaravel();
+            $this->getLaravel();
             $routes = Route::getRoutes();
 
             $twillRouteList = [];

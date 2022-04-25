@@ -9,10 +9,13 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 
 if (! function_exists('dumpUsableSqlQuery')) {
+    /**
+     * @return never
+     */
     function dumpUsableSqlQuery($query)
     {
         dd(vsprintf(str_replace('?', '%s', $query->toSql()), array_map(function ($binding) {
-            return is_numeric($binding) ? $binding : "'{$binding}'";
+            return is_numeric($binding) ? $binding : sprintf('\'%s\'', $binding);
         }, $query->getBindings())));
     }
 }
@@ -20,10 +23,8 @@ if (! function_exists('dumpUsableSqlQuery')) {
 if (! function_exists('classUsesDeep')) {
     /**
      * @param mixed $class
-     * @param bool $autoload
-     * @return array
      */
-    function classUsesDeep($class, $autoload = true)
+    function classUsesDeep($class, bool $autoload = true): array
     {
         $traits = [];
 
@@ -40,7 +41,7 @@ if (! function_exists('classUsesDeep')) {
             $traitsToSearch = array_merge($newTraits, $traitsToSearch);
         }
 
-        foreach ($traits as $trait => $same) {
+        foreach (array_keys($traits) as $trait) {
             $traits = array_merge(class_uses($trait, $autoload), $traits);
         }
 
@@ -51,41 +52,27 @@ if (! function_exists('classUsesDeep')) {
 if (! function_exists('classHasTrait')) {
     /**
      * @param mixed $class
-     * @param string $trait
-     * @return bool
      */
-    function classHasTrait($class, $trait)
+    function classHasTrait($class, string $trait): bool
     {
         $traits = classUsesDeep($class);
-
-        if (in_array($trait, array_keys($traits))) {
-            return true;
-        }
-
-        return false;
+        return array_key_exists($trait, $traits);
     }
 }
 
 if (! function_exists('getFormFieldsValue')) {
     /**
-     * @param array $formFields
-     * @param string $name
      * @param mixed $default
      * @return mixed
      */
-    function getFormFieldsValue($formFields, $name, $default = null)
+    function getFormFieldsValue(array $formFields, string $name, $default = null)
     {
         return Arr::get($formFields, str_replace(']', '', str_replace('[', '.', $name)), $default ?? '') ?? $default;
     }
 }
 
 if (! function_exists('fireCmsEvent')) {
-    /**
-     * @param string $eventName
-     * @param array $input
-     * @return void
-     */
-    function fireCmsEvent($eventName, $input = [])
+    function fireCmsEvent(string $eventName, array $input = []): void
     {
         $method = method_exists(\Illuminate\Events\Dispatcher::class, 'dispatch') ? 'dispatch' : 'fire';
         Event::$method($eventName, [$eventName, $input]);
@@ -93,11 +80,7 @@ if (! function_exists('fireCmsEvent')) {
 }
 
 if (! function_exists('twill_path')) {
-    /**
-     * @param string $path
-     * @return string
-     */
-    function twill_path($path = '')
+    function twill_path(string $path = ''): string
     {
         // Is it a full application path?
         if (Str::startsWith($path, base_path())) {
@@ -105,7 +88,7 @@ if (! function_exists('twill_path')) {
         }
 
         // Split to separate root namespace
-        preg_match('/(\w*)\W?(.*)/', config('twill.namespace'), $namespaceParts);
+        preg_match('#(\w*)\W?(.*)#', config('twill.namespace'), $namespaceParts);
 
         $twillBase = app_path(
             fix_directory_separator(
@@ -136,11 +119,9 @@ if (! function_exists('twill_path')) {
 
 if (! function_exists('make_twill_directory')) {
     /**
-     * @param string $path
-     * @param bool $recursive
      * @param \Illuminate\Filesystem\Filesystem|null $fs
      */
-    function make_twill_directory($path, $recursive = true, $fs = null)
+    function make_twill_directory(string $path, bool $recursive = true, $fs = null)
     {
         $fs = filled($fs)
         ? $fs
@@ -156,11 +137,10 @@ if (! function_exists('make_twill_directory')) {
 
 if (! function_exists('twill_put_stub')) {
     /**
-     * @param string $path
      * @param bool $recursive
      * @param \Illuminate\Filesystem\Filesystem|null $fs
      */
-    function twill_put_stub($path, $stub, $fs = null)
+    function twill_put_stub(string $path, $stub, $fs = null)
     {
         $fs = filled($fs)
         ? $fs
@@ -180,11 +160,10 @@ if (! function_exists('twill_put_stub')) {
 
 if (! function_exists('fix_directory_separator')) {
     /**
-     * @param string $path
      * @param bool $recursive
      * @param int $mode
      */
-    function fix_directory_separator($path)
+    function fix_directory_separator(string $path)
     {
         return str_replace(
             '\\',
@@ -197,18 +176,13 @@ if (! function_exists('fix_directory_separator')) {
 if (!function_exists('twillModel')) {
     function twillModel($model)
     {
-        return config("twill.models.$model")
-            ?? abort(500, "helpers/twillModel: '$model' model is not configured");
+        return config(sprintf('twill.models.%s', $model))
+            ?? abort(500, sprintf('helpers/twillModel: \'%s\' model is not configured', $model));
     }
 }
 
 if (!function_exists('generate_list_of_allowed_blocks')) {
-    /**
-     * @param array $blocks
-     * @param array $groups
-     * @return array
-     */
-    function generate_list_of_available_blocks($blocks, $groups): array
+    function generate_list_of_available_blocks(?array $blocks, ?array $groups): array
     {
         $blockList = TwillBlocks::getBlocks();
 
@@ -241,11 +215,13 @@ if (!function_exists('generate_list_of_allowed_blocks')) {
         );
 
         // Sort them by the original definition
-        return $finalBlockList->sortBy(function (Block $b) use ($blocks) {
+        $test =  $finalBlockList->sortBy(function (Block $b) use ($blocks) {
             return collect($blocks)->search(function ($id, $key) use ($b) {
                 return $id == $b->name;
             });
         })->values()->toArray();
+
+        return $test;
     }
 }
 

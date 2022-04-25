@@ -24,10 +24,9 @@ trait HasRelated
     /**
      * Returns the related items for a browser field.
      *
-     * @param string $browser_name
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getRelated($browser_name)
+    public function getRelated(string $browser_name)
     {
         if (!isset($this->relatedCache[$browser_name]) || $this->relatedCache[$browser_name] === null) {
             $this->loadRelated($browser_name);
@@ -39,12 +38,11 @@ trait HasRelated
     /**
      * Eager load related items for a browser field.
      *
-     * @param string $browser_name
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function loadRelated($browser_name)
+    public function loadRelated(string $browser_name)
     {
-        if (!isset($this->relatedItems)) {
+        if (!(property_exists($this, 'relatedItems') && $this->relatedItems !== null)) {
             $this->load('relatedItems');
         }
 
@@ -58,11 +56,10 @@ trait HasRelated
     /**
      * Attach items to the model for a browser field.
      *
-     * @param array $items
-     * @param string $browser_name
      * @return void
+     * @param mixed[] $items
      */
-    public function saveRelated($items, $browser_name)
+    public function saveRelated(array $items, string $browser_name)
     {
         RelatedItem::where([
             'browser_name' => $browser_name,
@@ -72,9 +69,9 @@ trait HasRelated
 
         $position = 1;
 
-        Collection::make($items)->map(function ($item) {
+        Collection::make($items)->map(function ($item): array {
             return Arr::only($item, ['endpointType', 'id']);
-        })->each(function ($values) use ($browser_name, &$position) {
+        })->each(function ($values) use ($browser_name, &$position): void {
             RelatedItem::create([
                 'subject_id' => $this->getKey(),
                 'subject_type' => $this->getMorphClass(),
@@ -83,7 +80,7 @@ trait HasRelated
                 'browser_name' => $browser_name,
                 'position' => $position,
             ]);
-            $position++;
+            ++$position;
         });
     }
 }

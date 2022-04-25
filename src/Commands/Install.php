@@ -24,41 +24,23 @@ class Install extends Command
      */
     protected $description = 'Install Twill into your Laravel application';
 
-    /**
-     * @var Filesystem
-     */
-    protected $files;
-
-    /**
-     * @var DatabaseManager
-     */
-    protected $db;
-
-    /**
-     * @param Filesystem $files
-     * @param DatabaseManager $db
-     */
-    public function __construct(Filesystem $files, DatabaseManager $db)
+    public function __construct(protected Filesystem $files, protected DatabaseManager $db)
     {
         parent::__construct();
-
-        $this->files = $files;
-        $this->db = $db;
     }
 
     /**
      * Executes the console command.
      *
-     * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function handle()
+    public function handle(): void
     {
         //check the database connection before installing
         try {
             $this->db->connection()->getPdo();
-        } catch (\Exception $e) {
-            $this->error('Could not connect to the database, please check your configuration:' . "\n" . $e);
+        } catch (\Exception $exception) {
+            $this->error('Could not connect to the database, please check your configuration:' . "\n" . $exception);
 
             return;
         }
@@ -71,7 +53,7 @@ class Install extends Command
                     $this->warn('Cancelled.');
                 }
             } else {
-                $this->error("Could not find preset: $preset");
+                $this->error(sprintf('Could not find preset: %s', $preset));
             }
         } else {
             $this->addRoutesFile();
@@ -96,10 +78,9 @@ class Install extends Command
     /**
      * Creates the default `twill.php` route configuration file.
      *
-     * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function addRoutesFile()
+    private function addRoutesFile(): void
     {
         $routesPath = base_path('routes');
 
@@ -115,10 +96,8 @@ class Install extends Command
 
     /**
      * Calls the command responsible for creation of the default superadmin user.
-     *
-     * @return void
      */
-    private function createSuperAdmin()
+    private function createSuperAdmin(): void
     {
         if (! $this->option('no-interaction')) {
             $this->call('twill:superadmin');
@@ -127,26 +106,22 @@ class Install extends Command
 
     /**
      * Publishes the package configuration files.
-     *
-     * @return void
      */
-    private function publishConfig()
+    private function publishConfig(): void
     {
         $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--provider' => \A17\Twill\TwillServiceProvider::class,
             '--tag' => 'config',
         ]);
     }
 
     /**
      * Publishes the package frontend assets.
-     *
-     * @return void
      */
-    private function publishAssets()
+    private function publishAssets(): void
     {
         $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--provider' => \A17\Twill\TwillServiceProvider::class,
             '--tag' => 'assets',
         ]);
     }

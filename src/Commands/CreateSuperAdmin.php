@@ -24,34 +24,15 @@ class CreateSuperAdmin extends Command
      */
     protected $description = "Create the superadmin account";
 
-    /**
-     * @var ValidatorFactory
-     */
-    protected $validatorFactory;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * @param ValidatorFactory $validatorFactory
-     * @param Config $config
-     */
-    public function __construct(ValidatorFactory $validatorFactory, Config $config)
+    public function __construct(protected ValidatorFactory $validatorFactory, protected Config $config)
     {
         parent::__construct();
-
-        $this->validatorFactory = $validatorFactory;
-        $this->config = $config;
     }
 
     /**
      * Create super admin account.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $this->info("Let's create a superadmin account!");
         $email = $this->setEmail();
@@ -91,6 +72,7 @@ class CreateSuperAdmin extends Command
         if (filled($email = $this->argument('email'))) {
             return $email;
         }
+
         $email = $this->ask('Enter an email');
         if ($this->validateEmail($email)) {
             return $email;
@@ -110,6 +92,7 @@ class CreateSuperAdmin extends Command
         if (filled($email = $this->argument('password'))) {
             return $email;
         }
+
         $password = $this->secret('Enter a password');
         if ($this->validatePassword($password)) {
             $confirmPassword = $this->secret('Confirm the password');
@@ -127,11 +110,8 @@ class CreateSuperAdmin extends Command
 
     /**
      * Determine if the email address given valid.
-     *
-     * @param  string  $email
-     * @return boolean
      */
-    private function validateEmail($email)
+    private function validateEmail(string $email): bool
     {
         return $this->validatorFactory->make(['email' => $email], [
             'email' => 'required|email|max:255|unique:' . $this->config->get('twill.users_table'),
@@ -140,11 +120,8 @@ class CreateSuperAdmin extends Command
 
     /**
      * Determine if the password given valid.
-     *
-     * @param  string  $password
-     * @return boolean
      */
-    private function validatePassword($password)
+    private function validatePassword(string $password): bool
     {
         return $this->validatorFactory->make(['password' => $password], [
             'password' => 'required|min:6',

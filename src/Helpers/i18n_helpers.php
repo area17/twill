@@ -14,13 +14,13 @@ if (!function_exists('getLocales')) {
     /**
      * @return string[]
      */
-    function getLocales()
+    function getLocales(): array
     {
         $locales = collect(config('translatable.locales'))->map(function ($locale, $index) {
             return collect($locale)->map(function ($country) use ($locale, $index) {
                 return is_numeric($index)
                     ? $locale
-                    : "$index-$country";
+                    : sprintf('%s-%s', $index, $country);
             });
         })->flatten()->toArray();
 
@@ -33,12 +33,7 @@ if (!function_exists('getLocales')) {
 }
 
 if (!function_exists('getLanguagesForVueStore')) {
-    /**
-     * @param array $form_fields
-     * @param bool $translate
-     * @return array
-     */
-    function getLanguagesForVueStore($form_fields = [], $translate = true)
+    function getLanguagesForVueStore(array $form_fields = [], bool $translate = true): array
     {
         $manageMultipleLanguages = count(getLocales()) > 1;
         if ($manageMultipleLanguages && $translate) {
@@ -75,11 +70,7 @@ if (!function_exists('getLanguagesForVueStore')) {
 }
 
 if (!function_exists('getLanguageLabelFromLocaleCode')) {
-    /**
-     * @param string $code
-     * @return string
-     */
-    function getLanguageLabelFromLocaleCode($code, $native = false)
+    function getLanguageLabelFromLocaleCode(string $code, $native = false): string
     {
         if (class_exists(Locale::class)) {
             if ($native) {
@@ -96,8 +87,10 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             if (is_array($lang) && isset($lang[1]) && $native) {
                 return $lang[1];
             }
+
             return $lang;
         }
+
         return $code;
     }
 }
@@ -112,7 +105,7 @@ if (!function_exists('camelCaseToWords')) {
     {
         $re = '/(?<=[a-z])(?=[A-Z])/x';
         $a = preg_split($re, $camelCaseString);
-        $words = join(" ", $a);
+        $words = implode(" ", $a);
         return ucfirst(strtolower($words));
     }
 }

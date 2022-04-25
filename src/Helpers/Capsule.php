@@ -15,55 +15,18 @@ use Illuminate\Support\Str;
 class Capsule
 {
     /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var string
-     */
-    public $path;
-
-    /**
-     * @var bool
-     */
-    public $enabled;
-
-    /**
-     * @var bool
-     */
-    public $packageCapsule = false;
-
-    /**
      * @var bool
      */
     public $loaded = false;
 
-    /**
-     * @var string|null
-     */
-    private $singular;
-
-    /**
-     * @var string
-     */
-    private $namespace;
-
     public function __construct(
-        string $name,
-        string $namespace,
-        string $path,
-        string $singular = null,
-        bool $enabled = true,
-        bool $packageCapsule = false
+        public string $name,
+        private string $namespace,
+        public string $path,
+        private ?string $singular = null,
+        public bool $enabled = true,
+        public bool $packageCapsule = false
     ) {
-        $this->name = $name;
-        $this->path = $path;
-        $this->enabled = $enabled;
-        $this->namespace = $namespace;
-        $this->singular = $singular;
-        $this->packageCapsule = $packageCapsule;
-
         $this->boot();
     }
 
@@ -101,7 +64,7 @@ class Capsule
             return;
         }
 
-        collect($files)->each(function ($file) {
+        collect($files)->each(function ($file): void {
             if (file_exists($file)) {
                 require_once $file;
             }
@@ -115,7 +78,7 @@ class Capsule
 
     public function loadMigrations(): void
     {
-        $callback = function (Migrator $migrator) {
+        $callback = function (Migrator $migrator): void {
             $migrator->path($this->getMigrationsPath());
         };
 
@@ -133,7 +96,7 @@ class Capsule
 
     public function loadTranslations(): void
     {
-        $callback = function (Translator $translator) {
+        $callback = function (Translator $translator): void {
             $translator->addNamespace($this->getLanguagesPath(), 'twill:capsules:' . $this->getModule());
         };
 
@@ -271,7 +234,7 @@ class Capsule
     public function getViewPrefix(): string
     {
         $name = Str::studly($this->name);
-        return "{$name}.resources.views.admin";
+        return sprintf('%s.resources.views.admin', $name);
     }
 
     public function getRoutesFile(): string
@@ -324,6 +287,9 @@ class Capsule
         return $this->path . '/config.php';
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getConfig(): array
     {
         if (file_exists($this->getConfigFile())) {

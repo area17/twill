@@ -9,8 +9,14 @@ class UpdateExampleCommand extends Command
 {
     use HandlesPresets;
 
+    /**
+     * @var string
+     */
     protected $signature = 'twill:update-example {preset}';
 
+    /**
+     * @var string
+     */
     protected $description = 'Updates the twill examples folder';
 
     public function handle(): void
@@ -24,7 +30,7 @@ class UpdateExampleCommand extends Command
                 $this->warn('Cancelled.');
             }
         } else {
-            $this->error("Could not find preset: $preset");
+            $this->error(sprintf('Could not find preset: %s', $preset));
         }
     }
 }

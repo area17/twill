@@ -14,8 +14,9 @@ use Illuminate\Support\Facades\Config;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
+    use AuthorizesRequests;
+    use DispatchesJobs;
+    use ValidatesRequests;
     public function __construct()
     {
         if (Config::get('twill.bind_exception_handler', true)) {
@@ -26,10 +27,9 @@ class Controller extends BaseController
     /**
      * Attempts to unset the given middleware.
      *
-     * @param string $middleware
      * @return void
      */
-    public function removeMiddleware($middleware)
+    public function removeMiddleware(string $middleware)
     {
         if (($key = array_search($middleware, Arr::pluck($this->middleware, 'middleware'))) !== false) {
             unset($this->middleware[$key]);

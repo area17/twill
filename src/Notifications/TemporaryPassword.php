@@ -7,7 +7,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 class TemporaryPassword extends ResetPassword
 {
-    public function toMail($notifiable)
+    public function toMail($notifiable): \Illuminate\Notifications\Messages\MailMessage
     {
         return (new MailMessage())->markdown('twill::emails.html.email', [
             'url' => url(request()->getScheme() . '://' . config('twill.admin_app_url') . route('twill.login.form', null, false)),

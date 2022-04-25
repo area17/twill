@@ -20,10 +20,7 @@ class BlockCollection extends Collection
      */
     protected $fileSystem;
 
-    /**
-     * @var \Illuminate\Support\Collection
-     */
-    private $missingDirectories;
+    private \Illuminate\Support\Collection $missingDirectories;
 
     /**
      * @param mixed $items
@@ -39,55 +36,45 @@ class BlockCollection extends Collection
         $this->load();
     }
 
-    private function addMissingDirectory($directory)
+    private function addMissingDirectory($directory): void
     {
         $this->missingDirectories->push($directory);
     }
 
     /**
      * @param $search
-     * @param array $sources
      * @return mixed
      * @throws \Exception
      */
-    public function findByName($search, $sources = [])
+    public function findByName($search, array $sources = [])
     {
         return $this->collect()
-            ->filter(function ($block) use ($search, $sources) {
+            ->filter(function ($block) use ($search, $sources): bool {
                 return $block->name == $search &&
                     (blank($sources) ||
                     collect($sources)->contains($block->source));
             })
-            ->sortBy(function ($block) {
+            ->sortBy(function ($block): int {
                 return $block->source === 'app' ? 0 : 1;
             })
             ->first();
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    public function getBlocks()
+    public function getBlocks(): \Illuminate\Support\Collection
     {
         return $this->collect()
-            ->filter(function ($block) {
+            ->filter(function ($block): bool {
                 return $block->type === Block::TYPE_BLOCK;
             })
             ->values();
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    public function getBlockList()
+    public function getBlockList(): \Illuminate\Support\Collection
     {
         return $this->getBlocks();
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    public function getMissingDirectories()
+    public function getMissingDirectories(): \Illuminate\Support\Collection
     {
         return $this->missingDirectories;
     }
@@ -114,7 +101,7 @@ class BlockCollection extends Collection
     /**
      * @return $this
      */
-    public function generatePaths()
+    public function generatePaths(): static
     {
         $this->paths = collect(
             config('twill.block_editor.directories.source.blocks')
@@ -137,21 +124,13 @@ class BlockCollection extends Collection
         return $this;
     }
 
-    /**
-     * @param Block $block
-     * @return string
-     */
-    public function detectCustomSources(Block $block)
+    public function detectCustomSources(Block $block): string
     {
-        if ($block->source === Block::SOURCE_APP) {
-            if (
-                $this->collect()
-                ->where('fileName', $block->getFileName())
-                ->where('source', Block::SOURCE_TWILL)
-                ->isNotEmpty()
-            ) {
-                return Block::SOURCE_CUSTOM;
-            }
+        if ($block->source === Block::SOURCE_APP && $this->collect()
+        ->where('fileName', $block->getFileName())
+        ->where('source', Block::SOURCE_TWILL)
+        ->isNotEmpty()) {
+            return Block::SOURCE_CUSTOM;
         }
 
         return $block->source;
@@ -162,12 +141,12 @@ class BlockCollection extends Collection
         $this->generatePaths();
 
         $this->items = collect($this->paths)
-            ->reduce(function (Collection $keep, $path) {
+            ->reduce(function (Collection $keep, $path): \Illuminate\Support\Collection {
                 $this->readBlocks(
                     $path['path'],
                     $path['source'],
                     $path['type']
-                )->each(function ($block) use ($keep) {
+                )->each(function ($block) use ($keep): \Illuminate\Support\Collection {
                     $keep->push($block);
 
                     return $keep;
@@ -178,15 +157,15 @@ class BlockCollection extends Collection
             ->toArray();
 
         $this->items = $this->collect()
-            ->each(function (Block $block) {
+            ->each(function (Block $block): void {
                 $block->setSource($this->detectCustomSources($block));
             })
             ->toArray();
 
         // remove duplicate Twill blocks
         $appBlocks = $this->collect()->whereIn('source', [Block::SOURCE_APP, Block::SOURCE_CUSTOM]);
-        $this->items = $this->collect()->filter(function ($item) use ($appBlocks) {
-            return ! $appBlocks->contains(function ($block) use ($item) {
+        $this->items = $this->collect()->filter(function ($item) use ($appBlocks): bool {
+            return ! $appBlocks->contains(function ($block) use ($item): bool {
                 return $item->source === Block::SOURCE_TWILL && $item->name === $block->name;
             });
         })->values()->toArray();
@@ -205,17 +184,13 @@ class BlockCollection extends Collection
      */
     public function addBlocksFromConfig(Collection $items, string $type): self
     {
-        $items->reject(function ($value, $blockName) use ($type) {
-            return $this->contains(function ($block) use ($blockName, $type) {
+        $items->reject(function ($value, $blockName) use ($type): array|bool {
+            return $this->contains(function ($block) use ($blockName, $type): bool {
                 return $block->name === $blockName && $block->type === $type;
             }) ? [$blockName, $value] : false;
         })
-            ->each(function ($block, $blockName) use ($type) {
-                if ($block['compiled'] ?? false) {
-                    $file = null;
-                } else {
-                    $file = $this->findFileByComponentName($block['component']);
-                }
+            ->each(function ($block, $blockName) use ($type): void {
+                $file = $block['compiled'] ?? false ? null : $this->findFileByComponentName($block['component']);
 
                 $this->push($this->blockFromComponentName(
                     $file,
@@ -230,102 +205,78 @@ class BlockCollection extends Collection
 
     /**
      * @param string $componentName
-     * @param string $blockName
-     * @param string $type
-     * @param string $source
-     * @return Block
      */
-    public function blockFromComponentName($file, $blockName, $type, $source)
+    public function blockFromComponentName($file, string $blockName, string $type, string $source): \A17\Twill\Services\Blocks\Block
     {
         $this->logDeprecatedBlockConfig($blockName, $type);
 
         return Block::make($file, $type, $source, $blockName);
     }
 
-    /**
-     * @param string $type
-     * @param string $blockName
-     * @return void
-     */
-    public function logDeprecatedBlockConfig($blockName, $type)
+    public function logDeprecatedBlockConfig(string $blockName, string $type): void
     {
-        $path = $this->paths->filter(function ($path) use ($type) {
+        $path = $this->paths->filter(function ($path) use ($type): bool {
             return $path['source'] === Block::SOURCE_APP && $path['type'] === $type;
         })->pluck('path')->join(', ', ' or ');
 
         Log::notice(
-            "The {$type} '{$blockName}' appears to be defined in the config " .
+            sprintf('The %s \'%s\' appears to be defined in the config ', $type, $blockName) .
             "'twill.block_editor.blocks' or 'twill.block_editor.repeaters' only. " .
-            "This will be deprecated in a future release. A {$type} should be " .
-            "defined in its unique view in [{$path}]."
+            sprintf('This will be deprecated in a future release. A %s should be ', $type) .
+            sprintf('defined in its unique view in [%s].', $path)
         );
     }
 
     /**
      * This function will try to find a view from the a component name
      * (minus the 'a17-block-' namespace).
-     *
-     * @param string $componentName
-     * @return \Symfony\Component\Finder\SplFileInfo
      */
-    public function findFileByComponentName($componentName)
+    public function findFileByComponentName(string $componentName): \Symfony\Component\Finder\SplFileInfo
     {
         $filename = str_replace('a17-block-', '', $componentName) . '.blade.php';
-        $paths = $this->paths->pluck('path')->filter(function ($path) {
+        $paths = $this->paths->pluck('path')->filter(function ($path): bool {
             return $this->fileSystem->exists($path);
         })->toArray();
 
         $files = iterator_to_array(\Symfony\Component\Finder\Finder::create()->name($filename)->in($paths), false);
 
         if (empty($files)) {
-            throw new Exception("Could not find a view for the block or repeater '{$componentName}'.");
+            throw new Exception(sprintf('Could not find a view for the block or repeater \'%s\'.', $componentName));
         }
 
         return $files[0];
     }
 
     /**
-     * @return array
+     * @return mixed[]
      */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->list()->toArray();
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    public function list()
+    public function list(): \Illuminate\Support\Collection
     {
-        return $this->collect()->map(function (Block $block) {
+        return $this->collect()->map(function (Block $block): \Illuminate\Support\Collection {
             return $block->toList();
         });
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    public function collect()
+    public function collect(): \Illuminate\Support\Collection
     {
         return collect($this);
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    public function getRepeaters()
+    public function getRepeaters(): \Illuminate\Support\Collection
     {
         return $this->collect()
-            ->filter(function ($block) {
+            ->filter(function ($block): bool {
                 return $block->type === Block::TYPE_REPEATER;
             })
             ->values();
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    public function getRepeaterList()
+    public function getRepeaterList(): \Illuminate\Support\Collection
     {
         return $this->getRepeaters();
     }

@@ -28,16 +28,15 @@ trait HasTranslation
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
      * @param string|null $locale
      * @return \Illuminate\Database\Eloquent\Builder|null
      */
-    public function scopeWithActiveTranslations($query, $locale = null)
+    public function scopeWithActiveTranslations(\Illuminate\Database\Eloquent\Builder $query, $locale = null)
     {
         if (method_exists($query->getModel(), 'translations')) {
             $locale = $locale == null ? app()->getLocale() : $locale;
 
-            $query->whereHas('translations', function ($query) use ($locale) {
+            $query->whereHas('translations', function ($query) use ($locale): void {
                 $query->whereActive(true);
                 $query->whereLocale($locale);
 
@@ -46,7 +45,7 @@ trait HasTranslation
                 }
             });
 
-            return $query->with(['translations' => function ($query) use ($locale) {
+            return $query->with(['translations' => function ($query) use ($locale): void {
                 $query->whereActive(true);
                 $query->whereLocale($locale);
 
@@ -58,13 +57,10 @@ trait HasTranslation
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $orderField
-     * @param string $orderType
      * @param string|null $locale
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOrderByTranslation($query, $orderField, $orderType = 'ASC', $locale = null)
+    public function scopeOrderByTranslation(\Illuminate\Database\Eloquent\Builder $query, string $orderField, string $orderType = 'ASC', $locale = null)
     {
         $translationTable = $this->getTranslationsTable();
         $localeKey = $this->getLocaleKey();
@@ -73,7 +69,7 @@ trait HasTranslation
         $locale = $locale == null ? app()->getLocale() : $locale;
 
         return $query
-            ->join($translationTable, function (JoinClause $join) use ($translationTable, $localeKey, $table, $keyName) {
+            ->join($translationTable, function (JoinClause $join) use ($translationTable, $localeKey, $table, $keyName): void {
                 $join
                     ->on($translationTable.'.'.$this->getRelationKey(), '=', $table.'.'.$keyName)
                     ->where($translationTable.'.'.$localeKey, $this->locale());
@@ -85,23 +81,20 @@ trait HasTranslation
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $orderRawString
-     * @param string $groupByField
      * @param string|null $locale
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeOrderByRawByTranslation($query, $orderRawString, $groupByField, $locale = null)
+    public function scopeOrderByRawByTranslation(\Illuminate\Database\Eloquent\Builder $query, string $orderRawString, string $groupByField, $locale = null)
     {
         $translationTable = $this->getTranslationsTable();
         $table = $this->getTable();
         $locale = $locale == null ? app()->getLocale() : $locale;
 
-        return $query->join("{$translationTable} as t", "t.{$this->getRelationKey()}", "=", "{$table}.id")
+        return $query->join(sprintf('%s as t', $translationTable), sprintf('t.%s', $this->getRelationKey()), "=", sprintf('%s.id', $table))
             ->where($this->getLocaleKey(), $locale)
-            ->groupBy("{$table}.id")
-            ->groupBy("t.{$groupByField}")
-            ->select("{$table}.*")
+            ->groupBy(sprintf('%s.id', $table))
+            ->groupBy(sprintf('t.%s', $groupByField))
+            ->select(sprintf('%s.*', $table))
             ->orderByRaw($orderRawString)
             ->with('translations');
     }
@@ -132,7 +125,7 @@ trait HasTranslation
      */
     public function getActiveLanguages()
     {
-        return Collection::make(getLocales())->map(function ($locale) {
+        return Collection::make(getLocales())->map(function ($locale): array {
             $translation = $this->translations->firstWhere('locale', $locale);
 
             return [
@@ -147,12 +140,11 @@ trait HasTranslation
     /**
      * Returns all translations for a given attribute.
      *
-     * @param string $key
      * @return Illuminate\Support\Collection
      */
-    public function translatedAttribute($key)
+    public function translatedAttribute(string $key)
     {
-        return $this->translations->mapWithKeys(function ($translation) use ($key) {
+        return $this->translations->mapWithKeys(function ($translation) use ($key): array {
             return [$translation->locale => $this->translate($translation->locale)->$key];
         });
     }

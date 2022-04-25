@@ -7,24 +7,12 @@ use Illuminate\Auth\AuthManager;
 
 class ImpersonateController extends Controller
 {
-    /**
-     * @var AuthManager
-     */
-    protected $authManager;
-
-    public function __construct(AuthManager $authManager)
+    public function __construct(protected AuthManager $authManager)
     {
         parent::__construct();
-
-        $this->authManager = $authManager;
     }
 
-    /**
-     * @param int $id
-     * @param UserRepository $users
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function impersonate($id, UserRepository $users)
+    public function impersonate(int $id, UserRepository $users): \Illuminate\Http\RedirectResponse
     {
         if ($this->authManager->guard('twill_users')->user()->can('impersonate')) {
             $user = $users->getById($id);
@@ -34,10 +22,7 @@ class ImpersonateController extends Controller
         return back();
     }
 
-    /**
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function stopImpersonate()
+    public function stopImpersonate(): \Illuminate\Http\RedirectResponse
     {
         $this->authManager->guard('twill_users')->user()->stopImpersonating();
         return back();

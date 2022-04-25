@@ -9,8 +9,14 @@ use Illuminate\Support\Str;
 
 class Media extends Model
 {
+    /**
+     * @var bool
+     */
     public $timestamps = true;
 
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'uuid',
         'filename',
@@ -26,7 +32,7 @@ class Media extends Model
             return $field['name'];
         })->toArray()));
 
-        Collection::make(config('twill.media_library.translatable_metadatas_fields'))->each(function ($field) {
+        Collection::make(config('twill.media_library.translatable_metadatas_fields'))->each(function ($field): void {
             $this->casts[$field] = 'json';
         });
 
@@ -40,32 +46,35 @@ class Media extends Model
         return $query->whereNotIn('id', $usedIds->toArray())->get();
     }
 
-    public function getDimensionsAttribute()
+    public function getDimensionsAttribute(): string
     {
         return $this->width . 'x' . $this->height;
     }
 
-    public function altTextFrom($filename)
+    public function altTextFrom($filename): string
     {
         $filename = pathinfo($filename, PATHINFO_FILENAME);
         if (Str::endsWith($filename, '@2x')) {
             $filename = substr($filename, 0, -2);
         }
 
-        return ucwords(preg_replace('/[^a-zA-Z0-9]/', ' ', sanitizeFilename($filename)));
+        return ucwords(preg_replace('#[^a-zA-Z0-9]#', ' ', sanitizeFilename($filename)));
     }
 
-    public function canDeleteSafely()
+    public function canDeleteSafely(): bool
     {
         return DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->count() === 0;
     }
 
-    public function isReferenced()
+    public function isReferenced(): bool
     {
         return DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->count() > 0;
     }
 
-    public function toCmsArray()
+    /**
+     * @return array<string, mixed>
+     */
+    public function toCmsArray(): array
     {
         return [
             'id' => $this->id,
@@ -87,7 +96,7 @@ class Media extends Model
                     'caption' => $this->caption,
                     'altText' => $this->alt_text,
                     'video' => null,
-                ] + Collection::make(config('twill.media_library.extra_metadatas_fields'))->mapWithKeys(function ($field) {
+                ] + Collection::make(config('twill.media_library.extra_metadatas_fields'))->mapWithKeys(function ($field): array {
                     return [
                         $field['name'] => $this->{$field['name']},
                     ];
@@ -135,13 +144,13 @@ class Media extends Model
         return $metadatas->$name ?? $fallbackValue ?? '';
     }
 
-    public function replace($fields)
+    public function replace($fields): void
     {
         $prevHeight = $this->height;
         $prevWidth = $this->width;
 
         if ($this->update($fields) && $this->isReferenced()) {
-            DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->get()->each(function ($mediable) use ($prevWidth, $prevHeight) {
+            DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->get()->each(function ($mediable) use ($prevWidth, $prevHeight): void {
                 if ($prevWidth != $this->width) {
                     $mediable->crop_x = 0;
                     $mediable->crop_w = $this->width;
@@ -157,7 +166,7 @@ class Media extends Model
         }
     }
 
-    public function delete()
+    public function delete(): ?bool
     {
         if ($this->canDeleteSafely()) {
             return parent::delete();

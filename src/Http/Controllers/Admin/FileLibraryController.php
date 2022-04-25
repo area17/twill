@@ -52,32 +52,14 @@ class FileLibraryController extends ModuleController implements SignUploadListen
      */
     protected $endpointType;
 
-    /**
-     * @var Illuminate\Routing\UrlGenerator
-     */
-    protected $urlGenerator;
-
-    /**
-     * @var Illuminate\Routing\ResponseFactory
-     */
-    protected $responseFactory;
-
-    /**
-     * @var Illuminate\Config\Repository
-     */
-    protected $config;
-
     public function __construct(
         Application $app,
         Request $request,
-        UrlGenerator $urlGenerator,
-        ResponseFactory $responseFactory,
-        Config $config
+        protected UrlGenerator $urlGenerator,
+        protected ResponseFactory $responseFactory,
+        protected Config $config
     ) {
         parent::__construct($app, $request);
-        $this->urlGenerator = $urlGenerator;
-        $this->responseFactory = $responseFactory;
-        $this->config = $config;
 
         $this->middleware('can:access-media-library', ['only' => ['index']]);
         $this->middleware('can:edit-media-library', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
@@ -86,9 +68,9 @@ class FileLibraryController extends ModuleController implements SignUploadListen
 
     /**
      * @param int|null $parentModuleId
-     * @return array
+     * @return array<string, mixed>
      */
-    public function index($parentModuleId = null)
+    public function index($parentModuleId = null): array
     {
         if ($this->request->has('except')) {
             $prependScope['exceptIds'] = $this->request->get('except');
@@ -98,16 +80,16 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     }
 
     /**
-     * @param array $prependScope
-     * @return array
+     * @param mixed[] $prependScope
+     * @return array<string, mixed>
      */
-    public function getIndexData($prependScope = [])
+    protected function getIndexData(array $prependScope = []): array
     {
         $scopes = $this->filterScope($prependScope);
         $items = $this->getIndexItems($scopes);
 
         return [
-            'items' => $items->map(function ($item) {
+            'items' => $items->map(function ($item): array {
                 return $this->buildFile($item);
             })->toArray(),
             'maxPage' => $items->lastPage(),
@@ -117,10 +99,9 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     }
 
     /**
-     * @param \A17\Twill\Models\File $item
-     * @return array
+     * @return mixed[]
      */
-    private function buildFile($item)
+    private function buildFile(\A17\Twill\Models\File $item): array
     {
         return $item->toCmsArray() + [
             'tags' => $item->tags->map(function ($tag) {
@@ -134,9 +115,9 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     }
 
     /**
-     * @return array
+     * @return mixed[]
      */
-    protected function getRequestFilters()
+    protected function getRequestFilters(): array
     {
         if ($this->request->has('search')) {
             $requestFilters['search'] = $this->request->get('search');
@@ -155,31 +136,25 @@ class FileLibraryController extends ModuleController implements SignUploadListen
 
     /**
      * @param int|null $parentModuleId
-     * @return JsonResponse
      * @throws BindingResolutionException
      */
-    public function store($parentModuleId = null)
+    public function store($parentModuleId = null): \Illuminate\Http\JsonResponse
     {
         $request = $this->app->make(FileRequest::class);
 
-        if ($this->endpointType === 'local') {
-            $file = $this->storeFile($request);
-        } else {
-            $file = $this->storeReference($request);
-        }
+        $file = $this->endpointType === 'local' ? $this->storeFile($request) : $this->storeReference($request);
 
         return $this->responseFactory->json(['media' => $this->buildFile($file), 'success' => true], 200);
     }
 
     /**
-     * @param Request $request
      * @return \A17\Twill\Models\File
      */
-    public function storeFile($request)
+    public function storeFile(\Illuminate\Http\Request $request)
     {
         $filename = $request->input('qqfilename');
 
-        $cleanFilename = preg_replace("/\s+/i", "-", $filename);
+        $cleanFilename = preg_replace("#\s+#i", "-", $filename);
 
         $fileDirectory = $request->input('unique_folder_name');
 
@@ -212,10 +187,9 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     }
 
     /**
-     * @param Request $request
      * @return \A17\Twill\Models\File
      */
-    public function storeReference($request)
+    public function storeReference(\Illuminate\Http\Request $request)
     {
         $fields = [
             'uuid' => $request->input('key') ?? $request->input('blob'),
@@ -232,10 +206,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
         }
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function singleUpdate()
+    public function singleUpdate(): \Illuminate\Http\JsonResponse
     {
         $this->repository->update(
             $this->request->input('id'),
@@ -245,10 +216,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
         return $this->responseFactory->json([], 200);
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function bulkUpdate()
+    public function bulkUpdate(): \Illuminate\Http\JsonResponse
     {
         $ids = explode(',', $this->request->input('ids'));
 
@@ -263,7 +231,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
         $items = $this->getIndexItems($scopes);
 
         return $this->responseFactory->json([
-            'items' => $items->map(function ($item) {
+            'items' => $items->map(function ($item): array {
                 return $this->buildFile($item);
             })->toArray(),
             'tags' => $this->repository->getTagsList(),
@@ -271,8 +239,6 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     }
 
     /**
-     * @param Request $request
-     * @param SignS3Upload $signS3Upload
      * @return mixed
      */
     public function signS3Upload(Request $request, SignS3Upload $signS3Upload)
@@ -281,8 +247,6 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     }
 
     /**
-     * @param Request $request
-     * @param SignAzureUpload $signAzureUpload
      * @return mixed
      */
     public function signAzureUpload(Request $request, SignAzureUpload $signAzureUpload)
@@ -302,10 +266,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
         : $this->responseFactory->make($signature, 200, ['Content-Type' => 'text/plain']);
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function uploadIsNotValid()
+    public function uploadIsNotValid(): \Illuminate\Http\JsonResponse
     {
         return $this->responseFactory->json(["invalid" => true], 500);
     }

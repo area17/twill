@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\File;
 
 class TwillBlocks
 {
+    /**
+     * @var string
+     */
     public const DIRECTORY_TYPE_VENDOR = 'vendor';
 
     /**
@@ -24,7 +27,7 @@ class TwillBlocks
     /**
      * @return A17\Twill\Services\Blocks\BlockCollection
      */
-    private $blockCollection;
+    private ?\A17\Twill\Services\Blocks\BlockCollection $blockCollection = null;
 
     /**
      * Registers a blocks directory.
@@ -36,7 +39,7 @@ class TwillBlocks
     public function registerPackageBlocksDirectory(string $path, string $renderNamespace = null): void
     {
         if (! isset(self::$blockDirectories[$path])) {
-            if (isset($this->blockCollection)) {
+            if ($this->blockCollection !== null) {
                 $this->getBlockCollection()->merge(
                     $this->readBlocksFromDirectory($path, self::DIRECTORY_TYPE_VENDOR, Block::TYPE_BLOCK)
                 );
@@ -59,7 +62,7 @@ class TwillBlocks
     public function registerPackageRepeatersDirectory(string $path, string $renderNamespace = null): void
     {
         if (! isset(self::$repeatersDirectories[$path])) {
-            if (isset($this->blockCollection)) {
+            if ($this->blockCollection !== null) {
                 $this->getBlockCollection()->merge(
                     $this->readBlocksFromDirectory($path, self::DIRECTORY_TYPE_VENDOR, Block::TYPE_REPEATER)
                 );
@@ -77,7 +80,7 @@ class TwillBlocks
      */
     public function getBlockCollection(): BlockCollection
     {
-        if (! isset($this->blockCollection)) {
+        if ($this->blockCollection === null) {
             $this->blockCollection = new BlockCollection();
         }
 
@@ -87,12 +90,15 @@ class TwillBlocks
             foreach ($this->readBlocksFromDirectory($repeaterDir, $data['type'], Block::TYPE_REPEATER, $data['renderNamespace']) as $repeater) {
                 $this->blockCollection->add($repeater);
             }
+
             unset(self::$repeatersDirectories[$repeaterDir]);
         }
+
         foreach (self::$blockDirectories as $blockDir => $data) {
             foreach ($this->readBlocksFromDirectory($blockDir, $data['type'], Block::TYPE_BLOCK, $data['renderNamespace']) as $block) {
                 $this->blockCollection->add($block);
             }
+
             unset(self::$blockDirectories[$blockDir]);
         }
 
@@ -101,14 +107,14 @@ class TwillBlocks
 
     public function findByName(string $name): ?Block
     {
-        return $this->getAll()->first(function (Block $block) use ($name) {
+        return $this->getAll()->first(function (Block $block) use ($name): bool {
             return $block->name === $name;
         });
     }
 
     public function findRepeaterByName(string $name): ?Block
     {
-        return $this->getRepeaters()->first(function (Block $block) use ($name) {
+        return $this->getRepeaters()->first(function (Block $block) use ($name): bool {
             return $block->name === $name;
         });
     }
@@ -153,7 +159,7 @@ class TwillBlocks
         }
 
         return collect(File::files($directory))
-            ->map(function ($file) use ($source, $type, $renderNamespace) {
+            ->map(function ($file) use ($source, $type, $renderNamespace): \A17\Twill\Services\Blocks\Block {
                 return Block::make($file, $type, $source, null, $renderNamespace);
             });
     }

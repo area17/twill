@@ -31,12 +31,12 @@ class MakeCapsule extends ModuleMake
     /**
      * @var null
      */
-    protected $capsulesDirectory = null;
+    protected $capsulesDirectory;
 
     /**
      * @var null
      */
-    protected $namespace = null;
+    protected $namespace;
 
     /**
      * @var bool
@@ -48,7 +48,7 @@ class MakeCapsule extends ModuleMake
      */
     protected $isSingleton = false;
 
-    public function handle()
+    public function handle(): void
     {
         $this->isSingleton = $this->hasOption('singleton') ? $this->option('singleton') : $this->isSingleton;
 

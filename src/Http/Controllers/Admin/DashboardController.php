@@ -19,53 +19,20 @@ use Spatie\Analytics\Period;
 
 class DashboardController extends Controller
 {
-    /**
-     * @var Application
-     */
-    protected $app;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
-     * @var ViewFactory
-     */
-    protected $viewFactory;
-
-    /**
-     * @var AuthFactory
-     */
-    protected $authFactory;
-
     public function __construct(
-        Application $app,
-        Config $config,
-        Logger $logger,
-        ViewFactory $viewFactory,
-        AuthFactory $authFactory
+        protected Application $app,
+        protected Config $config,
+        protected Logger $logger,
+        protected ViewFactory $viewFactory,
+        protected AuthFactory $authFactory
     ) {
         parent::__construct();
-
-        $this->app = $app;
-        $this->config = $config;
-        $this->logger = $logger;
-        $this->viewFactory = $viewFactory;
-        $this->authFactory = $authFactory;
     }
 
     /**
      * Displays the Twill dashboard.
-     *
-     * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(): \Illuminate\Contracts\View\View
     {
         $modules = Collection::make($this->config->get('twill.dashboard.modules'));
 
@@ -101,22 +68,18 @@ class DashboardController extends Controller
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return Collection
-     */
-    public function search(Request $request)
+    public function search(Request $request): \Illuminate\Support\Collection
     {
         $modules = Collection::make($this->config->get('twill.dashboard.modules'));
 
         return $modules->filter(function ($module) {
             return $module['search'] ?? false;
-        })->map(function ($module) use ($request) {
+        })->map(function ($module) use ($request): \Illuminate\Support\Collection {
             $repository = $this->getRepository($module['name'], $module['repository'] ?? null);
 
             $found = $repository->cmsSearch($request->get('search'), $module['search_fields'] ?? ['title'])->take(10);
 
-            return $found->map(function ($item) use ($module) {
+            return $found->map(function ($item) use ($module): array {
                 try {
                     $author = $item->revisions()->latest()->first()->user->name ?? 'Admin';
                 } catch (\Exception) {
@@ -146,30 +109,26 @@ class DashboardController extends Controller
     }
 
     /**
-     * @return array
+     * @return mixed[]
      */
-    private function getAllActivities()
+    private function getAllActivities(): Collection
     {
-        return Activity::take(20)->latest()->get()->map(function ($activity) {
+        return Activity::take(20)->latest()->get()->map(function ($activity): ?array {
             return $this->formatActivity($activity);
         })->filter()->values();
     }
 
     /**
-     * @return array
+     * @return mixed[]
      */
-    private function getLoggedInUserActivities()
+    private function getLoggedInUserActivities(): Collection
     {
-        return Activity::where('causer_id', $this->authFactory->guard('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity) {
+        return Activity::where('causer_id', $this->authFactory->guard('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity): ?array {
             return $this->formatActivity($activity);
         })->filter()->values();
     }
 
-    /**
-     * @param \Spatie\Activitylog\Models\Activity $activity
-     * @return array|null
-     */
-    private function formatActivity($activity)
+    private function formatActivity(\Spatie\Activitylog\Models\Activity $activity): ?array
     {
         $dashboardModule = $this->config->get('twill.dashboard.modules.' . $activity->subject_type);
 
@@ -194,22 +153,19 @@ class DashboardController extends Controller
             'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description),
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
-        ] : []) + (!$activity->subject->trashed() ? [
+        ] : []) + ($activity->subject->trashed() ? [] : [
             'edit' => $parent && $parentRelationship ? moduleRoute(
                 $dashboardModule['name'],
                 $dashboardModule['routePrefix'] ?? null,
                 'edit',
                 array_merge($parentRelationship ? [$parent->id] : [], [$activity->subject_id])
             ) : '',
-        ] : []) + (!is_null($activity->subject->published) ? [
+        ]) + (is_null($activity->subject->published) ? [] : [
             'published' => $activity->description === 'published' ? true : ($activity->description === 'unpublished' ? false : $activity->subject->published),
-        ] : []);
+        ]);
     }
 
-    /**
-     * @return array|\Illuminate\Support\Collection
-     */
-    private function getFacts()
+    private function getFacts(): array|\Illuminate\Support\Collection
     {
         /** @var Analytics $analytics */
         $analytics = app(Analytics::class);
@@ -219,13 +175,13 @@ class DashboardController extends Controller
                 'ga:users,ga:pageviews,ga:bouncerate,ga:pageviewsPerSession',
                 ['dimensions' => 'ga:date']
             );
-        } catch (InvalidConfiguration $exception) {
-            $this->logger->error($exception);
+        } catch (InvalidConfiguration $invalidConfiguration) {
+            $this->logger->error($invalidConfiguration);
 
             return [];
         }
 
-        $statsByDate = Collection::make($response['rows'] ?? [])->map(function (array $dateRow) {
+        $statsByDate = Collection::make($response['rows'] ?? [])->map(function (array $dateRow): array {
             return [
                 'date' => $dateRow[0],
                 'users' => (int) $dateRow[1],
@@ -262,7 +218,7 @@ class DashboardController extends Controller
             'yesterday',
             'week',
             'month',
-        ])->mapWithKeys(function ($period) use ($statsByDate, $dummyData) {
+        ])->mapWithKeys(function ($period) use ($statsByDate, $dummyData): array {
             if ($dummyData) {
                 return [$period => $dummyData];
             }
@@ -293,11 +249,9 @@ class DashboardController extends Controller
     }
 
     /**
-     * @param string $period
-     * @param \Illuminate\Support\Collection $statsByDate
-     * @return array
+     * @return array<string, mixed[]>
      */
-    private function getPeriodStats($period, $statsByDate)
+    private function getPeriodStats(string $period, \Illuminate\Support\Collection $statsByDate): array
     {
         if ($period === 'today') {
             return [
@@ -380,11 +334,7 @@ class DashboardController extends Controller
         return [];
     }
 
-    /**
-     * @param int $count
-     * @return string
-     */
-    private function formatStat($count)
+    private function formatStat(int $count): int|string
     {
         if ($count >= 1000) {
             return round($count / 1000, 1) . 'k';
@@ -395,9 +345,9 @@ class DashboardController extends Controller
 
     private function getShortcuts(Collection $modules): Collection
     {
-        return $modules->filter(function ($module) {
+        return $modules->filter(function ($module): bool {
             return ($module['count'] ?? false) || ($module['create'] ?? false);
-        })->map(function ($module) {
+        })->map(function ($module): array {
             $repository = $this->getRepository($module['name'], $module['repository'] ?? null);
 
             $moduleOptions = [
@@ -444,7 +394,7 @@ class DashboardController extends Controller
 
             $drafts = $query->get();
 
-            return $drafts->map(function ($draft) use ($module) {
+            return $drafts->map(function ($draft) use ($module): array {
                 return [
                     'type' => ucfirst($module['label_singular'] ?? Str::singular($module['name'])),
                     'name' => $draft->titleInDashboard ?? $draft->title,

@@ -17,32 +17,20 @@ use Illuminate\View\Factory as ViewFactory;
 
 class FeaturedController extends Controller
 {
-    /**
-     * @var Application
-     */
-    protected $app;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    public function __construct(Application $app, Config $config)
+    public function __construct(protected Application $app, protected Config $config)
     {
         parent::__construct();
-        $this->app = $app;
-        $this->config = $config;
     }
 
-    public function index(Request $request, ViewFactory $viewFactory, UrlGenerator $urlGenerator)
+    public function index(Request $request, ViewFactory $viewFactory, UrlGenerator $urlGenerator): array|\Illuminate\Contracts\View\View
     {
         $featuredSectionKey = $request->segment(count($request->segments()));
-        $featuredSection = $this->config->get("twill.buckets.$featuredSectionKey");
+        $featuredSection = $this->config->get(sprintf('twill.buckets.%s', $featuredSectionKey));
         $filters = json_decode($request->get('filter'), true) ?? [];
 
         $featuredSources = $this->getFeaturedSources($request, $featuredSection, $filters['search'] ?? '');
 
-        $contentTypes = Collection::make($featuredSources)->map(function ($source, $sourceKey) {
+        $contentTypes = Collection::make($featuredSources)->map(function ($source, $sourceKey): array {
             return [
                 'label' => $source['name'],
                 'value' => $sourceKey,
@@ -54,7 +42,7 @@ class FeaturedController extends Controller
 
             return [
                 'source' => [
-                    'content_type' => Arr::first($contentTypes, function ($contentTypeItem) use ($request) {
+                    'content_type' => Arr::first($contentTypes, function ($contentTypeItem) use ($request): bool {
                         return $contentTypeItem['value'] == $request->get('content_type');
                     }),
                     'items' => $source['items'],
@@ -88,20 +76,18 @@ class FeaturedController extends Controller
             'bucketSourceTitle' => $featuredSection['sourceHeaderTitle'] ?? null,
             'bucketsSectionIntro' => $featuredSection['sectionIntroText'] ?? null,
             'restricted' => $featuredSection['restricted'] ?? true,
-            'saveUrl' => $urlGenerator->route("twill.$routePrefix.$featuredSectionKey.save"),
+            'saveUrl' => $urlGenerator->route(sprintf('twill.%s.%s.save', $routePrefix, $featuredSectionKey)),
         ]);
     }
 
     /**
-     * @param array $featuredSection
-     * @param string $featuredSectionKey
-     * @return array
+     * @param mixed[] $featuredSection
+     * @return mixed[]
      */
-    private function getFeaturedItemsByBucket($featuredSection, $featuredSectionKey)
+    private function getFeaturedItemsByBucket(array $featuredSection, string $featuredSectionKey): array
     {
         $bucketRouteConfig = $this->config->get('twill.bucketsRoutes') ?? [$featuredSectionKey => 'featured'];
-        return Collection::make($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use ($featuredSectionKey, $bucketRouteConfig) {
-            $routePrefix = $bucketRouteConfig[$featuredSectionKey];
+        return Collection::make($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use ($featuredSectionKey, $bucketRouteConfig): array {
             return [
                 'id' => $bucketKey,
                 'name' => $bucket['name'],
@@ -128,7 +114,7 @@ class FeaturedController extends Controller
                             'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
                         ] : []);
                     }
-                })->reject(function ($item) {
+                })->reject(function ($item): bool {
                     return is_null($item);
                 })->values()->toArray(),
             ];
@@ -136,18 +122,17 @@ class FeaturedController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param array $featuredSection
      * @param string|null $search
-     * @return array
+     * @param mixed[] $featuredSection
+     * @return array<int|string, array{name: mixed, maxPage: int, offset: int, items: mixed}>
      */
-    private function getFeaturedSources(Request $request, $featuredSection, $search = null)
+    private function getFeaturedSources(Request $request, array $featuredSection, $search = null): array
     {
         $fetchedModules = [];
         $featuredSources = [];
 
-        Collection::make($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use (&$fetchedModules, $search, $request) {
-            return Collection::make($bucket['bucketables'])->mapWithKeys(function ($bucketable) use (&$fetchedModules, $search, $request) {
+        Collection::make($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use (&$fetchedModules, $search, $request): \Illuminate\Support\Collection {
+            return Collection::make($bucket['bucketables'])->mapWithKeys(function ($bucketable) use (&$fetchedModules, $search, $request): array {
 
                 $module = $bucketable['module'];
                 $repository = $this->getRepository($module, $bucketable['repository'] ?? null);
@@ -176,12 +161,12 @@ class FeaturedController extends Controller
                     'withImage' => $withImage,
                 ]];
             });
-        })->each(function ($bucketables, $bucket) use (&$featuredSources) {
-            $bucketables->each(function ($bucketableData, $bucketable) use (&$featuredSources) {
+        })->each(function ($bucketables, $bucket) use (&$featuredSources): void {
+            $bucketables->each(function ($bucketableData, $bucketable) use (&$featuredSources): void {
                 $featuredSources[$bucketable]['name'] = $bucketableData['name'];
                 $featuredSources[$bucketable]['maxPage'] = $bucketableData['items']->lastPage();
                 $featuredSources[$bucketable]['offset'] = $bucketableData['items']->perPage();
-                $featuredSources[$bucketable]['items'] = $bucketableData['items']->map(function ($item) use ($bucketableData, $bucketable) {
+                $featuredSources[$bucketable]['items'] = $bucketableData['items']->map(function ($item) use ($bucketableData, $bucketable): array {
                     return [
                         'id' => $item->id,
                         'name' => $item->titleInBucket ?? $item->title,
@@ -204,14 +189,12 @@ class FeaturedController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @return void
      * @throws \Throwable
      */
-    public function save(Request $request, DB $db)
+    public function save(Request $request, DB $db): void
     {
-        $db->transaction(function () use ($request) {
-            Collection::make($request->get('buckets'))->each(function ($bucketables, $bucketKey) {
+        $db->transaction(function () use ($request): void {
+            Collection::make($request->get('buckets'))->each(function ($bucketables, $bucketKey): void {
                 Feature::where('bucket_key', $bucketKey)->delete();
                 foreach (($bucketables ?? []) as $position => $bucketable) {
                     Feature::create([
@@ -228,11 +211,7 @@ class FeaturedController extends Controller
         fireCmsEvent('cms-buckets.saved');
     }
 
-    /**
-     * @param string $bucketable
-     * @return \A17\Twill\Repositories\ModuleRepository
-     */
-    private function getRepository($bucketable, $forModule = null)
+    private function getRepository(string $bucketable, $forModule = null): \A17\Twill\Repositories\ModuleRepository
     {
         return $this->app->make($forModule ?: $this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($bucketable)) . "Repository");
     }

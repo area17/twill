@@ -56,27 +56,15 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     /**
      * @var array
      */
-    protected $customFields;
-
-    /**
-     * @var Illuminate\Routing\ResponseFactory
-     */
-    protected $responseFactory;
-
-    /**
-     * @var Illuminate\Config\Repository
-     */
-    protected $config;
+    protected $customFields = [];
 
     public function __construct(
         Application $app,
-        Config $config,
+        protected Config $config,
         Request $request,
-        ResponseFactory $responseFactory
+        protected ResponseFactory $responseFactory
     ) {
         parent::__construct($app, $request);
-        $this->responseFactory = $responseFactory;
-        $this->config = $config;
 
         $this->middleware('can:access-media-library', ['only' => ['index']]);
         $this->middleware('can:edit-media-library', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
@@ -86,9 +74,9 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
     /**
      * @param int|null $parentModuleId
-     * @return array
+     * @return array<string, mixed>
      */
-    public function index($parentModuleId = null)
+    public function index($parentModuleId = null): array
     {
         if ($this->request->has('except')) {
             $prependScope['exceptIds'] = $this->request->get('except');
@@ -98,10 +86,10 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     }
 
     /**
-     * @param array $prependScope
-     * @return array
+     * @param mixed[] $prependScope
+     * @return array<string, mixed>
      */
-    public function getIndexData($prependScope = [])
+    protected function getIndexData(array $prependScope = []): array
     {
         $scopes = $this->filterScope($prependScope);
         $items = $this->getIndexItems($scopes);
@@ -117,9 +105,9 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     }
 
     /**
-     * @return array
+     * @return mixed[]
      */
-    protected function getRequestFilters()
+    protected function getRequestFilters(): array
     {
         if ($this->request->has('search')) {
             $requestFilters['search'] = $this->request->get('search');
@@ -143,20 +131,15 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     public function store($parentModuleId = null)
     {
         $request = $this->app->make(MediaRequest::class);
-        if ($this->endpointType === 'local') {
-            $media = $this->storeFile($request);
-        } else {
-            $media = $this->storeReference($request);
-        }
+        $media = $this->endpointType === 'local' ? $this->storeFile($request) : $this->storeReference($request);
 
         return $this->responseFactory->json(['media' => $media->toCmsArray(), 'success' => true], 200);
     }
 
     /**
-     * @param Request $request
      * @return Media
      */
-    public function storeFile($request)
+    public function storeFile(\Illuminate\Http\Request $request)
     {
         $originalFilename = $request->input('qqfilename');
 
@@ -198,10 +181,9 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     }
 
     /**
-     * @param Request $request
      * @return Media
      */
-    public function storeReference($request)
+    public function storeReference(\Illuminate\Http\Request $request)
     {
         $fields = [
             'uuid' => $request->input('key') ?? $request->input('blob'),
@@ -220,10 +202,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         }
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function singleUpdate()
+    public function singleUpdate(): \Illuminate\Http\JsonResponse
     {
         $this->repository->update(
             $this->request->input('id'),
@@ -239,14 +218,11 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         ], 200);
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function bulkUpdate()
+    public function bulkUpdate(): \Illuminate\Http\JsonResponse
     {
         $ids = explode(',', $this->request->input('ids'));
 
-        $metadatasFromRequest = $this->getExtraMetadatas()->reject(function ($meta) {
+        $metadatasFromRequest = $this->getExtraMetadatas()->reject(function ($meta): bool {
             return is_null($meta);
         })->toArray();
 
@@ -278,8 +254,6 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     }
 
     /**
-     * @param Request $request
-     * @param SignS3Upload $signS3Upload
      * @return mixed
      */
     public function signS3Upload(Request $request, SignS3Upload $signS3Upload)
@@ -288,8 +262,6 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     }
 
     /**
-     * @param Request $request
-     * @param SignAzureUpload $signAzureUpload
      * @return mixed
      */
     public function signAzureUpload(Request $request, SignAzureUpload $signAzureUpload)
@@ -309,20 +281,14 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         : $this->responseFactory->make($signature, 200, ['Content-Type' => 'text/plain']);
     }
 
-    /**
-     * @return JsonResponse
-     */
-    public function uploadIsNotValid()
+    public function uploadIsNotValid(): \Illuminate\Http\JsonResponse
     {
         return $this->responseFactory->json(["invalid" => true], 500);
     }
 
-    /**
-     * @return Collection
-     */
-    private function getExtraMetadatas()
+    private function getExtraMetadatas(): \Illuminate\Support\Collection
     {
-        return Collection::make($this->customFields)->mapWithKeys(function ($field) {
+        return Collection::make($this->customFields)->mapWithKeys(function ($field): array {
             $fieldInRequest = $this->request->get($field['name']);
 
             if (isset($field['type']) && $field['type'] === 'checkbox') {

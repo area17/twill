@@ -12,10 +12,10 @@ trait HandlePermissions
      * Retrieve user-item permissions fields
      *
      * @param Model $object
-     * @param array $fields
      * @return array
+     * @param mixed[] $fields
      */
-    public function getFormFieldsHandlePermissions($object, $fields)
+    public function getFormFieldsHandlePermissions($object, array $fields)
     {
         $moduleName = getModuleNameByModel($object);
 
@@ -24,10 +24,10 @@ trait HandlePermissions
         }
 
         $userItemPermissions = twillModel('user')::notSuperAdmin()->get()->mapWithKeys(
-            function ($user) use ($object, $moduleName) {
+            function ($user) use ($object, $moduleName): array {
                 $permissionName = $this->getUserItemPermissionName($user, $object, $moduleName);
 
-                return ["user_{$user->id}_permission" => $permissionName];
+                return [sprintf('user_%s_permission', $user->id) => $permissionName];
             }
         )->toArray();
 
@@ -73,12 +73,12 @@ trait HandlePermissions
 
         $itemScopes = collect(Permission::available(Permission::SCOPE_ITEM))
             ->reverse()
-            ->mapWithKeys(function ($scope) { return [$scope => 0]; })
+            ->mapWithKeys(function ($scope): array { return [$scope => 0]; })
             ->toArray();
 
         foreach ($permissionNames as $name) {
             if (isset($itemScopes[$name])) {
-                $itemScopes[$name]++;
+                ++$itemScopes[$name];
             }
         }
 
@@ -95,9 +95,9 @@ trait HandlePermissions
      * Function executed after save on module form
      *
      * @param Model $object
-     * @param array $fields
+     * @param mixed[] $fields
      */
-    public function afterSaveHandlePermissions($object, $fields)
+    public function afterSaveHandlePermissions($object, array $fields)
     {
         $moduleName = getModuleNameByModel($object);
 
@@ -136,11 +136,11 @@ trait HandlePermissions
 
     private function storePermissionFields($moduleName, $object, $permissionFields)
     {
-        Session::put("{$moduleName}_{$object->id}_item_permissions", $permissionFields);
+        Session::put(sprintf('%s_%s_item_permissions', $moduleName, $object->id), $permissionFields);
     }
 
     private function recallPermissionFields($moduleName, $object)
     {
-        return Session::get("{$moduleName}_{$object->id}_item_permissions") ?: [];
+        return Session::get(sprintf('%s_%s_item_permissions', $moduleName, $object->id)) ?: [];
     }
 }

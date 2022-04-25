@@ -9,7 +9,7 @@ use League\Flysystem\Filesystem;
 
 class Aws
 {
-    public function filesystemFactory($source)
+    public function filesystemFactory($source): \League\Flysystem\Filesystem
     {
         $config = $this->getConfigFor($source);
 
@@ -20,7 +20,10 @@ class Aws
         return new Filesystem($adapter);
     }
 
-    public function getConfigFor($disk)
+    /**
+     * @return array<string, mixed>
+     */
+    public function getConfigFor($disk): array
     {
         return [
             'credentials' => [
@@ -47,10 +50,10 @@ class Aws
 
         $envSuffix = Str::upper($key);
 
-        if (filled($value = config("filesystems.disks.{$disk}.{$key}"))) {
+        if (filled($value = config(sprintf('filesystems.disks.%s.%s', $disk, $key)))) {
             return $value;
         }
 
-        return env("{$env1}_{$envSuffix}", env("{$env2}_{$envSuffix}", $default));
+        return env(sprintf('%s_%s', $env1, $envSuffix), env(sprintf('%s_%s', $env2, $envSuffix), $default));
     }
 }

@@ -8,24 +8,48 @@ use Illuminate\Http\Request;
 
 class RoleController extends ModuleController
 {
+    /**
+     * @var string
+     */
     protected $namespace = 'A17\Twill';
 
+    /**
+     * @var string
+     */
     protected $moduleName = 'roles';
 
+    /**
+     * @var string[]
+     */
     protected $indexWith = ['medias'];
 
+    /**
+     * @var array<string, string>
+     */
     protected $defaultOrders = ['name' => 'asc'];
 
+    /**
+     * @var array<string, string>
+     */
     protected $defaultFilters = [
         'search' => 'search',
     ];
 
+    /**
+     * @var string
+     */
     protected $titleColumnKey = 'name';
 
+    /**
+     * @var array<string, false>
+     */
     protected $indexOptions = [
         'permalink' => false,
     ];
 
+    /**
+     * @var array<string, mixed[]>
+     */
     protected $labels = [
         'published' => 'twill::lang.permissions.roles.published',
         'draft' => 'twill::lang.permissions.roles.draft',
@@ -62,6 +86,9 @@ class RoleController extends ModuleController
         ];
     }
 
+    /**
+     * @var array<string, mixed[]>
+     */
     protected $indexColumns = [
         'name' => [
             'title' => 'Name',
@@ -80,16 +107,19 @@ class RoleController extends ModuleController
         ]
     ];
 
-    protected function indexData($request)
+    /**
+     * @return array<string, mixed[]>
+     */
+    protected function indexData($request): array
     {
         return [
             'primary_navigation' => $this->primaryNavigation,
         ];
     }
 
-    protected function getIndexItems($scopes = [], $forcePagination = false)
+    protected function getIndexItems($scopes = [], $forcePagination = false): \Illuminate\Database\Eloquent\Collection
     {
-        $scopes = $scopes + ['accessible' => true];
+        $scopes += ['accessible' => true];
 
         return parent::getIndexItems($scopes, $forcePagination);
     }
@@ -103,7 +133,10 @@ class RoleController extends ModuleController
         return parent::getIndexOption($option);
     }
 
-    protected function formData($request)
+    /**
+     * @return array<string, \A17\Twill\Models\Collection>|array<string, mixed[]>
+     */
+    protected function formData($request): array
     {
         return [
             'primary_navigation' => $this->primaryNavigation,
@@ -111,14 +144,17 @@ class RoleController extends ModuleController
         ];
     }
 
-    protected function indexItemData($item)
+    /**
+     * @return null[]|array<string, string>
+     */
+    protected function indexItemData($item): array
     {
         $canEdit = auth('twill_users')->user()->can('edit-user-roles') && ($item->canEdit ?? true);
 
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }
 
-    public function index($parentModuleId = null)
+    public function index($parentModuleId = null): array|\Illuminate\View\View
     {
         // Superadmins can reorder groups to determine the access-level of each one.
         // A given group can't edit other groups with a higher access-level.
@@ -127,14 +163,14 @@ class RoleController extends ModuleController
         return parent::index($parentModuleId);
     }
 
-    public function edit($id, $submoduleId = null)
+    public function edit($id, $submoduleId = null): \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
     {
         $this->authorizableOptions['edit'] = 'edit-role';
 
         return parent::edit($id, $submoduleId);
     }
 
-    public function update($id, $submoduleId = null)
+    public function update($id, $submoduleId = null): \Illuminate\Http\JsonResponse
     {
         $this->authorizableOptions['edit'] = 'edit-role';
 

@@ -23,17 +23,17 @@ trait HasBlocks
     public function renderNamedBlocks($name = 'default', $renderChilds = true, $blockViewMappings = [], $data = [])
     {
         return $this->blocks
-            ->filter(function ($block) use ($name) {
+            ->filter(function ($block) use ($name): bool {
                 return $name === 'default'
                     ? ($block->editor_name === $name || $block->editor_name === null)
                     : $block->editor_name === $name;
             })
             ->where('parent_id', null)
-            ->map(function ($block) use ($blockViewMappings, $renderChilds, $data) {
+            ->map(function ($block) use ($blockViewMappings, $renderChilds, $data): string {
                 if ($renderChilds) {
                     $childBlocks = $this->blocks->where('parent_id', $block->id);
 
-                    $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings, $data) {
+                    $renderedChildViews = $childBlocks->map(function ($childBlock) use ($blockViewMappings, $data): string {
                         $class = BlockConfig::findFirstWithType($childBlock->type);
                         $view = $class->getBlockView($blockViewMappings);
                         $data = $class->getData($data, $childBlock);
@@ -61,7 +61,7 @@ trait HasBlocks
      * @param array $data Provide extra data to Blade views.
      * @return string
      */
-    public function renderBlocks($renderChilds = false, $blockViewMappings = [], $data = [])
+    public function renderBlocks(bool $renderChilds = false, array $blockViewMappings = [], array $data = [])
     {
         return $this->renderNamedBlocks('default', $renderChilds, $blockViewMappings, $data);
     }

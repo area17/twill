@@ -7,24 +7,8 @@ use Illuminate\Contracts\Filesystem\Factory as FilesystemManager;
 
 class Disk implements FileServiceInterface
 {
-    /**
-     * @var FilesystemManager
-     */
-    protected $filesystemManager;
-
-    /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
-     * @param FilesystemManager $filesystemManager
-     * @param Config $config
-     */
-    public function __construct(FilesystemManager $filesystemManager, Config $config)
+    public function __construct(protected FilesystemManager $filesystemManager, protected Config $config)
     {
-        $this->filesystemManager = $filesystemManager;
-        $this->config = $config;
     }
 
     /**

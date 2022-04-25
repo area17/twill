@@ -11,15 +11,15 @@ trait HasSlug
 
     protected static function bootHasSlug()
     {
-        static::created(function ($model) {
+        static::created(function ($model): void {
             $model->setSlugs();
         });
 
-        static::updated(function ($model) {
+        static::updated(function ($model): void {
             $model->setSlugs();
         });
 
-        static::restored(function ($model) {
+        static::restored(function ($model): void {
             $model->setSlugs($restoring = true);
         });
     }
@@ -66,13 +66,11 @@ trait HasSlug
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $slug
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeForSlug($query, $slug)
+    public function scopeForSlug(\Illuminate\Database\Eloquent\Builder $query, string $slug)
     {
-        return $query->whereHas('slugs', function ($query) use ($slug) {
+        return $query->whereHas('slugs', function ($query) use ($slug): void {
             $query->whereSlug($slug);
             $query->whereActive(true);
             $query->whereLocale(app()->getLocale());
@@ -80,26 +78,22 @@ trait HasSlug
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $slug
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeForInactiveSlug($query, $slug)
+    public function scopeForInactiveSlug(\Illuminate\Database\Eloquent\Builder $query, string $slug)
     {
-        return $query->whereHas('slugs', function ($query) use ($slug) {
+        return $query->whereHas('slugs', function ($query) use ($slug): void {
             $query->whereSlug($slug);
             $query->whereLocale(app()->getLocale());
         })->with(['slugs']);
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $slug
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeForFallbackLocaleSlug($query, $slug)
+    public function scopeForFallbackLocaleSlug(\Illuminate\Database\Eloquent\Builder $query, string $slug)
     {
-        return $query->whereHas('slugs', function ($query) use ($slug) {
+        return $query->whereHas('slugs', function ($query) use ($slug): void {
             $query->whereSlug($slug);
             $query->whereActive(true);
             $query->whereLocale(config('translatable.fallback_locale'));
@@ -107,10 +101,9 @@ trait HasSlug
     }
 
     /**
-     * @param bool $restoring
      * @return void
      */
-    public function setSlugs($restoring = false)
+    public function setSlugs(bool $restoring = false)
     {
         foreach ($this->getSlugParams() as $slugParams) {
             $this->updateOrNewSlug($slugParams, $restoring);
@@ -118,11 +111,10 @@ trait HasSlug
     }
 
     /**
-     * @param array $slugParams
-     * @param bool $restoring
      * @return void
+     * @param mixed[] $slugParams
      */
-    public function updateOrNewSlug($slugParams, $restoring = false)
+    public function updateOrNewSlug(array $slugParams, bool $restoring = false)
     {
         if (in_array($slugParams['locale'], config('twill.slug_utf8_languages', []))) {
             $slugParams['slug'] = $this->getUtf8Slug($slugParams['slug']);
@@ -145,10 +137,10 @@ trait HasSlug
     }
 
     /**
-     * @param array $slugParams
      * @return object|null
+     * @param mixed[] $slugParams
      */
-    public function getExistingSlug($slugParams)
+    public function getExistingSlug(array $slugParams)
     {
         unset($slugParams['active']);
 
@@ -157,10 +149,10 @@ trait HasSlug
         foreach ($slugParams as $key => $value) {
             //check variations of the slug
             if ($key == 'slug') {
-                $query->where(function ($query) use ($value) {
+                $query->where(function ($query) use ($value): void {
                     $query->orWhere('slug', $value);
                     $query->orWhere('slug', $value . '-' . $this->getSuffixSlug());
-                    for ($i = 2; $i <= $this->nb_variation_slug; $i++) {
+                    for ($i = 2; $i <= $this->nb_variation_slug; ++$i) {
                         $query->orWhere('slug', $value . '-' . $i);
                     }
                 });
@@ -189,11 +181,9 @@ trait HasSlug
     }
 
     /**
-     * @param string $locale
-     * @param int $except_slug_id
      * @return void
      */
-    public function disableLocaleSlugs($locale, $except_slug_id = 0)
+    public function disableLocaleSlugs(string $locale, int $except_slug_id = 0)
     {
         $this->getSlugModelClass()::where($this->getForeignKey(), $this->id)
             ->where('id', '<>', $except_slug_id)
@@ -207,7 +197,7 @@ trait HasSlug
 
         unset($slugParams['active']);
 
-        for ($i = 2; $i <= $this->nb_variation_slug + 1; $i++) {
+        for ($i = 2; $i <= $this->nb_variation_slug + 1; ++$i) {
             $qCheck = $this->getSlugModelClass()::query();
             $qCheck->whereNull($this->getDeletedAtColumn());
             foreach ($slugParams as $key => $value) {
@@ -219,7 +209,7 @@ trait HasSlug
             }
 
             if (!empty($slugParams['slug'])) {
-                $slugParams['slug'] = $slugBackup . (($i > $this->nb_variation_slug) ? "-" . $this->getSuffixSlug() : "-{$i}");
+                $slugParams['slug'] = $slugBackup . (($i > $this->nb_variation_slug) ? "-" . $this->getSuffixSlug() : sprintf('-%d', $i));
             }
         }
 
@@ -234,7 +224,7 @@ trait HasSlug
      */
     public function getActiveSlug($locale = null)
     {
-        return $this->slugs->first(function ($slug) use ($locale) {
+        return $this->slugs->first(function ($slug) use ($locale): bool {
             return ($slug->locale === ($locale ?? app()->getLocale())) && $slug->active;
         }) ?? null;
     }
@@ -246,7 +236,7 @@ trait HasSlug
      */
     public function getFallbackActiveSlug()
     {
-        return $this->slugs->first(function ($slug) {
+        return $this->slugs->first(function ($slug): bool {
             return $slug->locale === config('translatable.fallback_locale') && $slug->active;
         }) ?? null;
     }
@@ -284,7 +274,7 @@ trait HasSlug
      */
     public function getSlugParams($locale = null)
     {
-        if (count(getLocales()) === 1 || !isset($this->translations)) {
+        if (count(getLocales()) === 1 || !(property_exists($this, 'translations') && $this->translations !== null)) {
             $slugParams = $this->getSingleSlugParams($locale);
             if ($slugParams != null && !empty($slugParams)) {
                 return $slugParams;
@@ -301,14 +291,14 @@ trait HasSlug
                 $slugDependenciesAttributes = [];
                 foreach ($attributes as $attribute) {
                     if (!isset($this->$attribute)) {
-                        throw new \Exception("You must define the field {$attribute} in your model");
+                        throw new \Exception(sprintf('You must define the field %s in your model', $attribute));
                     }
 
                     $slugDependenciesAttributes[$attribute] = $this->$attribute;
                 }
 
                 if (!isset($translation->$slugAttribute) && !isset($this->$slugAttribute)) {
-                    throw new \Exception("You must define the field {$slugAttribute} in your model");
+                    throw new \Exception(sprintf('You must define the field %s in your model', $slugAttribute));
                 }
 
                 $slugParam = [
@@ -342,14 +332,14 @@ trait HasSlug
                 $slugDependenciesAttributes = [];
                 foreach ($attributes as $attribute) {
                     if (!isset($this->$attribute)) {
-                        throw new \Exception("You must define the field {$attribute} in your model");
+                        throw new \Exception(sprintf('You must define the field %s in your model', $attribute));
                     }
 
                     $slugDependenciesAttributes[$attribute] = $this->$attribute;
                 }
 
                 if (!isset($this->$slugAttribute)) {
-                    throw new \Exception("You must define the field {$slugAttribute} in your model");
+                    throw new \Exception(sprintf('You must define the field %s in your model', $slugAttribute));
                 }
 
                 $slugParam = [
@@ -386,7 +376,7 @@ trait HasSlug
      */
     public function getForeignKey()
     {
-        return Str::snake(class_basename(get_class($this))) . "_id";
+        return Str::snake(class_basename($this::class)) . "_id";
     }
 
     protected function getSuffixSlug()
@@ -397,14 +387,13 @@ trait HasSlug
     /**
      * Generate a URL friendly slug from a UTF-8 string.
      *
-     * @param string $str
-     * @param array $options
      * @return string
+     * @param mixed[] $options
      */
-    public function getUtf8Slug($str, $options = [])
+    public function getUtf8Slug(string $str, array $options = [])
     {
         // Make sure string is in UTF-8 and strip invalid UTF-8 characters
-        $str = mb_convert_encoding((string) $str, 'UTF-8', mb_list_encodings());
+        $str = mb_convert_encoding($str, 'UTF-8', mb_list_encodings());
 
         $defaults = array(
             'delimiter' => '-',
@@ -419,15 +408,15 @@ trait HasSlug
 
         $char_map = array(
             // Latin
-            'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C',
-            'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I',
-            'Ð' => 'D', 'Ñ' => 'N', 'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ő' => 'O',
-            'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U', 'Ű' => 'U', 'Ý' => 'Y', 'Þ' => 'TH',
+            'À' => 'A', 'Á' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE',
+            'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Ï' => 'I',
+            'Ð' => 'D', 'Ñ' => 'N', 'Ò' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ő' => 'O',
+            'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ű' => 'U', 'Ý' => 'Y', 'Þ' => 'TH',
             'ß' => 'ss',
-            'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'ae', 'ç' => 'c',
-            'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
-            'ð' => 'd', 'ñ' => 'n', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ő' => 'o',
-            'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
+            'à' => 'a', 'á' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'ae',
+            'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'ï' => 'i',
+            'ð' => 'd', 'ñ' => 'n', 'ò' => 'o', 'ô' => 'o', 'õ' => 'o', 'ő' => 'o',
+            'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
             'ÿ' => 'y',
 
             // Latin symbols
@@ -470,10 +459,7 @@ trait HasSlug
             'ә' => 'a', 'ғ' => 'g', 'қ' => 'q', 'ң' => 'n', 'ө' => 'o', 'ұ' => 'u',
 
             // Czech
-            'Č' => 'C', 'Ď' => 'D', 'Ě' => 'E', 'Ň' => 'N', 'Ř' => 'R', 'Š' => 'S', 'Ť' => 'T', 'Ů' => 'U',
-            'Ž' => 'Z',
-            'č' => 'c', 'ď' => 'd', 'ě' => 'e', 'ň' => 'n', 'ř' => 'r', 'š' => 's', 'ť' => 't', 'ů' => 'u',
-            'ž' => 'z',
+            'Č' => 'C', 'Ď' => 'D', 'Ě' => 'E', 'Ň' => 'N', 'Ř' => 'R', 'Ť' => 'T', 'Ů' => 'U', 'ď' => 'd', 'ě' => 'e', 'ň' => 'n', 'ř' => 'r', 'ť' => 't', 'ů' => 'u',
 
             // Polish
             'Ą' => 'A', 'Ć' => 'C', 'Ę' => 'e', 'Ł' => 'L', 'Ń' => 'N', 'Ó' => 'o', 'Ś' => 'S', 'Ź' => 'Z',
@@ -501,7 +487,7 @@ trait HasSlug
         }
 
         // Replace non-alphanumeric characters with our delimiter
-        $str = preg_replace('/[^\p{L}\p{Nd}]+/u', $options['delimiter'], $str);
+        $str = preg_replace('#[^\p{L}\p{Nd}]+#u', $options['delimiter'], $str);
 
         // Remove duplicate delimiters
         $str = preg_replace('/(' . preg_quote($options['delimiter'], '/') . '){2,}/', '$1', $str);
@@ -518,12 +504,11 @@ trait HasSlug
     /**
      * Generate a URL friendly slug from a given string.
      *
-     * @param string $string
      * @return string
      */
-    public function urlSlugShorter($string)
+    public function urlSlugShorter(string $string)
     {
-        return strtolower(trim(preg_replace('~[^0-9a-z]+~i', '-', html_entity_decode(preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i', '$1', htmlentities($string, ENT_QUOTES, 'UTF-8')), ENT_QUOTES, 'UTF-8')), '-'));
+        return strtolower(trim(preg_replace('#[^0-9a-z]+#i', '-', html_entity_decode(preg_replace('#&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);#i', '$1', htmlentities($string, ENT_QUOTES, 'UTF-8')), ENT_QUOTES, 'UTF-8')), '-'));
     }
 
     /**

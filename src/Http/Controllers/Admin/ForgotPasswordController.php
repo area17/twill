@@ -21,32 +21,18 @@ class ForgotPasswordController extends Controller
 
     use SendsPasswordResetEmails;
 
-    /**
-     * @var PasswordBrokerManager
-     */
-    protected $passwordBrokerManager;
-
-    public function __construct(PasswordBrokerManager $passwordBrokerManager)
+    public function __construct(protected PasswordBrokerManager $passwordBrokerManager)
     {
         parent::__construct();
-
-        $this->passwordBrokerManager = $passwordBrokerManager;
         $this->middleware('twill_guest');
     }
 
-    /**
-     * @return \Illuminate\Contracts\Auth\PasswordBroker
-     */
-    public function broker()
+    public function broker(): \Illuminate\Contracts\Auth\PasswordBroker
     {
         return $this->passwordBrokerManager->broker('twill_users');
     }
 
-    /**
-     * @param ViewFactory $viewFactory
-     * @return \Illuminate\Contracts\View\View
-     */
-    public function showLinkRequestForm(ViewFactory $viewFactory)
+    public function showLinkRequestForm(ViewFactory $viewFactory): \Illuminate\Contracts\View\View
     {
         return $viewFactory->make('twill::auth.passwords.email');
     }

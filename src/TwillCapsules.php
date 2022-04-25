@@ -46,7 +46,7 @@ class TwillCapsules
      */
     public function getCapsuleForModule(string $module): Capsule
     {
-        $capsule = $this->getRegisteredCapsules()->first(function (Capsule $capsule) use ($module) {
+        $capsule = $this->getRegisteredCapsules()->first(function (Capsule $capsule) use ($module): bool {
             return $capsule->getModule() === $module;
         });
 
@@ -62,7 +62,7 @@ class TwillCapsules
      */
     public function getCapsuleForModel(string $model): Capsule
     {
-        $capsule = $this->getRegisteredCapsules()->first(function (Capsule $capsule) use ($model) {
+        $capsule = $this->getRegisteredCapsules()->first(function (Capsule $capsule) use ($model): bool {
             return $capsule->getSingular() === $model;
         });
 
@@ -91,10 +91,10 @@ class TwillCapsules
 
         $list
             ->where('enabled', true)
-            ->filter(function ($capsule) {
+            ->filter(function ($capsule): bool {
                 return ! isset($this->registeredCapsules[$capsule['name']]);
             })
-            ->map(function ($capsule) use ($path) {
+            ->map(function ($capsule) use ($path): void {
                 $this->registerCapsule(
                     new Capsule(
                         $capsule['name'],
@@ -112,9 +112,9 @@ class TwillCapsules
         // @todo: Read from capsules to get this data.
         $base = config('twill.capsules.namespaces.base');
 
-        $type = config("twill.capsules.namespaces.$type");
+        $type = config(sprintf('twill.capsules.namespaces.%s', $type));
 
-        return "$base\\$capsuleName" . (filled($type) ? "\\$type" : '');
+        return sprintf('%s\%s', $base, $capsuleName) . (filled($type) ? sprintf('\%s', $type) : '');
     }
 
     public function capsuleNamespaceToPath(
@@ -124,7 +124,7 @@ class TwillCapsules
     ): string {
         $namespace = Str::after($namespace, $capsuleNamespace . '\\');
 
-        return "$rootPath/{$this->getProjectCapsulesSubdirectory()}" . str_replace('\\', '/', $namespace);
+        return sprintf('%s/%s', $rootPath, $this->getProjectCapsulesSubdirectory()) . str_replace('\\', '/', $namespace);
     }
 
     public function getProjectCapsulesPath(): string
@@ -136,7 +136,7 @@ class TwillCapsules
     {
         $subdirectory = config('twill.capsules.namespaces.subdir');
 
-        return filled($subdirectory) ? "$subdirectory/" : '';
+        return filled($subdirectory) ? sprintf('%s/', $subdirectory) : '';
     }
 
     public function getAutoloader()

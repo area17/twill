@@ -23,7 +23,7 @@ class Dev extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         $this->call('twill:build', [
             '--hot' => true,

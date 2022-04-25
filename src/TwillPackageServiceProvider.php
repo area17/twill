@@ -10,7 +10,7 @@ use ReflectionClass;
 
 abstract class TwillPackageServiceProvider extends ServiceProvider
 {
-    protected $autoRegisterCapsules = true;
+    protected bool $autoRegisterCapsules = true;
 
     public function boot(): void
     {
@@ -44,14 +44,14 @@ abstract class TwillPackageServiceProvider extends ServiceProvider
 
     protected function getClassName(): string
     {
-        $provider = explode('\\', get_class($this));
+        $provider = explode('\\', $this::class);
 
         return array_pop($provider);
     }
 
     protected function getCapsuleNamespace(): string
     {
-        $provider = explode('\\', get_class($this));
+        $provider = explode('\\', $this::class);
         array_pop($provider);
 
         return implode('\\', $provider);
@@ -59,7 +59,7 @@ abstract class TwillPackageServiceProvider extends ServiceProvider
 
     protected function getPackageDirectory(): string
     {
-        $class = new ReflectionClass(get_class($this));
+        $class = new ReflectionClass($this::class);
 
         $path = Str::replaceLast('/' . $this->getClassName() . '.php', '', $class->getFileName());
 

@@ -15,39 +15,31 @@ use Schema;
 
 class BlockRepository extends ModuleRepository
 {
-    use HandleMedias, HandleFiles;
+    use HandleMedias;
 
-    /**
-     * @var Config
-     */
-    protected $config;
+    use HandleFiles;
 
-    /**
-     * @param Config $config
-     */
-    public function __construct(Config $config)
+    public function __construct(protected Config $config)
     {
         $blockModel = twillModel('block');
         $this->model = new $blockModel;
-        $this->config = $config;
     }
 
     /**
-     * @param string $role
-     * @return array
+     * @return mixed[]
      */
-    public function getCrops($role)
+    public function getCrops(string $role): array
     {
         return $this->config->get('twill.block_editor.crops')[$role];
     }
 
-    public function hydrate($object, $fields)
+    public function hydrate($object, $fields): \A17\Twill\Models\Model
     {
         if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
             $relatedItems = Collection::make();
 
-            Collection::make($fields['browsers'])->each(function ($items, $browserName) use (&$relatedItems) {
-                Collection::make($items)->each(function ($item) use ($browserName, &$relatedItems) {
+            Collection::make($fields['browsers'])->each(function ($items, $browserName) use (&$relatedItems): void {
+                Collection::make($items)->each(function ($item) use ($browserName, &$relatedItems): void {
                     try {
                         $repository = $this->getModelRepository($item['endpointType'] ?? $browserName);
                         $relatedItems->push((object) [
@@ -55,8 +47,8 @@ class BlockRepository extends ModuleRepository
                             'browser_name' => $browserName,
                         ]);
 
-                    } catch (ReflectionException $e) {
-                        Log::error($e);
+                    } catch (ReflectionException $reflectionException) {
+                        Log::error($reflectionException);
                     }
                 });
             });
@@ -69,22 +61,19 @@ class BlockRepository extends ModuleRepository
 
     /**
      * @param HasMedias|HasFiles $object
-     * @return void
      */
-    public function afterSave($object, $fields)
+    public function afterSave($object, $fields): void
     {
-        if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
-            if (isset($fields['browsers'])) {
-                Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($object) {
-                    $object->saveRelated($items, $browserName);
-                });
-            }
+        if (Schema::hasTable(config('twill.related_table', 'twill_related')) && isset($fields['browsers'])) {
+            Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($object): void {
+                $object->saveRelated($items, $browserName);
+            });
         }
 
         parent::afterSave($object, $fields);
     }
 
-    public function afterDelete($object)
+    public function afterDelete($object): void
     {
         $object->medias()->sync([]);
         $object->files()->sync([]);
@@ -95,11 +84,10 @@ class BlockRepository extends ModuleRepository
     }
 
     /**
-     * @param array $block
-     * @param bool $repeater
-     * @return array
+     * @param mixed[] $block
+     * @return mixed[]
      */
-    public function buildFromCmsArray($block, $repeater = false)
+    public function buildFromCmsArray(array $block, bool $repeater = false): array
     {
         $blockInstance = BlockConfig::getForComponent($block['type'], $repeater);
 
@@ -110,7 +98,7 @@ class BlockRepository extends ModuleRepository
         $block['content'] = empty($block['content']) ? new \stdClass : (object) $block['content'];
 
         if ($block['browsers']) {
-            $browsers = Collection::make($block['browsers'])->map(function ($items) {
+            $browsers = Collection::make($block['browsers'])->map(function ($items): \Illuminate\Support\Collection {
                 return Collection::make($items)->pluck('id');
             })->toArray();
 

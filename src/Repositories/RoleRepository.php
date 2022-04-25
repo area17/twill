@@ -14,7 +14,7 @@ class RoleRepository extends ModuleRepository
         $this->model = $model;
     }
 
-    public function filter($query, array $scopes = [])
+    public function filter($query, array $scopes = []): \Illuminate\Database\Eloquent\Builder
     {
         $this->searchIn($query, $scopes, 'search', ['name']);
 

@@ -22,25 +22,19 @@ class SyncLang extends Command
      */
     protected $description = "Sync the translations";
 
-    /**
-     * @var Filesystem
-     */
-    protected $files;
+    protected string $langDirPath = __DIR__ . '/../../lang';
 
-    protected $langDirPath = __DIR__ . '/../../lang';
+    protected string $csvPath = __DIR__ . '/../../lang/lang.csv';
 
-    protected $csvPath = __DIR__ . '/../../lang/lang.csv';
-
-    protected $langStubPath = __DIR__ . '/stubs/lang.stub';
+    protected string $langStubPath = __DIR__ . '/stubs/lang.stub';
 
     /**
      * @param ValidatorFactory $validatorFactory
      * @param Config $config
      */
-    public function __construct(Filesystem $files)
+    public function __construct(protected Filesystem $files)
     {
         parent::__construct();
-        $this->files = $files;
     }
 
     /**
@@ -64,7 +58,7 @@ class SyncLang extends Command
     }
 
     // BETA METHOD, NOT STABLE
-    private function toCsv()
+    private function toCsv(): void
     {
         if ($this->confirm('This operation will overwrite the lang.csv file, are you sure?')) {
             $csvArray = $this->getArrayFromCsv();
@@ -78,7 +72,7 @@ class SyncLang extends Command
                         $newRow = array_fill(0, count($csvArray[0]), "");
                         $newRow[0] = $key;
                         $newRow[$columnIndex] = $translation;
-                        array_push($csvArray, $newRow);
+                        $csvArray[] = $newRow;
                     } else {
                         $csvArray[$rowIndex + 2][$columnIndex] = $translation;
                     }
@@ -95,7 +89,10 @@ class SyncLang extends Command
         }
     }
 
-    private function getArrayFromCsv()
+    /**
+     * @return mixed[][]
+     */
+    private function getArrayFromCsv(): array
     {
         return array_map('str_getcsv', file($this->csvPath));
     }
@@ -110,7 +107,7 @@ class SyncLang extends Command
         return $codes;
     }
 
-    private function generateLangFiles()
+    private function generateLangFiles(): void
     {
         foreach ($this->getLangCodesFromCsv() as $code) {
             $langDirPath = $this->langDirPath . '/' . $code;
@@ -123,7 +120,7 @@ class SyncLang extends Command
         }
     }
 
-    private function generateLangFileContent($code)
+    private function generateLangFileContent($code): string
     {
         $content = [];
         $index = $this->getIndexByCode($code);
@@ -148,17 +145,18 @@ class SyncLang extends Command
         return array_search($code, $this->getArrayFromCsv()[1]);
     }
 
-    private function convertArrayToString($array)
+    private function convertArrayToString($array): string
     {
         $export = var_export($array, true);
-        $export = preg_replace("/^([ ]*)(.*)/m", '$1$1$2', $export);
+        $export = preg_replace("#^([ ]*)(.*)#m", '$1$1$2', $export);
+
         $array = preg_split("/\r\n|\n|\r/", $export);
         $array = preg_replace(["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], [null, ']$1', ' => ['], $array);
-        $export = join(PHP_EOL, array_filter(["["] + $array));
-        return $export;
+
+        return implode(PHP_EOL, array_filter(["["] + $array));
     }
 
-    private function cleanup()
+    private function cleanup(): void
     {
         $this->info('Cleaning up the lang directories...');
         $this->files->deleteDirectories($this->langDirPath);

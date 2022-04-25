@@ -7,13 +7,16 @@ use Illuminate\Support\Str;
 
 class SettingTranslation extends Model
 {
+    /**
+     * @var array<class-string<\locale>>|string[]
+     */
     protected $fillable = [
         'value',
         'active',
         'locale',
     ];
 
-    public function getTable()
+    public function getTable(): string
     {
         $twillSettingsTable = config('twill.settings_table', 'twill_settings');
 

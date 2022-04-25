@@ -15,7 +15,7 @@ class ListBlocks extends Command
      */
     protected $signature =
         'twill:list:blocks {filter?}' .
-        '{--t|--twill : List only Twill\'s internal blocks} ' .
+        "{--t|--twill : List only Twill's internal blocks} " .
         '{--c|--custom : List only user custom blocks} ' .
         '{--a|--app : List only legacy application blocks}' .
         '{--b|--blocks : List only blocks}' .
@@ -47,15 +47,15 @@ class ListBlocks extends Command
     {
         $this->blockCollection
             ->getMissingDirectories()
-            ->each(function ($directory) {
-                $this->error("Directory not found: {$directory}");
+            ->each(function ($directory): void {
+                $this->error(sprintf('Directory not found: %s', $directory));
             });
     }
 
     /**
      * @return Block[]
      */
-    protected function generateHeaders()
+    protected function generateHeaders(): array
     {
         return [
             'Title',
@@ -75,10 +75,7 @@ class ListBlocks extends Command
         ];
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    protected function getBlocks()
+    protected function getBlocks(): \Illuminate\Support\Collection
     {
         $sourceFiltered =
         $this->option('twill') ||
@@ -88,14 +85,14 @@ class ListBlocks extends Command
         $typeFiltered = $this->option('blocks') || $this->option('repeaters');
 
         $filteredList = $this->blockCollection
-            ->reject(function (Block $block) use ($sourceFiltered) {
+            ->reject(function (Block $block) use ($sourceFiltered): bool {
                 return $sourceFiltered && ! $this->option($block->source);
             })
-            ->reject(function (Block $block) use ($typeFiltered) {
+            ->reject(function (Block $block) use ($typeFiltered): bool {
                 return $this->dontPassTextFilter($block) ||
                     ($typeFiltered &&
                     ! $this->option(Str::plural($block->type)));
-            })->sortBy(function (Block $block) {
+            })->sortBy(function (Block $block): array {
                 return [$block->group, $block->title];
             });
 
@@ -118,10 +115,8 @@ class ListBlocks extends Command
 
     /**
      * Executes the console command.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $blockCollection = $this->getBlocks();
 
@@ -147,21 +142,17 @@ class ListBlocks extends Command
     {
         $color = $block['type'] === 'repeater' ? 'green' : 'yellow';
 
-        $block['type'] = "<fg={$color}>{$block['type']}</>";
+        $block['type'] = sprintf('<fg=%s>%s</>', $color, $block['type']);
 
         return $block;
     }
 
-    /**
-     * @param \A17\Twill\Services\Blocks\Block $block
-     * @return bool
-     */
-    public function dontPassTextFilter(Block $block)
+    public function dontPassTextFilter(Block $block): bool
     {
         if (filled($filter = $this->argument('filter'))) {
             return ! $block
                 ->toList()
-                ->reduce(function ($keep, $element) use ($filter) {
+                ->reduce(function ($keep, $element) use ($filter): bool {
                     if (is_array($element)) {
                         return false;
                     }

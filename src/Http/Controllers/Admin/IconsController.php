@@ -10,30 +10,23 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class IconsController extends Controller
 {
-    protected Filesystem $files;
-
-    protected BlockMaker $blockMaker;
-
-    public function __construct(Filesystem $files, BlockMaker $blockMaker)
+    public function __construct(protected Filesystem $files, protected BlockMaker $blockMaker)
     {
         parent::__construct();
-
-        $this->files = $files;
-        $this->blockMaker = $blockMaker;
     }
 
-    public function index()
+    public function index(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $icons = collect(
             config('twill.block_editor.directories.source.icons')
-        )->reduce(function (Collection $keep, $path) {
+        )->reduce(function (Collection $keep, $path): \Illuminate\Support\Collection {
             if (! $this->files->exists($path)) {
                 return $keep;
             }
 
             $files = collect($this->files->files($path))->map(function (
                 SplFileInfo $file
-            ) {
+            ): ?array {
                 if (in_array($file->getFilename(), config('twill.internal_icons'))) {
                     return null;
                 }
@@ -49,10 +42,10 @@ class IconsController extends Controller
             return $keep->merge($files);
         }, collect());
 
-        return view('twill::blocks.icons', compact('icons'));
+        return view('twill::blocks.icons', ['icons' => $icons]);
     }
 
-    public function show($file)
+    public function show($file): \Symfony\Component\HttpFoundation\StreamedResponse
     {
         $file = $this->blockMaker->getIconFile($file, false);
 
@@ -60,7 +53,7 @@ class IconsController extends Controller
             abort(404);
         }
 
-        return response()->stream(function () use ($file) {
+        return response()->stream(function () use ($file): void {
             echo $this->files->get($file);
         }, 200, ['Content-Type' => 'image/svg+xml']);
     }

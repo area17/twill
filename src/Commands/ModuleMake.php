@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 
 class ModuleMake extends Command
 {
+    public $capsuleNamespace;
     use HandlesStubs;
 
     /**
@@ -40,29 +41,14 @@ class ModuleMake extends Command
     protected $description = 'Create a new Twill Module';
 
     /**
-     * @var Filesystem
+     * @var string[]
      */
-    protected $files;
-
-    /**
-     * @var Composer
-     */
-    protected $composer;
+    protected $modelTraits = [];
 
     /**
      * @var string[]
      */
-    protected $modelTraits;
-
-    /**
-     * @var string[]
-     */
-    protected $repositoryTraits;
-
-    /**
-     * @var Config
-     */
-    protected $config;
+    protected $repositoryTraits = [];
 
     /**
      * @var bool
@@ -136,18 +122,9 @@ class ModuleMake extends Command
      */
     protected $customDirs = false;
 
-    /**
-     * @param Filesystem $files
-     * @param Composer $composer
-     * @param Config $config
-     */
-    public function __construct(Filesystem $files, Composer $composer, Config $config)
+    public function __construct(protected Filesystem $files, protected Composer $composer, protected Config $config)
     {
         parent::__construct();
-
-        $this->files = $files;
-        $this->composer = $composer;
-        $this->config = $config;
 
         $this->blockable = false;
         $this->translatable = false;
@@ -187,7 +164,7 @@ class ModuleMake extends Command
         if (file_exists($dir)) {
             if (! $this->option('force')) {
                 $answer = $this->choice(
-                    "Capsule path exists ($dir). Erase and overwrite?",
+                    sprintf('Capsule path exists (%s). Erase and overwrite?', $dir),
                     ['no', 'yes'],
                     $this->defaultsAnswserToNo
                         ? 0
@@ -234,6 +211,7 @@ class ModuleMake extends Command
             if (! $this->confirm('Creating capsule in ' . $dir, true)) {
                 exit(1);
             }
+
             $this->customDirs = true;
             $this->capsule = new Capsule(
                 $moduleTitle,
@@ -301,6 +279,7 @@ class ModuleMake extends Command
             } else {
                 $this->createCapsuleSeed();
             }
+
             $this->createCapsuleRoutes();
         } elseif ($this->isSingleton) {
             $this->createSingletonSeed($modelName);
@@ -317,9 +296,9 @@ class ModuleMake extends Command
 
         if (! $this->customDirs) {
             $this->info("Setup a new CMS menu item in config/twill-navigation.php:\n");
-            $this->info("    '{$navModuleName}' => [");
-            $this->info("        'title' => '{$navTitle}',");
-            $this->info("        '{$navType}' => true,");
+            $this->info(sprintf('    \'%s\' => [', $navModuleName));
+            $this->info(sprintf('        \'title\' => \'%s\',', $navTitle));
+            $this->info(sprintf('        \'%s\' => true,', $navType));
             $this->info("    ],\n");
 
             if ($this->isCapsule) {
@@ -327,7 +306,7 @@ class ModuleMake extends Command
                 $this->info("    'capsules' => [");
                 $this->info("        'list' => [");
                 $this->info('            [');
-                $this->info("                'name' => '{$this->capsule->name}',");
+                $this->info(sprintf('                \'name\' => \'%s\',', $this->capsule->name));
                 $this->info("                'enabled' => true,");
                 $this->info('            ],');
                 $this->info('        ],');
@@ -345,7 +324,7 @@ class ModuleMake extends Command
 
         $this->info('Enjoy.');
 
-        if ($this->nestable && ! class_exists('\Kalnoy\Nestedset\NestedSet')) {
+        if ($this->nestable && ! class_exists(\Kalnoy\Nestedset\NestedSet::class)) {
             $this->warn("\nTo support module nesting, you must install the `kalnoy/nestedset` package:");
             $this->warn("\n    composer require kalnoy/nestedset\n");
         }
@@ -356,18 +335,17 @@ class ModuleMake extends Command
     /**
      * Creates a new module database migration file.
      *
-     * @param string $moduleName
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function createMigration($moduleName = 'items')
+    private function createMigration(string $moduleName = 'items')
     {
         $table = Str::snake($moduleName);
         $tableClassName = Str::studly($table);
 
         $migrationName = 'create_' . $table . '_tables';
 
-        if (! count(glob($this->databasePath('migrations/*' . $migrationName . '.php')))) {
+        if (count(glob($this->databasePath('migrations/*' . $migrationName . '.php'))) === 0) {
             $migrationPath = $this->databasePath() . '/migrations';
 
             $this->makeDir($migrationPath);
@@ -381,7 +359,7 @@ class ModuleMake extends Command
             );
 
             if ($this->translatable) {
-                $stub = preg_replace('/{{!hasTranslation}}[\s\S]+?{{\/!hasTranslation}}/', '', $stub);
+                $stub = preg_replace('#{{!hasTranslation}}[\s\S]+?{{\/!hasTranslation}}#', '', $stub);
             } else {
                 $stub = str_replace([
                     '{{!hasTranslation}}',
@@ -395,7 +373,7 @@ class ModuleMake extends Command
             $stub = $this->renderStubForOption($stub, 'hasPosition', $this->sortable);
             $stub = $this->renderStubForOption($stub, 'hasNesting', $this->nestable);
 
-            $stub = preg_replace('/\}\);[\s\S]+?Schema::create/', "});\n\n        Schema::create", $stub);
+            $stub = preg_replace('#\}\);[\s\S]+?Schema::create#', "});\n\n        Schema::create", $stub);
 
             $this->files->put($fullPath, $stub);
 
@@ -406,11 +384,10 @@ class ModuleMake extends Command
     /**
      * Creates new model class files for the given model name and traits.
      *
-     * @param string $modelName
-     * @param array $activeTraits
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @param mixed[] $activeTraits
      */
-    private function createModels($modelName = 'Item', $activeTraits = [])
+    private function createModels(string $modelName = 'Item', array $activeTraits = [])
     {
         $modelClassName = $this->namespace('models', 'Models', $modelName);
 
@@ -419,7 +396,7 @@ class ModuleMake extends Command
         $this->makeTwillDirectory($modelsDir);
 
         if ($this->translatable) {
-            $this->makeTwillDirectory($baseDir = $this->isCapsule ? $this->capsule->getModelsDir() : "$modelsDir/Translations");
+            $this->makeTwillDirectory($baseDir = $this->isCapsule ? $this->capsule->getModelsDir() : sprintf('%s/Translations', $modelsDir));
 
             $modelTranslationClassName = $modelName . 'Translation';
 
@@ -441,11 +418,11 @@ class ModuleMake extends Command
                 $this->files->get(__DIR__ . '/stubs/model_translation.stub')
             );
 
-            $this->putTwillStub(twill_path("$baseDir/" . $modelTranslationClassName . '.php'), $stub);
+            $this->putTwillStub(twill_path(sprintf('%s/', $baseDir) . $modelTranslationClassName . '.php'), $stub);
         }
 
         if ($this->sluggable) {
-            $this->makeTwillDirectory($baseDir = $this->isCapsule ? $this->capsule->getModelsDir() : "$modelsDir/Slugs");
+            $this->makeTwillDirectory($baseDir = $this->isCapsule ? $this->capsule->getModelsDir() : sprintf('%s/Slugs', $modelsDir));
 
             $modelSlugClassName = $modelName . 'Slug';
 
@@ -467,11 +444,11 @@ class ModuleMake extends Command
                 $this->files->get(__DIR__ . '/stubs/model_slug.stub')
             );
 
-            $this->putTwillStub(twill_path("$baseDir/" . $modelSlugClassName . '.php'), $stub);
+            $this->putTwillStub(twill_path(sprintf('%s/', $baseDir) . $modelSlugClassName . '.php'), $stub);
         }
 
         if ($this->revisionable) {
-            $this->makeTwillDirectory($baseDir = $this->isCapsule ? $this->capsule->getModelsDir() : "$modelsDir/Revisions");
+            $this->makeTwillDirectory($baseDir = $this->isCapsule ? $this->capsule->getModelsDir() : sprintf('%s/Revisions', $modelsDir));
 
             $modelRevisionClassName = $modelName . 'Revision';
 
@@ -493,7 +470,7 @@ class ModuleMake extends Command
                 $this->files->get(__DIR__ . '/stubs/model_revision.stub')
             );
 
-            $this->putTwillStub(twill_path("$baseDir/" . $modelRevisionClassName . '.php'), $stub);
+            $this->putTwillStub(twill_path(sprintf('%s/', $baseDir) . $modelRevisionClassName . '.php'), $stub);
         }
 
         $activeModelTraits = [];
@@ -541,7 +518,7 @@ class ModuleMake extends Command
         $stub = $this->renderStubForOption($stub, 'hasMedias', $this->mediable);
         $stub = $this->renderStubForOption($stub, 'hasPosition', $this->sortable);
 
-        $this->putTwillStub(twill_path("$modelsDir/" . $modelName . '.php'), $stub);
+        $this->putTwillStub(twill_path(sprintf('%s/', $modelsDir) . $modelName . '.php'), $stub);
 
         $this->info('Models created successfully! Fill your fillables!');
     }
@@ -563,18 +540,17 @@ class ModuleMake extends Command
     /**
      * Creates new repository class file for the given model name.
      *
-     * @param string $modelName
-     * @param array $activeTraits
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @param mixed[] $activeTraits
      */
-    private function createRepository($modelName = 'Item', $activeTraits = [])
+    private function createRepository(string $modelName = 'Item', array $activeTraits = [])
     {
         $repositoriesDir = $this->isCapsule ? $this->capsule->getRepositoriesDir() : 'Repositories';
 
         $modelClass = $this->isCapsule ? $this->capsule->getModel() : config(
             'twill.namespace'
-        ) . "\Models\\{$modelName}";
+        ) . sprintf('\Models\%s', $modelName);
 
         $this->makeTwillDirectory($repositoriesDir);
 
@@ -622,7 +598,7 @@ class ModuleMake extends Command
             $this->files->get(__DIR__ . '/stubs/repository.stub')
         );
 
-        twill_put_stub(twill_path("{$repositoriesDir}/" . $repositoryClassName . '.php'), $stub);
+        twill_put_stub(twill_path(sprintf('%s/', $repositoriesDir) . $repositoryClassName . '.php'), $stub);
 
         $this->info('Repository created successfully! Control all the things!');
     }
@@ -630,12 +606,10 @@ class ModuleMake extends Command
     /**
      * Create a new controller class file for the given module name and model name.
      *
-     * @param string $moduleName
-     * @param string $modelName
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function createController($moduleName = 'items', $modelName = 'Item')
+    private function createController(string $moduleName = 'items', string $modelName = 'Item')
     {
         $controllerClassName = $modelName . 'Controller';
 
@@ -669,7 +643,7 @@ class ModuleMake extends Command
 
             $stub = str_replace(['{{hasNesting}}', '{{/hasNesting}}'], '', $stub);
         } else {
-            $stub = preg_replace('/{{hasNesting}}[\s\S]+?{{\/hasNesting}}/', '', $stub);
+            $stub = preg_replace('#{{hasNesting}}[\s\S]+?{{\/hasNesting}}#', '', $stub);
         }
 
         $stub = str_replace(
@@ -679,9 +653,9 @@ class ModuleMake extends Command
         );
 
         // Remove lines including only whitespace, leave true empty lines untouched
-        $stub = preg_replace('/^[\s]+\n/m', '', $stub);
+        $stub = preg_replace('#^[\s]+\n#m', '', $stub);
 
-        $this->putTwillStub(twill_path("$dir/" . $controllerClassName . '.php'), $stub);
+        $this->putTwillStub(twill_path(sprintf('%s/', $dir) . $controllerClassName . '.php'), $stub);
 
         $this->info('Controller created successfully! Define your index/browser/form endpoints options!');
     }
@@ -689,11 +663,10 @@ class ModuleMake extends Command
     /**
      * Creates a new request class file for the given model name.
      *
-     * @param string $modelName
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function createRequest($modelName = 'Item')
+    private function createRequest(string $modelName = 'Item')
     {
         $dir = $this->isCapsule ? $this->capsule->getRequestsDir() : 'Http/Requests/Twill';
 
@@ -707,7 +680,7 @@ class ModuleMake extends Command
             $this->files->get(__DIR__ . '/stubs/request.stub')
         );
 
-        $this->putTwillStub(twill_path("{$dir}/" . $requestClassName . '.php'), $stub);
+        $this->putTwillStub(twill_path(sprintf('%s/', $dir) . $requestClassName . '.php'), $stub);
 
         $this->info('Form request created successfully! Add some validation rules!');
     }
@@ -715,11 +688,10 @@ class ModuleMake extends Command
     /**
      * Creates appropriate module Blade view files.
      *
-     * @param string $moduleName
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function createViews($moduleName = 'items')
+    private function createViews(string $moduleName = 'items')
     {
         $viewsPath = $this->viewPath($moduleName);
 
@@ -739,7 +711,6 @@ class ModuleMake extends Command
      * Creates a basic routes file for the Capsule.
      *
      * @param string $moduleName
-     * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function createCapsuleRoutes(): void
@@ -763,7 +734,6 @@ class ModuleMake extends Command
      * Creates a new capsule database seed file.
      *
      * @param string $moduleName
-     * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     private function createCapsuleSeed(): void
@@ -774,7 +744,7 @@ class ModuleMake extends Command
 
         $stub = str_replace('{namespace}', $this->capsule->getSeedsNamespace(), $stub);
 
-        $this->files->put("{$this->capsule->getSeedsPsr4Path()}/DatabaseSeeder.php", $stub);
+        $this->files->put(sprintf('%s/DatabaseSeeder.php', $this->capsule->getSeedsPsr4Path()), $stub);
 
         $this->info('Seed created successfully!');
     }
@@ -782,11 +752,10 @@ class ModuleMake extends Command
     /**
      * Creates a new singleton module database seed file.
      *
-     * @param string $modelName
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function createSingletonSeed($modelName = 'Item')
+    private function createSingletonSeed(string $modelName = 'Item')
     {
         $repositoryName = $modelName . 'Repository';
         $seederName = $modelName . 'Seeder';
@@ -800,9 +769,9 @@ class ModuleMake extends Command
         $stub = $this->replaceVariables([
             'seederNamespace' => 'Database\\Seeders',
             'seederClassName' => $seederName,
-            'modelClass' => "App\\Models\\$modelName",
+            'modelClass' => sprintf('App\Models\%s', $modelName),
             'modelClassName' => $modelName,
-            'repositoryClass' => "App\\Repositories\\$repositoryName",
+            'repositoryClass' => sprintf('App\Repositories\%s', $repositoryName),
             'repositoryClassName' => $repositoryName,
         ], $stub);
 
@@ -813,7 +782,7 @@ class ModuleMake extends Command
 
         $stub = $this->removeEmptyLinesWithOnlySpaces($stub);
 
-        $this->files->put("{$dir}/{$seederName}.php", $stub);
+        $this->files->put(sprintf('%s/%s.php', $dir, $seederName), $stub);
 
         $this->info('Seed created successfully!');
     }
@@ -833,7 +802,7 @@ class ModuleMake extends Command
         $stub = $this->replaceVariables([
             'seederNamespace' => $this->capsule->getDatabaseNamespace() . '\\Seeds',
             'seederClassName' => $seederName,
-            'modelClass' => $this->capsule->getModelNamespace() . "\\$modelName",
+            'modelClass' => $this->capsule->getModelNamespace() . sprintf('\%s', $modelName),
             'modelClassName' => $modelName,
             'repositoryClass' => $this->capsule->getRepositoryClass(),
             'repositoryClassName' => $repositoryName,
@@ -846,7 +815,7 @@ class ModuleMake extends Command
 
         $stub = $this->removeEmptyLinesWithOnlySpaces($stub);
 
-        $this->files->put("{$dir}/{$seederName}.php", $stub);
+        $this->files->put(sprintf('%s/%s.php', $dir, $seederName), $stub);
 
         $this->info('Seed created successfully!');
     }
@@ -900,7 +869,7 @@ class ModuleMake extends Command
     {
         $base = config('twill.capsules.namespace');
 
-        $this->capsuleNamespace = "{$base}\\{$module}";
+        $this->capsuleNamespace = sprintf('%s\%s', $base, $module);
     }
 
     public function databasePath($path = '')
@@ -923,7 +892,7 @@ class ModuleMake extends Command
         }
 
         if (! is_dir($dir)) {
-            $this->info("It wasn't possible to create capsule directory $dir");
+            $this->info(sprintf('It wasn\'t possible to create capsule directory %s', $dir));
 
             die;
         }
@@ -955,14 +924,14 @@ class ModuleMake extends Command
 
     public function namespace($type, $suffix, $class = null)
     {
-        $class = (filled($class) ? "\\$class" : '');
+        $class = (filled($class) ? sprintf('\%s', $class) : '');
 
         if (! $this->isCapsule) {
-            return "App\\{$suffix}{$class}";
+            return sprintf('App\%s%s', $suffix, $class);
         }
 
         if (! $this->isCapsule) {
-            return "App\\{$suffix}{$class}";
+            return sprintf('App\%s%s', $suffix, $class);
         }
 
         if ($type === 'models') {
@@ -990,7 +959,7 @@ class ModuleMake extends Command
             return $this->config->get('view.paths')[0] . '/admin/' . $moduleName;
         }
 
-        $dir = "$this->moduleBasePath/resources/views/admin";
+        $dir = sprintf('%s/resources/views/admin', $this->moduleBasePath);
         $this->makeDir($dir);
 
         return $dir;

@@ -8,15 +8,21 @@ use Illuminate\Support\Str;
 
 class Setting extends Model
 {
-    use HasTranslation, HasMedias;
+    use HasTranslation;
+    use HasMedias;
+    public bool $useTranslationFallback = true;
 
-    public $useTranslationFallback = true;
-
+    /**
+     * @var string[]
+     */
     protected $fillable = [
         'key',
         'section',
     ];
 
+    /**
+     * @var array<class-string<\locale>>|string[]
+     */
     public $translatedAttributes = [
         'value',
         'locale',
@@ -25,7 +31,7 @@ class Setting extends Model
 
     public function getTranslationModelNameDefault()
     {
-        return "A17\Twill\Models\Translations\SettingTranslation";
+        return \A17\Twill\Models\Translations\SettingTranslation::class;
     }
 
     public function getTable()

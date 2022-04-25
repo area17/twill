@@ -16,16 +16,19 @@ trait HasMedias
         'crop_h',
     ];
 
+    /**
+     * @return mixed[]
+     */
     public function getMediasParams(): array
     {
-        return (isset($this->mediasParams) && is_array($this->mediasParams))
+        return (property_exists($this, 'mediasParams') && $this->mediasParams !== null && is_array($this->mediasParams))
             ? $this->mediasParams
             : config('twill.default_crops');
     }
 
     public static function bootHasMedias(): void
     {
-        self::deleted(static function (Model $model) {
+        self::deleted(static function (Model $model): void {
             if (! method_exists($model, 'isForceDeleting') || $model->isForceDeleting()) {
                 /* @var \A17\Twill\Models\Behaviors\HasMedias $model */
                 $model->medias()->detach();
@@ -60,7 +63,7 @@ trait HasMedias
 
     private function findMedia($role, $crop = 'default')
     {
-        $media = $this->medias->first(function ($media) use ($role, $crop) {
+        $media = $this->medias->first(function ($media) use ($role, $crop): bool {
             if (config('twill.media_library.translated_form_fields', false)) {
                 $localeScope = $media->pivot->locale === app()->getLocale();
             }
@@ -69,7 +72,7 @@ trait HasMedias
         });
 
         if (! $media && config('twill.media_library.translated_form_fields', false)) {
-            $media = $this->medias->first(function ($media) use ($role, $crop) {
+            $media = $this->medias->first(function ($media) use ($role, $crop): bool {
                 return $media->pivot->role === $role && $media->pivot->crop === $crop;
             });
         }
@@ -84,7 +87,7 @@ trait HasMedias
      * @param string $crop Crop name.
      * @return bool
      */
-    public function hasImage($role, $crop = 'default')
+    public function hasImage(string $role, string $crop = 'default')
     {
         $media = $this->findMedia($role, $crop);
 
@@ -102,9 +105,9 @@ trait HasMedias
      * @param Media|null $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return string|null
      */
-    public function image($role, $crop = 'default', $params = [], $has_fallback = false, $cms = false, $media = null)
+    public function image(string $role, string $crop = 'default', array $params = [], bool $has_fallback = false, bool $cms = false, $media = null)
     {
-        if (! $media) {
+        if ($media === null) {
             $media = $this->findMedia($role, $crop);
         }
 
@@ -133,9 +136,9 @@ trait HasMedias
      * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @return array
      */
-    public function images($role, $crop = 'default', $params = [])
+    public function images(string $role, string $crop = 'default', array $params = [])
     {
-        $medias = $this->medias->filter(function ($media) use ($role, $crop) {
+        $medias = $this->medias->filter(function ($media) use ($role, $crop): bool {
             return $media->pivot->role === $role && $media->pivot->crop === $crop;
         });
 
@@ -155,9 +158,9 @@ trait HasMedias
      * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @return array
      */
-    public function imagesWithCrops($role, $params = [])
+    public function imagesWithCrops(string $role, array $params = [])
     {
-        $medias = $this->medias->filter(function ($media) use ($role) {
+        $medias = $this->medias->filter(function ($media) use ($role): bool {
             return $media->pivot->role === $role;
         });
 
@@ -180,9 +183,9 @@ trait HasMedias
      * @param Media|null $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return array
      */
-    public function imageAsArray($role, $crop = 'default', $params = [], $media = null)
+    public function imageAsArray(string $role, string $crop = 'default', array $params = [], $media = null)
     {
-        if (! $media) {
+        if ($media === null) {
             $media = $this->findMedia($role, $crop);
         }
 
@@ -208,9 +211,9 @@ trait HasMedias
      * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @return array
      */
-    public function imagesAsArrays($role, $crop = 'default', $params = [])
+    public function imagesAsArrays(string $role, string $crop = 'default', array $params = [])
     {
-        $medias = $this->medias->filter(function ($media) use ($role, $crop) {
+        $medias = $this->medias->filter(function ($media) use ($role, $crop): bool {
             return $media->pivot->role === $role && $media->pivot->crop === $crop;
         });
 
@@ -230,9 +233,9 @@ trait HasMedias
      * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @return array
      */
-    public function imagesAsArraysWithCrops($role, $params = [])
+    public function imagesAsArraysWithCrops(string $role, array $params = [])
     {
-        $medias = $this->medias->filter(function ($media) use ($role) {
+        $medias = $this->medias->filter(function ($media) use ($role): bool {
             return $media->pivot->role === $role;
         });
 
@@ -253,10 +256,10 @@ trait HasMedias
      * @param Media|null $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return string
      */
-    public function imageAltText($role, $media = null)
+    public function imageAltText(string $role, $media = null)
     {
-        if (! $media) {
-            $media = $this->medias->first(function ($media) use ($role) {
+        if ($media === null) {
+            $media = $this->medias->first(function ($media) use ($role): bool {
                 if (config('twill.media_library.translated_form_fields', false)) {
                     $localeScope = $media->pivot->locale === app()->getLocale();
                 }
@@ -279,10 +282,10 @@ trait HasMedias
      * @param Media|null $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return string
      */
-    public function imageCaption($role, $media = null)
+    public function imageCaption(string $role, $media = null)
     {
-        if (! $media) {
-            $media = $this->medias->first(function ($media) use ($role) {
+        if ($media === null) {
+            $media = $this->medias->first(function ($media) use ($role): bool {
                 if (config('twill.media_library.translated_form_fields', false)) {
                     $localeScope = $media->pivot->locale === app()->getLocale();
                 }
@@ -305,10 +308,10 @@ trait HasMedias
      * @param Media|null $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return string
      */
-    public function imageVideo($role, $media = null)
+    public function imageVideo(string $role, $media = null)
     {
-        if (! $media) {
-            $media = $this->medias->first(function ($media) use ($role) {
+        if ($media === null) {
+            $media = $this->medias->first(function ($media) use ($role): bool {
                 if (config('twill.media_library.translated_form_fields', false)) {
                     $localeScope = $media->pivot->locale === app()->getLocale();
                 }
@@ -334,7 +337,7 @@ trait HasMedias
      * @param string $crop Crop name.
      * @return Media|null
      */
-    public function imageObject($role, $crop = 'default')
+    public function imageObject(string $role, string $crop = 'default')
     {
         return $this->findMedia($role, $crop);
     }
@@ -350,7 +353,7 @@ trait HasMedias
      * @return string|null
      * @see \A17\Twill\Commands\RefreshLQIP
      */
-    public function lowQualityImagePlaceholder($role, $crop = 'default', $params = [], $has_fallback = false)
+    public function lowQualityImagePlaceholder(string $role, string $crop = 'default', array $params = [], bool $has_fallback = false)
     {
         $media = $this->findMedia($role, $crop);
 
@@ -374,7 +377,7 @@ trait HasMedias
      * @param bool $has_fallback Indicate that you can provide a fallback. Will return `null` instead of the default image fallback.
      * @return string|null
      */
-    public function socialImage($role, $crop = 'default', $params = [], $has_fallback = false)
+    public function socialImage(string $role, string $crop = 'default', array $params = [], bool $has_fallback = false)
     {
         $media = $this->findMedia($role, $crop);
 
@@ -399,7 +402,7 @@ trait HasMedias
      * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @return string
      */
-    public function cmsImage($role, $crop = 'default', $params = [])
+    public function cmsImage(string $role, string $crop = 'default', array $params = [])
     {
         return $this->image($role, $crop, $params, false, true, false) ?? ImageService::getTransparentFallbackUrl();
     }
@@ -410,7 +413,7 @@ trait HasMedias
      * @param array $params Parameters compatible with the current image service, like `w` or `h`.
      * @return string
      */
-    public function defaultCmsImage($params = [])
+    public function defaultCmsImage(array $params = [])
     {
         $media = $this->medias->first();
 
@@ -428,9 +431,9 @@ trait HasMedias
      * @param string $crop Crop name.
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function imageObjects($role, $crop = 'default')
+    public function imageObjects(string $role, string $crop = 'default')
     {
-        return $this->medias->filter(function ($media) use ($role, $crop) {
+        return $this->medias->filter(function ($media) use ($role, $crop): bool {
             return $media->pivot->role === $role && $media->pivot->crop === $crop;
         });
     }

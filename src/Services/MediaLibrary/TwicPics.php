@@ -8,19 +8,14 @@ class TwicPics implements ImageServiceInterface
 {
     use ImageServiceDefaults;
 
-    protected $paramsProcessor;
-
-    public function __construct(TwicPicsParamsProcessor $paramsProcessor)
+    public function __construct(protected TwicPicsParamsProcessor $paramsProcessor)
     {
-        $this->paramsProcessor = $paramsProcessor;
     }
 
     /**
      * @param string $id
-     * @param array $params
-     * @return string
      */
-    public function getUrl($id, array $params = [])
+    public function getUrl($id, array $params = []): string
     {
         $defaultParams = config('twill.twicpics.default_params');
 
@@ -30,23 +25,18 @@ class TwicPics implements ImageServiceInterface
     /**
      * @param string $id
      * @param array $crop_params
-     * @param array $params
-     * @return string
      */
-    public function getUrlWithCrop($id, array $cropParams, array $params = [])
+    public function getUrlWithCrop($id, array $cropParams, array $params = []): string
     {
         return $this->getUrl($id, $this->getCrop($cropParams) + $params);
     }
 
     /**
      * @param string $id
-     * @param array $cropParams
      * @param int $width
      * @param int $height
-     * @param array $params
-     * @return string
      */
-    public function getUrlWithFocalCrop($id, array $cropParams, $width, $height, array $params = [])
+    public function getUrlWithFocalCrop($id, array $cropParams, $width, $height, array $params = []): string
     {
         return $this->getUrl($id, $this->getFocalPointCrop($cropParams, $width, $height) + $params);
 
@@ -54,10 +44,8 @@ class TwicPics implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
-     * @return string
      */
-    public function getLQIPUrl($id, array $params = [])
+    public function getLQIPUrl($id, array $params = []): string
     {
         $defaultParams = config('twill.twicpics.lqip_default_params');
 
@@ -66,10 +54,8 @@ class TwicPics implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
-     * @return string
      */
-    public function getSocialUrl($id, array $params = [])
+    public function getSocialUrl($id, array $params = []): string
     {
         $defaultParams = config('twill.twicpics.social_default_params');
 
@@ -78,10 +64,8 @@ class TwicPics implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
-     * @return string
      */
-    public function getCmsUrl($id, array $params = [])
+    public function getCmsUrl($id, array $params = []): string
     {
         $defaultParams = config('twill.twicpics.cms_default_params');
 
@@ -90,18 +74,17 @@ class TwicPics implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @return string
      */
-    public function getRawUrl($id)
+    public function getRawUrl($id): string
     {
         $domain = config('twill.twicpics.domain');
         $path = config('twill.twicpics.path');
 
         if (! empty($path)) {
-            $path = "{$path}/";
+            $path = sprintf('%s/', $path);
         }
 
-        return "https://{$domain}/{$path}{$id}";
+        return sprintf('https://%s/%s%s', $domain, $path, $id);
     }
 
     /**
@@ -114,11 +97,9 @@ class TwicPics implements ImageServiceInterface
     }
 
     /**
-     * @param string $id
-     * @param array $params
-     * @return string
+     * @param mixed[] $params
      */
-    protected function createUrl($id, $params = [])
+    protected function createUrl(string $id, array $params = []): string
     {
         $rawUrl = $this->getRawUrl($id);
 
@@ -126,20 +107,18 @@ class TwicPics implements ImageServiceInterface
 
         $params = $this->paramsProcessor->process($params);
 
-        $manipulations = collect($params)->map(function ($value, $key) {
-            return "{$key}={$value}";
+        $manipulations = collect($params)->map(function ($value, $key): string {
+            return sprintf('%s=%s', $key, $value);
         })->join('/');
 
-        return "{$rawUrl}?twic={$apiVersion}/{$manipulations}";
+        return sprintf('%s?twic=%s/%s', $rawUrl, $apiVersion, $manipulations);
     }
 
     /**
-     * @param string $id
-     * @param array $params
-     * @param array $defaultParams
-     * @return string
+     * @param mixed[] $params
+     * @param mixed[] $defaultParams
      */
-    protected function getUrlWithDefaultParams($id, $params = [], $defaultParams = [])
+    protected function getUrlWithDefaultParams(string $id, array $params = [], array $defaultParams = []): string
     {
         $cropParams = Arr::has($params, $this->cropParamsKeys) ? $this->getCrop($params) : [];
 
@@ -149,10 +128,10 @@ class TwicPics implements ImageServiceInterface
     }
 
     /**
-     * @param array $cropParams
-     * @return array
+     * @param mixed[] $cropParams
+     * @return mixed[]
      */
-    protected function getCrop($cropParams)
+    protected function getCrop(array $cropParams): array
     {
         $cropW = $cropParams['crop_w'] ?? null;
         $cropH = $cropParams['crop_h'] ?? null;
@@ -163,22 +142,20 @@ class TwicPics implements ImageServiceInterface
             return [];
         }
 
-        $expression = "{$cropW}x{$cropH}";
+        $expression = sprintf('%sx%s', $cropW, $cropH);
 
         if (filled($cropX) && filled($cropY)) {
-            $expression .= "@{$cropX}x{$cropY}";
+            $expression .= sprintf('@%sx%s', $cropX, $cropY);
         }
 
         return ['crop' => $expression];
     }
 
     /**
-     * @param array $cropParams
-     * @param int $width
-     * @param int $height
-     * @return array
+     * @param mixed[] $cropParams
+     * @return mixed[]
      */
-    protected function getFocalPointCrop($cropParams, $width, $height)
+    protected function getFocalPointCrop(array $cropParams, int $width, int $height): array
     {
         if (empty($cropParams)) {
             return [];
@@ -192,6 +169,6 @@ class TwicPics implements ImageServiceInterface
         $focusX = $cropW / 2 + $cropX;
         $focusY = $cropH / 2 + $cropY;
 
-        return ['focus' => "{$focusX}x{$focusY}"];
+        return ['focus' => sprintf('%sx%s', $focusX, $focusY)];
     }
 }

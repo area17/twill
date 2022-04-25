@@ -6,7 +6,7 @@ class MediaCropNotFoundException extends \Exception
 {
     public function __construct(string $crop)
     {
-        $message = "Found media but could not find the crop '$crop'";
+        $message = sprintf('Found media but could not find the crop \'%s\'', $crop);
         parent::__construct($message);
     }
 }

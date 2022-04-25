@@ -21,16 +21,19 @@ abstract class Model extends BaseModel implements TaggableInterface
     use TaggableTrait;
     use IsTranslatable;
 
+    /**
+     * @var bool
+     */
     public $timestamps = true;
 
     protected function isTranslationModel()
     {
-        return Str::endsWith(get_class($this), 'Translation');
+        return Str::endsWith($this::class, 'Translation');
     }
 
     public function scopePublished($query)
     {
-        return $query->where("{$this->getTable()}.published", true);
+        return $query->where(sprintf('%s.published', $this->getTable()), true);
     }
 
     public function scopeAccessible($query)
@@ -39,7 +42,7 @@ abstract class Model extends BaseModel implements TaggableInterface
             return $query;
         }
 
-        $model = get_class($query->getModel());
+        $model = $query->getModel()::class;
         $moduleName = isPermissionableModule(getModuleNameByModel($model));
 
         if ($moduleName && ! Auth::user()->isSuperAdmin()) {
@@ -69,7 +72,7 @@ abstract class Model extends BaseModel implements TaggableInterface
     public function scopePublishedInListings($query)
     {
         if ($this->isFillable('public')) {
-            $query->where("{$this->getTable()}.public", true);
+            $query->where(sprintf('%s.public', $this->getTable()), true);
         }
 
         return $query->published()->visible();
@@ -79,12 +82,12 @@ abstract class Model extends BaseModel implements TaggableInterface
     {
         if ($this->isFillable('publish_start_date')) {
             $query->where(function ($query) {
-                $query->whereNull("{$this->getTable()}.publish_start_date")->orWhere("{$this->getTable()}.publish_start_date", '<=', Carbon::now());
+                $query->whereNull(sprintf('%s.publish_start_date', $this->getTable()))->orWhere(sprintf('%s.publish_start_date', $this->getTable()), '<=', Carbon::now());
             });
 
             if ($this->isFillable('publish_end_date')) {
                 $query->where(function ($query) {
-                    $query->whereNull("{$this->getTable()}.publish_end_date")->orWhere("{$this->getTable()}.publish_end_date", '>=', Carbon::now());
+                    $query->whereNull(sprintf('%s.publish_end_date', $this->getTable()))->orWhere(sprintf('%s.publish_end_date', $this->getTable()), '>=', Carbon::now());
                 });
             }
         }
@@ -99,12 +102,12 @@ abstract class Model extends BaseModel implements TaggableInterface
 
     public function scopeDraft($query)
     {
-        return $query->where("{$this->getTable()}.published", false);
+        return $query->where(sprintf('%s.published', $this->getTable()), false);
     }
 
     public function scopeOnlyTrashed($query)
     {
-        return $query->whereNotNull("{$this->getTable()}.deleted_at");
+        return $query->whereNotNull(sprintf('%s.deleted_at', $this->getTable()));
     }
 
     public function getFillable()
