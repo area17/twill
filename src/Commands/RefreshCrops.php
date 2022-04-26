@@ -329,14 +329,14 @@ class RefreshCrops extends Command
             $crop_y = 0;
         } elseif ($originalRatio <= $ratio) {
             $crop_w = $width;
-            $crop_h = $width / $ratio;
+            $crop_h = floor($width / $ratio);
             $crop_x = 0;
-            $crop_y = ($height - $crop_h) / 2;
+            $crop_y = floor(($height - $crop_h) / 2);
         } else {
             $crop_h = $height;
-            $crop_w = $height * $ratio;
+            $crop_w = floor($height * $ratio);
             $crop_y = 0;
-            $crop_x = ($width - $crop_w) / 2;
+            $crop_x = floor(($width - $crop_w) / 2);
         }
 
         return compact('crop_w', 'crop_h', 'crop_x', 'crop_y');
