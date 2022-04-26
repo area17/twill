@@ -2,6 +2,32 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.8.1 (2022-04-26)
+
+### Fixes
+
+- Fixes an error when using translated validation rules in Laravel 9 [`#1611`](https://github.com/area17/twill/pull/1611)
+- Avoids a 500 error if glide base url is set to an empty string [`#1603`](https://github.com/area17/twill/pull/1603)
+- Fixes an issue where repeaters and blocks would not expand on create/duplicate [`#1608`](https://github.com/area17/twill/pull/1608)
+
+## 2.8.0 (2022-04-19)
+
+### Added 
+
+No new features were added in the final release. Please check rc and beta tags to see a full
+list of new features and fixes.
+
+### Fixed
+
+- Improved language label display [`#1592`](https://github.com/area17/twill/pull/1592)
+- Fixed regression in translatable settings [`#1598`](https://github.com/area17/twill/pull/1598)
+- Fixed capsule database path [`#1583`](https://github.com/area17/twill/pull/1583)
+- Fixed activity log morph size [`#1565`](https://github.com/area17/twill/pull/1565)
+
+### Docs
+
+- Added repeater guide [`#1576`](https://github.com/area17/twill/pull/1576)
+
 ## 2.8.0-rc.2 (2022-04-08)
 
 ### Added
