@@ -41,7 +41,9 @@
     "pragmarx/google2fa-qrcode": "^1.0|^2.0",
     "spatie/laravel-activitylog": "^2.5|^3.2|^4.0",
     "spatie/laravel-analytics": "^3.6|^4.0",
-    "spatie/once": "^2.0|^3.0"
+    "spatie/once": "^2.0|^3.0",
+    "usernotnull/tall-toasts": "^1.4",
+    "wire-elements/modal": "^1.0"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^2.16|^3.0",

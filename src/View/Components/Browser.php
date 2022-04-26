@@ -78,8 +78,37 @@ class Browser extends TwillFormComponent
             'Add' . ($this->max > 1 ? " up to {$this->max} " . $itemLabel : ' one ' . Str::singular($this->itemLabel));
     }
 
+    private function getModalData(): string
+    {
+        return json_encode([
+            'title' => __('twill::lang.fields.browser.attach') . ' ' . strtolower($this->label),
+            'field' => $this->name,
+            'module' => $this->moduleName,
+            'max' => $this->max,
+            // @todo: endpoints as we no longer have to rely on that.
+            'endpoints' => $this->endpoints,
+            'currentSelection' => $this->selectedItems(),
+        ]);
+    }
+
+    private function selectedItems(): array
+    {
+        $browsers = \Illuminate\Support\Facades\View::shared('browsers');
+
+        return $browsers[$this->name] ?? [];
+    }
+
     public function render(): View
     {
-        return view('twill::partials.form._browser', $this->data());
+        return view(
+            'twill::partials.form._browser',
+            array_merge(
+                $this->data(),
+                [
+                    'modal_data' => $this->getModalData(),
+                    'selected_items' => $this->selectedItems(),
+                ]
+            )
+        );
     }
 }

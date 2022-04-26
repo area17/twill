@@ -2,6 +2,7 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Http\Livewire\BrowserPicker;
 use A17\Twill\Http\Livewire\Form;
 use Exception;
 use A17\Twill\Commands\BlockMake;
@@ -81,6 +82,7 @@ class TwillServiceProvider extends ServiceProvider
     {
         // LIVEWIRE
         Livewire::component('livewire-twill-form', Form::class);
+        Livewire::component('livewire-browser-picker', BrowserPicker::class);
         // ENDLIVEWIRE
 
         $this->requireHelpers();

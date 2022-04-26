@@ -43,7 +43,7 @@
                 @partialView(($moduleName ?? null), 'navigation._breadcrumb')
             @endif
             <section class="main">
-                <div class="app" id="app">
+                <div class="app" id="app" v-cloak>
                     @yield('content')
                     @if (config('twill.enabled.media-library') || config('twill.enabled.file-library'))
                         <a17-medialibrary ref="mediaLibrary"
@@ -78,17 +78,63 @@
             @csrf
         </form>
 
-        {{-- LIVEWIRE --}}
-        @livewireScripts
-        {{-- Toast: https://github.com/usernotnull/tall-toasts --}}
-        @toastScripts
-        {{-- Sortable --}}
-        <script src="https://unpkg.com/@nextapps-be/livewire-sortablejs@0.1.1/dist/livewire-sortable.js" defer></script>
-        {{-- AlpineJs --}}
-        <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-        <livewire:toasts />
-        {{-- Safelist classes --}}
-        {{-- modalwidth comment for tailwind purge, used widths: sm:max-w-sm sm:max-w-md sm:max-w-lg sm:max-w-xl sm:max-w-2xl sm:max-w-3xl sm:max-w-4xl sm:max-w-5xl sm:max-w-6xl sm:max-w-7xl --}}
-        @livewire('livewire-ui-modal')
+
+        <script>
+            window['{{ config('twill.js_namespace') }}'] = {};
+            window['{{ config('twill.js_namespace') }}'].version = '{{ config('twill.version') }}';
+            window['{{ config('twill.js_namespace') }}'].twillLocalization = {!! json_encode($twillLocalization) !!};
+            window['{{ config('twill.js_namespace') }}'].STORE = {};
+            window['{{ config('twill.js_namespace') }}'].STORE.form = {};
+            window['{{ config('twill.js_namespace') }}'].STORE.config = {
+                publishDateDisplayFormat: '{{config('twill.publish_date_display_format')}}',
+            };
+            window['{{ config('twill.js_namespace') }}'].STORE.medias = {};
+            window['{{ config('twill.js_namespace') }}'].STORE.medias.types = [];
+            window['{{ config('twill.js_namespace') }}'].STORE.medias.config = {
+                useWysiwyg: {{ config('twill.media_library.media_caption_use_wysiwyg') ? 'true' : 'false' }},
+                wysiwygOptions: {!! json_encode(config('twill.media_library.media_caption_wysiwyg_options')) !!}
+            };
+            window['{{ config('twill.js_namespace') }}'].STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!};
+
+            @if (config('twill.enabled.media-library'))
+                window['{{ config('twill.js_namespace') }}'].STORE.medias.types.push({
+                    value: 'image',
+                    text: '{{ twillTrans("twill::lang.media-library.images") }}',
+                    total: {{ \A17\Twill\Models\Media::count() }},
+                    endpoint: '{{ route('twill.media-library.medias.index') }}',
+                    tagsEndpoint: '{{ route('twill.media-library.medias.tags') }}',
+                    uploaderConfig: {!! json_encode($mediasUploaderConfig) !!}
+                });
+                window['{{ config('twill.js_namespace') }}'].STORE.medias.showFileName = !!'{{ config('twill.media_library.show_file_name') }}';
+            @endif
+
+            @if (config('twill.enabled.file-library'))
+                window['{{ config('twill.js_namespace') }}'].STORE.medias.types.push({
+                    value: 'file',
+                    text: '{{ twillTrans("twill::lang.media-library.files") }}',
+                    total: {{ \A17\Twill\Models\File::count() }},
+                    endpoint: '{{ route('twill.file-library.files.index') }}',
+                    tagsEndpoint: '{{ route('twill.file-library.files.tags') }}',
+                    uploaderConfig: {!! json_encode($filesUploaderConfig) !!}
+                });
+            @endif
+
+
+            @yield('initialStore')
+
+            window.STORE = {}
+            window.STORE.form = {}
+            window.STORE.publication = {}
+            window.STORE.medias = {}
+            window.STORE.medias.types = []
+            window.STORE.medias.selected = {}
+            window.STORE.browsers = {}
+            window.STORE.browsers.selected = {}
+
+            @stack('vuexStore')
+        </script>
+        <script src="{{ twillAsset('chunk-vendors.js') }}"></script>
+        <script src="{{ twillAsset('chunk-common.js') }}"></script>
+        @stack('extra_js')
     </body>
 </html>

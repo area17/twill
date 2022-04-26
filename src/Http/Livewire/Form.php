@@ -6,15 +6,21 @@ use A17\Twill\Models\Model;
 use A17\Twill\Repositories\ModuleRepository;
 use App\Repositories\ProjectRepository;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Livewire\Component;
+use Usernotnull\Toast\Concerns\WireToast;
 
 class Form extends Component
 {
+    use WireToast;
+
     public Model $model;
     public array $form;
     // @todo: Make dynamic.
     public string $currentLang = 'en';
+
+    protected $listeners = ['newBrowserData'];
 
     private function getRepo(): ModuleRepository
     {
@@ -51,6 +57,12 @@ class Form extends Component
         return $dummyRules;
     }
 
+    public function newBrowserData(string $browser, array $items): void
+    {
+        $this->form['browsers'][$browser] = $items;
+        toast()->info('Browser items selected')->push();
+    }
+
     private function getForm(): string
     {
         $view = "twill.projects.form";
@@ -64,6 +76,7 @@ class Form extends Component
     public function save(): void
     {
         $this->getRepo()->update($this->model->id, $this->form);
+        toast()->success('Saved')->push();
     }
 
     public function updateRepeaterOrder(array $newOrderData): void
@@ -84,13 +97,15 @@ class Form extends Component
         $newList = [];
 
         // The $newOrderData is already sorted so we can just pick the items, insert them and then replace the array.
-        foreach ($newOrderData as $newIndex => $item) {
+        foreach ($newOrderData as $item) {
             $currentIndex = explode('#', $item['value'])[1];
             $newList[] = $currentList[$currentIndex];
         }
 
         // Set back the array.
         $this->form['repeaters'][$repeaterName] = $newList;
+
+        toast()->info('Order has been updated')->push();
     }
 
     public function addRepeater(string $type): void
@@ -100,10 +115,21 @@ class Form extends Component
         ];
     }
 
+    public function deleteBrowserItem(string $browser, int $id): void
+    {
+        $this->form['browsers'][$browser] = Arr::where(
+            $this->form['browsers'][$browser],
+            function (array $item) use ($id) {
+                return $item['id'] !== $id;
+            }
+        );
+    }
+
     public function render(): View
     {
         // Get the form.
         \Illuminate\Support\Facades\View::share('repeaters', $this->form['repeaters']);
+        \Illuminate\Support\Facades\View::share('browsers', $this->form['browsers']);
         return view('twill::livewire.form', [
             'langCodes' => config('translatable.locales'),
             'formView' => $this->getForm(),
