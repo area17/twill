@@ -66,6 +66,33 @@ class Form extends Component
         $this->getRepo()->update($this->model->id, $this->form);
     }
 
+    public function updateRepeaterOrder(array $newOrderData): void
+    {
+        // Get the repeater name.
+        $repeaterName = $newOrderData[0]["value"] ?? null;
+
+        if (!$repeaterName) {
+            // We cannot handle this as data is missing.
+            return;
+        }
+
+        $repeaterName = explode('#', $repeaterName)[0];
+
+        // Get the current list.
+        $currentList = $this->form['repeaters'][$repeaterName];
+
+        $newList = [];
+
+        // The $newOrderData is already sorted so we can just pick the items, insert them and then replace the array.
+        foreach ($newOrderData as $newIndex => $item) {
+            $currentIndex = explode('#', $item['value'])[1];
+            $newList[] = $currentList[$currentIndex];
+        }
+
+        // Set back the array.
+        $this->form['repeaters'][$repeaterName] = $newList;
+    }
+
     public function addRepeater(string $type): void
     {
         $this->form['repeaters'][$type][] = [

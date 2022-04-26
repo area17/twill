@@ -134,7 +134,10 @@
         <script src="{{ twillAsset('chunk-vendors.js') }}"></script>
         <script src="{{ twillAsset('chunk-common.js') }}"></script>
         @stack('extra_js')
+        {{-- LIVEWIRE --}}
         @livewireScripts
+        {{-- Sortable --}}
+        <script src="https://unpkg.com/@nextapps-be/livewire-sortablejs@0.1.1/dist/livewire-sortable.js" defer></script>
         @livewireStyles
     </body>
 </html>

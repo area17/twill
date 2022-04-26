@@ -1,12 +1,17 @@
 @if(isset($livewire) && $livewire)
-    <div class="mt-6 mb-6">
+    <div class="mt-6 mb-6" wire:sortable="updateRepeaterOrder">
         @foreach ($repeaters[$type] as $index => $data)
-            <x-twill::fieldset :nested="true" :title="$type">
+            <x-twill::fieldset :nested="true"
+                               :title="$type"
+                               :sortable="true"
+                               wire:key="repeater-{{$type}}-{{$index}}"
+                               wire:sortable.item="{{$type}}#{{$index}}">
                 {!! $repeaterForm($index, $data) !!}
             </x-twill::fieldset>
         @endforeach
     </div>
-    <button class="bg-blue-600 text-white px-4 py-2" wire:click.prevent="addRepeater('{{$type}}')">Add new {{$type}}</button>
+    <button class="bg-blue-600 text-white px-4 py-2"
+            wire:click.prevent="addRepeater('{{$type}}')">Add new {{$type}}</button>
 @else
     <a17-repeater
         type="{{ $type }}"
