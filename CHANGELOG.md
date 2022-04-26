@@ -8,6 +8,7 @@ All notable changes to `twill` will be documented in this file.
 
 - Fixes an error when using translated validation rules in Laravel 9 [`#1611`](https://github.com/area17/twill/pull/1611)
 - Avoids a 500 error if glide base url is set to an empty string [`#1603`](https://github.com/area17/twill/pull/1603)
+- Fixes an issue where repeaters and blocks would not expand on create/duplicate [`#1608`](https://github.com/area17/twill/pull/1608)
 
 ## 2.8.0 (2022-04-19)
 
