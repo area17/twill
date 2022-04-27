@@ -83,6 +83,36 @@ Select::make()
 | default     |	Sets a default value if empty	      	                       | string          |               |
 | disabled            | Disables the field                                      | boolean         | false         | 
 
+
+Select item option
+| Option      | Description                                                  | Type/values     | Default value |
+| :---------- | :----------------------------------------------------------- | :-------------- | :------------ |
+| selectable  | Defines if select item should be selectable in the select or not | boolean     | true          |
+
+Example of `selectable` prop usage:
+```php
+@formField('select', [
+    'name' => 'office',
+    'label' => 'Office',
+    'placeholder' => 'Select an office',
+    'options' => [
+        [
+            'value' => 1,
+            'label' => 'New York'
+        ],
+        [
+            'value' => 2,
+            'label' => 'London'
+        ],
+        [
+            'value' => 3,
+            'label' => 'Berlin',
+            'selectable' => false // This item will be non-selectable in the select form component
+        ]
+    ]
+])
+```
+
 A migration to save a `select` field would be:
 
 ```php
