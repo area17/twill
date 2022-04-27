@@ -96,6 +96,11 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             if (is_array($lang) && isset($lang[1]) && $native) {
                 return $lang[1];
             }
+
+            if (is_array($lang) && isset($lang[0])) {
+                return $lang[0];
+            }
+
             return $lang;
         }
         return $code;
