@@ -61,7 +61,7 @@
             @if ($note) note: '{{ $note }}', @endif
             @if ($required) required: true, @endif
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
-            @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
+            @if ($placeholder) placeholder: '{{ addslashes($placeholder) }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($hideCounter) showCounter: false, @endif
             @if ($disabled) disabled: true, @endif
@@ -108,7 +108,7 @@
             @if ($note) note: '{{ $note }}', @endif
             @if ($required) required: true, @endif
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
-            @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
+            @if ($placeholder) placeholder: '{{ addslashes($placeholder) }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($hideCounter) showCounter: false, @endif
             @if ($disabled) disabled: true, @endif
