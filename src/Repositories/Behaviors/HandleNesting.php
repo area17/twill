@@ -48,7 +48,6 @@ trait HandleNesting
         if (!$object->parent) {
             $object->parent_id = null;
             $object->save();
-            return;
         }
     }
 }
