@@ -3,6 +3,7 @@
 namespace A17\Twill\Models;
 
 use Kalnoy\Nestedset\Collection as BaseNestedsetCollection;
+use Kalnoy\Nestedset\NodeTrait;
 
 class NestedsetCollection extends BaseNestedsetCollection
 {
@@ -15,7 +16,7 @@ class NestedsetCollection extends BaseNestedsetCollection
      *
      * @param mixed $root
      *
-     * @return Collection
+     * @return NestedsetCollection
      */
     public function toTree($root = false)
     {
