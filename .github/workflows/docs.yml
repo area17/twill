@@ -19,5 +19,5 @@ jobs:
           ACCESS_TOKEN: ${{ secrets.TWILL_PAT_TOKEN }}
           TARGET_REPO: area17/twill
           TARGET_BRANCH: build/docs
-          BUILD_SCRIPT: cd docs && npm ci && npm run build
+          BUILD_SCRIPT: cd docs && npm ci && VUEPRESS_BASE=twill npm run build
           BUILD_DIR: docs/

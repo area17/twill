@@ -1,7 +1,8 @@
+let base = process.env.VUEPRESS_BASE || 'docs';
 module.exports = {
   title: 'Twill',
   description: 'Twill — An open source CMS toolkit for Laravel',
-  base: `/${process.env.VUEPRESS_BASE}/`,
+  base: `/${base}/`,
   dest: "docs",
   head: [
     ['link', { rel: 'shortcut icon', href: '/favicon.ico' }],
