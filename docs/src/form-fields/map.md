@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Map
 
-![screenshot](/docs/_media/map.png)
+![screenshot](../.vuepress/public/_media/map.png)
 
 ```php
 @formField('map', [
