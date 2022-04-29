@@ -17,7 +17,7 @@ Self-nested modules allow items to be nested within other items of the same modu
 You can enable nesting when creating a new module with the `--hasNesting` or `-N` option:
 
 ```
-php artisan twill:module:make -N pages
+php artisan twill:make:module -N pages
 ```
 
 This will prefill some options and methods in your module's controller and use the supporting traits on your model and repository.
