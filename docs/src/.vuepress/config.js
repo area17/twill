@@ -38,13 +38,6 @@ module.exports = {
     ],
     sidebar: require('./sidebar.js'),
   },
-  configureWebpack: {
-    resolve: {
-      alias: {
-        '@base': `/${base}/`
-      }
-    }
-  },
   plugins: [
     ['@vuepress/google-analytics', {
       ga: 'UA-117094786-1'
