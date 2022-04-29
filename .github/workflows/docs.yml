@@ -2,7 +2,7 @@ name: Documentation Build
 on:
   push:
     branches:
-      - docs/test
+      - 2.x
 jobs:
   build:
     name: Build docs
