@@ -117,6 +117,10 @@ module.exports = [
           {
             "title": "Nested Modules",
             "path": "/crud-modules/nested-modules.html",
+          },
+          {
+            "title": "Capsules",
+            "path": "/crud-modules/capsules.html",
           }
         ],
         "collapsable": true
