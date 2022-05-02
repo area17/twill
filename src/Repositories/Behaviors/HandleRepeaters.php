@@ -205,6 +205,7 @@ trait HandleRepeaters
             // If the relation is not an "existing" one try to match it with our session.
             if (
                 !Str::startsWith($relationField['id'], $relation) &&
+                $relationField['id'] > (time() - 100000) && // Temporary "fix" :D
                 $id = TwillUtil::hasRepeaterIdFor($relationField['id'])
             ) {
                 $relationField['id'] = $relation . '-' . $id;

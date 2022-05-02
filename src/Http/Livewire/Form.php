@@ -129,7 +129,7 @@ class Form extends Component
     {
         // Get the form.
         \Illuminate\Support\Facades\View::share('repeaters', $this->form['repeaters']);
-        \Illuminate\Support\Facades\View::share('browsers', $this->form['browsers']);
+        \Illuminate\Support\Facades\View::share('browsers', $this->form['browsers'] ?? []);
         return view('twill::livewire.form', [
             'langCodes' => config('translatable.locales'),
             'formView' => $this->getForm(),
