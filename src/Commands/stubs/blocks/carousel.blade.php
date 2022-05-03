@@ -12,6 +12,4 @@
     default="fixed-width"
 />
 
-<x-twill::repeater
-    type="carousel-item"
-/>
+<x-twill::repeater type="carousel-item"/>

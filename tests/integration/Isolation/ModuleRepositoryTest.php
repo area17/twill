@@ -2,9 +2,7 @@
 
 namespace A17\Twill\Tests\Integration\Isolation;
 
-use A17\Twill\Repositories\ModuleRepository;
 use A17\Twill\Tests\Integration\TestCase;
-use App\Models\Author;
 use App\Repositories\AuthorRepository;
 use App\Repositories\CategoryRepository;
 
