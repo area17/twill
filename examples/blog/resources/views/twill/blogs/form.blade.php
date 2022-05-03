@@ -20,7 +20,7 @@
         :max="1"
     />
 
-    @formField('tags')
+    <x-twill::tags />
 
     <x-twill::block-editor/>
 @stop

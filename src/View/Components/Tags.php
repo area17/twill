@@ -1,0 +1,24 @@
+<?php
+
+namespace A17\Twill\View\Components;
+
+use Illuminate\Contracts\View\View;
+
+class Tags extends TwillFormComponent
+{
+    public function __construct(
+        string $label = 'Tags',
+        string $note = '',
+    ) {
+        parent::__construct(
+            'tags',
+            $label,
+            $note
+        );
+    }
+
+    public function render(): View
+    {
+        return view('twill::partials.form._tags', $this->data());
+    }
+}

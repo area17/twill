@@ -9,5 +9,9 @@ Tags can be used to organize content and is by default available if you have ena
 To enable tags, add the `HandleTags` trait to your module's repository.
 
 ```php
-@formField('tags')
+<x-twill::tags />
 ```
+
+::: details Old method
+@formField('tags')
+:::
