@@ -8,7 +8,7 @@
         max: {{ $max }},
         filesizeMax: {{ $filesizeMax }},
         @if ($buttonOnTop) buttonOnTop: true, @endif
-        @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
+        {{$formFieldName(true)}}
     }"
 ></a17-locale>
 

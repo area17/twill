@@ -1,5 +1,5 @@
 <a17-singlecheckbox
-    @include('twill::partials.form.utils._field_name')
+    {{$formFieldName()}}
     label="{{ $label ?? '' }}"
     :initial-value="{{ $default ? 'true' : 'false' }}"
     @if ($note) note='{{ $note }}' @endif

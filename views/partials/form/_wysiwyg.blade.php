@@ -10,7 +10,7 @@
             type="a17-wysiwyg-tiptap"
             :attributes="{
             label: '{{ $label }}',
-            @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
+            {{$formFieldName(true)}}
             @if ($note) note: '{{ $note }}', @endif
             @if ($required) required: true, @endif
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
@@ -32,7 +32,7 @@
     @else
         <a17-wysiwyg-tiptap
             label="{{ $label }}"
-            @include('twill::partials.form.utils._field_name')
+            {{$formFieldName()}}
             @if ($note) note="{{ $note }}" @endif
             @if ($required) :required="true" @endif
             @if ($options) :options='{!! json_encode($options) !!}' @endif
@@ -57,7 +57,7 @@
             type="a17-wysiwyg"
             :attributes="{
             label: '{{ $label }}',
-            @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
+            {{$formFieldName(true)}}
             @if ($note) note: '{{ $note }}', @endif
             @if ($required) required: true, @endif
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
@@ -79,7 +79,7 @@
     @else
         <a17-wysiwyg
             label="{{ $label }}"
-            @include('twill::partials.form.utils._field_name')
+            {{$formFieldName()}}
             @if ($note) note="{{ $note }}" @endif
             @if ($required) :required="true" @endif
             @if ($options) :options='{!! json_encode($options) !!}' @endif

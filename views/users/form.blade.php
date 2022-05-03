@@ -138,7 +138,7 @@
 
     @if(config('twill.enabled.permissions-management') && config('twill.permissions.level') == 'roleGroupItem')
         @can('edit-users')
-            @unless($item->isSuperAdmin() || $item->id == $currentUser->id)
+            @unless($item->isSuperAdmin() || $item->id === $currentUser->id)
                 <x-twill::formConnectedFields
                     field-name="role_id"
                     :render-for-blocks="false"

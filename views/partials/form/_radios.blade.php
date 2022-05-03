@@ -1,6 +1,6 @@
 <a17-singleselect
     label="{{ $label }}"
-    @include('twill::partials.form.utils._field_name')
+    {{$formFieldName()}}
     :options="{{ json_encode($options) }}"
     @if ($default) selected="{{ $default }}" @endif
     :grid="false"

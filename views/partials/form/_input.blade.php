@@ -3,7 +3,7 @@
         type="a17-textfield"
         :attributes="{
             label: '{{ $label }}',
-            @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
+            {{$formFieldName(true)}}
             type: '{{ $type }}',
             @if ($required) required: true, @endif
             @if ($note) note: '{{ $note }}', @endif
@@ -26,7 +26,7 @@
 @else
     <a17-textfield
         label="{{ $label }}"
-        @include('twill::partials.form.utils._field_name')
+        {{$formFieldName()}}
         type="{{ $type }}"
         @if ($required) :required="true" @endif
         @if ($note) note="{{ $note }}" @endif

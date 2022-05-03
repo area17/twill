@@ -1,7 +1,7 @@
 @if ($unpack)
     <a17-multiselect
         label="{{ $label }}"
-        @include('twill::partials.form.utils._field_name')
+        {{$formFieldName()}}
         :options="{{ json_encode($options) }}"
         :grid="true"
         :columns="{{ $columns }}"
@@ -21,7 +21,7 @@
 @else
     <a17-vselect
         label="{{ $label }}"
-        @include('twill::partials.form.utils._field_name')
+        {{$formFieldName()}}
         :options="{{ json_encode($options) }}"
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder ?? false) placeholder="{{ $placeholder }}" @endif

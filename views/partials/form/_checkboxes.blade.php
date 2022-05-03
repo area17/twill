@@ -1,6 +1,6 @@
 <a17-multiselect
     label="{{ $label }}"
-    @include('twill::partials.form.utils._field_name')
+    {{$formFieldName()}}
     :options="{{ json_encode($options) }}"
     :grid="false"
     :columns="{{ $columns }}"
