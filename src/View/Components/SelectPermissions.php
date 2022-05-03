@@ -20,8 +20,8 @@ class SelectPermissions extends TwillFormComponent
         public ?array $options = null,
     ) {
         parent::__construct(
-            'permissions',
-            'Permissions',
+            name: 'permissions',
+            label: 'Permissions',
         );
 
         $this->options = $options ?? [

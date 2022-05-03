@@ -11,9 +11,9 @@ class Tags extends TwillFormComponent
         string $note = '',
     ) {
         parent::__construct(
-            'tags',
-            $label,
-            $note
+            name: 'tags',
+            label: $label,
+            note: $note
         );
     }
 

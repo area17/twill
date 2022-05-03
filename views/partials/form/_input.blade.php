@@ -14,6 +14,9 @@
             @if ($rows) rows: {{ $rows }}, @endif
             @if ($prefix) prefix: '{{ $prefix }}', @endif
             @if ($inModal) inModal: true, @endif
+            @if ($min) min: {{$min}}, @endif
+            @if ($max) max: {{$max}}, @endif
+            @if ($step) step: {{$step}}, @endif
             @if ($default)
                 initialValue: '{{ $default }}',
                 hasDefaultStore: true,
@@ -39,6 +42,9 @@
         @if ($onChange) v-on:change="{{ $onChange }}{{ $onChangeFullAttribute }}" @endif
         @if ($prefix) prefix="{{ $prefix }}" @endif
         @if ($inModal) :in-modal="true" @endif
+        @if ($min) min="{{$min}}" @endif
+        @if ($max) max="{{$max}}" @endif
+        @if ($step) step="{{$step}}" @endif
         @if ($default)
             :initial-value="'{{ $default }}'"
             :has-default-store="true"

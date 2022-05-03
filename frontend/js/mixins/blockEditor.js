@@ -18,8 +18,6 @@ export default {
   methods: {
     addAndEditBlock (add, edit, { block, index }) {
       window[process.env.VUE_APP_NAME].PREVSTATE = cloneDeep(this.$store.state)
-      // eslint-disable-next-line
-      console.log('add-and-edit-block', { block, index })
       add(block, index)
       edit(index)
     },

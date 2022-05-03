@@ -27,6 +27,9 @@ class Input extends TwillFormComponent
         public ?string $onChange = null,
         public ?string $onChangeAttribute = null,
         public ?string $prefix = null,
+        public ?int $min = null,
+        public ?int $max = null,
+        public ?int $step = null,
     ) {
         parent::__construct(
             name: $name,

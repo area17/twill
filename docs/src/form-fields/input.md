@@ -69,6 +69,13 @@ pageClass: twill-doc
 | readonly    | Sets the field as readonly                                                                                               | true<br />false                                             | false         |
 | default     | Sets a default value if empty                                                                                            | string                                                      |               |
 
+Specific options for the "number" type:
+
+| Option | Description                           | Type/values | Default value |
+|:-------|:--------------------------------------|:------------|:--------------|
+| min    | Minimum value                         | number      | null          |
+| max    | Maximum value                         | number      | null          |
+| step   | Step to increment/decrement the value | number      | null          |
 
 A migration to save an `input` field would be:
 
