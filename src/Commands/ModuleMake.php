@@ -732,7 +732,7 @@ class ModuleMake extends Command
             $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub')
         );
 
-        $this->info('Form view created successfully! Include your form fields using @formField directives!');
+        $this->info('Form view created successfully! You can now include your form fields.');
     }
 
     /**

@@ -6,97 +6,105 @@
 
 @section('contentFields')
 
-    @formField('input', [
-        'name' => 'email',
-        'label' => twillTrans('twill::lang.user-management.email')
-    ])
+    <x-twill::input
+        name="email"
+        :label="twillTrans('twill::lang.user-management.email')"
+    />
 
     @can('edit-user-roles')
         @if($item->id !== $currentUser->id)
-            @formField('select', [
-                'name' => $item->getRoleColumnName(),
-                'label' => twillTrans('twill::lang.user-management.role'),
-                'options' => $roleList ?? [],
-                'placeholder' => twillTrans('twill::lang.user-management.role-placeholder'),
-            ])
+            <x-twill::select
+                :name="$item->getRoleColumnName()"
+                :label="twillTrans('twill::lang.user-management.role')"
+                :options="$roleList ?? []"
+                :placeholder="twillTrans('twill::lang.user-management.role-placeholder')"
+            />
         @endif
     @endcan
 
     @if(config('twill.enabled.users-image'))
-        @formField('medias', [
-            'name' => 'profile',
-            'label' => twillTrans('twill::lang.user-management.profile-image'),
-        ])
+        <x-twill::medias
+            name="profile"
+            :label="twillTrans('twill::lang.user-management.profile-image')"
+        />
     @endif
 
     @if(config('twill.enabled.users-description'))
-        @formField('input', [
-            'name' => 'title',
-            'label' => twillTrans('twill::lang.user-management.title'),
-            'maxlength' => 250
-        ])
-        @formField('input', [
-            'name' => 'description',
-            'rows' => 4,
-            'type' => 'textarea',
-            'label' => twillTrans('twill::lang.user-management.description'),
-        ])
+        <x-twill::input
+            name="title"
+            :label="twillTrans('twill::lang.user-management.title')"
+            :maxlength="250"
+        />
+        <x-twill::input
+            name="description"
+            :rows="4"
+            type="textarea"
+            :label="twillTrans('twill::lang.user-management.description')"
+        />
     @endif
 
-    @formField('select', [
-        'name' => 'language',
-        'label' => twillTrans('twill::lang.user-management.language'),
-        'placeholder' => twillTrans('twill::lang.user-management.language-placeholder'),
-        'default' => config('twill.locale', 'en'),
-        'options' => array_map(function($locale) {
-            return [
-                'value' => $locale,
-                'label' => getLanguageLabelFromLocaleCode($locale, true)
-            ];
-        }, config('twill.available_user_locales', ['en']))
-    ])
+    @php
+        $languageOptions = array_map(
+            function($locale) {
+                return [
+                    'value' => $locale,
+                    'label' => getLanguageLabelFromLocaleCode($locale, true)
+                ];
+            },
+            config('twill.available_user_locales', ['en'])
+        );
+    @endphp
+
+    <x-twill::select
+        name="language"
+        :label="twillTrans('twill::lang.user-management.language')"
+        :placeholder="twillTrans('twill::lang.user-management.language-placeholder')"
+        :default="config('twill.locale', 'en')"
+        :options="$languageOptions"
+    />
 
     @if($with2faSettings ?? false)
-        @formField('checkbox', [
-            'name' => 'google_2fa_enabled',
-            'label' => twillTrans('twill::lang.user-management.2fa'),
-        ])
+        <x-twill::checkbox
+            name="google_2fa_enabled"
+            :label="twillTrans('twill::lang.user-management.2fa')"
+        />
 
         @unless($item->google_2fa_enabled ?? false)
-            @component('twill::partials.form.utils._connected_fields', [
-                'fieldName' => 'google_2fa_enabled',
-                'fieldValues' => true,
-            ])
-                <img style="display: block; margin-left: auto; margin-right: auto; max-height: 300px;" src="{{ $qrCode }}">
-                <div class="f--regular f--note" style="margin: 20px 0;">{!! twillTrans('twill::lang.user-management.2fa-description', ['link' => 'https://github.com/antonioribeiro/google2fa#google-authenticator-apps']) !!}</div>
-                @formField('input', [
-                    'name' => 'verify-code',
-                    'label' => twillTrans('twill::lang.user-management.otp'),
-                ])
-            @endcomponent
+            <x-twill::formConnectedFields
+                field-name="google_2fa_enabled"
+                :field-values="true"
+            >
+                <img style="display: block; margin-left: auto; margin-right: auto; max-height: 300px;"
+                     src="{{ $qrCode }}">
+                <div class="f--regular f--note"
+                     style="margin: 20px 0;">{!! twillTrans('twill::lang.user-management.2fa-description', ['link' => 'https://github.com/antonioribeiro/google2fa#google-authenticator-apps']) !!}</div>
+                <x-twill::input
+                    name="verify-code"
+                    :label="twillTrans('twill::lang.user-management.otp')"
+                />
+            </x-twill::formConnectedFields>
         @else
-            @component('twill::partials.form.utils._connected_fields', [
-                'fieldName' => 'google_2fa_enabled',
-                'fieldValues' => false,
-            ])
-                @formField('input', [
-                    'name' => 'verify-code',
-                    'label' => twillTrans('twill::lang.user-management.otp'),
-                    'note' => twillTrans('twill::lang.user-management.2fa-disable'),
-                ])
-            @endcomponent
+            <x-twill::formConnectedFields
+                field-name="google_2fa_enabled"
+                :field-values="false"
+            >
+                <x-twill::input
+                    name="verify-code"
+                    :label="twillTrans('twill::lang.user-management.otp')"
+                    :note="twillTrans('twill::lang.user-management.2fa-disable')"
+                />
+            </x-twill::formConnectedFields>
         @endunless
     @endif
 
-    @if(config('twill.enabled.permissions-management') && config('twill.permissions.level') != 'role')
+    @if(config('twill.enabled.permissions-management') && config('twill.permissions.level') !== 'role')
         @can('edit-user-groups')
-            @formField('browser', [
-                'moduleName' => 'groups',
-                'name' => 'groups',
-                'label' => 'Groups',
-                'note' => '',
-                'max' => 999,
-            ])
+            <x-twill::browser
+                module-name="groups"
+                name="groups"
+                label="Groups"
+                :max="999"
+            />
         @else
             @if($item->groups->count())
                 @php
@@ -131,39 +139,39 @@
     @if(config('twill.enabled.permissions-management') && config('twill.permissions.level') == 'roleGroupItem')
         @can('edit-users')
             @unless($item->isSuperAdmin() || $item->id == $currentUser->id)
-                @component('twill::partials.form.utils._connected_fields', [
-                    'fieldName' => 'role_id',
-                    'renderForBlocks' => false,
-                    'fieldValues' => $item->role_id
-                  ])
+                <x-twill::formConnectedFields
+                    field-name="role_id"
+                    :render-for-blocks="false"
+                    :field-values="$item->role_id"
+                >
                     @foreach($permissionModules as $moduleName => $moduleItems)
                         <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
                             @formField('select_permissions', [
-                                'itemsInSelectsTables' => $moduleItems,
-                                'labelKey' => 'title',
-                                'namePattern' => $moduleName . '_%id%_permission',
-                                'options' => [
-                                    [
-                                        'value' => '',
-                                        'label' => 'None'
-                                    ],
-                                    [
-                                        'value' => 'view-item',
-                                        'label' => 'View'
-                                    ],
-                                    [
-                                        'value' => 'edit-item',
-                                        'label' => 'Edit'
-                                    ],
-                                    [
-                                        'value' => 'manage-item',
-                                        'label' => 'Manage'
-                                    ],
-                                ]
+                            'itemsInSelectsTables' => $moduleItems,
+                            'labelKey' => 'title',
+                            'namePattern' => $moduleName . '_%id%_permission',
+                            'options' => [
+                            [
+                            'value' => '',
+                            'label' => 'None'
+                            ],
+                            [
+                            'value' => 'view-item',
+                            'label' => 'View'
+                            ],
+                            [
+                            'value' => 'edit-item',
+                            'label' => 'Edit'
+                            ],
+                            [
+                            'value' => 'manage-item',
+                            'label' => 'Manage'
+                            ],
+                            ]
                             ])
                         </a17-fieldset>
                     @endforeach
-                @endcomponent
+                </x-twill::formConnectedFields>
             @endif
         @endcan
     @endif
@@ -172,69 +180,69 @@
 
 @push('vuexStore')
     window['{{ config('twill.js_namespace') }}'].STORE.publication.submitOptions = {
-        draft: [
-          {
-            name: 'save',
-            text: {!! json_encode(twillTrans('twill::lang.user-management.update-disabled-user')) !!}
-          },
-          {
-            name: 'save-close',
-            text: {!! json_encode(twillTrans('twill::lang.user-management.update-disabled-and-close')) !!}
-          },
-          {
-            name: 'save-new',
-            text: {!! json_encode(twillTrans('twill::lang.user-management.update-disabled-user-and-create-new')) !!}
-          },
-          {
-            name: 'cancel',
-            text: {!! json_encode(twillTrans('twill::lang.user-management.cancel')) !!}
-          }
-        ],
-        live: [
-          {
-            name: 'publish',
-            text: {!! json_encode(twillTrans('twill::lang.user-management.enable-user')) !!}
-          },
-          {
-            name: 'publish-close',
-            text: {!! json_encode(twillTrans('twill::lang.user-management.enable-user-and-close')) !!}
-          },
-          {
-            name: 'publish-new',
-            text: {!! json_encode(twillTrans('twill::lang.user-management.enable-user-and-create-new')) !!}
-          },
-          {
-            name: 'cancel',
-            text: {!! json_encode(twillTrans('twill::lang.user-management.cancel')) !!}
-          }
-        ],
-        update: [
-          {
-            name: 'update',
-            text: {!! json_encode(twillTrans('twill::lang.user-management.update')) !!}
-          },
-          {
-            name: 'update-close',
-            text: {!! json_encode(twillTrans('twill::lang.user-management.update-and-close')) !!}
-          },
-          {
-            name: 'update-new',
-            text: {!! json_encode(twillTrans('twill::lang.user-management.update-and-create-new')) !!}
-          },
-          {
-            name: 'cancel',
-            text: {!! json_encode(twillTrans('twill::lang.user-management.cancel')) !!}
-          }
-        ]
+    draft: [
+    {
+    name: 'save',
+    text: {!! json_encode(twillTrans('twill::lang.user-management.update-disabled-user')) !!}
+    },
+    {
+    name: 'save-close',
+    text: {!! json_encode(twillTrans('twill::lang.user-management.update-disabled-and-close')) !!}
+    },
+    {
+    name: 'save-new',
+    text: {!! json_encode(twillTrans('twill::lang.user-management.update-disabled-user-and-create-new')) !!}
+    },
+    {
+    name: 'cancel',
+    text: {!! json_encode(twillTrans('twill::lang.user-management.cancel')) !!}
+    }
+    ],
+    live: [
+    {
+    name: 'publish',
+    text: {!! json_encode(twillTrans('twill::lang.user-management.enable-user')) !!}
+    },
+    {
+    name: 'publish-close',
+    text: {!! json_encode(twillTrans('twill::lang.user-management.enable-user-and-close')) !!}
+    },
+    {
+    name: 'publish-new',
+    text: {!! json_encode(twillTrans('twill::lang.user-management.enable-user-and-create-new')) !!}
+    },
+    {
+    name: 'cancel',
+    text: {!! json_encode(twillTrans('twill::lang.user-management.cancel')) !!}
+    }
+    ],
+    update: [
+    {
+    name: 'update',
+    text: {!! json_encode(twillTrans('twill::lang.user-management.update')) !!}
+    },
+    {
+    name: 'update-close',
+    text: {!! json_encode(twillTrans('twill::lang.user-management.update-and-close')) !!}
+    },
+    {
+    name: 'update-new',
+    text: {!! json_encode(twillTrans('twill::lang.user-management.update-and-create-new')) !!}
+    },
+    {
+    name: 'cancel',
+    text: {!! json_encode(twillTrans('twill::lang.user-management.cancel')) !!}
+    }
+    ]
     }
     @unless($item->isSuperAdmin())
         @can('edit-users')
             window['{{ config('twill.js_namespace') }}'].STORE.publication.userInfo = {
-                user_name: '{{ $item->name }}',
-                registered_at: '{{ $item->isActivated() ? $item->registered_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}',
-                last_login_at: '{{ $item->isActivated() && $item->last_login_at ? $item->last_login_at->format('d M Y, H:i') : null }}',
-                resend_registration_link: '{{ !$item->isActivated() ? route('twill.users.resend.registrationEmail', ['user' => $item]) : null }}',
-                is_activated: {{ json_encode($item->isActivated()) }}
+            user_name: '{{ $item->name }}',
+            registered_at: '{{ $item->isActivated() ? $item->registered_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}',
+            last_login_at: '{{ $item->isActivated() && $item->last_login_at ? $item->last_login_at->format('d M Y, H:i') : null }}',
+            resend_registration_link: '{{ !$item->isActivated() ? route('twill.users.resend.registrationEmail', ['user' => $item]) : null }}',
+            is_activated: {{ json_encode($item->isActivated()) }}
             }
         @endcan
     @endunless

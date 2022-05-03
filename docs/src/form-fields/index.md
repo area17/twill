@@ -79,10 +79,10 @@ like in the following example:
 @stop
 
 @section('fieldsets')
-    @formFieldset(['id' => 'attributes', 'title' => 'Attributes', 'open' => false])
+   <x-twill::formFieldset id="attributes" title="Attributes" :open="false">
         <x-twill::input ... />
         ...
-    @endformFieldset
+   </x-twill::formFieldset>
 @stop
 ```
 

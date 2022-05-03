@@ -112,14 +112,11 @@ Then, add the form field to the `form.blade.php` file.
 @extends('twill::layouts.form')
 
 @section('contentFields')
-
     ...
-
-    @formField('medias', [
-        'name' => 'cover',
-        'label' => 'Cover image',
-    ])
-
+    <x-twill::medias
+        name="cover"
+        label="Cover image"
+    />
     ...
 @stop
 ```
