@@ -10,7 +10,7 @@
             type="a17-wysiwyg-tiptap"
             :attributes="{
             label: '{{ $label }}',
-            {{$formFieldName(true)}}
+            {{$formFieldName(true)}},
             @if ($note) note: '{{ $note }}', @endif
             @if ($required) required: true, @endif
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
@@ -57,7 +57,7 @@
             type="a17-wysiwyg"
             :attributes="{
             label: '{{ $label }}',
-            {{$formFieldName(true)}}
+            {{$formFieldName(true)}},
             @if ($note) note: '{{ $note }}', @endif
             @if ($required) required: true, @endif
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif

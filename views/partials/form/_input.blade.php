@@ -3,7 +3,7 @@
         type="a17-textfield"
         :attributes="{
             label: '{{ $label }}',
-            {{$formFieldName(true)}}
+            {{$formFieldName(true)}},
             type: '{{ $type }}',
             @if ($required) required: true, @endif
             @if ($note) note: '{{ $note }}', @endif
