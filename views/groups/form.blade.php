@@ -69,29 +69,11 @@
         @section('fieldsets')
             @foreach($permissionModules as $moduleName => $moduleItems)
                 <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
-                    @formField('select_permissions', [
-                    'itemsInSelectsTables' => $moduleItems,
-                    'labelKey' => 'title',
-                    'namePattern' => $moduleName . '_%id%_permission',
-                    'options' => [
-                    [
-                    'value' => '',
-                    'label' => 'None'
-                    ],
-                    [
-                    'value' => 'view-item',
-                    'label' => 'View'
-                    ],
-                    [
-                    'value' => 'edit-item',
-                    'label' => 'Edit'
-                    ],
-                    [
-                    'value' => 'manage-item',
-                    'label' => 'Manage'
-                    ],
-                    ]
-                    ])
+                    <x-twill::select-permissions
+                        :items-in-selects-tables="$moduleItems"
+                        label-key="title"
+                        :name-pattern="$moduleName . '_%id%_permission'"
+                    />
                 </a17-fieldset>
             @endforeach
         @stop

@@ -123,30 +123,12 @@
                             @if($showPermissionFieldset ?? null)
                                 @can('manage-item', isset($item) ? $item : null)
                                     <a17-fieldset title="User Permissions" id="permissions">
-                                        @formField('select_permissions', [
-                                            'itemsInSelectsTables' => $users,
-                                            'labelKey' => 'name',
-                                            'namePattern' => 'user_%id%_permission',
-                                            'listUser' => true,
-                                            'options' => [
-                                                [
-                                                    'value' => '',
-                                                    'label' => 'None'
-                                                ],
-                                                [
-                                                    'value' => 'view-item',
-                                                    'label' => 'View'
-                                                ],
-                                                [
-                                                    'value' => 'edit-item',
-                                                    'label' => 'Edit'
-                                                ],
-                                                [
-                                                    'value' => 'manage-item',
-                                                    'label' => 'Manage'
-                                                ],
-                                            ]
-                                        ])
+                                        <x-twill::select-permissions
+                                            :items-in-selects-tables="$users"
+                                            label-key="name"
+                                            name-pattern="user_%id%_permission"
+                                            :list-user="true"
+                                        />
                                     </a17-fieldset>
                                 @endcan
                             @endif

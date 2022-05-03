@@ -1,23 +1,3 @@
-@php
-    $searchable = $searchable ?? false;
-    $itemsInSelectsTables = $itemsInSelectsTables ?? false;
-    $listUser = $listUser ?? false;
-
-    $options = (is_object($options) || is_string($options)) && method_exists($options, 'map') ? $options->map(function($label, $value, $disabled) {
-        return [
-            'value' => $value,
-            'label' => $label,
-            'disabled' => $disabled ?? false
-        ];
-    })->values()->toArray() : $options;
-
-    $isUserForm = get_class($item) === twillModel('user');
-    if (get_class($item) === "A17\Twill\Models\Group") {
-        $fctUpdatePermissionOptions = "updatePermissionGroupOptions";
-    } else {
-        $fctUpdatePermissionOptions = "updatePermissionOptions";
-    }
-@endphp
 <a17-singleselect-permissions
     @if ($searchable) :searchable="true" @endif
     @if ($listUser) :list-user="true" @endif
