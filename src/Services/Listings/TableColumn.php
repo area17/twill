@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Services\Listings;
 
-use A17\Twill\Exceptions\ColumnFieldKeyMissingException;
+use A17\Twill\Exceptions\ColumnMissingPropertyException;
 use A17\Twill\Models\Model;
 use Illuminate\Support\Str;
 
@@ -30,7 +30,7 @@ abstract class TableColumn
     public function getKey(): string
     {
         if ($this->key === null) {
-            throw new ColumnFieldKeyMissingException();
+            throw new ColumnMissingPropertyException();
         }
         return $this->key;
     }

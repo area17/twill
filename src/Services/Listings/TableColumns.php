@@ -8,6 +8,29 @@ use Illuminate\Support\Collection;
 
 class TableColumns extends Collection
 {
+    public function getArrayForModelBrowser(Model $model, TableDataContext $tableDataContext): array
+    {
+        $data = $this->getArrayForModel($model);
+
+        $editUrl = moduleRoute(
+            $tableDataContext->moduleName,
+            $tableDataContext->routePrefix,
+            'edit',
+            $model->{$tableDataContext->identifierColumn}
+        );
+
+        $data['id'] = $model->{$tableDataContext->identifierColumn};
+        $data['name'] = $model->{$tableDataContext->titleColumnKey};
+        $data['edit'] = $editUrl;
+        $data['endpointType'] = $tableDataContext->endpointType;
+
+        if (!isset($data['thumbnail']) && $tableDataContext->hasMedia) {
+            $data['thumbnail'] = $model->defaultCmsImage(['w' => 100, 'h' => 100]);
+        }
+
+        return $data;
+    }
+
     public function getArrayForModel(Model $model): array
     {
         $data = [];

@@ -8,6 +8,14 @@ use Carbon\Carbon;
 
 class ScheduledStatus extends TableColumn
 {
+    public static function make(): static
+    {
+        $column = new static();
+        $column->field('scheduled_status');
+
+        return $column;
+    }
+
     public function getRenderValue(Model $model): string
     {
         $this->html = true;

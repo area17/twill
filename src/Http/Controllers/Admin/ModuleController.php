@@ -11,13 +11,17 @@ use A17\Twill\Models\Group;
 use A17\Twill\Models\Model;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Listings\Columns\Boolean;
+use A17\Twill\Services\Listings\Columns\Browser;
 use A17\Twill\Services\Listings\Columns\Image;
 use A17\Twill\Services\Listings\Columns\Languages;
+use A17\Twill\Services\Listings\Columns\NestedData;
 use A17\Twill\Services\Listings\Columns\PublishStatus;
+use A17\Twill\Services\Listings\Columns\Relation;
 use A17\Twill\Services\Listings\Columns\ScheduledStatus;
 use A17\Twill\Services\Listings\Columns\Text;
 use A17\Twill\Services\Listings\TableColumn;
 use A17\Twill\Services\Listings\TableColumns;
+use A17\Twill\Services\Listings\TableDataContext;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -367,14 +371,30 @@ abstract class ModuleController extends Controller
         }
     }
 
-    public function getIndexColumns(): TableColumns
+    /**
+     * $type can be index or browser
+     */
+    private function getTableColumns(string $type): TableColumns
+    {
+        if ($type === 'index') {
+            return $this->getIndexTableColumns();
+        }
+        return $this->getBrowserTableColumns();
+    }
+
+    protected function getBrowserTableColumns(): TableColumns
+    {
+        return $this->getIndexTableColumns();
+    }
+
+    protected function getIndexTableColumns(): TableColumns
     {
         $columns = TableColumns::make();
 
         if ($this->getIndexOption('publish')) {
             $columns->add(
-                PublishStatus::make('published')
-                    ->setTitle(twillTrans('twill::lang.listing.columns.published'))
+                PublishStatus::make()
+                    ->title(twillTrans('twill::lang.listing.columns.published'))
                     ->sortable()
                     ->optional()
             );
@@ -382,17 +402,11 @@ abstract class ModuleController extends Controller
 
         // Consume Deprecated data.
         if ($this->indexColumns) {
-            foreach ($this->indexColumns as $key => $indexColumn) {
-                $columns->add(
-                    Text::make($key)
-                        ->setTitle($indexColumn['title'] ?? null)
-                        ->setField($indexColumn['field'])
-                        ->sortable($indexColumn['sort'] ?? false)
-                );
-            }
+            $this->handleLegacyColumns($columns, $this->indexColumns);
         } else {
             $columns->add(
-                Text::make($this->titleColumnKey)
+                Text::make()
+                    ->field($this->titleColumnKey)
                     ->linkCell(function (Model $model) {
                         if ($this->getIndexOption('edit', $model)) {
                             return $this->getModuleRoute($model->id, 'edit');
@@ -404,36 +418,83 @@ abstract class ModuleController extends Controller
         // Add default columns.
         if ($this->getIndexOption('showImage')) {
             $columns->add(
-                Image::make('thumbnail')
+                Image::make()
+                    ->field('thumbnail')
                     ->rounded()
-                    ->setTitle(__('Image'))
+                    ->title(__('Image'))
             );
         }
 
         if ($this->getIndexOption('feature')) {
             $columns->add(
-                Boolean::make('featured')
-                    ->setTitle(twillTrans('twill::lang.listing.columns.featured'))
+                Boolean::make()
+                    ->field('featured')
+                    ->title(twillTrans('twill::lang.listing.columns.featured'))
             );
         }
 
         if ($this->getIndexOption('includeScheduledInList') && $this->repository->isFillable('publish_start_date')) {
             $columns->add(
-                ScheduledStatus::make('publish_status')
-                    ->setTitle(twillTrans('twill::lang.listing.columns.published'))
+                ScheduledStatus::make()
+                    ->title(twillTrans('twill::lang.listing.columns.published'))
                     ->optional()
             );
         }
 
         if ($this->moduleHas('translations') && count(getLocales()) > 1) {
             $columns->add(
-                Languages::make('languages')
-                    ->setTitle(twillTrans('twill::lang.listing.languages'))
+                Languages::make()
+                    ->title(twillTrans('twill::lang.listing.languages'))
                     ->optional()
             );
         }
 
         return $columns;
+    }
+
+    private function handleLegacyColumns(TableColumns $columns, array $items): void
+    {
+        foreach ($items as $indexColumn) {
+            if ($indexColumn['nested'] ?? false) {
+                $columns->add(
+                    NestedData::make()
+                        ->title($indexColumn['title'] ?? null)
+                        ->field($indexColumn['nested'])
+                        ->sortable($indexColumn['sort'] ?? false)
+                        ->linkCell(function (Model $model) use ($indexColumn) {
+                            $module = Str::singular(last(explode('.', $this->moduleName)));
+
+                            return moduleRoute(
+                                "$this->moduleName.{$indexColumn['nested']}",
+                                $this->routePrefix,
+                                'index',
+                                [$module => $this->getItemIdentifier($model)]
+                            );
+                        })
+                );
+            } elseif ($indexColumn['relatedBrowser'] ?? false) {
+                $columns->add(
+                    Browser::make()
+                        ->field($indexColumn['field'])
+                        ->title($indexColumn['title'])
+                        ->browser($indexColumn['relatedBrowser'])
+                );
+            } elseif ($indexColumn['relationship'] ?? false) {
+                $columns->add(
+                    Relation::make()
+                        ->title($indexColumn['title'])
+                        ->field($indexColumn['field'])
+                        ->relation($indexColumn['relationship'])
+                );
+            } else {
+                $columns->add(
+                    Text::make()
+                        ->title($indexColumn['title'] ?? null)
+                        ->field($indexColumn['field'])
+                        ->sortable($indexColumn['sort'] ?? false)
+                );
+            }
+        }
     }
 
     /**
@@ -1175,7 +1236,10 @@ abstract class ModuleController extends Controller
 
         $data = [
                 'tableData' => $this->getIndexTableData($items),
-                'tableColumns' => $this->getIndexColumns()->toCmsArray(request(), $this->getIndexOption('reorder')),
+                'tableColumns' => $this->getTableColumns('index')->toCmsArray(
+                    request(),
+                    $this->getIndexOption('reorder')
+                ),
                 'tableMainFilters' => $this->getIndexTableMainFilters($items),
                 'filters' => json_decode($this->request->get('filter'), true) ?? [],
                 'hiddenFilters' => array_keys(Arr::except($this->filters, array_keys($this->defaultFilters))),
@@ -1255,7 +1319,7 @@ abstract class ModuleController extends Controller
         $translated = $this->moduleHas('translations');
 
         return $items->map(function (Model $item) use ($translated) {
-            $columnsData = $this->getIndexColumns()->getArrayForModel($item);
+            $columnsData = $this->getTableColumns('index')->getArrayForModel($item);
 
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
             $itemCanDelete = $this->getIndexOption('delete', $item) && ($item->canDelete ?? true);
@@ -1267,7 +1331,6 @@ abstract class ModuleController extends Controller
             return array_replace(
                 [
                     'id' => $itemId,
-                    'name' => '@todo: $name but where is this used?',
                     'publish_start_date' => $item->publish_start_date,
                     'publish_end_date' => $item->publish_end_date,
                     'edit' => $canEdit ? $this->getModuleRoute($itemId, 'edit') : null,
@@ -1303,40 +1366,9 @@ abstract class ModuleController extends Controller
 
     protected function getItemColumnData(Model $item, TableColumn $column): array
     {
-        if (isset($column['nested']) && $column['nested']) {
-            $field = $column['nested'];
-            $nestedCount = $item->{$column['nested']}->count();
-            $module = Str::singular(last(explode('.', $this->moduleName)));
-            $value = '<a href="';
-            $value .= moduleRoute(
-                "$this->moduleName.$field",
-                $this->routePrefix,
-                'index',
-                [$module => $this->getItemIdentifier($item)]
-            );
-            $value .= '">' . $nestedCount . ' ' . (strtolower(Str::plural($column['title'], $nestedCount))) . '</a>';
-        } else {
-            $field = $column['field'];
-            $value = $item->$field;
-        }
-
-        if (isset($column['relationship'])) {
-            $field = $column['relationship'] . ucfirst($column['field']);
-
-            $relation = $item->{$column['relationship']}();
-
-            $value = collect($relation->get())
-                ->pluck($column['field'])
-                ->join(', ');
-        } elseif (isset($column['present']) && $column['present']) {
+        // @todo: Implement this one.
+        if (isset($column['present']) && $column['present']) {
             $value = $item->presentAdmin()->{$column['field']};
-        }
-
-        if (isset($column['relatedBrowser']) && $column['relatedBrowser']) {
-            $field = 'relatedBrowser' . ucfirst($column['relatedBrowser']) . ucfirst($column['field']);
-            $value = $item->getRelated($column['relatedBrowser'])
-                ->pluck($column['field'])
-                ->join(', ');
         }
 
         return [
@@ -1351,65 +1383,6 @@ abstract class ModuleController extends Controller
     protected function getItemIdentifier($item)
     {
         return $item->{$this->identifierColumnKey};
-    }
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Collection $items
-     * @return array
-     */
-    protected function getIndexTableColumns($items)
-    {
-        $tableColumns = [];
-        $visibleColumns = $this->request->get('columns') ?? false;
-        $indexColumnCopy = $this->indexColumns;
-
-        foreach ($indexColumnCopy as $key => $column) {
-            if ($key === $this->titleColumnKey) {
-                $tableColumns[] = [
-                    'name' => 'name',
-                    'label' => $column['title'] ?? twillTrans('twill::lang.listing.columns.name'),
-                    'visible' => true,
-                    'optional' => false,
-                    'sortable' => $this->getIndexOption('reorder') ? false : ($column['sort'] ?? false),
-                ];
-                continue;
-            }
-
-            if (isset($column['thumb'])) {
-                // Thumbnails : rounded or regular ones
-                $hasRoundedThumb = isset($column['variation']) && $column['variation'] === 'rounded';
-                $tableColumns[] = [
-                    'name' => 'thumbnail',
-                    'label' => $column['title'] ?? twillTrans('twill::lang.listing.columns.thumbnail'),
-                    'visible' => !$visibleColumns || in_array('thumbnail', $visibleColumns, true),
-                    'optional' => true,
-                    'sortable' => false,
-                    'variation' => $hasRoundedThumb ? 'rounded' : 'square',
-                ];
-                continue;
-            }
-
-            if (isset($column['relationship'])) {
-                $columnName = $column['relationship'] . ucfirst($column['field']);
-            } elseif (isset($column['nested'])) {
-                $columnName = $column['nested'];
-            } elseif (isset($column['relatedBrowser'])) {
-                $columnName = 'relatedBrowser' . ucfirst($column['relatedBrowser']) . ucfirst($column['field']);
-            } else {
-                $columnName = $column['field'];
-            }
-
-            $tableColumns[] = [
-                'name' => $columnName,
-                'label' => $column['title'],
-                'visible' => $visibleColumns ? in_array($columnName, $visibleColumns) : ($column['visible'] ?? true),
-                'optional' => $column['optional'] ?? true,
-                'sortable' => $this->getIndexOption('reorder') ? false : ($column['sort'] ?? false),
-                'html' => $column['html'] ?? false,
-            ];
-        }
-
-        return $tableColumns;
     }
 
     /**
@@ -1547,33 +1520,21 @@ abstract class ModuleController extends Controller
 
     /**
      * @param \Illuminate\Database\Eloquent\Collection $items
-     * @return array
      */
-    protected function getBrowserTableData($items)
+    protected function getBrowserTableData(Collection $items): array
     {
-        $withImage = $this->moduleHas('medias');
-
-        return $items->map(function ($item) use ($withImage) {
-            $columnsData = Collection::make($this->browserColumns)->mapWithKeys(function ($column) use ($item) {
-                return $this->getItemColumnData($item, $column);
-            })->toArray();
-
-            $name = $columnsData[$this->titleColumnKey];
-            unset($columnsData[$this->titleColumnKey]);
-
-            return [
-                    'id' => $this->getItemIdentifier($item),
-                    'name' => $name,
-                    'edit' => moduleRoute(
-                        $this->moduleName,
-                        $this->routePrefix,
-                        'edit',
-                        $this->getItemIdentifier($item)
-                    ),
-                    'endpointType' => $this->repository->getMorphClass(),
-                ] + $columnsData + ($withImage && !array_key_exists('thumbnail', $columnsData) ? [
-                    'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
-                ] : []);
+        return $items->map(function (Model $item) {
+            return $this->getTableColumns('browser')->getArrayForModelBrowser(
+                $item,
+                new TableDataContext(
+                    $this->titleColumnKey,
+                    $this->identifierColumnKey,
+                    $this->moduleName,
+                    $this->routePrefix,
+                    $this->repository->getMorphClass(),
+                    $this->moduleHas('medias')
+                )
+            );
         })->toArray();
     }
 

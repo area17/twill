@@ -13,7 +13,6 @@ class Languages extends TableColumn
 {
     public static function make(): static
     {
-        // Publish status column is always in need of this key for vue.
         $column = new static();
         $column->field('languages');
 
