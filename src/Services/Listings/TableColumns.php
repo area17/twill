@@ -14,7 +14,7 @@ class TableColumns extends Collection
 
         /** @var \A17\Twill\Services\Listings\TableColumn $item */
         foreach ($this->items as $item) {
-            $data[$item->key] = $item->renderCell($model);
+            $data[$item->getKey()] = $item->renderCell($model);
         }
         return $data;
     }

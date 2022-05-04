@@ -2,43 +2,52 @@
 
 namespace A17\Twill\Services\Listings;
 
+use A17\Twill\Exceptions\ColumnFieldKeyMissingException;
 use A17\Twill\Models\Model;
 use Illuminate\Support\Str;
 
 abstract class TableColumn
 {
     protected function __construct(
-        public string $key,
-        public ?string $field = null,
-        public ?string $title = null,
-        public bool $sortable = false,
-        public bool $defaultSort = false,
-        public bool $optional = false,
-        public bool $visible = true,
-        public bool $html = false,
+        protected ?string $key = null,
+        protected ?string $field = null,
+        protected ?string $title = null,
+        protected bool $sortable = false,
+        protected bool $defaultSort = false,
+        protected bool $optional = false,
+        protected bool $visible = true,
+        protected bool $html = false,
         protected \Closure|string|null $link = null,
         protected ?\Closure $render = null
     ) {
-        if (!$this->title) {
-            $this->title = Str::headline($field ?? $key);
-        }
-        if (!$this->field) {
-            $this->field = $key;
-        }
     }
 
-    public static function make(string $key): static
+    public static function make(): static
     {
-        return new static($key);
+        return new static();
     }
 
-    public function setField(string $field): static
+    public function getKey(): string
+    {
+        if ($this->key === null) {
+            throw new ColumnFieldKeyMissingException();
+        }
+        return $this->key;
+    }
+
+    public function field(string $field): static
     {
         $this->field = $field;
+        if (!$this->key) {
+            $this->key = $field;
+        }
+        if (!$this->title) {
+            $this->title = Str::headline($field);
+        }
         return $this;
     }
 
-    public function setTitle(string $title): self
+    public function title(string $title): self
     {
         $this->title = $title;
         return $this;

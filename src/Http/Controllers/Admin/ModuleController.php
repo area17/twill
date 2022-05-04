@@ -10,12 +10,12 @@ use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Group;
 use A17\Twill\Models\Model;
 use A17\Twill\Services\Blocks\Block;
-use A17\Twill\Services\Listings\Columns\BooleanColumn;
-use A17\Twill\Services\Listings\Columns\ImageColumn;
-use A17\Twill\Services\Listings\Columns\LanguagesColumn;
-use A17\Twill\Services\Listings\Columns\PublishStatusColumn;
-use A17\Twill\Services\Listings\Columns\ScheduledStatusColumn;
-use A17\Twill\Services\Listings\Columns\TextColumn;
+use A17\Twill\Services\Listings\Columns\Boolean;
+use A17\Twill\Services\Listings\Columns\Image;
+use A17\Twill\Services\Listings\Columns\Languages;
+use A17\Twill\Services\Listings\Columns\PublishStatus;
+use A17\Twill\Services\Listings\Columns\ScheduledStatus;
+use A17\Twill\Services\Listings\Columns\Text;
 use A17\Twill\Services\Listings\TableColumn;
 use A17\Twill\Services\Listings\TableColumns;
 use Illuminate\Contracts\Foundation\Application;
@@ -373,7 +373,7 @@ abstract class ModuleController extends Controller
 
         if ($this->getIndexOption('publish')) {
             $columns->add(
-                PublishStatusColumn::make('published')
+                PublishStatus::make('published')
                     ->setTitle(twillTrans('twill::lang.listing.columns.published'))
                     ->sortable()
                     ->optional()
@@ -384,7 +384,7 @@ abstract class ModuleController extends Controller
         if ($this->indexColumns) {
             foreach ($this->indexColumns as $key => $indexColumn) {
                 $columns->add(
-                    TextColumn::make($key)
+                    Text::make($key)
                         ->setTitle($indexColumn['title'] ?? null)
                         ->setField($indexColumn['field'])
                         ->sortable($indexColumn['sort'] ?? false)
@@ -392,7 +392,7 @@ abstract class ModuleController extends Controller
             }
         } else {
             $columns->add(
-                TextColumn::make($this->titleColumnKey)
+                Text::make($this->titleColumnKey)
                     ->linkCell(function (Model $model) {
                         if ($this->getIndexOption('edit', $model)) {
                             return $this->getModuleRoute($model->id, 'edit');
@@ -404,7 +404,7 @@ abstract class ModuleController extends Controller
         // Add default columns.
         if ($this->getIndexOption('showImage')) {
             $columns->add(
-                ImageColumn::make('thumbnail')
+                Image::make('thumbnail')
                     ->rounded()
                     ->setTitle(__('Image'))
             );
@@ -412,14 +412,14 @@ abstract class ModuleController extends Controller
 
         if ($this->getIndexOption('feature')) {
             $columns->add(
-                BooleanColumn::make('featured')
+                Boolean::make('featured')
                     ->setTitle(twillTrans('twill::lang.listing.columns.featured'))
             );
         }
 
         if ($this->getIndexOption('includeScheduledInList') && $this->repository->isFillable('publish_start_date')) {
             $columns->add(
-                ScheduledStatusColumn::make('publish_status')
+                ScheduledStatus::make('publish_status')
                     ->setTitle(twillTrans('twill::lang.listing.columns.published'))
                     ->optional()
             );
@@ -427,7 +427,7 @@ abstract class ModuleController extends Controller
 
         if ($this->moduleHas('translations') && count(getLocales()) > 1) {
             $columns->add(
-                LanguagesColumn::make('languages')
+                Languages::make('languages')
                     ->setTitle(twillTrans('twill::lang.listing.languages'))
                     ->optional()
             );

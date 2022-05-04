@@ -6,7 +6,7 @@ use A17\Twill\Models\Model;
 use A17\Twill\Services\Listings\TableColumn;
 use Carbon\Carbon;
 
-class ScheduledStatusColumn extends TableColumn
+class ScheduledStatus extends TableColumn
 {
     public function getRenderValue(Model $model): string
     {

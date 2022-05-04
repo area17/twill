@@ -5,7 +5,7 @@ namespace A17\Twill\Services\Listings\Columns;
 use A17\Twill\Models\Model;
 use A17\Twill\Services\Listings\TableColumn;
 
-class ImageColumn extends TableColumn
+class Image extends TableColumn
 {
     protected ?string $presenter = null;
     protected ?string $role = null;
@@ -51,6 +51,15 @@ class ImageColumn extends TableColumn
         return $data;
     }
 
+    public function getRenderValue(Model $model): string
+    {
+        if ($renderFunction = $this->render) {
+            return $renderFunction($model);
+        }
+
+        return $this->getThumbnail($model);
+    }
+
     public function getThumbnail(Model $model): ?string
     {
         if ($this->presenter) {
@@ -62,14 +71,5 @@ class ImageColumn extends TableColumn
         $params = $this->mediaParams ?? ['w' => 80, 'h' => 80, 'fit' => 'crop'];
 
         return $model->cmsImage($role, $crop, $params);
-    }
-
-    public function getRenderValue(Model $model): string
-    {
-        if ($renderFunction = $this->render) {
-            return $renderFunction($model);
-        }
-
-        return $this->getThumbnail($model);
     }
 }
