@@ -10,7 +10,11 @@ use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Group;
 use A17\Twill\Models\Model;
 use A17\Twill\Services\Blocks\Block;
+use A17\Twill\Services\Listings\Columns\BooleanColumn;
 use A17\Twill\Services\Listings\Columns\ImageColumn;
+use A17\Twill\Services\Listings\Columns\LanguagesColumn;
+use A17\Twill\Services\Listings\Columns\PublishStatusColumn;
+use A17\Twill\Services\Listings\Columns\ScheduledStatusColumn;
 use A17\Twill\Services\Listings\Columns\TextColumn;
 use A17\Twill\Services\Listings\TableColumn;
 use A17\Twill\Services\Listings\TableColumns;
@@ -105,6 +109,7 @@ abstract class ModuleController extends Controller
         'editInModal' => false,
         'skipCreateModal' => false,
         'includeScheduledInList' => true,
+        'showImage' => false,
     ];
 
     /**
@@ -132,6 +137,8 @@ abstract class ModuleController extends Controller
         'bulkEdit' => 'edit-module',
         'editInModal' => 'edit-module',
         'skipCreateModal' => 'edit-module',
+        'includeScheduledInList' => 'edit-module',
+        'showImage' => 'edit-module',
     ];
 
     /**
@@ -364,26 +371,65 @@ abstract class ModuleController extends Controller
     {
         $columns = TableColumns::make();
 
+        if ($this->getIndexOption('publish')) {
+            $columns->add(
+                PublishStatusColumn::make('published')
+                    ->setTitle(twillTrans('twill::lang.listing.columns.published'))
+                    ->sortable()
+                    ->optional()
+            );
+        }
+
         // Consume Deprecated data.
         if ($this->indexColumns) {
             foreach ($this->indexColumns as $key => $indexColumn) {
                 $columns->add(
-                    new TextColumn(
-                        key: $key,
-                        field: $indexColumn['field'],
-                        title: $indexColumn['title'] ?? null,
-                        sortable: $indexColumn['sort'] ?? false,
-                        defaultSort: false
-                    )
+                    TextColumn::make($key)
+                        ->setTitle($indexColumn['title'] ?? null)
+                        ->setField($indexColumn['field'])
+                        ->sortable($indexColumn['sort'] ?? false)
                 );
             }
         } else {
             $columns->add(
-                new TextColumn(
-                    key: $this->titleColumnKey,
-                    field: $this->titleColumnKey,
-                    sortable: true
-                )
+                TextColumn::make($this->titleColumnKey)
+                    ->linkCell(function (Model $model) {
+                        if ($this->getIndexOption('edit', $model)) {
+                            return $this->getModuleRoute($model->id, 'edit');
+                        }
+                    })
+            );
+        }
+
+        // Add default columns.
+        if ($this->getIndexOption('showImage')) {
+            $columns->add(
+                ImageColumn::make('thumbnail')
+                    ->rounded()
+                    ->setTitle(__('Image'))
+            );
+        }
+
+        if ($this->getIndexOption('feature')) {
+            $columns->add(
+                BooleanColumn::make('featured')
+                    ->setTitle(twillTrans('twill::lang.listing.columns.featured'))
+            );
+        }
+
+        if ($this->getIndexOption('includeScheduledInList') && $this->repository->isFillable('publish_start_date')) {
+            $columns->add(
+                ScheduledStatusColumn::make('publish_status')
+                    ->setTitle(twillTrans('twill::lang.listing.columns.published'))
+                    ->optional()
+            );
+        }
+
+        if ($this->moduleHas('translations') && count(getLocales()) > 1) {
+            $columns->add(
+                LanguagesColumn::make('languages')
+                    ->setTitle(twillTrans('twill::lang.listing.languages'))
+                    ->optional()
             );
         }
 
@@ -1129,7 +1175,7 @@ abstract class ModuleController extends Controller
 
         $data = [
                 'tableData' => $this->getIndexTableData($items),
-                'tableColumns' => $this->getIndexTableColumns($items),
+                'tableColumns' => $this->getIndexColumns()->toCmsArray(request(), $this->getIndexOption('reorder')),
                 'tableMainFilters' => $this->getIndexTableMainFilters($items),
                 'filters' => json_decode($this->request->get('filter'), true) ?? [],
                 'hiddenFilters' => array_keys(Arr::except($this->filters, array_keys($this->defaultFilters))),
@@ -1208,26 +1254,9 @@ abstract class ModuleController extends Controller
     {
         $translated = $this->moduleHas('translations');
 
-        return $items->map(function ($item) use ($translated) {
-            $columnsData = $this->getIndexColumns()->mapWithKeys(function ($column) use ($item) {
-                return $this->getItemColumnData($item, $column);
-            })->toArray();
+        return $items->map(function (Model $item) use ($translated) {
+            $columnsData = $this->getIndexColumns()->getArrayForModel($item);
 
-            $name = $columnsData[$this->titleColumnKey];
-
-            if (empty($name)) {
-                if ($this->moduleHas('translations')) {
-                    $fallBackTranslation = $item->translations()->where('active', true)->first();
-
-                    if (isset($fallBackTranslation->{$this->titleColumnKey})) {
-                        $name = $fallBackTranslation->{$this->titleColumnKey};
-                    }
-                }
-
-                $name = $name ?? ('Missing ' . $this->titleColumnKey);
-            }
-
-            unset($columnsData[$this->titleColumnKey]);
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
             $itemCanDelete = $this->getIndexOption('delete', $item) && ($item->canDelete ?? true);
             $canEdit = $this->getIndexOption('edit', $item);
@@ -1235,28 +1264,31 @@ abstract class ModuleController extends Controller
 
             $itemId = $this->getItemIdentifier($item);
 
-            return array_replace([
-                'id' => $itemId,
-                'name' => $name,
-                'publish_start_date' => $item->publish_start_date,
-                'publish_end_date' => $item->publish_end_date,
-                'edit' => $canEdit ? $this->getModuleRoute($itemId, 'edit') : null,
-                'duplicate' => $canDuplicate ? $this->getModuleRoute($itemId, 'duplicate') : null,
-                'delete' => $itemCanDelete ? $this->getModuleRoute($itemId, 'destroy') : null,
-            ] + ($this->getIndexOption('editInModal') ? [
-                'editInModal' => $this->getModuleRoute($itemId, 'edit'),
-                'updateUrl' => $this->getModuleRoute($itemId, 'update'),
-            ] : []) + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? [
-                'published' => $item->published,
-            ] : []) + ($this->getIndexOption('feature', $item) && ($item->canFeature ?? true) ? [
-                'featured' => $item->{$this->featureField},
-            ] : []) + (($this->getIndexOption('restore', $item) && $itemIsTrashed) ? [
-                'deleted' => true,
-            ] : []) + (($this->getIndexOption('forceDelete') && $itemIsTrashed) ? [
-                'destroyable' => true,
-            ] : []) + ($translated ? [
-                'languages' => $item->getActiveLanguages(),
-            ] : []) + $columnsData, $this->indexItemData($item));
+            return array_replace(
+                [
+                    'id' => $itemId,
+                    'name' => '@todo: $name but where is this used?',
+                    'publish_start_date' => $item->publish_start_date,
+                    'publish_end_date' => $item->publish_end_date,
+                    'edit' => $canEdit ? $this->getModuleRoute($itemId, 'edit') : null,
+                    'duplicate' => $canDuplicate ? $this->getModuleRoute($itemId, 'duplicate') : null,
+                    'delete' => $itemCanDelete ? $this->getModuleRoute($itemId, 'destroy') : null,
+                ] + ($this->getIndexOption('editInModal') ? [
+                    'editInModal' => $this->getModuleRoute($itemId, 'edit'),
+                    'updateUrl' => $this->getModuleRoute($itemId, 'update'),
+                ] : []) + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? [
+                    'published' => $item->published,
+                ] : []) + ($this->getIndexOption('feature', $item) && ($item->canFeature ?? true) ? [
+                    'featured' => $item->{$this->featureField},
+                ] : []) + (($this->getIndexOption('restore', $item) && $itemIsTrashed) ? [
+                    'deleted' => true,
+                ] : []) + (($this->getIndexOption('forceDelete') && $itemIsTrashed) ? [
+                    'destroyable' => true,
+                ] : []) + ($translated ? [
+                    'languages' => $item->getActiveLanguages(),
+                ] : []) + $columnsData,
+                $this->indexItemData($item)
+            );
         })->toArray();
     }
 
@@ -1271,17 +1303,6 @@ abstract class ModuleController extends Controller
 
     protected function getItemColumnData(Model $item, TableColumn $column): array
     {
-
-        if ($column instanceof ImageColumn && $thumbnail = $column->getThumbnail($item)) {
-            return [
-                'thumbnail' => $thumbnail
-            ];
-        }
-
-        if ($column instanceof TextColumn) {
-            return [$column->key => $item->{$column->field}];
-        }
-
         if (isset($column['nested']) && $column['nested']) {
             $field = $column['nested'];
             $nestedCount = $item->{$column['nested']}->count();
@@ -1342,68 +1363,32 @@ abstract class ModuleController extends Controller
         $visibleColumns = $this->request->get('columns') ?? false;
         $indexColumnCopy = $this->indexColumns;
 
-        if (isset(Arr::first($indexColumnCopy)['thumb'])
-            && Arr::first($indexColumnCopy)['thumb']) {
-            // Thumbnails : rounded or regular ones
-            $hasRoundedThumb = (isset(Arr::first($this->indexColumns)['thumb'])
-                    && Arr::first($this->indexColumns)['thumb']
-                    && isset(Arr::first($this->indexColumns)['variation'])
-                    && Arr::first($this->indexColumns)['variation'] === 'rounded') ?? false;
-            $hasThumb = (isset(Arr::first($this->indexColumns)['thumb'])
-                && Arr::first($this->indexColumns)['thumb']
-                && !$hasRoundedThumb);
-            $thumb = ($hasRoundedThumb || $hasThumb) ? [
-                    'name' => 'thumbnail',
-                    'label' => twillTrans('twill::lang.listing.columns.thumbnail'),
-                    'visible' => $visibleColumns ? in_array('thumbnail', $visibleColumns) : true,
-                    'optional' => true,
-                    'sortable' => false,
-                ] + (isset(Arr::first($this->indexColumns)['variation'])
-                    ? ['variation' => Arr::first($this->indexColumns)['variation']]
-                    : []) : false;
-
-            if ($hasThumb) {
-                $tableColumns[] = $thumb;
+        foreach ($indexColumnCopy as $key => $column) {
+            if ($key === $this->titleColumnKey) {
+                $tableColumns[] = [
+                    'name' => 'name',
+                    'label' => $column['title'] ?? twillTrans('twill::lang.listing.columns.name'),
+                    'visible' => true,
+                    'optional' => false,
+                    'sortable' => $this->getIndexOption('reorder') ? false : ($column['sort'] ?? false),
+                ];
+                continue;
             }
 
-            array_shift($indexColumnCopy);
-        }
+            if (isset($column['thumb'])) {
+                // Thumbnails : rounded or regular ones
+                $hasRoundedThumb = isset($column['variation']) && $column['variation'] === 'rounded';
+                $tableColumns[] = [
+                    'name' => 'thumbnail',
+                    'label' => $column['title'] ?? twillTrans('twill::lang.listing.columns.thumbnail'),
+                    'visible' => !$visibleColumns || in_array('thumbnail', $visibleColumns, true),
+                    'optional' => true,
+                    'sortable' => false,
+                    'variation' => $hasRoundedThumb ? 'rounded' : 'square',
+                ];
+                continue;
+            }
 
-        if ($this->getIndexOption('feature')) {
-            $tableColumns[] = [
-                'name' => 'featured',
-                'label' => twillTrans('twill::lang.listing.columns.featured'),
-                'visible' => true,
-                'optional' => false,
-                'sortable' => false,
-            ];
-        }
-
-        if ($this->getIndexOption('publish')) {
-            $tableColumns[] = [
-                'name' => 'published',
-                'label' => twillTrans('twill::lang.listing.columns.published'),
-                'visible' => true,
-                'optional' => false,
-                'sortable' => false,
-            ];
-        }
-
-        $tableColumns[] = [
-            'name' => 'name',
-            'label' => $indexColumnCopy[$this->titleColumnKey]['title'] ?? twillTrans(
-                    'twill::lang.listing.columns.name'
-                ),
-            'visible' => true,
-            'optional' => false,
-            'sortable' => $this->getIndexOption(
-                'reorder'
-            ) ? false : ($indexColumnCopy[$this->titleColumnKey]['sort'] ?? false),
-        ];
-
-        unset($indexColumnCopy[$this->titleColumnKey]);
-
-        foreach ($indexColumnCopy as $column) {
             if (isset($column['relationship'])) {
                 $columnName = $column['relationship'] . ucfirst($column['field']);
             } elseif (isset($column['nested'])) {
@@ -1421,26 +1406,6 @@ abstract class ModuleController extends Controller
                 'optional' => $column['optional'] ?? true,
                 'sortable' => $this->getIndexOption('reorder') ? false : ($column['sort'] ?? false),
                 'html' => $column['html'] ?? false,
-            ];
-        }
-
-        if ($this->getIndexOption('includeScheduledInList') && $this->repository->isFillable('publish_start_date')) {
-            $tableColumns[] = [
-                'name' => 'publish_start_date',
-                'label' => twillTrans('twill::lang.listing.columns.published'),
-                'visible' => true,
-                'optional' => true,
-                'sortable' => true,
-            ];
-        }
-
-        if ($this->moduleHas('translations') && count(getLocales()) > 1) {
-            $tableColumns[] = [
-                'name' => 'languages',
-                'label' => twillTrans('twill::lang.listing.languages'),
-                'visible' => $visibleColumns ? in_array('languages', $visibleColumns) : true,
-                'optional' => true,
-                'sortable' => false,
             ];
         }
 

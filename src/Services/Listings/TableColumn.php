@@ -2,20 +2,132 @@
 
 namespace A17\Twill\Services\Listings;
 
+use A17\Twill\Models\Model;
 use Illuminate\Support\Str;
 
 abstract class TableColumn
 {
-    public function __construct(
+    protected function __construct(
         public string $key,
         public ?string $field = null,
         public ?string $title = null,
         public bool $sortable = false,
         public bool $defaultSort = false,
+        public bool $optional = false,
+        public bool $visible = true,
+        public bool $html = false,
+        protected \Closure|string|null $link = null,
+        protected ?\Closure $render = null
     ) {
         if (!$this->title) {
             $this->title = Str::headline($field ?? $key);
         }
+        if (!$this->field) {
+            $this->field = $key;
+        }
+    }
+
+    public static function make(string $key): static
+    {
+        return new static($key);
+    }
+
+    public function setField(string $field): static
+    {
+        $this->field = $field;
+        return $this;
+    }
+
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+        return $this;
+    }
+
+    public function sortable(bool $sortable = true): self
+    {
+        $this->sortable = $sortable;
+        return $this;
+    }
+
+    public function sortByDefault(bool $defaultSort = true): self
+    {
+        $this->defaultSort = $defaultSort;
+        return $this;
+    }
+
+    public function optional(bool $optional = true): self
+    {
+        $this->optional = $optional;
+        return $this;
+    }
+
+    public function hide(bool $visible = false): self
+    {
+        $this->visible = $visible;
+        return $this;
+    }
+
+    public function renderHtml(bool $html = true): self
+    {
+        $this->html = $html;
+        return $this;
+    }
+
+    public function linkCell(\Closure|string $link): self
+    {
+        $this->link = $link;
+        return $this;
+    }
+
+    public function customRender(\Closure $renderFunction): self
+    {
+        $this->render = $renderFunction;
+        return $this;
+    }
+
+    public function toColumnArray(array $visibleColumns = [], bool $sortable = true): array
+    {
+        $visible = true;
+
+        if ($this->optional && (empty($visibleColumns) || in_array($this->key, $visibleColumns, true))) {
+            $visible = false;
+        }
+
+        return [
+            'name' => $this->key,
+            'label' => $this->title,
+            'visible' => $visible,
+            'optional' => $this->optional,
+            'sortable' => $sortable && $this->sortable,
+            'html' => $this->html,
+        ];
+    }
+
+    public function renderCell(Model $model): string
+    {
+        if ($link = $this->link) {
+            if ($link instanceof \Closure) {
+                $link = $link($model);
+            }
+            // Link via the closure can be null so we recheck it and only then use it.
+            if ($link) {
+                return view('twill::listings.columns.linked-cell', [
+                    'slot' => $this->getRenderValue($model),
+                    'link' => $link,
+                ]);
+            }
+        }
+        return $this->getRenderValue($model);
+    }
+
+    protected function getRenderValue(Model $model): string
+    {
+        if ($renderFunction = $this->render) {
+            return $renderFunction($model);
+        }
+
+        return $model->{$this->field};
     }
 
 }
