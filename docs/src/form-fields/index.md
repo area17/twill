@@ -98,4 +98,4 @@ alternatively, or if you need more control, you can use the `sideFieldsets` sect
 
 Both combined produces the result as shown in the screenshot below:
 
-![screenshot](/docs/_media/screenshot-sidebar.png)
+![screenshot](../.vuepress/public/_media/screenshot-sidebar.png)

@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Datepicker
 
-![screenshot](/docs/_media/datepicker.png)
+![screenshot](../.vuepress/public/_media/datepicker.png)
 
 ```php
 @formField('date_picker', [

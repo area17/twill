@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Repeater
 
-![screenshot](/docs/_media/repeater.png)
+![screenshot](../.vuepress/public/_media/repeater.png)
 
 ```php
 @formField('repeater', ['type' => 'video'])
