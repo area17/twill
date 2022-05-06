@@ -36,6 +36,7 @@ use Cartalyst\Tags\TagsServiceProvider;
 use Exception;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
@@ -114,6 +115,9 @@ class TwillServiceProvider extends ServiceProvider
         $this->registerFacades();
 
         $this->app->bind(TwillCapsules::class);
+
+        // Laravel 7 compatability.
+        Collection::macro('doesntContain', [Collection::class, 'missing']);
 
         Relation::morphMap([
             'users' => User::class,
