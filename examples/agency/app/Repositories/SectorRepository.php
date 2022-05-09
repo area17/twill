@@ -4,10 +4,9 @@ namespace App\Repositories;
 
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use A17\Twill\Repositories\Behaviors\HandleSlugs;
-use A17\Twill\Repositories\ModuleRepository;
 use App\Models\Sector;
 
-class SectorRepository extends ModuleRepository
+class SectorRepository extends BaseRepository
 {
     use HandleTranslations, HandleSlugs;
 
