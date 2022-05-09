@@ -16,7 +16,7 @@ class WorkRepository extends ModuleRepository
 {
     use HandleBlocks, HandleTranslations, HandleSlugs, HandleMedias, HandleRevisions, HandleFiles, HandleTags;
 
-    protected $relatedBrowsers = ['people', 'offices'];
+    protected $relatedBrowsers = ['offices'];
 
     public function __construct(Work $model)
     {
@@ -35,12 +35,14 @@ class WorkRepository extends ModuleRepository
             'WorkLink',
             'external_link'
         );
+        $this->updateBrowser($object, $fields, 'people');
     }
 
     public function getFormFields($object)
     {
         $fields = parent::getFormFields($object);
         $fields = $this->getFormFieldsForRepeater($object, $fields, 'workLinks', 'WorkLink', 'external_link');
+        $fields['browsers']['people'] = $this->getFormFieldsForBrowser($object, 'people', 'about');
         return $fields;
     }
 }

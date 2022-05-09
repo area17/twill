@@ -5,10 +5,11 @@ namespace App\Models;
 use A17\Twill\Models\Behaviors\HasTranslation;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Model;
+use App\Models\Traits\HasWorks;
 
 class Sector extends Model
 {
-    use HasTranslation, HasSlug;
+    use HasTranslation, HasSlug, HasWorks;
 
     protected $fillable = [
         'published',
@@ -22,5 +23,4 @@ class Sector extends Model
     public $slugAttributes = [
         'title',
     ];
-
 }

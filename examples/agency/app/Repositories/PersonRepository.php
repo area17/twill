@@ -23,12 +23,14 @@ class PersonRepository extends ModuleRepository
     {
         $this->updateRepeater($object, $fields, 'videos', 'PersonVideo', 'video');
         parent::afterSave($object, $fields);
+        $this->updateBrowser($object, $fields, 'works');
     }
 
     public function getFormFields($object)
     {
         $fields = parent::getFormFields($object);
         $fields = $this->getFormFieldsForRepeater($object, $fields, 'videos', 'PersonVideo', 'video');
+        $fields['browsers']['works'] = $this->getFormFieldsForBrowser($object, 'works', 'work');
         return $fields;
     }
 }

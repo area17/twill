@@ -10,10 +10,11 @@ use A17\Twill\Models\Behaviors\HasRevisions;
 use A17\Twill\Models\Behaviors\HasPosition;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Model;
+use App\Models\Traits\HasWorks;
 
 class Person extends Model implements Sortable
 {
-    use HasBlocks, HasTranslation, HasSlug, HasMedias, HasRevisions, HasPosition;
+    use HasBlocks, HasTranslation, HasSlug, HasMedias, HasRevisions, HasPosition, HasWorks;
 
 
     protected $fillable = [

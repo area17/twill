@@ -1,6 +1,7 @@
 @extends('twill::layouts.form', [
     'additionalFieldsets' => [
         ['fieldset' => 'videos', 'label' => 'Videos'],
+        ['fieldset' => 'related', 'label' => 'Related content'],
     ]
 ])
 
@@ -68,5 +69,15 @@
 @section('fieldsets')
     @formFieldset(['id' => 'videos', 'title' => 'Videos', 'open' => true])
         @formField('repeater', ['type' => 'video'])
+    @endformFieldset
+
+    @formFieldset(['id' => 'related', 'title' => 'Related Content', 'open' => true])
+        @formField('browser', [
+            'moduleName' => 'works',
+            'name' => 'works',
+            'label' => 'Milestone projects',
+            'max' => 3,
+            'endpoint' => '/admin/work/works/browser'
+        ])
     @endformFieldset
 @stop
