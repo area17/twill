@@ -247,19 +247,18 @@ return [
         'init_alt_text_from_filename' => true,
         'prefix_uuid_with_local_path' => config('twill.file_library.prefix_uuid_with_local_path', false),
         'translated_form_fields' => false,
-        'show_file_name' => false,
-    ],
-    /*
-    |--------------------------------------------------------------------------
-    | Wysiwyg options for the caption field.
-    |--------------------------------------------------------------------------
-    */
-    'media_caption_use_wysiwyg' => false,
-    'media_caption_wysiwyg_options' => [
-        'modules' => [
-            'toolbar' => [
-                'bold',
-                'italic',
+        /*
+        |--------------------------------------------------------------------------
+        | Wysiwyg options for the caption field.
+        |--------------------------------------------------------------------------
+        */
+        'media_caption_use_wysiwyg' => false,
+        'media_caption_wysiwyg_options' => [
+            'modules' => [
+                'toolbar' => [
+                    'bold',
+                    'italic',
+                ],
             ],
         ],
     ],

@@ -15,6 +15,10 @@
     $onChangeFullAttribute = $onChangeAttribute ? "('".$onChangeAttribute."', ...arguments)" : "";
     $prefix = $prefix ?? false;
     $inModal = $fieldsInModal ?? false;
+    // Number specific
+    $min = $min ?? null;
+    $max = $max ?? null;
+    $step = $step ?? null;
 @endphp
 
 @if($translated)
@@ -33,6 +37,9 @@
             @if ($rows) rows: {{ $rows }}, @endif
             @if ($prefix) prefix: '{{ $prefix }}', @endif
             @if ($inModal) inModal: true, @endif
+            @if ($min) min: {{$min}}, @endif
+            @if ($max) max: {{$max}}, @endif
+            @if ($step) step: {{$step}}, @endif
             @if ($default)
                 initialValue: '{{ $default }}',
                 hasDefaultStore: true,
@@ -58,6 +65,9 @@
         @if ($onChange) v-on:change="{{ $onChange }}{{ $onChangeFullAttribute }}" @endif
         @if ($prefix) prefix="{{ $prefix }}" @endif
         @if ($inModal) :in-modal="true" @endif
+        @if ($min) min="{{$min}}" @endif
+        @if ($max) max="{{$max}}" @endif
+        @if ($step) step="{{$step}}" @endif
         @if ($default)
             :initial-value="'{{ $default }}'"
             :has-default-store="true"

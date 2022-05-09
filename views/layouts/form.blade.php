@@ -79,7 +79,7 @@
                 </div>
             </a17-sticky-nav>
         </div>
-        <form action="{{ $saveUrl }}" novalidate method="POST" @unless($customForm) v-on:submit.prevent="submitForm" @endif>
+        <form action="{{ $saveUrl }}" novalidate method="POST" @if($customForm) ref="customForm" @else v-on:submit.prevent="submitForm" @endif>
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="container">
                 <div class="wrapper wrapper--reverse" v-sticky data-sticky-id="publisher" data-sticky-offset="80">

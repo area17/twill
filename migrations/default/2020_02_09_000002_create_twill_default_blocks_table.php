@@ -17,7 +17,7 @@ class CreateTwillDefaultBlocksTable extends Migration
 
         if (!Schema::hasTable($twillBlocksTable)) {
             Schema::create($twillBlocksTable, function (Blueprint $table) {
-                $table->{twillIncrementsMethod()}('id');
+                $table->bigIncrements('id');
                 $table->integer('blockable_id')->nullable()->unsigned();
                 $table->string('blockable_type')->nullable();
                 $table->integer('position')->unsigned();

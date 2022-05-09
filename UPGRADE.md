@@ -35,3 +35,37 @@ you now need to update to `renderBlocks(true)`
 
 Model crops are now a global config, if you do not need model specific crops you can manage them globally from your
 config.
+
+
+## twillIncrementsMethod and twillIntegerMethod are removed
+
+The default now is bigIncrements and bigInteger. If you relied on these functions for custom
+logic you can add them to your own codebase. For reference the functions are below:
+
+https://github.com/area17/twill/issues/1585
+
+```php
+if (!function_exists('twillIncrementsMethod')) {
+    /**
+     * @return string
+     */
+    function twillIncrementsMethod()
+    {
+        return config('twill.migrations_use_big_integers')
+            ? 'bigIncrements'
+            : 'increments';
+    }
+}
+
+if (!function_exists('twillIntegerMethod')) {
+    /**
+     * @return string
+     */
+    function twillIntegerMethod()
+    {
+        return config('twill.migrations_use_big_integers')
+            ? 'bigInteger'
+            : 'integer';
+    }
+}
+```
