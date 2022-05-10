@@ -56,7 +56,7 @@
   import debounce from 'lodash/debounce'
 
   export default {
-    name: 'A17editorpreview',
+    name: 'A17editorPreview',
     props: {
       bgColor: {
         type: String,
