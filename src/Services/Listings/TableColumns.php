@@ -2,14 +2,13 @@
 
 namespace A17\Twill\Services\Listings;
 
-use A17\Twill\Models\Model;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 class TableColumns extends Collection
 {
-    public function getArrayForModelBrowser(Model $model, TableDataContext $tableDataContext): array
+    public function getArrayForModelBrowser(BaseModel $model, TableDataContext $tableDataContext): array
     {
         $data = $this->getArrayForModel($model);
 

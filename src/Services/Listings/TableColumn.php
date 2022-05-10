@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 abstract class TableColumn
 {
-    protected function __construct(
+    final protected function __construct(
         protected ?string $key = null,
         protected ?string $field = null,
         protected ?string $title = null,

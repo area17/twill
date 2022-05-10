@@ -24,6 +24,7 @@ use A17\Twill\Services\Listings\TableColumn;
 use A17\Twill\Services\Listings\TableColumns;
 use A17\Twill\Services\Listings\TableDataContext;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
@@ -1331,7 +1332,7 @@ abstract class ModuleController extends Controller
     {
         $translated = $this->moduleHas('translations');
 
-        return $items->map(function (\Illuminate\Database\Eloquent\Model $item) use ($translated) {
+        return $items->map(function (BaseModel $item) use ($translated) {
             $columnsData = $this->getTableColumns('index')->getArrayForModel($item);
 
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
@@ -1521,7 +1522,7 @@ abstract class ModuleController extends Controller
 
     protected function getBrowserTableData(Collection|LengthAwarePaginator $items): array
     {
-        return $items->map(function (Model $item) {
+        return $items->map(function (BaseModel $item) {
             return $this->getTableColumns('browser')->getArrayForModelBrowser(
                 $item,
                 new TableDataContext(
