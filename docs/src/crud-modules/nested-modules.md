@@ -178,7 +178,7 @@ class IssueController extends BaseModuleController
 {
     protected $moduleName = 'issues';
 
-    protected $indexColumns = [
+    protected ?array $indexColumns = [
         'title' => [
             'title' => 'Title',
             'field' => 'title',

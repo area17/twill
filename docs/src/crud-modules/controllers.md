@@ -48,7 +48,7 @@ pageClass: twill-doc
     /*
      * Available columns of the index view
      */
-    protected $indexColumns = [
+    protected ?array $indexColumns = [
         'image' => [
             'thumb' => true, // image column
             'variant' => [
@@ -89,7 +89,7 @@ pageClass: twill-doc
      * Columns of the browser view for this module when browsed from another module
      * using a browser form field
      */
-    protected $browserColumns = [
+    protected ?array $browserColumns = [
         'title' => [
             'title' => 'Title',
             'field' => 'title',
@@ -164,7 +164,7 @@ Let's say we have a controller with certain fields displayed:
 File: `app/Http/Controllers/Twill/PlayController.php`
 
 ```php
-    protected $indexColumns = [
+    protected ?array $indexColumns = [
         'image' => [
             'thumb' => true, // image column
             'variant' => [

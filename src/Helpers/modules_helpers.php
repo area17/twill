@@ -176,11 +176,3 @@ if (! function_exists('isUserGroupPermissionModuleExists')) {
         return false;
     }
 }
-
-if (!function_exists('getModuleRoutePrefix')) {
-    function getModuleRoutePrefix(string $module): string
-    {
-        // @todo: Implement
-        return '';
-    }
-}

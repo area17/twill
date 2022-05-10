@@ -65,7 +65,7 @@ class UserController extends ModuleController
     /**
      * @var array
      */
-    protected $indexColumns = [
+    protected ?array $indexColumns = [
         'name' => [
             'title' => 'Name',
             'field' => 'name',

@@ -27,7 +27,7 @@ class AuthorController extends ModuleController
         'editInModal' => false,
     ];
 
-    protected $indexColumns = [
+    protected ?array $indexColumns = [
         'avatar' => [
             'thumb' => true,
 
