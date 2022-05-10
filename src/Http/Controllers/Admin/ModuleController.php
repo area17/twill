@@ -266,14 +266,14 @@ abstract class ModuleController extends Controller
     protected $indexOptions;
 
     /**
-     * @deprecated please use the getIndexColumns method. Will be removed in Twill 4.0
+     * @deprecated please use the getIndexTableColumns method. Will be removed in Twill 4.0
      */
     protected ?array $indexColumns = null;
 
     /**
-     * @var array
+     * @deprecated please use the getBrowserTableColumns method. Will be removed in Twill 4.0
      */
-    protected $browserColumns;
+    protected ?array $browserColumns;
 
     /**
      * @var string
@@ -358,18 +358,6 @@ abstract class ModuleController extends Controller
          * Apply any filters that are selected by default
          */
         $this->applyFiltersDefaultOptions();
-
-        /*
-         * Available columns of the browser view
-         */
-        if (!isset($this->browserColumns)) {
-            $this->browserColumns = [
-                $this->titleColumnKey => [
-                    'title' => ucfirst($this->titleColumnKey),
-                    'field' => $this->titleColumnKey,
-                ],
-            ];
-        }
     }
 
     /**
@@ -385,10 +373,13 @@ abstract class ModuleController extends Controller
 
     protected function getBrowserTableColumns(): TableColumns
     {
-        return $this->getIndexTableColumns();
+        return $this->getIndexTableColumns(true);
     }
 
-    protected function getIndexTableColumns(): TableColumns
+    /**
+     * $forBrowser is here for backwards compatability.
+     */
+    protected function getIndexTableColumns(bool $forBrowser = false): TableColumns
     {
         $columns = TableColumns::make();
 
@@ -402,18 +393,22 @@ abstract class ModuleController extends Controller
         }
 
         // Consume Deprecated data.
-        if ($this->indexColumns) {
-            $this->handleLegacyColumns($columns, $this->indexColumns);
+        if ($forBrowser && $this->browserColumns) {
+            $this->handleLegacyColumns($columns, $this->browserColumns);
         } else {
-            $columns->add(
-                Text::make()
-                    ->field($this->titleColumnKey)
-                    ->linkCell(function (Model $model) {
-                        if ($this->getIndexOption('edit', $model)) {
-                            return $this->getModuleRoute($model->id, 'edit');
-                        }
-                    })
-            );
+            if ($this->indexColumns) {
+                $this->handleLegacyColumns($columns, $this->indexColumns);
+            } else {
+                $columns->add(
+                    Text::make()
+                        ->field($this->titleColumnKey)
+                        ->linkCell(function (Model $model) {
+                            if ($this->getIndexOption('edit', $model)) {
+                                return $this->getModuleRoute($model->id, 'edit');
+                            }
+                        })
+                );
+            }
         }
 
         // Add default columns.
@@ -461,6 +456,7 @@ abstract class ModuleController extends Controller
                     NestedData::make()
                         ->title($indexColumn['title'] ?? null)
                         ->field($indexColumn['nested'])
+                        ->sortKey($indexColumn['sortKey'] ?? null)
                         ->sortable($indexColumn['sort'] ?? false)
                         ->optional($indexColumn['optional'] ?? false)
                         ->linkCell(function (Model $model) use ($indexColumn) {
@@ -477,8 +473,9 @@ abstract class ModuleController extends Controller
             } elseif ($indexColumn['relatedBrowser'] ?? false) {
                 $columns->add(
                     Browser::make()
-                        ->field($indexColumn['field'])
                         ->title($indexColumn['title'])
+                        ->field($indexColumn['field'])
+                        ->sortKey($indexColumn['sortKey'] ?? null)
                         ->optional($indexColumn['optional'] ?? false)
                         ->browser($indexColumn['relatedBrowser'])
                 );
@@ -487,22 +484,25 @@ abstract class ModuleController extends Controller
                     Relation::make()
                         ->title($indexColumn['title'])
                         ->field($indexColumn['field'])
+                        ->sortKey($indexColumn['sortKey'] ?? null)
                         ->optional($indexColumn['optional'] ?? false)
                         ->relation($indexColumn['relationship'])
                 );
             } elseif ($indexColumn['present'] ?? false) {
                 $columns->add(
                     Presenter::make()
-                        ->sortable($indexColumn['sort'] ?? false)
-                        ->optional($indexColumn['optional'] ?? false)
                         ->title($indexColumn['title'])
                         ->field($indexColumn['field'])
+                        ->sortKey($indexColumn['sortKey'] ?? null)
+                        ->optional($indexColumn['optional'] ?? false)
+                        ->sortable($indexColumn['sort'] ?? false)
                 );
             } else {
                 $columns->add(
                     Text::make()
                         ->title($indexColumn['title'] ?? null)
                         ->field($indexColumn['field'])
+                        ->sortKey($indexColumn['sortKey'] ?? null)
                         ->optional($indexColumn['optional'] ?? false)
                         ->sortable($indexColumn['sort'] ?? false)
                 );
@@ -1377,18 +1377,6 @@ abstract class ModuleController extends Controller
         return [];
     }
 
-    protected function getItemColumnData(Model $item, TableColumn $column): array
-    {
-        // @todo: Implement this one.
-        if (isset($column['present']) && $column['present']) {
-            $value = $item->presentAdmin()->{$column['field']};
-        }
-
-        return [
-            "$field" => $value,
-        ];
-    }
-
     /**
      * @param \A17\Twill\Models\Model $item
      * @return int|string
@@ -1644,21 +1632,22 @@ abstract class ModuleController extends Controller
         $this->request->merge(['filter' => json_encode($filters)]);
     }
 
-    /**
-     * @return array
-     */
-    protected function orderScope()
+    protected function orderScope(): array
     {
         $orders = [];
         if ($this->request->has('sortKey') && $this->request->has('sortDir')) {
-            if (($key = $this->request->get('sortKey')) == 'name') {
+            if (($key = $this->request->get('sortKey')) === 'name') {
                 $sortKey = $this->titleColumnKey;
             } elseif (!empty($key)) {
                 $sortKey = $key;
             }
 
             if (isset($sortKey)) {
-                $orders[$this->indexColumns[$sortKey]['sortKey'] ?? $sortKey] = $this->request->get('sortDir');
+                /** @var \A17\Twill\Services\Listings\TableColumn $indexColumn */
+                $indexColumn = $this->getIndexTableColumns()->first(function (TableColumn $column) use ($sortKey) {
+                    return $column->getKey() === $sortKey;
+                });
+                $orders[$indexColumn?->getSortKey() ?? $sortKey] = $this->request->get('sortDir');
             }
         }
 

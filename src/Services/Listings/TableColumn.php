@@ -12,6 +12,7 @@ abstract class TableColumn
         protected ?string $key = null,
         protected ?string $field = null,
         protected ?string $title = null,
+        protected ?string $sortKey = null,
         protected bool $sortable = false,
         protected bool $defaultSort = false,
         protected bool $optional = false,
@@ -87,6 +88,15 @@ abstract class TableColumn
     {
         $this->link = $link;
         return $this;
+    }
+
+    public function sortKey(?string $sortKey): self {
+        $this->sortKey = $sortKey;
+        return $this;
+    }
+
+    public function getSortKey(): ?string {
+        return  $this->sortKey;
     }
 
     public function customRender(\Closure $renderFunction): self
