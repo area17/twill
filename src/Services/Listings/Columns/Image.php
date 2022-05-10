@@ -2,24 +2,18 @@
 
 namespace A17\Twill\Services\Listings\Columns;
 
+use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Model as TwillModel;
 use A17\Twill\Services\Listings\TableColumn;
-use http\Exception\InvalidArgumentException;
 use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 
 class Image extends TableColumn
 {
-    protected ?string $presenter = null;
     protected ?string $role = null;
     protected ?string $crop = null;
     protected ?array $mediaParams = null;
     protected bool $rounded = false;
-
-    public function setPresenter(string $presenter): self
-    {
-        $this->presenter = $presenter;
-        return $this;
-    }
 
     public function role(string $role): self
     {
@@ -55,8 +49,8 @@ class Image extends TableColumn
 
     public function getRenderValue(Model $model): string
     {
-        if (!$model instanceof TwillModel) {
-            throw new InvalidArgumentException('Model is not a Twill model');
+        if (!classHasTrait($model::class, HasMedias::class)) {
+            throw new InvalidArgumentException('Cannot use image column on model not implementing HasMedias trait');
         }
 
         if ($renderFunction = $this->render) {
@@ -68,10 +62,6 @@ class Image extends TableColumn
 
     public function getThumbnail(TwillModel $model): ?string
     {
-        if ($this->presenter) {
-            return $model->presentAdmin()->{$this->presenter};
-        }
-
         $role = $this->role ?? head(array_keys($model->getMediasParams()));
         $crop = $this->crop ?? head(array_keys($model->getMediasParams()[$role]));
         $params = $this->mediaParams ?? ['w' => 80, 'h' => 80, 'fit' => 'crop'];

@@ -67,6 +67,10 @@ abstract class TableColumn
         return $this;
     }
 
+    public function isDefaultSort(): bool {
+        return $this->defaultSort;
+    }
+
     public function optional(bool $optional = true): self
     {
         $this->optional = $optional;
@@ -108,7 +112,7 @@ abstract class TableColumn
 
     public function toColumnArray(array $visibleColumns = [], bool $sortable = true): array
     {
-        $visible = true;
+        $visible = $this->visible;
 
         if ($this->optional && (empty($visibleColumns) || in_array($this->key, $visibleColumns, true))) {
             $visible = false;

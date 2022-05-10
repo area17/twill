@@ -4,6 +4,8 @@ namespace App\Models;
 
 use A17\Twill\Models\Behaviors\HasBlocks;
 use A17\Twill\Models\Behaviors\HasPosition;
+use A17\Twill\Models\Behaviors\HasPresenter;
+use A17\Twill\Models\Behaviors\HasRelated;
 use A17\Twill\Models\Behaviors\HasTranslation;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Behaviors\HasMedias;
@@ -13,6 +15,7 @@ use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Model;
 use App\Models\Slugs\AuthorSlug;
 use App\Models\Revisions\AuthorRevision;
+use App\TestPresenter;
 
 class Author extends Model implements Sortable
 {
@@ -22,7 +25,11 @@ class Author extends Model implements Sortable
         HasMedias,
         HasFiles,
         HasRevisions,
+        HasRelated,
+        HasPresenter,
         HasPosition;
+
+    public $presenterAdmin = TestPresenter::class;
 
     protected $fillable = [
         'published',
@@ -70,6 +77,18 @@ class Author extends Model implements Sortable
                 ],
             ],
         ],
+        'empty' => [
+            'default' => [
+                [
+                    'name' => 'landscape',
+                    'ratio' => 16 / 9,
+                ],
+                [
+                    'name' => 'portrait',
+                    'ratio' => 3 / 4,
+                ],
+            ],
+        ]
     ];
 
     public function slugs()

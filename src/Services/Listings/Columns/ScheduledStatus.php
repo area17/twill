@@ -20,8 +20,8 @@ class ScheduledStatus extends TableColumn
     {
         $this->html = true;
 
-        $startDate = Carbon::parse($model->publish_start_date);
-        $endDate = Carbon::parse($model->publish_end_date);
+        $startDate = $model->publish_start_date ? Carbon::parse($model->publish_start_date) : null;
+        $endDate = $model->publish_end_date ? Carbon::parse($model->publish_end_date) : null;
 
         $expired = $model->publish_end_date && $endDate->isPast();
         $scheduled = $model->publish_start_date && $startDate->isFuture();
@@ -39,9 +39,9 @@ class ScheduledStatus extends TableColumn
             'isScheduled' => $scheduled,
             'isExpired' => $expired,
             'label' => $label,
-            'hasStartDate' => $model->publish_start_date,
-            'startDate' => $startDate->format($format),
-            'endDate' => $endDate->format($format),
+            'hasStartDate' => $model->publish_start_date ?? false,
+            'startDate' => $startDate?->format($format),
+            'endDate' => $endDate?->format($format),
         ])->render();
     }
 }
