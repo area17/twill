@@ -15,6 +15,7 @@ use A17\Twill\Services\Listings\Columns\Browser;
 use A17\Twill\Services\Listings\Columns\Image;
 use A17\Twill\Services\Listings\Columns\Languages;
 use A17\Twill\Services\Listings\Columns\NestedData;
+use A17\Twill\Services\Listings\Columns\Presenter;
 use A17\Twill\Services\Listings\Columns\PublishStatus;
 use A17\Twill\Services\Listings\Columns\Relation;
 use A17\Twill\Services\Listings\Columns\ScheduledStatus;
@@ -461,6 +462,7 @@ abstract class ModuleController extends Controller
                         ->title($indexColumn['title'] ?? null)
                         ->field($indexColumn['nested'])
                         ->sortable($indexColumn['sort'] ?? false)
+                        ->optional($indexColumn['optional'] ?? false)
                         ->linkCell(function (Model $model) use ($indexColumn) {
                             $module = Str::singular(last(explode('.', $this->moduleName)));
 
@@ -477,6 +479,7 @@ abstract class ModuleController extends Controller
                     Browser::make()
                         ->field($indexColumn['field'])
                         ->title($indexColumn['title'])
+                        ->optional($indexColumn['optional'] ?? false)
                         ->browser($indexColumn['relatedBrowser'])
                 );
             } elseif ($indexColumn['relationship'] ?? false) {
@@ -484,13 +487,23 @@ abstract class ModuleController extends Controller
                     Relation::make()
                         ->title($indexColumn['title'])
                         ->field($indexColumn['field'])
+                        ->optional($indexColumn['optional'] ?? false)
                         ->relation($indexColumn['relationship'])
+                );
+            } elseif ($indexColumn['present'] ?? false) {
+                $columns->add(
+                    Presenter::make()
+                        ->sortable($indexColumn['sort'] ?? false)
+                        ->optional($indexColumn['optional'] ?? false)
+                        ->title($indexColumn['title'])
+                        ->field($indexColumn['field'])
                 );
             } else {
                 $columns->add(
                     Text::make()
                         ->title($indexColumn['title'] ?? null)
                         ->field($indexColumn['field'])
+                        ->optional($indexColumn['optional'] ?? false)
                         ->sortable($indexColumn['sort'] ?? false)
                 );
             }
