@@ -2,8 +2,10 @@
 
 namespace A17\Twill\Services\Listings\Columns;
 
-use A17\Twill\Models\Model;
+use A17\Twill\Models\Model as TwillModel;
 use A17\Twill\Services\Listings\TableColumn;
+use http\Exception\InvalidArgumentException;
+use Illuminate\Database\Eloquent\Model;
 
 class Image extends TableColumn
 {
@@ -53,6 +55,10 @@ class Image extends TableColumn
 
     public function getRenderValue(Model $model): string
     {
+        if (!$model instanceof TwillModel) {
+            throw new InvalidArgumentException('Model is not a Twill model');
+        }
+
         if ($renderFunction = $this->render) {
             return $renderFunction($model);
         }
@@ -60,7 +66,7 @@ class Image extends TableColumn
         return $this->getThumbnail($model);
     }
 
-    public function getThumbnail(Model $model): ?string
+    public function getThumbnail(TwillModel $model): ?string
     {
         if ($this->presenter) {
             return $model->presentAdmin()->{$this->presenter};

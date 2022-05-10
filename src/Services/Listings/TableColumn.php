@@ -3,7 +3,8 @@
 namespace A17\Twill\Services\Listings;
 
 use A17\Twill\Exceptions\ColumnMissingPropertyException;
-use A17\Twill\Models\Model;
+use Closure;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 abstract class TableColumn
@@ -18,8 +19,8 @@ abstract class TableColumn
         protected bool $optional = false,
         protected bool $visible = true,
         protected bool $html = false,
-        protected \Closure|string|null $link = null,
-        protected ?\Closure $render = null
+        protected Closure|string|null $link = null,
+        protected ?Closure $render = null
     ) {
     }
 
@@ -48,7 +49,7 @@ abstract class TableColumn
         return $this;
     }
 
-    public function title(string $title): self
+    public function title(?string $title): self
     {
         $this->title = $title;
         return $this;
@@ -84,7 +85,7 @@ abstract class TableColumn
         return $this;
     }
 
-    public function linkCell(\Closure|string $link): self
+    public function linkCell(Closure|string $link): self
     {
         $this->link = $link;
         return $this;
@@ -99,7 +100,7 @@ abstract class TableColumn
         return  $this->sortKey;
     }
 
-    public function customRender(\Closure $renderFunction): self
+    public function customRender(Closure $renderFunction): self
     {
         $this->render = $renderFunction;
         return $this;
@@ -114,7 +115,7 @@ abstract class TableColumn
         }
 
         return [
-            'name' => $this->key,
+            'name' => $this->getKey(),
             'label' => $this->title,
             'visible' => $visible,
             'optional' => $this->optional,
@@ -126,7 +127,7 @@ abstract class TableColumn
     public function renderCell(Model $model): string
     {
         if ($link = $this->link) {
-            if ($link instanceof \Closure) {
+            if ($link instanceof Closure) {
                 $link = $link($model);
             }
             // Link via the closure can be null so we recheck it and only then use it.
@@ -146,7 +147,7 @@ abstract class TableColumn
             return $renderFunction($model);
         }
 
-        return $model->{$this->field};
+        return $model->{$this->field} ?? '';
     }
 
 }

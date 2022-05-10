@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Services\Listings\Columns;
 
-use A17\Twill\Models\Model;
 use A17\Twill\Services\Listings\TableColumn;
+use Illuminate\Database\Eloquent\Model;
 
 /**
  * This is an empty one as it is rendered on the vue end.

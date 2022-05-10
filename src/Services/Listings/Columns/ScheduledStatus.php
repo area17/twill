@@ -2,9 +2,9 @@
 
 namespace A17\Twill\Services\Listings\Columns;
 
-use A17\Twill\Models\Model;
 use A17\Twill\Services\Listings\TableColumn;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 
 class ScheduledStatus extends TableColumn
 {

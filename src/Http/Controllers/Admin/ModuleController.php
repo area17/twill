@@ -273,7 +273,7 @@ abstract class ModuleController extends Controller
     /**
      * @deprecated please use the getBrowserTableColumns method. Will be removed in Twill 4.0
      */
-    protected ?array $browserColumns;
+    protected ?array $browserColumns = null;
 
     /**
      * @var string
@@ -450,7 +450,7 @@ abstract class ModuleController extends Controller
 
     private function handleLegacyColumns(TableColumns $columns, array $items): void
     {
-        foreach ($items as $indexColumn) {
+        foreach ($items as $key => $indexColumn) {
             if ($indexColumn['nested'] ?? false) {
                 $columns->add(
                     NestedData::make()
@@ -474,7 +474,7 @@ abstract class ModuleController extends Controller
                 $columns->add(
                     Browser::make()
                         ->title($indexColumn['title'])
-                        ->field($indexColumn['field'])
+                        ->field($indexColumn['field'] ?? $key)
                         ->sortKey($indexColumn['sortKey'] ?? null)
                         ->optional($indexColumn['optional'] ?? false)
                         ->browser($indexColumn['relatedBrowser'])
@@ -483,7 +483,7 @@ abstract class ModuleController extends Controller
                 $columns->add(
                     Relation::make()
                         ->title($indexColumn['title'])
-                        ->field($indexColumn['field'])
+                        ->field($indexColumn['field'] ?? $key)
                         ->sortKey($indexColumn['sortKey'] ?? null)
                         ->optional($indexColumn['optional'] ?? false)
                         ->relation($indexColumn['relationship'])
@@ -492,7 +492,7 @@ abstract class ModuleController extends Controller
                 $columns->add(
                     Presenter::make()
                         ->title($indexColumn['title'])
-                        ->field($indexColumn['field'])
+                        ->field($indexColumn['field'] ?? $key)
                         ->sortKey($indexColumn['sortKey'] ?? null)
                         ->optional($indexColumn['optional'] ?? false)
                         ->sortable($indexColumn['sort'] ?? false)
@@ -501,7 +501,7 @@ abstract class ModuleController extends Controller
                 $columns->add(
                     Text::make()
                         ->title($indexColumn['title'] ?? null)
-                        ->field($indexColumn['field'])
+                        ->field($indexColumn['field'] ?? $key)
                         ->sortKey($indexColumn['sortKey'] ?? null)
                         ->optional($indexColumn['optional'] ?? false)
                         ->sortable($indexColumn['sort'] ?? false)
@@ -1331,7 +1331,7 @@ abstract class ModuleController extends Controller
     {
         $translated = $this->moduleHas('translations');
 
-        return $items->map(function (Model $item) use ($translated) {
+        return $items->map(function (\Illuminate\Database\Eloquent\Model $item) use ($translated) {
             $columnsData = $this->getTableColumns('index')->getArrayForModel($item);
 
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
@@ -1519,10 +1519,7 @@ abstract class ModuleController extends Controller
         return array_replace_recursive(['data' => $data], $this->indexData($this->request));
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Collection $items
-     */
-    protected function getBrowserTableData(Collection $items): array
+    protected function getBrowserTableData(Collection|LengthAwarePaginator $items): array
     {
         return $items->map(function (Model $item) {
             return $this->getTableColumns('browser')->getArrayForModelBrowser(
@@ -1540,10 +1537,9 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param array $scopes
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    protected function getBrowserItems($scopes = [])
+    protected function getBrowserItems(array $scopes = [])
     {
         return $this->getIndexItems($scopes, true);
     }

@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Services\Listings\Columns;
 
-use A17\Twill\Models\Model;
 use A17\Twill\Services\Listings\TableColumn;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class NestedData extends TableColumn

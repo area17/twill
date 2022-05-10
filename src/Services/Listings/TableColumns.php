@@ -3,6 +3,7 @@
 namespace A17\Twill\Services\Listings;
 
 use A17\Twill\Models\Model;
+use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -31,7 +32,7 @@ class TableColumns extends Collection
         return $data;
     }
 
-    public function getArrayForModel(Model $model): array
+    public function getArrayForModel(BaseModel $model): array
     {
         $data = [];
 

@@ -3,12 +3,22 @@
 namespace A17\Twill\Services\Listings\Columns;
 
 use A17\Twill\Exceptions\ColumnMissingPropertyException;
-use A17\Twill\Models\Model;
 use A17\Twill\Services\Listings\TableColumn;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Relation extends TableColumn
 {
     private ?string $relation = null;
+
+    public function getKey(): string
+    {
+        if ($this->key === null) {
+            throw new ColumnMissingPropertyException();
+        }
+        return $this->relation . Str::studly($this->field);
+    }
+
 
     public function relation(string $relation): self
     {
@@ -22,8 +32,9 @@ class Relation extends TableColumn
             throw new ColumnMissingPropertyException('Relation column missing relation value: ' . $this->field);
         }
 
-        /** @var \Illuminate\Database\Eloquent\Builder $relation */
-        $relation = $model->{$this->relation}();
+        // @todo: I feel this can be optimized.
+        /** @var \Illuminate\Database\Eloquent\Collection $relation */
+        $relation = $model->{$this->relation}()->get();
 
         return $relation->pluck($this->field)->join(', ');
     }

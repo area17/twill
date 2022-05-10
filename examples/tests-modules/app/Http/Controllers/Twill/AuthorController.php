@@ -30,7 +30,6 @@ class AuthorController extends ModuleController
     protected ?array $indexColumns = [
         'avatar' => [
             'thumb' => true,
-
             'variant' => [
                 'role' => 'featured',
                 'crop' => 'default',
