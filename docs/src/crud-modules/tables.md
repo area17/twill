@@ -6,7 +6,8 @@ pageClass: twill-doc
 
 In Twill you can customize the module tables and browser tables to your own need.
 
-To modify the table you start by overwriting the `getIndexTableColumns(): TableColumns` method.
+To modify the table you start by overwriting the `getIndexTableColumns(): TableColumns` method or
+the `getBrowserTableColumns(): TableColumns` method for browser lists.
 
 You can manage this in 2 ways, but the easiest is to self define the columns without
 calling `parent::getIndexTableColumns`.
