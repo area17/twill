@@ -91,6 +91,12 @@ module.exports = [
           {
             "title": "Controllers",
             "path": "/crud-modules/controllers.html",
+            "children": [
+              {
+                "title": "Tables",
+                "path": "/crud-modules/tables.html",
+              },
+            ]
           },
           {
             "title": "Form Requests",

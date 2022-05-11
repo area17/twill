@@ -374,13 +374,35 @@ abstract class ModuleController extends Controller
 
     protected function getBrowserTableColumns(): TableColumns
     {
-        return $this->getIndexTableColumns(true);
+        $columns = TableColumns::make();
+
+        if ($this->browserColumns) {
+            $this->handleLegacyColumns($columns, $this->browserColumns);
+        } else {
+            if ($this->moduleHas('medias')) {
+                $columns->add(
+                    Image::make()
+                        ->field('thumbnail')
+                        ->rounded()
+                        ->title(__('Image'))
+                );
+            }
+
+            $columns->add(
+                Text::make()
+                    ->field($this->titleColumnKey)
+                    ->linkCell(function (Model $model) {
+                        if ($this->getIndexOption('edit', $model)) {
+                            return $this->getModuleRoute($model->id, 'edit');
+                        }
+                    })
+            );
+        }
+
+        return $columns;
     }
 
-    /**
-     * $forBrowser is here for backwards compatability.
-     */
-    protected function getIndexTableColumns(bool $forBrowser = false): TableColumns
+    protected function getIndexTableColumns(): TableColumns
     {
         $columns = TableColumns::make();
 
@@ -394,22 +416,18 @@ abstract class ModuleController extends Controller
         }
 
         // Consume Deprecated data.
-        if ($forBrowser && $this->browserColumns) {
-            $this->handleLegacyColumns($columns, $this->browserColumns);
+        if ($this->indexColumns) {
+            $this->handleLegacyColumns($columns, $this->indexColumns);
         } else {
-            if ($this->indexColumns) {
-                $this->handleLegacyColumns($columns, $this->indexColumns);
-            } else {
-                $columns->add(
-                    Text::make()
-                        ->field($this->titleColumnKey)
-                        ->linkCell(function (Model $model) {
-                            if ($this->getIndexOption('edit', $model)) {
-                                return $this->getModuleRoute($model->id, 'edit');
-                            }
-                        })
-                );
-            }
+            $columns->add(
+                Text::make()
+                    ->field($this->titleColumnKey)
+                    ->linkCell(function (Model $model) {
+                        if ($this->getIndexOption('edit', $model)) {
+                            return $this->getModuleRoute($model->id, 'edit');
+                        }
+                    })
+            );
         }
 
         // Add default columns.
