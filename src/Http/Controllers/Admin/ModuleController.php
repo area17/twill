@@ -2081,7 +2081,7 @@ abstract class ModuleController extends Controller
         return twillTrans(Arr::has($this->labels, $key) ? Arr::get($this->labels, $key) : $key, $replace);
     }
 
-    public function getForm(Model $model): Form {
+    public function getForm(\Illuminate\Database\Eloquent\Model $model): Form {
         return new Form();
     }
 }
