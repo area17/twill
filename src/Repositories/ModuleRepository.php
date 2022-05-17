@@ -366,20 +366,30 @@ abstract class ModuleRepository
             return false;
         }
 
-        if (($revision = $object->revisions()->orderBy('created_at', 'desc')->first()) === null) {
-            return false;
+        // Check if model HasRevisions
+        if(method_exists($object, 'revisions')){
+
+            if (($revision = $object->revisions()->orderBy('created_at', 'desc')->first()) === null) {
+                return false;
+            }
+    
+            $revisionInput = json_decode($revision->payload, true);
+            $baseInput = collect($revisionInput)->only([
+                $titleColumnKey,
+                'slug',
+                'languages',
+            ])->filter()->toArray();
+    
+            $newObject = $this->create($baseInput);
+    
+            $this->update($newObject->id, $revisionInput);
+
+        }else{
+
+            $newObject = $object->replicate();
+            $newObject->created_at = Carbon::now();
+            $newObject->save();
         }
-
-        $revisionInput = json_decode($revision->payload, true);
-        $baseInput = collect($revisionInput)->only([
-            $titleColumnKey,
-            'slug',
-            'languages',
-        ])->filter()->toArray();
-
-        $newObject = $this->create($baseInput);
-
-        $this->update($newObject->id, $revisionInput);
 
         return $newObject;
     }
