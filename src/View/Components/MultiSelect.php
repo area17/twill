@@ -19,17 +19,18 @@ class MultiSelect extends FieldWithOptions
         bool $readOnly = false,
         bool $inModal = false,
         // FieldWithOptions
-        mixed $options = null,
+        mixed $options = [],
         bool $unpack = false,
         int $columns = 0,
         bool $searchable = false,
-        string $placeholder = '',
+        ?string $placeholder = null,
         bool $addNew = false,
         ?string $moduleName = null,
         ?string $storeUrl = null,
         // Component specific
         public ?int $min = null,
         public ?int $max = null,
+        public ?string $endpoint = null,
     ) {
         parent::__construct(
             name: $name,

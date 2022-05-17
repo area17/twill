@@ -21,7 +21,7 @@ abstract class TwillFormComponent extends Component
     public function __construct(
         public string $name,
         public string $label,
-        public string $note = '',
+        public ?string $note = '',
         public bool $inModal = false,
         public bool $readOnly = false,
         public bool $renderForBlocks = false,

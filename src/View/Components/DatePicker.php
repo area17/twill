@@ -22,7 +22,7 @@ class DatePicker extends TwillFormComponent
         public bool $withTime = true,
         public bool $allowInput = false,
         public bool $allowClear = false,
-        public string $placeholder = '',
+        public ?string $placeholder = null,
         public bool $timeOnly = false,
         public bool $time24Hr = false,
         public ?string $altFormat = null,

@@ -20,7 +20,7 @@ class Wysiwyg extends TwillFormComponent
         bool $inModal = false,
         // Component specific
         public bool $hideCounter = false,
-        public string $placeholder = '',
+        public ?string $placeholder = null,
         public bool $editSource = false,
         public ?array $toolbarOptions = null,
         public ?int $maxlength = null,

@@ -20,7 +20,7 @@ class Input extends TwillFormComponent
         bool $inModal = false,
         // Component specific
         public string $type = 'text',
-        public string $placeholder = '',
+        public ?string $placeholder = '',
         public ?int $maxlength = null,
         public ?int $rows = null,
         public ?string $ref = null,

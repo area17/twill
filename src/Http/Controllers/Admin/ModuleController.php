@@ -8,7 +8,9 @@ use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Helpers\FlashLevel;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Group;
+use A17\Twill\Models\Model;
 use A17\Twill\Services\Blocks\Block;
+use A17\Twill\Services\Forms\Form;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -558,7 +560,7 @@ abstract class ModuleController extends Controller
         });
 
         View::share('form', $this->form($id));
-        return View::make($view, $this->form($id))->with('renderFields', $this->getForm());
+        return View::make($view, $this->form($id))->with('renderFields', $this->getForm($this->repository->getById($id)));
     }
 
     /**
@@ -2079,7 +2081,7 @@ abstract class ModuleController extends Controller
         return twillTrans(Arr::has($this->labels, $key) ? Arr::get($this->labels, $key) : $key, $replace);
     }
 
-    public function getForm(): array {
-        return [];
+    public function getForm(Model $model): Form {
+        return new Form();
     }
 }
