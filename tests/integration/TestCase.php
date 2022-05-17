@@ -2,12 +2,14 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use _PHPStan_61858e129\Nette\DI\Definitions\Reference;
 use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
 use Carbon\Carbon;
+use Composer\Autoload\ClassLoader;
 use Faker\Factory as Faker;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Filesystem\Filesystem;
@@ -133,6 +135,11 @@ abstract class TestCase extends OrchestraTestCase
         $this->copyTestFiles();
 
         $this->installTwill();
+
+        // Add database seeders to autoload as it is not in the orchestra base composer.
+        foreach (File::allFiles(base_path("/database/seeders")) as $file) {
+            include_once $file->getPathname();
+        }
     }
 
     /**
