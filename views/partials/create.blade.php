@@ -1,5 +1,8 @@
+@php
+    $titleFormKey = $titleFormKey ?? 'title';
+@endphp
 <x-twill::input
-    :name="$titleFormKey ?? 'title'"
+    :name="$titleFormKey"
     :label="$titleFormKey === 'title' ? twillTrans('twill::lang.modal.title-field') : ucfirst($titleFormKey)"
     :translated="$translateTitle ?? false"
     :required="true"
