@@ -15,7 +15,7 @@ class SingletonModuleTest extends TestCase
         $this->login();
     }
 
-    public function createContactPage()
+    public function createContactPage(): void
     {
         app(ContactPageRepository::class)->create([
             'title' => [
@@ -28,13 +28,6 @@ class SingletonModuleTest extends TestCase
             ],
             'published' => true,
         ]);
-    }
-
-    // FIXME — this is needed for the new admin routes to take effect in the next test,
-    // because files are copied in `setUp()` after the app is initialized.
-    public function testDummy()
-    {
-        $this->assertTrue(true);
     }
 
     public function testSingletonNavigationItem()
@@ -57,13 +50,11 @@ class SingletonModuleTest extends TestCase
         $this->assertSee('This is the ContactPage form');
     }
 
-/** @todo: I cannot make testbench autoload the migration. */
-/*     public function testSingletonRouteAutoSeeds() */
-/*     { */
-/*         $this->httpRequestAssert('/twill/contactPage', 'GET', [], 200); */
-/*  */
-/*         $this->assertDontSee("ContactPage is not seeded"); */
-/*     } */
+    public function testSingletonRouteAutoSeeds()
+    {
+        $this->httpRequestAssert('/twill/contactPage', 'GET', [], 200);
+        $this->assertDontSee("ContactPage is not seeded");
+    }
 
     public function testSingletonRouteRequiresOneRecordIfNotAutoSeeded()
     {
@@ -86,7 +77,7 @@ class SingletonModuleTest extends TestCase
     {
         $this->createContactPage();
 
-        $this->httpRequestAssert('/twill/contactPages/1/edit', 'GET');
+        $this->httpRequestAssert('/twill/contactPage', 'GET');
 
         $this->assertSee('This is the ContactPage form');
     }
