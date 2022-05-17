@@ -25,7 +25,7 @@
     $connectedBrowserField = $connectedBrowserField ?? false;
 @endphp
 
-<a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}" note="{{ $fieldNote }}">
+<a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}" note="{{ $fieldNote }}" @if($renderForBlocks) :fixed-error-key="$parent.blockFieldName('{{$name}}')" @endif>
     <a17-browserfield
         @include('twill::partials.form.utils._field_name')
         item-label="{{ $itemLabel }}"

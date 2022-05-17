@@ -27,7 +27,7 @@
             widthMin: {{ $widthMin }},
             heightMin: {{ $heightMin }},
             note: '{{ $fieldNote }}',
-            @if($renderForBlocks) :fixed-error-key: '$parent.blockFieldName('{{$name}}')' @endif
+            @if($renderForBlocks) fixedErrorKey: $parent.blockFieldName('{{$name}}'), @endif
             @if ($disabled) disabled: true, @endif
             @if ($extraMetadatas) extraMetadatas: {{ json_encode($extraMetadatas) }}, @endif
             @if ($altTextMaxLength) :altTextMaxLength: {{ $altTextMaxLength }}, @endif
