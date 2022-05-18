@@ -12,4 +12,9 @@ class ColorFieldTest extends ComponentTestBase
         'label' => 'label',
     ];
     public string $expectedView = 'twill::partials.form._color';
+
+    public string $field = \A17\Twill\Services\Forms\Fields\Color::class;
+    public array $fieldSetters = [
+        'name' => 'name',
+    ];
 }

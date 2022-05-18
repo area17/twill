@@ -50,27 +50,32 @@ class Browser extends TwillFormComponent
             default: $default
         );
 
-        $endpointsFromModules = isset($this->modules) ? collect($this->modules)->map(function ($module) {
-            return [
-                'label' => $module['label'] ?? ucfirst($module['name']),
-                'value' => moduleRoute(
-                    $module['name'],
-                    $module['routePrefix'] ?? null,
-                    'browser',
-                    $module['params'] ?? [],
-                    false
-                ),
-            ];
-        })->toArray() : null;
+        if (!$this->endpoints) {
+            $endpointsFromModules = isset($this->modules) ? collect($this->modules)->map(function ($module) {
+                return [
+                    'label' => $module['label'] ?? ucfirst($module['name']),
+                    'value' => moduleRoute(
+                        $module['name'],
+                        $module['routePrefix'] ?? null,
+                        'browser',
+                        $module['params'] ?? [],
+                        false
+                    ),
+                ];
+            })->toArray() : null;
+        }
 
         $this->endpoints = $this->endpoints ?? $endpointsFromModules ?? [];
-        $this->endpoint = $this->endpoint ?? (!empty($endpoints) ? null : moduleRoute(
-                $this->moduleName,
-                $this->routePrefix,
-                'browser',
-                $this->params,
-                false
-            ));
+
+        if (empty($this->endpoints)) {
+            $this->endpoint = $this->endpoint ?? (!empty($endpoints) ? null : moduleRoute(
+                    $this->moduleName,
+                    $this->routePrefix,
+                    'browser',
+                    $this->params,
+                    false
+                ));
+        }
 
         $this->itemLabel = $this->itemLabel ?? strtolower($this->label);
 

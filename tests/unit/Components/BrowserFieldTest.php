@@ -17,5 +17,15 @@ class BrowserFieldTest extends ComponentTestBase
             ],
         ],
     ];
+    public string $field = \A17\Twill\Services\Forms\Fields\Browser::class;
+    public array $fieldSetters = [
+        'name' => 'browser_name',
+        'endpoints' => [
+            [
+                'label' => 'Demo',
+                'value' => '/bar/foo',
+            ],
+        ],
+    ];
     public string $expectedView = 'twill::partials.form._browser';
 }

@@ -11,4 +11,8 @@ class RepeaterFieldTest extends ComponentTestBase
         'type' => 'type',
     ];
     public string $expectedView = 'twill::partials.form._repeater';
+    public string $field = \A17\Twill\Services\Forms\Fields\Repeater::class;
+    public array $fieldSetters = [
+        'type' => 'some_type',
+    ];
 }

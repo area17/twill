@@ -19,7 +19,7 @@ class MultiSelect extends FieldWithOptions
         bool $readOnly = false,
         bool $inModal = false,
         // FieldWithOptions
-        mixed $options = [],
+        mixed $options = null,
         bool $unpack = false,
         int $columns = 0,
         bool $searchable = false,

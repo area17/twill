@@ -12,4 +12,9 @@ class MapFieldTest extends ComponentTestBase
         'label' => 'label',
     ];
     public string $expectedView = 'twill::partials.form._map';
+
+    public string $field = \A17\Twill\Services\Forms\Fields\Map::class;
+    public array $fieldSetters = [
+        'name' => 'name',
+    ];
 }

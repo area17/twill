@@ -12,4 +12,9 @@ class MediasFieldTest extends ComponentTestBase
         'label' => 'label',
     ];
     public string $expectedView = 'twill::partials.form._medias';
+
+    public string $field = \A17\Twill\Services\Forms\Fields\Medias::class;
+    public array $fieldSetters = [
+        'name' => 'name',
+    ];
 }

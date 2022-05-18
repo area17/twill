@@ -12,4 +12,5 @@ class TimePickerFieldTest extends ComponentTestBase
         'label' => 'label',
     ];
     public string $expectedView = 'twill::partials.form._date_picker';
+    public bool $noFieldTest = true;
 }

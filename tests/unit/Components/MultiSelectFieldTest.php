@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Tests\Unit\Components;
 
+use A17\Twill\Services\Forms\Option;
+use A17\Twill\Services\Forms\Options;
 use A17\Twill\View\Components\MultiSelect;
 
 class MultiSelectFieldTest extends ComponentWithOptionsTestBase
@@ -17,6 +19,18 @@ class MultiSelectFieldTest extends ComponentWithOptionsTestBase
             ],
         ],
     ];
-
     public string $expectedView = 'twill::partials.form._multi_select';
+    public string $field = \A17\Twill\Services\Forms\Fields\MultiSelect::class;
+    public array $fieldSetters = [
+        'name' => 'name',
+    ];
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->fieldSetters['options'] = new Options([
+            new Option('key', 'value'),
+        ]);
+    }
 }

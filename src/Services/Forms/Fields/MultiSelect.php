@@ -70,4 +70,9 @@ class MultiSelect extends BaseFormField
 
         return $this;
     }
+
+    protected function getAdditionalConstructorArguments(): array
+    {
+        return ['options' => $this->options ?? []];
+    }
 }
