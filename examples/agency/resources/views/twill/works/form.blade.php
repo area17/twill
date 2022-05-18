@@ -61,9 +61,7 @@
         'label' => 'Autoloop'
     ])
 
-    @formField('block_editor', [
-        'blocks' => ['title', 'quote', 'text', 'image', 'grid', 'test', 'publications', 'news']
-    ])
+    @formField('block_editor')
 @stop
 
 @section('fieldsets')

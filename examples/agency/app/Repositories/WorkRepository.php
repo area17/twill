@@ -76,4 +76,11 @@ class WorkRepository extends ModuleRepository
 
         return $query->paginate($perPage);
     }
+
+    public function hydrate($object, $fields)
+    {
+        $this->hydrateMultiSelect($object, $fields, 'disciplines');
+        $this->hydrateMultiSelect($object, $fields, 'sectors');
+        return parent::hydrate($object, $fields);
+    }
 }

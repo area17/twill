@@ -32,7 +32,7 @@ class OfficeController extends BaseModuleController
                 'crop' => 'default'
             ]
         ],
-        'full_name' => [
+        'title' => [
             'title' => 'Title',
             'field' => 'title',
             'sort' => true

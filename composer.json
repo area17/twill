@@ -26,6 +26,7 @@
     "php": "^8.0",
     "ext-json": "*",
     "ext-pdo": "*",
+    "area17/twill-image": "1.x-dev",
     "astrotomic/laravel-translatable": "^11.5",
     "cartalyst/tags": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
     "doctrine/dbal": "^2.12|^3.0",

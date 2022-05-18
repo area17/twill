@@ -35,7 +35,7 @@ class PersonVideo extends Model implements Sortable
             'default' => [
                 [
                     'name' => 'default',
-                    'ratio' => 16 / 9,
+                    'ratio' => 4 / 3,
                 ],
             ],
             'mobile' => [

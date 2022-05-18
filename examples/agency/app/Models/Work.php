@@ -97,6 +97,14 @@ class Work extends Model implements Sortable
                 ],
             ],
         ],
+        'image' => [
+            'desktop' => [
+                [
+                    'name' => 'desktop',
+                    'ratio' => 1,
+                ],
+            ],
+        ]
     ];
 
     public $filesParams = ['video'];

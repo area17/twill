@@ -33,4 +33,13 @@ class PersonRepository extends ModuleRepository
         $fields['browsers']['works'] = $this->getFormFieldsForBrowser($object, 'works', 'work');
         return $fields;
     }
+
+    public function hydrate($object, $fields)
+    {
+        $this->hydrateRepeater($object, $fields, 'videos', 'PersonVideo', 'video');
+
+        $this->hydrateBrowser($object, $fields, 'works');
+
+        return parent::hydrate($object, $fields);
+    }
 }
