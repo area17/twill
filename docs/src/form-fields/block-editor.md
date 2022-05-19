@@ -6,20 +6,29 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/blockeditor.png)
 
+Form views:
+```html
+<x-twill::block-editor />
+
+@php
+    $blocks = [
+        'title',
+        'quote',
+        'text'
+    ];
+@endphp
+
+<x-twill::block-editor
+    :blocks="$blocks"
+/>
+```
+
+From builder:
 ```php
-    <x-twill::block-editor />
-    
-    @php
-        $blocks = [
-            'title',
-            'quote',
-            'text'
-        ];
-    @endphp
-    
-    <x-twill::block-editor
-        :blocks="$blocks"
-    />
+BlockEditor::make()
+
+BlockEditor::make()
+    ->blocks(['title', 'quote', 'text'])
 ```
 
 ::: details Old method

@@ -6,7 +6,7 @@ trait hasMin
 {
     protected ?int $min = null;
 
-    public function min(int $min = 1): self
+    public function min(int $min): self
     {
         $this->min = $min;
 

@@ -6,11 +6,18 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/color.png)
 
-```php
+Form view:
+```html
 <x-twill::color
     name="main_color"
     label="Main color"
 />
+```
+
+Form builder:
+```php
+Color::make()
+    ->name('featured')
 ```
 
 ::: details Old method

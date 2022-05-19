@@ -97,6 +97,10 @@ module.exports = [
             "path": "/crud-modules/form-requests.html",
           },
           {
+            "title": "Form Builder",
+            "path": "/crud-modules/form-builder.html",
+          },
+          {
             "title": "Routes",
             "path": "/crud-modules/routes.html",
           },

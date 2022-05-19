@@ -6,7 +6,8 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/wysiwyg.png)
 
-```php
+Form view:
+```html
 <x-twill::wysiwyg 
     name="case_study" 
     :label="__('Case study text')"
@@ -26,6 +27,15 @@ pageClass: twill-doc
     :maxlength="200" 
     :note="__('Help text')"
 />
+```
+
+Form builder:
+```php
+Wysiwyg::make()
+    ->name('case_study')
+    ->toolbarOptions(['list-ordered', 'list-unordered'])
+    ->maxLength(200)
+    ->note('Some note')
 ```
 
 ::: details Old method

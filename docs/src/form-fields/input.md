@@ -7,6 +7,7 @@ pageClass: twill-doc
 ![screenshot](/docs/_media/input.png)
 
 
+Form views:
 ```html
 <x-twill::input 
     name="subtitle"
@@ -26,6 +27,18 @@ pageClass: twill-doc
     :rows="3"
     :translated="true"
 />
+```
+
+Form builder:
+```php
+Input::make()
+    ->name('subtitle')
+    ->label(__('Subtitle'))
+    ->maxLength(100)
+    ->required()
+    ->note(__('Field note'))
+    ->translatable()
+    ->placeholder(__('Placeholder'))
 ```
 
 ::: details Old method

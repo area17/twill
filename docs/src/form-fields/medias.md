@@ -6,7 +6,8 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/medias.png)
 
-```php 
+Form view:
+```html 
 <x-twill::medias 
     name="cover" 
     label="Cover image"
@@ -21,6 +22,14 @@ pageClass: twill-doc
     :max="5"
     field-note="Minimum image width: 1500px"
 />
+```
+
+Form builder:
+```php
+Medias::make()
+    ->name('cover')
+    ->label(__('Cover image'))
+    ->max(5)
 ```
 
 ::: details Old method

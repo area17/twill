@@ -6,7 +6,8 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/radios.png)
 
-```php
+Form view:
+```html
 @php
     $options = [
         [
@@ -31,6 +32,20 @@ pageClass: twill-doc
     :inline="true"
     :options="$options"
 />
+```
+
+Form builder:
+```php
+Radios::make()
+    ->name('sectors')
+    ->inline()
+    ->border()
+    ->options(
+        Options::make([
+            Option::make('key', 'value'),
+            ...
+        ])
+    );
 ```
 
 ::: details Old method

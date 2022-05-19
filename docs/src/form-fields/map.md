@@ -6,12 +6,20 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/map.png)
 
-```php
+Form view:
+```html
 <x-twill::map
     name="location"
     label="Location"
     :show-map="true"
 />
+```
+
+Form builder:
+```php
+Map::make()
+    ->name('location')
+    ->openMap()
 ```
 
 ::: details Old method

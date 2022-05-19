@@ -6,7 +6,8 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/multiselectinline.png)
 
-```php
+Form view:
+```html
 @php
     $options = [
         [
@@ -39,6 +40,19 @@ pageClass: twill-doc
     :options="$options"
 />
 ```
+
+Form builder:
+```php
+MultiSelect::make()
+    ->inline()
+    ->options(
+        Options::make([
+            Option::make('key', 'value'),
+            ...
+        ])
+    );
+```
+
 
 ::: details Old method
 ```php

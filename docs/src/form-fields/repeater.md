@@ -6,10 +6,17 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/repeater.png)
 
-```php
+Form view:
+```html
 <x-twill::repeater
     type="video"
 />
+```
+
+Form builder:
+```php
+Repeater::make()
+    ->type('video')
 ```
 
 ::: detail Old method

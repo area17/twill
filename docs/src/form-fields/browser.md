@@ -6,13 +6,22 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/browser.png)
 
-```php
+Form views:
+```html
 <x-twill::browser
     module-name="publications"
     name="publications"
     label="Publications"
     :max="4"
 />
+```
+
+From builder:
+```php
+Browser::make()
+    ->modules([Publications::class])
+    ->name('publications')
+    ->max(4);
 ```
 
 ::: details Old method

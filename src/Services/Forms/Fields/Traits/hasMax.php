@@ -6,7 +6,7 @@ trait hasMax
 {
     protected ?int $max = null;
 
-    public function max(int $max = 1): self
+    public function max(int $max): self
     {
         $this->max = $max;
 

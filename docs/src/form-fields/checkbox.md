@@ -6,11 +6,18 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/checkbox.png)
 
-```php
+Form view:
+```html
 <x-twill::checkbox
     name="featured"
     label="Featured"
 />
+```
+
+Form builder:
+```php
+Checkbox::make()
+    ->name('featured')
 ```
 
 ::: details Old method

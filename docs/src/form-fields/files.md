@@ -6,7 +6,8 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/files.png)
 
-```php
+Form view:
+```html
 <x-twill::files 
     name="single_file" 
     label="Single file"
@@ -18,6 +19,14 @@ pageClass: twill-doc
     label="files" 
     :max="4" 
 />
+```
+
+Form builder:
+```php
+Files::make()
+    ->name('single_file')
+    ->label(__('Single file'))
+    ->note('Add one file (per language)');
 ```
 
 ::: details Old method

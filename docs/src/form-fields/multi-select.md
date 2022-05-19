@@ -6,7 +6,8 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/multiselectunpacked.png)
 
-```php
+Form view:
+```html
 @php
     $options = [
         [
@@ -39,6 +40,19 @@ pageClass: twill-doc
     :max="1"
     :options="$options"
 />
+```
+
+Form builder:
+```php
+MultiSelect::make()
+    ->min(1)
+    ->max(1)
+    ->options(
+        Options::make([
+            Option::make('key', 'value'),
+            ...
+        ])
+    );
 ```
 
 ::: details Old method

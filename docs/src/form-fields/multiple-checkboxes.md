@@ -6,7 +6,8 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/checkboxes.png)
 
-```php
+Form view:
+```html
 @php
     $options = [
         [
@@ -33,6 +34,18 @@ pageClass: twill-doc
     :inline="true"
     :options="$options"
 />
+```
+
+Form builder:
+```php
+Checkboxes::make()
+    ->name('sectors')
+    ->options(
+        Options::make([
+            Option::make('key', 'value'),
+            ...
+        ])
+    );
 ```
 
 ::: details Old method

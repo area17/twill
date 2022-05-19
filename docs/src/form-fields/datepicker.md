@@ -6,13 +6,20 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/datepicker.png)
 
-```php
+Form view:
+```html
 <x-twill::date-picker 
     name="event_date" 
     label="Event date"
     :minDate="\Carbon\Carbon::now()->format('Y-m-d H:i)"
     maxDate="2030-01-01 12:00"
 />
+```
+
+Form builder:
+```php
+DatePicker::make()
+    ->name('event_date')
 ```
 
 ::: details Old method

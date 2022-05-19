@@ -8,7 +8,6 @@ use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Helpers\FlashLevel;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Group;
-use A17\Twill\Models\Model;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Forms\Form;
 use Illuminate\Contracts\Foundation\Application;

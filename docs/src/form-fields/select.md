@@ -6,7 +6,8 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/select.png)
 
-```php
+Form view:
+```html
 @php
     $selectOptions = [
         [
@@ -30,6 +31,18 @@ pageClass: twill-doc
     placeholder="Select an office"
     :options="$selectOptions"
 />
+```
+
+Form builder:
+```php
+Select::make()
+    ->name('sectors')
+    ->options(
+        Options::make([
+            Option::make('key', 'value'),
+            ...
+        ])
+    );
 ```
 
 ::: details Old method
