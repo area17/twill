@@ -2,6 +2,14 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.8.3 (2022-05-19)
+
+### Fixes
+
+- Media fields can now be validated in blocks [`#1648`](https://github.com/area17/twill/pull/1648)
+- Internal links in quill are no longer set to target \_blank [`#1649`](https://github.com/area17/twill/pull/1649)
+- Improved restoring support for nested modules [`#1590`](https://github.com/area17/twill/pull/1590)
+
 ## 2.8.2 (2022-05-06)
 
 ### Fixes
