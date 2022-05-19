@@ -2,6 +2,44 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.8.2 (2022-05-06)
+
+### Fixes
+
+- Make site link translatable [`#1617`](https://github.com/area17/twill/pull/1617)
+- Fix SQL error on twill:refresh-crops command [`#1618`](https://github.com/area17/twill/pull/1618)
+- Fix locale if intl extension is missing. [`#1620`](https://github.com/area17/twill/pull/1620)
+- Fix usage of quotes in placeholder [`#1621`](https://github.com/area17/twill/pull/1621)
+- Fix visual issue with long notes on media [`#1612`](https://github.com/area17/twill/pull/1612)
+- Change search to allow less then 3 characters [`#1613`](https://github.com/area17/twill/pull/1613)
+- Add polyfill for doesntContain to ensure Laravel 7 compatability [`#1635`](https://github.com/area17/twill/pull/1635)
+
+## 2.8.1 (2022-04-26)
+
+### Fixes
+
+- Fixes an error when using translated validation rules in Laravel 9 [`#1611`](https://github.com/area17/twill/pull/1611)
+- Avoids a 500 error if glide base url is set to an empty string [`#1603`](https://github.com/area17/twill/pull/1603)
+- Fixes an issue where repeaters and blocks would not expand on create/duplicate [`#1608`](https://github.com/area17/twill/pull/1608)
+
+## 2.8.0 (2022-04-19)
+
+### Added
+
+No new features were added in the final release. Please check rc and beta tags to see a full
+list of new features and fixes.
+
+### Fixed
+
+- Improved language label display [`#1592`](https://github.com/area17/twill/pull/1592)
+- Fixed regression in translatable settings [`#1598`](https://github.com/area17/twill/pull/1598)
+- Fixed capsule database path [`#1583`](https://github.com/area17/twill/pull/1583)
+- Fixed activity log morph size [`#1565`](https://github.com/area17/twill/pull/1565)
+
+### Docs
+
+- Added repeater guide [`#1576`](https://github.com/area17/twill/pull/1576)
+
 ## 2.8.0-rc.2 (2022-04-08)
 
 ### Added
@@ -14,7 +52,7 @@ All notable changes to `twill` will be documented in this file.
 - Changed activity log morph size to bigInt [`#1565`](https://github.com/area17/twill/pull/1565)
 - Fixed leftover array accessor on capsule object [`#1574`](https://github.com/area17/twill/pull/1574)
 - Fixed small visual issue with long labels [`#1566`](https://github.com/area17/twill/pull/1566)
-- Fixed MorphMany saving [`#1460`](https://github.com/area17/twill/pull/1460) 
+- Fixed MorphMany saving [`#1460`](https://github.com/area17/twill/pull/1460)
 
 ### Docs
 

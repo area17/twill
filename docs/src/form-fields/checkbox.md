@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Checkbox
 
-![screenshot](/docs/_media/checkbox.png)
+![screenshot](../.vuepress/public/_media/checkbox.png)
 
 ```php
 @formField('checkbox', [

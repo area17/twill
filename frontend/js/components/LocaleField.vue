@@ -4,7 +4,7 @@
       <div class="locale__item" v-for="language in languages" :key="language.value">
         <component
             v-bind:is="`${type}`"
-            v-if="language === currentLocale"
+            v-if="language === currentLocale || isCustomForm"
             :data-lang="language.value"
             v-bind="attributesPerLang(language.value)"
             :name="`${attributes.name}[${language.value}]`"
@@ -70,6 +70,14 @@
         currentLocale: state => state.language.active,
         languages: state => state.language.all
       })
+    },
+    data () {
+      return {
+        isCustomForm: false
+      }
+    },
+    mounted () {
+      this.isCustomForm = this.$root.$refs.customForm !== undefined
     },
     methods: {
       attributesPerLang: function (lang) {

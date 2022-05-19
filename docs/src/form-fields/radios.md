@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Radios
 
-![screenshot](/docs/_media/radios.png)
+![screenshot](../.vuepress/public/_media/radios.png)
 
 ```php
 @formField('radios', [
