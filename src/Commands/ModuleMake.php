@@ -876,6 +876,7 @@ class ModuleMake extends Command
             'hasPosition' => 'Do you need to manage the position of records on this module?',
             'hasRevisions' => 'Do you need to enable revisions on this module?',
             'hasNesting' => 'Do you need to enable nesting on this module?',
+            'generatePreview' => 'Do you want this command to generate a dummy preview file?',
         ];
 
         $defaultAnswers = [
