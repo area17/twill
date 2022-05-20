@@ -2,12 +2,13 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\Models\Media;
 use Carbon\Carbon;
 use Illuminate\Database\DatabaseManager;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use A17\Twill\Models\Media;
 
 class RefreshCrops extends Command
 {
@@ -17,7 +18,7 @@ class RefreshCrops extends Command
      * @var string
      */
     protected $signature = 'twill:refresh-crops
-        {modelName : The fully qualified model name (e.g. App\Models\Post)}
+        {modelName : The fully qualified model name (e.g. App\Models\Post, A17\Twill\Models\Block)}
         {roleName : The role name for which crops will be refreshed}
         {--dry : Print the operations that would be performed without modifying the database}
     ';
@@ -27,7 +28,7 @@ class RefreshCrops extends Command
      *
      * @var string
      */
-    protected $description = 'Refresh all crops for an existing image role';
+    protected $description = 'Refresh all crops for an existing image role. It may be crops defined in the Model or in config/twill.php';
 
     /**
      * @var DatabaseManager
@@ -107,7 +108,10 @@ class RefreshCrops extends Command
 
         $this->roleName = $this->argument('roleName');
 
-        $mediasParams = app($this->modelName)->mediasParams;
+        $mediasParams = app($this->modelName)->getMediasParams();
+        if (empty($mediasParams)) {
+            $mediasParams = config('twill.block_editor.crops');
+        }
 
         if (! isset($mediasParams[$this->roleName])) {
             $this->error("Role `{$this->roleName}` was not found`");
@@ -117,9 +121,15 @@ class RefreshCrops extends Command
 
         $this->crops = collect($mediasParams[$this->roleName]);
 
+        // If the model exists in the Morphmap, we loop for the morphed name instead.
+        $mediableType = $this->modelName;
+        if ($morphedModelName = array_search($this->modelName, Relation::morphMap())) {
+            $mediableType = $morphedModelName;
+        }
+
         $mediables = $this->db
             ->table(config('twill.mediables_table', 'twill_mediables'))
-            ->where(['mediable_type' => $this->modelName, 'role' => $this->roleName]);
+            ->where(['mediable_type' => $mediableType, 'role' => $this->roleName]);
 
         if ($mediables->count() === 0) {
             $this->warn("No mediables found for model `$this->modelName` and role `$this->roleName`");
@@ -128,8 +138,8 @@ class RefreshCrops extends Command
         }
 
         if ($this->isDryRun) {
-            $this->warn("**Dry Run** No changes are being made to the database");
-            $this->warn("");
+            $this->warn('**Dry Run** No changes are being made to the database');
+            $this->warn('');
         }
 
         $this->processMediables($mediables);
@@ -145,13 +155,14 @@ class RefreshCrops extends Command
     protected function printSummary()
     {
         if ($this->cropsCreated + $this->cropsDeleted === 0) {
-            $this->info("");
-            $this->info("No crops to create or delete for this model and role");
+            $this->info('');
+            $this->info('No crops to create or delete for this model and role');
+
             return;
         }
 
-        $this->info("");
-        $this->info("Summary:");
+        $this->info('');
+        $this->info('Summary:');
 
         $actionPrefix = $this->isDryRun ? 'to be ' : '';
 
@@ -212,6 +223,7 @@ class RefreshCrops extends Command
             $cropNames = collect($crops)->join(', ');
             $noun = Str::plural('crop', count($crops));
             $this->info("Create {$noun} `{$cropNames}` for mediable_id=`{$baseItem->mediable_id}` and media_id=`{$baseItem->media_id}`");
+
             return;
         }
 
@@ -252,6 +264,7 @@ class RefreshCrops extends Command
             $cropNames = collect($crops)->join(', ');
             $noun = Str::plural('crop', count($crops));
             $this->info("Delete {$noun} `$cropNames` for mediable_id=`$baseItem->mediable_id` and media_id=`$baseItem->media_id`");
+
             return;
         }
 
@@ -275,7 +288,7 @@ class RefreshCrops extends Command
      */
     protected function locateModel($modelName)
     {
-        $modelName = ltrim($modelName, "\\");
+        $modelName = ltrim($modelName, '\\');
         $modelStudly = Str::studly($modelName);
         $moduleName = Str::plural($modelStudly);
         $namespace = config('twill.namespace', 'App');
@@ -304,7 +317,7 @@ class RefreshCrops extends Command
      */
     protected function getCropParams($mediaId, $ratio)
     {
-        if (!isset($this->mediaCache[$mediaId])) {
+        if (! isset($this->mediaCache[$mediaId])) {
             $this->mediaCache[$mediaId] = Media::find($mediaId);
         }
 

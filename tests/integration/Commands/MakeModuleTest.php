@@ -25,11 +25,11 @@ class MakeModuleTest extends TestCase
         );
 
         $this->assertFileExists(
-            twill_path('Http/Controllers/Admin/PostController.php')
+            twill_path('Http/Controllers/Twill/PostController.php')
         );
 
         $this->assertIsObject(
-            $this->app->make(\App\Http\Controllers\Admin\PostController::class)
+            $this->app->make(\App\Http\Controllers\Twill\PostController::class)
         );
     }
 }

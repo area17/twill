@@ -2,16 +2,14 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Schema;
-use A17\Twill\Services\Routing\HasRoutes;
-use A17\Twill\Services\Capsules\HasCapsules;
+use A17\Twill\Facades\TwillCapsules;
+use A17\Twill\Facades\TwillRoutes;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class CapsulesTest extends TestCase
 {
-    use HasCapsules, HasRoutes;
-
     protected $capsules = [
         'posts',
         'artists',
@@ -25,10 +23,15 @@ class CapsulesTest extends TestCase
     ];
 
     protected $capsuleName;
+
     protected $capsuleNameSingular;
+
     protected $capsuleModel;
+
     protected $capsuleClassName;
+
     protected $capsuleModelName;
+
     protected $manager;
 
     public function setUp(): void
@@ -37,13 +40,11 @@ class CapsulesTest extends TestCase
 
         parent::setUp();
 
-        $this->manager = app('twill.capsules.manager');
-
         $this->login();
 
         app()->setLocale('en');
 
-        $this->makeCapsule($this->capsuleName);
+        $this->makeCapsule();
     }
 
     public function loadConfig($file = null)
@@ -52,7 +53,7 @@ class CapsulesTest extends TestCase
             'twill.dashboard' => [
                 'modules' => [],
                 'analytics' => ['enabled' => false],
-                'search_endpoint' => 'admin.search',
+                'search_endpoint' => 'twill.search',
             ],
         ]);
 
@@ -162,13 +163,13 @@ class CapsulesTest extends TestCase
         $this->assertSee('Language');
     }
 
-    protected function createCapsuleModel($count = 1)
+    protected function createCapsuleModel(int $count = 1)
     {
         $class = $this->capsuleModel;
 
         $this->assertEquals(0, $class::count());
 
-        foreach (range(1, $count) as $c) {
+        for ($i = 0; $i < $count; $i++) {
             $this->request(
                 "/twill/{$this->capsuleName}",
                 'POST',
@@ -180,24 +181,29 @@ class CapsulesTest extends TestCase
 
         $this->assertEquals($count, $class::count());
 
-        $this->assertEquals($firstModel->title, $data['title']['en']);
+        if (isset($data)) {
+            $this->assertEquals($firstModel->title, $data['title']['en']);
+        }
 
         return $firstModel;
     }
 
     protected function getCreateAuthorData(): array
     {
-        $name = $this->name = $this->faker->name;
+        $name = $this->faker->name;
+
+        $nameEn = '[EN] ' . $name;
+        $nameFr = '[FR] ' . $name;
 
         return [
             'title' => [
-                'en' => ($this->name_en = '[EN] ' . $name),
-                'fr' => ($this->name_fr = '[FR] ' . $name),
+                'en' => $nameEn,
+                'fr' => $nameFr,
             ],
 
             'slug' => [
-                'en' => ($this->slug_en = Str::slug($this->name_en)),
-                'fr' => ($this->slug_fr = Str::slug($this->name_fr)),
+                'en' => Str::slug($nameEn),
+                'fr' => Str::slug($nameFr),
             ],
 
             'published' => false,
@@ -243,10 +249,9 @@ class CapsulesTest extends TestCase
         $this->artisan("twill:make:capsule {$this->capsuleName} --all --force")
             ->expectsConfirmation('Do you also want to generate the preview file?', 'no');
 
-        $this->registerCapsuleRoutes(
+        TwillRoutes::registerCapsuleRoutes(
             app(Router::class),
-            $this->getCapsuleByModule($this->capsuleName),
-            $this->manager
+            TwillCapsules::getCapsuleForModule($this->capsuleName)
         );
 
         $this->migrate();
@@ -259,7 +264,7 @@ class CapsulesTest extends TestCase
 
             $class = "Create{$class}Tables";
 
-            if (!collect(get_declared_classes())->contains($class)) {
+            if (! collect(get_declared_classes())->contains($class)) {
                 $this->capsuleName = $capsule;
 
                 break;
@@ -273,5 +278,31 @@ class CapsulesTest extends TestCase
         $this->capsuleModelName = Str::singular($this->capsuleClassName);
 
         $this->capsuleModel = "App\Twill\Capsules\\{$this->capsuleClassName}\\Models\\{$this->capsuleModelName}";
+    }
+
+    public function testCanMakeCapsule()
+    {
+        $this->assertExitCodeIsGood(
+            $this->artisan('twill:make:capsule', [
+                'moduleName' => 'Trucks',
+                '--hasBlocks' => true,
+                '--hasTranslation' => true,
+                '--hasSlug' => true,
+                '--hasMedias' => true,
+                '--hasFiles' => true,
+                '--hasPosition' => true,
+                '--hasRevisions' => true,
+                '--hasNesting' => true,
+            ])
+            ->run()
+        );
+
+        $this->assertFileExists(
+            twill_path('Twill/Capsules/Trucks/Models/Truck.php')
+        );
+
+        $this->assertIsObject(
+            $this->app->make('App\Twill\Capsules\Trucks\Models\Truck')
+        );
     }
 }

@@ -57,7 +57,7 @@ return [
 //                    '/app-dir/vendor/area17/twill/vendor/orchestra/testbench-core/laravel/app/Twill/Capsules/Posts/resources/views',
 //                'view_prefix' => 'Posts.resources.views.admin',
 //                'routes_file' =>
-//                    '/app-dir/vendor/area17/twill/vendor/orchestra/testbench-core/laravel/app/Twill/Capsules/Posts/routes/admin.php',
+//                    '/app-dir/vendor/area17/twill/vendor/orchestra/testbench-core/laravel/app/Twill/Capsules/Posts/routes/twill.php',
 //                'models_dir' =>
 //                    '/app-dir/vendor/area17/twill/vendor/orchestra/testbench-core/laravel/app/Twill/Capsules/Posts/app/Data/Models',
 //                'translation' =>

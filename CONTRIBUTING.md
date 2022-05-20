@@ -28,5 +28,35 @@ Please send coherent history — make sure each individual commit in your pull r
 
 # Coding style
 - PHP: [PSR-2 Coding Standard](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md).
-
 - Javascript: [Standard](https://standardjs.com/), [Vue ESLint Essentials](https://github.com/vuejs/eslint-plugin-vue).
+
+# Editor configuration tips
+
+## Visual Studio Code
+
+To make it easy to setup the correct configs when you are working in twill from a symlinked directory you can use the
+command `php artisan twill:setup-devtools` to copy the configurations to your Laravel installation.
+
+For JavaScript, Vue and SCSS formatting, the [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) extension can do it for you. Install and set it as the default formatter in your `settings.json`.
+
+```
+"editor.formatOnSave": true,
+"editor.defaultFormatter": "esbenp.prettier-vscode",
+```
+
+For PHP auto-formatting on save, you can use the [phpcsfixer](https://marketplace.visualstudio.com/items?itemName=junstyle.php-cs-fixer) extension and add to `settings.json`.
+
+```
+"php-cs-fixer.executablePath": "${workspaceRoot}/vendor/bin/php-cs-fixer",
+"php-cs-fixer.formatHtml": true,
+"php-cs-fixer.onsave": true,
+"[php]": {
+  "editor.defaultFormatter": "junstyle.php-cs-fixer"
+},
+```
+
+For PHP contextual linting, you can use the [phpcs](https://marketplace.visualstudio.com/items?itemName=ikappas.phpcs) extension and then install [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) globally.
+
+```
+composer global require "squizlabs/php_codesniffer=*"
+```

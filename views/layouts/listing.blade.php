@@ -142,8 +142,8 @@
                 ref="editionModal"
                 form-create="{{ $storeUrl }}"
                 v-on:reload="reloadDatas"
-                @if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
-                @if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
+                @if ($publishedLabel ?? false) published-label="{{ $publishedLabel }}" @endif
+                @if ($draftLabel ?? false) draft-label="{{ $draftLabel }}" @endif
             >
                 <a17-langmanager
                     :control-publication="{{ json_encode($controlLanguagesPublication) }}"

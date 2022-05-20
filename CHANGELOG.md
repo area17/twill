@@ -2,6 +2,107 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.8.1 (2022-04-26)
+
+### Fixes
+
+- Fixes an error when using translated validation rules in Laravel 9 [`#1611`](https://github.com/area17/twill/pull/1611)
+- Avoids a 500 error if glide base url is set to an empty string [`#1603`](https://github.com/area17/twill/pull/1603)
+- Fixes an issue where repeaters and blocks would not expand on create/duplicate [`#1608`](https://github.com/area17/twill/pull/1608)
+
+## 2.8.0 (2022-04-19)
+
+### Added 
+
+No new features were added in the final release. Please check rc and beta tags to see a full
+list of new features and fixes.
+
+### Fixed
+
+- Improved language label display [`#1592`](https://github.com/area17/twill/pull/1592)
+- Fixed regression in translatable settings [`#1598`](https://github.com/area17/twill/pull/1598)
+- Fixed capsule database path [`#1583`](https://github.com/area17/twill/pull/1583)
+- Fixed activity log morph size [`#1565`](https://github.com/area17/twill/pull/1565)
+
+### Docs
+
+- Added repeater guide [`#1576`](https://github.com/area17/twill/pull/1576)
+
+## 2.8.0-rc.2 (2022-04-08)
+
+### Added
+
+- Added option to disable repeater sorting [`#1541`](https://github.com/area17/twill/pull/1541)
+- Added support for connectedBrowserField when using browsers [`#1400`](https://github.com/area17/twill/pull/1400)
+
+### Fixed
+
+- Changed activity log morph size to bigInt [`#1565`](https://github.com/area17/twill/pull/1565)
+- Fixed leftover array accessor on capsule object [`#1574`](https://github.com/area17/twill/pull/1574)
+- Fixed small visual issue with long labels [`#1566`](https://github.com/area17/twill/pull/1566)
+- Fixed MorphMany saving [`#1460`](https://github.com/area17/twill/pull/1460) 
+
+### Docs
+
+- Small improvement to the install documentations [`#1569`](https://github.com/area17/twill/pull/1569)
+
+## 2.8.0-rc.1 (2022-04-01)
+
+### Added
+
+- Allows media fields to use wysiwyg [`#1540`](https://github.com/area17/twill/pull/1540)
+
+### Fixed
+
+- Reverted change that throws exception when crops are missing [`#1535`](https://github.com/area17/twill/pull/1535)
+- Fixed issue that would cause undefined index when using octane [`#1549`](https://github.com/area17/twill/pull/1549)
+- Fixed bug in singleton generator when using plural name [`#1551`](https://github.com/area17/twill/pull/1551)
+- Fixed regression for resources in capsules and packages [`#1552`](https://github.com/area17/twill/pull/1552)
+- Fixed Glide url without scheme [`#1545`](https://github.com/area17/twill/pull/1545)
+
+### Docs
+
+- Improved custom page documentation [`#1548`](https://github.com/area17/twill/pull/1548)
+- Improved config documentation [`#1537`](https://github.com/area17/twill/pull/1537)
+- Added documentation on how to use custom icons [`#1538`](https://github.com/area17/twill/pull/1538)
+
+## 2.8.0-beta.2 (2022-03-15)
+
+### Added
+
+- Twill composer packages [`#1446`](https://github.com/area17/twill/pull/1446)
+- Url field type [`#1514`](https://github.com/area17/twill/pull/1514)
+- Browsers are now supported by connected fields [`#1399`](https://github.com/area17/twill/pull/1399)
+
+### Fixed
+
+- Fixed regression with repeaters in updated block system [`#1518`](https://github.com/area17/twill/pull/1518)
+- Fixes visual issue when using limitHeight on a wysiwyg field [`#1509`](https://github.com/area17/twill/pull/1509)
+- When refreshing crops, block crops are now included [`#1517`](https://github.com/area17/twill/pull/1517)
+
+## 2.8.0-beta.1 (2022-03-03)
+
+### Added
+
+- Laravel 9 support [`#1243`](https://github.com/area17/twill/pull/1243)
+- Added Twill block classes to support block render data, validation and more [`#1421`](https://github.com/area17/twill/pull/1421)
+- Repeaters and blocks are now updated instead of recreated [`#1431`](https://github.com/area17/twill/pull/1431)
+- Improved translatable fields validations [`1411`](https://github.com/area17/twill/pull/1411)
+
+
+### Fixed
+
+- Update Refresh Crops command to take in consideration the MorphMap [`#1485`](https://github.com/area17/twill/pull/1485)
+- Get image size from uploaded file instead of stored file [`#1412`](https://github.com/area17/twill/pull/1412)
+- Fix unauthenticated user 500 error when using custom error handler [`#1449`](https://github.com/area17/twill/pull/1449)
+- Fix exception for missing repository in related browser [`#1405`](https://github.com/area17/twill/pull/1405)
+- Do not show changed dialog when content is identical [`#1359`](https://github.com/area17/twill/pull/1359)
+- Improved performance when many fields/languages are used [`#1350`](https://github.com/area17/twill/pull/1350)
+
+### Documentation
+
+- Added more guides [`#1473`](https://github.com/area17/twill/pull/1473)
+
 ## 2.7.0 (2022-02-25)
 
 ### Added
@@ -389,7 +490,7 @@ publication controll in the create modal [`#1468`](https://github.com/area17/twi
 - **Self-contained blocks** (#597) [`1e95b0ac`](https://github.com/area17/twill/commit/1e95b0ac) [`9ae502a4`](https://github.com/area17/twill/commit/9ae502a46ed31f82ebda5426dbff5f56228e2d25) [`948985ef`](https://github.com/area17/twill/commit/948985ef22d70a08287ccdf7583ca802f6182833) [`66fa7c5e`](https://github.com/area17/twill/commit/66fa7c5e16c0ce34f0edc1aab74a52ef0d232401) [`c00759ee`](https://github.com/area17/twill/commit/c00759ee7cad76aea16ec7f04c693ba1cd046b9d)
   - This change allows defining blocks without adding them to the `twill.block_editor` configuration
   - This is backwards compatible with blocks already defined in configuration
-  - Repeaters are now created in a dedicated folder: `views/admin/repeaters` by default, but your existing repeaters in the `views/admin/blocks` file will still work
+  - Repeaters are now created in a dedicated folder: `views/twill/repeaters` by default, but your existing repeaters in the `views/twill/blocks` file will still work
   - Annotations are now supported in blocks and repeaters Blade files:
     - Provide a title with `@twillPropTitle` or `@twillBlockTitle` or `@twillRepeaterTitle`
     - Provide an icon with `@twillPropIcon` or `@twillBlockIcon` or `@twillRepeaterIcon`
@@ -619,7 +720,7 @@ We also namespaced our inline javascript variables to prevent any conflict in th
 
 Finally, to help custom workflows, maintainers and contributors, we made everything configurable:
 - `manifest_file`, which defaults to `twill-manifest.json`
-- `public_directory`, which defaults to `assets/admin`, like in previous versions, and can now be controlled through the `TWILL_ASSETS_DIR` environment variable
+- `public_directory`, which defaults to `assets/twill`, like in previous versions, and can now be controlled through the `TWILL_ASSETS_DIR` environment variable
 - `dev_mode`, which defaults to `false`
 - `dev_mode_url`, which defaults to  [http://localhost:8080](http://localhost:8080/)  and can be controlled through the `TWILL_DEV_MODE_URL` environment variable.
 
@@ -699,6 +800,7 @@ It is now possible to automatically save and retrieve multiple form fields in a 
 [`5564e488`](https://github.com/area17/twill/commit/5564e48801d97e28c350c2250b0b3f36efa54444)/[`#452`](https://github.com/area17/twill/pull/452)/[`657e83cf`](https://github.com/area17/twill/commit/657e83cf7191f44a81a6051c04ff9a9c62cac8e1)/[`#501`](https://github.com/area17/twill/pull/501)/[`b48793af`](https://github.com/area17/twill/commit/b48793af5ea9ef8e3e54761f58402786a54881ba)/[`#541`](https://github.com/area17/twill/pull/541)/[`74926425`](https://github.com/area17/twill/commit/7492642564e65e84646e3d9f930227bdc2400540)/[`6437a073`](https://github.com/area17/twill/commit/6437a0732ff1983196ab716395d18677cab3bc45)/[`84176e44`](https://github.com/area17/twill/commit/84176e448e47d63339bf2ffa3ac9224f3ca5dc42)
 
 #### Azure uploads
+
 A new `endpoint_type` to support Azure storage of all uploads, exactly like when working with S3.
 
 [`#424`](https://github.com/area17/twill/pull/424)/[`2129c084`](https://github.com/area17/twill/commit/2129c084bd5cdf14a0617006d0332090f8f9af9c)/[`#443`](https://github.com/area17/twill/pull/443)/[`d81a5b94`](https://github.com/area17/twill/commit/d81a5b9439661a1c9449f3d25a6bc1946706788a)/[`b7a89f38`](https://github.com/area17/twill/commit/b7a89f3830a25e682a996e25176d10f6ac23059d)/[`4bf2e133`](https://github.com/area17/twill/commit/4bf2e133e9841b12f92f955ab0440fed0769f202)
@@ -776,6 +878,7 @@ You can also provide a custom  `block_single_layout`  per subdomain by creating 
 >
 
 #### Tiptap WYSIWYG
+
 ![tiptap](https://twill.io/docs/changelogs_media/tables.png)
 In order to provide HTML tables support in the WYSIWYG form field, we've integrated the [Tiptap editor](https://tiptap.scrumpy.io/) with Twill. You can use it by using the new `type` option of the `wysiwyg` form field, with the `tiptap` value. You can then enable the `table` button in your `toolbarOptions`.
 

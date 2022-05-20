@@ -10,6 +10,8 @@
     $placeholder = $placeholder ?? false;
     $required = $required ?? false;
     $searchable = $searchable ?? false;
+    $inTable = $inTable ?? false;
+    $inGrid = $inGrid ?? true;
     $disabled = $disabled ?? false;
     $columns = $columns ?? 0;
 
@@ -29,6 +31,8 @@
         @if (isset($default)) selected="{{ $default }}" @endif
         @if ($required) :required="true" @endif
         @if ($inModal) :in-modal="true" @endif
+        @if ($inTable) :in-table="true" :inline="true" @endif
+        @if (!$inGrid) :grid="false" @endif
         @if ($disabled) disabled @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"

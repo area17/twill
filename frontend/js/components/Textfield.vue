@@ -31,6 +31,9 @@
         :autofocus="autofocus"
         :autocomplete="autocomplete"
         :value="value"
+        :min="min"
+        :max="max"
+        :step="step"
         @focus="onFocus"
         @blur="onBlur"
         @input="onInput"
@@ -87,7 +90,25 @@
         @blur="onBlur"
         @input="onInput"
       />
+      <input v-if="type === 'url'"
+        ref="input"
+        type="url"
+        :placeholder="placeholder"
+        :name="name"
+        :id="uniqId"
+        :disabled="disabled"
+        :maxlength="displayedMaxlength"
+        :required="required"
+        :readonly="readonly"
+        :autofocus="autofocus"
+        :autocomplete="autocomplete"
+        :value="value"
+        @focus="onFocus"
+        @blur="onBlur"
+        @input="onInput"
+      />
       <span class="input__limit f--tiny" :class="limitClasses" v-if="hasMaxlength">{{ counter }}</span>
+      <span :class="validityClasses" v-if="type === 'email'"></span>
     </div>
   </a17-inputframe>
 </template>
@@ -120,6 +141,18 @@
       maxlength: {
         type: Number,
         default: 0
+      },
+      min: {
+        type: Number,
+        default: null
+      },
+      max: {
+        type: Number,
+        default: null
+      },
+      step: {
+        type: Number,
+        default: null
       },
       initialValue: {
         default: ''
@@ -155,6 +188,13 @@
         return {
           'input__limit--red': this.counter < (this.maxlength * 0.1)
         }
+      },
+      validityClasses: function () {
+        return [
+          'input__validity',
+          this.isFieldValid === true ? 'input__validity--valid' : '',
+          this.isFieldValid === false ? 'input__validity--error' : ''
+        ]
       }
     },
     data: function () {
@@ -162,6 +202,7 @@
         value: this.initialValue,
         lastSavedValue: this.initialValue,
         focused: false,
+        isFieldValid: null,
         counter: 0
       }
     },
@@ -212,6 +253,7 @@
       _onInputInternal: debounce(function (event) {
         const newValue = event.target.value
         this.updateAndSaveValue(newValue)
+        this.checkFieldValidity(event.target)
 
         this.$emit('change', newValue)
 
@@ -226,6 +268,27 @@
         if (clone) {
           const h = clone.scrollHeight
           this.$refs.input.style.minHeight = `${h + minH}px`
+        }
+      },
+      checkFieldValidity: function (el) {
+        // Switch based on the type of the field.
+        let pattern = null
+        let re = null
+
+        switch (el.type) {
+          case 'email':
+            // If user didn't type any character, return.
+            if (el.value.length < 1) {
+              this.isFieldValid = null
+              return
+            }
+
+            pattern = el.pattern
+            re = RegExp(pattern)
+
+            // Get pattern and test validity with regex.
+            this.isFieldValid = re.test(this.value)
+            break
         }
       }
     },
@@ -280,7 +343,8 @@
     input[type="number"],
     input[type="text"],
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="url"] {
       @include resetfield;
       height:$height_input - 2px;
       line-height:$height_input - 2px;
@@ -341,6 +405,26 @@
     color:red;
   }
 
+  .input__validity {
+    position: absolute;
+    top: 17px;
+    right: 15px;
+    width: 10px;
+    height: 10px;
+    background-color: $color__tag--disabled;
+    border-radius: 50%;
+    user-select: none;
+    pointer-events: none;
+
+    &--valid {
+      background-color: $color__ok;
+    }
+
+    &--error {
+      background-color: $color__error;
+    }
+  }
+
   .input__field--textarea {
     display:block;
     padding:0;
@@ -367,7 +451,8 @@
     input[type="number"],
     input[type="text"],
     input[type="email"],
-    input[type="password"] {
+    input[type="password"],
+    input[type="url"] {
       height:$height_input - 10px - 2px;
       line-height:$height_input - 10px - 2px;
     }

@@ -2,14 +2,17 @@
 
 namespace A17\Twill\Repositories;
 
+use A17\Twill\Facades\TwillCapsules;
+use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Model;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
+use A17\Twill\Repositories\Behaviors\HandlePermissions;
 use A17\Twill\Repositories\Behaviors\HandleRelatedBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleRepeaters;
-use A17\Twill\Services\Capsules\HasCapsules;
+use Exception;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -19,10 +22,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use PDO;
+use ReflectionClass;
 
 abstract class ModuleRepository
 {
-    use HandleDates, HandleBrowsers, HandleRelatedBrowsers, HandleRepeaters, HandleFieldsGroups, HasCapsules;
+    use HandleDates;
+    use HandleBrowsers;
+    use HandleRelatedBrowsers;
+    use HandleRepeaters;
+    use HandleFieldsGroups;
+    use HandlePermissions;
 
     /**
      * @var \A17\Twill\Models\Model
@@ -60,7 +69,7 @@ abstract class ModuleRepository
      * @param array $orders
      * @param int $perPage
      * @param bool $forcePagination
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection|\Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function get($with = [], $scopes = [], $orders = [], $perPage = 20, $forcePagination = false)
     {
@@ -69,7 +78,7 @@ abstract class ModuleRepository
         $query = $this->filter($query, $scopes);
         $query = $this->order($query, $orders);
 
-        if (!$forcePagination && $this->model instanceof Sortable) {
+        if (! $forcePagination && $this->model instanceof Sortable) {
             return $query->ordered()->get();
         }
 
@@ -87,21 +96,27 @@ abstract class ModuleRepository
      */
     public function getCountByStatusSlug($slug, $scope = [])
     {
-        $this->countScope = $scope;
+        $query = $this->model->where($scope);
+
+        if (config('twill.enabled.permissions-management') &&
+            (isPermissionableModule(getModuleNameByModel($this->model)) || method_exists($this->model, 'scopeAccessible'))
+        ) {
+            $query = $query->accessible();
+        }
 
         switch ($slug) {
             case 'all':
-                return $this->getCountForAll();
+                return $query->count();
             case 'published':
-                return $this->getCountForPublished();
+                return $query->published()->count();
             case 'draft':
-                return $this->getCountForDraft();
+                return $query->draft()->count();
             case 'trash':
-                return $this->getCountForTrash();
+                return $query->onlyTrashed()->count();
         }
 
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
-            if (($count = $this->$method($slug)) !== false) {
+            if (($count = $this->$method($slug, $scope)) !== false) {
                 return $count;
             }
         }
@@ -110,38 +125,46 @@ abstract class ModuleRepository
     }
 
     /**
+     * @deprecated To be removed in Twill 3.0
      * @return int
      */
     public function getCountForAll()
     {
         $query = $this->model->newQuery();
+
         return $this->filter($query, $this->countScope)->count();
     }
 
     /**
+     * @deprecated To be removed in Twill 3.0
      * @return int
      */
     public function getCountForPublished()
     {
         $query = $this->model->newQuery();
+
         return $this->filter($query, $this->countScope)->published()->count();
     }
 
     /**
+     * @deprecated To be removed in Twill 3.0
      * @return int
      */
     public function getCountForDraft()
     {
         $query = $this->model->newQuery();
+
         return $this->filter($query, $this->countScope)->draft()->count();
     }
 
     /**
+     * @deprecated To be removed in Twill 3.0
      * @return int
      */
     public function getCountForTrash()
     {
         $query = $this->model->newQuery();
+
         return $this->filter($query, $this->countScope)->onlyTrashed()->count();
     }
 
@@ -173,7 +196,7 @@ abstract class ModuleRepository
 
         if ($this->model instanceof Sortable) {
             $query = $query->ordered();
-        } elseif (!empty($orders)) {
+        } elseif (! empty($orders)) {
             $query = $this->order($query, $orders);
         }
 
@@ -256,20 +279,17 @@ abstract class ModuleRepository
         return $this->hydrate($object, $fields);
     }
 
-    /**
-     * @param array $attributes
-     * @param array $fields
-     * @return \A17\Twill\Models\Model
-     */
-    public function updateOrCreate($attributes, $fields)
+    public function updateOrCreate(array $attributes, array $fields): Model
     {
         $object = $this->model->where($attributes)->first();
 
-        if (!$object) {
+        if (! $object) {
             return $this->create($fields);
         }
 
         $this->update($object->id, $fields);
+
+        return $object;
     }
 
     /**
@@ -335,6 +355,7 @@ abstract class ModuleRepository
             if (($object = $this->model->find($id)) != null) {
                 $object->update($values);
                 $this->afterUpdateBasic($object, $values);
+
                 return true;
             }
 
@@ -359,7 +380,6 @@ abstract class ModuleRepository
      */
     public function duplicate($id, $titleColumnKey = 'title')
     {
-
         if (($object = $this->model->find($id)) === null) {
             return false;
         }
@@ -393,11 +413,13 @@ abstract class ModuleRepository
                 return false;
             }
 
-            if (!method_exists($object, 'canDeleteSafely') || $object->canDeleteSafely()) {
+            if (! method_exists($object, 'canDeleteSafely') || $object->canDeleteSafely()) {
                 $object->delete();
                 $this->afterDelete($object);
+
                 return true;
             }
+
             return false;
         }, 3);
     }
@@ -413,11 +435,12 @@ abstract class ModuleRepository
                 Collection::make($ids)->each(function ($id) {
                     $this->delete($id);
                 });
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error($e);
                 if (config('app.debug')) {
                     throw $e;
                 }
+
                 return false;
             }
 
@@ -437,6 +460,7 @@ abstract class ModuleRepository
             } else {
                 $object->forceDelete();
                 $this->afterDelete($object);
+
                 return true;
             }
         }, 3);
@@ -458,8 +482,9 @@ abstract class ModuleRepository
                 $objects->each(function ($object) {
                     $this->afterDelete($object);
                 });
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error($e);
+
                 return false;
             }
 
@@ -477,6 +502,7 @@ abstract class ModuleRepository
             if (($object = $this->model->withTrashed()->find($id)) != null) {
                 $object->restore();
                 $this->afterRestore($object);
+
                 return true;
             }
 
@@ -500,8 +526,9 @@ abstract class ModuleRepository
                 $objects->each(function ($object) {
                     $this->afterRestore($object);
                 });
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error($e);
+
                 return false;
             }
 
@@ -518,11 +545,11 @@ abstract class ModuleRepository
     {
         if (property_exists($this->model, 'checkboxes')) {
             foreach ($this->model->checkboxes as $field) {
-                if (!$this->shouldIgnoreFieldBeforeSave($field)) {
-                    if (!isset($fields[$field])) {
+                if (! $this->shouldIgnoreFieldBeforeSave($field)) {
+                    if (! isset($fields[$field])) {
                         $fields[$field] = false;
                     } else {
-                        $fields[$field] = !empty($fields[$field]);
+                        $fields[$field] = ! empty($fields[$field]);
                     }
                 }
             }
@@ -530,14 +557,14 @@ abstract class ModuleRepository
 
         if (property_exists($this->model, 'nullable')) {
             foreach ($this->model->nullable as $field) {
-                if (!isset($fields[$field]) && !$this->shouldIgnoreFieldBeforeSave($field)) {
+                if (! isset($fields[$field]) && ! $this->shouldIgnoreFieldBeforeSave($field)) {
                     $fields[$field] = null;
                 }
             }
         }
 
         foreach ($fields as $key => $value) {
-            if (!$this->shouldIgnoreFieldBeforeSave($key)) {
+            if (! $this->shouldIgnoreFieldBeforeSave($key)) {
                 if (is_array($value) && empty($value)) {
                     $fields[$key] = null;
                 }
@@ -741,7 +768,7 @@ abstract class ModuleRepository
             }
 
             foreach ($object->$relationship as $relationshipObject) {
-                if (!in_array($relationshipObject->$attribute, $fields[$formField])) {
+                if (! in_array($relationshipObject->$attribute, $fields[$formField])) {
                     $relationshipObject->delete();
                 }
             }
@@ -801,7 +828,6 @@ abstract class ModuleRepository
      */
     public function searchIn($query, &$scopes, $scopeField, $orFields = [])
     {
-
         if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
             $query->where(function ($query) use (&$scopes, $scopeField, $orFields) {
                 foreach ($orFields as $field) {
@@ -860,13 +886,13 @@ abstract class ModuleRepository
      */
     protected function getModelRepository($relation, $modelOrRepository = null)
     {
-        if (!$modelOrRepository) {
-            if (class_exists($relation) && (new $relation) instanceof Model) {
+        if (! $modelOrRepository) {
+            if (class_exists($relation) && (new $relation()) instanceof Model) {
                 $modelOrRepository = Str::afterLast($relation, '\\');
             } else {
                 $morphedModel = Relation::getMorphedModel($relation);
                 if (class_exists($morphedModel) && (new $morphedModel) instanceof Model) {
-                    $modelOrRepository = (new \ReflectionClass($morphedModel))->getShortName();
+                    $modelOrRepository = (new ReflectionClass($morphedModel))->getShortName();
                 } else {
                     $modelOrRepository = ucfirst(Str::singular($relation));
                 }
@@ -879,21 +905,21 @@ abstract class ModuleRepository
 
         if ($repository instanceof ModuleRepository) {
             return $repository;
-        } else {
-            $class = Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($modelOrRepository) . "Repository";
         }
+
+        $class = Config::get('twill.namespace') . '\\Repositories\\' . ucfirst($modelOrRepository) . 'Repository';
 
         if (class_exists($class)) {
             return App::make($class);
         }
 
-        $capsule = $this->getCapsuleByModel($modelOrRepository);
+        try {
+            $capsule = TwillCapsules::getCapsuleForModel($modelOrRepository);
 
-        if (blank($capsule)) {
+            return App::make($capsule->getRepositoryClass());
+        } catch (NoCapsuleFoundException) {
             throw new \Exception("Repository class not found for model '{$modelOrRepository}'");
         }
-
-        return App::make($capsule['repository']);
     }
 
     /**
@@ -941,7 +967,7 @@ abstract class ModuleRepository
 
     /**
      * @param string $behavior
-     * @return boolean
+     * @return bool
      */
     public function hasBehavior($behavior)
     {
@@ -955,7 +981,7 @@ abstract class ModuleRepository
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function isTranslatable($column)
     {

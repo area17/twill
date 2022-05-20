@@ -8,10 +8,10 @@ Twill includes the ability to create fully custom pages that includes your navig
 
 #### Example
 
-- Create a route in `routes/admin.php`
+- Create a route in `routes/twill.php`
 
 ```php
-  Route::name('customPage')->get('/customPage', 'MockController@show');
+  Route::name('customPage')->get('/customPage', 'CustomPageController@show');
 ```
 
 - Add a link to your page in `config/twill-navigation.php`
@@ -30,9 +30,13 @@ return [
 - Add a controller to handle the request
 
 ```php
+// file: app/Http/Controllers/Admin/CustomPageController.php
+
 namespace App\Http\Controllers\Admin;
 
-class MockController
+use A17\Twill\Http\Controllers\Admin\Controller;
+
+class CustomPageController extends Controller
 {
     public function show()
     {
@@ -44,6 +48,8 @@ class MockController
 - And create the view
 
 ```php
+// file: resources/views/admin/customPage.blade.php
+
 @extends('twill::layouts.free')
 
 @section('customPageContent')
