@@ -246,8 +246,7 @@ class CapsulesTest extends TestCase
 
     public function makeCapsule()
     {
-        $this->artisan("twill:make:capsule {$this->capsuleName} --all --force")
-            ->expectsConfirmation('Do you also want to generate the preview file?', 'no');
+        $this->artisan("twill:make:capsule {$this->capsuleName} --all --force");
 
         TwillRoutes::registerCapsuleRoutes(
             app(Router::class),
@@ -293,6 +292,7 @@ class CapsulesTest extends TestCase
                 '--hasPosition' => true,
                 '--hasRevisions' => true,
                 '--hasNesting' => true,
+                '--generatePreview' => true,
             ])
             ->run()
         );

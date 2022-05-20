@@ -513,8 +513,9 @@ class BlockMaker
 
         if ($generateView) {
             $this->put(
-                str_replace('views/admin/blocks', 'views/site/blocks', $blockFile),
-                'This is a basic preview. You can use dd($block) to view the data you have access to.'
+                $path = str_replace('views/twill/blocks', 'views/site/blocks', $blockFile),
+                'This is a basic preview. You can use dd($block) to view the data you have access to. <br />' .
+                'This preview file is located at: ' . $path
             );
             $this->info("Block {$blockName} blank render view was created.");
         }

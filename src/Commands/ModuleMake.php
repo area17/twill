@@ -30,6 +30,7 @@ class ModuleMake extends Command
         {--P|hasPosition}
         {--R|hasRevisions}
         {--N|hasNesting}
+        {--E|generatePreview}
         {--all}';
 
     /**
@@ -734,7 +735,7 @@ class ModuleMake extends Command
 
         $this->info("Form view created successfully! Include your form fields using @formField directives!");
 
-        if ($this->confirm("Do you also want to generate the preview file?")) {
+        if ($this->checkOption('generatePreview') === true || $this->confirm("Do you also want to generate the preview file?")) {
             $previewViewsPath = $this->previewViewPath();
             twill_put_stub($previewViewsPath . '/' . Str::singular($moduleName) . '.blade.php', $this->files->get(__DIR__ . '/stubs/preview_module.blade.stub'));
         }
