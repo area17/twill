@@ -12,7 +12,7 @@ Inside a block, repeaters can be used too.
 ```php
   @twillBlockTitle('Accordion')
   ...
-  @formField('repeater', ['type' => 'accordion_item'])
+  <x-twill::repeater type="accordion_item"/>
 ```
 You can add other fields before or after your repeater, or even multiple repeaters to the same block.
 
@@ -23,15 +23,15 @@ filename: ```views/twill/repeaters/accordion_item.blade.php```
   @twillRepeaterTitle('Accordion item')
   @twillRepeaterMax('10') // Optional
 
-  @formField('input', [
-      'name' => 'header',
-      'label' => 'Header'
-  ])
+  <x-twill::input
+      name="header"
+      label="Header"
+  />
 
-  @formField('input', [
-      'type' => 'textarea',
-      'name' => 'description',
-      'label' => 'Description',
-      'rows' => 4
-  ])
+  <x-twill::input
+      type="textarea"
+      name="description"
+      label="description"
+      :rows="4"
+  />
 ```

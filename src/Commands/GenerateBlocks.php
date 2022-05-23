@@ -6,6 +6,7 @@ use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
 
@@ -75,7 +76,9 @@ class GenerateBlocks extends Command
                 $blockName = str_replace('a17-block-', '', $block->component);
                 $basename = str_replace('.blade.php', '', $block->fileName);
 
+                View::share('TwillUntilConsumed', ['renderForBlocks' => true]);
                 $vueBlockTemplate = $this->viewFactory->make('twill.blocks.' . $basename, ['renderForBlocks' => true])->render();
+                View::share('TwillUntilConsumed', []);
 
                 $vueBlockContent = $this->viewFactory->make('twill::blocks.builder', [
                     'render' => $this->sanitize($vueBlockTemplate),

@@ -4,12 +4,22 @@ pageClass: twill-doc
 
 # Form Fields
 
+## Using controller method
+
+Since Twill 3.0 there is also a possibility to define your forms from the module controller,
+for details about this approach see [Form builder documentation](../crud-modules/form-builder.md).
+
+This method will still continue to receive improvements as it does not yet support all the features
+that the form views method has such as fieldset, sidebars and conditional fields.
+
+## Using form views
+
 Your module `form` view should look something like this (`resources/views/twill/moduleName/form.blade.php`):
 
 ```php
 @extends('twill::layouts.form')
 @section('contentFields')
-    @formField('...', [...])
+    <x-twill::input ... />
     ...
 @stop
 ```
@@ -29,15 +39,15 @@ like in the following example:
 ])
 
 @section('contentFields')
-    @formField('...', [...])
+    <x-twill::input ... />
     ...
 @stop
 
 @section('fieldsets')
-    @formFieldset(['id' => 'attributes', 'title' => 'Attributes', 'open' => false])
-        @formField('...', [...])
+   <x-twill::formFieldset id="attributes" title="Attributes" :open="false">
+        <x-twill::input ... />
         ...
-    @endformFieldset
+   </x-twill::formFieldset>
 @stop
 ```
 
@@ -48,7 +58,6 @@ You can use the following arguments when defining a `formFieldset`
 | id          | The id of the fieldset, this should match the value in `additionalFieldsets` | string         |               |
 | title       | The title of the fieldset                                                    | string         |               |
 | open        | If the fieldset should be open by default                                    | boolean        | false         |
-
 
 The additional fieldsets array passed to the form layout will display a sticky navigation of your fieldset on scroll.
 You can also rename the content section by passing a `contentFieldsetLabel` property to the layout, or disable it
@@ -66,12 +75,12 @@ If you use the `sideFieldset` it will automatically be embedded into a collapsib
 
 ```php
 @section('sideFieldset')
-    @formField('input', [
-        'name' => 'description',
-        'label' => 'Description',
-        'translated' => true,
-        'maxlength' => 100
-    ])
+    <x-twill::input
+        name="description"
+        label="Description"
+        :translated="true"
+        :maxLenght="100"
+    />
 @endsection
 ```
 
@@ -80,18 +89,18 @@ alternatively, or if you need more control, you can use the `sideFieldsets` sect
 ```php
 @section('sideFieldsets')
     <a17-fieldset title="SEO" id="seo">
-        @formField('input', [
-            'name' => 'description',
-            'label' => 'Description',
-            'translated' => true,
-            'maxlength' => 100
-        ])
-        @formField('input', [
-            'name' => 'meta',
-            'label' => 'Meta',
-            'translated' => true,
-            'maxlength' => 100
-        ])
+        <x-twill::input
+            name="description"
+            label="Description"
+            :translated="true"
+            :maxLenght="100"
+        />
+        <x-twill::input
+            name="meta"
+            label="Meta"
+            :translated="true"
+            :maxLenght="100"
+        />
     </a17-fieldset>
 @endsection
 ```

@@ -12,13 +12,13 @@ filename: ```views/twill/blocks/products.blade.php```
 ```php
     @twillBlockTitle('Products')
 
-    @formField('browser', [
-        'routePrefix' => 'shop',
-        'moduleName' => 'products',
-        'name' => 'products',
-        'label' => 'Products',
-        'max' => 10
-    ])
+    <x-twill::browser
+        route-prefix="shop"
+        module-name="products"
+        name="products"
+        label="Products"
+        :max="10"
+    />
 ```
 
 - If the module you are browsing is not at the root of your admin, you should use the `browser_route_prefixes` array in the configuration in addition to `routePrefix` in the form field declaration:

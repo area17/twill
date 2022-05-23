@@ -13,7 +13,7 @@
           <a17-activity-row :row="row" :index="index" :columns="columns" :key="row.id"></a17-activity-row>
         </template>
       </table>
-      <template v-else="">
+      <template v-else>
         <div class="activityFeed__empty">
           <h4>{{ emptyMessage }}</h4>
         </div>

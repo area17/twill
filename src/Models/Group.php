@@ -6,6 +6,7 @@ use A17\Twill\Models\Behaviors\HasPermissions;
 use A17\Twill\Models\Behaviors\IsTranslatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -98,12 +99,7 @@ class Group extends BaseModel
         return $query->whereNotNull('deleted_at');
     }
 
-    /**
-     * User model relationship.
-     *
-     * @return BelongsToMany|Collection|User[]
-     */
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(twillModel('user'), 'group_twill_user', 'group_id', 'twill_user_id');
     }
@@ -165,7 +161,6 @@ class Group extends BaseModel
      */
     public function viewableItems()
     {
-        /* @phpstan-ignore-next-line */
         return Permission::where('name', 'view-item')->whereHas('groups', function ($query) {
             $query->where('id', $this->id);
         })->with('permissionable')->get()->pluck('permissionable');

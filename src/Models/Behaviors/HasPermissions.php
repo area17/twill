@@ -9,22 +9,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 trait HasPermissions
 {
     /**
-     * Permissions relationship
+     * This method should be clean of checks, the checks should happen earlier on.
      *
      * @return BelongsToMany|Collection|Permission[]
      */
-    public function permissions()
+    public function permissions(): BelongsToMany
     {
-        if (config('twill.enabled.permissions-management')) {
-            // Deal with the situation that twill user's table has been renamed.
-            if (get_class($this) === twillModel('user')) {
-                return $this->belongsToMany('A17\Twill\Models\Permission', 'permission_twill_user', 'twill_user_id', 'permission_id');
-            } else {
-                return $this->belongsToMany('A17\Twill\Models\Permission');
-            }
+        // Deal with the situation that twill user's table has been renamed.
+        if (get_class($this) === twillModel('user')) {
+            return $this->belongsToMany(
+                Permission::class,
+                'permission_twill_user',
+                'twill_user_id',
+                'permission_id'
+            );
         }
 
-        return null;
+        return $this->belongsToMany(Permission::class);
     }
 
     /**
@@ -60,7 +61,6 @@ trait HasPermissions
         $this->permissions()->global()->detach(Permission::where('name', $name)->first()->id);
     }
 
-
     /**
      * Add module permission to item, after making sure the permission is
      * valid
@@ -79,7 +79,6 @@ trait HasPermissions
         ]);
 
         $this->permissions()->save($permission);
-
     }
 
     /**
@@ -99,7 +98,6 @@ trait HasPermissions
         }
     }
 
-
     /**
      * Revoke all module permissions from the item
      *
@@ -108,7 +106,7 @@ trait HasPermissions
      */
     public function revokeAllModulePermission($permissionableType)
     {
-        foreach(Permission::ofModel($permissionableType)->get() as $permission) {
+        foreach (Permission::ofModel($permissionableType)->get() as $permission) {
             $this->permissions()->module()->detach($permission->id);
         }
     }
@@ -194,13 +192,13 @@ trait HasPermissions
     /**
      * Check if a permission is available for a particular scope
      *
+     * @param string $name
+     * @param string $scope
+     * @return void
      * @see Permission::SCOPE_GLOBAL
      * @see Permission::SCOPE_MODULE
      * @see Permission::SCOPE_ITEM
      *
-     * @param string $name
-     * @param string $scope
-     * @return void
      */
     protected function checkPermissionAvailable($name, $scope)
     {

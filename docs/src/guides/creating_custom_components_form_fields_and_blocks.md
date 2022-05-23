@@ -226,17 +226,17 @@ export default {
         { name: 'footer', label: 'Footer' },
     ]">
         <div class="custom-tab custom-tab--header">
-            @formField('input', [
-                'name' => 'header_title',
-                'label' => 'Header Title',
-                'translated' => true,
-            ])
-
-            @formField('input', [
-                'name' => 'header_subtitle',
-                'label' => 'Header Subtitle',
-                'translated' => true,
-            ])
+            <x-twill::input
+                name="header_title"
+                label="Header title"
+                :translated="true"
+            />
+            
+            <x-twill::input
+                name="header_subtitle"
+                label="Header subtitle"
+                :translated="true"
+            />
         </div>
 
         <div class="custom-tab custom-tab--body">
@@ -456,10 +456,10 @@ This will create the following file in your project:
 @twillBlockIcon('text')
 @twillBlockGroup('app')
 
-@formField('input', [
-    'name' => 'title',
-    'label' => 'Title',
-])
+<x-twill::input
+    name="title"
+    label="Title"
+/>
 
 // ...
 ```
@@ -551,9 +551,6 @@ Then the custom block is usable in the block editor:
 
 @section('contentFields')
 	// ...
-
-    @formField('block_editor', [
-        'blocks' => ['banner'],
-    ])
+    <x-twill::block-editor :blocks="['banner']"/>
 @stop
 ```

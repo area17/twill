@@ -18,9 +18,9 @@ trait HandleGroupPermissions
      */
     public function getFormFieldsHandleGroupPermissions($object, $fields)
     {
-        if (config('twill.permissions.level') == 'roleGroup') {
+        if (config('twill.permissions.level') === 'roleGroup') {
             // Add active global permissions
-            foreach ($object->permissions()->global()->get()->pluck('name') as $permissionName) {
+            foreach ($object->permissions()->global()->pluck('name') as $permissionName) {
                 $fields[$permissionName] = true;
             }
 
@@ -33,7 +33,7 @@ trait HandleGroupPermissions
                     $fields['module_' . $moduleName . '_permissions'] = 'none';
                 }
             }
-        } elseif (config('twill.permissions.level') == 'roleGroupItem') {
+        } elseif (config('twill.permissions.level') === 'roleGroupItem') {
             // Add active item permissions
             foreach ($object->permissions()->moduleItem()->get() as $permission) {
                 $model = $permission->permissionable()->first();

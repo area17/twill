@@ -6,6 +6,25 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/browser.png)
 
+Form views:
+```html
+<x-twill::browser
+    module-name="publications"
+    name="publications"
+    label="Publications"
+    :max="4"
+/>
+```
+
+From builder:
+```php
+Browser::make()
+    ->modules([Publications::class])
+    ->name('publications')
+    ->max(4);
+```
+
+::: details Old method
 ```php
 @formField('browser', [
     'moduleName' => 'publications',
@@ -14,6 +33,7 @@ pageClass: twill-doc
     'max' => 4,
 ])
 ```
+:::
 
 | Option                | Description                                                                     | Type    | Default value |
 |:----------------------|:--------------------------------------------------------------------------------|:--------|:--------------|
@@ -76,12 +96,12 @@ class ArticleRepository extends ModuleRepository
 @section('contentFields')
     ...
 
-    @formField('browser', [
-        'moduleName' => 'authors',
-        'name' => 'authors',
-        'label' => 'Authors',
-        'max' => 4,
-    ])
+    <x-twill::browser
+        module-name="authors"
+        name="authors"
+        label="Authors"
+        :max="4"
+    />
 @stop
 ```
 
@@ -106,8 +126,8 @@ class ArticleRepository extends ModuleRepository
 @section('contentFields')
     ...
 
-    @formField('browser', [
-        'modules' => [
+    <x-twill::browser
+        :modules="[
             [
               'label' => 'Authors',
               'name' => 'authors',
@@ -116,32 +136,32 @@ class ArticleRepository extends ModuleRepository
               'label' => 'Editors',
               'name' => 'editors',
             ],
-        ],
-        'name' => 'collaborators',
-        'label' => 'Collaborators',
-        'max' => 4,
-    ])
+        ]"
+        name="collaborators"
+        label="Collaborators"
+        :max="4"
+    />
 @stop
 ```
 
 - Alternatively, you can use manual endpoints instead of module names:
 
 ```php
-    @formField('browser', [
-        'endpoints' => [
-            [
-              'label' => 'Authors',
-              'value' => '/authors/browser',
-            ],
-            [
-              'label' => 'Editors',
-              'value' => '/editors/browser',
-            ],
+<x-twill::browser
+    :endpoints="[
+        [
+          'label' => 'Authors',
+          'value' => '/authors/browser',
         ],
-        'name' => 'collaborators',
-        'label' => 'Collaborators',
-        'max' => 4,
-    ])
+        [
+          'label' => 'Editors',
+          'value' => '/editors/browser',
+        ],
+    ]"
+    name="collaborators"
+    label="Collaborators"
+    :max="4"
+/>
 ```
 
 ## Working with related items
@@ -165,21 +185,21 @@ Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/st
 The following example demonstrates how to make a browser field depend on the selected items of another browser field.
 
 ```php
-@formField('browser', [
-    'label' => 'Product',
-    'name' => 'product',
-    'moduleName' => 'products',
-    'max' => 1,
-])
+<x-twill::browser
+    module-name="products"
+    name="product"
+    label="Product"
+    :max="1"
+/>
 
-@formField('browser', [
-    'label' => 'Product variant',
-    'name' => 'product_variant',
-    'moduleName' => 'productVariants',
-    'connectedBrowserField' => 'product',
-    'note' => 'Select a product to enable this field.'
-    'max' => 1,
-])
+<x-twill::browser
+    label="Product variant"
+    name="product_variant"
+    module-name="productVariants"
+    connected-browser-field="product"
+    note="Select a product to enable this field"
+    :max="1"
+/>
 ```
 
 The second browser is using the `connectedBrowserField` option, which will:

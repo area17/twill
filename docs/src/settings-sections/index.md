@@ -12,17 +12,17 @@ If you did not enable this feature before running the `twill:install` command, y
 
 To create a new settings section, add a blade file to your `resources/views/twill/settings` folder. The name of this file is the name of your new settings section.
 
-In this file, you can use `@formField('input')` Blade directives to add new settings. The name attribute of each form field is the name of a setting. Wrap them like in the following example:
+In this file, you can use `<x-twill::input />` Blade components to add new settings. The name attribute of each form field is the name of a setting. Wrap them like in the following example:
 
 ```php
 @extends('twill::layouts.settings')
 
 @section('contentFields')
-    @formField('input', [
-        'label' => 'Site title',
-        'name' => 'site_title',
-        'textLimit' => '80'
-    ])
+    <x-twill:input
+        label="Site title"
+        name="site_title"
+        :maxlength="80"
+    />
 @stop
 ```
 

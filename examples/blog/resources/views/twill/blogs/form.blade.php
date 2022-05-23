@@ -1,26 +1,26 @@
 @extends('twill::layouts.form')
 
 @section('contentFields')
-    @formField('input', [
-        'name' => 'description',
-        'label' => 'Description',
-        'translated' => true,
-        'maxlength' => 100
-    ])
+    <x-twill::input
+        name="description"
+        label="Description"
+        :translated="true"
+        :maxlength="100"
+    />
 
-    @formField('medias', [
-        'name' => 'cover',
-        'label' => 'Cover image'
-    ])
+    <x-twill::medias
+        name="cover"
+        label="Cover image"
+    />
 
-    @formField('browser', [
-        'moduleName' => 'categories',
-        'name' => 'categories',
-        'label' => 'Categories',
-        'max' => 1,
-    ])
+    <x-twill::browser
+        module-name="categories"
+        name="categories"
+        label="Category"
+        :max="1"
+    />
 
-    @formField('tags')
-    @formField('block_editor')
+    <x-twill::tags />
 
+    <x-twill::block-editor/>
 @stop
