@@ -15,24 +15,36 @@ class Image extends TableColumn
     protected ?array $mediaParams = null;
     protected bool $rounded = false;
 
+    /**
+     * The image role that is defined in your model. Can be left out as it will take the first one available.
+     */
     public function role(string $role): self
     {
         $this->role = $role;
         return $this;
     }
 
+    /**
+     * A specific crop to use for the image. Can be left out as it will take the first one available.
+     */
     public function crop(string $crop): self
     {
         $this->crop = $crop;
         return $this;
     }
 
+    /**
+     * Optional array of media parameters for more control over the rendering.
+     */
     public function mediaParams(array $params): self
     {
         $this->mediaParams = $params;
         return $this;
     }
 
+    /**
+     * If enabled the image will be rounded instead of square.
+     */
     public function rounded(bool $rounded = true): self
     {
         $this->rounded = $rounded;

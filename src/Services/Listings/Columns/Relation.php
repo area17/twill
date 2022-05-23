@@ -19,7 +19,9 @@ class Relation extends TableColumn
         return $this->relation . Str::studly($this->field);
     }
 
-
+    /**
+     * Set the relation that should be used.
+     */
     public function relation(string $relation): self
     {
         $this->relation = $relation;
