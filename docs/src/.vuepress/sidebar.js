@@ -56,7 +56,11 @@ module.exports = [
           {
             "title": "Navigation",
             "path": "/getting-started/navigation.html",
-          }
+          },
+          {
+            "title": "Updating",
+            "path": "/getting-started/updating.html",
+          },
         ],
         "collapsable": true
       },
@@ -87,10 +91,20 @@ module.exports = [
           {
             "title": "Controllers",
             "path": "/crud-modules/controllers.html",
+            "children": [
+              {
+                "title": "Tables",
+                "path": "/crud-modules/tables.html",
+              },
+            ]
           },
           {
             "title": "Form Requests",
             "path": "/crud-modules/form-requests.html",
+          },
+          {
+            "title": "Form Builder",
+            "path": "/crud-modules/form-builder.html",
           },
           {
             "title": "Routes",
@@ -103,6 +117,10 @@ module.exports = [
           {
             "title": "Nested Modules",
             "path": "/crud-modules/nested-modules.html",
+          },
+          {
+            "title": "Capsules",
+            "path": "/crud-modules/capsules.html",
           }
         ],
         "collapsable": true
@@ -323,6 +341,10 @@ module.exports = [
           {
             "title": "Vue.js Workflow - Creating custom components, form fields and blocks in Twill",
             "path": "/guides/creating_custom_components_form_fields_and_blocks.html"
+          },
+          {
+            "title": "Json repeaters",
+            "path": "/guides/json_repeaters.html"
           }
         ],
       },

@@ -35,6 +35,11 @@ Twill's `install` command consists of:
 - publishing Twill's assets for the admin console UI.
 - prompting you to create a superadmin user.
 
+## Storage
+
+If you have not yet done this following the Laravel installation guide, now would be a good time to run
+`php artisan storage:link` to setup the storage folders mapping to the public directory.
+
 ## Example setup
 
 If this is your first time using Twill or you just want to experiment with a Twill installation you can use the demo

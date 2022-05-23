@@ -15,8 +15,9 @@ use App\Models\Author;
 class AuthorRepository extends ModuleRepository
 {
     use HandleBlocks;
-    use HandleTranslations;
+    // Slugs is before translations deliberately as this used to give errors.
     use HandleSlugs;
+    use HandleTranslations;
     use HandleMedias;
     use HandleFiles;
     use HandleRevisions;
