@@ -18,6 +18,7 @@ use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\ModuleMakeDeprecated;
 use A17\Twill\Commands\RefreshCrops;
 use A17\Twill\Commands\RefreshLQIP;
+use A17\Twill\Commands\Release;
 use A17\Twill\Commands\SyncLang;
 use A17\Twill\Commands\Update;
 use A17\Twill\Http\ViewComposers\ActiveNavigation;
@@ -330,6 +331,7 @@ class TwillServiceProvider extends ServiceProvider
             SyncLang::class,
             CapsuleInstall::class,
             GeneratePackageCommand::class,
+            Release::class,
         ]);
     }
 

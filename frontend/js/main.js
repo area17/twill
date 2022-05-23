@@ -27,7 +27,7 @@ window[process.env.VUE_APP_NAME].vheader = new Vue({ el: '#headerUser' })
 /* eslint no-unused-vars: "off" */
 window[process.env.VUE_APP_NAME].vsearch = search
 /* eslint-disable no-console */
-console.log('\x1b[32m', `Made with ${process.env.VUE_APP_NAME} - v${window[process.env.VUE_APP_NAME].version}`)
+console.log('\x1b[32m', `TEMP Made with ${process.env.VUE_APP_NAME} - v${window[process.env.VUE_APP_NAME].version}`)
 
 merge(
   window[process.env.VUE_APP_NAME].STORE,
