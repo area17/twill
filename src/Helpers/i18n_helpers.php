@@ -6,7 +6,7 @@ if (! function_exists('twillTrans')) {
     /**
      * @deprecated use __('') instead.
      */
-    function twillTrans($key, $replace = [])
+    function __($key, $replace = [])
     {
         return __($key, $replace);
     }
