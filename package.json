@@ -13,6 +13,8 @@
     "clean-customs": "rm -rf frontend/js/components/blocks/customs/* && rm -rf frontend/js/components/customs/* && touch frontend/js/components/customs/.keep"
   },
   "dependencies": {
+    "@alpinejs/mask": "^3.10.0",
+    "alpinejs": "^3.10.0",
     "axios": "^0.21.2",
     "core-js": "^3.9.1",
     "cropperjs": "1.5.6",

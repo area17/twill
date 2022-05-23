@@ -17,6 +17,8 @@ class Input extends BaseFormField
     public const TYPE_TEXT = 'text';
     public const TYPE_NUMBER = 'number';
     public const TYPE_TEXTAREA = 'textarea';
+    public const TYPE_EMAIL = 'email';
+    public const TYPE_URL = 'url';
 
     use isTranslatable;
     use hasMin;
@@ -25,8 +27,9 @@ class Input extends BaseFormField
     use hasPlaceholder;
     use hasOnChange;
 
-    protected string $type = self::TYPE_NUMBER;
+    protected string $type = self::TYPE_TEXT;
     protected string $prefix;
+    protected ?string $mask = null;
     protected ?int $rows;
 
     public static function make(): static
@@ -53,6 +56,18 @@ class Input extends BaseFormField
     public function type(string $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Apply a mask to field based on alpinjs mask.
+     * This only works with Input::TYPE_TEXT
+     *
+     * @see https://alpinejs.dev/plugins/mask
+     */
+    public function mask(string $mask): self {
+        $this->mask = $mask;
 
         return $this;
     }

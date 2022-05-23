@@ -30,6 +30,7 @@ class Input extends TwillFormComponent
         public ?int $min = null,
         public ?int $max = null,
         public ?int $step = null,
+        public ?string $mask = null,
     ) {
         parent::__construct(
             name: $name,

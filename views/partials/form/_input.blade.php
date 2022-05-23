@@ -13,6 +13,7 @@
             @if ($readOnly) readonly: true, @endif
             @if ($rows) rows: {{ $rows }}, @endif
             @if ($prefix) prefix: '{{ $prefix }}', @endif
+            @if ($mask) mask: '{{ $mask }}', @endif
             @if ($inModal) inModal: true, @endif
             @if ($min) min: {{$min}}, @endif
             @if ($max) max: {{$max}}, @endif
@@ -41,6 +42,7 @@
         @if ($ref) ref="{{ $ref }}" @endif
         @if ($onChange) v-on:change="{{ $onChange }}{{ $onChangeFullAttribute }}" @endif
         @if ($prefix) prefix="{{ $prefix }}" @endif
+        @if ($mask) mask="{{ $mask }}" @endif
         @if ($inModal) :in-modal="true" @endif
         @if ($min) min="{{$min}}" @endif
         @if ($max) max="{{$max}}" @endif
