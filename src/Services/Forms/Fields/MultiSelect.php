@@ -36,6 +36,9 @@ class MultiSelect extends BaseFormField
         );
     }
 
+    /**
+     * If the options should be searchable.
+     */
     public function searchable(bool $searchable = true): self
     {
         $this->searchable = $searchable;

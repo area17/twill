@@ -27,13 +27,19 @@ class DatePicker extends BaseFormField
         );
     }
 
-    public function withTime(bool $withTime = true): self
+    /**
+     * Hides the time picker.
+     */
+    public function withoutTime(bool $withoutTime = true): self
     {
-        $this->withTime = $withTime;
+        $this->withTime = !$withoutTime;
 
         return $this;
     }
 
+    /**
+     * Allows manual input.
+     */
     public function allowInput(bool $allowInput = true): self
     {
         $this->allowInput = $allowInput;
@@ -41,6 +47,9 @@ class DatePicker extends BaseFormField
         return $this;
     }
 
+    /**
+     * Allows to clear the input field.
+     */
     public function allowClear(bool $allowClear = true): self
     {
         $this->allowClear = $allowClear;
@@ -48,6 +57,9 @@ class DatePicker extends BaseFormField
         return $this;
     }
 
+    /**
+     * Makes it a time picker only.
+     */
     public function timeOnly(bool $timeOnly = true): self
     {
         $this->withTime = true;
@@ -57,6 +69,9 @@ class DatePicker extends BaseFormField
         return $this;
     }
 
+    /**
+     * If 24h format should be used.
+     */
     public function time24h(bool $time24h = true): self
     {
         $this->time24h = $time24h;
@@ -64,6 +79,9 @@ class DatePicker extends BaseFormField
         return $this;
     }
 
+    /**
+     * Define a custom date format.
+     */
     public function altFormat(string $altFormat): self
     {
         $this->altFormat = $altFormat;
@@ -71,6 +89,9 @@ class DatePicker extends BaseFormField
         return $this;
     }
 
+    /**
+     * Set how many hours are increment when using the + and - actions.
+     */
     public function hourIncrement(int $hourIncrement = 1): self
     {
         $this->hourIncrement = $hourIncrement;
@@ -78,6 +99,9 @@ class DatePicker extends BaseFormField
         return $this;
     }
 
+    /**
+     * Set how many minutes are increment when using the + and - actions.
+     */
     public function minuteIncrement(int $minutIncrement = 1): self
     {
         $this->minuteIncrement = $minutIncrement;

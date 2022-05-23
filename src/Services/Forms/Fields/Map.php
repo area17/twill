@@ -22,7 +22,7 @@ class Map extends BaseFormField
     }
 
     /**
-     * Hides the map which is shown by default.
+     * Completely remove the map.
      */
     public function hideMap(bool $hideMap = true): self
     {
@@ -31,6 +31,9 @@ class Map extends BaseFormField
         return $this;
     }
 
+    /**
+     * Show the map by default.
+     */
     public function openMap(bool $openMap = true): self
     {
         $this->openMap = $openMap;
@@ -38,6 +41,9 @@ class Map extends BaseFormField
         return $this;
     }
 
+    /**
+     * Stores extended data into the field like lat/lon.
+     */
     public function saveExtendedData(bool $saveExtendedData = true): self
     {
         $this->saveExtendedData = $saveExtendedData;
@@ -45,6 +51,9 @@ class Map extends BaseFormField
         return $this;
     }
 
+    /**
+     * Make the field try to automatically detect the latitude and longitude.
+     */
     public function autoDetectLatLang(bool $autoDetectLatLang = true): self
     {
         $this->autoDetectLatLngValue = $autoDetectLatLang;

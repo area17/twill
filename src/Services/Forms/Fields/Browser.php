@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
+use A17\Twill\Services\Forms\Fields\Traits\canHaveButtonOnTop;
 use A17\Twill\Services\Forms\Fields\Traits\hasFieldNote;
 use A17\Twill\Services\Forms\Fields\Traits\hasMax;
 use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
@@ -12,6 +13,7 @@ class Browser extends BaseFormField
     use isTranslatable;
     use hasMax;
     use hasFieldNote;
+    use canHaveButtonOnTop;
 
     protected ?string $moduleName = null;
     protected array $modules = [];
@@ -19,7 +21,6 @@ class Browser extends BaseFormField
     protected array $params = [];
     protected ?string $browserNote = null;
     protected ?string $itemLabel = null;
-    protected bool $buttonOnTop = false;
     protected bool $wide = false;
     protected bool $sortable = false;
     protected ?string $routePrefix = null;
@@ -36,6 +37,9 @@ class Browser extends BaseFormField
         return $instance;
     }
 
+    /**
+     * Additional parameters to pass to the module route.
+     */
     public function params(array $params): self
     {
         $this->params = $params;
@@ -43,6 +47,9 @@ class Browser extends BaseFormField
         return $this;
     }
 
+    /**
+     * A list of custom endpoints to use.
+     */
     public function endpoints(array $endpoints): self
     {
         $this->endpoints = $endpoints;
@@ -50,6 +57,9 @@ class Browser extends BaseFormField
         return $this;
     }
 
+    /**
+     * A note to display inside the browser.
+     */
     public function browserNote(string $browserNote): self
     {
         $this->browserNote = $browserNote;
@@ -57,6 +67,9 @@ class Browser extends BaseFormField
         return $this;
     }
 
+    /**
+     * The label to display for items, defaults to the field label.
+     */
     public function itemLabel(string $itemLabel): self
     {
         $this->itemLabel = $itemLabel;
@@ -77,13 +90,9 @@ class Browser extends BaseFormField
         return $this;
     }
 
-    public function buttonOnTop(bool $buttonOnTop = true): self
-    {
-        $this->buttonOnTop = $buttonOnTop;
-
-        return $this;
-    }
-
+    /**
+     * Makes the modal window use the full width.
+     */
     public function wide(bool $wide = true): self
     {
         $this->wide = $wide;
@@ -91,6 +100,9 @@ class Browser extends BaseFormField
         return $this;
     }
 
+    /**
+     * Makes the columns in the browser sortable.
+     */
     public function sortable(bool $sortable = true): self
     {
         $this->sortable = $sortable;
@@ -98,6 +110,9 @@ class Browser extends BaseFormField
         return $this;
     }
 
+    /**
+     * Set a custom route prefix if needed.
+     */
     public function routePrefix(string $routePrefix): self
     {
         $this->routePrefix = $routePrefix;
@@ -105,6 +120,9 @@ class Browser extends BaseFormField
         return $this;
     }
 
+    /**
+     * Conditionally show this field based on another browser field.
+     */
     public function connectedBrowserField(string $connectedBrowserField): self
     {
         $this->connectedBrowserField = $connectedBrowserField;
@@ -112,6 +130,9 @@ class Browser extends BaseFormField
         return $this;
     }
 
+    /**
+     * A list of modules that can be be selected in the browser modal.
+     */
     public function modules(array $modules): self
     {
         if (count($modules) === 1) {

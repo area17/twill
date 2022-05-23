@@ -6,6 +6,9 @@ trait hasFieldNote
 {
     protected ?string $fieldNote = null;
 
+    /**
+     * Adds a note.
+     */
     public function fieldNote(string $fieldNote): self
     {
         $this->fieldNote = $fieldNote;

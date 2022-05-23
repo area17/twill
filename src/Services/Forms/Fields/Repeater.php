@@ -21,6 +21,9 @@ class Repeater extends BaseFormField
         );
     }
 
+    /**
+     * The name of the repeater, this also sets the name of field if not set yet.
+     */
     public function type(string $type): self
     {
         $this->type = $type;
@@ -32,6 +35,9 @@ class Repeater extends BaseFormField
         return $this;
     }
 
+    /**
+     * Instead of a button show a link to add a new one.
+     */
     public function buttonAsLink(bool $buttonAsLink = true): self
     {
         $this->buttonAsLink = $buttonAsLink;

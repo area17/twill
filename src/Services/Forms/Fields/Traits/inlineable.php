@@ -8,6 +8,9 @@ trait inlineable
 {
     protected bool $inline = false;
 
+    /**
+     * Shows the option inline.
+     */
     public function inline(bool $inline = true): self
     {
         $this->inline = $inline;

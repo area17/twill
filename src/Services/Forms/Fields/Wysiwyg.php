@@ -35,6 +35,9 @@ class Wysiwyg extends BaseFormField
         );
     }
 
+    /**
+     * Hides the character counter.
+     */
     public function hideCounter(bool $hideCounter = true): self
     {
         $this->hideCounter = $hideCounter;
@@ -42,6 +45,9 @@ class Wysiwyg extends BaseFormField
         return $this;
     }
 
+    /**
+     * Adds a edit source button.
+     */
     public function allowSource(bool $allowSource = true): self
     {
         $this->editSource = $allowSource;
@@ -49,6 +55,9 @@ class Wysiwyg extends BaseFormField
         return $this;
     }
 
+    /**
+     * Allows you to set custom toolbar options. This depends on the editor used.
+     */
     public function toolbarOptions(array $toolbarOptions): self
     {
         $this->toolbarOptions = $toolbarOptions;
@@ -56,6 +65,9 @@ class Wysiwyg extends BaseFormField
         return $this;
     }
 
+    /**
+     * Allows you to set editor options. This depends on the editor used.
+     */
     public function options(array $options): self
     {
         $this->options = $options;
@@ -63,6 +75,9 @@ class Wysiwyg extends BaseFormField
         return $this;
     }
 
+    /**
+     * The type of editor to use, defaults to quill, options are: tiptap
+     */
     public function type(string $type): self
     {
         $this->type = $type;
@@ -70,6 +85,9 @@ class Wysiwyg extends BaseFormField
         return $this;
     }
 
+    /**
+     * Limits the height of the editor, otherwise grows infinitely.
+     */
     public function limitHeight(bool $limitHeight = true): self
     {
         $this->limitHeight = $limitHeight;
@@ -77,6 +95,9 @@ class Wysiwyg extends BaseFormField
         return $this;
     }
 
+    /**
+     * Enables syntax highlight.
+     */
     public function syntax(bool $syntax = true): self
     {
         $this->syntax = $syntax;
@@ -84,6 +105,9 @@ class Wysiwyg extends BaseFormField
         return $this;
     }
 
+    /**
+     * Set a custom theme for the syntax highlighter.
+     */
     public function customTheme(string $customTheme): self
     {
         $this->customTheme = $customTheme;
@@ -91,6 +115,9 @@ class Wysiwyg extends BaseFormField
         return $this;
     }
 
+    /**
+     * Additional custom options.
+     */
     public function customOptions(array $customOptions): self
     {
         $this->customOptions = $customOptions;

@@ -6,6 +6,9 @@ trait hasMax
 {
     protected ?int $max = null;
 
+    /**
+     * Sets the max amount of items.
+     */
     public function max(int $max): self
     {
         $this->max = $max;

@@ -14,6 +14,9 @@ class BlockEditor extends BaseFormField
         return $field;
     }
 
+    /**
+     * Default is all, but using this method you can limit the block types the field can use.
+     */
     public function blocks(array $blocks): self {
         $this->blocks = $blocks;
 

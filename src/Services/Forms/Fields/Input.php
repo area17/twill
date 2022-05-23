@@ -37,6 +37,9 @@ class Input extends BaseFormField
         );
     }
 
+    /**
+     * Text to display (inside) before the actual input.
+     */
     public function prefix(string $prefix): self
     {
         $this->prefix = $prefix;
@@ -44,6 +47,9 @@ class Input extends BaseFormField
         return $this;
     }
 
+    /**
+     * The type of input field like: text, number, email, ..
+     */
     public function type(string $type): self
     {
         $this->type = $type;
@@ -51,6 +57,9 @@ class Input extends BaseFormField
         return $this;
     }
 
+    /**
+     * The amount of rows, only used with textarea type.
+     */
     public function rows(int $rows): self
     {
         $this->rows = $rows;

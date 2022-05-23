@@ -8,6 +8,9 @@ trait hasOnChange
     protected ?string $onChange = null;
     protected ?string $onChangeAttribute = null;
 
+    /**
+     * The field to act on.
+     */
     public function ref(string $ref): self
     {
         $this->ref = $ref;
@@ -15,6 +18,9 @@ trait hasOnChange
         return $this;
     }
 
+    /**
+     * Javascript to execute on change.
+     */
     public function onChange(string $onChange): self
     {
         $this->onChange = $onChange;
@@ -22,6 +28,9 @@ trait hasOnChange
         return $this;
     }
 
+    /**
+     * Attribute to change.
+     */
     public function onChangeAttribute(string $onChangeAttribute): self
     {
         $this->onChangeAttribute = $onChangeAttribute;

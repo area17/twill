@@ -6,6 +6,9 @@ trait hasBorder
 {
     protected bool $border = false;
 
+    /**
+     * Adds a border around the options.
+     */
     public function border(bool $border = true): self
     {
         $this->border = $border;

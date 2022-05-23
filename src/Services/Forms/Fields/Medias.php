@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
+use A17\Twill\Services\Forms\Fields\Traits\canHaveButtonOnTop;
 use A17\Twill\Services\Forms\Fields\Traits\hasFieldNote;
 use A17\Twill\Services\Forms\Fields\Traits\hasMax;
 use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
@@ -11,9 +12,8 @@ class Medias extends BaseFormField
     use isTranslatable;
     use hasMax;
     use hasFieldNote;
+    use canHaveButtonOnTop;
 
-    protected bool $buttonOnTop = false;
-    protected ?string $itemLabel = null;
     protected bool $withAddInfo = true;
     protected bool $withVideoUrl = true;
     protected bool $withCaption = true;
@@ -38,13 +38,9 @@ class Medias extends BaseFormField
         return $instance;
     }
 
-    public function buttonOnTop(bool $buttonOnTop = true): self
-    {
-        $this->buttonOnTop = $buttonOnTop;
-
-        return $this;
-    }
-
+    /**
+     * Disables the additional metadata input fields.
+     */
     public function withoutAddInfo(bool $withoutAddInfo = true): self
     {
         $this->withAddInfo = !$withoutAddInfo;
@@ -52,6 +48,9 @@ class Medias extends BaseFormField
         return $this;
     }
 
+    /**
+     * Removes the video url field from the additional info section.
+     */
     public function withoutVideoUrl(bool $withoutVideoUrl = true): self
     {
         $this->withVideoUrl = !$withoutVideoUrl;
@@ -59,6 +58,9 @@ class Medias extends BaseFormField
         return $this;
     }
 
+    /**
+     * Removes the caption field from the additional info section.
+     */
     public function withoutCaption(bool $withoutCaption = true): self
     {
         $this->withCaption = !$withoutCaption;
@@ -66,6 +68,9 @@ class Medias extends BaseFormField
         return $this;
     }
 
+    /**
+     * Set the max length of the alt field.
+     */
     public function altTextMaxLength(bool $altTextMaxLength): self
     {
         $this->altTextMaxLength = $altTextMaxLength;
@@ -73,6 +78,9 @@ class Medias extends BaseFormField
         return $this;
     }
 
+    /**
+     * Set the max length of the caption field.
+     */
     public function captionMaxLength(int $captionMaxLength): self
     {
         $this->captionMaxLength = $captionMaxLength;
@@ -80,6 +88,11 @@ class Medias extends BaseFormField
         return $this;
     }
 
+    /**
+     * Define custom extra metadata.
+     *
+     * @see https://twill.io/docs/form-fields/medias.html#extra-metadatas
+     */
     public function extraMetadatas(array $extraMetadatas): self
     {
         $this->extraMetadatas = $extraMetadatas;
@@ -87,6 +100,9 @@ class Medias extends BaseFormField
         return $this;
     }
 
+    /**
+     * The minimum width of the image.
+     */
     public function minWidth(int $minWidth): self
     {
         $this->widthMin = $minWidth;
@@ -94,6 +110,9 @@ class Medias extends BaseFormField
         return $this;
     }
 
+    /**
+     * The minimum height of the image.
+     */
     public function minHeight(int $minHeight): self
     {
         $this->heightMin = $minHeight;
@@ -101,6 +120,9 @@ class Medias extends BaseFormField
         return $this;
     }
 
+    /**
+     * Hide the cropper.
+     */
     public function hideActiveCrop(bool $hideActiveCrop = true): self
     {
         $this->activeCrop = !$hideActiveCrop;

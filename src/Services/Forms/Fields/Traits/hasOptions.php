@@ -10,6 +10,9 @@ trait hasOptions
     protected Options|null $options = null;
     protected int $columns = 0;
 
+    /**
+     * List of options to display in the field.
+     */
     public function options(Options $options): self
     {
         $this->options = $options;
@@ -17,14 +20,11 @@ trait hasOptions
         return $this;
     }
 
+    /**
+     * Adds a single option.
+     */
     public function addOption(Option $option): self {
         $this->options->add($option);
-
-        return $this;
-    }
-
-    public function columns(int $columns = 1): self {
-        $this->columns = $columns;
 
         return $this;
     }

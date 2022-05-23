@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
+use A17\Twill\Services\Forms\Fields\Traits\canHaveButtonOnTop;
 use A17\Twill\Services\Forms\Fields\Traits\hasFieldNote;
 use A17\Twill\Services\Forms\Fields\Traits\hasMax;
 use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
@@ -12,8 +13,8 @@ class Files extends BaseFormField
     use isTranslatable;
     use hasMax;
     use hasFieldNote;
+    use canHaveButtonOnTop;
 
-    protected bool $buttonOnTop = false;
     protected ?string $itemLabel = null;
     protected ?int $filesizeMax = 0;
 
@@ -31,6 +32,9 @@ class Files extends BaseFormField
         return $instance;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function label(string $label): BaseFormField
     {
         if (!$this->itemLabel) {
@@ -49,13 +53,9 @@ class Files extends BaseFormField
         return $this;
     }
 
-    public function buttonOnTop(bool $buttonOnTop = true): self
-    {
-        $this->buttonOnTop = $buttonOnTop;
-
-        return $this;
-    }
-
+    /**
+     * The label to display for items, defaults to the field label.
+     */
     public function itemLabel(string $itemLabel): self
     {
         $this->itemLabel = $itemLabel;
