@@ -24,6 +24,9 @@ class Release extends Command
         $this->line('Building assets.');
         Artisan::call('twill:build');
 
+        // Copy from dist to twill-assets.
+        $this->executeInTwillDir('rm -Rf twill-assets/assets && cp -Rf dist/assets twill-assets/assets');
+
         $this->line('Force add the assets.');
         $this->executeInTwillDir('git add --force dist');
 
