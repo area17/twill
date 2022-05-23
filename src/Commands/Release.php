@@ -13,21 +13,87 @@ class Release extends Command
 
     public function handle()
     {
-        $this->versionIsGreaterThanLatestVersion($this->argument('version'));
-//        $this->checkTwillServiceProviderVersion($this->argument('version'));
-//        $this->checkPackageJsonVersionMatches($this->argument('version'));
+        $version = $this->argument('version');
+        $this->versionIsGreaterThanLatestVersion($version);
+        $this->checkChangelogContainsVersion($version);
+        $this->isOnMainBranch();
+        $this->isNotBehind();
+        $this->checkTwillServiceProviderVersion($version);
+        $this->checkPackageJsonVersionMatches($version);
 
-        // Everything is now fine.
+        $this->line('Building assets.');
         Artisan::call('twill:build');
+
+        $this->line('Force add the assets.');
+        $this->executeInTwillDir('git add --force dist');
+
+        $this->line('Making new commit with assets');
+        $this->executeInTwillDir('git commit -m "Updating assets for release ' . $version . '"');
+
+        $this->line('Pushing last commit');
+        $this->executeInTwillDir('git push');
+
+        $this->line('Making the tag');
+        $this->executeInTwillDir("git tag $version");
+
+        $this->line('Pushing the tag');
+        $this->executeInTwillDir("git push origin --tags $version");
+
+        $this->line('Done!');
     }
 
-    private function executeInTwillDir(string $command): string
+    /**
+     * @return void
+     */
+    private function isNotBehind()
+    {
+        $currentBranch = $this->executeInTwillDir('git rev-parse --abbrev-ref HEAD');
+        if (!empty($this->executeInTwillDir('git diff origin/' . $currentBranch))) {
+            $this->error(
+                'It looks like your current branch is not clean, please git pull/commit/stash the latest changes before making a release.'
+            );
+            exit(1);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function isOnMainBranch()
+    {
+        $currentBranch = $this->executeInTwillDir('git rev-parse --abbrev-ref HEAD');
+        if (!in_array($currentBranch, ['2.x', '3.x'])) {
+            $this->error('Current working branch must be a releasable branch (2.x or 3.x)');
+            exit(1);
+        }
+    }
+
+    /**
+     * @param string $version
+     * @return void
+     */
+    private function checkChangelogContainsVersion($version) {
+        if (!str_contains(file_get_contents($this->getTwillDir('CHANGELOG.md')), "## $version")) {
+            $this->error('The changelog is currently missing the version you are trying to tag.');
+            exit(1);
+        }
+    }
+
+    /**
+     * @param string $command
+     * @return false|string|null
+     */
+    private function executeInTwillDir($command)
     {
         $twillDir = $this->getTwillDir();
         return shell_exec("cd $twillDir && $command");
     }
 
-    private function versionIsGreaterThanLatestVersion(string $version): void
+    /**
+     * @param string $version
+     * @return void
+     */
+    private function versionIsGreaterThanLatestVersion($version)
     {
         $splittedVersion = explode('.', $version);
         if (count($splittedVersion) < 3) {
@@ -46,14 +112,20 @@ class Release extends Command
         });
 
         if ($this->newVersionIsGreaterThanOld($version, $tags->last())) {
-            $this->line('New version is greater than old version');
+            $this->line('New version is greater than old version, continuing release.');
             return;
         }
 
         $this->error('New version is lower than te last tagged one: ' . $tags->last());
+        exit(1);
     }
 
-    private function newVersionIsGreaterThanOld(string $newVersion, string $oldVersion): bool
+    /**
+     * @param string $newVersion
+     * @param string $oldVersion
+     * @return bool
+     */
+    private function newVersionIsGreaterThanOld($newVersion, $oldVersion)
     {
         [$major1, $minor1, $patch1] = explode('.', $newVersion);
         [$major2, $minor2, $patch2] = explode('.', $oldVersion);
@@ -69,7 +141,11 @@ class Release extends Command
         return $major1 > $major2;
     }
 
-    private function checkPackageJsonVersionMatches(string $version): void
+    /**
+     * @param string $version
+     * @return void
+     */
+    private function checkPackageJsonVersionMatches($version)
     {
         $array = json_decode(file_get_contents($this->getTwillDir('package.json')));
 
@@ -79,7 +155,11 @@ class Release extends Command
         }
     }
 
-    private function checkTwillServiceProviderVersion(string $version): void
+    /**
+     * @param $version
+     * @return void
+     */
+    private function checkTwillServiceProviderVersion($version)
     {
         if (TwillServiceProvider::VERSION !== $version) {
             $twillServiceProviderVersion = TwillServiceProvider::VERSION;
@@ -90,7 +170,11 @@ class Release extends Command
         }
     }
 
-    private function getTwillDir(string $path = ''): string
+    /**
+     * @param string $path
+     * @return string
+     */
+    private function getTwillDir($path = '')
     {
         return __DIR__ . '/../../' . $path;
     }
