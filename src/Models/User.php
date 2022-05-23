@@ -8,8 +8,6 @@ use A17\Twill\Models\Behaviors\HasPermissions;
 use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\IsTranslatable;
 use A17\Twill\Models\Enums\UserRole;
-use A17\Twill\Models\Group;
-use A17\Twill\Models\Role;
 use A17\Twill\Notifications\PasswordResetByAdmin as PasswordResetByAdminNotification;
 use A17\Twill\Notifications\Reset as ResetNotification;
 use A17\Twill\Notifications\TemporaryPassword as TemporaryPasswordNotification;
