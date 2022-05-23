@@ -81,7 +81,7 @@ Input::make()
 | disabled    | Disables the field                                                                                                       | true<br />false                                             | false         |
 | readonly    | Sets the field as readonly                                                                                               | true<br />false                                             | false         |
 | default     | Sets a default value if empty                                                                                            | string                                                      |               |
-| mask        | Set a mask using the alpinjs mask plugin                                                                                 | string                                                      |               |
+| mask        | Set a mask using the alpinejs mask plugin                                                                                | string                                                      |               |
 
 Specific options for the "number" type:
 
