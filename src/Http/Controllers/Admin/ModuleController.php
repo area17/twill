@@ -23,6 +23,7 @@ use A17\Twill\Services\Listings\Columns\Text;
 use A17\Twill\Services\Listings\TableColumn;
 use A17\Twill\Services\Listings\TableColumns;
 use A17\Twill\Services\Listings\TableDataContext;
+use A17\Twill\Services\Forms\Form;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Http\Request;
@@ -741,7 +742,8 @@ abstract class ModuleController extends Controller
             return View::exists($view);
         });
 
-        return View::make($view, $this->form($id));
+        View::share('form', $this->form($id));
+        return View::make($view, $this->form($id))->with('renderFields', $this->getForm($this->repository->getById($id)));
     }
 
     /**
@@ -774,6 +776,7 @@ abstract class ModuleController extends Controller
             return View::exists($view);
         });
 
+        View::share('form', $this->form(null));
         return View::make($view, $this->form(null));
     }
 
@@ -927,6 +930,7 @@ abstract class ModuleController extends Controller
             twillTrans('twill::lang.publisher.restore-message', ['user' => $revision->byUser, 'date' => $date])
         );
 
+        View::share('form', $this->form($id, $item));
         return View::make($view, $this->form($id, $item));
     }
 
@@ -2158,5 +2162,9 @@ abstract class ModuleController extends Controller
     protected function getTransLabel($key, $replace = [])
     {
         return twillTrans(Arr::has($this->labels, $key) ? Arr::get($this->labels, $key) : $key, $replace);
+    }
+
+    public function getForm(\Illuminate\Database\Eloquent\Model $model): Form {
+        return new Form();
     }
 }

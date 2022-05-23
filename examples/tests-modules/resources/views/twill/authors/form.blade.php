@@ -1,30 +1,30 @@
 @extends('twill::layouts.form')
 
 @section('contentFields')
-    @formField('medias', [
-        'name' => 'avatar',
-        'label' => 'Avatar',
-    ])
+    <x-twill::medias
+        name="avatar"
+        label="Avatar"
+    />
 
-    @formField('input', [
-        'name' => 'description',
-        'label' => 'Description',
-        'translated' => true,
-        'maxlength' => 100
-    ])
+    <x-twill::input
+        name="description"
+        label="Description"
+        :translated="true"
+        :maxlength="100"
+    />
 
-    @formField('input', [
-        'name' => 'birthday',
-        'label' => 'Birthday',
-        'translated' => false
-    ])
+    <x-twill::input
+        name="birthday"
+        label="Birthday"
+        :translated="true"
+    />
 
-    @formField('input', [
-        'name' => 'bio',
-        'label' => 'Bio',
-        'translated' => true,
-        'type' => 'textarea'
-    ])
+    <x-twill::input
+        name="bio"
+        label="Bio"
+        :translated="true"
+        type="textarea"
+    />
 
-    @formField('block_editor')
+    <x-twill::block-editor/>
 @stop

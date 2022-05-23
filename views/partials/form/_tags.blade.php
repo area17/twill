@@ -1,7 +1,3 @@
-@php
-    $label = $label ?? 'Tags';
-    $note = $note ?? false;
-@endphp
 <a17-vselect
     label="{{ $label }}"
     name="tags"
