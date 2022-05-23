@@ -42,7 +42,7 @@ abstract class BaseFormField
     }
 
     /**
-     * Set the label of the field, you can use __('') Laravel translatable strings here.
+     * Set the label of the field, you can use twillTrans('') Laravel translatable strings here.
      */
     public function label(string $label): self
     {

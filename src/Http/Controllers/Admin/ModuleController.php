@@ -385,7 +385,7 @@ abstract class ModuleController extends Controller
                     Image::make()
                         ->field('thumbnail')
                         ->rounded()
-                        ->title(__('Image'))
+                        ->title(twillTrans('Image'))
                 );
             }
 
@@ -437,7 +437,7 @@ abstract class ModuleController extends Controller
                 Image::make()
                     ->field('thumbnail')
                     ->rounded()
-                    ->title(__('Image'))
+                    ->title(twillTrans('Image'))
             );
         }
 
