@@ -16,14 +16,14 @@ class Welcome extends ResetPassword
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject(__('twill::lang.notifications.welcome.subject', [
+            ->subject(twillTrans('twill::lang.notifications.welcome.subject', [
                 'appName' => config('app.name')
             ]))
             ->markdown('twill::emails.html.email', [
                 'url' => route('twill.password.reset.welcome.form', $this->token),
-                'actionText' => __('twill::lang.notifications.welcome.action'),
-                'title' => __('twill::lang.notifications.welcome.title'),
-                'copy' => __('twill::lang.notifications.welcome.content', ['name' => config('app.name')]),
+                'actionText' => twillTrans('twill::lang.notifications.welcome.action'),
+                'title' => twillTrans('twill::lang.notifications.welcome.title'),
+                'copy' => twillTrans('twill::lang.notifications.welcome.content', ['name' => config('app.name')]),
             ]);
     }
 }

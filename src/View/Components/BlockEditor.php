@@ -25,7 +25,7 @@ class BlockEditor extends TwillFormComponent
             renderForBlocks: $renderForBlocks,
             renderForModal: $renderForModal,
         );
-        $this->trigger = $trigger ?? $label ?? __('twill::lang.fields.block-editor.add-content');
+        $this->trigger = $trigger ?? $label ?? twillTrans('twill::lang.fields.block-editor.add-content');
     }
 
     public function render(): View

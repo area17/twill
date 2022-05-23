@@ -135,7 +135,7 @@ class DashboardController extends Controller
                     'href' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $item->id),
                     'thumbnail' => method_exists($item, 'defaultCmsImage') ? $item->defaultCmsImage(['w' => 100, 'h' => 100]) : null,
                     'published' => $item->published,
-                    'activity' => __('twill::lang.dashboard.search.last-edit'),
+                    'activity' => twillTrans('twill::lang.dashboard.search.last-edit'),
                     'date' => $date,
                     'title' => $item->titleInDashboard ?? $item->title,
                     'author' => $author,
@@ -189,9 +189,9 @@ class DashboardController extends Controller
             'id' => $activity->id,
             'type' => ucfirst($dashboardModule['label_singular'] ?? Str::singular($dashboardModule['name'])),
             'date' => $activity->created_at->toIso8601String(),
-            'author' => $activity->causer->name ?? __('twill::lang.dashboard.unknown-author'),
+            'author' => $activity->causer->name ?? twillTrans('twill::lang.dashboard.unknown-author'),
             'name' => $activity->subject->titleInDashboard ?? $activity->subject->title,
-            'activity' => __('twill::lang.dashboard.activities.' . $activity->description),
+            'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description),
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
         ] : []) + (!$activity->subject->trashed() ? [

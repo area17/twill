@@ -1,13 +1,13 @@
 <x-twill::input
     name="name"
-    :label="__('twill::lang.user-management.name')"
+    :label="twillTrans('twill::lang.user-management.name')"
     :maxlength="70"
 />
 
 @unless($item ?? null)
     <x-twill::input
         name="email"
-        :label="__('twill::lang.user-management.email')"
+        :label="twillTrans('twill::lang.user-management.email')"
         type="email"
     />
 
@@ -16,7 +16,7 @@
 
         <x-twill::select
             :name="$userModel::getRoleColumnName()"
-            :label="__('twill::lang.user-management.role')"
+            :label="twillTrans('twill::lang.user-management.role')"
             :native="true"
             :options="$roleList ?? []"
             :default="$roleList[0]['value'] ?? ''"

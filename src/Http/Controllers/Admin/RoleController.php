@@ -44,18 +44,18 @@ class RoleController extends ModuleController
 
         $this->primaryNavigation = [
             'users' => [
-                'title' => __('twill::lang.user-management.users'),
+                'title' => twillTrans('twill::lang.user-management.users'),
                 'module' => true,
                 'can' => 'edit-users',
             ],
             'roles' => [
-                'title' => __('twill::lang.permissions.roles.title'),
+                'title' => twillTrans('twill::lang.permissions.roles.title'),
                 'module' => true,
                 'active' => true,
                 'can' => 'edit-user-roles',
             ],
             'groups' => [
-                'title' => __('twill::lang.permissions.groups.title'),
+                'title' => twillTrans('twill::lang.permissions.groups.title'),
                 'module' => true,
                 'can' => 'edit-user-groups',
             ],

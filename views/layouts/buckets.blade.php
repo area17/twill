@@ -21,13 +21,13 @@
 
 @section('content')
     <a17-buckets
-        title="{{ $bucketSourceTitle ?? __('twill::lang.buckets.source-title') }}"
-        empty-buckets="{{ __('twill::lang.buckets.none-featured') }}"
-        empty-source="{{ __('twill::lang.buckets.none-available') }}"
+        title="{{ $bucketSourceTitle ?? twillTrans('twill::lang.buckets.source-title') }}"
+        empty-buckets="{{ twillTrans('twill::lang.buckets.none-featured') }}"
+        empty-source="{{ twillTrans('twill::lang.buckets.none-available') }}"
         :restricted="{!! json_encode($restricted ?? true) !!}"
         :extra-actions="{{ json_encode($bucketSectionLinks) }}"
     >
-        {{ $bucketsSectionIntro ?? __('twill::lang.buckets.intro') }}
+        {{ $bucketsSectionIntro ?? twillTrans('twill::lang.buckets.intro') }}
     </a17-buckets>
 @stop
 

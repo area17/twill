@@ -77,7 +77,7 @@ class UserRequest extends Request
                                 return $fail('You must have 2FA enabled to do this action');
                             }
 
-                            $challenge = __(
+                            $challenge = twillTrans(
                                 'twill::lang.user-management.force-2fa-disable-challenge',
                                 ['user' => $user->email]
                             );

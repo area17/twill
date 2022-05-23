@@ -1,6 +1,6 @@
 <x-twill::input
     :name="$titleFormKey ?? 'title'"
-    :label="$titleFormKey === 'title' ? __('twill::lang.modal.title-field') : ucfirst($titleFormKey)"
+    :label="$titleFormKey === 'title' ? twillTrans('twill::lang.modal.title-field') : ucfirst($titleFormKey)"
     :required="true"
     on-change="formatPermalink"
 />
@@ -30,7 +30,7 @@
 @if ($permalink ?? true)
     <x-twill::input
         name="slug"
-        :label="__('twill::lang.modal.permalink-field')"
+        :label="twillTrans('twill::lang.modal.permalink-field')"
         ref="permalink"
         :prefix="$permalinkPrefix ?? ''"
     />

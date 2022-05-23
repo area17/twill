@@ -16,13 +16,13 @@ class Reset extends ResetPassword
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject(__('twill::lang.notifications.reset.subject', [
+            ->subject(twillTrans('twill::lang.notifications.reset.subject', [
                 'appName' => config('app.name')
             ]))
             ->markdown('twill::emails.html.email', [
                 'url' => route('twill.password.reset.form', $this->token),
-                'actionText' => __('twill::lang.notifications.reset.action'),
-                'copy' => __('twill::lang.notifications.reset.content'),
+                'actionText' => twillTrans('twill::lang.notifications.reset.action'),
+                'copy' => twillTrans('twill::lang.notifications.reset.content'),
             ]);
     }
 }

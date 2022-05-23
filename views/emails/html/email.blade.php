@@ -8,11 +8,11 @@
 @endslot
 
 {{-- Body --}}
-{{ __('twill::lang.emails.hello') }}
+{{ twillTrans('twill::lang.emails.hello') }}
 
 {{ $copy }}
 
-{{ __('twill::lang.emails.regards') }}<br>
+{{ twillTrans('twill::lang.emails.regards') }}<br>
 {{ config('app.name') }}
 
 {{-- Button --}}
@@ -25,7 +25,7 @@
 {{-- Subcopy --}}
 @slot('subcopy')
 @component('twill::emails.html.subcopy')
-{{ __('twill::lang.emails.problems', ['actionText' => $actionText, 'url' => $url]) }}
+{{ twillTrans('twill::lang.emails.problems', ['actionText' => $actionText, 'url' => $url]) }}
 @endcomponent
 @endslot
 

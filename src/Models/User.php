@@ -278,7 +278,7 @@ class User extends AuthenticatableContract
     {
         return $this->last_login_at ?
             $this->last_login_at->format('d M Y, H:i') :
-            ($this->isActivated() ? '&mdash;' : __('twill::lang.user-management.activation-pending'));
+            ($this->isActivated() ? '&mdash;' : twillTrans('twill::lang.user-management.activation-pending'));
     }
 
     public function setGoogle2faSecretAttribute($secret)
