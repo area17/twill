@@ -7,7 +7,7 @@
             type: '{{ $type }}',
             @if ($required) required: true, @endif
             @if ($note) note: '{{ $note }}', @endif
-            @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
+            @if ($placeholder) placeholder: '{{ addslashes($placeholder) }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($disabled) disabled: true, @endif
             @if ($readOnly) readonly: true, @endif

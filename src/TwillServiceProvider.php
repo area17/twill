@@ -40,6 +40,7 @@ use Cartalyst\Tags\TagsServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -121,6 +122,9 @@ class TwillServiceProvider extends ServiceProvider
         $this->app->bind(TwillCapsules::class);
 
         Blade::componentNamespace('A17\\Twill\\View\\Components', 'twill');
+
+        // Laravel 7 compatability.
+        Collection::macro('doesntContain', [Collection::class, 'missing']);
 
         Relation::morphMap([
             'users' => User::class,

@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Medias
 
-![screenshot](/docs/_media/medias.png)
+![screenshot](../.vuepress/public/_media/medias.png)
 
 Form view:
 ```html 

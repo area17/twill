@@ -26,7 +26,7 @@ All notable changes to `twill` will be documented in this file.
 - Better defaults [PR](https://github.com/area17/twill/pull/1484)
 - Config file names are aligned with their config key name [PR](https://github.com/area17/twill/pull/1434)
 - Namespaces have been renamed from Admin to Twill [PR](https://github.com/area17/twill/pull/1388)
-    - You can use php artisan twill:upgrade to automate this in your code base
+  - You can use php artisan twill:upgrade to automate this in your code base
 
 ### Bugfixes
 
@@ -35,6 +35,26 @@ All notable changes to `twill` will be documented in this file.
 ### Documentation
 
 - Documented capsules [PR](https://github.com/area17/twill/pull/1628)
+
+## 2.8.3 (2022-05-19)
+
+### Fixes
+
+- Media fields can now be validated in blocks [`#1648`](https://github.com/area17/twill/pull/1648)
+- Internal links in quill are no longer set to target \_blank [`#1649`](https://github.com/area17/twill/pull/1649)
+- Improved restoring support for nested modules [`#1590`](https://github.com/area17/twill/pull/1590)
+
+## 2.8.2 (2022-05-06)
+
+### Fixes
+
+- Make site link translatable [`#1617`](https://github.com/area17/twill/pull/1617)
+- Fix SQL error on twill:refresh-crops command [`#1618`](https://github.com/area17/twill/pull/1618)
+- Fix locale if intl extension is missing. [`#1620`](https://github.com/area17/twill/pull/1620)
+- Fix usage of quotes in placeholder [`#1621`](https://github.com/area17/twill/pull/1621)
+- Fix visual issue with long notes on media [`#1612`](https://github.com/area17/twill/pull/1612)
+- Change search to allow less then 3 characters [`#1613`](https://github.com/area17/twill/pull/1613)
+- Add polyfill for doesntContain to ensure Laravel 7 compatability [`#1635`](https://github.com/area17/twill/pull/1635)
 
 ## 2.8.1 (2022-04-26)
 

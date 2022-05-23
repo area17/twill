@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Multi Select
 
-![screenshot](/docs/_media/multiselectunpacked.png)
+![screenshot](../.vuepress/public/_media/multiselectunpacked.png)
 
 Form view:
 ```html

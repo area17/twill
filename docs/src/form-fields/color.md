@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Color
 
-![screenshot](/docs/_media/color.png)
+![screenshot](../.vuepress/public/_media/color.png)
 
 Form view:
 ```html

@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Select
 
-![screenshot](/docs/_media/select.png)
+![screenshot](../.vuepress/public/_media/select.png)
 
 Form view:
 ```html

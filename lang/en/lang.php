@@ -333,6 +333,7 @@ return [
         'media-library' => 'Media Library',
         'settings' => 'Settings',
         'close-menu' => 'Close menu',
+        'open-live-site' => 'Open live site',
     ],
     'notifications' => [
         'reset' => [

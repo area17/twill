@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # WYSIWYG
 
-![screenshot](/docs/_media/wysiwyg.png)
+![screenshot](../.vuepress/public/_media/wysiwyg.png)
 
 Form view:
 ```html

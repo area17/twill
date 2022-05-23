@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Select Unpacked
 
-![screenshot](/docs/_media/selectunpacked.png)
+![screenshot](../.vuepress/public/_media/selectunpacked.png)
 
 Form view:
 ```html

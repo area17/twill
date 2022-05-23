@@ -8,6 +8,7 @@
             widthMin: {{ $widthMin }},
             heightMin: {{ $heightMin }},
             note: '{{ $fieldNote }}',
+            @if($renderForBlocks) fixedErrorKey: $parent.blockFieldName('{{$name}}'), @endif
             @if ($disabled) disabled: true, @endif
             @if ($extraMetadatas) extraMetadatas: {{ json_encode($extraMetadatas) }}, @endif
             @if ($altTextMaxLength) :altTextMaxLength: {{ $altTextMaxLength }}, @endif
@@ -34,7 +35,7 @@
     @endpush
     @endunless
 @else
-    <a17-inputframe label="{{ $label }}" name="medias.{{ $name }}" @if ($required) :required="true" @endif @if ($fieldNote) note="{{ $fieldNote }}" @endif>
+    <a17-inputframe @if($renderForBlocks) :fixed-error-key="$parent.blockFieldName('{{$name}}')" @endif label="{{ $label }}" name="medias.{{ $name }}" @if ($required) :required="true" @endif @if ($fieldNote) note="{{ $fieldNote }}" @endif>
         @if($multiple) <a17-slideshow @else <a17-mediafield @endif
             {!! $formFieldName() !!}
             crop-context="{{ $name }}"
