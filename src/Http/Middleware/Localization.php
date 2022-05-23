@@ -16,7 +16,6 @@ class Localization
     public function handle($request, Closure $next)
     {
         if ($lang = $request->user()->language) {
-            app()->setLocale($lang);
             config(['twill.locale' => $lang]);
         }
 

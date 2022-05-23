@@ -369,9 +369,15 @@ class Block
                 $result = $matches[1];
 
                 $result = Str::replaceLast(')', '', Str::replaceFirst('(', '', $result));
+
                 // Process the match if it is __(translatable).
                 if (Str::startsWith($result, '__(')) {
-                    return __(preg_replace('/__\((?:"|\')(.*)(?:"|\')\)/', '$1', $result));
+                    return twillTrans(preg_replace('/__\((?:"|\')(.*)(?:"|\')\)/', '$1', $result));
+                }
+
+                // Process the match if it is twillTrans(translatable).
+                if (Str::startsWith($result, 'twillTrans(')) {
+                    return twillTrans(preg_replace('/twillTrans\((?:"|\')(.*)(?:"|\')\)/', '$1', $result));
                 }
 
                 return trim($result, '\'"');

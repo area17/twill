@@ -5,7 +5,8 @@ use Illuminate\Support\Collection;
 if (! function_exists('twillTrans')) {
     function twillTrans($key, $replace = [])
     {
-        return __($key, $replace);
+        $locale = config('twill.locale', config('twill.fallback_locale', 'en'));
+        return trans($key, $replace, $locale);
     }
 }
 
