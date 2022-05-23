@@ -21,7 +21,7 @@
     {{-- Footer --}}
     @slot('footer')
         @component('emails.markdown.footer')
-            © {{ date('Y') }} {{ config('app.name') }}. {{ twillTrans('twill::lang.emails.all-rights-reserved') }}
+            © {{ date('Y') }} {{ config('app.name') }}. {{ __('twill::lang.emails.all-rights-reserved') }}
         @endcomponent
     @endslot
 @endcomponent

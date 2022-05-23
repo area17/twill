@@ -12,7 +12,7 @@
 @if(isset($currentUser))
     <a17-dropdown ref="userDropdown" position="bottom-right" :offset="-10">
         <a href="{{ route('twill.users.edit', $currentUser->id) }}" @click.prevent="$refs.userDropdown.toggle()">
-            {{ $currentUser->role === 'SUPERADMIN' ? twillTrans('twill::lang.nav.admin') : $currentUser->name }}
+            {{ $currentUser->role === 'SUPERADMIN' ? __('twill::lang.nav.admin') : $currentUser->name }}
             <span symbol="dropdown_module" class="icon icon--dropdown_module">
                 <svg>
                     <title>dropdown_module</title>
@@ -22,10 +22,10 @@
         </a>
         <div slot="dropdown__content">
             @if ($currentUser->can('access-user-management'))
-                <a href="{{ route($user_management_route) }}">{{ twillTrans('twill::lang.nav.cms-users') }}</a>
+                <a href="{{ route($user_management_route) }}">{{ __('twill::lang.nav.cms-users') }}</a>
             @endif
-            <a href="{{ route('twill.users.edit', $currentUser->id) }}">{{ twillTrans('twill::lang.nav.profile') }}</a>
-            <a href="#" data-logout-btn>{{ twillTrans('twill::lang.nav.logout') }}</a>
+            <a href="{{ route('twill.users.edit', $currentUser->id) }}">{{ __('twill::lang.nav.profile') }}</a>
+            <a href="#" data-logout-btn>{{ __('twill::lang.nav.logout') }}</a>
         </div>
     </a17-dropdown>
 @endif

@@ -17,12 +17,12 @@
                 </div>
                 <div class="headerMobile__list">
                     @if (config('twill.enabled.media-library') || config('twill.enabled.file-library'))
-                        <a href="#" data-closenav-btn data-medialib-btn>{{ twillTrans('twill::lang.nav.media-library') }}</a><br />
+                        <a href="#" data-closenav-btn data-medialib-btn>{{ __('twill::lang.nav.media-library') }}</a><br />
                     @endif
                     @if(isset($currentUser))
-                        <a href="{{ route('twill.users.index') }}">{{ twillTrans('twill::lang.nav.cms-users') }}</a><br />
-                        <a href="{{ route('twill.users.edit', $currentUser->id) }}">{{ twillTrans('twill::lang.nav.profile') }}</a><br />
-                        <a href="#" data-logout-btn>{{ twillTrans('twill::lang.nav.logout') }}</a>
+                        <a href="{{ route('twill.users.index') }}">{{ __('twill::lang.nav.cms-users') }}</a><br />
+                        <a href="{{ route('twill.users.edit', $currentUser->id) }}">{{ __('twill::lang.nav.profile') }}</a><br />
+                        <a href="#" data-logout-btn>{{ __('twill::lang.nav.logout') }}</a>
                     @endif
                 </div>
             </div>
@@ -41,7 +41,7 @@
             <span class="ham__icon">
                 <span class="ham__line"></span>
             </span>
-            <span class="icon icon--close_modal"><svg><title>{{ twillTrans('twill::lang.nav.close-menu') }}</title><use xlink:href="#icon--close_modal"></use></svg></span>
+            <span class="icon icon--close_modal"><svg><title>{{ __('twill::lang.nav.close-menu') }}</title><use xlink:href="#icon--close_modal"></use></svg></span>
         </span>
     </button>
 @endif

@@ -24,7 +24,7 @@
             <ul class="header__items">
                 @can('access-media-library')
                     @if (config('twill.enabled.media-library') || config('twill.enabled.file-library'))
-                        <li class="header__item"><a href="#" data-medialib-btn>{{ twillTrans('twill::lang.nav.media-library') }}</a></li>
+                        <li class="header__item"><a href="#" data-medialib-btn>{{ __('twill::lang.nav.media-library') }}</a></li>
                     @endif
                 @endcan
                 @if (config('twill.enabled.site-link'))

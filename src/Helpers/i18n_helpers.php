@@ -3,7 +3,10 @@
 use Illuminate\Support\Collection;
 
 if (! function_exists('twillTrans')) {
-    function twillTrans($key, $replace = [])
+    /**
+     * @deprecated use __('') instead.
+     */
+    function __($key, $replace = [])
     {
         return __($key, $replace);
     }

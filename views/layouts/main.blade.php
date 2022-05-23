@@ -50,13 +50,13 @@
                                           :extra-metadatas="{{ json_encode(array_values(config('twill.media_library.extra_metadatas_fields', []))) }}"
                                           :translatable-metadatas="{{ json_encode(array_values(config('twill.media_library.translatable_metadatas_fields', []))) }}"
                         ></a17-medialibrary>
-                        <a17-dialog ref="deleteWarningMediaLibrary" modal-title="{{ twillTrans("twill::lang.media-library.dialogs.delete.delete-media-title") }}" confirm-label="{{ twillTrans("twill::lang.media-library.dialogs.delete.delete-media-confirm") }}">
-                            <p class="modal--tiny-title"><strong>{{ twillTrans("twill::lang.media-library.dialogs.delete.delete-media-title") }}</strong></p>
-                            <p>{!! twillTrans("twill::lang.media-library.dialogs.delete.delete-media-desc") !!}</p>
+                        <a17-dialog ref="deleteWarningMediaLibrary" modal-title="{{ __("twill::lang.media-library.dialogs.delete.delete-media-title") }}" confirm-label="{{ __("twill::lang.media-library.dialogs.delete.delete-media-confirm") }}">
+                            <p class="modal--tiny-title"><strong>{{ __("twill::lang.media-library.dialogs.delete.delete-media-title") }}</strong></p>
+                            <p>{!! __("twill::lang.media-library.dialogs.delete.delete-media-desc") !!}</p>
                         </a17-dialog>
-                        <a17-dialog ref="replaceWarningMediaLibrary" modal-title="{{ twillTrans("twill::lang.media-library.dialogs.replace.replace-media-title") }}" confirm-label="{{ twillTrans("twill::lang.media-library.dialogs.replace.replace-media-confirm") }}">
-                            <p class="modal--tiny-title"><strong>{{ twillTrans("twill::lang.media-library.dialogs.replace.replace-media-title") }}</strong></p>
-                            <p>{!! twillTrans("twill::lang.media-library.dialogs.replace.replace-media-desc") !!}</p>
+                        <a17-dialog ref="replaceWarningMediaLibrary" modal-title="{{ __("twill::lang.media-library.dialogs.replace.replace-media-title") }}" confirm-label="{{ __("twill::lang.media-library.dialogs.replace.replace-media-confirm") }}">
+                            <p class="modal--tiny-title"><strong>{{ __("twill::lang.media-library.dialogs.replace.replace-media-title") }}</strong></p>
+                            <p>{!! __("twill::lang.media-library.dialogs.replace.replace-media-desc") !!}</p>
                         </a17-dialog>
                     @endif
                     <a17-notif variant="success"></a17-notif>
@@ -97,7 +97,7 @@
             @if (config('twill.enabled.media-library'))
                 window['{{ config('twill.js_namespace') }}'].STORE.medias.types.push({
                     value: 'image',
-                    text: '{{ twillTrans("twill::lang.media-library.images") }}',
+                    text: '{{ __("twill::lang.media-library.images") }}',
                     total: {{ \A17\Twill\Models\Media::count() }},
                     endpoint: '{{ route('twill.media-library.medias.index') }}',
                     tagsEndpoint: '{{ route('twill.media-library.medias.tags') }}',
@@ -109,7 +109,7 @@
             @if (config('twill.enabled.file-library'))
                 window['{{ config('twill.js_namespace') }}'].STORE.medias.types.push({
                     value: 'file',
-                    text: '{{ twillTrans("twill::lang.media-library.files") }}',
+                    text: '{{ __("twill::lang.media-library.files") }}',
                     total: {{ \A17\Twill\Models\File::count() }},
                     endpoint: '{{ route('twill.file-library.files.index') }}',
                     tagsEndpoint: '{{ route('twill.file-library.files.tags') }}',

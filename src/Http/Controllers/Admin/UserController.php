@@ -137,19 +137,19 @@ class UserController extends ModuleController
 
         $this->primaryNavigation = [
             'users' => [
-                'title' => twillTrans('twill::lang.user-management.users'),
+                'title' => __('twill::lang.user-management.users'),
                 'module' => true,
                 'active' => true,
                 'can' => 'edit-users',
             ],
         ] + (config('twill.enabled.permissions-management') ? [
             'roles' => [
-                'title' => twillTrans('twill::lang.permissions.roles.title'),
+                'title' => __('twill::lang.permissions.roles.title'),
                 'module' => true,
                 'can' => 'edit-user-roles',
             ],
             'groups' => [
-                'title' => twillTrans('twill::lang.permissions.groups.title'),
+                'title' => __('twill::lang.permissions.groups.title'),
                 'module' => true,
                 'can' => 'edit-user-groups',
             ],
@@ -253,22 +253,22 @@ class UserController extends ModuleController
         }
 
         array_push($statusFilters, [
-            'name' => twillTrans('twill::lang.user-management.active'),
+            'name' => __('twill::lang.user-management.active'),
             'slug' => 'activated',
             'number' => $this->repository->getCountByStatusSlug('activated', [$roleScope]),
         ], [
-            'name' => twillTrans('twill::lang.user-management.pending'),
+            'name' => __('twill::lang.user-management.pending'),
             'slug' => 'pending',
             'number' => $this->repository->getCountByStatusSlug('pending', [$roleScope]),
         ], [
-            'name' => twillTrans('twill::lang.user-management.disabled'),
+            'name' => __('twill::lang.user-management.disabled'),
             'slug' => 'draft',
             'number' => $this->repository->getCountByStatusSlug('draft', [$roleScope]),
         ]);
 
         if ($this->getIndexOption('restore')) {
             array_push($statusFilters, [
-                'name' => twillTrans('twill::lang.user-management.trash'),
+                'name' => __('twill::lang.user-management.trash'),
                 'slug' => 'trash',
                 'number' => $this->repository->getCountByStatusSlug('trash', [$roleScope]),
             ]);

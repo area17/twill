@@ -26,7 +26,7 @@
     $customForm = $customForm ?? false;
     $controlLanguagesPublication = $controlLanguagesPublication ?? true;
     $disableContentFieldset = $disableContentFieldset ?? false;
-    $editModalTitle = ($createWithoutModal ?? false) ? twillTrans('twill::lang.modal.create.title') : null;
+    $editModalTitle = ($createWithoutModal ?? false) ? __('twill::lang.modal.create.title') : null;
     $item = isset($item) ? $item : null;
 
     if (config('twill.enabled.permissions-management')) {
@@ -49,7 +49,7 @@
                 if(!$disableContentFieldset) {
                     array_unshift($additionalFieldsets, [
                         'fieldset' => 'content',
-                        'label' => $contentFieldsetLabel ?? twillTrans('twill::lang.form.content')
+                        'label' => $contentFieldsetLabel ?? __('twill::lang.form.content')
                     ]);
                 }
             @endphp
@@ -74,7 +74,7 @@
                 <div slot="actions">
                     <a17-langswitcher :all-published="{{ json_encode(!$controlLanguagesPublication) }}"></a17-langswitcher>
                     <a17-button v-if="editor" type="button" variant="editor" size="small" @click="openEditor(-1)">
-                        <span v-svg symbol="editor"></span>{{ twillTrans('twill::lang.form.editor') }}
+                        <span v-svg symbol="editor"></span>{{ __('twill::lang.form.editor') }}
                     </a17-button>
                 </div>
             </a17-sticky-nav>
@@ -108,7 +108,7 @@
                     </aside>
                     <section class="col col--primary" data-sticky-top="publisher">
                         @unless($disableContentFieldset)
-                            <a17-fieldset title="{{ $contentFieldsetLabel ?? twillTrans('twill::lang.form.content') }}" id="content">
+                            <a17-fieldset title="{{ $contentFieldsetLabel ?? __('twill::lang.form.content') }}" id="content">
                                 @if (isset($renderFields) && $renderFields->isNotEmpty())
                                     @foreach($renderFields as $field)
                                         {!! $field->render() !!}
@@ -149,9 +149,9 @@
     </a17-modal>
     <a17-editor v-if="editor" ref="editor" bg-color="{{ config('twill.block_editor.background_color') ?? '#FFFFFF' }}"></a17-editor>
     <a17-previewer ref="preview"></a17-previewer>
-        <a17-dialog ref="warningContentEditor" modal-title="{{ twillTrans('twill::lang.form.dialogs.delete.title') }}" confirm-label="{{ twillTrans('twill::lang.form.dialogs.delete.confirm') }}">
-        <p class="modal--tiny-title"><strong>{{ twillTrans('twill::lang.form.dialogs.delete.delete-content') }}</strong></p>
-        <p>{!! twillTrans('twill::lang.form.dialogs.delete.confirmation') !!}</p>
+        <a17-dialog ref="warningContentEditor" modal-title="{{ __('twill::lang.form.dialogs.delete.title') }}" confirm-label="{{ __('twill::lang.form.dialogs.delete.confirm') }}">
+        <p class="modal--tiny-title"><strong>{{ __('twill::lang.form.dialogs.delete.delete-content') }}</strong></p>
+        <p>{!! __('twill::lang.form.dialogs.delete.confirmation') !!}</p>
     </a17-dialog>
 @stop
 
@@ -178,10 +178,10 @@
         published: {{ $item?->published ? 'true' : 'false' }},
         createWithoutModal: {{ isset($createWithoutModal) && $createWithoutModal ? 'true' : 'false' }},
         withPublicationTimeframe: {{ json_encode(($schedule ?? true) && $item?->isFillable('publish_start_date')) }},
-        publishedLabel: '{{ $publishedLabel ?? twillTrans('twill::lang.main.published') }}',
-        draftLabel: '{{ $draftLabel ?? twillTrans('twill::lang.main.draft') }}',
-        expiredLabel: '{{twillTrans('twill::lang.publisher.expired')}}',
-        scheduledLabel: '{{twillTrans('twill::lang.publisher.scheduled')}}',
+        publishedLabel: '{{ $publishedLabel ?? __('twill::lang.main.published') }}',
+        draftLabel: '{{ $draftLabel ?? __('twill::lang.main.draft') }}',
+        expiredLabel: '{{__('twill::lang.publisher.expired')}}',
+        scheduledLabel: '{{__('twill::lang.publisher.scheduled')}}',
         submitDisableMessage: '{{ $submitDisableMessage ?? '' }}',
         startDate: '{{ $item?->publish_start_date ?? '' }}',
         endDate: '{{ $item?->publish_end_date ?? '' }}',
@@ -191,55 +191,55 @@
             draft: [
                 {
                     name: 'restore',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-draft') }}'
+                    text: '{{ __('twill::lang.publisher.restore-draft') }}'
                 },
                 {
                     name: 'restore-close',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-draft-close') }}'
+                    text: '{{ __('twill::lang.publisher.restore-draft-close') }}'
                 },
                 {
                     name: 'restore-new',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-draft-new') }}'
+                    text: '{{ __('twill::lang.publisher.restore-draft-new') }}'
                 },
                 {
                     name: 'cancel',
-                    text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
+                    text: '{{ __('twill::lang.publisher.cancel') }}'
                 }
             ],
             live: [
                 {
                     name: 'restore',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live') }}'
+                    text: '{{ __('twill::lang.publisher.restore-live') }}'
                 },
                 {
                     name: 'restore-close',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live-close') }}'
+                    text: '{{ __('twill::lang.publisher.restore-live-close') }}'
                 },
                 {
                     name: 'restore-new',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live-new') }}'
+                    text: '{{ __('twill::lang.publisher.restore-live-new') }}'
                 },
                 {
                     name: 'cancel',
-                    text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
+                    text: '{{ __('twill::lang.publisher.cancel') }}'
                 }
             ],
             update: [
                 {
                     name: 'restore',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live') }}'
+                    text: '{{ __('twill::lang.publisher.restore-live') }}'
                 },
                 {
                     name: 'restore-close',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live-close') }}'
+                    text: '{{ __('twill::lang.publisher.restore-live-close') }}'
                 },
                 {
                     name: 'restore-new',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live-new') }}'
+                    text: '{{ __('twill::lang.publisher.restore-live-new') }}'
                 },
                 {
                     name: 'cancel',
-                    text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
+                    text: '{{ __('twill::lang.publisher.cancel') }}'
                 }
             ]
         } @else null @endif

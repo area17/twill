@@ -6,7 +6,7 @@
         :wide="{{ json_encode($wide) }}"
         endpoint="{{ $endpoint }}"
         :endpoints="{{ json_encode($endpoints) }}"
-        modal-title="{{ twillTrans('twill::lang.fields.browser.attach') . ' ' . strtolower($label) }}"
+        modal-title="{{ __('twill::lang.fields.browser.attach') . ' ' . strtolower($label) }}"
         :draggable="{{ json_encode($sortable) }}"
         browser-note="{{ $browserNote }}"
         @if($buttonOnTop) :button-on-top="true" @endif

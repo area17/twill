@@ -86,7 +86,7 @@
                                 @if($skipCreateModal) href={{$createUrl ?? ''}} el="a" @endif
                                 @if(!$skipCreateModal) v-on:click="create" @endif
                             >
-                                {{ twillTrans('twill::lang.listing.add-new-button') }}
+                                {{ __('twill::lang.listing.add-new-button') }}
                             </a17-button>
                             @foreach($filterLinks as $link)
                                 <a17-button el="a" href="{{ $link['url'] ?? '#' }}" download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}" target="{{ $link['target'] ?? '' }}" variant="small secondary">{{ $link['label'] }}</a17-button>
@@ -127,13 +127,13 @@
                 :draggable="{{ $reorder ? 'true' : 'false' }}"
                 :max-depth="{{ $nestedDepth ?? '1' }}"
                 :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-                empty-message="{{ twillTrans('twill::lang.listing.listing-empty-message') }}">
+                empty-message="{{ __('twill::lang.listing.listing-empty-message') }}">
             </a17-nested-datatable>
         @else
             <a17-datatable
                 :draggable="{{ $reorder ? 'true' : 'false' }}"
                 :bulkeditable="{{ $bulkEdit ? 'true' : 'false' }}"
-                empty-message="{{ twillTrans('twill::lang.listing.listing-empty-message') }}">
+                empty-message="{{ __('twill::lang.listing.listing-empty-message') }}">
             </a17-datatable>
         @endif
 
@@ -152,14 +152,14 @@
             </a17-modal-create>
         @endif
 
-        <a17-dialog ref="warningDeleteRow" modal-title="{{ twillTrans('twill::lang.listing.dialogs.delete.title') }}" confirm-label="{{ twillTrans('twill::lang.listing.dialogs.delete.confirm') }}">
-            <p class="modal--tiny-title"><strong>{{ twillTrans('twill::lang.listing.dialogs.delete.move-to-trash') }}</strong></p>
-            <p>{{ twillTrans('twill::lang.listing.dialogs.delete.disclaimer') }}</p>
+        <a17-dialog ref="warningDeleteRow" modal-title="{{ __('twill::lang.listing.dialogs.delete.title') }}" confirm-label="{{ __('twill::lang.listing.dialogs.delete.confirm') }}">
+            <p class="modal--tiny-title"><strong>{{ __('twill::lang.listing.dialogs.delete.move-to-trash') }}</strong></p>
+            <p>{{ __('twill::lang.listing.dialogs.delete.disclaimer') }}</p>
         </a17-dialog>
 
-        <a17-dialog ref="warningDestroyRow" modal-title="{{ twillTrans('twill::lang.listing.dialogs.destroy.title') }}" confirm-label="{{ twillTrans('twill::lang.listing.dialogs.destroy.confirm') }}">
-            <p class="modal--tiny-title"><strong>{{ twillTrans('twill::lang.listing.dialogs.destroy.destroy-permanently') }}</strong></p>
-            <p>{{ twillTrans('twill::lang.listing.dialogs.destroy.disclaimer') }}</p>
+        <a17-dialog ref="warningDestroyRow" modal-title="{{ __('twill::lang.listing.dialogs.destroy.title') }}" confirm-label="{{ __('twill::lang.listing.dialogs.destroy.confirm') }}">
+            <p class="modal--tiny-title"><strong>{{ __('twill::lang.listing.dialogs.destroy.destroy-permanently') }}</strong></p>
+            <p>{{ __('twill::lang.listing.dialogs.destroy.disclaimer') }}</p>
         </a17-dialog>
     </div>
 @stop

@@ -1,6 +1,6 @@
 @extends('twill::layouts.form', [
-    'contentFieldsetLabel' => twillTrans('twill::lang.user-management.content-fieldset-label'),
-    'editModalTitle' => twillTrans('twill::lang.user-management.edit-modal-title'),
+    'contentFieldsetLabel' => __('twill::lang.user-management.content-fieldset-label'),
+    'editModalTitle' => __('twill::lang.user-management.edit-modal-title'),
     'reloadOnSuccess' => true
 ])
 
@@ -12,16 +12,16 @@
 
     <x-twill::input
         name="email"
-        :label="twillTrans('twill::lang.user-management.email')"
+        :label="__('twill::lang.user-management.email')"
     />
 
     @can('edit-user-roles')
         @if($item->id !== $currentUser->id)
             <x-twill::select
                 :name="$item->getRoleColumnName()"
-                :label="twillTrans('twill::lang.user-management.role')"
+                :label="__('twill::lang.user-management.role')"
                 :options="$roleList ?? []"
-                :placeholder="twillTrans('twill::lang.user-management.role-placeholder')"
+                :placeholder="__('twill::lang.user-management.role-placeholder')"
             />
         @endif
     @endcan
@@ -29,21 +29,21 @@
     @if(config('twill.enabled.users-image'))
         <x-twill::medias
             name="profile"
-            :label="twillTrans('twill::lang.user-management.profile-image')"
+            :label="__('twill::lang.user-management.profile-image')"
         />
     @endif
 
     @if(config('twill.enabled.users-description'))
         <x-twill::input
             name="title"
-            :label="twillTrans('twill::lang.user-management.title')"
+            :label="__('twill::lang.user-management.title')"
             :maxlength="250"
         />
         <x-twill::input
             name="description"
             :rows="4"
             type="textarea"
-            :label="twillTrans('twill::lang.user-management.description')"
+            :label="__('twill::lang.user-management.description')"
         />
     @endif
 
@@ -61,8 +61,8 @@
 
     <x-twill::select
         name="language"
-        :label="twillTrans('twill::lang.user-management.language')"
-        :placeholder="twillTrans('twill::lang.user-management.language-placeholder')"
+        :label="__('twill::lang.user-management.language')"
+        :placeholder="__('twill::lang.user-management.language-placeholder')"
         :default="config('twill.locale', 'en')"
         :options="$languageOptions"
     />
@@ -70,7 +70,7 @@
     @if($with2faSettings ?? false)
         <x-twill::checkbox
             name="google_2fa_enabled"
-            :label="twillTrans('twill::lang.user-management.2fa')"
+            :label="__('twill::lang.user-management.2fa')"
         />
 
         @unless($item->google_2fa_enabled ?? false)
@@ -81,10 +81,10 @@
                 <img style="display: block; margin-left: auto; margin-right: auto; max-height: 300px;"
                      src="{{ $qrCode }}">
                 <div class="f--regular f--note"
-                     style="margin: 20px 0;">{!! twillTrans('twill::lang.user-management.2fa-description', ['link' => 'https://github.com/antonioribeiro/google2fa#google-authenticator-apps']) !!}</div>
+                     style="margin: 20px 0;">{!! __('twill::lang.user-management.2fa-description', ['link' => 'https://github.com/antonioribeiro/google2fa#google-authenticator-apps']) !!}</div>
                 <x-twill::input
                     name="verify-code"
-                    :label="twillTrans('twill::lang.user-management.otp')"
+                    :label="__('twill::lang.user-management.otp')"
                 />
             </x-twill::formConnectedFields>
         @else
@@ -94,8 +94,8 @@
             >
                 <x-twill::input
                     name="verify-code"
-                    :label="twillTrans('twill::lang.user-management.otp')"
-                    :note="twillTrans('twill::lang.user-management.2fa-disable')"
+                    :label="__('twill::lang.user-management.otp')"
+                    :note="__('twill::lang.user-management.2fa-disable')"
                 />
             </x-twill::formConnectedFields>
         @endunless
@@ -186,55 +186,55 @@
     draft: [
     {
     name: 'save',
-    text: {!! json_encode(twillTrans('twill::lang.user-management.update-disabled-user')) !!}
+    text: {!! json_encode(__('twill::lang.user-management.update-disabled-user')) !!}
     },
     {
     name: 'save-close',
-    text: {!! json_encode(twillTrans('twill::lang.user-management.update-disabled-and-close')) !!}
+    text: {!! json_encode(__('twill::lang.user-management.update-disabled-and-close')) !!}
     },
     {
     name: 'save-new',
-    text: {!! json_encode(twillTrans('twill::lang.user-management.update-disabled-user-and-create-new')) !!}
+    text: {!! json_encode(__('twill::lang.user-management.update-disabled-user-and-create-new')) !!}
     },
     {
     name: 'cancel',
-    text: {!! json_encode(twillTrans('twill::lang.user-management.cancel')) !!}
+    text: {!! json_encode(__('twill::lang.user-management.cancel')) !!}
     }
     ],
     live: [
     {
     name: 'publish',
-    text: {!! json_encode(twillTrans('twill::lang.user-management.enable-user')) !!}
+    text: {!! json_encode(__('twill::lang.user-management.enable-user')) !!}
     },
     {
     name: 'publish-close',
-    text: {!! json_encode(twillTrans('twill::lang.user-management.enable-user-and-close')) !!}
+    text: {!! json_encode(__('twill::lang.user-management.enable-user-and-close')) !!}
     },
     {
     name: 'publish-new',
-    text: {!! json_encode(twillTrans('twill::lang.user-management.enable-user-and-create-new')) !!}
+    text: {!! json_encode(__('twill::lang.user-management.enable-user-and-create-new')) !!}
     },
     {
     name: 'cancel',
-    text: {!! json_encode(twillTrans('twill::lang.user-management.cancel')) !!}
+    text: {!! json_encode(__('twill::lang.user-management.cancel')) !!}
     }
     ],
     update: [
     {
     name: 'update',
-    text: {!! json_encode(twillTrans('twill::lang.user-management.update')) !!}
+    text: {!! json_encode(__('twill::lang.user-management.update')) !!}
     },
     {
     name: 'update-close',
-    text: {!! json_encode(twillTrans('twill::lang.user-management.update-and-close')) !!}
+    text: {!! json_encode(__('twill::lang.user-management.update-and-close')) !!}
     },
     {
     name: 'update-new',
-    text: {!! json_encode(twillTrans('twill::lang.user-management.update-and-create-new')) !!}
+    text: {!! json_encode(__('twill::lang.user-management.update-and-create-new')) !!}
     },
     {
     name: 'cancel',
-    text: {!! json_encode(twillTrans('twill::lang.user-management.cancel')) !!}
+    text: {!! json_encode(__('twill::lang.user-management.cancel')) !!}
     }
     ]
     }

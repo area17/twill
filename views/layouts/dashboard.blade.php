@@ -1,7 +1,7 @@
 @extends('twill::layouts.main')
 
 @php
-    $emptyMessage = $emptyMessage ?? twillTrans('twill::lang.dashboard.empty-message');
+    $emptyMessage = $emptyMessage ?? __('twill::lang.dashboard.empty-message');
     $isDashboard = true;
     $translate = true;
 @endphp
@@ -26,7 +26,7 @@
 @section('primaryNavigation')
     @if (config('twill.enabled.search', false))
         <div class="dashboardSearch" id="searchApp" v-cloak>
-            <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" type="dashboard" placeholder="{{ twillTrans('twill::lang.dashboard.search-placeholder') }}"></a17-search>
+            <a17-search endpoint="{{ route(config('twill.dashboard.search_endpoint')) }}" type="dashboard" placeholder="{{ __('twill::lang.dashboard.search-placeholder') }}"></a17-search>
         </div>
     @endif
 @stop
@@ -41,12 +41,12 @@
                     <aside class="col col--aside">
                         @if($facts ?? false)
                             <a17-stat-feed :facts="{{ json_encode($facts ?? []) }}">
-                                {{ twillTrans('twill::lang.dashboard.statitics') }}
+                                {{ __('twill::lang.dashboard.statitics') }}
                             </a17-stat-feed>
                         @endif
 
                         @if(!$drafts->isEmpty())
-                            <a17-feed :entities="{{ json_encode($drafts ?? []) }}">{{ twillTrans('twill::lang.dashboard.my-drafts') }}</a17-feed>
+                            <a17-feed :entities="{{ json_encode($drafts ?? []) }}">{{ __('twill::lang.dashboard.my-drafts') }}</a17-feed>
                         @endif
                     </aside>
                     <div class="col col--primary">
