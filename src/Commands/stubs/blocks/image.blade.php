@@ -4,23 +4,20 @@
 @twillBlockIcon('image')
 @twillBlockGroup('twill')
 
-@formField('medias', [
-    'name' => 'image',  // role
-    'label' => 'Image',
-    'withVideoUrl' => false,
-    'translated' => false,
-])
+<x-twill::medias
+    name="image"
+    label="Image"
+/>
 
-@formField('input', [
-    'name' => 'author',
-    'label' => 'Author',
-    'translated' => false,
-])
+<x-twill::input
+    name="author"
+    label="Author"
+/>
 
-@formField('radios', [
-    'name' => 'ratio',
-    'label' => "Ratio",
-    'options' => collect(['full' => 'Full', 'half' => 'Half']),
-    'default' => 'full',
-    'inline' => true
-])
+<x-twill::radios
+    name="ratio"
+    label="Ratio"
+    :options="collect(['full' => 'Full', 'half' => 'Half'])"
+    default="full"
+    :inline="true"
+/>

@@ -21,6 +21,9 @@ module.exports = {
     ['meta', { name: 'twitter:domain', content: 'twill.io' }],
     ['meta', { name: 'twitter:creator', content: '@twillcms' }]
   ],
+  markdown:{
+    toc: {includeLevel: [2, 3, 4]}
+  },
   themeConfig: {
     docsRepo: 'area17/twill',
     docsDir: 'docs/src',

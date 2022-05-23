@@ -1,6 +1,6 @@
 <template>
   <a :href="editUrl"
-     v-if="!row.hasOwnProperty('deleted')"
+     v-if="!row.hasOwnProperty('deleted') && (row.edit)"
      class="tablecell__name"
      @click="preventEditInPlace($event)">
     <span class="f--link-underlined--o">{{ row[colName] }}</span>

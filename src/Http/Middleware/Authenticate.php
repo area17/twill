@@ -14,6 +14,6 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-        return route('admin.login.form');
+        return route('twill.login.form');
     }
 }

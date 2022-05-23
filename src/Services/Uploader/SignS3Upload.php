@@ -46,10 +46,11 @@ class SignS3Upload
 
         if ($this->isValid($policyObject)) {
             $encodedPolicy = base64_encode($policyJson);
-            $signedPolicy = array(
+            $signedPolicy = [
                 'policy' => $encodedPolicy,
                 'signature' => $this->signV4Policy($policyObject, $encodedPolicy),
-            );
+            ];
+
             return $signedPolicy;
         }
 
@@ -59,15 +60,15 @@ class SignS3Upload
     private function isValid($policy)
     {
         $expectedMaxSize = null;
-        $conditions = $policy["conditions"];
+        $conditions = $policy['conditions'];
         $bucket = null;
         $parsedMaxSize = null;
 
-        for ($i = 0; $i < count($conditions); ++$i) {
+        for ($i = 0; $i < count($conditions); $i++) {
             $condition = $conditions[$i];
-            if (isset($condition["bucket"])) {
-                $bucket = $condition["bucket"];
-            } else if (isset($condition[0]) && $condition[0] == "content-length-range") {
+            if (isset($condition['bucket'])) {
+                $bucket = $condition['bucket'];
+            } elseif (isset($condition[0]) && $condition[0] == 'content-length-range') {
                 $parsedMaxSize = $condition[2];
             }
         }
@@ -77,14 +78,14 @@ class SignS3Upload
 
     private function signV4Policy($policy, $encodedPolicy)
     {
-        foreach ($policy["conditions"] as $condition) {
-            if (isset($condition["x-amz-credential"])) {
-                $credentialCondition = $condition["x-amz-credential"];
+        foreach ($policy['conditions'] as $condition) {
+            if (isset($condition['x-amz-credential'])) {
+                $credentialCondition = $condition['x-amz-credential'];
             }
         }
 
         $pattern = "/.+\/(.+)\\/(.+)\/s3\/aws4_request/";
-        preg_match($pattern, $credentialCondition, $matches);
+        preg_match($pattern, $credentialCondition ?? '', $matches);
 
         $dateKey = hash_hmac('sha256', $matches[1], 'AWS4' . $this->secret, true);
         $dateRegionKey = hash_hmac('sha256', $matches[2], $dateKey, true);

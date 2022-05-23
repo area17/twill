@@ -1,16 +1,6 @@
-@php
-    $withTime = $withTime ?? true;
-    $allowInput = $allowInput ?? false;
-    $allowClear = $allowClear ?? false;
-    $note = $note ?? false;
-    $inModal = $fieldsInModal ?? false;
-    $timeOnly = $timeOnly ?? false;
-    $disabled = $disabled ?? false;
-@endphp
-
 <a17-datepicker
     label="{{ $label }}"
-    @include('twill::partials.form.utils._field_name')
+    {!! $formFieldName() !!}
     place-holder="{{ $placeholder ?? $label }}"
     @if ($disabled) disabled @endif
     @if ($withTime) enable-time @endif

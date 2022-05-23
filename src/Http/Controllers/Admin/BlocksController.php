@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Models\Block;
 use A17\Twill\Repositories\BlockRepository;
 use Illuminate\Config\Repository as Config;
@@ -9,7 +10,6 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\View\Factory as ViewFactory;
-use TwillBlocks;
 
 class BlocksController extends Controller
 {
@@ -88,7 +88,7 @@ class BlocksController extends Controller
                     $error = $e->getMessage() . ' in ' . $e->getFile();
                 }
 
-                return $viewFactory->make('twill::errors.block', ['view' => $view, 'error' => $error])->render();
+                return $viewFactory->make('twill::errors.block', ['view' => $view ?? '', 'error' => $error])->render();
             })->implode('');
 
         $view = $viewFactory->exists($config->get('twill.block_editor.block_single_layout'))

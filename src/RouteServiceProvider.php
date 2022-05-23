@@ -6,9 +6,11 @@ use A17\Twill\Http\Controllers\Front\GlideController;
 use A17\Twill\Http\Middleware\Authenticate;
 use A17\Twill\Http\Middleware\Impersonate;
 use A17\Twill\Http\Middleware\Localization;
+use A17\Twill\Http\Middleware\Permission;
 use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
 use A17\Twill\Http\Middleware\SupportSubdomainRouting;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
+use A17\Twill\Services\Routing\HasRoutes;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
@@ -67,8 +69,8 @@ class RouteServiceProvider extends ServiceProvider
             $groupOptions,
             $middlewares,
             $supportSubdomainRouting,
-            config('twill.namespace', 'App') . '\Http\Controllers\Admin',
-            base_path('routes/admin.php'),
+            config('twill.namespace', 'App') . '\Http\Controllers\Twill',
+            base_path('routes/twill.php'),
             true
         );
     }
@@ -194,6 +196,7 @@ class RouteServiceProvider extends ServiceProvider
             ValidateBackHistory::class
         );
         Route::aliasMiddleware('localization', Localization::class);
+        Route::aliasMiddleware('permission', Permission::class);
     }
 
     /**
