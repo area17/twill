@@ -40,6 +40,7 @@ Select::make()
     ->options(
         Options::make([
             Option::make('key', 'value'),
+            Option::make('key', 'value', selectable: false),
             ...
         ])
     );
@@ -91,11 +92,8 @@ Select item option
 
 Example of `selectable` prop usage:
 ```php
-@formField('select', [
-    'name' => 'office',
-    'label' => 'Office',
-    'placeholder' => 'Select an office',
-    'options' => [
+@php
+    $selectOptions = [
         [
             'value' => 1,
             'label' => 'New York'
@@ -106,11 +104,18 @@ Example of `selectable` prop usage:
         ],
         [
             'value' => 3,
-            'label' => 'Berlin',
+            'label' => 'Berlin'
             'selectable' => false // This item will be non-selectable in the select form component
         ]
-    ]
-])
+    ];
+@endphp
+
+<x-twill::select 
+    name="office"
+    label="office"
+    placeholder="Select an office"
+    :options="$selectOptions"
+/>
 ```
 
 A migration to save a `select` field would be:

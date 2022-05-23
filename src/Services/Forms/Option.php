@@ -9,12 +9,13 @@ class Option implements Arrayable
     public function __construct(
         protected string|int $value,
         protected string $label,
+        protected bool $selectable = true,
     ) {
     }
 
-    public static function make(string|int $value, string $label): self
+    public static function make(string|int $value, string $label, bool $selectable = true): self
     {
-        return new self($value, $label);
+        return new self($value, $label, $selectable);
     }
 
     public function toArray(): array
@@ -22,6 +23,7 @@ class Option implements Arrayable
         return [
             'value' => $this->value,
             'label' => $this->label,
+            'selectable' => $this->selectable,
         ];
     }
 }
