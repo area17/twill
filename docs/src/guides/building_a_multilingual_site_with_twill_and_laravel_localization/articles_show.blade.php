@@ -5,5 +5,5 @@
 
     <p>{!! $article->description !!}</p>
 
-    <a href="{{ route('articles') }}">{{ twillTrans('news.back') }}</a>
+    <a href="{{ route('articles') }}">{{ __('news.back') }}</a>
 @endsection
