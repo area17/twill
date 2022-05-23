@@ -43,7 +43,7 @@ class Handler extends ExceptionHandler
             return view()->exists($view)? $view : "errors::{$statusCode}";
         }
 
-        $view = "admin.errors.$statusCode";
+        $view = "twill.errors.$statusCode";
 
         return view()->exists($view) ? $view : "twill::errors.$statusCode";
     }

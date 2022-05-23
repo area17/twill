@@ -4,6 +4,7 @@ namespace A17\Twill\Services\Blocks;
 
 use A17\Twill\Facades\TwillBlocks;
 use Exception;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
 /**
@@ -532,12 +533,15 @@ class Block
      */
     public function render()
     {
-        return BladeCompiler::render(
+        View::share('TwillUntilConsumed', ['renderForBlocks' => true]);
+        $block = BladeCompiler::render(
             $this->contents,
             [
                 'renderForBlocks' => true,
             ] + $this->getFormData()
         );
+        View::share('TwillUntilConsumed', []);
+        return $block;
     }
 
     public function getBlockView($blockViewMappings = [])

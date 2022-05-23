@@ -2,20 +2,20 @@
 @twillBlockIcon('text')
 @twillBlockGroup('twill')
 
-@formField('input', [
-    'name' => 'anchor',
-    'label' => 'Anchor',
-])
+<x-twill::input
+    name="anchor"
+    label="Anchro"
+/>
 
-@formField('wysiwyg', [
-    'name' => 'description',
-    'label' => 'Text',
-    'toolbarOptions' => [
+<x-twill::wysiwyg
+    name="description"
+    label="Text"
+    :toolbar-options="[
         'bold',
         'italic',
         [ 'script' => 'super' ],
         [ 'script' => 'sub' ],
         'link',
         'clean'
-    ],
-])
+    ]"
+/>

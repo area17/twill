@@ -14,7 +14,7 @@ trait HasBlocks
      */
     public function blocks()
     {
-        return $this->morphMany(Block::class, 'blockable')->orderBy(
+        return $this->morphMany(twillModel('block'), 'blockable')->orderBy(
             config('twill.blocks_table', 'twill_blocks') . '.position',
             'asc'
         );
@@ -56,11 +56,12 @@ trait HasBlocks
      * Returns the rendered Blade views for all attached blocks in their proper order.
      *
      * @param bool $renderChilds Include all child blocks in the rendered output.
-     * @param array $blockViewMappings Provide alternate Blade views for blocks. Format: `['block-type' => 'view.path']`.
+     * @param array $blockViewMappings Provide alternate Blade views for blocks.
+     *   Format: `['block-type' => 'view.path']`.
      * @param array $data Provide extra data to Blade views.
      * @return string
      */
-    public function renderBlocks($renderChilds = true, $blockViewMappings = [], $data = [])
+    public function renderBlocks($renderChilds = false, $blockViewMappings = [], $data = [])
     {
         return $this->renderNamedBlocks('default', $renderChilds, $blockViewMappings, $data);
     }

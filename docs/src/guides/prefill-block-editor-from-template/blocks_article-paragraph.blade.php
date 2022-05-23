@@ -2,9 +2,9 @@
 @twillBlockIcon('text')
 @twillBlockGroup('app')
 
-@formField('wysiwyg', [
-    'name' => 'text',
-    'label' => 'Text',
-    'placeholder' => 'Text',
-    'toolbarOptions' => ['bold', 'italic', 'link', 'clean'],
-])
+<x-twill::wysiwyg
+    name="text"
+    label="Text"
+    placeholder="Text"
+    :toolbar-options="['bold', 'italic', 'link', 'clean']"
+/>

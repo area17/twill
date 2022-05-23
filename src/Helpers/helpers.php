@@ -194,7 +194,15 @@ if (! function_exists('fix_directory_separator')) {
     }
 }
 
-if (! function_exists('generate_list_of_allowed_blocks')) {
+if (!function_exists('twillModel')) {
+    function twillModel($model): string
+    {
+        return config("twill.models.$model")
+            ?? abort(500, "helpers/twillModel: '$model' model is not configured");
+    }
+}
+
+if (!function_exists('generate_list_of_allowed_blocks')) {
     /**
      * @param array $blocks
      * @param array $groups

@@ -2,15 +2,14 @@
 
 use Illuminate\Support\Collection;
 
-if (!function_exists('twillTrans')) {
+if (! function_exists('twillTrans')) {
     function twillTrans($key, $replace = [])
     {
-        $locale = config('twill.locale', config('twill.fallback_locale', 'en'));
-        return trans($key, $replace, $locale);
+        return __($key, $replace);
     }
 }
 
-if (!function_exists('getLocales')) {
+if (! function_exists('getLocales')) {
     /**
      * @return string[]
      */
@@ -32,7 +31,7 @@ if (!function_exists('getLocales')) {
     }
 }
 
-if (!function_exists('getLanguagesForVueStore')) {
+if (! function_exists('getLanguagesForVueStore')) {
     /**
      * @param array $form_fields
      * @param bool $translate
@@ -74,7 +73,7 @@ if (!function_exists('getLanguagesForVueStore')) {
     }
 }
 
-if (!function_exists('getLanguageLabelFromLocaleCode')) {
+if (! function_exists('getLanguageLabelFromLocaleCode')) {
     /**
      * @param string $code
      * @return string
@@ -83,10 +82,10 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
     {
         if (class_exists(Locale::class)) {
             if ($native) {
-                return ucfirst(Locale::getDisplayLanguage($code, $code));
-            } else {
-                return ucfirst(Locale::getDisplayLanguage($code, config('twill.locale', config('twill.fallback_locale', 'en'))));
+                return Locale::getDisplayName($code, $code);
             }
+
+            return Locale::getDisplayName($code, config('twill.locale', config('twill.fallback_locale', 'en')));
         }
 
         $codeToLanguageMappings = getCodeToLanguageMappings();
@@ -96,28 +95,31 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             if (is_array($lang) && isset($lang[1]) && $native) {
                 return $lang[1];
             }
+
             return $lang;
         }
+
         return $code;
     }
 }
 
-/**
+/*
  * Converts camelCase string to have spaces between each.
  * @param string $camelCaseString
  * @return string (ex.: camel case string)
  */
-if (!function_exists('camelCaseToWords')) {
+if (! function_exists('camelCaseToWords')) {
     function camelCaseToWords($camelCaseString)
     {
         $re = '/(?<=[a-z])(?=[A-Z])/x';
         $a = preg_split($re, $camelCaseString);
-        $words = join(" ", $a);
+        $words = join(' ', $a);
+
         return ucfirst(strtolower($words));
     }
 }
 
-if (!function_exists('getCodeToLanguageMappings')) {
+if (! function_exists('getCodeToLanguageMappings')) {
     function getCodeToLanguageMappings()
     {
         return [

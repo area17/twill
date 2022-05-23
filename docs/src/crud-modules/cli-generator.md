@@ -22,7 +22,7 @@ The command accepts several options:
 
 The `twill:module` command will generate a migration file, a model, a repository, a controller, a form request object and a form view.
 
-Add the route to your admin routes file(`routes/admin.php`).
+Add the route to your admin routes file(`routes/twill.php`).
 
 ```php
 <?php
@@ -73,7 +73,7 @@ The functionalities are exactly the same as that of regular modules. But they ar
 
 After generating your singleton via the command mentioned above:
 
-Add the route to your admin routes file(`routes/admin.php`).
+Add the route to your admin routes file(`routes/twill.php`).
 
 ```php
 <?php
@@ -97,5 +97,7 @@ return [
 If you receive an error when visiting the module, you might have forgotton to run the seeder that is mentioned when
 generating the singleton. `php artisan db:seed ModuleNameSeeder`
 
-If you want you can also set the config variable `twill.auto_seed_singletons` to true, when the singleton admin page
-is then visited and there is no content found it will be automatically seeded.
+If the singleton is not yet seeded when you visit the admin panel, by default Twill will automatically take care
+of the seeding.
+
+You can disable this behavior by setting `twill.auto_seed_singletons` to false.

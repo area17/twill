@@ -157,10 +157,7 @@ class BlockCollection extends Collection
         return $block->source;
     }
 
-    /**
-     * @return $this
-     */
-    public function load()
+    public function load(): self
     {
         $this->generatePaths();
 
@@ -205,12 +202,8 @@ class BlockCollection extends Collection
      * This function will add blocks and repeaters that are only defined in the config.
      *
      * For compatibility with 2.0.2 and lower
-     *
-     * @param Collection $items
-     * @param string $type
-     * @return void
      */
-    public function addBlocksFromConfig(Collection $items, $type)
+    public function addBlocksFromConfig(Collection $items, string $type): self
     {
         $items->reject(function ($value, $blockName) use ($type) {
             return $this->contains(function ($block) use ($blockName, $type) {

@@ -222,6 +222,9 @@
       },
       handleClone (cloneFn, blockIndex, block) {
         cloneFn && cloneFn({ block, index: blockIndex + 1 })
+        this.$nextTick(() => {
+          this.checkExpandBlocks()
+        })
       },
       handleBlockAdd (fn, block, index = -1) {
         fn(block, index)
@@ -265,7 +268,7 @@
     mounted () {
       // if there are blocks, these should be all collapse by default
       this.$nextTick(function () {
-        if (this.blocks(this.editorName) && this.blocks(this.editorName).length < 4) {
+        if (this.$refs.blockList && this.blocks(this.editorName) && this.blocks(this.editorName).length < 4) {
           this.$refs.blockList.forEach((block) => block.toggleExpand())
         }
       })
