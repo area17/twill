@@ -74,5 +74,5 @@ If you want translated field labels you should use:
 ```php
 Input::make()
     ->name('description')
-    ->label(__('Description'))
+    ->label(twillTrans('Description'))
 ```

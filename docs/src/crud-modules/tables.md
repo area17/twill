@@ -40,7 +40,7 @@ protected function getIndexTableColumns(): TableColumns
     $columns->add(
         Text::make()
             ->field('title')
-            ->title(__('Title'))
+            ->title(twillTrans('Title'))
     );
     
     ...

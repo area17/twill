@@ -33,12 +33,12 @@ Form builder:
 ```php
 Input::make()
     ->name('subtitle')
-    ->label(__('Subtitle'))
+    ->label(twillTrans('Subtitle'))
     ->maxLength(100)
     ->required()
-    ->note(__('Field note'))
+    ->note(twillTrans('Field note'))
     ->translatable()
-    ->placeholder(__('Placeholder'))
+    ->placeholder(twillTrans('Placeholder'))
 ```
 
 ::: details Old method

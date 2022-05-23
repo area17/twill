@@ -10,22 +10,22 @@ Form view:
 ```html
 <x-twill::wysiwyg 
     name="case_study" 
-    :label="__('Case study text')"
+    :label="twillTrans('Case study text')"
     :toolbar-options="['list-ordered', 'list-unordered']" 
-    :placeholder="__('Case study placeholder')"
+    :placeholder="twillTrans('Case study placeholder')"
     :maxlength="200" 
-    :note="__('Help text')"
+    :note="twillTrans('Help text')"
 />
 
 <x-twill::wysiwyg 
     name="case_study" 
-    :label="__('Case study text')"
+    :label="twillTrans('Case study text')"
     :toolbar-options="[ [ 'header' => [1, 2, false] ], 'list-ordered', 'list-unordered', [ 'indent' => '-1'], [ 'indent' => '+1' ] ]" 
-    :placeholder="__('Case study placeholder')"
+    :placeholder="twillTrans('Case study placeholder')"
     :edit-source="true"
     :translated="true"
     :maxlength="200" 
-    :note="__('Help text')"
+    :note="twillTrans('Help text')"
 />
 ```
 
@@ -92,12 +92,12 @@ $wysiwygOptions = [
 
 <x-twill::wysiwyg 
     name="case_study" 
-    :label="__('Case study text')"
+    :label="twillTrans('Case study text')"
     :toolbar-options="$wysiwygOptions"
-    :placeholder="__('Case study placeholder')"
+    :placeholder="twillTrans('Case study placeholder')"
     :edit-source="true"
     :maxlength="200" 
-    :note="__('Help text')"
+    :note="twillTrans('Help text')"
 />
 ```
 

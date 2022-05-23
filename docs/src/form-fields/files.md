@@ -25,7 +25,7 @@ Form builder:
 ```php
 Files::make()
     ->name('single_file')
-    ->label(__('Single file'))
+    ->label(twillTrans('Single file'))
     ->note('Add one file (per language)');
 ```
 

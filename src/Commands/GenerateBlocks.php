@@ -140,6 +140,19 @@ class GenerateBlocks extends Command
             '',
         ];
 
-        return preg_replace($search, $replace, Block::removeSpecialBladeTags($html));
+        return preg_replace($search, $replace, $this->removeSpecialBladeTags($html));
+    }
+
+    /**
+     * @param $contents
+     * @return string
+     */
+    private function removeSpecialBladeTags($contents)
+    {
+        return preg_replace([
+            "/@twillProp.*\(" . Block::PREG_REPLACE_INNER . "\)/sU",
+            "/@twillBlock.*\(" . Block::PREG_REPLACE_INNER . "\)/sU",
+            "/@twillRepeater.*\(" . Block::PREG_REPLACE_INNER . "\)/sU",
+        ], '', $contents);
     }
 }

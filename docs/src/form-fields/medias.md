@@ -28,7 +28,7 @@ Form builder:
 ```php
 Medias::make()
     ->name('cover')
-    ->label(__('Cover image'))
+    ->label(twillTrans('Cover image'))
     ->max(5)
 ```
 

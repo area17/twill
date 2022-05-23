@@ -28,9 +28,9 @@ class ScheduledStatus extends TableColumn
 
         $label = null;
         if ($scheduled) {
-            $label = __('twill::lang.publisher.scheduled');
+            $label = twillTrans('twill::lang.publisher.scheduled');
         } elseif ($expired) {
-            $label = __('twill::lang.publisher.expired');
+            $label = twillTrans('twill::lang.publisher.expired');
         }
 
         $format = config('twill.publish_date_display_format', 'F d, Y');

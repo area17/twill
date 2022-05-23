@@ -22,7 +22,7 @@ class Block
 
     public const TYPE_REPEATER = 'repeater';
 
-    public const PREG_REPLACE_INNER = '(?:\'|")(.*)(?:\'|")';
+    public const PREG_REPLACE_INNER = '(\(((?>[^()]+)|(?-2))*\))';
 
     /**
      * @var string
@@ -363,10 +363,24 @@ class Block
         $bladeProperty = ucfirst($property);
 
         foreach (['twillProp', 'twillBlock', 'twillRepeater'] as $pattern) {
-            preg_match("/@{$pattern}{$bladeProperty}\(" . self::PREG_REPLACE_INNER . "\)/", $block, $matches);
+            preg_match("/@{$pattern}{$bladeProperty}" . self::PREG_REPLACE_INNER . '/', $block, $matches);
 
             if (filled($matches)) {
-                return $matches[1];
+                $result = $matches[1];
+
+                $result = Str::replaceLast(')', '', Str::replaceFirst('(', '', $result));
+
+                // Process the match if it is __(translatable).
+                if (Str::startsWith($result, '__(')) {
+                    return twillTrans(preg_replace('/__\((?:"|\')(.*)(?:"|\')\)/', '$1', $result));
+                }
+
+                // Process the match if it is twillTrans(translatable).
+                if (Str::startsWith($result, 'twillTrans(')) {
+                    return twillTrans(preg_replace('/twillTrans\((?:"|\')(.*)(?:"|\')\)/', '$1', $result));
+                }
+
+                return trim($result, '\'"');
             }
         }
 
@@ -527,26 +541,13 @@ class Block
     {
         View::share('TwillUntilConsumed', ['renderForBlocks' => true]);
         $block = BladeCompiler::render(
-            self::removeSpecialBladeTags($this->contents),
+            $this->contents,
             [
                 'renderForBlocks' => true,
             ] + $this->getFormData()
         );
         View::share('TwillUntilConsumed', []);
         return $block;
-    }
-
-    /**
-     * @param $contents
-     * @return string
-     */
-    public static function removeSpecialBladeTags($contents)
-    {
-        return preg_replace([
-            "/@twillProp.*\(" . self::PREG_REPLACE_INNER . "\)/sU",
-            "/@twillBlock.*\(" . self::PREG_REPLACE_INNER . "\)/sU",
-            "/@twillRepeater.*\(" . self::PREG_REPLACE_INNER . "\)/sU",
-        ], '', $contents);
     }
 
     public function getBlockView($blockViewMappings = [])
