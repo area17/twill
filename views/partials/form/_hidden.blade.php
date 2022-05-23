@@ -1,5 +1,5 @@
 <a17-hiddenfield
-    {{$formFieldName()}}
+    {!! $formFieldName() !!}
     @if ($value) :initial-value="'{{ $value }}'" @endif
     :has-default-store="true"
     in-store="value"

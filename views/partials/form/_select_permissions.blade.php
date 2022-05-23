@@ -22,7 +22,7 @@
             @endif
             <label for="{{ $name }}">{{ $itemInSelectsTables[$labelKey ?? 'title'] }}</label>
             <a17-singleselect
-                {{$formFieldName()}}
+                {!! $formFieldName() !!}
                 :options='{{ json_encode($fctUpdatePermissionOptions($options, $isUserForm ? $item : $itemInSelectsTables, $isUserForm ? $itemInSelectsTables : $item)) }}'
                 @if ($default) selected="{{ $default }}" @endif
                 :in-table="true"

@@ -1,6 +1,6 @@
 <a17-singleselect
     label="{{ $label }}"
-    {{$formFieldName()}}
+    {!! $formFieldName() !!}
     :options="{{ json_encode($options) }}"
     @if ($default) selected="{{ $default }}" @endif
     :grid="false"

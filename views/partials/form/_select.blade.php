@@ -1,7 +1,7 @@
 @if ($unpack ?? false)
     <a17-singleselect
         label="{{ $label }}"
-        {{$formFieldName()}}
+        {!! $formFieldName() !!}
         :options='{{ json_encode($options) }}'
         :columns="{{ $columns }}"
         @if (isset($default)) selected="{{ $default }}" @endif
@@ -26,7 +26,7 @@
 @elseif ($native ?? false)
     <a17-select
         label="{{ $label }}"
-        {{$formFieldName()}}
+        {!! $formFieldName() !!}
         :options='{{ json_encode($options) }}'
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         @if (isset($default)) selected="{{ $default }}" @endif
@@ -50,7 +50,7 @@
 @else
     <a17-vselect
         label="{{ $label }}"
-        {{$formFieldName()}}
+        {!! $formFieldName() !!}
         :options='{{ json_encode($options) }}'
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif

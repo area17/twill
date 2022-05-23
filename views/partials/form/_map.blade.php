@@ -1,6 +1,6 @@
 <a17-locationfield
     label="{{ $label }}"
-    {{$formFieldName()}}
+    {!! $formFieldName() !!}
     @if ($showMap) show-map @else :show-map="false" @endif
     @if ($openMap) open-map @endif
     @if ($inModal) :in-modal="true" @endif

@@ -1,6 +1,6 @@
 <a17-multiselect
     label="{{ $label }}"
-    {{$formFieldName()}}
+    {!! $formFieldName() !!}
     :options="{{ json_encode($options) }}"
     :grid="false"
     :columns="{{ $columns }}"

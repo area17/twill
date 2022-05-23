@@ -8,7 +8,7 @@
         max: {{ $max }},
         filesizeMax: {{ $filesizeMax }},
         @if ($buttonOnTop) buttonOnTop: true, @endif
-        {{$formFieldName(true)}}
+        {!! $formFieldName(true) !!}
     }"
 ></a17-locale>
 
