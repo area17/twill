@@ -19,6 +19,22 @@ abstract class Request extends FormRequest
     }
 
     /**
+     * @return array
+     */
+    public function rulesForCreate()
+    {
+        return [];
+    }
+
+    /**
+     * @return array
+     */
+    public function rulesForUpdate()
+    {
+        return [];
+    }
+
+    /**
      * Gets the validation rules that apply to the request.
      *
      * @return array
@@ -26,9 +42,12 @@ abstract class Request extends FormRequest
     public function rules()
     {
         switch ($this->method()) {
-            case 'POST':{return $this->rulesForCreate();}
-            case 'PUT':{return $this->rulesForUpdate();}
-            default:break;
+            case 'POST':
+                return $this->rulesForCreate();
+            case 'PUT':
+                return $this->rulesForUpdate();
+            default:
+                break;
         }
 
         return [];
@@ -46,7 +65,7 @@ abstract class Request extends FormRequest
 
         if ($this->request->has('languages')) {
             foreach ($locales as $locale) {
-                $language = Collection::make($this->request->get('languages'))->where('value', $locale)->first();
+                $language = Collection::make($this->request->all('languages'))->where('value', $locale)->first();
                 $currentLocaleActive = $language['published'] ?? false;
                 $rules = $this->updateRules($rules, $fields, $locale, $currentLocaleActive);
 

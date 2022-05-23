@@ -42,6 +42,10 @@ const mutations = {
     block.type = blockModel.component
     block.title = blockModel.title
 
+    // Metadata for rendering
+    block.twillUi = {}
+    block.twillUi.isNew = true
+
     // create new repeater object if required
     if (isNew) {
       const newBlocks = {}
@@ -59,6 +63,11 @@ const mutations = {
   [FORM.DUPLICATE_FORM_BLOCK] (state, blockInfos) {
     const clone = Object.assign({}, state.repeaters[blockInfos.name][blockInfos.index])
     clone.id = setBlockID()
+
+    // Metadata for rendering
+    clone.twillUi = {}
+    clone.twillUi.isNew = true
+
     state.repeaters[blockInfos.name].splice(blockInfos.index + 1, 0, clone)
   },
   [FORM.REORDER_FORM_BLOCKS] (state, newValues) {

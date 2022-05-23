@@ -221,7 +221,7 @@ class ModuleMake extends Command
         $moduleName = Str::camel(Str::plural(lcfirst($this->argument('moduleName'))));
 
         // e.g. newsItem
-        $singularModuleName = Str::camel(lcfirst($this->argument('moduleName')));
+        $singularModuleName = Str::camel(Str::singular(lcfirst($this->argument('moduleName'))));
 
         // e.g. NewsItems
         $moduleTitle = Str::studly($moduleName);
@@ -304,10 +304,10 @@ class ModuleMake extends Command
             $this->createCapsuleRoutes();
         } elseif ($this->isSingleton) {
             $this->createSingletonSeed($modelName);
-            $this->info("\nAdd to routes/admin.php:\n");
+            $this->info("\nAdd to routes/twill.php:\n");
             $this->info("    Route::singleton('{$singularModuleName}');\n");
         } else {
-            $this->info("\nAdd to routes/admin.php:\n");
+            $this->info("\nAdd to routes/twill.php:\n");
             $this->info("    Route::module('{$moduleName}');\n");
         }
 
@@ -570,13 +570,13 @@ class ModuleMake extends Command
      */
     private function createRepository($modelName = 'Item', $activeTraits = [])
     {
-        $modelsDir = $this->isCapsule ? $this->capsule->getRepositoriesDir() : 'Repositories';
+        $repositoriesDir = $this->isCapsule ? $this->capsule->getRepositoriesDir() : 'Repositories';
 
         $modelClass = $this->isCapsule ? $this->capsule->getModel() : config(
             'twill.namespace'
         ) . "\Models\\{$modelName}";
 
-        $this->makeTwillDirectory($modelsDir);
+        $this->makeTwillDirectory($repositoriesDir);
 
         $repositoryClassName = $modelName . 'Repository';
 
@@ -622,7 +622,7 @@ class ModuleMake extends Command
             $this->files->get(__DIR__ . '/stubs/repository.stub')
         );
 
-        $this->putTwillStub(twill_path("{$modelsDir}/" . $repositoryClassName . '.php'), $stub);
+        twill_put_stub(twill_path("{$repositoriesDir}/" . $repositoryClassName . '.php'), $stub);
 
         $this->info('Repository created successfully! Control all the things!');
     }
@@ -639,7 +639,7 @@ class ModuleMake extends Command
     {
         $controllerClassName = $modelName . 'Controller';
 
-        $dir = $this->isCapsule ? $this->capsule->getControllersDir() : 'Http/Controllers/Admin';
+        $dir = $this->isCapsule ? $this->capsule->getControllersDir() : 'Http/Controllers/Twill';
 
         if ($this->isSingleton) {
             $baseController = config('twill.base_singleton_controller');
@@ -653,12 +653,7 @@ class ModuleMake extends Command
 
         $stub = str_replace(
             ['{{moduleName}}', '{{controllerClassName}}', '{{namespace}}', '{{baseController}}'],
-            [
-                $moduleName,
-                $controllerClassName,
-                $this->namespace('controllers', 'Http\Controllers\Admin'),
-                $baseController,
-            ],
+            [$moduleName, $controllerClassName, $this->namespace('controllers', 'Http\Controllers\Twill'), $baseController],
             $this->files->get(__DIR__ . '/stubs/controller.stub')
         );
 
@@ -700,7 +695,7 @@ class ModuleMake extends Command
      */
     private function createRequest($modelName = 'Item')
     {
-        $dir = $this->isCapsule ? $this->capsule->getRequestsDir() : 'Http/Requests/Admin';
+        $dir = $this->isCapsule ? $this->capsule->getRequestsDir() : 'Http/Requests/Twill';
 
         $this->makeTwillDirectory($dir);
 
@@ -708,7 +703,7 @@ class ModuleMake extends Command
 
         $stub = str_replace(
             ['{{requestClassName}}', '{{namespace}}', '{{baseRequest}}'],
-            [$requestClassName, $this->namespace('requests', 'Http\Requests\Admin'), config('twill.base_request')],
+            [$requestClassName, $this->namespace('requests', 'Http\Requests\Twill'), config('twill.base_request')],
             $this->files->get(__DIR__ . '/stubs/request.stub')
         );
 
@@ -737,7 +732,7 @@ class ModuleMake extends Command
             $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub')
         );
 
-        $this->info('Form view created successfully! Include your form fields using @formField directives!');
+        $this->info('Form view created successfully! You can now include your form fields.');
     }
 
     /**
@@ -966,6 +961,10 @@ class ModuleMake extends Command
             return "App\\{$suffix}{$class}";
         }
 
+        if (! $this->isCapsule) {
+            return "App\\{$suffix}{$class}";
+        }
+
         if ($type === 'models') {
             return $this->capsule->getModelNamespace() . $class;
         }
@@ -991,7 +990,7 @@ class ModuleMake extends Command
             return $this->config->get('view.paths')[0] . '/admin/' . $moduleName;
         }
 
-        $dir = "$this->moduleBasePath/resources/views/admin";
+        $dir = "$this->moduleBasePath/resources/views/twill";
         $this->makeDir($dir);
 
         return $dir;

@@ -2,13 +2,14 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use A17\Twill\AuthServiceProvider;
+use _PHPStan_61858e129\Nette\DI\Definitions\Reference;
 use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
 use Carbon\Carbon;
+use Composer\Autoload\ClassLoader;
 use Faker\Factory as Faker;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Filesystem\Filesystem;
@@ -35,6 +36,11 @@ abstract class TestCase extends OrchestraTestCase
      * @var \Faker\Generator
      */
     public $faker;
+
+    /**
+     * @var string|null
+     */
+    public $example;
 
     /**
      * @var \A17\Twill\Tests\Integration\UserClass
@@ -65,21 +71,21 @@ abstract class TestCase extends OrchestraTestCase
         '/../resources/views',
         '/../resources/views/admin',
         '/../resources/views/site',
-        'Http/Controllers/Admin',
-        'Http/Requests/Admin',
+        'Http/Controllers/Twill',
+        'Http/Requests/Twill',
         'Models/Revisions',
         'Models/Slugs',
         'Models/Translations',
         'Repositories',
-        '/../resources/views/admin/authors',
-        '/../resources/views/admin/categories',
+        '/../resources/views/twill/authors',
+        '/../resources/views/twill/categories',
         '/../resources/views/site/blocks',
         '/../resources/views/site/layouts',
     ];
 
     public $toDelete = [
         '{$database}/migrations/',
-        '{$base}/routes/admin.php',
+        '{$base}/routes/twill.php',
         '{$app}/Models',
         '{$app}/Http',
         '{$app}/Repositories/',
@@ -88,6 +94,7 @@ abstract class TestCase extends OrchestraTestCase
         '{$app}/Twill',
         '{$routes}',
         '{$config}/twill-navigation.php',
+        '{$config}/twill.php',
     ];
 
     protected function deleteAllTwillPaths(): void
@@ -102,7 +109,7 @@ abstract class TestCase extends OrchestraTestCase
     protected function makeAllTwillPaths(): void
     {
         collect($this->paths)->each(function ($directory) {
-            if (! file_exists($directory = twill_path($directory))) {
+            if (!file_exists($directory = twill_path($directory))) {
                 $this->files->makeDirectory($directory, 0755, true);
             }
         });
@@ -128,6 +135,11 @@ abstract class TestCase extends OrchestraTestCase
         $this->copyTestFiles();
 
         $this->installTwill();
+
+        // Add database seeders to autoload as it is not in the orchestra base composer.
+        foreach (File::allFiles(base_path("/database/seeders")) as $file) {
+            include_once $file->getPathname();
+        }
     }
 
     /**
@@ -183,25 +195,6 @@ abstract class TestCase extends OrchestraTestCase
         }
     }
 
-    protected function loadModulesConfig($file = null)
-    {
-        if (blank($file) || Str::contains($file, 'twill.php')) {
-            $config = require $this->makeFileName(
-                $file ?? '{$stubs}/modules/authors/twill.php'
-            );
-
-            config(['twill' => $config + config('twill')]);
-        }
-
-        if (blank($file) || Str::contains($file, 'translatable.php')) {
-            $config = require $this->makeFileName(
-                $file ?? '{$stubs}/modules/authors/translatable.php'
-            );
-
-            config(['translatable' => $config]);
-        }
-    }
-
     /**
      * Create sqlite database, if needed.
      *
@@ -228,6 +221,23 @@ abstract class TestCase extends OrchestraTestCase
         $this->request('/twill/login', 'POST', [
             'email' => $this->superAdmin()->email,
             'password' => $this->superAdmin()->unencrypted_password,
+        ]);
+
+        return $this->crawler;
+    }
+
+    /**
+     * Login with the provided credentials.
+     *
+     * @param string $email
+     * @param string $password
+     * @return \Illuminate\Foundation\Testing\TestResponse|void
+     */
+    protected function loginAs($email, $password)
+    {
+        $this->request('/twill/login', 'POST', [
+            'email' => $email,
+            'password' => $password,
         ]);
 
         return $this->crawler;
@@ -282,7 +292,6 @@ abstract class TestCase extends OrchestraTestCase
         );
 
         return [
-            AuthServiceProvider::class,
             RouteServiceProvider::class,
             TwillServiceProvider::class,
             ValidationServiceProvider::class,
@@ -320,17 +329,8 @@ abstract class TestCase extends OrchestraTestCase
     {
         $connection = $app['config']['database.default'];
 
-        if (
-            $driver =
-            $app['config'][
-                'database.connections.' . $connection . '.driver'
-            ] === self::DB_CONNECTION
-        ) {
-            $this->createDatabase(
-                $app['config'][
-                    'database.connections.' . $connection . '.database'
-                ]
-            );
+        if ($app['config']['database.connections.' . $connection . '.driver'] === self::DB_CONNECTION) {
+            $this->createDatabase($app['config']['database.connections.' . $connection . '.database']);
         }
     }
 
@@ -353,9 +353,9 @@ abstract class TestCase extends OrchestraTestCase
     public function superAdmin($force = false)
     {
         return $this->superAdmin =
-        ! $this->superAdmin || $force
-        ? $this->makeNewSuperAdmin()
-        : $this->superAdmin;
+            !$this->superAdmin || $force
+                ? $this->makeNewSuperAdmin()
+                : $this->superAdmin;
     }
 
     /**
@@ -387,18 +387,29 @@ abstract class TestCase extends OrchestraTestCase
     {
         $this->truncateTwillUsers();
 
-        $this->artisan('twill:install')
-            ->expectsQuestion('Enter an email', $this->superAdmin()->email)
-            ->expectsQuestion('Enter a password', $this->superAdmin()->password)
-            ->expectsQuestion(
-                'Confirm the password',
-                $this->superAdmin()->password
-            );
+        if ($this->example) {
+            $this->artisan('twill:install ' . $this->example)
+                ->expectsConfirmation(
+                    'Are you sure to install this preset? This can overwrite your models, config and routes.',
+                    'yes'
+                )
+                ->expectsQuestion('Enter an email', $this->superAdmin()->email)
+                ->expectsQuestion('Enter a password', $this->superAdmin()->password)
+                ->expectsQuestion(
+                    'Confirm the password',
+                    $this->superAdmin()->password
+                );
+        } else {
+            $this->artisan('twill:install')
+                ->expectsQuestion('Enter an email', $this->superAdmin()->email)
+                ->expectsQuestion('Enter a password', $this->superAdmin()->password)
+                ->expectsQuestion(
+                    'Confirm the password',
+                    $this->superAdmin()->password
+                );
+        }
 
-        $user = User::where(
-            'email',
-            $email = $this->superAdmin()->email
-        )->first();
+        $user = User::where('email', $this->superAdmin()->email)->first();
 
         $user->setAttribute(
             'unencrypted_password',
@@ -436,7 +447,7 @@ abstract class TestCase extends OrchestraTestCase
 
         return collect($routes)->filter(function ($route) {
             return Str::startsWith($route->action['uses'], 'A17\Twill') ||
-            Str::startsWith($route->action['uses'], 'App\\');
+                Str::startsWith($route->action['uses'], 'App\\');
         });
     }
 
@@ -565,8 +576,12 @@ abstract class TestCase extends OrchestraTestCase
 
                 $destination = $this->makeFileName($destination, $source);
 
-                if (! $this->files->exists($directory = dirname($destination))) {
+                if (!$this->files->exists($directory = dirname($destination))) {
                     $this->files->makeDirectory($directory, 0755, true);
+                }
+
+                if ($this->files->exists($destination)) {
+                    $this->files->delete($destination);
                 }
 
                 $this->files->copy($source, $destination);
@@ -583,11 +598,11 @@ abstract class TestCase extends OrchestraTestCase
                 File::deleteDirectory($file);
             }
 
-            if (! is_dir($file) && file_exists($file)) {
+            if (!is_dir($file) && file_exists($file)) {
                 unlink($file);
             }
 
-            if (! Str::endsWith($file, '.php')) {
+            if (!Str::endsWith($file, '.php')) {
                 File::makeDirectory($file, 0755, true);
             }
         });
@@ -630,7 +645,7 @@ abstract class TestCase extends OrchestraTestCase
 
         $extension = pathinfo($file, PATHINFO_EXTENSION);
 
-        if (filled($source) && ! Str::endsWith($file, ".{$extension}")) {
+        if (filled($source) && !Str::endsWith($file, ".{$extension}")) {
             $file = $file . basename($source);
         }
 
@@ -678,7 +693,7 @@ abstract class TestCase extends OrchestraTestCase
      */
     public function skipOnTravis()
     {
-        if (! is_null(env('TRAVIS_PHP_VERSION'))) {
+        if (!is_null(env('TRAVIS_PHP_VERSION'))) {
             $this->markTestSkipped('This test cannot be executed on Travis');
         }
     }

@@ -12,26 +12,26 @@ In order to add a block editor to your module, add the `block_editor` field to y
 @extends('twill::layouts.form')
 
 @section('contentFields')
-    @formField('input', [
-        'name' => 'description',
-        'label' => 'Description',
-    ])
+    <x-twill::input
+        name="description"
+        label="Description"
+    />
 ...
-    @formField('block_editor')
+    <x-twill::block-editor/>
 @stop
 ```
 
-By default, adding the `@formField('block_editor')` directive enables all available *blocks* for use in your module. To scope only certain *blocks* to be available in a given module, you can add a second parameter to the `@formField()` directive with the *blocks* key. e.g.:
+By default, adding the `<x-twill::block-editor/>` directive enables all available *blocks* for use in your module. To scope only certain *blocks* to be available in a given module, you can specify which blocks to use using:
 
 ```php
-@formField('block_editor', [
-    'blocks' => ['quote', 'image']
-])
+<x-twill::block-editor
+    :blocks="['quote', 'image']"
+/>
 ```
 
 #### Create and define blocks
 
-Blocks and Repeaters are built on the same Block model and are created and defined in their respective folders. By default, Twill will look for Blade templates in `views/admin/blocks` for blocks and `views/admin/repeaters` for repeaters.
+Blocks and Repeaters are built on the same Block model and are created and defined in their respective folders. By default, Twill will look for Blade templates in `views/twill/blocks` for blocks and `views/twill/repeaters` for repeaters.
 
 Note: Prior to Twill version 2.2, Blocks (and Repeaters) needed to be defined in the configuration file – this is no longer necessary and not recommended. This change is backward compatible, so your existing configuration should work as it used to. Defining blocks in the configuration file will be deprecated in a future release (see the section below [Legacy configuration](/block-editor/legacy-configuration-2-2.html).
 
@@ -50,54 +50,49 @@ the formField. See [Repeater form field](/form-fields/repeater.html)
 
 e.g.:
 
-filename: ```views/admin/blocks/quote.blade.php```
+filename: ```views/twill/blocks/quote.blade.php```
 ```php
 @twillBlockTitle('Quote')
 @twillBlockIcon('text')
 
-@formField('input', [
-    'name' => 'quote',
-    'type' => 'textarea',
-    'label' => 'Quote text',
-    'maxlength' => 250,
-    'rows' => 4
-])
+<x-twill::input 
+    name="quote"
+    type="textarea"
+    label="Quote text"
+    :maxlength="250"
+    :rows="4"
+/>
 ```
 
 A more complex example would look like this:
 
-filename: ```views/admin/blocks/media.blade.php```
+filename: ```views/twill/blocks/media.blade.php```
 ```php
 @twillBlockTitle('Media')
 @twillBlockIcon('image')
 
-@formField('medias', [
-    'name' => 'image',
-    'label' => 'Images',
-    'withVideoUrl' => false,
-    'max' => 20,
-])
+<x-twill::medias
+    name="image"
+    label="Images"
+    :max="20"
+/>
 
-@formField('files', [
-    'name'  => 'video',
-    'label' => 'Video',
-    'note'  => 'Video will overwrite previously selected images',
-    'max'   => 1
-])
+<x-twill:files
+    name="video"
+    label="video"
+    note="Video will overwrite previously selected images"
+    :max="1"
+/>
 
-@formField('input', [
-    'name' => 'caption',
-    'label' => 'Caption',
-    'maxlength' => 250,
-    'translated' => true,
-])
+<x-twill::input
+    name="caption"
+    label="Caption"
+    :maxlength="250"
+    :translated="true"
+/>
 
-@formField('select', [
-    'name' => 'effect',
-    'label' => 'Transition Effect',
-    'placeholder' => 'Select Transition Effect',
-    'default' => 'cut',
-    'options' => [
+@php
+    $options = [
         [
             'value' => 'cut',
             'label' => 'Cut'
@@ -106,21 +101,28 @@ filename: ```views/admin/blocks/media.blade.php```
             'value' => 'fade',
             'label' => 'Fade In/Out'
         ]
-    ]
-])
+    ];
+@endphp
 
-@formField('color', [
-    'name'  => 'bg',
-    'label' => 'Background color',
-    'note'  => 'Default is light grey (#E6E6E6)',
-])
+<x-twill::select
+    name="effect"
+    label="Transition effect"
+    placeholder="Select transition effect"
+    default="cut"
+    :options="$options"
+/>
 
-@formField('input', [
-    'name' => 'timing',
-    'label' => 'Timing',
-    'maxlength' => 250,
-    'note' => 'Timing in ms (default is 4000ms)',
-])
+<x-twill::color
+    name="bg"
+    label="Background color"
+    note="Default is light grey (#E6E6E6)"
+/>
+
+<x-twill::input
+    name="timing"
+    label="Timing"
+    note="Timing in ms (default is 4000ms)"
+/>
 ```
 
 With that, the *block* is ready to be used on the form!
@@ -135,12 +137,11 @@ In Twill >= 2.5, you can use the `@twillBlockTitleField` directive to include th
 @twillBlockIcon('text')
 @twillBlockGroup('app')
 
-@formField('input', [
-    'name' => 'title',
-    'label' => 'Title',
-    'required' => true,
-])
-
+<x-twill::input
+    name="title"
+    label="Title"
+    :required="true"
+/>
 ...
 ```
 
@@ -148,7 +149,7 @@ In Twill >= 2.5, you can use the `@twillBlockTitleField` directive to include th
 
 Using `php artisan twill:make:block {name} {baseBlock} {icon}`, you can generate a new block based on a provided block as a base.
 
-This example would create `views/admin/blocks/exceptional-media.blade.php` from `views/admin/blocks/media.blade.php`:
+This example would create `views/twill/blocks/exceptional-media.blade.php` from `views/twill/blocks/media.blade.php`:
 
 ```
 $ php artisan twill:make:block ExceptionalMedia media image
@@ -167,6 +168,34 @@ Using `php artisan twill:list:blocks` will list all blocks and repeaters. There 
 ##### List existing icons
 
 `php artisan twill:list:icons` will list all icons available.
+
+##### Using custom icons
+
+If you want to use custom icons in a block, you have to define the source directory's path in `config/twill.php`. Add it under `block_editor.directories.source.icons` key:
+
+filename: ```config/twill.php```
+```php
+<?php
+
+return [
+    ...
+    'block_editor' => [
+        'directories' => [
+            'source' => [
+                'icons' => [
+                    base_path('vendor/area17/twill/frontend/icons'),
+                    resource_path('assets/admin/icons'), // or any other path of your choice
+                ],
+            ],
+        ],
+    ],
+    ...
+];
+```
+See also [Default Configuration](https://twill.io/docs/block-editor/default-configuration.html).
+
+If the `resource_path('assets/admin/icons')` directory contains a `my-custom-icon.svg` file, you can use this icon in your block by using its basename: `@twillBlockIcon('my-custom-icon')`.
+
 
 #### Use Block traits in your Model and Repository
 

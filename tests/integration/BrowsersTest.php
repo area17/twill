@@ -14,55 +14,11 @@ use A17\Twill\Models\RelatedItem;
 
 class BrowsersTest extends TestCase
 {
-    protected $allFiles = [
-       '{$stubs}/browsers/2021_08_10_0001_create_writers_tables_for_browsers.php' => '{$database}/migrations/',
-       '{$stubs}/browsers/Writer.php' => '{$app}/Models/',
-       '{$stubs}/browsers/WriterController.php' => '{$app}/Http/Controllers/Admin/',
-       '{$stubs}/browsers/WriterRepository.php' => '{$app}/Repositories/',
-       '{$stubs}/browsers/WriterRequest.php' => '{$app}/Http/Requests/Admin/',
-       '{$stubs}/browsers/WriterRevision.php' => '{$app}/Models/Revisions/',
-       '{$stubs}/browsers/writers-form.blade.php' => '{$resources}/views/admin/writers/form.blade.php',
-       '{$stubs}/browsers/writers-view.blade.php' => '{$resources}/views/site/writer.blade.php',
-
-       '{$stubs}/browsers/2021_08_10_0002_create_letters_tables_for_browsers.php' => '{$database}/migrations/',
-       '{$stubs}/browsers/2021_08_10_0003_create_letter_writer_table_for_browsers.php' => '{$database}/migrations/',
-       '{$stubs}/browsers/Letter.php' => '{$app}/Models/',
-       '{$stubs}/browsers/LetterController.php' => '{$app}/Http/Controllers/Admin/',
-       '{$stubs}/browsers/LetterRepository.php' => '{$app}/Repositories/',
-       '{$stubs}/browsers/LetterRequest.php' => '{$app}/Http/Requests/Admin/',
-       '{$stubs}/browsers/LetterRevision.php' => '{$app}/Models/Revisions/',
-       '{$stubs}/browsers/letters-form.blade.php' => '{$resources}/views/admin/letters/form.blade.php',
-       '{$stubs}/browsers/letters-view.blade.php' => '{$resources}/views/site/letter.blade.php',
-
-       '{$stubs}/browsers/2021_08_10_0004_create_bios_tables_for_browsers.php' => '{$database}/migrations/',
-       '{$stubs}/browsers/Bio.php' => '{$app}/Models/',
-       '{$stubs}/browsers/BioController.php' => '{$app}/Http/Controllers/Admin/',
-       '{$stubs}/browsers/BioRepository.php' => '{$app}/Repositories/',
-       '{$stubs}/browsers/BioRequest.php' => '{$app}/Http/Requests/Admin/',
-       '{$stubs}/browsers/BioRevision.php' => '{$app}/Models/Revisions/',
-       '{$stubs}/browsers/bios-form.blade.php' => '{$resources}/views/admin/bios/form.blade.php',
-       '{$stubs}/browsers/bios-view.blade.php' => '{$resources}/views/site/bio.blade.php',
-
-       '{$stubs}/browsers/2021_08_10_0005_create_books_tables_for_browsers.php' => '{$database}/migrations/',
-       '{$stubs}/browsers/Book.php' => '{$app}/Models/',
-       '{$stubs}/browsers/BookController.php' => '{$app}/Http/Controllers/Admin/',
-       '{$stubs}/browsers/BookRepository.php' => '{$app}/Repositories/',
-       '{$stubs}/browsers/BookRequest.php' => '{$app}/Http/Requests/Admin/',
-       '{$stubs}/browsers/BookRevision.php' => '{$app}/Models/Revisions/',
-       '{$stubs}/browsers/books-form.blade.php' => '{$resources}/views/admin/books/form.blade.php',
-       '{$stubs}/browsers/books-view.blade.php' => '{$resources}/views/site/book.blade.php',
-
-       '{$stubs}/browsers/twill-navigation.php' => '{$config}/',
-       '{$stubs}/browsers/admin.php' => '{$base}/routes/admin.php',
-    ];
+    public $example = 'tests-browsers';
 
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->copyFiles($this->allFiles);
-
-        $this->migrate();
 
         $this->login();
     }

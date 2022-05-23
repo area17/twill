@@ -22,7 +22,6 @@
       hasBlockActive,
       savedBlocks,
       editorNames,
-      reorderBlocks,
       moveBlock
     }">
       <div class="editor">

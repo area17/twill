@@ -328,6 +328,7 @@ return [
     'nav' => [
         'admin' => 'Admin',
         'cms-users' => 'CMS Users',
+        'profile' => 'Profile',
         'logout' => 'Logout',
         'media-library' => 'Media Library',
         'settings' => 'Settings',
@@ -348,6 +349,18 @@ return [
     ],
     'overlay' => [
         'close' => 'Close',
+    ],
+    'permissions' => [
+        'groups' => [
+            'title' => 'Groups',
+            'published' => 'Enabled',
+            'draft' => 'Disabled',
+        ],
+        'roles' => [
+            'title' => 'Roles',
+            'published' => 'Enabled',
+            'draft' => 'Disabled',
+        ],
     ],
     'previewer' => [
         'compare-view' => 'Compare view',
@@ -415,8 +428,11 @@ return [
         'force-2fa-disable-description' => 'Type text shown in the field to disable 2FA for this user',
         'force-2fa-disable-challenge' => 'Disable 2FA for :user',
         'active' => 'Active',
+        'pending' => 'Pending',
+        'activation-pending' => 'Pending activation',
+        'user-image' => 'Image',
+        'content-fieldset-label' => 'Account',
         'cancel' => 'Cancel',
-        'content-fieldset-label' => 'User settings',
         'description' => 'Description',
         'disabled' => 'Disabled',
         'edit-modal-title' => 'Edit user name',

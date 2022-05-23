@@ -6,6 +6,33 @@ pageClass: twill-doc
 
 ![screenshot](/docs/_media/medias.png)
 
+Form view:
+```html 
+<x-twill::medias 
+    name="cover" 
+    label="Cover image"
+    note="Also used in listings"
+    field-note="Minimum image width: 1500px"
+/>
+
+<x-twill::medias 
+    name="cover" 
+    label="Cover image"
+    note="Also used in listings"
+    :max="5"
+    field-note="Minimum image width: 1500px"
+/>
+```
+
+Form builder:
+```php
+Medias::make()
+    ->name('cover')
+    ->label(__('Cover image'))
+    ->max(5)
+```
+
+::: details Old method
 ```php
 @formField('medias', [
     'name' => 'cover',
@@ -21,9 +48,10 @@ pageClass: twill-doc
     'fieldNote' => 'Minimum image width: 1500px'
 ])
 ```
+:::
 
 | Option         | Description                                          | Type/values    | Default value |
-| :------------- | :--------------------------------------------------- | :------------- | :------------ |
+|:---------------|:-----------------------------------------------------|:---------------|:--------------|
 | name           | Name of the field                                    | string         |               |
 | label          | Label of the field                                   | string         |               |
 | translated     | Defines if the field is translatable                 | true<br/>false | false         |
@@ -31,7 +59,8 @@ pageClass: twill-doc
 | fieldNote      | Hint message displayed above the field               | string         |               |
 | note           | Hint message displayed in the field                  | string         |               |
 | buttonOnTop    | Displays the `Attach images` button above the images | true<br/>false | false         |
-| disabled            | Disables the field                                      | boolean         | false         | 
+| extraMetadatas | An array of additional metadatas, explained below    | array          | []            |
+| disabled       | Disables the field                                   | boolean        | false         |
 
 
 Right after declaring the `medias` formField in the blade template file, you still need to do a few things to make it work properly.
@@ -92,16 +121,54 @@ Then, add the form field to the `form.blade.php` file.
 @extends('twill::layouts.form')
 
 @section('contentFields')
-
     ...
-
-    @formField('medias', [
-        'name' => 'cover',
-        'label' => 'Cover image',
-    ])
-
+    <x-twill::medias
+        name="cover"
+        label="Cover image"
+    />
     ...
 @stop
 ```
 
 No migration is needed to save `medias` form fields.
+
+## Extra metadatas
+
+On field level you can specify additional metadatas.
+
+There are currently 2 supported field types:
+
+- Text
+- Checkbox
+
+When defining your media field you can pass the extraMetadatas:
+
+```php
+@php
+    $extraMetadata = [
+        [
+            'name' => 'credits_list',
+            'label' => 'Credits list',
+            'type' => 'text',
+            'wysiwyg' => true,
+            'wysiwygOptions' => [
+                'modules' => [
+                    'toolbar' => [
+                        'italic',
+                        'link'
+                    ]
+                ]
+            ],
+        ],
+    ];
+@endphp
+
+<x-twill::medias name="cover" label="Cover image"
+                 note="Also used in listings"
+                 :extra-metadatas="$extraMetadata"
+                 field-note="Minimum image width: 1500px"/>
+```
+
+The parameters `name`, `label` and `type` are mandatory, `wysiwyg` and `wysiwygOptions` are optional.
+
+If no `wysiwygOptions` are provided it will fall back to the ones defined in the [media config](/getting-started/configuration.html#media-library/)

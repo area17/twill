@@ -178,7 +178,7 @@ class IssueController extends BaseModuleController
 {
     protected $moduleName = 'issues';
 
-    protected $indexColumns = [
+    protected ?array $indexColumns = [
         'title' => [
             'title' => 'Title',
             'field' => 'title',
@@ -191,7 +191,7 @@ class IssueController extends BaseModuleController
 }
 ```
 
-Add both modules to `routes/admin.php`:
+Add both modules to `routes/twill.php`:
 
 ```php
 Route::module('issues');
@@ -211,7 +211,7 @@ return [
 
 Then, rename and move the `articles/` views folder inside of the parent `issues/` folder:
 ```
-resources/views/admin/
+resources/views/twill/
 └── issues
     ├── articles
     │   └── form.blade.php

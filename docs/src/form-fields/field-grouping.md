@@ -83,21 +83,23 @@ public $fieldsGroupsFormFieldNameSeparator = '_';
 Finally in our model form we can add the fields:
 
 ```php
-@formField('input', [
-    'name' => 'link_target',
-    'label' => 'Link target',
-    'translated' => true
-])
-@formField('input', [
-    'name' => 'link_url',
-    'label' => 'Link url',
-    'translated' => true
-])
-@formField('input', [
-    'name' => 'link_label',
-    'label' => 'Link label',
-    'translated' => true
-])
+<x-twill::input
+    name="link_target"
+    label="Link target"
+    :translated="true"
+/>
+
+<x-twill::input
+    name="link_url"
+    label="Link url"
+    :translated="true"
+/>
+
+<x-twill::input
+    name="link_label"
+    label="Link label"
+    :translated="true"
+/>
 ```
 
 ### Using the field name separator
@@ -112,19 +114,21 @@ public $fieldsGroupsFormFieldNameSeparator = '.'; // Default is _
 This will automatically group/ungroup these fields based on the separator:
 
 ```php
-@formField('input', [
-    'name' => 'external_link.link_target',
-    'label' => 'Link target',
-    'translated' => true
-])
-@formField('input', [
-    'name' => 'external_link.link_url',
-    'label' => 'Link url',
-    'translated' => true
-])
-@formField('input', [
-    'name' => 'external_link.link_label',
-    'label' => 'Link label',
-    'translated' => true
-])
+<x-twill::input
+    name="external_link.link_target"
+    label="Link target"
+    :translated="true"
+/>
+
+<x-twill::input
+    name="external_link.link_url"
+    label="Link url"
+    :translated="true"
+/>
+
+<x-twill::input
+    name="external_link.link_label"
+    label="Link label"
+    :translated="true"
+/>
 ```
