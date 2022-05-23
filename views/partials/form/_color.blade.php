@@ -1,7 +1,7 @@
 <a17-colorfield
     label="{{ $label }}"
     default-value="{{ $default ?? '' }}"
-    {{$formFieldName()}}
+    {!! $formFieldName() !!}
     in-store="value"
 ></a17-colorfield>
 

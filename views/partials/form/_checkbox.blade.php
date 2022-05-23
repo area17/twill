@@ -1,5 +1,5 @@
 <a17-singlecheckbox
-    {{$formFieldName()}}
+    {!! $formFieldName() !!}
     label="{{ $label ?? '' }}"
     :initial-value="{{ $default ? 'true' : 'false' }}"
     @if ($note) note='{{ $note }}' @endif

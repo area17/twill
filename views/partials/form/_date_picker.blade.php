@@ -1,6 +1,6 @@
 <a17-datepicker
     label="{{ $label }}"
-    {{$formFieldName()}}
+    {!! $formFieldName() !!}
     place-holder="{{ $placeholder ?? $label }}"
     @if ($disabled) disabled @endif
     @if ($withTime) enable-time @endif

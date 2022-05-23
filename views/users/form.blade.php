@@ -4,6 +4,10 @@
     'reloadOnSuccess' => true
 ])
 
+@php
+    $isSuperAdmin = isset($item->role) ? $item->role === 'SUPERADMIN' : false;
+@endphp
+
 @section('contentFields')
 
     <x-twill::input
@@ -96,6 +100,23 @@
             </x-twill::formConnectedFields>
         @endunless
     @endif
+
+    @can('manage-users')
+        @if(config('twill.enabled.users-2fa') && $item->google_2fa_enabled && ($item->id !== $currentUser->id))
+            <x-twill::checkbox name="google_2fa_enabled" :label="__('twill::lang.user-management.2fa')"/>
+
+            <x-twill::formConnectedFields
+                field-name="google_2fa_enabled"
+                :field-values="false"
+            >
+                <x-twill::input name="force-2fa-disable-challenge"
+                                :label="__('twill::lang.user-management.force-2fa-disable')"
+                                :note="__('twill::lang.user-management.force-2fa-disable-description')"
+                                :placeholder="__('twill::lang.user-management.force-2fa-disable-challenge', ['user' => $item->email])"
+                />
+            </x-twill::formConnectedFields>
+        @endif
+    @endcan
 
     @if(config('twill.enabled.permissions-management') && config('twill.permissions.level') !== 'role')
         @can('edit-user-groups')

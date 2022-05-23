@@ -1,6 +1,6 @@
 <a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}" note="{{ $fieldNote }}">
     <a17-browserfield
-        {{$formFieldName()}}
+        {!! $formFieldName() !!}
         item-label="{{ $itemLabel }}"
         :max="{{ $max }}"
         :wide="{{ json_encode($wide) }}"

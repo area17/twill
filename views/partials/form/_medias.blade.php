@@ -18,7 +18,7 @@
             @if (!$withCaption) withCaption: false, @endif
             @if ($buttonOnTop) buttonOnTop: true, @endif
             @if (!$activeCrop) activeCrop: false, @endif
-            {{$formFieldName(true)}}
+            {!! $formFieldName(true) !!}
         }"
     >
         {{ $note }}
@@ -36,7 +36,7 @@
 @else
     <a17-inputframe label="{{ $label }}" name="medias.{{ $name }}" @if ($required) :required="true" @endif @if ($fieldNote) note="{{ $fieldNote }}" @endif>
         @if($multiple) <a17-slideshow @else <a17-mediafield @endif
-            {{$formFieldName()}}
+            {!! $formFieldName() !!}
             crop-context="{{ $name }}"
             :width-min="{{ $widthMin }}"
             :height-min="{{ $heightMin }}"
