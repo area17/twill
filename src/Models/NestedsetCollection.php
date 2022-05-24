@@ -21,7 +21,7 @@ class NestedsetCollection extends BaseNestedsetCollection
     public function toTree($root = false)
     {
         if ($this->isEmpty()) {
-            return new static();
+            return new self();
         }
 
         $this->linkNodes();
@@ -42,6 +42,6 @@ class NestedsetCollection extends BaseNestedsetCollection
             }
         }
 
-        return new static($items);
+        return new self($items);
     }
 }

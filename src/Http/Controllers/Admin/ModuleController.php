@@ -33,6 +33,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
@@ -969,7 +970,7 @@ abstract class ModuleController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            \Log::error($e);
+            Log::error($e);
         }
 
         return $this->respondWithError(
@@ -998,7 +999,7 @@ abstract class ModuleController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            \Log::error($e);
+            Log::error($e);
         }
 
         return $this->respondWithError(

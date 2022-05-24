@@ -68,7 +68,7 @@ trait HandleUserPermissions
 
     private function updateUserItemPermissions($user, $fields)
     {
-        $oldFields = \Session::get("user-{$user->id}");
+        $oldFields = Session::get("user-{$user->id}");
 
         foreach ($fields as $key => $value) {
             if (Str::endsWith($key, '_permission')) {

@@ -9,9 +9,9 @@ use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Services\Blocks\Block as BlockConfig;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Collection;
-use Log;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use ReflectionException;
-use Schema;
 
 class BlockRepository extends ModuleRepository
 {
