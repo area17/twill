@@ -7,12 +7,22 @@ import showEnvLine from '@/behaviors/showEnvLine'
 import logoutButton from '@/behaviors/logoutButton'
 import search from '@/main-search'
 import merge from 'lodash/merge'
+// Alpine js
+import Alpine from 'alpinejs'
+import mask from '@alpinejs/mask'
 
 const A17Init = function () {
   navToggle()
   showEnvLine()
   logoutButton()
 }
+
+
+// Alpine js
+Alpine.plugin(mask)
+window.Alpine = Alpine
+
+Alpine.start()
 
 // User header dropdown
 /* eslint-disable no-new */

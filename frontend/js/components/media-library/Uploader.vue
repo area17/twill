@@ -34,9 +34,13 @@
       },
       uploaderValidation: function () {
         const extensions = this.uploaderConfig.allowedExtensions
+        let acceptFiles = '*/*'
+        if (extensions.length > 0) {
+          acceptFiles = '.' + extensions.join(', .')
+        }
         return {
           allowedExtensions: extensions,
-          acceptFiles: '.' + extensions.join(', .'),
+          acceptFiles: acceptFiles,
           stopOnFirstInvalidFile: false
         }
       }

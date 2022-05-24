@@ -1,20 +1,8 @@
-@php
-    $trigger = $trigger ?? $label ?? twillTrans('twill::lang.fields.block-editor.add-content');
-    $name = $name ?? 'default';
-    $title = $title ?? Str::title($name);
-    $allowedBlocks = generate_list_of_available_blocks($blocks ?? null, $group ?? $groups ?? null);
-
-    $editorName = [
-        'label' => $title,
-        'value' => $name,
-    ];
-@endphp
-
-@unless($withoutSeparator ?? false)
+@unless($withoutSeparator)
 <hr/>
 @endunless
 <a17-blocks
-    title="{{ $title }}"
+    title="{{ $label }}"
     @if ($renderForBlocks) :editor-name="repeaterName('{{ $name }}')" @else editor-name="{{ $name }}" @endif
     trigger="{{ $trigger }}">
 </a17-blocks>

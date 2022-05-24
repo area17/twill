@@ -4,43 +4,9 @@ namespace A17\Twill\Tests\Integration;
 
 use App\Http\Controllers\Twill\NodeController;
 use App\Models\Node;
-use App\Repositories\NodeRepository;
 
-class NestedModuleTest extends TestCase
+class NestedModuleTest extends NestedModuleTestBase
 {
-    public $example = 'tests-nestedmodules';
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->login();
-    }
-
-    public function createNodes($titles)
-    {
-        return collect($titles)->map(function ($name) {
-            return app(NodeRepository::class)->create([
-                'title' => $name,
-                'published' => true,
-            ]);
-        });
-    }
-
-    public function arrangeNodes($parents, $children)
-    {
-        $data = $parents->map(function ($item) {
-            return ['id' => $item->id, 'children' => []];
-        })->all();
-
-        // All children are attached to the first parent
-        $data[0]['children'] = $children->map(function ($item) {
-            return ['id' => $item->id, 'children' => []];
-        })->all();
-
-        return $data;
-    }
-
     // FIXME — this is needed for the new admin routes to take effect in the next test,
     // because files are copied in `setUp()` after the app is initialized.
     public function testDummy()

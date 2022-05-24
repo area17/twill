@@ -2,13 +2,13 @@
 
 namespace A17\Twill;
 
+use Exception;
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
 use A17\Twill\Commands\CapsuleInstall;
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\Dev;
 use A17\Twill\Commands\GenerateBlocks;
-use A17\Twill\Commands\GeneratePackageCommand;
 use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ListBlocks;
 use A17\Twill\Commands\ListIcons;
@@ -37,11 +37,13 @@ use A17\Twill\Services\FileLibrary\FileService;
 use A17\Twill\Services\MediaLibrary\ImageService;
 use Astrotomic\Translatable\TranslatableServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;
-use Exception;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
 use Spatie\Activitylog\ActivitylogServiceProvider;
 
@@ -52,7 +54,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const VERSION = '2.8.0';
+    public const VERSION = '3.0.0';
 
     /**
      * Service providers to be registered.
@@ -118,6 +120,11 @@ class TwillServiceProvider extends ServiceProvider
         $this->registerFacades();
 
         $this->app->bind(TwillCapsules::class);
+
+        Blade::componentNamespace('A17\\Twill\\View\\Components', 'twill');
+
+        // Laravel 7 compatability.
+        Collection::macro('doesntContain', [Collection::class, 'missing']);
 
         Relation::morphMap([
             'users' => User::class,
@@ -368,6 +375,35 @@ class TwillServiceProvider extends ServiceProvider
 
         $view = $partialNamespace . $view . $name;
 
+        if (class_exists(Blade::getClassComponentNamespaces()['twill'] . '\\' . Str::studly($name))) {
+            $expression = explode(',', $expression);
+            array_shift($expression);
+            $expression = implode(',', $expression);
+            if ($expression === "") {
+                $expression = '[]';
+            }
+            $expression = str_replace("'", "\\'", $expression);
+
+            $php = '<?php' . PHP_EOL;
+            $php .= "\$data = eval('return $expression;');";
+            $php .= '$attributes = "";';
+            $php .= 'foreach(array_keys($data) as $attribute) {';
+            $php .= '  $attributes .= " :$attribute=\'$" . $attribute . "\'";';
+            $php .= '}' . PHP_EOL;
+            $php .= 'if ($renderForBlocks ?? false) {';
+            $php .= '  $attributes .= " :render-for-blocks=\'true\'";';
+            $php .= '}';
+            $php .= 'if ($renderForModal ?? false) {';
+            $php .= '  $attributes .= " :render-for-modal=\'true\'";';
+            $php .= '}';
+            $php .= '$name = "' . $name . '";';
+            $php .= 'echo Blade::render("<x-twill::$name $attributes />", $data); ?>';
+
+            return $php;
+        }
+
+        // Legacy behaviour.
+        // @TODO: Not sure if we should keep this.
         $expression = explode(',', $expression);
         array_shift($expression);
         $expression = '(' . implode(',', $expression) . ')';
@@ -387,9 +423,7 @@ class TwillServiceProvider extends ServiceProvider
     {
         $blade = $this->app['view']->getEngineResolver()->resolve('blade')->getCompiler();
 
-        $blade->directive('dd', function ($param) {
-            return "<?php dd({$param}); ?>";
-        });
+        $this->registerNullBladeDirectives($blade);
 
         $blade->directive('dumpData', function ($data) {
             return sprintf(
@@ -400,16 +434,6 @@ class TwillServiceProvider extends ServiceProvider
 
         $blade->directive('formField', function ($expression) {
             return $this->includeView('partials.form._', $expression);
-        });
-
-        /*
-         * Register the validation rules as "null" directives, so they are automatically cleaned from the view.
-         */
-        $blade->directive('twillBlockValidationRules', function () {
-            return null;
-        });
-        $blade->directive('twillBlockValidationRulesForTranslatedFields', function () {
-            return null;
         });
 
         $blade->directive('partialView', function ($expression) {
@@ -464,12 +488,50 @@ class TwillServiceProvider extends ServiceProvider
         $blade->component('twill::partials.form.utils._connected_fields', 'formConnectedFields');
         $blade->component('twill::partials.form.utils._inline_checkboxes', 'formInlineCheckboxes');
 
+        $blade->component('twill::partials.form.utils._fieldset', 'twill::formFieldset');
+        $blade->component('twill::partials.form.utils._columns', 'twill::formColumns');
+        $blade->component('twill::partials.form.utils._collapsed_fields', 'twill::formCollapsedFields');
+        $blade->component('twill::partials.form.utils._connected_fields', 'twill::formConnectedFields');
+        $blade->component('twill::partials.form.utils._inline_checkboxes', 'twill::formInlineCheckboxes');
+
+        $blade->component('twill::partials.form.utils._field_rows', 'twill::fieldRows');
+
         if (method_exists($blade, 'aliasComponent')) {
             $blade->aliasComponent('twill::partials.form.utils._fieldset', 'formFieldset');
             $blade->aliasComponent('twill::partials.form.utils._columns', 'formColumns');
             $blade->aliasComponent('twill::partials.form.utils._collapsed_fields', 'formCollapsedFields');
             $blade->aliasComponent('twill::partials.form.utils._connected_fields', 'formConnectedFields');
             $blade->aliasComponent('twill::partials.form.utils._inline_checkboxes', 'formInlineCheckboxes');
+        }
+    }
+
+    /**
+     * Null blade directives are used for cleaning up the form, block and repeater blade files.
+     */
+    private function registerNullBladeDirectives($blade): void
+    {
+        $nullCallBack = function () {
+            return null;
+        };
+
+        $keys = ['Block', 'Repeater', 'Prop'];
+        $props = [
+            'Title',
+            'TitleField',
+            'Icon',
+            'Group',
+            'Trigger',
+            'Max',
+            'Compiled',
+            'Component',
+            'ValidationRules',
+            'ValidationRulesForTranslatedFields',
+        ];
+
+        foreach ($keys as $key) {
+            foreach ($props as $prop) {
+                $blade->directive("twill{$key}{$prop}", $nullCallBack);
+            }
         }
     }
 

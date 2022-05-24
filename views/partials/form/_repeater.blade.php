@@ -1,12 +1,7 @@
-@php
-    $name = $name ?? $type;
-    $buttonAsLink = $buttonAsLink ?? false;
-    $max = $max ?? null;
-@endphp
-
 <a17-repeater
     type="{{ $type }}"
     @if ($max) :max="{{$max}}" @endif
+    @if (!$reorder) :draggable="false" @endif
     @if ($renderForBlocks) :name="repeaterName('{{ $name }}')" @else name="{{ $name }}" @endif
     @if ($buttonAsLink) :button-as-link="true" @endif
 ></a17-repeater>

@@ -185,7 +185,10 @@ class Capsule
 
     public function getDatabasePsr4Path(): string
     {
-        return $this->path . '/Database';
+        if (File::exists($this->path . '/Database')) {
+            return $this->path . '/Database';
+        }
+        return $this->path . '/database';
     }
 
     public function getSeedsNamespace(): string
@@ -270,7 +273,8 @@ class Capsule
 
     public function getViewPrefix(): string
     {
-        return "{$this->getModule()}.resources.views.admin";
+        $name = Str::studly($this->name);
+        return "{$name}.resources.views.admin";
     }
 
     public function getRoutesFile(): string
@@ -278,9 +282,21 @@ class Capsule
         return $this->getPsr4Path() . '/routes/twill.php';
     }
 
-    public function routesFileExists(): bool
+    public function getLegacyRoutesFile(): string
     {
-        return file_exists($this->getRoutesFile());
+        return $this->getPsr4Path() . '/routes/admin.php';
+    }
+
+    public function getRoutesFileIfExists(): ?string
+    {
+        if (file_exists($this->getRoutesFile())) {
+            return $this->getRoutesFile();
+        }
+        if (file_exists($this->getLegacyRoutesFile())) {
+            return $this->getLegacyRoutesFile();
+        }
+
+        return null;
     }
 
     public function getModel(): string
