@@ -48,15 +48,14 @@ class BlockRenderer
     public function render(
         array $blockViewMappings = [],
         array $data = [],
-        bool $renderChildren = false,
     ): string {
         $viewResult = [];
         /** @var Block $block */
         foreach ($this->rootBlocks as $block) {
-            $viewResult[] = $block->renderView($blockViewMappings, $data, $renderChildren, $this->inEditor);
+            $viewResult[] = $block->renderView($blockViewMappings, $data, $this->inEditor);
         }
 
-        return join('', $viewResult);
+        return implode('', $viewResult);
     }
 
     public static function fromCmsArray(array $data): self
@@ -88,17 +87,19 @@ class BlockRenderer
             }
         }
 
-        $class->setRenderData(new RenderData(
-            block: (new A17Block())->fill([
-                'type' => $type,
-                'content' => $data['content'],
-                'editor_name' => $editorName,
-            ]),
-            editorName: $editorName,
-            children: $children,
-            parentEditorName: $parentEditorName,
-            inEditor: true,
-        ));
+        $class->setRenderData(
+            new RenderData(
+                block: (new A17Block())->fill([
+                    'type' => $type,
+                    'content' => $data['content'],
+                    'editor_name' => $editorName,
+                ]),
+                editorName: $editorName,
+                children: $children,
+                parentEditorName: $parentEditorName,
+                inEditor: true,
+            )
+        );
 
         return $class;
     }
@@ -107,15 +108,12 @@ class BlockRenderer
         Model $model,
         string $editorName,
     ): self {
-        if (! isset(class_uses_recursive($model)[HasBlocks::class])) {
+        if (!isset(class_uses_recursive($model)[HasBlocks::class])) {
             throw new Exception('Model ' . $model::class . ' does not implement HasBlocks');
         }
 
         $renderer = new self();
 
-        // Get the blocks.
-        // @todo: This is a bit more strict than the old implementation. I guess that is fine
-        // as we do this in 3.x.
         /** @var \A17\Twill\Models\Block[] $blocks */
         $blocks = $model->blocks()->whereEditorName($editorName)->whereParentId(null)->get();
 
@@ -148,13 +146,15 @@ class BlockRenderer
             );
         }
 
-        $class->setRenderData(new RenderData(
-            block: $block,
-            editorName: $editorName,
-            children: $children,
-            model: $rootModel,
-            parentEditorName: $block->child_key
-        ));
+        $class->setRenderData(
+            new RenderData(
+                block: $block,
+                editorName: $editorName,
+                children: $children,
+                model: $rootModel,
+                parentEditorName: $block->child_key
+            )
+        );
 
         return $class;
     }

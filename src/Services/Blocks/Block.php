@@ -138,9 +138,9 @@ class Block
     public static function make($file, $type, $source, $name = null, string $renderNamespace = null): self
     {
         $name = $name ?? Str::before(
-            $file->getFilename(),
-            '.blade.php'
-        );
+                $file->getFilename(),
+                '.blade.php'
+            );
 
         $transformed = Str::studly($name) . 'Block';
         // @todo: Package block classes?
@@ -210,9 +210,9 @@ class Block
         $this->renderNamespace = $renderNamespace;
 
         $this->name = $name ?? Str::before(
-            $this->file->getFilename(),
-            '.blade.php'
-        );
+                $this->file->getFilename(),
+                '.blade.php'
+            );
 
         // @todo: This may not be needed.
         if ($type === self::TYPE_BLOCK && config('twill.block_editor.repeaters.' . $this->name) !== null) {
@@ -305,14 +305,19 @@ class Block
      */
     public function parse()
     {
-        $contents = $this->file ? file_get_contents((string) $this->file->getPathName()) : '';
+        $contents = $this->file ? file_get_contents((string)$this->file->getPathName()) : '';
 
         $this->title = $this->parseProperty('title', $contents, $this->name);
-        $this->trigger = $this->parseProperty('trigger', $contents, $this->name, $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.add-item') : null);
-        $this->max = (int) $this->parseProperty('max', $contents, $this->name, 999);
+        $this->trigger = $this->parseProperty(
+            'trigger',
+            $contents,
+            $this->name,
+            $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.add-item') : null
+        );
+        $this->max = (int)$this->parseProperty('max', $contents, $this->name, 999);
         $this->group = $this->parseProperty('group', $contents, $this->name, 'app');
         $this->icon = $this->parseProperty('icon', $contents, $this->name, 'text');
-        $this->compiled = (bool) $this->parseProperty('compiled', $contents, $this->name, false);
+        $this->compiled = (bool)$this->parseProperty('compiled', $contents, $this->name, false);
         $this->component = $this->parseProperty('component', $contents, $this->name, "a17-block-{$this->name}");
         $this->isNewFormat = $this->isNewFormat($contents);
         $this->contents = $contents;
@@ -327,7 +332,7 @@ class Block
 
         $this->parseMixedProperty('titleField', $contents, $this->name, function ($value, $options) {
             $this->titleField = $value;
-            $this->hideTitlePrefix = (bool) ($options['hidePrefix'] ?? false);
+            $this->hideTitlePrefix = (bool)($options['hidePrefix'] ?? false);
         });
 
         return $this;
@@ -399,7 +404,7 @@ class Block
      * @param string $property
      * @param string $block
      * @param string $blockName
-     * @param callable $callback  Should have the following signature: `function (array $value)`
+     * @param callable $callback Should have the following signature: `function (array $value)`
      * @return void
      * @throws \Exception
      */
@@ -421,7 +426,7 @@ class Block
      * @param string $property
      * @param string $block
      * @param string $blockName
-     * @param callable $callback  Should have the following signature: `function ($value, $options)`
+     * @param callable $callback Should have the following signature: `function ($value, $options)`
      * @return mixed
      * @throws \Exception
      */
@@ -539,11 +544,10 @@ class Block
     }
 
     /**
-     * @todo: Rename to renderForm
      * @return string
      * @throws \Throwable
      */
-    public function render()
+    public function renderForm()
     {
         View::share('TwillUntilConsumed', ['renderForBlocks' => true]);
         $block = BladeCompiler::render(
@@ -579,10 +583,9 @@ class Block
     public function renderView(
         array $blockViewMappings,
         array $data,
-        bool $renderChildren = false,
         bool $inEditor = false
     ): string {
-        if (! $this->renderData) {
+        if (!$this->renderData) {
             throw new \Exception('Cannot render without renderData');
         }
 
@@ -591,7 +594,6 @@ class Block
         $view = $this->getBlockView($blockViewMappings);
         $data = $this->getData($data, $this->renderData->block);
 
-        // @todo: $renderChildren
         $data['block'] = $this->renderData->block;
         $data['renderData'] = $this->renderData;
 

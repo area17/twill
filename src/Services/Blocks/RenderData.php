@@ -27,7 +27,6 @@ class RenderData
         string $editorName,
         array $viewMapping = [],
         array $data = [],
-        bool $renderChildren = false
     ): string {
         $output = [];
         /** @var \A17\Twill\Services\Blocks\Block $child */
@@ -36,13 +35,12 @@ class RenderData
                 $output[] = $child->renderView(
                     $viewMapping,
                     $data + ['inEditor' => $this->inEditor],
-                    $renderChildren,
                     $this->inEditor
                 );
             }
         }
 
-        return join('', $output);
+        return implode('', $output);
     }
 
     public function getChildrenFor(
@@ -57,7 +55,6 @@ class RenderData
                 $output[] = $child->renderView(
                     $viewMapping,
                     $data + ['inEditor' => $this->inEditor],
-                    false,
                     $this->inEditor
                 );
             }

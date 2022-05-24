@@ -12,19 +12,12 @@ class BlocksController extends Controller
     /**
      * Render an HTML preview of a single block.
      * This is used by the full screen content editor.
-     *
-     * @param Application $app
-     * @param ViewFactory $viewFactory
-     * @param Request $request
-     * @return string
-     *
-     * @todo: Add back 'inEditor'
      */
     public function preview(
         Application $app,
         ViewFactory $viewFactory,
         Request $request,
-    ) {
+    ): string {
         if ($request->has('activeLanguage')) {
             $app->setLocale($request->get('activeLanguage'));
         }
@@ -32,12 +25,11 @@ class BlocksController extends Controller
         $data = $request->except('activeLanguage');
 
         $mapping = config('twill.block_editor.block_views_mappings');
-        $previewRenderChilds = config('twill.block_editor.block_preview_render_childs');
 
         if ($viewFactory->exists(config('twill.block_editor.block_single_layout'))) {
             $viewFactory->inject(
                 'content',
-                BlockRenderer::fromCmsArray($data)->render($mapping, [], $previewRenderChilds)
+                BlockRenderer::fromCmsArray($data)->render($mapping, [])
             );
             $result = view(config('twill.block_editor.block_single_layout'));
         } else {
