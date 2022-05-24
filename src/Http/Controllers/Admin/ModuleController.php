@@ -734,13 +734,20 @@ abstract class ModuleController extends Controller
 
         $this->setBackLink();
 
-        $view = Collection::make([
-            "$this->viewPrefix.form",
-            "twill::$this->moduleName.form",
-            'twill::layouts.form',
-        ])->first(function ($view) {
-            return View::exists($view);
-        });
+        $controllerForm = $this->getForm($this->repository->getById($id));
+
+        if ($controllerForm->isNotEmpty()) {
+            $view =  'twill::layouts.form';
+        }
+        else {
+            $view = Collection::make([
+                "$this->viewPrefix.form",
+                "twill::$this->moduleName.form",
+                'twill::layouts.form',
+            ])->first(function ($view) {
+                return View::exists($view);
+            });
+        }
 
         View::share('form', $this->form($id));
         return View::make($view, $this->form($id))->with('renderFields', $this->getForm($this->repository->getById($id)));

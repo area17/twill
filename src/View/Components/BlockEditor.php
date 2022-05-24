@@ -46,6 +46,7 @@ class BlockEditor extends TwillFormComponent
                 'editorName' => [
                     'label' => $this->label,
                     'value' => $this->name,
+                    'nested' => $this->renderForBlocks
                 ],
             ])
         );

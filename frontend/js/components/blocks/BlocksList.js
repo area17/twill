@@ -11,7 +11,7 @@ export default {
   },
   computed: {
     availableBlocks () {
-      const splitted = this.editorName.split('_')
+      const splitted = this.editorName.split('|')
       const editorName = splitted[splitted.length - 1]
       return this.getAvailableBlocks(editorName)
     },

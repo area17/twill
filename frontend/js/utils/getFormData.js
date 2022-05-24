@@ -36,7 +36,7 @@ export const buildBlock = (block, rootState, isRepeater = false) => {
     return repeaterKey.startsWith('blocks-' + block.id)
   }).map(repeaterKey => {
     return {
-      [repeaterKey.replace('blocks-' + block.id + '_', '')]: rootState.repeaters.repeaters[repeaterKey].map(repeaterItem => {
+      [repeaterKey.replace('blocks-' + block.id + '|', '')]: rootState.repeaters.repeaters[repeaterKey].map(repeaterItem => {
         return buildBlock(repeaterItem, rootState, true)
       })
     }
@@ -46,7 +46,7 @@ export const buildBlock = (block, rootState, isRepeater = false) => {
     return blockKey.startsWith('blocks-' + block.id)
   }).map(blockKey => {
     return {
-      [blockKey.replace('blocks-' + block.id + '_', '')]: rootState.blocks.blocks[blockKey].map(repeaterItem => {
+      [blockKey.replace('blocks-' + block.id + '|', '')]: rootState.blocks.blocks[blockKey].map(repeaterItem => {
         return buildBlock(repeaterItem, rootState)
       })
     }

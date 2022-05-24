@@ -3,7 +3,7 @@
 @endunless
 <a17-blocks
     title="{{ $label }}"
-    @if ($renderForBlocks) :editor-name="repeaterName('{{ $name }}')" @else editor-name="{{ $name }}" @endif
+    @if ($renderForBlocks) :editor-name="nestedEditorName('{{ $name }}')" @else editor-name="{{ $name }}" @endif
     trigger="{{ $trigger }}">
 </a17-blocks>
 

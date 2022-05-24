@@ -23,6 +23,9 @@ export default {
     },
     repeaterName: function (id) {
       return this.name.replace('[', '-').replace(']', '') + '_' + id // nameOfBlock-UniqID_name
+    },
+    nestedEditorName: function (id) {
+      return this.name.replace('[', '-').replace(']', '') + '|' + id // nameOfBlock-UniqID_name
     }
   }
 }

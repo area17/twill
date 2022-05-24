@@ -43,6 +43,9 @@
       }
     },
     methods: {
+      parent: function() {
+        return this.$parent.$options.name
+      },
       openAddModal: function () {
         if (this.$parent.$refs.addModal) this.$parent.$refs.addModal.open()
       }
