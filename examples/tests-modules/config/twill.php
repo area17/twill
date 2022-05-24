@@ -5,8 +5,6 @@ return [
         'block_single_layout' => 'site.layouts.block',
         'block_views_path' => 'site.blocks',
         'block_views_mappings' => [],
-        'block_preview_render_childs' => false,
-
         'crops' => [
             'avatar' => [
                 'default' => [
