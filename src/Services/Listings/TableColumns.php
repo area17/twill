@@ -23,6 +23,7 @@ class TableColumns extends Collection
         $data['name'] = $model->{$tableDataContext->titleColumnKey};
         $data['edit'] = $editUrl;
         $data['endpointType'] = $tableDataContext->endpointType;
+        $data['repeaterFields'] = $tableDataContext->repeaterFields;
 
         if (!isset($data['thumbnail']) && $tableDataContext->hasMedia) {
             $data['thumbnail'] = $model->defaultCmsImage(['w' => 100, 'h' => 100]);

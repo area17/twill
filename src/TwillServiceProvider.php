@@ -524,6 +524,7 @@ class TwillServiceProvider extends ServiceProvider
             'Component',
             'ValidationRules',
             'ValidationRulesForTranslatedFields',
+            'SelectTrigger'
         ];
 
         foreach ($keys as $key) {

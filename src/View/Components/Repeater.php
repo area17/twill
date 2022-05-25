@@ -12,7 +12,7 @@ class Repeater extends TwillFormComponent
         public bool $buttonAsLink = false,
         public bool $reorder = true,
         public ?int $max = null,
-        public bool $allowCreate = false,
+        public bool $allowCreate = true,
         public ?string $relation = null,
         public ?array $browserModule = null,
         // Generic

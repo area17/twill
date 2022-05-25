@@ -14,5 +14,4 @@ class TableDataContext
         public array $repeaterFields,
     ) {
     }
-
 }
