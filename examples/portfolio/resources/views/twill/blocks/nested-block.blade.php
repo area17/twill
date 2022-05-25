@@ -2,11 +2,11 @@
 @twillBlockIcon('text')
 @twillBlockGroup('app')
 
-@formField('input', [
-    'name' => 'title',
-    'label' => 'Title',
-    'translated' => true,
-])
+<x-twill::input
+    name="title"
+    label="Title"
+    :translated="true"
+/>
 
-@formField('block_editor', ['name' => 'left'])
-@formField('block_editor', ['name' => 'right'])
+<x-twill::block-editor name="left"/>
+<x-twill::block-editor name="right"/>

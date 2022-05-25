@@ -1,12 +1,12 @@
 @extends('twill::layouts.form')
 
 @section('contentFields')
-    @formField('input', [
-        'name' => 'description',
-        'label' => 'Description',
-        'translated' => true,
-        'maxlength' => 100
-    ])
+    <x-twill::input
+        name="description"
+        label="Description"
+        :translated="true"
+        :maxlength="100"
+    />
 
-    @formField('repeater', ['type' => 'comment'])
+    <x-twill::repeater type="comment"/>
 @stop

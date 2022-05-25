@@ -3,13 +3,13 @@
 @twillRepeaterTrigger('Add comment')
 @twillRepeaterGroup('app')
 
-@formField('input', [
-    'name' => 'title',
-    'label' => 'Title'
-])
+<x-twill::input
+    name="title"
+    label="Title"
+/>
 
-@formField('input', [
-    'name' => 'comment',
-    'label' => 'The comment',
-    'maxlength' => 100
-])
+<x-twill::input
+    name="comment"
+    label="Comment"
+    :maxlength="100"
+/>
