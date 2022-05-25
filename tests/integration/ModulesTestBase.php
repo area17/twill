@@ -201,7 +201,7 @@ abstract class ModulesTestBase extends TestCase
         );
     }
 
-    protected function editAuthor()
+    protected function editAuthor(): void
     {
         $this->httpRequestAssert(
             "/twill/personnel/authors/{$this->author->id}",

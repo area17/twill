@@ -64,7 +64,7 @@ class DatePicker extends BaseFormField
     {
         $this->withTime = true;
         $this->timeOnly = $timeOnly;
-        $this->altFormat = $this->altFormat ?? (($this->time24Hr ?? false) ? 'H:i' : 'h:i K');
+        $this->altFormat = $this->altFormat ?? (($this->time24h ?? false) ? 'H:i' : 'h:i K');
 
         return $this;
     }
