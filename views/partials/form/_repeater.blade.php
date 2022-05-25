@@ -1,20 +1,7 @@
-@php
-   $name = $name ?? $type;
-   $buttonAsLink = $buttonAsLink ?? false;
-   $browserModule = $browserModule ?? null;
-   $max = $max ?? null;
-   $allowCreate = $allowCreate ?? true;
-   $relation = $relation ?? null;
-
-   $browserModule = $browserModule ? [
-       'label' => $browserModule['label'] ?? ucfirst($browserModule['name']),
-       'value' => moduleRoute($browserModule['name'], $browserModule['routePrefix'] ?? null, 'browser', $browserModule['params'] ?? [], false)
-   ] : null;
-@endphp
-
 <a17-repeater
     type="{{ $type }}"
     @if ($max) :max="{{$max}}" @endif
+    @if (!$reorder) :draggable="false" @endif
     @if ($renderForBlocks) :name="repeaterName('{{ $name }}')" @else name="{{ $name }}" @endif
     @if ($browserModule) :browser="{{ json_encode($browserModule) }}" @endif
     @if ($buttonAsLink) :button-as-link="true" @endif

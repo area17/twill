@@ -17,7 +17,7 @@ class CreateTwillDefaultTagsTables extends Migration
 
         if (!Schema::hasTable($twillTaggedTable)) {
             Schema::create($twillTaggedTable, function (Blueprint $table) {
-                $table->{twillIncrementsMethod()}('id');
+                $table->bigIncrements('id');
                 $table->string('taggable_type');
                 $table->integer('taggable_id')->unsigned();
                 $table->integer('tag_id')->unsigned();
@@ -30,7 +30,7 @@ class CreateTwillDefaultTagsTables extends Migration
 
         if (!Schema::hasTable($twillTagsTable)) {
             Schema::create($twillTagsTable, function (Blueprint $table) {
-                $table->{twillIncrementsMethod()}('id');
+                $table->bigIncrements('id');
                 $table->string('namespace');
                 $table->string('slug');
                 $table->string('name');

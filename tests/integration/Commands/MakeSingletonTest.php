@@ -17,7 +17,9 @@ class MakeSingletonTest extends TestCase
                 '--hasMedias' => true,
                 '--hasFiles' => true,
                 '--hasRevisions' => true,
-            ])->run()
+                '--generatePreview' => true,
+            ])
+            ->run()
         );
 
         $this->assertFileExists(

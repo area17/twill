@@ -150,6 +150,8 @@ class ModulesAuthorsTest extends ModulesTestBase
         $data = [
             'id' => 1,
             'type' => 'a17-block-quote',
+            'editor_name' => 'default',
+            'is_repeater' => false,
             'content' => [
                 'quote' => ($quote = $this->fakeText(70)),
             ],

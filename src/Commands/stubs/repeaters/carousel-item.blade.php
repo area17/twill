@@ -2,13 +2,12 @@
 @twillRepeaterTrigger('Add carousel item')
 @twillRepeaterGroup('twill')
 
-@formField('input', [
-    'name' => 'description',
-    'label' => 'Description',
-])
+<x-twill::input
+    name="description"
+    label="Description"
+/>
 
-@formField('medias', [
-    'name' => 'image',
-    'label' => 'Image',
-    'withVideoUrl' => false,
-])
+<x-twill::medias
+    name="image"
+    label="Image"
+/>

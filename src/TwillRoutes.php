@@ -115,14 +115,14 @@ class TwillRoutes
 
     public function registerCapsuleRoutes($router, Capsule $capsule): void
     {
-        if ($capsule->routesFileExists()) {
+        if ($routesFile = $capsule->getRoutesFileIfExists()) {
             $this->registerRoutes(
                 $router,
                 $this->getRouteGroupOptions(),
                 $this->getRouteMiddleware(),
                 $this->supportSubdomainRouting(),
                 $capsule->getControllersNamespace(),
-                $capsule->getRoutesFile(),
+                $routesFile,
                 // When it is not a package capsule we can register it immediately.
                 ! $capsule->packageCapsule
             );

@@ -7,6 +7,7 @@
             ref="blockList"
             :block="block"
             :index="index"
+            :withHandle="draggable"
             :size="blockSize"
             :opened="opened"
           >
@@ -177,7 +178,6 @@
         this.$store.commit(FORM.ADD_REPEATER_FROM_SELECTION, { type: this.type, name: this.name, selection: selected, relation: this.relation })
       },
       duplicateBlock: function (index) {
-        this.opened = true
         this.$store.commit(FORM.DUPLICATE_FORM_BLOCK, {
           type: this.type,
           name: this.name,
@@ -202,9 +202,8 @@
       }
     },
     mounted: function () {
-      const self = this
-      this.$nextTick(function () {
-        self.collapseAllBlocks()
+      this.$nextTick(() => {
+        this.collapseAllBlocks()
       })
     }
   }

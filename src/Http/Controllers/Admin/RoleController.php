@@ -62,7 +62,7 @@ class RoleController extends ModuleController
         ];
     }
 
-    protected $indexColumns = [
+    protected ?array $indexColumns = [
         'name' => [
             'title' => 'Name',
             'field' => 'name',

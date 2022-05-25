@@ -74,12 +74,12 @@ trait HandleMedias
 
                 $locale = $locale ?? config('app.locale');
 
-                if (in_array($role, array_keys($this->model->mediasParams ?? []))
+                if (in_array($role, array_keys($this->model->getMediasParams()))
                     || in_array($role, array_keys(config('twill.block_editor.crops', [])))
                     || in_array($role, array_keys(config('twill.settings.crops', [])))) {
                     Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
-                        if (isset($media['crops']) && !empty($media['crops'])) {
+                        if (isset($media['crops']) && ! empty($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
                                 $medias->push([
                                     'id' => $media['id'],
@@ -154,7 +154,7 @@ trait HandleMedias
     {
         $itemsForForm = [];
 
-        foreach ($medias->groupBy('id') as $id => $mediasById) {
+        foreach ($medias->groupBy('id') as $mediasById) {
             $item = $mediasById->first();
 
             $itemForForm = $item->toCmsArray();
@@ -184,6 +184,6 @@ trait HandleMedias
      */
     public function getCrops($role)
     {
-        return $this->model->mediasParams[$role];
+        return $this->model->getMediasParams()[$role];
     }
 }

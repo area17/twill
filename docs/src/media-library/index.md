@@ -4,4 +4,4 @@ pageClass: twill-doc
 
 # Media Library
 
-![screenshot](/docs/_media/medialibrary.png)
+![screenshot](../.vuepress/public/_media/medialibrary.png)

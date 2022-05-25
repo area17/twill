@@ -292,6 +292,7 @@ class CapsulesTest extends TestCase
                 '--hasPosition' => true,
                 '--hasRevisions' => true,
                 '--hasNesting' => true,
+                '--generatePreview' => true,
             ])
             ->run()
         );

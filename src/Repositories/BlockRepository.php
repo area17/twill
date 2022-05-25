@@ -9,9 +9,9 @@ use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Services\Blocks\Block as BlockConfig;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Collection;
-use Log;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use ReflectionException;
-use Schema;
 
 class BlockRepository extends ModuleRepository
 {
@@ -107,7 +107,7 @@ class BlockRepository extends ModuleRepository
 
         $block['instance'] = $blockInstance;
 
-        $block['content'] = empty($block['content']) ? new \stdClass : (object) $block['content'];
+        $block['content'] = empty($block['content']) ? new \stdClass() : (object) $block['content'];
 
         if ($block['browsers']) {
             $browsers = Collection::make($block['browsers'])->map(function ($items) {

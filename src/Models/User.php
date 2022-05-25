@@ -6,13 +6,11 @@ use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasOauth;
 use A17\Twill\Models\Behaviors\HasPermissions;
 use A17\Twill\Models\Behaviors\HasPresenter;
-use A17\Twill\Models\Enums\UserRole;
 use A17\Twill\Models\Behaviors\IsTranslatable;
-use A17\Twill\Models\Group;
-use A17\Twill\Models\Role;
+use A17\Twill\Models\Enums\UserRole;
+use A17\Twill\Notifications\PasswordResetByAdmin as PasswordResetByAdminNotification;
 use A17\Twill\Notifications\Reset as ResetNotification;
 use A17\Twill\Notifications\TemporaryPassword as TemporaryPasswordNotification;
-use A17\Twill\Notifications\PasswordResetByAdmin as PasswordResetByAdminNotification;
 use A17\Twill\Notifications\Welcome as WelcomeNotification;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -25,7 +23,15 @@ use PragmaRX\Google2FAQRCode\Google2FA;
 
 class User extends AuthenticatableContract
 {
-    use Authenticatable, Authorizable, HasMedias, Notifiable, HasPresenter, HasOauth, HasPermissions, SoftDeletes, IsTranslatable;
+    use Authenticatable;
+    use Authorizable;
+    use HasMedias;
+    use Notifiable;
+    use HasPresenter;
+    use HasOauth;
+    use HasPermissions;
+    use SoftDeletes;
+    use IsTranslatable;
 
     public $timestamps = true;
 
@@ -57,7 +63,7 @@ class User extends AuthenticatableContract
 
     public $checkboxes = ['published'];
 
-    public $mediasParams = [
+    public array $mediasParams = [
         'profile' => [
             'default' => [
                 [
@@ -83,9 +89,10 @@ class User extends AuthenticatableContract
      */
     public function scopeAccessible($query)
     {
+        /** @var self $currentUser */
         $currentUser = auth('twill_users')->user();
 
-        if (!config('twill.enabled.permissions-management') || $currentUser->isSuperAdmin()) {
+        if (! config('twill.enabled.permissions-management') || $currentUser->isSuperAdmin()) {
             return $query;
         }
 
@@ -118,7 +125,7 @@ class User extends AuthenticatableContract
             return $this->role ? $this->role->name : null;
         }
 
-        if (!empty($this->role)) {
+        if (! empty($this->role)) {
             return UserRole::{$this->role}()->getValue();
         }
 
@@ -160,6 +167,7 @@ class User extends AuthenticatableContract
         if (config('twill.enabled.permissions-management')) {
             return $query->where('is_superadmin', '<>', true);
         }
+
         return $query->where('role', '<>', 'SUPERADMIN');
     }
 
@@ -260,9 +268,9 @@ class User extends AuthenticatableContract
             $query
                 ->join('group_twill_user', 'groups.id', '=', 'group_twill_user.group_id')
                 ->where('group_twill_user.twill_user_id', $this->id)
-                ->where('published', 1)
-            ;
+                ->where('published', 1);
         });
+
         return $permissions;
     }
 

@@ -3,82 +3,77 @@
 ])
 
 @section('contentFields')
-    @component('twill::partials.form.utils._field_rows', [
-        'title' => 'General permissions'
-    ])
-        @formField('checkbox', [
-            'name' => 'edit-settings',
-            'label' => 'Edit property settings'
-        ])
+    <x-twill::fieldRows title="General permissions">
+        <x-twill::checkbox
+            name="edit-settings"
+            label="Edit property settings"
+        />
 
-        @formField('checkbox', [
-            'name' => 'edit-users',
-            'label' => 'Manage users'
-        ])
+        <x-twill::checkbox
+            name="edit-users"
+            label="Manage users"
+        />
 
-        @formField('checkbox', [
-            'name' => 'edit-user-roles',
-            'label' => 'Manage user roles'
-        ])
+        <x-twill::checkbox
+            name="edit-user-roles"
+            label="Manage user roles"
+        />
 
-        @formField('checkbox', [
-            'name' => 'edit-user-groups',
-            'label' => 'Manage user groups'
-        ])
+        <x-twill::checkbox
+            name="edit-user-groups"
+            label="Manage user groups"
+        />
 
-        @formField('checkbox', [
-            'name' => 'access-media-library',
-            'label' => 'Access media library'
-        ])
+        <x-twill::checkbox
+            name="access-media-library"
+            label="Access media library"
+        />
 
-        @formField('checkbox', [
-            'name' => 'edit-media-library',
-            'label' => 'Upload to media library'
-        ])
-    @endcomponent
+        <x-twill::checkbox
+            name="edit-media-library"
+            label="Upload to media library"
+        />
+    </x-twill::fieldRows>
 
-    @component('twill::partials.form.utils._field_rows', [
-        'title' => 'Content permissions'
-    ])
-        @formField('checkbox', [
-            'name' => 'manage-modules',
-            'label' => 'Manage All Modules'
-        ])
+    <x-twill::fieldRows title="Content permissions">
+        <x-twill::checkbox
+            name="manage-modules"
+            label="Manage all modules"
+        />
 
-        @component('twill::partials.form.utils._connected_fields', [
-            'fieldName' => 'manage-modules',
-            'fieldValues' => false,
-        ])
+        <x-twill::formConnectedFields
+            field-name="manage-modules"
+            :field-values="false"
+        >
             @foreach($permission_modules as $module_name => $module_items)
-                @formField('select', [
-                    'name' => 'module_' . $module_name . '_permissions',
-                    'label' => ucfirst($module_name) . ' permissions',
-                    'placeholder' => 'Select a permission',
-                    'options' => array_merge([
-                        [
-                            'value' => 'none',
-                            'label' => 'None'
+                <x-twill::select
+                    :name="'module_' . $module_name . '_permissions'"
+                    :label="ucfirst($module_name) . ' permissions'"
+                    placeholder="Select a permission"
+                    :options="array_merge([
+                            [
+                                'value' => 'none',
+                                'label' => 'None'
+                            ],
+                            [
+                                'value' => 'view-module',
+                                'label' => 'View ' . $module_name
+                            ],
+                            [
+                                'value' => 'edit-module',
+                                'label' => 'Edit ' . $module_name
+                            ]
                         ],
-                        [
-                            'value' => 'view-module',
-                            'label' => 'View ' . $module_name
-                        ],
-                        [
-                            'value' => 'edit-module',
-                            'label' => 'Edit ' . $module_name
-                        ]
-                    ], (config('twill.permissions.level')=='roleGroupItem' ? [['value' => 'manage-module', 'label' => 'Manage ' . $module_name ]] : []))
-                ])
+                        (config('twill.permissions.level')==='roleGroupItem' ? [['value' => 'manage-module', 'label' => 'Manage ' . $module_name ]] : []))"
+                />
             @endforeach
-        @endcomponent
-    @endcomponent
+        </x-twill::formConnectedFields>
+    </x-twill::fieldRows>
 
-    @component('twill::partials.form.utils._field_rows', [
-        'title' => 'Groups'
-    ])
-        @formField('checkbox', [
-            'name' => 'in_everyone_group',
-            'label' => 'Include in "Everyone"'
-        ])
-    @endcomponent
+    <x-twill::fieldRows title="Groups">
+        <x-twill::checkbox
+            name="in_everyone_group"
+            label="Include in 'Everyone'"
+        />
+    </x-twill::fieldRows>
 @stop

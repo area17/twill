@@ -16,6 +16,7 @@ class MakeSingleton extends ModuleMake
         {--M|hasMedias}
         {--F|hasFiles}
         {--R|hasRevisions}
+        {--E|generatePreview}
         {--all}';
 
     /**

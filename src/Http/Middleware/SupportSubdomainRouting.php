@@ -4,8 +4,8 @@ namespace A17\Twill\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use URL;
-use View;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
 
 class SupportSubdomainRouting
 {
@@ -17,7 +17,7 @@ class SupportSubdomainRouting
         if (config('twill.active_subdomain') !== $subdomain) {
             config(['twill.active_subdomain' => $subdomain]);
         }
-        
+
         // Set subdomain as default URL parameter to not have
         // to add it manually when using route helpers
         URL::defaults([$parameter => $subdomain]);

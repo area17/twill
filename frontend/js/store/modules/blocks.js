@@ -64,6 +64,10 @@ const mutations = {
     const updated = state.blocks[editorName] || []
     const newBlock = { ...block, id: setBlockID(), name: editorName }
 
+    // Metadata for rendering
+    newBlock.twillUi = {}
+    newBlock.twillUi.isNew = true
+
     if (index > -1) {
       updated.splice(index, 0, newBlock) // add after a certain position
     } else {

@@ -18,6 +18,7 @@ class MakeCapsule extends ModuleMake
         {--P|hasPosition}
         {--R|hasRevisions}
         {--N|hasNesting}
+        {--E|generatePreview}
         {--all}
         {--force}';
 

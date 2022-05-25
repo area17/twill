@@ -17,6 +17,8 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 trait HandleBlocks
 {
+    private ?\Illuminate\Validation\Validator $blockValidator = null;
+
     /**
      * @param \A17\Twill\Models\Model $object
      * @param array $fields
@@ -72,7 +74,7 @@ trait HandleBlocks
 
             $fakeBlockId++;
             $newChildBlock->id = $fakeBlockId;
-            if (! empty($childBlock['blocks'])) {
+            if (!empty($childBlock['blocks'])) {
                 $childBlockHydrated = $this->hydrateHandleBlocks(
                     $newChildBlock,
                     $childBlock,
@@ -99,7 +101,7 @@ trait HandleBlocks
 
         $blockRepository = app(BlockRepository::class);
 
-        $validator = Validator::make([], []);
+        $this->blockValidator = Validator::make([], []);
 
         foreach ($fields['blocks'] ?? [] as $block) {
             $blockCmsData = app(BlockRepository::class)->buildFromCmsArray($block);
@@ -110,27 +112,21 @@ trait HandleBlocks
             // Figure out if the class has translations.
             $handleTranslations = property_exists($object, 'translatedAttributes');
 
-            try {
-                $this->validate(
-                    $block['content'],
-                    $block['id'],
-                    $blockInstance->getRules(),
-                    $handleTranslations ? $blockInstance->getRulesForTranslatedFields() : []
-                );
-            } catch (ValidationException $e) {
-                $validator->errors()->merge($e->errors());
-            }
-        }
-
-        if ($validator->errors()->isNotEmpty()) {
-            throw new ValidationException($validator);
+            $this->validateBlockArray($block, $blockInstance, $handleTranslations);
         }
 
         $existingBlockIds = $object->blocks()->pluck('id')->toArray();
 
         $usedBlockIds = [];
 
-        foreach ($this->getBlocks($object, $fields) as $blockData) {
+        $blocks = $this->getBlocks($object, $fields);
+
+        // At this point we have parsed all content so we can throw the validation exception.
+        if ($this->blockValidator->errors()->isNotEmpty()) {
+            throw new ValidationException($this->blockValidator);
+        }
+
+        foreach ($blocks as $blockData) {
             $this->updateOrCreateBlock($blockRepository, $blockData, $existingBlockIds, $usedBlockIds);
         }
 
@@ -147,7 +143,7 @@ trait HandleBlocks
     ): void {
         // Find an existing block id based on the frontend id.
         if (
-            ! in_array($blockData['id'] ?? null, $existingBlockIds, false) &&
+            !in_array($blockData['id'] ?? null, $existingBlockIds, false) &&
             $id = TwillUtil::hasBlockIdFor($blockData['id'])
         ) {
             $originalBlockId = $blockData['id'];
@@ -186,7 +182,7 @@ trait HandleBlocks
 
     private function validate(array $formData, int $id, array $basicRules, array $translatedFieldRules): void
     {
-        $finalValidator = Validator::make([], []);
+        $finalValidator = $this->blockValidator;
         foreach ($translatedFieldRules as $field => $rules) {
             foreach (config('translatable.locales') as $locale) {
                 $data = $formData[$field][$locale] ?? null;
@@ -206,10 +202,6 @@ trait HandleBlocks
                     $finalValidator->getMessageBag()->add("blocks[$id][$key]", $error);
                 }
             }
-        }
-
-        if ($finalValidator->errors()->isNotEmpty()) {
-            throw new ValidationException($finalValidator);
         }
     }
 
@@ -260,6 +252,9 @@ trait HandleBlocks
         if (isset($fields['blocks']) && is_array($fields['blocks'])) {
             foreach ($fields['blocks'] as $index => $block) {
                 $block = $this->buildBlock($block, $object);
+
+                $this->validateBlockArray($block, $block['instance'], true);
+
                 $block['position'] = $index + 1;
                 $block['blocks'] = $this->getChildBlocks($object, $block);
 
@@ -283,7 +278,8 @@ trait HandleBlocks
 
         foreach ($parentBlockFields['blocks'] as $childKey => $childBlocks) {
             foreach ($childBlocks as $index => $childBlock) {
-                $childBlock = $this->buildBlock($childBlock, $object, true);
+                $childBlock = $this->buildBlock($childBlock, $object, $childBlock['is_repeater'] ?? true);
+                $this->validateBlockArray($childBlock, $childBlock['instance'], true);
                 $childBlock['child_key'] = $childKey;
                 $childBlock['position'] = $index + 1;
                 $childBlock['editor_name'] = $parentBlockFields['editor_name'] ?? 'default';
@@ -294,6 +290,19 @@ trait HandleBlocks
         }
 
         return $childBlocksList;
+    }
+
+    private function validateBlockArray(
+        array $block,
+        \A17\Twill\Services\Blocks\Block $blockInstance,
+        bool $handleTranslations
+    ): void {
+        $this->validate(
+            (array)$block['content'] + $block['medias'] + $block['browsers'] + $block['blocks'],
+            $block['id'],
+            $blockInstance->getRules(),
+            $handleTranslations ? $blockInstance->getRulesForTranslatedFields() : []
+        );
     }
 
     /**
@@ -339,16 +348,22 @@ trait HandleBlocks
                     'attributes' => [],
                 ];
 
-                if (isset($block->parent_id)) {
-                    $fields['blocksRepeaters']["blocks-{$block->parent_id}_{$block->child_key}"][] = $blockItem + [
+                if (isset($block->parent_id) && $blockTypeConfig->type !== 'block') {
+                    $fields['blocksRepeaters']["blocks-{$block->parent_id}|{$block->child_key}"][] = $blockItem + [
                             'trigger' => $blockTypeConfig->trigger,
                             'selectTrigger' => $blockTypeConfig->selectTrigger,
                             'max' => $blockTypeConfig->max,
                         ];
                 } else {
-                    $fields['blocks'][$blockItem['name']][] = $blockItem + [
-                            'icon' => $blockTypeConfig->icon,
-                        ];
+                    if (isset($block->parent_id)) {
+                        $fields['blocks']["blocks-{$block->parent_id}|{$block->child_key}"][] = $blockItem + [
+                                'icon' => $blockTypeConfig->icon,
+                            ];
+                    } else {
+                        $fields['blocks'][$blockItem['name']][] = $blockItem + [
+                                'icon' => $blockTypeConfig->icon,
+                            ];
+                    }
                 }
 
                 $fields['blocksFields'][] = Collection::make($block['content'])->filter(function ($value, $key) {
@@ -438,7 +453,7 @@ trait HandleBlocks
                     ->isNotEmpty()) {
                 $items = $this->getFormFieldsForRelatedBrowser($block, $relation);
                 foreach ($items as &$item) {
-                    if (! isset($item['edit'])) {
+                    if (!isset($item['edit'])) {
                         try {
                             $item['edit'] = moduleRoute(
                                 $relation,

@@ -1,7 +1,14 @@
 <template>
   <div class="browserField">
     <div class="browserField__trigger" v-if="buttonOnTop && remainingItems">
-      <a17-button type="button" :disabled="disabled" variant="ghost" @click="openBrowser">{{ addLabel }}</a17-button>
+      <a17-button
+        type="button"
+        :disabled="disabled || (connectedBrowserField && connectedBrowserFieldItems.length === 0)"
+        variant="ghost"
+        @click="openBrowser"
+      >
+        {{ addLabel }}
+      </a17-button>
       <input type="hidden" :name="name" :value="itemsIds"/>
       <span class="browserField__note f--small"><slot></slot></span>
     </div>
@@ -15,7 +22,14 @@
       </draggable>
     </table>
     <div class="browserField__trigger" v-if="!buttonOnTop && remainingItems">
-      <a17-button type="button" :disabled="disabled" variant="ghost" @click="openBrowser">{{ addLabel }}</a17-button>
+      <a17-button
+        type="button"
+        :disabled="disabled || (connectedBrowserField && connectedBrowserFieldItems.length === 0)"
+        variant="ghost"
+        @click="openBrowser"
+      >
+        {{ addLabel }}
+      </a17-button>
       <input type="hidden" :name="name" :value="itemsIds"/>
       <span class="browserField__note f--small"><slot></slot></span>
     </div>
@@ -81,6 +95,10 @@
       disabled: {
         type: Boolean,
         default: false
+      },
+      connectedBrowserField: {
+        type: String,
+        defautl: null
       }
     },
     data: function () {
@@ -120,6 +138,9 @@
           return ''
         }
       },
+      connectedBrowserFieldItems: function () {
+        return this.selectedBrowser[this.connectedBrowserField] || []
+      },
       ...mapState({
         selectedBrowser: state => state.browser.selected
       }),
@@ -145,8 +166,23 @@
           this.$store.commit(BROWSER.UPDATE_BROWSER_ENDPOINTS, this.endpoints)
         } else {
           this.$store.commit(BROWSER.DESTROY_BROWSER_ENDPOINTS)
+
+          let endpointURL = this.endpoint
+
+          if (this.connectedBrowserFieldItems.length) {
+            let append = '?'
+
+            if (endpointURL.indexOf('?') > -1) {
+              append = '&'
+            }
+
+            endpointURL = endpointURL + append + 'connectedBrowserIds= ' + encodeURIComponent(
+              JSON.stringify(this.connectedBrowserFieldItems.map(i => i.id))
+            )
+          }
+
           this.$store.commit(BROWSER.UPDATE_BROWSER_ENDPOINT, {
-            value: this.endpoint,
+            value: endpointURL,
             label: this.name
           })
         }
@@ -158,6 +194,13 @@
           this.$root.$refs.browserWide.open(this.endpoints.length <= 0)
         } else {
           this.$root.$refs.browser.open(this.endpoints.length <= 0)
+        }
+      }
+    },
+    watch: {
+      connectedBrowserFieldItems (items) {
+        if (this.connectedBrowserField && items.length === 0) {
+          this.deleteAll()
         }
       }
     }
