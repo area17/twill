@@ -2,6 +2,12 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.8.4 (2022-05-25)
+
+### Fixes
+
+- Fixed console error when editing block with media in the block editor [`#1659`](https://github.com/area17/twill/pull/1659)
+
 ## 2.8.3 (2022-05-19)
 
 ### Fixes
