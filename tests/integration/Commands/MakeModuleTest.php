@@ -19,7 +19,9 @@ class MakeModuleTest extends TestCase
                 '--hasPosition' => true,
                 '--hasRevisions' => true,
                 '--hasNesting' => true,
-            ])->run()
+            ])
+            ->expectsConfirmation('Do you also want to generate the preview file?', 'no')
+            ->run()
         );
 
         $this->assertFileExists(

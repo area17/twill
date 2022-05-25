@@ -30,6 +30,7 @@ class ModuleMake extends Command
         {--P|hasPosition}
         {--R|hasRevisions}
         {--N|hasNesting}
+        {--E|generatePreview}
         {--all}';
 
     /**
@@ -719,7 +720,7 @@ class ModuleMake extends Command
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function createViews($moduleName = 'items')
+    private function createViews(string $moduleName = 'items'): void
     {
         $viewsPath = $this->viewPath($moduleName);
 
@@ -733,6 +734,11 @@ class ModuleMake extends Command
         );
 
         $this->info('Form view created successfully! You can now include your form fields.');
+
+        if ($this->checkOption('generatePreview') === true) {
+            $previewViewsPath = $this->previewViewPath();
+            twill_put_stub($previewViewsPath . '/' . Str::singular($moduleName) . '.blade.php', $this->files->get(__DIR__ . '/stubs/preview_module.blade.stub'));
+        }
     }
 
     /**
@@ -870,6 +876,7 @@ class ModuleMake extends Command
             'hasPosition' => 'Do you need to manage the position of records on this module?',
             'hasRevisions' => 'Do you need to enable revisions on this module?',
             'hasNesting' => 'Do you need to enable nesting on this module?',
+            'generatePreview' => 'Do you also want to generate the preview file?',
         ];
 
         $defaultAnswers = [
@@ -984,14 +991,25 @@ class ModuleMake extends Command
         throw new \Exception('Missing Implementation.');
     }
 
-    public function viewPath($moduleName)
+    public function viewPath(string $moduleName): string
     {
-        if (! $this->isCapsule) {
+        if (!$this->isCapsule) {
             return $this->config->get('view.paths')[0] . '/admin/' . $moduleName;
         }
 
         $dir = "$this->moduleBasePath/resources/views/twill";
         $this->makeDir($dir);
+
+        return $dir;
+    }
+
+    public function previewViewPath(): string
+    {
+        if (!$this->isCapsule) {
+            return $this->config->get('view.paths')[0] . '/site/';
+        }
+
+        $this->makeDir($dir = "{$this->moduleBasePath}/resources/views");
 
         return $dir;
     }

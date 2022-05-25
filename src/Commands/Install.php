@@ -74,6 +74,7 @@ class Install extends Command
                 $this->error("Could not find preset: $preset");
             }
         } else {
+            $this->copyBlockPreviewFile();
             $this->addRoutesFile();
             $this->call('migrate');
             $this->publishConfig();
@@ -110,6 +111,20 @@ class Install extends Command
         if (! $this->files->exists($routesPath . '/twill.php')) {
             $stub = $this->files->get(__DIR__ . '/stubs/admin.stub');
             $this->files->put($routesPath . '/twill.php', $stub);
+        }
+    }
+
+    private function copyBlockPreviewFile()
+    {
+        $layoutsDirectory = base_path('resources/views/site/layouts');
+
+        if (! $this->files->exists($layoutsDirectory)) {
+            $this->files->makeDirectory($layoutsDirectory, 0755, true);
+        }
+
+        if (! $this->files->exists($layoutsDirectory . '/block.blade.php')) {
+            $stub = $this->files->get(__DIR__ . '/stubs/block.blade.php');
+            $this->files->put($layoutsDirectory . '/block.blade.php', $stub);
         }
     }
 
