@@ -170,7 +170,7 @@
       },
       onSearchInput: debounce(function (event) {
         this.searchValue = event.target.value
-        if (this.searchValue && this.searchValue.length > 2) {
+        if (this.searchValue && this.searchValue.length > 0) {
           if (this.type === 'dashboard') {
             htmlSearchClasses.forEach((klass) => {
               html.classList.add(klass)

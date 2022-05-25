@@ -4,41 +4,74 @@ pageClass: twill-doc
 
 # Select Unpacked
 
-![screenshot](/docs/_media/selectunpacked.png)
+![screenshot](../.vuepress/public/_media/selectunpacked.png)
 
+Form view:
+```html
+@php
+    $selectOptions = [
+        [
+            'value' => 1,
+            'label' => 'New York'
+        ],
+        [
+            'value' => 2,
+            'label' => 'London'
+        ],
+        [
+            'value' => 3,
+            'label' => 'Berlin'
+        ]
+    ];
+@endphp
+
+<x-twill::select 
+    name="office"
+    label="office"
+    placeholder="Select an office"
+    :unpack="true"
+    :options="$selectOptions"
+/>
+```
+
+Form builder:
+```php
+Select::make()
+    ->name('sectors')
+    ->unpack()
+    ->options(
+        Options::make([
+            Option::make('key', 'value'),
+            ...
+        ])
+    );
+```
+
+
+::: details Old method
 ```php
 @formField('select', [
-    'name' => 'discipline',
-    'label' => 'Discipline',
+    'name' => 'office',
+    'label' => 'Office',
+    'placeholder' => 'Select an office',
     'unpack' => true,
     'options' => [
         [
-            'value' => 'arts',
-            'label' => 'Arts & Culture'
+            'value' => 1,
+            'label' => 'New York'
         ],
         [
-            'value' => 'finance',
-            'label' => 'Banking & Finance'
+            'value' => 2,
+            'label' => 'London'
         ],
         [
-            'value' => 'civic',
-            'label' => 'Civic & Public'
-        ],
-        [
-            'value' => 'design',
-            'label' => 'Design & Architecture'
-        ],
-        [
-            'value' => 'education',
-            'label' => 'Education'
-        ],
-        [
-            'value' => 'entertainment',
-            'label' => 'Entertainment'
-        ],
+            'value' => 3,
+            'label' => 'Berlin'
+        ]
     ]
 ])
 ```
+:::
 
 A migration to save the above `select` field would be:
 

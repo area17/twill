@@ -230,7 +230,7 @@ trait HandleRevisions
 
         $relationFields = $fields['repeaters'][$repeaterName] ?? [];
 
-        $relationRepository = $this->getModelRepository($relationship, $model);
+        $relationRepository = getModelRepository($relationship, $model);
 
         $repeaterCollection = Collection::make();
 

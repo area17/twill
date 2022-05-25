@@ -1,6 +1,7 @@
 <a17-colorfield
     label="{{ $label }}"
-    @include('twill::partials.form.utils._field_name')
+    default-value="{{ $default ?? '' }}"
+    {!! $formFieldName() !!}
     in-store="value"
 ></a17-colorfield>
 

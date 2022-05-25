@@ -2,10 +2,10 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Services\MediaLibrary\ImageService;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use A17\Twill\Services\MediaLibrary\ImageService;
 
 class Media extends Model
 {
@@ -33,9 +33,10 @@ class Media extends Model
         parent::__construct($attributes);
     }
 
-    public function scopeUnused ($query)
+    public function scopeUnused($query)
     {
-        $usedIds = DB::table(config('twill.mediables_table'))->get()->pluck('media_id');
+        $usedIds = DB::table(config('twill.mediables_table'))->pluck('media_id');
+
         return $query->whereNotIn('id', $usedIds->toArray())->get();
     }
 
@@ -69,18 +70,18 @@ class Media extends Model
         return [
             'id' => $this->id,
             'name' => $this->filename,
-            'thumbnail' => ImageService::getCmsUrl($this->uuid, ["h" => "256"]),
+            'thumbnail' => ImageService::getCmsUrl($this->uuid, ['h' => '256']),
             'original' => ImageService::getRawUrl($this->uuid),
-            'medium' => ImageService::getUrl($this->uuid, ["h" => "430"]),
+            'medium' => ImageService::getUrl($this->uuid, ['h' => '430']),
             'width' => $this->width,
             'height' => $this->height,
             'tags' => $this->tags->map(function ($tag) {
                 return $tag->name;
             }),
             'deleteUrl' => $this->canDeleteSafely() ? moduleRoute('medias', 'media-library', 'destroy', $this->id) : null,
-            'updateUrl' => route('admin.media-library.medias.single-update'),
-            'updateBulkUrl' => route('admin.media-library.medias.bulk-update'),
-            'deleteBulkUrl' => route('admin.media-library.medias.bulk-delete'),
+            'updateUrl' => route('twill.media-library.medias.single-update'),
+            'updateBulkUrl' => route('twill.media-library.medias.bulk-update'),
+            'deleteBulkUrl' => route('twill.media-library.medias.bulk-delete'),
             'metadatas' => [
                 'default' => [
                     'caption' => $this->caption,
@@ -139,10 +140,8 @@ class Media extends Model
         $prevHeight = $this->height;
         $prevWidth = $this->width;
 
-        if ($this->update($fields) && $this->isReferenced())
-        {
+        if ($this->update($fields) && $this->isReferenced()) {
             DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->get()->each(function ($mediable) use ($prevWidth, $prevHeight) {
-
                 if ($prevWidth != $this->width) {
                     $mediable->crop_x = 0;
                     $mediable->crop_w = $this->width;
@@ -153,7 +152,7 @@ class Media extends Model
                     $mediable->crop_h = $this->height;
                 }
 
-                DB::table(config('twill.mediables_table', 'twill_mediables'))->where('id', $mediable->id)->update((array)$mediable);
+                DB::table(config('twill.mediables_table', 'twill_mediables'))->where('id', $mediable->id)->update((array) $mediable);
             });
         }
     }
@@ -163,6 +162,7 @@ class Media extends Model
         if ($this->canDeleteSafely()) {
             return parent::delete();
         }
+
         return false;
     }
 

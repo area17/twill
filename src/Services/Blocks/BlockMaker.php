@@ -62,11 +62,12 @@ class BlockMaker
      * @param $blockName
      * @param $baseName
      * @param $iconName
+     * @param bool $generateView
      * @return mixed
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      * @throws \Exception
      */
-    public function make($blockName, $baseName, $iconName)
+    public function make($blockName, $baseName, $iconName, bool $generateView = false)
     {
         $this->info('Creating block...');
 
@@ -112,7 +113,8 @@ class BlockMaker
             $blockName,
             $blockFile,
             $repeaters,
-            $blockIdentifier
+            $blockIdentifier,
+            $generateView
         );
     }
 
@@ -383,7 +385,7 @@ class BlockMaker
     public function generateRepeaters($baseName, $blockName, &$blockBase)
     {
         preg_match_all(
-            '/@formField(.*\'repeater\'.*\[.*=>.*\'(.*)\'].*)/',
+            '/<x-twill::repeater type="(.*)"\/>/',
             $blockBase,
             $matches
         );
@@ -394,7 +396,7 @@ class BlockMaker
             return null;
         }
 
-        foreach ($matches[2] as $index => $repeaterName) {
+        foreach ($matches[1] as $index => $repeaterName) {
             if (Str::startsWith($repeaterName, $baseName)) {
                 $newRepeater = $this->createRepeater(
                     $repeaterName,
@@ -502,11 +504,21 @@ class BlockMaker
         $blockName,
         string $blockFile,
         $repeaters,
-        string $blockIdentifier
+        string $blockIdentifier,
+        bool $generateView = false
     ) {
         $this->put($blockFile, $this->blockBase);
 
         $this->info("Block {$blockName} was created.");
+
+        if ($generateView) {
+            $this->put(
+                $path = str_replace('views/twill/blocks', 'views/site/blocks', $blockFile),
+                'This is a basic preview. You can use dd($block) to view the data you have access to. <br />' .
+                'This preview file is located at: ' . $path
+            );
+            $this->info("Block {$blockName} blank render view was created.");
+        }
 
         foreach ($repeaters as $repeater) {
             $this->put(

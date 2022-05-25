@@ -56,7 +56,11 @@ module.exports = [
           {
             "title": "Navigation",
             "path": "/getting-started/navigation.html",
-          }
+          },
+          {
+            "title": "Updating",
+            "path": "/getting-started/updating.html",
+          },
         ],
         "collapsable": true
       },
@@ -87,10 +91,20 @@ module.exports = [
           {
             "title": "Controllers",
             "path": "/crud-modules/controllers.html",
+            "children": [
+              {
+                "title": "Tables",
+                "path": "/crud-modules/tables.html",
+              },
+            ]
           },
           {
             "title": "Form Requests",
             "path": "/crud-modules/form-requests.html",
+          },
+          {
+            "title": "Form Builder",
+            "path": "/crud-modules/form-builder.html",
           },
           {
             "title": "Routes",
@@ -103,6 +117,10 @@ module.exports = [
           {
             "title": "Nested Modules",
             "path": "/crud-modules/nested-modules.html",
+          },
+          {
+            "title": "Capsules",
+            "path": "/crud-modules/capsules.html",
           }
         ],
         "collapsable": true
@@ -215,6 +233,10 @@ module.exports = [
             "path": "/block-editor/creating-a-block-editor.html",
           },
           {
+            "title": "Nested blocks",
+            "path": "/block-editor/nested-blocks.html",
+          },
+          {
             "title": "Adding Repeater Fields to a Block",
             "path": "/block-editor/adding-repeater-fields-to-a-block.html",
           },
@@ -229,6 +251,18 @@ module.exports = [
           {
             "title": "Previewing Blocks",
             "path": "/block-editor/previewing-blocks.html",
+          },
+          {
+            "title": "Block classes",
+            "path": "/block-editor/block-classes.html",
+          },
+          {
+            "title": "Validating block fields",
+            "path": "/block-editor/validating-blocks.html",
+          },
+          {
+            "title": "Adding data to block forms",
+            "path": "/block-editor/adding-data-to-block-forms.html",
           },
           {
             "title": "Development Workflow",
@@ -291,6 +325,30 @@ module.exports = [
           {
             "title": "Adding fields to the create modal",
             "path": "/guides/adding-fields-to-the-create-modal.html",
+          },
+          {
+            "title": "Prefill block editor from template",
+            "path": "/guides/prefill-block-editor-from-template.html",
+          },
+          {
+            "title": "Building a multilingual site with Twill and Laravel Localization",
+            "path": "/guides/building_a_multilingual_site_with_twill_and_laravel_localization.html",
+          },
+          {
+            "title": "Adding custom user roles and permissions on Twill",
+            "path": "/guides/adding-custom-roles-and-permissions.html",
+          },
+          {
+            "title": "Manage frontend user profiles from Twill",
+            "path": "/guides/manage_frontend_user_profiles_from_twill.html",
+          },
+          {
+            "title": "Vue.js Workflow - Creating custom components, form fields and blocks in Twill",
+            "path": "/guides/creating_custom_components_form_fields_and_blocks.html"
+          },
+          {
+            "title": "Json repeaters",
+            "path": "/guides/json_repeaters.html"
           }
         ],
       },
@@ -327,12 +385,27 @@ module.exports = [
       {
         "title": "User Management",
         "path": "/user-management/",
-        "children": [],
+        "children": [
+          {
+            "title": "Advanced permissions",
+            "path": "/user-management/advanced-permissions.html",
+          }
+        ],
       },
       {
         "title": "OAuth Login",
         "path": "/oauth-login/",
         "children": [],
+      },
+      {
+        "title": "Packages",
+        "path": "/packages/",
+        "children": [
+          {
+            "title": "Creating a package",
+            "path": "/packages/creating-a-package",
+          }
+        ]
       },
       {
         "title": "Resources",

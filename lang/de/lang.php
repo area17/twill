@@ -326,7 +326,8 @@ return [
     ],
     'nav' => [
         'admin' => 'Admin',
-        'cms-users' => 'CMS-Benutzer',
+        'cms-users' => 'CMS Benutzer',
+        'profile' => 'Profile',
         'logout' => 'Abmelden',
         'media-library' => 'Medien',
         'settings' => 'Einstellungen',

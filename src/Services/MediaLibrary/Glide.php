@@ -67,6 +67,10 @@ class Glide implements ImageServiceInterface
             ltrim($this->config->get('twill.glide.base_path'), '/'),
         ]);
 
+        if (!empty($baseUrlHost) && !Str::startsWith($baseUrl, ['http://', 'https://'])) {
+            $baseUrl = $this->request->getScheme() . '://' . $baseUrl;
+        }
+
         $this->server = ServerFactory::create([
             'response' => new LaravelResponseFactory($this->request),
             'source' => $this->config->get('twill.glide.source'),

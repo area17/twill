@@ -1,26 +1,7 @@
-@php
-    $options = is_object($options) && method_exists($options, 'map') ? $options->map(function($label, $value) {
-        return [
-            'value' => $value,
-            'label' => $label
-        ];
-    })->values()->toArray() : $options;
-
-    $unpack = $unpack ?? true;
-    $note = $note ?? false;
-    $columns = $columns ?? 0;
-
-    // do not use for now, but this will allow you to create a new option directly from the form
-    $addNew = $addNew ?? false;
-    $moduleName = $moduleName ?? null;
-    $storeUrl = $storeUrl ?? '';
-    $inModal = $fieldsInModal ?? false;
-@endphp
-
 @if ($unpack)
     <a17-multiselect
         label="{{ $label }}"
-        @include('twill::partials.form.utils._field_name')
+        {!! $formFieldName() !!}
         :options="{{ json_encode($options) }}"
         :grid="true"
         :columns="{{ $columns }}"
@@ -40,7 +21,7 @@
 @else
     <a17-vselect
         label="{{ $label }}"
-        @include('twill::partials.form.utils._field_name')
+        {!! $formFieldName() !!}
         :options="{{ json_encode($options) }}"
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder ?? false) placeholder="{{ $placeholder }}" @endif

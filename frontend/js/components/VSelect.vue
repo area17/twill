@@ -11,9 +11,9 @@
               :value="value"
               :options="currentOptions"
               :searchable="searchable"
+              :selectable="selectable"
               :clearSearchOnSelect="clearSearchOnSelect"
               :label="optionsLabel"
-              :on-search="getOptions"
               :taggable="taggable"
               :pushTags="pushTags"
               :transition="transition"
@@ -21,6 +21,7 @@
               :maxHeight="maxHeight"
               :disabled="disabled"
               @input="updateValue"
+              @search="getOptions"
           >
             <span slot="no-options">{{ emptyText }}</span>
           </v-select>
@@ -44,7 +45,6 @@
   import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue'
   // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
   // import vSelect from 'vue-select' // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
-
   export default {
     name: 'A17VueSelect',
     mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
@@ -80,6 +80,10 @@
       searchable: {
         type: Boolean,
         default: false
+      },
+      selectable: {
+        type: Function,
+        default: option => option.selectable ?? true,
       },
       clearSearchOnSelect: {
         type: Boolean,
@@ -150,7 +154,6 @@
                 if (typeof this.value[0] === 'object') {
                   return this.value.map(e => e.value)
                 }
-
                 return this.value.join(',')
               }
             }
@@ -199,12 +202,10 @@
         // see formStore mixin
         this.value = value
         this.saveIntoStore()
-
         this.$emit('change', value)
       },
       getOptions: debounce(function (search, loading) {
         if (!this.isAjax()) return true
-
         loading(true)
         this.$http.get(this.ajaxUrl, { params: { q: search } }).then((resp) => {
           if (resp.data.items && resp.data.items.length) {

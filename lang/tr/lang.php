@@ -332,6 +332,7 @@ return [
         'media-library' => 'Medya Kütüphanesi',
         'settings' => 'Genel Ayarlar',
         'close-menu' => 'Menüyü Kapat',
+        'open-live-site' => 'Siteyi Görüntüle',
     ],
     'notifications' => [
         'reset' => [

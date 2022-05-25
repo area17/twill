@@ -2,57 +2,11 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use App\Http\Controllers\Twill\NodeController;
 use App\Models\Node;
-use App\Repositories\NodeRepository;
-use App\Http\Controllers\Admin\NodeController;
 
-class NestedModuleTest extends TestCase
+class NestedModuleTest extends NestedModuleTestBase
 {
-    protected $allFiles = [
-       '{$stubs}/nested_module/2021_09_16_230238_create_nodes_tables.php' => '{$database}/migrations/',
-       '{$stubs}/nested_module/Node.php' => '{$app}/Models/',
-       '{$stubs}/nested_module/NodeController.php' => '{$app}/Http/Controllers/Admin/',
-       '{$stubs}/nested_module/NodeRepository.php' => '{$app}/Repositories/',
-       '{$stubs}/nested_module/NodeRequest.php' => '{$app}/Http/Requests/Admin/',
-       '{$stubs}/nested_module/form.blade.php' => '{$resources}/views/admin/books/form.blade.php',
-       '{$stubs}/nested_module/admin.php' => '{$base}/routes/admin.php',
-    ];
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->copyFiles($this->allFiles);
-
-        $this->migrate();
-
-        $this->login();
-    }
-
-    public function createNodes($titles)
-    {
-        return collect($titles)->map(function ($name) {
-            return app(NodeRepository::class)->create([
-                'title' => $name,
-                'published' => true,
-            ]);
-        });
-    }
-
-    public function arrangeNodes($parents, $children)
-    {
-        $data = $parents->map(function ($item) {
-            return ['id' => $item->id, 'children' => []];
-        })->all();
-
-        // All children are attached to the first parent
-        $data[0]['children'] = $children->map(function ($item) {
-            return ['id' => $item->id, 'children' => []];
-        })->all();
-
-        return $data;
-    }
-
     // FIXME — this is needed for the new admin routes to take effect in the next test,
     // because files are copied in `setUp()` after the app is initialized.
     public function testDummy()
