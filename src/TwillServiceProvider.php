@@ -236,7 +236,6 @@ class TwillServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/twill.php', 'twill');
         $this->mergeConfigFrom(__DIR__ . '/../config/frontend.php', 'twill.frontend');
-        $this->mergeConfigFrom(__DIR__ . '/../config/debug.php', 'twill.debug');
         $this->mergeConfigFrom(__DIR__ . '/../config/seo.php', 'twill.seo');
         $this->mergeConfigFrom(__DIR__ . '/../config/block_editor.php', 'twill.block_editor');
         $this->mergeConfigFrom(__DIR__ . '/../config/enabled.php', 'twill.enabled');

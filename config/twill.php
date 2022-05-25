@@ -260,6 +260,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | This parameter will enable some debug views:
+    | - Shows an error if a view is missing in the editor/front-end
+    |--------------------------------------------------------------------------
+    */
+    'debug' => env('APP_DEBUG', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Base classes for automatic generation of Modules and Capsules
     |--------------------------------------------------------------------------
     |

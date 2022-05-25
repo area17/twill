@@ -1,7 +1,11 @@
 @unless($withoutSeparator)
 <hr/>
 @endunless
-<a17-blocks title="{{ $label }}" trigger="{{ $trigger }}" editor-name="{{ $name }}"></a17-blocks>
+<a17-blocks
+    title="{{ $label }}"
+    @if ($renderForBlocks) :editor-name="nestedEditorName('{{ $name }}')" @else editor-name="{{ $name }}" @endif
+    trigger="{{ $trigger }}">
+</a17-blocks>
 
 @push('vuexStore')
     window['{{ config('twill.js_namespace') }}'].STORE.form.availableBlocks['{{ $name }}'] = {!! json_encode(array_values($allowedBlocks)) !!}

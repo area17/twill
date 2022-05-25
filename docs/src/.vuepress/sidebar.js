@@ -233,6 +233,10 @@ module.exports = [
             "path": "/block-editor/creating-a-block-editor.html",
           },
           {
+            "title": "Nested blocks",
+            "path": "/block-editor/nested-blocks.html",
+          },
+          {
             "title": "Adding Repeater Fields to a Block",
             "path": "/block-editor/adding-repeater-fields-to-a-block.html",
           },

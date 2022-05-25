@@ -33,6 +33,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
@@ -734,13 +735,20 @@ abstract class ModuleController extends Controller
 
         $this->setBackLink();
 
-        $view = Collection::make([
-            "$this->viewPrefix.form",
-            "twill::$this->moduleName.form",
-            'twill::layouts.form',
-        ])->first(function ($view) {
-            return View::exists($view);
-        });
+        $controllerForm = $this->getForm($this->repository->getById($id));
+
+        if ($controllerForm->isNotEmpty()) {
+            $view =  'twill::layouts.form';
+        }
+        else {
+            $view = Collection::make([
+                "$this->viewPrefix.form",
+                "twill::$this->moduleName.form",
+                'twill::layouts.form',
+            ])->first(function ($view) {
+                return View::exists($view);
+            });
+        }
 
         View::share('form', $this->form($id));
         return View::make($view, $this->form($id))->with('renderFields', $this->getForm($this->repository->getById($id)));
@@ -962,7 +970,7 @@ abstract class ModuleController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            \Log::error($e);
+            Log::error($e);
         }
 
         return $this->respondWithError(
@@ -991,7 +999,7 @@ abstract class ModuleController extends Controller
                 }
             }
         } catch (\Exception $e) {
-            \Log::error($e);
+            Log::error($e);
         }
 
         return $this->respondWithError(
