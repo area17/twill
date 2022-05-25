@@ -65,7 +65,7 @@ class Release extends Command
     private function isOnMainBranch()
     {
         $currentBranch = $this->executeInTwillDir('git rev-parse --abbrev-ref HEAD');
-        if (!in_array($currentBranch, ['2.x', '3.x'])) {
+        if (!in_array(trim($currentBranch), ['2.x', '3.x'])) {
             $this->error('Current working branch must be a releasable branch (2.x or 3.x)');
             exit(1);
         }
