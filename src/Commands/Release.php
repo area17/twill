@@ -28,7 +28,7 @@ class Release extends Command
         $this->executeInTwillDir('rm -Rf twill-assets/assets && cp -Rf dist/assets twill-assets/assets');
 
         $this->line('Force add the assets.');
-        $this->executeInTwillDir('git add --force dist');
+        $this->executeInTwillDir('git add twill-assets');
 
         $this->line('Making new commit with assets');
         $this->executeInTwillDir('git commit -m "Updating assets for release ' . $version . '"');
