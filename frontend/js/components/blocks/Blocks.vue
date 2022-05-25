@@ -49,7 +49,7 @@
                           {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
                   </button>
                   <button type="button"
-                          v-if="editor"
+                          v-if="editor && !editorName.includes('|')"
                           @click="openInEditor(edit, blockIndex, editorName)">
                           {{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}
                   </button>
@@ -114,7 +114,7 @@
             </template>
           </div>
         </a17-dropdown>
-        <div class="blocks__secondaryActions">
+        <div class="blocks__secondaryActions" v-if="!editorName.includes('|')">
           <a href="#"
              class="f--link f--link-underlined--o"
              v-if="editor"

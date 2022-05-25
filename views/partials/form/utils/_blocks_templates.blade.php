@@ -15,7 +15,7 @@
 @foreach($blocks as $block)
     <script type="text/x-template" id="{{ $block->component }}">
         <div class="block__body">
-            {!! $block->render() !!}
+            {!! $block->renderForm() !!}
         </div>
     </script>
 @endforeach

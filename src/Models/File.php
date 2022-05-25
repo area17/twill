@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Models;
 
-use FileService;
+use A17\Twill\Services\FileLibrary\FileService;
 use Illuminate\Support\Facades\DB;
 
 class File extends Model

@@ -5,8 +5,6 @@ return [
         'block_single_layout' => 'site.layouts.block',
         'block_views_path' => 'site.blocks',
         'block_views_mappings' => [],
-        'block_preview_render_childs' => true,
-
         'crops' => [
             'avatar' => [
                 'default' => [
@@ -29,8 +27,7 @@ return [
                         'path' => base_path(
                             'vendor/area17/twill/src/Commands/stubs/blocks'
                         ),
-                        'source' =>
-                        A17\Twill\Services\Blocks\Block::SOURCE_TWILL,
+                        'source' => A17\Twill\Services\Blocks\Block::SOURCE_TWILL,
                     ],
                     [
                         'path' => resource_path('views/twill/blocks'),
@@ -47,8 +44,7 @@ return [
                         'path' => base_path(
                             'vendor/area17/twill/src/Commands/stubs/repeaters'
                         ),
-                        'source' =>
-                        A17\Twill\Services\Blocks\Block::SOURCE_TWILL,
+                        'source' => A17\Twill\Services\Blocks\Block::SOURCE_TWILL,
                     ],
                 ],
 
