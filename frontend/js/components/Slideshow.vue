@@ -113,34 +113,33 @@
 <style lang="scss" scoped>
 
   .slideshow {
-    // width: 100%;
     display: block;
     border-radius: 2px;
     border: 1px solid $color__border;
-    /*overflow-x: hidden;*/
     background:$color__background;
   }
 
   .slideshow__trigger {
     padding:10px;
-    position:relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     border-top: 1px solid $color__border--light;
 
     &:first-child {
-      border-top:0 none
+      border-top:0 none;
     }
   }
 
   .slideshow__note {
     color: $color__text--light;
-    float: right;
-    position: absolute;
-    bottom: 18px;
-    right: 15px;
+    padding: 5px;
+    flex: 1;
+    justify-content: flex-end;
     display:none;
 
     @include breakpoint('small+') {
-      display: inline-block;
+      display: flex;
     }
 
     @include breakpoint('medium') {

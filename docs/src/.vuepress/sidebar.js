@@ -91,10 +91,20 @@ module.exports = [
           {
             "title": "Controllers",
             "path": "/crud-modules/controllers.html",
+            "children": [
+              {
+                "title": "Tables",
+                "path": "/crud-modules/tables.html",
+              },
+            ]
           },
           {
             "title": "Form Requests",
             "path": "/crud-modules/form-requests.html",
+          },
+          {
+            "title": "Form Builder",
+            "path": "/crud-modules/form-builder.html",
           },
           {
             "title": "Routes",
@@ -107,6 +117,10 @@ module.exports = [
           {
             "title": "Nested Modules",
             "path": "/crud-modules/nested-modules.html",
+          },
+          {
+            "title": "Capsules",
+            "path": "/crud-modules/capsules.html",
           }
         ],
         "collapsable": true

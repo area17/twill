@@ -38,4 +38,16 @@ trait HandleNesting
         ReorderNestedModuleItems::dispatch($this->model, $ids)
             ->onQueue($this->reorderNestedModuleItemsJobQueue);
     }
+
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @return void
+     */
+    public function afterRestore($object)
+    {
+        if (!$object->parent) {
+            $object->parent_id = null;
+            $object->save();
+        }
+    }
 }

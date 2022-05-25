@@ -124,7 +124,7 @@ class Permission extends BaseModel
      *
      * @return MorphTo|Collection|User[]
      */
-    public function permissionable()
+    public function permissionable(): MorphTo
     {
         return $this->morphTo();
     }
@@ -134,7 +134,7 @@ class Permission extends BaseModel
      *
      * @return BelongsToMany|Collection|User[]
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(twillModel('user'), 'permission_twill_user', 'permission_id', 'twill_user_id');
     }
@@ -144,7 +144,7 @@ class Permission extends BaseModel
      *
      * @return BelongsToMany|Collection|BaseModel[]
      */
-    public function roles()
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(twillModel('role'), 'permission_role', 'permission_id', 'role_id');
     }
@@ -154,7 +154,7 @@ class Permission extends BaseModel
      *
      * @return BelongsToMany|Collection|BaseModel[]
      */
-    public function groups()
+    public function groups(): BelongsToMany
     {
         return $this->belongsToMany(twillModel('group'), 'group_permission', 'permission_id', 'group_id');
     }

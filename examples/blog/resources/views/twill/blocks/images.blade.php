@@ -2,9 +2,9 @@
 @twillBlockIcon('text')
 @twillBlockGroup('app')
 
-@formField('medias', [
-    'name' => 'blog_image',
-    'label' => 'Blog Images',
-    'max' => 5,
-    'fieldNote' => 'Minimum image width: 1500px'
-])
+<x-twill::medias
+    name="blog_image"
+    label="Blog images"
+    :max="5"
+    note="Minimum image width: 1500px"
+/>

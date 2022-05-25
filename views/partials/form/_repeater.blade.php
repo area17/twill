@@ -1,10 +1,3 @@
-@php
-    $name = $name ?? $type;
-    $buttonAsLink = $buttonAsLink ?? false;
-    $max = $max ?? null;
-    $reorder = $reorder ?? true;
-@endphp
-
 <a17-repeater
     type="{{ $type }}"
     @if ($max) :max="{{$max}}" @endif

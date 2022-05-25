@@ -3,6 +3,7 @@
 namespace A17\Twill\Models\Behaviors;
 
 use Kalnoy\Nestedset\NodeTrait;
+use A17\Twill\Models\NestedsetCollection;
 
 trait HasNesting
 {
@@ -92,5 +93,13 @@ trait HasNesting
         }
 
         return $nodeArrays;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function newCollection(array $models = [])
+    {
+        return new NestedsetCollection($models);
     }
 }

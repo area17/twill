@@ -46,57 +46,6 @@ pageClass: twill-doc
     protected $titleColumnKey = 'title';
 
     /*
-     * Available columns of the index view
-     */
-    protected $indexColumns = [
-        'image' => [
-            'thumb' => true, // image column
-            'variant' => [
-                'role' => 'cover',
-                'crop' => 'default',
-            ],
-        ],
-        'title' => [ // field column
-            'title' => 'Title',
-            'field' => 'title',
-        ],
-        'subtitle' => [
-            'title' => 'Subtitle',
-            'field' => 'subtitle',
-            'sort' => true, // column is sortable
-            'visible' => false, // will be available from the columns settings dropdown
-        ],
-        'relationName' => [ // relation column
-            // Take a look at the example in the next section fot the implementation of the sort
-            'title' => 'Relation name',
-            'sort' => true,
-            'relationship' => 'relationName',
-            'field' => 'relationFieldToDisplay'
-        ],
-        'presenterMethodField' => [ // presenter column
-            'title' => 'Field title',
-            'field' => 'presenterMethod',
-            'present' => true,
-        ],
-        'relatedBrowserFieldName' => [ // related browser column
-            'title' => 'Field title',
-            'field' => 'relatedFieldToDisplay',
-            'relatedBrowser' => 'browserName',
-        ]
-    ];
-
-    /*
-     * Columns of the browser view for this module when browsed from another module
-     * using a browser form field
-     */
-    protected $browserColumns = [
-        'title' => [
-            'title' => 'Title',
-            'field' => 'title',
-        ],
-    ];
-
-    /*
      * Relations to eager load for the index view
      */
     protected $indexWith = [];
@@ -164,7 +113,7 @@ Let's say we have a controller with certain fields displayed:
 File: `app/Http/Controllers/Twill/PlayController.php`
 
 ```php
-    protected $indexColumns = [
+    protected ?array $indexColumns = [
         'image' => [
             'thumb' => true, // image column
             'variant' => [
@@ -279,7 +228,7 @@ If needed you can customize the permalink displayed in the admin interface when 
 useful if you are using Laravel for displaying your front-end as you do not need to keep your permalink and routes in
 sync.
 
-![screenshot](/docs/_media/custom-permalink.png)
+![screenshot](../.vuepress/public/_media/custom-permalink.png)
 
 This can be done by setting the `customPermalink` via the `formData` method in the model controller.
 

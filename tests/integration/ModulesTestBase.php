@@ -3,6 +3,8 @@
 namespace A17\Twill\Tests\Integration;
 
 use A17\Twill\Models\Model;
+use App\Models\Author;
+use App\Models\Category;
 use App\Models\Translations\AuthorTranslation;
 use App\Models\Translations\CategoryTranslation;
 use Illuminate\Support\Str;
@@ -37,7 +39,7 @@ abstract class ModulesTestBase extends TestCase
 
     public $translation;
 
-    public $author;
+    public ?Author $author;
 
     public $title;
 
@@ -53,11 +55,7 @@ abstract class ModulesTestBase extends TestCase
     {
         parent::setUp();
 
-        /* $this->loadModulesConfig(); */
-
-        /* $this->migrate(); */
-
-        $this->login();
+        $this->actingAs($this->superAdmin, 'twill_users');
     }
 
     protected function assertSomethingWrongHappened()
@@ -154,7 +152,7 @@ abstract class ModulesTestBase extends TestCase
         $this->assertEquals($data['endpointType'], 'App\Models\Author');
     }
 
-    protected function createAuthor($count = 1): Model
+    protected function createAuthor($count = 1): Author
     {
         foreach (range(1, $count) as $c) {
             $this->httpRequestAssert(
@@ -405,7 +403,7 @@ abstract class ModulesTestBase extends TestCase
         ];
     }
 
-    protected function createCategory($count = 1)
+    protected function createCategory($count = 1): Category
     {
         foreach (range(1, $count) as $c) {
             $this->httpRequestAssert(
@@ -427,5 +425,7 @@ abstract class ModulesTestBase extends TestCase
         $this->assertNotNull($this->translation);
 
         $this->assertCount(3, $this->category->slugs);
+
+        return $this->category;
     }
 }

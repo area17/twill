@@ -733,7 +733,7 @@ class ModuleMake extends Command
             $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub')
         );
 
-        $this->info("Form view created successfully! Include your form fields using @formField directives!");
+        $this->info('Form view created successfully! You can now include your form fields.');
 
         if ($this->checkOption('generatePreview') === true || $this->confirm("Do you also want to generate the preview file?")) {
             $previewViewsPath = $this->previewViewPath();
@@ -997,7 +997,7 @@ class ModuleMake extends Command
             return $this->config->get('view.paths')[0] . '/admin/' . $moduleName;
         }
 
-        $dir = "$this->moduleBasePath/resources/views/admin";
+        $dir = "$this->moduleBasePath/resources/views/twill";
         $this->makeDir($dir);
 
         return $dir;

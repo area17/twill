@@ -385,7 +385,7 @@ class BlockMaker
     public function generateRepeaters($baseName, $blockName, &$blockBase)
     {
         preg_match_all(
-            '/@formField(.*\'repeater\'.*\[.*=>.*\'(.*)\'].*)/',
+            '/<x-twill::repeater type="(.*)"\/>/',
             $blockBase,
             $matches
         );
@@ -396,7 +396,7 @@ class BlockMaker
             return null;
         }
 
-        foreach ($matches[2] as $index => $repeaterName) {
+        foreach ($matches[1] as $index => $repeaterName) {
             if (Str::startsWith($repeaterName, $baseName)) {
                 $newRepeater = $this->createRepeater(
                     $repeaterName,

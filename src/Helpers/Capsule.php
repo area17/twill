@@ -282,9 +282,21 @@ class Capsule
         return $this->getPsr4Path() . '/routes/twill.php';
     }
 
-    public function routesFileExists(): bool
+    public function getLegacyRoutesFile(): string
     {
-        return file_exists($this->getRoutesFile());
+        return $this->getPsr4Path() . '/routes/admin.php';
+    }
+
+    public function getRoutesFileIfExists(): ?string
+    {
+        if (file_exists($this->getRoutesFile())) {
+            return $this->getRoutesFile();
+        }
+        if (file_exists($this->getLegacyRoutesFile())) {
+            return $this->getLegacyRoutesFile();
+        }
+
+        return null;
     }
 
     public function getModel(): string
