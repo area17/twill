@@ -15,7 +15,6 @@ use A17\Twill\Commands\ListIcons;
 use A17\Twill\Commands\MakeCapsule;
 use A17\Twill\Commands\MakeSingleton;
 use A17\Twill\Commands\ModuleMake;
-use A17\Twill\Commands\ModuleMakeDeprecated;
 use A17\Twill\Commands\RefreshCrops;
 use A17\Twill\Commands\RefreshLQIP;
 use A17\Twill\Commands\SetupDevTools;
@@ -336,7 +335,6 @@ class TwillServiceProvider extends ServiceProvider
             ModuleMake::class,
             MakeCapsule::class,
             MakeSingleton::class,
-            ModuleMakeDeprecated::class,
             UpgradeCommand::class,
             BlockMake::class,
             ListIcons::class,

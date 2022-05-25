@@ -17,8 +17,8 @@ class MakeSingletonTest extends TestCase
                 '--hasMedias' => true,
                 '--hasFiles' => true,
                 '--hasRevisions' => true,
+                '--generatePreview' => true,
             ])
-            ->expectsConfirmation('Do you also want to generate the preview file?', 'no')
             ->run()
         );
 

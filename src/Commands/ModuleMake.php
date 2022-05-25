@@ -735,7 +735,7 @@ class ModuleMake extends Command
 
         $this->info('Form view created successfully! You can now include your form fields.');
 
-        if ($this->checkOption('generatePreview') === true || $this->confirm("Do you also want to generate the preview file?")) {
+        if ($this->checkOption('generatePreview') === true) {
             $previewViewsPath = $this->previewViewPath();
             twill_put_stub($previewViewsPath . '/' . Str::singular($moduleName) . '.blade.php', $this->files->get(__DIR__ . '/stubs/preview_module.blade.stub'));
         }
@@ -876,7 +876,7 @@ class ModuleMake extends Command
             'hasPosition' => 'Do you need to manage the position of records on this module?',
             'hasRevisions' => 'Do you need to enable revisions on this module?',
             'hasNesting' => 'Do you need to enable nesting on this module?',
-            'generatePreview' => 'Do you want this command to generate a dummy preview file?',
+            'generatePreview' => 'Do you also want to generate the preview file?',
         ];
 
         $defaultAnswers = [
