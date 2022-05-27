@@ -2,6 +2,12 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.8.5 (2022-05-27)
+
+### Fixes
+
+- Reverts change in build folder location
+
 ## 2.8.4 (2022-05-25)
 
 ### Fixes

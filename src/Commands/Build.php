@@ -103,7 +103,7 @@ class Build extends Command
             $this->info('');
             $progressBar->setMessage("Publishing assets...\n\n");
             $progressBar->advance();
-            $this->call('twill:update', ['--fromBuild']);
+            $this->call('twill:update');
 
             $this->info('');
             $progressBar->setMessage("Done.");
