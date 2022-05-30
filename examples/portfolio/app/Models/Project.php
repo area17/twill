@@ -9,6 +9,7 @@ use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasRevisions;
 use A17\Twill\Models\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Project extends Model
@@ -30,6 +31,11 @@ class Project extends Model
     public $slugAttributes = [
         'title',
     ];
+
+    public function links(): HasMany
+    {
+        return $this->hasMany(Link::class)->orderBy('position');
+    }
 
     public function partners(): BelongsToMany
     {

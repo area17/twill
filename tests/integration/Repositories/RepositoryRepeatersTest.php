@@ -214,4 +214,21 @@ class RepositoryRepeatersTest extends ModulesTestBase
         $this->assertEquals('new title', $partners[0]->title);
         $this->assertEquals('some role', $partners[0]->pivot->role);
     }
+
+    public function testGetBrowserDataForRepeater(): void
+    {
+        $this->get(route('twill.partners.browser', ['forRepeater' => 'true']))
+            ->assertJsonPath(
+                'data.0.repeaterFields',
+                [
+                    'published' => 0,
+                    'title' => [
+                        'en' => 'partner 1',
+                    ],
+                    'description' => [
+                        'en' => null,
+                    ],
+                ]
+            );
+    }
 }

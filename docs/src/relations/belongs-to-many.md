@@ -2,7 +2,7 @@
 pageClass: twill-doc
 ---
 
-# BelongsToMany
+# BelongsToMany with pivot data
 
 [BelongsToMany](https://laravel.com/docs/9.x/eloquent-relationships#many-to-many) is a great way to make one model refer
 to many others.
@@ -21,6 +21,10 @@ data to further extend this relation, to complete the examples above:
 
 In Twill we can set this up using a [repeater](/form-fields/repeaters.md) and below we will go thorough all the steps to
 make this work, using the **project/contributor** example.
+
+::: tip
+The pivot can be left out in this example as well if you just want to have a BelongsToMany relation.
+:::
 
 If you want to quickly test this in a new project, you can install twill using the portfolio example:
 `php artisan twill:install portfolio`
@@ -52,7 +56,7 @@ Now with the migration setup we can setup our relation in the `Project` model:
 
 `app/Models/Project.php`
 
-<<< @/src/../../examples/portfolio/app/Models/Project.php{35-38}
+<<< @/src/../../examples/portfolio/app/Models/Project.php{40-43}
 
 ## Setup the repeater and form
 
@@ -65,7 +69,7 @@ make clear it is for the pivot table. But you can name it however you like.
 
 In our project form we can now refer to the repeater and allow editors to select.
 
-<<< @/src/../../examples/portfolio/resources/views/twill/projects/form.blade.php{11-25}
+<<< @/src/../../examples/portfolio/resources/views/twill/projects/form.blade.php{11-26}
 
 ## Update the repository
 
@@ -73,7 +77,7 @@ As a final step we have to update the repository to map the repeater field to th
 
 `app/Repositories/ProjectRepository.php`
 
-<<< @/src/../../examples/portfolio/app/Repositories/ProjectRepository.php{22-33,35-46,11}
+<<< @/src/../../examples/portfolio/app/Repositories/ProjectRepository.php{39-46,70-77}
 
 Take note of the methods as they are different from other repeater methods: `updateRepeaterWithPivot`, 
 `getFormFieldForRepeaterWithPivot`

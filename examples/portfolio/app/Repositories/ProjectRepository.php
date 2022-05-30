@@ -19,7 +19,7 @@ class ProjectRepository extends ModuleRepository
         $this->model = $model;
     }
 
-    public function afterSave($object, $fields)
+    public function afterSave($object, $fields): void
     {
         $this->updateRepeaterMorphMany(
             $object,
@@ -28,6 +28,12 @@ class ProjectRepository extends ModuleRepository
             'commentable',
             'Comment',
             'comment'
+        );
+
+        $this->updateRepeater(
+            $object,
+            $fields,
+            'links',
         );
 
         $this->updateRepeaterWithPivot(
@@ -41,7 +47,7 @@ class ProjectRepository extends ModuleRepository
         parent::afterSave($object, $fields);
     }
 
-    public function getFormFields($object)
+    public function getFormFields($object): array
     {
         $fields = parent::getFormFields($object);
 
@@ -51,6 +57,14 @@ class ProjectRepository extends ModuleRepository
             'comments',
             'Comment',
             'comment'
+        );
+
+        $fields = $this->getFormFieldsForRepeater(
+            $object,
+            $fields,
+            'links',
+            'Link',
+            'link'
         );
 
         return $this->getFormFieldForRepeaterWithPivot(

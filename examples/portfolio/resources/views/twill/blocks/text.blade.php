@@ -2,17 +2,17 @@
 @twillBlockIcon('text')
 @twillBlockGroup('app')
 
-<x-twill::input
-    name="title"
-    label="Title"
-    :translated="true"
-/>
+@formField('input', [
+    'name' => 'title',
+    'label' => 'Title',
+    'translated' => true,
+])
 
-<x-twill::wysiwyg
-    name="text"
-    label="Text"
-    placeholder="Text"
-    :toolbar-options="[
+@formField('wysiwyg', [
+    'name' => 'text',
+    'label' => 'Text',
+    'placeholder' => 'Text',
+    'toolbarOptions' => [
         'bold',
         'italic',
         ['list' => 'bullet'],
@@ -21,6 +21,6 @@
         [ 'script' => 'sub' ],
         'link',
         'clean'
-    ]"
-    :translated="true"
-/>
+    ],
+    'translated' => true
+])

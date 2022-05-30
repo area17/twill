@@ -9,7 +9,7 @@
 />
 
 <x-twill::input
-    name="comment"
-    label="Comment"
+    name="title"
+    label="Title"
     :maxlength="100"
 />

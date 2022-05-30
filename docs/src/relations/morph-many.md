@@ -53,7 +53,7 @@ define the **inverse** of this relation in each of these models:
 
 `app/Models/Project.php`
 
-<<< @/src/../../examples/portfolio/app/Models/Project.php{39-42}
+<<< @/src/../../examples/portfolio/app/Models/Project.php{50-53}
 
 Now that we have our inverse set up we can continue setting up our repository.
 
@@ -73,7 +73,7 @@ Then in both `resources/views/twill/partners/form.blade.php` and `resources/view
 we add:
 
 ```
-@formField('repeater', ['type' => 'comment'])
+<x-twill::repeater type="comment"/>
 ```
 
 When you now visit either of the forms you should see the new **Add comment** button.

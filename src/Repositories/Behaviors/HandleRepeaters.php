@@ -73,6 +73,7 @@ trait HandleRepeaters
     }
 
     /**
+     * @deprecated use updateRepeaterWithPivot
      * @param \A17\Twill\Models\Model $object
      * @param array $fields
      * @param string $relation

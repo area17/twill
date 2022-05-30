@@ -9,7 +9,7 @@
 --}}
 <x-twill::input
     name="title"
-    label="title"
+    label="Title"
     :disabled="true"
     :translated="true"
 />
