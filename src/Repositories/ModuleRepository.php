@@ -577,11 +577,7 @@ abstract class ModuleRepository
         return $fields;
     }
 
-    /**
-     * @param array $fields
-     * @return array
-     */
-    public function prepareFieldsBeforeCreate($fields)
+    public function prepareFieldsBeforeCreate(array $fields): array
     {
         $fields = $this->cleanupFields(null, $fields);
 
