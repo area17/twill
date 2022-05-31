@@ -78,7 +78,7 @@ trait HandlePermissions
 
         foreach ($permissionNames as $name) {
             if (isset($itemScopes[$name])) {
-                $itemScopes[$name]++;
+                ++$itemScopes[$name];
             }
         }
 

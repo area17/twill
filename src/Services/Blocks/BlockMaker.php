@@ -35,10 +35,6 @@ class BlockMaker
      */
     protected $icon;
 
-    /**
-     * @param Filesystem $files
-     * @param \A17\Twill\Services\Blocks\BlockCollection $blockCollection
-     */
     public function __construct(
         Filesystem $files,
         BlockCollection $blockCollection
@@ -62,7 +58,6 @@ class BlockMaker
      * @param $blockName
      * @param $baseName
      * @param $iconName
-     * @param bool $generateView
      * @return mixed
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      * @throws \Exception
@@ -266,7 +261,7 @@ class BlockMaker
             $stub
         );
 
-        $stub = preg_replace(
+        return preg_replace(
             [
                 "/@twillPropComponent\('(.*)'\)\n/",
                 "/@twillBlockComponent\('(.*)'\)\n/",
@@ -275,8 +270,6 @@ class BlockMaker
             "",
             $stub
         );
-
-        return $stub;
     }
 
     /**
@@ -294,7 +287,6 @@ class BlockMaker
     }
 
     /**
-     * @param string $blockIdentifier
      * @param string $type
      * @return string
      */
@@ -385,7 +377,7 @@ class BlockMaker
     public function generateRepeaters($baseName, $blockName, &$blockBase)
     {
         preg_match_all(
-            '/<x-twill::repeater type="(.*)"\/>/',
+            '#<x-twill::repeater type="(.*)"\/>#',
             $blockBase,
             $matches
         );
@@ -495,9 +487,7 @@ class BlockMaker
 
     /**
      * @param $blockName
-     * @param string $blockFile
      * @param \Illuminate\Support\Collection $repeaters
-     * @param string $blockIdentifier
      * @return bool
      */
     protected function saveAllFiles(
@@ -533,7 +523,6 @@ class BlockMaker
     }
 
     /**
-     * @param \Illuminate\Console\Command $command
      * @return BlockMaker
      */
     public function setCommand(Command $command)

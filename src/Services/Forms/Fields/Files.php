@@ -16,6 +16,7 @@ class Files extends BaseFormField
     use canHaveButtonOnTop;
 
     protected ?string $itemLabel = null;
+
     protected ?int $filesizeMax = 0;
 
     public static function make(): static
@@ -40,6 +41,7 @@ class Files extends BaseFormField
         if (!$this->itemLabel) {
             $this->itemLabel = strtolower($label);
         }
+
         return parent::label($label);
     }
 

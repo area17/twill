@@ -12,16 +12,34 @@ use Illuminate\Support\Str;
  */
 class Block
 {
+    /**
+     * @var string
+     */
     public const SOURCE_APP = 'app';
 
+    /**
+     * @var string
+     */
     public const SOURCE_TWILL = 'twill';
 
+    /**
+     * @var string
+     */
     public const SOURCE_CUSTOM = 'custom';
 
+    /**
+     * @var string
+     */
     public const TYPE_BLOCK = 'block';
 
+    /**
+     * @var string
+     */
     public const TYPE_REPEATER = 'repeater';
 
+    /**
+     * @var string
+     */
     public const PREG_REPLACE_INNER = '(\(((?>[^()]+)|(?-2))*\))';
 
     /**
@@ -37,7 +55,7 @@ class Block
     /**
      * @var bool
      */
-    public $hideTitlePrefix;
+    public $hideTitlePrefix = false;
 
     /**
      * @var string
@@ -77,7 +95,7 @@ class Block
     /**
      * @var bool
      */
-    public $compiled;
+    public $compiled = false;
 
     /**
      * @var string
@@ -92,7 +110,7 @@ class Block
     /**
      * @var bool
      */
-    public $isNewFormat;
+    public $isNewFormat = false;
 
     /**
      * @var \Symfony\Component\Finder\SplFileInfo
@@ -138,7 +156,6 @@ class Block
      * @param $name
      * @param string $renderNamespace
      *   Mainly for packages, but this will get the preview/render view file from that namespace.
-     * @return static
      */
     public static function make($file, $type, $source, $name = null, string $renderNamespace = null): self
     {
@@ -167,11 +184,7 @@ class Block
 
     public static function getForType(string $type, bool $repeater = false): self
     {
-        if ($repeater) {
-            $blocksList = TwillBlocks::getRepeaters();
-        } else {
-            $blocksList = TwillBlocks::getBlocks();
-        }
+        $blocksList = $repeater ? TwillBlocks::getRepeaters() : TwillBlocks::getBlocks();
 
         return $blocksList->first(function (self $blockConfig) use ($type) {
             return $blockConfig->name === $type;
@@ -180,11 +193,7 @@ class Block
 
     public static function getForComponent(string $type, bool $repeater = false): self
     {
-        if ($repeater) {
-            $blocksList = TwillBlocks::getRepeaters();
-        } else {
-            $blocksList = TwillBlocks::getBlocks();
-        }
+        $blocksList = $repeater ? TwillBlocks::getRepeaters() : TwillBlocks::getBlocks();
 
         return $blocksList->first(function (self $blockConfig) use ($type) {
             return $blockConfig->component === $type;
@@ -248,8 +257,6 @@ class Block
      *
      * This function is not aware of the context. If you need to know the current module you have to figure that out
      * yourself by for example parsing the route.
-     *
-     * @return array
      */
     public function getFormData(): array
     {
@@ -311,7 +318,7 @@ class Block
      */
     public function parse()
     {
-        $contents = $this->file ? file_get_contents((string)$this->file->getPathName()) : '';
+        $contents = $this->file ? file_get_contents($this->file->getPathName()) : '';
 
         $this->title = $this->parseProperty('title', $contents, $this->name);
         $this->trigger = $this->parseProperty(
@@ -389,12 +396,12 @@ class Block
 
                 // Process the match if it is __(translatable).
                 if (Str::startsWith($result, '__(')) {
-                    return twillTrans(preg_replace('/__\((?:"|\')(.*)(?:"|\')\)/', '$1', $result));
+                    return twillTrans(preg_replace('#__\((?:"|\')(.*)(?:"|\')\)#', '$1', $result));
                 }
 
                 // Process the match if it is twillTrans(translatable).
                 if (Str::startsWith($result, 'twillTrans(')) {
-                    return twillTrans(preg_replace('/twillTrans\((?:"|\')(.*)(?:"|\')\)/', '$1', $result));
+                    return twillTrans(preg_replace('#twillTrans\((?:"|\')(.*)(?:"|\')\)#', '$1', $result));
                 }
 
                 return trim($result, '\'"');
@@ -412,7 +419,6 @@ class Block
      * @param string $block
      * @param string $blockName
      * @param callable $callback Should have the following signature: `function (array $value)`
-     * @return void
      * @throws \Exception
      */
     public function parseArrayProperty(
@@ -497,26 +503,23 @@ class Block
         }
 
         if (
-            $configBlock = collect(config('twill.block_editor.blocks'))->filter(
+            ($configBlock = collect(config('twill.block_editor.blocks'))->filter(
                 function ($block) use ($blockName) {
                     return Str::contains($block['component'], $blockName);
                 }
-            )->first()
+            )->first()) && ($value = ($configBlock[$property] ?? null))
         ) {
-            if ($value = ($configBlock[$property] ?? null)) {
-                return $value;
-            }
+            return $value;
         }
+
         if (
-            $configRepeater = collect(config('twill.block_editor.repeaters'))->filter(
+            ($configRepeater = collect(config('twill.block_editor.repeaters'))->filter(
                 function ($repeater) use ($blockName) {
                     return Str::contains($repeater['component'], $blockName);
                 }
-            )->first()
+            )->first()) && ($value = ($configRepeater[$property] ?? null))
         ) {
-            if ($value = ($configRepeater[$property] ?? null)) {
-                return $value;
-            }
+            return $value;
         }
 
         if ($property !== 'title') {
@@ -537,7 +540,7 @@ class Block
      */
     public function isNewFormat($block)
     {
-        preg_match("/@twill(Prop|Block|Repeater).*\('(.*)'\)/", $block, $propMatches);
+        preg_match("#@twill(Prop|Block|Repeater).*\('(.*)'\)#", $block, $propMatches);
 
         return filled($propMatches);
     }
@@ -569,7 +572,7 @@ class Block
 
     public function getBlockView($blockViewMappings = [])
     {
-        if ($this->renderNamespace) {
+        if ($this->renderNamespace !== '' && $this->renderNamespace !== '0') {
             $view = $this->renderNamespace . '::' . $this->name;
         } else {
             $view = config('twill.block_editor.block_views_path') . '.' . $this->name;
@@ -592,7 +595,7 @@ class Block
         array $data,
         bool $inEditor = false
     ): string {
-        if (!$this->renderData) {
+        if ($this->renderData === null) {
             throw new \Exception('Cannot render without renderData');
         }
 
@@ -606,9 +609,9 @@ class Block
 
         try {
             return view($view, $data)->render();
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             if (config('twill.debug')) {
-                $error = $e->getMessage() . ' in ' . $e->getFile();
+                $error = $exception->getMessage() . ' in ' . $exception->getFile();
 
                 return View::make('twill::errors.block', ['view' => $view, 'error' => $error])->render();
             }

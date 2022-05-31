@@ -9,9 +9,19 @@ use Illuminate\Support\Facades\Session;
  */
 class TwillUtil
 {
+    /**
+     * @var string
+     */
     private const SESSION_FIELD = 'twill_util';
 
+    /**
+     * @var string
+     */
     private const REPEATER_ID_INDEX = 'repeater_ids';
+
+    /**
+     * @var string
+     */
     private const BLOCK_ID_INDEX = 'block_ids';
 
     public function hasRepeaterIdFor(int $frontEndId): ?int {

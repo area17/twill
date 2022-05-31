@@ -67,18 +67,13 @@ class TwillRoutes
 
     public function registerRoutePatterns(): void
     {
-        if (($patterns = config('twill.admin_route_patterns')) != null) {
-            if (is_array($patterns)) {
-                foreach ($patterns as $label => $pattern) {
-                    Route::pattern($label, $pattern);
-                }
+        if (($patterns = config('twill.admin_route_patterns')) != null && is_array($patterns)) {
+            foreach ($patterns as $label => $pattern) {
+                Route::pattern($label, $pattern);
             }
         }
     }
 
-    /**
-     * @return array
-     */
     public function getRouteGroupOptions(): array
     {
         return [

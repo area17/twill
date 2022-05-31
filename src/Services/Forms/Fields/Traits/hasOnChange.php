@@ -5,7 +5,9 @@ namespace A17\Twill\Services\Forms\Fields\Traits;
 trait hasOnChange
 {
     protected ?string $ref = null;
+
     protected ?string $onChange = null;
+
     protected ?string $onChangeAttribute = null;
 
     /**

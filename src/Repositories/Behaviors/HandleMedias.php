@@ -63,20 +63,18 @@ trait HandleMedias
 
         if (isset($fields['medias'])) {
             foreach ($fields['medias'] as $role => $mediasForRole) {
-                if (config('twill.media_library.translated_form_fields', false)) {
-                    if (Str::contains($role, ['[', ']'])) {
-                        $start = strpos($role, '[') + 1;
-                        $finish = strpos($role, ']', $start);
-                        $locale = substr($role, $start, $finish - $start);
-                        $role = strtok($role, '[');
-                    }
+                if (config('twill.media_library.translated_form_fields', false) && Str::contains($role, ['[', ']'])) {
+                    $start = strpos($role, '[') + 1;
+                    $finish = strpos($role, ']', $start);
+                    $locale = substr($role, $start, $finish - $start);
+                    $role = strtok($role, '[');
                 }
 
                 $locale = $locale ?? config('app.locale');
 
-                if (in_array($role, array_keys($this->model->getMediasParams()))
-                    || in_array($role, array_keys(config('twill.block_editor.crops', [])))
-                    || in_array($role, array_keys(config('twill.settings.crops', [])))) {
+                if (array_key_exists($role, $this->model->getMediasParams())
+                    || array_key_exists($role, config('twill.block_editor.crops', []))
+                    || array_key_exists($role, config('twill.settings.crops', []))) {
                     Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
                         if (isset($media['crops']) && ! empty($media['crops'])) {

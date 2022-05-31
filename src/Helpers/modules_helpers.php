@@ -15,16 +15,14 @@ if (! function_exists('getAllModules')) {
         });
 
         $moduleRepositories = $repositories->filter(function ($repository) {
-            return is_subclass_of($repository, 'A17\Twill\Repositories\ModuleRepository');
+            return is_subclass_of($repository, \A17\Twill\Repositories\ModuleRepository::class);
         });
 
-        $modules = $moduleRepositories->map(function ($repository) {
+        return $moduleRepositories->map(function ($repository) {
             $modelName = str_replace('Repository', '', str_replace('App\\Repositories\\', '', $repository));
 
             return Str::plural(lcfirst($modelName));
         });
-
-        return $modules;
     }
 }
 
@@ -60,6 +58,7 @@ if (! function_exists('getModelRepository')) {
         if (! $model) {
             $model = ucfirst(Str::singular($relation));
         }
+
         $repository = config('twill.namespace') . '\\Repositories\\' . ucfirst($model) . 'Repository';
 
         if (! class_exists($repository)) {
@@ -100,10 +99,8 @@ if (! function_exists('updatePermissionOptions')) {
 
         if ($user->role) {
             $permissions = $user->role->permissions()->module()->pluck('name', 'permissionable_type')->all();
-            if (empty($permissions)) {
-                if ($user->role->permissions()->global()->where('name', 'manage-modules')->first()) {
-                    $permissions[get_class($item)] = 'manage-item';
-                }
+            if (empty($permissions) && $user->role->permissions()->global()->where('name', 'manage-modules')->first()) {
+                $permissions[get_class($item)] = 'manage-item';
             }
         }
 
@@ -166,10 +163,8 @@ if (! function_exists('isUserGroupPermissionModuleExists')) {
         foreach ($user->publishedGroups as $group) {
             if ($moduleName == 'global') {
                 return $group->permissions()->global()->where('name', 'manage-modules')->exists();
-            } else {
-                if (in_array($permission, $group->permissions()->OfModuleName($moduleName)->get()->pluck('name')->all())) {
-                    return true;
-                }
+            } elseif (in_array($permission, $group->permissions()->OfModuleName($moduleName)->get()->pluck('name')->all())) {
+                return true;
             }
         }
 

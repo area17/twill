@@ -24,7 +24,7 @@ if (! function_exists('moduleRoute')) {
         }
 
         // Create base route name
-        $routeName = 'twill.' . ($prefix ? $prefix . '.' : '');
+        $routeName = 'twill.' . ($prefix !== '' && $prefix !== '0' ? $prefix . '.' : '');
 
         // Prefix it with module name only if prefix doesn't contains it already
         if (
@@ -36,7 +36,7 @@ if (! function_exists('moduleRoute')) {
         }
 
         //  Add the action name
-        $routeName .= $action ? ".{$action}" : '';
+        $routeName .= $action !== '' && $action !== '0' ? ".{$action}" : '';
 
         // Build the route
         return route($routeName, $parameters, $absolute);
@@ -62,10 +62,10 @@ if (! function_exists('getNavigationUrl')) {
         } elseif ($isSingleton) {
             return moduleRoute($key, $prefix);
         } elseif ($element['raw'] ?? false) {
-            return ! empty($element['route']) ? $element['route'] : '#';
+            return empty($element['route']) ? '#' : $element['route'];
         }
 
-        return ! empty($element['route']) ? route($element['route'], $element['params'] ?? []) : '#';
+        return empty($element['route']) ? '#' : route($element['route'], $element['params'] ?? []);
     }
 }
 
@@ -78,8 +78,6 @@ if (! function_exists('isActiveNavigation')) {
             return true;
         }
 
-        $urlsAreMatching = ($navigationElement['raw'] ?? false) && Str::endsWith(Request::url(), $navigationElement['route']);
-
-        return $urlsAreMatching;
+        return ($navigationElement['raw'] ?? false) && Str::endsWith(Request::url(), $navigationElement['route']);
     }
 }

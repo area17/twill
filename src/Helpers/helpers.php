@@ -40,7 +40,7 @@ if (! function_exists('classUsesDeep')) {
             $traitsToSearch = array_merge($newTraits, $traitsToSearch);
         }
 
-        foreach ($traits as $trait => $same) {
+        foreach (array_keys($traits) as $trait) {
             $traits = array_merge(class_uses($trait, $autoload), $traits);
         }
 
@@ -57,12 +57,7 @@ if (! function_exists('classHasTrait')) {
     function classHasTrait($class, $trait)
     {
         $traits = classUsesDeep($class);
-
-        if (in_array($trait, array_keys($traits))) {
-            return true;
-        }
-
-        return false;
+        return array_key_exists($trait, $traits);
     }
 }
 
@@ -105,7 +100,7 @@ if (! function_exists('twill_path')) {
         }
 
         // Split to separate root namespace
-        preg_match('/(\w*)\W?(.*)/', config('twill.namespace'), $namespaceParts);
+        preg_match('#(\w*)\W?(.*)#', config('twill.namespace'), $namespaceParts);
 
         $twillBase = app_path(
             fix_directory_separator(

@@ -15,7 +15,7 @@ class NestedData extends TableColumn
         return $item;
     }
 
-    public function getRenderValue(Model $model): string
+    protected function getRenderValue(Model $model): string
     {
         $nestedCount = $model->{$this->field}()->count();
 

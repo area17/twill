@@ -16,7 +16,7 @@ class PublishStatus extends TableColumn
         return $column;
     }
 
-    public function getRenderValue(Model $model): string
+    protected function getRenderValue(Model $model): string
     {
         return '';
     }

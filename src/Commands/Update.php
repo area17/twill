@@ -28,7 +28,7 @@ class Update extends Command
     private function publishAssets()
     {
         $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--provider' => \A17\Twill\TwillServiceProvider::class,
             '--tag' => 'assets',
             '--force' => true,
         ]);

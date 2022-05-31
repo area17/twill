@@ -49,7 +49,7 @@ class IconsController extends Controller
             return $keep->merge($files);
         }, collect());
 
-        return view('twill::blocks.icons', compact('icons'));
+        return view('twill::blocks.icons', ['icons' => $icons]);
     }
 
     public function show($file)

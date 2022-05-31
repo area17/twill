@@ -11,12 +11,19 @@ class DatePicker extends BaseFormField
     use hasPlaceholder;
 
     protected bool $withTime = true;
+
     protected bool $allowInput = false;
+
     protected bool $allowClear = false;
+
     protected bool $timeOnly = false;
+
     protected bool $time24h = false;
+
     protected ?string $altFormat = null;
+
     protected ?int $minuteIncrement = null;
+
     protected ?int $hourIncrement = null;
 
     public static function make(): static

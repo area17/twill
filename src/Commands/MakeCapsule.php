@@ -32,12 +32,12 @@ class MakeCapsule extends ModuleMake
     /**
      * @var null
      */
-    protected $capsulesDirectory = null;
+    protected $capsulesDirectory;
 
     /**
      * @var null
      */
-    protected $namespace = null;
+    protected $namespace;
 
     /**
      * @var bool

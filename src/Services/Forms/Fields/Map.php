@@ -9,8 +9,11 @@ class Map extends BaseFormField
     use isTranslatable;
 
     protected bool $showMap = true;
+
     protected bool $openMap = false;
+
     protected bool $saveExtendedData = false;
+
     protected bool $autoDetectLatLngValue = false;
 
     public static function make(): static

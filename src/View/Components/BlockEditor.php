@@ -36,6 +36,7 @@ class BlockEditor extends TwillFormComponent
         } elseif ($this->groups) {
             $groups = $this->groups;
         }
+
         return view(
             'twill::partials.form._block_editor',
             array_merge($this->data(), [

@@ -34,10 +34,6 @@ class Install extends Command
      */
     protected $db;
 
-    /**
-     * @param Filesystem $files
-     * @param DatabaseManager $db
-     */
     public function __construct(Filesystem $files, DatabaseManager $db)
     {
         parent::__construct();
@@ -57,8 +53,8 @@ class Install extends Command
         //check the database connection before installing
         try {
             $this->db->connection()->getPdo();
-        } catch (\Exception $e) {
-            $this->error('Could not connect to the database, please check your configuration:' . "\n" . $e);
+        } catch (\Exception $exception) {
+            $this->error('Could not connect to the database, please check your configuration:' . "\n" . $exception);
 
             return;
         }
@@ -148,7 +144,7 @@ class Install extends Command
     private function publishConfig()
     {
         $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--provider' => \A17\Twill\TwillServiceProvider::class,
             '--tag' => 'config',
         ]);
     }
@@ -161,7 +157,7 @@ class Install extends Command
     private function publishAssets()
     {
         $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--provider' => \A17\Twill\TwillServiceProvider::class,
             '--tag' => 'assets',
         ]);
     }

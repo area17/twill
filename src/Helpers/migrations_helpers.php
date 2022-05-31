@@ -101,6 +101,7 @@ if (!function_exists('createDefaultRelationshipTableFields')) {
         if (!$table1NamePlural) {
             $table1NamePlural = Str::plural($table1NameSingular);
         }
+
         if (!$table2NamePlural) {
             $table2NamePlural = Str::plural($table2NameSingular);
         }

@@ -8,7 +8,7 @@ use Rector\Core\Rector\AbstractRector;
 
 abstract class LaravelAwareRectorRule extends AbstractRector implements ConfigurableRectorInterface
 {
-    public $baseDir = null;
+    public $baseDir;
 
     public function configure(array $configuration): void
     {

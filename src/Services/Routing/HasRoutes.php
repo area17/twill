@@ -56,27 +56,20 @@ trait HasRoutes
 
     public function registerRoutePatterns()
     {
-        if (($patterns = config('twill.admin_route_patterns')) != null) {
-            if (is_array($patterns)) {
-                foreach ($patterns as $label => $pattern) {
-                    Route::pattern($label, $pattern);
-                }
+        if (($patterns = config('twill.admin_route_patterns')) != null && is_array($patterns)) {
+            foreach ($patterns as $label => $pattern) {
+                Route::pattern($label, $pattern);
             }
         }
     }
 
-    /**
-     * @return array
-     */
     protected function getRouteGroupOptions(): array
     {
-        $groupOptions = [
+        return [
             'as' => config('twill.admin_route_name_prefix', 'twill.'),
             'middleware' => [config('twill.admin_middleware_group', 'web')],
             'prefix' => rtrim(ltrim(config('twill.admin_app_path'), '/'), '/'),
         ];
-
-        return $groupOptions;
     }
 
     public function getRouteMiddleware($middleware = null)

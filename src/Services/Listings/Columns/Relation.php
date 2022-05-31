@@ -16,6 +16,7 @@ class Relation extends TableColumn
         if ($this->key === null) {
             throw new ColumnMissingPropertyException();
         }
+
         return $this->relation . Str::studly($this->field);
     }
 
@@ -28,7 +29,7 @@ class Relation extends TableColumn
         return $this;
     }
 
-    public function getRenderValue(Model $model): string
+    protected function getRenderValue(Model $model): string
     {
         if (null === $this->relation) {
             throw new ColumnMissingPropertyException('Relation column missing relation value: ' . $this->field);

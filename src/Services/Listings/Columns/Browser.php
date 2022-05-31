@@ -16,7 +16,7 @@ class Browser extends TableColumn
         return $this;
     }
 
-    public function getRenderValue(Model $model): string
+    protected function getRenderValue(Model $model): string
     {
         if (null === $this->browser) {
             throw new ColumnMissingPropertyException('Browser column missing browser value: ' . $this->field);

@@ -138,20 +138,15 @@ class BlockCollection extends Collection
     }
 
     /**
-     * @param Block $block
      * @return string
      */
     public function detectCustomSources(Block $block)
     {
-        if ($block->source === Block::SOURCE_APP) {
-            if (
-                $this->collect()
-                ->where('fileName', $block->getFileName())
-                ->where('source', Block::SOURCE_TWILL)
-                ->isNotEmpty()
-            ) {
-                return Block::SOURCE_CUSTOM;
-            }
+        if ($block->source === Block::SOURCE_APP && $this->collect()
+        ->where('fileName', $block->getFileName())
+        ->where('source', Block::SOURCE_TWILL)
+        ->isNotEmpty()) {
+            return Block::SOURCE_CUSTOM;
         }
 
         return $block->source;
@@ -211,11 +206,7 @@ class BlockCollection extends Collection
             }) ? [$blockName, $value] : false;
         })
             ->each(function ($block, $blockName) use ($type) {
-                if ($block['compiled'] ?? false) {
-                    $file = null;
-                } else {
-                    $file = $this->findFileByComponentName($block['component']);
-                }
+                $file = $block['compiled'] ?? false ? null : $this->findFileByComponentName($block['component']);
 
                 $this->push($this->blockFromComponentName(
                     $file,

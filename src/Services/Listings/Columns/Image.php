@@ -11,8 +11,11 @@ use InvalidArgumentException;
 class Image extends TableColumn
 {
     protected ?string $role = null;
+
     protected ?string $crop = null;
+
     protected ?array $mediaParams = null;
+
     protected bool $rounded = false;
 
     /**
@@ -59,13 +62,13 @@ class Image extends TableColumn
         return $data;
     }
 
-    public function getRenderValue(Model $model): string
+    protected function getRenderValue(Model $model): string
     {
         if (!classHasTrait($model::class, HasMedias::class)) {
             throw new InvalidArgumentException('Cannot use image column on model not implementing HasMedias trait');
         }
 
-        if ($renderFunction = $this->render) {
+        if (($renderFunction = $this->render) !== null) {
             return $renderFunction($model);
         }
 

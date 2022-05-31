@@ -23,9 +23,13 @@ class MultiSelect extends BaseFormField
     use hasPlaceholder;
 
     protected bool $searchable = false;
+
     protected bool $addNew = false;
+
     protected ?string $moduleName = null;
+
     protected ?string $storeUrl = null;
+
     protected ?string $endpoint = null;
 
     public static function make(): static

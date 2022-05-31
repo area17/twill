@@ -11,6 +11,7 @@ class Repeater extends BaseFormField
     use canReorder;
 
     protected ?string $type = null;
+
     protected bool $buttonAsLink = false;
 
     public static function make(): static

@@ -11,7 +11,9 @@ class Checkbox extends BaseFormField
     use hasBorder;
 
     protected ?string $confirmMessageText = null;
+
     protected ?string $confirmTitleText = null;
+
     protected bool $requireConfirmation = false;
 
     public static function make(): static

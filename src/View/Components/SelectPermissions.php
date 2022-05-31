@@ -9,6 +9,7 @@ use Illuminate\Support\Collection;
 class SelectPermissions extends TwillFormComponent
 {
     public bool $isUserForm;
+
     public string $fctUpdatePermissionOptions;
 
     public function __construct(

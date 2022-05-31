@@ -40,6 +40,7 @@ class TableColumns extends Collection
         foreach ($this->items as $item) {
             $data[$item->getKey()] = $item->renderCell($model);
         }
+
         return $data;
     }
 

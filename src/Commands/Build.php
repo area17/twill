@@ -26,9 +26,6 @@ class Build extends Command
      */
     protected $filesystem;
 
-    /**
-     * @param Filesystem $filesystem
-     */
     public function __construct(Filesystem $filesystem)
     {
         parent::__construct();
@@ -116,7 +113,7 @@ class Build extends Command
      */
     private function getDevPort()
     {
-        preg_match('/^.*:(\d+)/', config('twill.dev_mode_url'), $matches);
+        preg_match('#^.*:(\d+)#', config('twill.dev_mode_url'), $matches);
 
         return $matches[1] ?? '8080';
     }
@@ -140,8 +137,8 @@ class Build extends Command
 
             try {
                 $process->start();
-            } catch(\Exception $e) {
-                $this->warn("Could not start the chokidar watcher ({$e->getMessage()})\n");
+            } catch(\Exception $exception) {
+                $this->warn("Could not start the chokidar watcher ({$exception->getMessage()})\n");
             }
         } else {
             $this->warn("The `chokidar-cli` package was not found. It is required to watch custom blocks & components in development. You can install it by running:\n");

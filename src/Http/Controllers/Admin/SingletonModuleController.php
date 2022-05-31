@@ -30,6 +30,7 @@ abstract class SingletonModuleController extends ModuleController
                 $this->seed();
                 return $this->editSingleton();
             }
+
             throw new \Exception("$model is not seeded");
         }
 
@@ -45,6 +46,7 @@ abstract class SingletonModuleController extends ModuleController
         if (!class_exists($seederName)) {
             throw new \Exception("$seederName is missing");
         }
+
         $seeder = new $seederName();
         $seeder->run();
     }
