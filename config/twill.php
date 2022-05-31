@@ -170,7 +170,6 @@ return [
 
     'custom_auth_service_provider' => false,
 
-
     /*
     |--------------------------------------------------------------------------
     | Twill FE Application configuration
@@ -211,7 +210,7 @@ return [
         'ru',
         'tr',
         'bs',
-        'ar'
+        'ar',
     ],
 
     /*
@@ -219,7 +218,53 @@ return [
     | When a singleton is not seeded, you can use this flag to automatically seed it.
     |--------------------------------------------------------------------------
     */
-    'auto_seed_singletons' => false,
+    'auto_seed_singletons' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | The default crops that can be used in models. These can be extended by
+    | a model specific $mediasParams property, or by overriding the getMediasParams
+    | method.
+    |--------------------------------------------------------------------------
+    */
+    'default_crops' => [
+        'cover' => [
+            'default' => [
+                [
+                    'name' => 'default',
+                    'ratio' => 16 / 9,
+                ],
+            ],
+            'mobile' => [
+                [
+                    'name' => 'mobile',
+                    'ratio' => 1,
+                ],
+            ],
+            'flexible' => [
+                [
+                    'name' => 'free',
+                    'ratio' => 0,
+                ],
+                [
+                    'name' => 'landscape',
+                    'ratio' => 16 / 9,
+                ],
+                [
+                    'name' => 'portrait',
+                    'ratio' => 3 / 5,
+                ],
+            ],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | This parameter will enable some debug views:
+    | - Shows an error if a view is missing in the editor/front-end
+    |--------------------------------------------------------------------------
+    */
+    'debug' => env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------

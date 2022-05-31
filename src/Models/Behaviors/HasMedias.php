@@ -16,6 +16,13 @@ trait HasMedias
         'crop_h',
     ];
 
+    public function getMediasParams(): array
+    {
+        return (isset($this->mediasParams) && is_array($this->mediasParams))
+            ? $this->mediasParams
+            : config('twill.default_crops');
+    }
+
     public static function bootHasMedias(): void
     {
         self::deleted(static function (Model $model) {

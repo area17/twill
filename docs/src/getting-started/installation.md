@@ -35,6 +35,11 @@ Twill's `install` command consists of:
 - publishing Twill's assets for the admin console UI.
 - prompting you to create a superadmin user.
 
+## Storage
+
+If you have not yet done this following the Laravel installation guide, now would be a good time to run
+`php artisan storage:link` to setup the storage folders mapping to the public directory.
+
 ## Example setup
 
 If this is your first time using Twill or you just want to experiment with a Twill installation you can use the demo
@@ -99,7 +104,17 @@ At this point, you should be able to login at `admin.domain.test`, `manage.domai
 
 ## Setting up the media library
 
-From there, you might want to configure Twill's media library's storage provider and its rendering service. By default, Twill is configured to store uploads on `AWS S3` and to render images via [Imgix](https://imgix.com). Provide the following .env variables to get up and running:
+From there, you might want to configure Twill's media library's storage provider and its rendering service.
+
+By default Twill uses local storage and local image rendering using [Glide](https://glide.thephpleague.com/), if you have
+more advanced image storage needs you can setup AWS as instructed below.
+
+See the [media library's configuration documentation](/media-library/) for more information.
+
+### AWS
+
+Provide the following .env variables to get up and running to store uploads on `AWS S3` and to render
+images via [Imgix](https://imgix.com)
 
 ```bash
 S3_KEY=S3_KEY
@@ -108,15 +123,6 @@ S3_BUCKET=bucket-name
 
 IMGIX_SOURCE_HOST=source.imgix.net
 ```
-
-If you are not ready to use those third party services yet, can't use them, or have very limited image rendering needs, Twill also provides a local storage driver as well as a locale image rendering service powered by [Glide](https://glide.thephpleague.com/). The following .env variables should get you up and running:
-
-```bash
-MEDIA_LIBRARY_ENDPOINT_TYPE=local
-MEDIA_LIBRARY_IMAGE_SERVICE=A17\Twill\Services\MediaLibrary\Glide
-```
-
-See the [media library's configuration documentation](/media-library/) for more information.
 
 ## A note about the frontend
 

@@ -4,10 +4,10 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\Media;
 use A17\Twill\Repositories\Behaviors\HandleTags;
+use A17\Twill\Services\MediaLibrary\ImageService;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use ImageService;
 
 class MediaRepository extends ModuleRepository
 {

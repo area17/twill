@@ -125,6 +125,7 @@
         if (this.locked) return
 
         this.active = false
+        this.$emit('close')
         this.mask()
       },
       bindKeyboard: function () {

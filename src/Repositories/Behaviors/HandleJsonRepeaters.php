@@ -64,17 +64,19 @@ trait HandleJsonRepeaters
     {
         $repeatersFields = [];
         $repeatersBrowsers = [];
+        /** @var \A17\Twill\Services\Blocks\Block[] $repeatersList */
         $repeatersList = TwillBlocks::getRepeaters()->keyBy('name');
+        $repeaters = [];
 
         foreach ($serializedData as $index => $repeaterItem) {
             $id = $repeaterItem['id'] ?? $index;
 
             $repeaters[] = [
                 'id' => $id,
-                'type' => $repeatersList[$repeaterName]['component'],
-                'title' => $repeatersList[$repeaterName]['title'],
-                'titleField' => $repeatersList[$repeaterName]['titleField'],
-                'hideTitlePrefix' => $repeatersList[$repeaterName]['hideTitlePrefix'],
+                'type' => $repeatersList[$repeaterName]->component,
+                'title' => $repeatersList[$repeaterName]->title,
+                'titleField' => $repeatersList[$repeaterName]->titleField,
+                'hideTitlePrefix' => $repeatersList[$repeaterName]->hideTitlePrefix,
             ];
 
             if (isset($repeaterItem['browsers'])) {
@@ -85,9 +87,9 @@ trait HandleJsonRepeaters
 
             $itemFields = Arr::except($repeaterItem, ['id', 'repeaters', 'files', 'medias', 'browsers', 'blocks']);
 
-            foreach ($itemFields as $index => $value) {
+            foreach ($itemFields as $itemFieldIndex => $value) {
                 $repeatersFields[] = [
-                    'name' => "blocks[$id][$index]",
+                    'name' => "blocks[$id][$itemFieldIndex]",
                     'value' => $value,
                 ];
             }

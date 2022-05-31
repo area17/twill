@@ -24,12 +24,12 @@ will ensure that also with future updates you stay in line with the Twill defaul
 ```php
 @include('twill::partials.create')
 
-@formField('input', [
-    'name' => 'description',
-    'label' => 'Description',
-    'translated' => true,
-    'maxlength' => 100
-])
+<x-twill::input
+    name="description"
+    label="description"
+    :translated="true"
+    :maxlength="100"
+/>
 ```
 
 This will give you the following result:
@@ -44,29 +44,29 @@ The benefit of this is that you have more control over the positioning and you c
 the permalink for example.
 
 ```php
-@formField('input', [
-    'name' => $titleFormKey ?? 'title',
-    'label' => $titleFormKey === 'title' ? twillTrans('twill::lang.modal.title-field') : ucfirst($titleFormKey),
-    'translated' => $translateTitle ?? false,
-    'required' => true,
-    'onChange' => 'formatPermalink'
-])
+<x-twill::input
+    :name="$titleFormKey ?? 'title'"
+    :label="$titleFormKey === 'title' ? twillTrans('twill::lang.modal.title-field') : ucfirst($titleFormKey)"
+    :translated="$translateTitle ?? false"
+    :required="true"
+    on-change="formatPermalink"
+/>
 
-@formField('input', [
-    'name' => 'description',
-    'label' => 'Description',
-    'translated' => true,
-    'maxlength' => 100
-])
+<x-twill::input
+    name="description"
+    label="Description"
+    :translated="true"
+    :maxlength="100"
+/>
 
 @if ($permalink ?? true)
-    @formField('input', [
-        'name' => 'slug',
-        'label' => twillTrans('twill::lang.modal.permalink-field'),
-        'translated' => true,
-        'ref' => 'permalink',
-        'prefix' => $permalinkPrefix ?? ''
-    ])
+    <x-twill::input
+        name="slug"
+        :label="twillTrans('twill::lang.modal.permalink-field')"
+        :translated="true"
+        ref="permalink"
+        :prefix="$permalinkPrefix ?? ''"
+    />
 @endif
 ```
 
@@ -107,12 +107,12 @@ Then in your modules `create.blade.php` file you can use:
 ```php
 @include('twill::partials.create')
 
-@formField('select', [
-    'name' => 'example_options_field',
-    'label' => 'Example',
-    'unpack' => true,
-    'options' => $example_options
-])
+<x-twill::select
+    name="example_options_field"
+    label="Example"
+    :unpack="true"
+    :options="$example_options"
+/>
 ```
 
 Result:

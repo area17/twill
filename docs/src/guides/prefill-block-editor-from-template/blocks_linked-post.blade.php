@@ -2,19 +2,19 @@
 @twillBlockIcon('text')
 @twillBlockGroup('app')
 
-@formField('input', [
-    'name' => 'title',
-    'label' => 'Article Title',
-])
+<x-twill::input
+    name="title"
+    label="Article title"
+/>
 
-@formField('input', [
-    'name' => 'description',
-    'label' => 'Article Link',
-    'type' => 'textarea',
-    'rows' => 4,
-])
+<x-twill::input
+    name="description"
+    label="Article link"
+    type="textarea"
+    :rows="4"
+/>
 
-@formField('input', [
-    'name' => 'url',
-    'label' => 'Article URL',
-])
+<x-twill::input
+    name="url"
+    label="Article URL"
+/>

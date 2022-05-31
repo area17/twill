@@ -2,9 +2,9 @@
 
 namespace A17\Twill\Http\Middleware;
 
-use Auth;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class Permission
 {
@@ -16,7 +16,7 @@ class Permission
                     if (in_array($activeSubdomain, $group->subdomains_access)) {
                         return $next($request);
                     }
-                };
+                }
                 abort(403);
             }
         }

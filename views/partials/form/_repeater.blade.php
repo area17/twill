@@ -1,16 +1,12 @@
-@php
-    $name = $name ?? $type;
-    $buttonAsLink = $buttonAsLink ?? false;
-    $max = $max ?? null;
-    $reorder = $reorder ?? true;
-@endphp
-
 <a17-repeater
     type="{{ $type }}"
     @if ($max) :max="{{$max}}" @endif
     @if (!$reorder) :draggable="false" @endif
     @if ($renderForBlocks) :name="repeaterName('{{ $name }}')" @else name="{{ $name }}" @endif
+    @if ($browserModule) :browser="{{ json_encode($browserModule) }}" @endif
     @if ($buttonAsLink) :button-as-link="true" @endif
+    @if ($relation) relation="{{$relation}}" @endif
+    :allow-create="{{$allowCreate ? 'true' : 'false'}}"
 ></a17-repeater>
 
 @push('vuexStore')

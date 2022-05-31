@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Models;
 
-use A17\Twill\Models\User;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPermissions;
 use A17\Twill\Models\Behaviors\IsTranslatable;

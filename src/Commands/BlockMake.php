@@ -54,12 +54,15 @@ class BlockMake extends Command
      */
     public function handle()
     {
+        $generateView = $this->confirm('Should we also generate a view file for rendering the block?');
+
         $this->blockMaker
             ->setCommand($this)
             ->make(
                 $this->argument('name'),
                 $this->argument('base') ?? 'text',
-                $this->argument('icon') ?? 'text'
+                $this->argument('icon') ?? 'text',
+                $generateView
             );
 
         return parent::handle();

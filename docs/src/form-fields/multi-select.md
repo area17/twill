@@ -4,8 +4,58 @@ pageClass: twill-doc
 
 # Multi Select
 
-![screenshot](/docs/_media/multiselectunpacked.png)
+![screenshot](../.vuepress/public/_media/multiselectunpacked.png)
 
+Form view:
+```html
+@php
+    $options = [
+        [
+            'value' => 'arts',
+            'label' => 'Arts & Culture'
+        ],
+        [
+            'value' => 'finance',
+            'label' => 'Banking & Finance'
+        ],
+        [
+            'value' => 'civic',
+            'label' => 'Civic & Public'
+        ],
+        [
+            'value' => 'design',
+            'label' => 'Design & Architecture'
+        ],
+        [
+            'value' => 'education',
+            'label' => 'Education'
+        ]
+    ];
+@endphp
+
+<x-twill::multi-select
+    name="sectors"
+    label="Sectors"
+    :min="1"
+    :max="1"
+    :options="$options"
+/>
+```
+
+Form builder:
+```php
+MultiSelect::make()
+    ->min(1)
+    ->max(1)
+    ->options(
+        Options::make([
+            Option::make('key', 'value'),
+            ...
+        ])
+    );
+```
+
+::: details Old method
 ```php
 @formField('multi_select', [
     'name' => 'sectors',
@@ -36,21 +86,22 @@ pageClass: twill-doc
     ]
 ])
 ```
+:::
 
-| Option      | Description                                                  | Type/values     | Default value |
-| :---------- | :----------------------------------------------------------- | :-------------- | :------------ |
-| name        | Name of the field                                            | string          |               |
-| label       | Label of the field                                           | string          |               |
-| min         | Minimum number of selectable options                         | integer         |               |
-| max         | Maximum number of selectable options                         | integer         |               |
-| options     | Array of options for the dropdown, must include _value_ and _label_ | array           |               |
-| unpack      | Defines if the multi select will be displayed as an open list of options | true<br/>false  | true         |
-| columns     | Aligns the options on a grid with a given number of columns  | integer         | 0 (off)       |
-| searchable  | Filter the field values while typing                         | true<br/>false  | false         |
-| note        | Hint message displayed above the field                       | string          |               |
-| placeholder | Text displayed as a placeholder in the field                 | string          |               |
+| Option      | Description                                                                                                              | Type/values     | Default value |
+|:------------|:-------------------------------------------------------------------------------------------------------------------------|:----------------|:--------------|
+| name        | Name of the field                                                                                                        | string          |               |
+| label       | Label of the field                                                                                                       | string          |               |
+| min         | Minimum number of selectable options                                                                                     | integer         |               |
+| max         | Maximum number of selectable options                                                                                     | integer         |               |
+| options     | Array of options for the dropdown, must include _value_ and _label_                                                      | array           |               |
+| unpack      | Defines if the multi select will be displayed as an open list of options                                                 | true<br/>false  | true          |
+| columns     | Aligns the options on a grid with a given number of columns                                                              | integer         | 0 (off)       |
+| searchable  | Filter the field values while typing                                                                                     | true<br/>false  | false         |
+| note        | Hint message displayed above the field                                                                                   | string          |               |
+| placeholder | Text displayed as a placeholder in the field                                                                             | string          |               |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
-| disabled    | Disables the field                                           | true<br />false | false         |
+| disabled    | Disables the field                                                                                                       | true<br />false | false         |
 
 
 There are several ways to implement a `multi_select` form field.
@@ -160,11 +211,11 @@ protected function formData($request)
 
 - In the form, we can now add the field:
 ```php
-@formField('multi_select', [
-    'name' => 'sectors',
-    'label' => 'Sectors',
-    'options' => $sectors
-])
+<x-twill::multi-select
+    name="sectors"
+    label="Sectors"
+    :options="$sectors"
+/>
 ```
 
 When used in a [block](/block-editor/creating-a-block-editor.html), no migration is needed.

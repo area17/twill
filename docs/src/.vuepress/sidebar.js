@@ -56,7 +56,11 @@ module.exports = [
           {
             "title": "Navigation",
             "path": "/getting-started/navigation.html",
-          }
+          },
+          {
+            "title": "Updating",
+            "path": "/getting-started/updating.html",
+          },
         ],
         "collapsable": true
       },
@@ -87,10 +91,20 @@ module.exports = [
           {
             "title": "Controllers",
             "path": "/crud-modules/controllers.html",
+            "children": [
+              {
+                "title": "Tables",
+                "path": "/crud-modules/tables.html",
+              },
+            ]
           },
           {
             "title": "Form Requests",
             "path": "/crud-modules/form-requests.html",
+          },
+          {
+            "title": "Form Builder",
+            "path": "/crud-modules/form-builder.html",
           },
           {
             "title": "Routes",
@@ -103,6 +117,10 @@ module.exports = [
           {
             "title": "Nested Modules",
             "path": "/crud-modules/nested-modules.html",
+          },
+          {
+            "title": "Capsules",
+            "path": "/crud-modules/capsules.html",
           }
         ],
         "collapsable": true
@@ -203,6 +221,24 @@ module.exports = [
         "collapsable": true
       },
       {
+        "title": "Relations",
+        "path": "/relations/",
+        "children": [
+          {
+            "title": "One to many",
+            "path": "/relations/one-to-many.html",
+          },
+          {
+            "title": "Belongs to many with pivot",
+            "path": "/relations/belongs-to-many.html",
+          },
+          {
+            "title": "Polymorphic One to Many",
+            "path": "/relations/morph-many.html",
+          }
+        ]
+      },
+      {
         "title": "Block Editor",
         "path": "/block-editor/",
         "children": [
@@ -213,6 +249,10 @@ module.exports = [
           {
             "title": "Creating a Block Editor",
             "path": "/block-editor/creating-a-block-editor.html",
+          },
+          {
+            "title": "Nested blocks",
+            "path": "/block-editor/nested-blocks.html",
           },
           {
             "title": "Adding Repeater Fields to a Block",
@@ -323,6 +363,10 @@ module.exports = [
           {
             "title": "Vue.js Workflow - Creating custom components, form fields and blocks in Twill",
             "path": "/guides/creating_custom_components_form_fields_and_blocks.html"
+          },
+          {
+            "title": "Json repeaters",
+            "path": "/guides/json_repeaters.html"
           }
         ],
       },

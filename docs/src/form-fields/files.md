@@ -4,8 +4,32 @@ pageClass: twill-doc
 
 # Files
 
-![screenshot](/docs/_media/files.png)
+![screenshot](../.vuepress/public/_media/files.png)
 
+Form view:
+```html
+<x-twill::files 
+    name="single_file" 
+    label="Single file"
+    note="Add one file (per language)" 
+/>
+
+<x-twill::files 
+    name="files" 
+    label="files" 
+    :max="4" 
+/>
+```
+
+Form builder:
+```php
+Files::make()
+    ->name('single_file')
+    ->label(twillTrans('Single file'))
+    ->note('Add one file (per language)');
+```
+
+::: details Old method
 ```php
 @formField('files', [
     'name' => 'single_file',
@@ -19,16 +43,17 @@ pageClass: twill-doc
     'max' => 4,
 ])
 ```
+:::
 
-| Option         | Description                               | Type/values    | Default value |
-| :------------- | :---------------------------------------- | :------------- | :------------ |
-| name           | Name of the field                         | string         |               |
-| label          | Label of the field                        | string         |               |
-| itemLabel      | Label used for the `Add` button           | string         |               |
-| max            | Max number of attached items              | integer        | 1             |
-| fieldNote      | Hint message displayed above the field    | string         |               |
-| note           | Hint message displayed in the field       | string         |               |
-| buttonOnTop    | Displays the `Add` button above the files | true<br/>false | false         |
+| Option      | Description                               | Type/values    | Default value |
+|:------------|:------------------------------------------|:---------------|:--------------|
+| name        | Name of the field                         | string         |               |
+| label       | Label of the field                        | string         |               |
+| itemLabel   | Label used for the `Add` button           | string         |               |
+| max         | Max number of attached items              | integer        | 1             |
+| fieldNote   | Hint message displayed above the field    | string         |               |
+| note        | Hint message displayed in the field       | string         |               |
+| buttonOnTop | Displays the `Add` button above the files | true<br/>false | false         |
 
 
 Similar to the media formField, to make the file field work, you have to include the `HasFiles` trait in your module's [Model](/crud-modules/models.html), and include `HandleFiles` trait in your module's [Repository](/crud-modules/repositories.html). At last, add the `filesParams` configuration array in your model.

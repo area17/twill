@@ -12,21 +12,21 @@ In order to add a block editor to your module, add the `block_editor` field to y
 @extends('twill::layouts.form')
 
 @section('contentFields')
-    @formField('input', [
-        'name' => 'description',
-        'label' => 'Description',
-    ])
+    <x-twill::input
+        name="description"
+        label="Description"
+    />
 ...
-    @formField('block_editor')
+    <x-twill::block-editor/>
 @stop
 ```
 
-By default, adding the `@formField('block_editor')` directive enables all available *blocks* for use in your module. To scope only certain *blocks* to be available in a given module, you can add a second parameter to the `@formField()` directive with the *blocks* key. e.g.:
+By default, adding the `<x-twill::block-editor/>` directive enables all available *blocks* for use in your module. To scope only certain *blocks* to be available in a given module, you can specify which blocks to use using:
 
 ```php
-@formField('block_editor', [
-    'blocks' => ['quote', 'image']
-])
+<x-twill::block-editor
+    :blocks="['quote', 'image']"
+/>
 ```
 
 #### Create and define blocks
@@ -55,13 +55,13 @@ filename: ```views/twill/blocks/quote.blade.php```
 @twillBlockTitle('Quote')
 @twillBlockIcon('text')
 
-@formField('input', [
-    'name' => 'quote',
-    'type' => 'textarea',
-    'label' => 'Quote text',
-    'maxlength' => 250,
-    'rows' => 4
-])
+<x-twill::input 
+    name="quote"
+    type="textarea"
+    label="Quote text"
+    :maxlength="250"
+    :rows="4"
+/>
 ```
 
 A more complex example would look like this:
@@ -71,33 +71,28 @@ filename: ```views/twill/blocks/media.blade.php```
 @twillBlockTitle('Media')
 @twillBlockIcon('image')
 
-@formField('medias', [
-    'name' => 'image',
-    'label' => 'Images',
-    'withVideoUrl' => false,
-    'max' => 20,
-])
+<x-twill::medias
+    name="image"
+    label="Images"
+    :max="20"
+/>
 
-@formField('files', [
-    'name'  => 'video',
-    'label' => 'Video',
-    'note'  => 'Video will overwrite previously selected images',
-    'max'   => 1
-])
+<x-twill:files
+    name="video"
+    label="video"
+    note="Video will overwrite previously selected images"
+    :max="1"
+/>
 
-@formField('input', [
-    'name' => 'caption',
-    'label' => 'Caption',
-    'maxlength' => 250,
-    'translated' => true,
-])
+<x-twill::input
+    name="caption"
+    label="Caption"
+    :maxlength="250"
+    :translated="true"
+/>
 
-@formField('select', [
-    'name' => 'effect',
-    'label' => 'Transition Effect',
-    'placeholder' => 'Select Transition Effect',
-    'default' => 'cut',
-    'options' => [
+@php
+    $options = [
         [
             'value' => 'cut',
             'label' => 'Cut'
@@ -106,21 +101,28 @@ filename: ```views/twill/blocks/media.blade.php```
             'value' => 'fade',
             'label' => 'Fade In/Out'
         ]
-    ]
-])
+    ];
+@endphp
 
-@formField('color', [
-    'name'  => 'bg',
-    'label' => 'Background color',
-    'note'  => 'Default is light grey (#E6E6E6)',
-])
+<x-twill::select
+    name="effect"
+    label="Transition effect"
+    placeholder="Select transition effect"
+    default="cut"
+    :options="$options"
+/>
 
-@formField('input', [
-    'name' => 'timing',
-    'label' => 'Timing',
-    'maxlength' => 250,
-    'note' => 'Timing in ms (default is 4000ms)',
-])
+<x-twill::color
+    name="bg"
+    label="Background color"
+    note="Default is light grey (#E6E6E6)"
+/>
+
+<x-twill::input
+    name="timing"
+    label="Timing"
+    note="Timing in ms (default is 4000ms)"
+/>
 ```
 
 With that, the *block* is ready to be used on the form!
@@ -135,12 +137,11 @@ In Twill >= 2.5, you can use the `@twillBlockTitleField` directive to include th
 @twillBlockIcon('text')
 @twillBlockGroup('app')
 
-@formField('input', [
-    'name' => 'title',
-    'label' => 'Title',
-    'required' => true,
-])
-
+<x-twill::input
+    name="title"
+    label="Title"
+    :required="true"
+/>
 ...
 ```
 

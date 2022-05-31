@@ -131,7 +131,7 @@
       }
     },
     created () {
-      if (this.isNew) {
+      if (this.block.ui && this.block.ui.isNew) {
         this.toggleExpand()
       }
     },
