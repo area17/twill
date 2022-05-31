@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Rector\Core\ValueObject\PhpVersion;
+use Rector\Laravel\Set\LaravelSetList;
 use Rector\Set\ValueObject\SetList;
 
 /**
@@ -10,11 +12,21 @@ use Rector\Set\ValueObject\SetList;
 return static function (\Rector\Config\RectorConfig $rectorConfig): void {
     $rectorConfig->sets([
         SetList::DEAD_CODE,
+        SetList::CODE_QUALITY,
+        SetList::CODING_STYLE,
+        LaravelSetList::LARAVEL_80
     ]);
-    $rectorConfig->import(SetList::TYPE_DECLARATION);
-    $rectorConfig->import(SetList::CODE_QUALITY);
-    $rectorConfig->import(SetList::CODING_STYLE);
-    $rectorConfig->import(SetList::PHP_80);
-    $rectorConfig->import(SetList::PHP_81);
+
+    $rectorConfig->paths([__DIR__ . '/src', __DIR__ . '/tests']);
+    $rectorConfig->phpVersion(PhpVersion::PHP_80);
+    $rectorConfig->phpstanConfig(__DIR__ . '/phpstan.neon');
+
+    $rectorConfig->skip([
+        \Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector::class,
+        \Rector\CodingStyle\Rector\If_\NullableCompareToNullRector::class,
+        \Rector\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector::class,
+        \Rector\CodeQuality\Rector\PropertyFetch\ExplicitMethodCallOverMagicGetSetRector::class,
+        Rector\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector::class
+    ]);
 };
 

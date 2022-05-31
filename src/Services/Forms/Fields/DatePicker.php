@@ -64,7 +64,7 @@ class DatePicker extends BaseFormField
     {
         $this->withTime = true;
         $this->timeOnly = $timeOnly;
-        $this->altFormat = $this->altFormat ?? (($this->time24Hr ?? false) ? 'H:i' : 'h:i K');
+        $this->altFormat = $this->altFormat ?? (($this->time24h ?? false) ? 'H:i' : 'h:i K');
 
         return $this;
     }
@@ -102,9 +102,9 @@ class DatePicker extends BaseFormField
     /**
      * Set how many minutes are increment when using the + and - actions.
      */
-    public function minuteIncrement(int $minutIncrement = 1): self
+    public function minuteIncrement(int $minuteIncrement = 1): self
     {
-        $this->minuteIncrement = $minutIncrement;
+        $this->minuteIncrement = $minuteIncrement;
 
         return $this;
     }
