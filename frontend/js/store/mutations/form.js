@@ -18,6 +18,7 @@ export const UPDATE_FORM_SAVE_TYPE = 'updateFormSaveType'
 export const REPLACE_FORM_FIELDS = 'replaceFormField'
 export const ADD_FORM_FIELDS = 'addFormField'
 export const EMPTY_FORM_FIELDS = 'emptyFormField'
+export const ADD_REPEATER_FROM_SELECTION = 'addRepeaterFromSelection'
 
 /* Modal forms */
 export const EMPTY_MODAL_FIELDS = 'emptyModalField'
@@ -47,5 +48,6 @@ export default {
   EMPTY_MODAL_FIELDS,
   UPDATE_MODAL_FIELD,
   REMOVE_MODAL_FIELD,
-  REPLACE_MODAL_FIELDS
+  REPLACE_MODAL_FIELDS,
+  ADD_REPEATER_FROM_SELECTION
 }

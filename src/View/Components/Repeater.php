@@ -12,17 +12,25 @@ class Repeater extends TwillFormComponent
         public bool $buttonAsLink = false,
         public bool $reorder = true,
         public ?int $max = null,
+        public bool $allowCreate = true,
+        public ?string $relation = null,
+        public ?array $browserModule = null,
         // Generic
         bool $renderForBlocks = false,
         bool $renderForModal = false,
-        ?string $name = null,
+        ?string $label = null,
     ) {
         parent::__construct(
-            name: $name ?? $type,
-            label: $name ?? $type,
+            name: $label ?? $type,
+            label: $label ?? $type,
             renderForBlocks: $renderForBlocks,
             renderForModal: $renderForModal,
         );
+
+        $this->browserModule = $browserModule ? [
+            'label' => $browserModule['label'] ?? ucfirst($browserModule['name']),
+            'value' => moduleRoute($browserModule['name'], $browserModule['routePrefix'] ?? null, 'browser', $browserModule['params'] ?? [], false)
+        ] : null;
     }
 
     public function render(): View

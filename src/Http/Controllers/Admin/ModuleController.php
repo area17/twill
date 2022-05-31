@@ -738,9 +738,8 @@ abstract class ModuleController extends Controller
         $controllerForm = $this->getForm($this->repository->getById($id));
 
         if ($controllerForm->isNotEmpty()) {
-            $view =  'twill::layouts.form';
-        }
-        else {
+            $view = 'twill::layouts.form';
+        } else {
             $view = Collection::make([
                 "$this->viewPrefix.form",
                 "twill::$this->moduleName.form",
@@ -751,7 +750,10 @@ abstract class ModuleController extends Controller
         }
 
         View::share('form', $this->form($id));
-        return View::make($view, $this->form($id))->with('renderFields', $this->getForm($this->repository->getById($id)));
+        return View::make($view, $this->form($id))->with(
+            'renderFields',
+            $this->getForm($this->repository->getById($id))
+        );
     }
 
     /**
@@ -1543,16 +1545,31 @@ abstract class ModuleController extends Controller
             $prependScope['exceptIds'] = $this->request->get('except');
         }
 
+        $forRepeater = $this->request->get('forRepeater', false) === 'true';
+
         $scopes = $this->filterScope($prependScope);
         $items = $this->getBrowserItems($scopes);
-        $data = $this->getBrowserTableData($items);
+        $data = $this->getBrowserTableData($items, $forRepeater);
 
         return array_replace_recursive(['data' => $data], $this->indexData($this->request));
     }
 
-    protected function getBrowserTableData(Collection|LengthAwarePaginator $items): array
+    protected function getBrowserTableData(Collection|LengthAwarePaginator $items, bool $forRepeater = false): array
     {
-        return $items->map(function (BaseModel $item) {
+        return $items->map(function (BaseModel $item) use ($forRepeater) {
+
+            $repeaterFields = [];
+            if ($forRepeater) {
+                $translatedAttributes = $item->getTranslatedAttributes();
+                foreach ($item->getFillable() as $field) {
+                    if (in_array($field, $translatedAttributes, true)) {
+                        $repeaterFields[$field] = $item->translatedAttribute($field);
+                    } else {
+                        $repeaterFields[$field] = $item->{$field};
+                    }
+                }
+            }
+
             return $this->getTableColumns('browser')->getArrayForModelBrowser(
                 $item,
                 new TableDataContext(
@@ -1561,7 +1578,8 @@ abstract class ModuleController extends Controller
                     $this->moduleName,
                     $this->routePrefix,
                     $this->repository->getMorphClass(),
-                    $this->moduleHas('medias')
+                    $this->moduleHas('medias'),
+                    $repeaterFields
                 )
             );
         })->toArray();
@@ -2172,7 +2190,8 @@ abstract class ModuleController extends Controller
         return twillTrans(Arr::has($this->labels, $key) ? Arr::get($this->labels, $key) : $key, $replace);
     }
 
-    public function getForm(\Illuminate\Database\Eloquent\Model $model): Form {
+    public function getForm(\Illuminate\Database\Eloquent\Model $model): Form
+    {
         return new Form();
     }
 }

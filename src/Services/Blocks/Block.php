@@ -45,6 +45,11 @@ class Block
     public $trigger;
 
     /**
+     * For repeaters only: The select existing button text
+     */
+    public ?string $selectTrigger;
+
+    /**
      * @var string
      */
     public $source;
@@ -261,6 +266,7 @@ class Block
             'titleField' => $this->titleField,
             'hideTitlePrefix' => $this->hideTitlePrefix,
             'trigger' => $this->trigger,
+            'selectTrigger' => $this->selectTrigger,
             'name' => $this->name,
             'group' => $this->group,
             'type' => $this->type,
@@ -314,6 +320,7 @@ class Block
             $this->name,
             $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.add-item') : null
         );
+        $this->selectTrigger = $this->parseProperty('SelectTrigger', $contents, $this->name, $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.select-existing') : null);
         $this->max = (int)$this->parseProperty('max', $contents, $this->name, 999);
         $this->group = $this->parseProperty('group', $contents, $this->name, 'app');
         $this->icon = $this->parseProperty('icon', $contents, $this->name, 'text');

@@ -98,6 +98,8 @@ export const gatherRepeaters = (rootState) => {
 
         // and lastly we want to keep the id to update existing items
         fields.id = repeaterItem.id
+        // If the repeater has a target id we are referencing an existing item.
+        fields.repeater_target_id = repeaterItem.repeater_target_id ?? null
 
         return Object.assign(repeaterBlock, fields)
       })

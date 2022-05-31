@@ -11,7 +11,7 @@ class TableDataContext
         public string $routePrefix,
         public string $endpointType,
         public bool $hasMedia,
+        public array $repeaterFields,
     ) {
     }
-
 }

@@ -221,6 +221,24 @@ module.exports = [
         "collapsable": true
       },
       {
+        "title": "Relations",
+        "path": "/relations/",
+        "children": [
+          {
+            "title": "One to many",
+            "path": "/relations/one-to-many.html",
+          },
+          {
+            "title": "Belongs to many with pivot",
+            "path": "/relations/belongs-to-many.html",
+          },
+          {
+            "title": "Polymorphic One to Many",
+            "path": "/relations/morph-many.html",
+          }
+        ]
+      },
+      {
         "title": "Block Editor",
         "path": "/block-editor/",
         "children": [
