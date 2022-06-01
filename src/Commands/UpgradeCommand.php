@@ -46,7 +46,7 @@ class UpgradeCommand extends Command
             exit(1);
         }
 
-        $this->moveRoutesFile();
+        $this->moveRoutesFileAndRenameNavigation();
         $this->moveResourcesAdminFolder();
         $this->moveControllerAdminDirectories();
 
@@ -54,7 +54,7 @@ class UpgradeCommand extends Command
         $this->runRector();
     }
 
-    protected function moveRoutesFile(): void
+    protected function moveRoutesFileAndRenameNavigation(): void
     {
         if (!$this->fsAsStorage->exists('routes/admin.php')) {
             $this->warn('Not moving routes/admin.php, file not present.');
@@ -64,6 +64,16 @@ class UpgradeCommand extends Command
         $this->info('Moving routes/admin.php to routes/twill.php');
         $this->fsAsStorage->move('routes/admin.php', 'routes/twill.php');
         $this->newLine();
+
+        $this->info('Renaming admin. routes to twill. in config/twill-navigation.php and config/twill.php');
+
+        $navigation = $this->fsAsStorage->get('config/twill-navigation.php');
+        $fixedNavigation = str_replace('admin.', 'twill.', $navigation);
+        $this->fsAsStorage->update('config/twill-navigation.php', $fixedNavigation);
+
+        $config = $this->fsAsStorage->get('config/twill.php');
+        $fixedConfig = str_replace('admin.', 'twill.', $config);
+        $this->fsAsStorage->update('config/twill-navigation.php', $fixedConfig);
     }
 
     protected function moveResourcesAdminFolder(): void
