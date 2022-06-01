@@ -25,7 +25,7 @@ class GlobalNavigation extends Component
     public function getNavigationItems(): array
     {
         $final = [];
-        foreach (config('twill-navigation') as $global_navigation_key => $global_navigation_element) {
+        foreach (config('twill-navigation', []) as $global_navigation_key => $global_navigation_element) {
             $is_settings = $global_navigation_key === 'settings';
             $is_module = $is_settings || ($global_navigation_element['module'] ?? false);
             $gate = $is_settings ? 'edit-settings' : ($global_navigation_element['can'] ?? 'access-module-list');
