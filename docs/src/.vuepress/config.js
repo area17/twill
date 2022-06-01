@@ -1,19 +1,20 @@
+let base = process.env.VUEPRESS_BASE || 'docs';
 module.exports = {
   title: 'Twill',
   description: 'Twill — An open source CMS toolkit for Laravel',
-  base: "/docs/",
+  base: `/${base}/`,
   dest: "docs",
   head: [
-    ['link', { rel: 'shortcut icon', href: '/favicon.ico' }],
-    ['link', { rel: 'apple-touch-icon', href: '/favicon-192.png' }],
+    ['link', { rel: 'shortcut icon', href: `/${base}/favicon.ico` }],
+    ['link', { rel: 'apple-touch-icon', href: `/${base}/favicon-192.png` }],
     ['meta', { name: 'theme-color', content: '#000000' }],
     ['meta', { property: 'og:url', content: 'https://twill.io/' }],
     ['meta', { name: 'twitter:url', content: 'https://twill.io/' }],
-    ['meta', { property: 'og:image', content: '/social_share.png' }],
+    ['meta', { property: 'og:image', content: `/${base}/social_share.png` }],
     ['meta', { property: 'og:image:width', content: '1200' }],
     ['meta', { property: 'og:image:height', content: '630' }],
-    ['meta', { name: 'twitter:image', content: '/social_share.png' }],
-    ['meta', { itemprop: 'image', content: '/social_share.png' }],
+    ['meta', { name: 'twitter:image', content: `/${base}/social_share.png` }],
+    ['meta', { itemprop: 'image', content: `/${base}/social_share.png` }],
     ['meta', { property: 'og:site_name', content: 'Twill' }],
     ['meta', { property: 'og:author', content: 'https://www.facebook.com/twillcms/' }],
     ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
@@ -21,6 +22,9 @@ module.exports = {
     ['meta', { name: 'twitter:domain', content: 'twill.io' }],
     ['meta', { name: 'twitter:creator', content: '@twillcms' }]
   ],
+  markdown:{
+    toc: {includeLevel: [2, 3, 4]}
+  },
   themeConfig: {
     docsRepo: 'area17/twill',
     docsDir: 'docs/src',

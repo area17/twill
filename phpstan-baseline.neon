@@ -1,0 +1,11 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Call to an undefined method A17\\\\Twill\\\\Commands\\\\CapsuleInstall\\:\\:extractRepositoryFromUrl\\(\\)\\.$#"
+			count: 1
+			path: src/Commands/CapsuleInstall.php
+
+		-
+			message: "#^Variable \\$activeRepositoryTraits in empty\\(\\) always exists and is not falsy\\.$#"
+			count: 1
+			path: src/Commands/ModuleMake.php

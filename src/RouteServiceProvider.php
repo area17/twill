@@ -6,9 +6,11 @@ use A17\Twill\Http\Controllers\Front\GlideController;
 use A17\Twill\Http\Middleware\Authenticate;
 use A17\Twill\Http\Middleware\Impersonate;
 use A17\Twill\Http\Middleware\Localization;
+use A17\Twill\Http\Middleware\Permission;
 use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
 use A17\Twill\Http\Middleware\SupportSubdomainRouting;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
+use A17\Twill\Services\Routing\HasRoutes;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
@@ -27,13 +29,12 @@ class RouteServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerMacros();
-        $this->registerRouteMiddlewares($this->app->get('router'));
+        $this->registerRouteMiddlewares();
         $this->app->bind(TwillRoutes::class);
         parent::boot();
     }
 
     /**
-     * @param Router $router
      * @return void
      */
     public function map(Router $router)
@@ -59,16 +60,15 @@ class RouteServiceProvider extends ServiceProvider
         $router,
         $groupOptions,
         $middlewares,
-        $supportSubdomainRouting,
-        $namespace = null
+        $supportSubdomainRouting
     ) {
         \A17\Twill\Facades\TwillRoutes::registerRoutes(
             $router,
             $groupOptions,
             $middlewares,
             $supportSubdomainRouting,
-            config('twill.namespace', 'App') . '\Http\Controllers\Admin',
-            base_path('routes/admin.php'),
+            config('twill.namespace', 'App') . '\Http\Controllers\Twill',
+            base_path('routes/twill.php'),
             true
         );
     }
@@ -163,7 +163,7 @@ class RouteServiceProvider extends ServiceProvider
 
         if (
             config('twill.media_library.image_service') ===
-            'A17\Twill\Services\MediaLibrary\Glide'
+            \A17\Twill\Services\MediaLibrary\Glide::class
         ) {
             $router
                 ->get(
@@ -177,10 +177,9 @@ class RouteServiceProvider extends ServiceProvider
     /**
      * Register Route middleware.
      *
-     * @param Router $router
      * @return void
      */
-    private function registerRouteMiddlewares(Router $router)
+    private function registerRouteMiddlewares()
     {
         Route::aliasMiddleware(
             'supportSubdomainRouting',
@@ -194,6 +193,7 @@ class RouteServiceProvider extends ServiceProvider
             ValidateBackHistory::class
         );
         Route::aliasMiddleware('localization', Localization::class);
+        Route::aliasMiddleware('permission', Permission::class);
     }
 
     /**
@@ -245,7 +245,7 @@ class RouteServiceProvider extends ServiceProvider
         ) {
             $slugs = explode('.', $slug);
             $prefixSlug = str_replace('.', '/', $slug);
-            $_slug = Arr::last($slugs);
+            Arr::last($slugs);
             $className = implode(
                 '',
                 array_map(function ($s) {
@@ -253,7 +253,24 @@ class RouteServiceProvider extends ServiceProvider
                 }, $slugs)
             );
 
-            $customRoutes = $defaults = [
+            $customRoutes = [
+                'reorder',
+                'publish',
+                'bulkPublish',
+                'browser',
+                'feature',
+                'bulkFeature',
+                'tags',
+                'preview',
+                'restore',
+                'bulkRestore',
+                'forceDelete',
+                'bulkForceDelete',
+                'bulkDelete',
+                'restoreRevision',
+                'duplicate',
+            ];
+            $defaults = [
                 'reorder',
                 'publish',
                 'bulkPublish',
@@ -309,7 +326,7 @@ class RouteServiceProvider extends ServiceProvider
                     Route::get($routeSlug, $mapping);
                 }
 
-                if (in_array($route, ['restoreRevision'])) {
+                if ($route == 'restoreRevision') {
                     Route::get($routeSlug . '/{id}', $mapping);
                 }
 
@@ -324,11 +341,11 @@ class RouteServiceProvider extends ServiceProvider
                     Route::put($routeSlug, $mapping);
                 }
 
-                if (in_array($route, ['duplicate'])) {
+                if ($route == 'duplicate') {
                     Route::put($routeSlug . '/{id}', $mapping);
                 }
 
-                if (in_array($route, ['preview'])) {
+                if ($route == 'preview') {
                     Route::put($routeSlug . '/{id}', $mapping);
                 }
 

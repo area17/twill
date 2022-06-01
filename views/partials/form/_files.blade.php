@@ -1,12 +1,3 @@
-@php
-    $max = $max ?? 1;
-    $itemLabel = $itemLabel ?? strtolower($label);
-    $note = $note ?? 'Add' . ($max > 1 ? " up to $max $itemLabel" : ' one ' . Str::singular($itemLabel));
-    $fieldNote = $fieldNote ?? '';
-    $filesizeMax = $filesizeMax ?? 0;
-    $buttonOnTop = $buttonOnTop ?? false;
-@endphp
-
 <a17-locale
     type="a17-filefield"
     :attributes="{
@@ -17,7 +8,7 @@
         max: {{ $max }},
         filesizeMax: {{ $filesizeMax }},
         @if ($buttonOnTop) buttonOnTop: true, @endif
-        @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
+        {!! $formFieldName(true) !!}
     }"
 ></a17-locale>
 

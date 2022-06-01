@@ -15,7 +15,7 @@ class ListBlocks extends Command
      */
     protected $signature =
         'twill:list:blocks {filter?}' .
-        '{--t|--twill : List only Twill\'s internal blocks} ' .
+        "{--t|--twill : List only Twill's internal blocks} " .
         '{--c|--custom : List only user custom blocks} ' .
         '{--a|--app : List only legacy application blocks}' .
         '{--b|--blocks : List only blocks}' .
@@ -153,7 +153,6 @@ class ListBlocks extends Command
     }
 
     /**
-     * @param \A17\Twill\Services\Blocks\Block $block
      * @return bool
      */
     public function dontPassTextFilter(Block $block)

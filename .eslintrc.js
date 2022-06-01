@@ -3,17 +3,18 @@ module.exports = {
   env: {
     node: true
   },
-  'extends': [
-    'plugin:vue/essential',
-    '@vue/standard'
-  ],
-  'rules': {
+  extends: ['plugin:vue/essential', '@vue/standard', 'prettier'],
+  rules: {
     // indent
-    'indent': ['error', 2, { 'SwitchCase': 1 }],
-    'vue/script-indent': ['error', 2, {
-      'baseIndent': 1,
-      'switchCase': 1
-    }],
+    indent: ['error', 2, { SwitchCase: 1 }],
+    'vue/script-indent': [
+      'error',
+      2,
+      {
+        baseIndent: 1,
+        switchCase: 1
+      }
+    ],
     'no-useless-escape': 0,
     // allow paren-less arrow functions
     'arrow-parens': 0,
@@ -23,21 +24,28 @@ module.exports = {
     'no-prototype-builtins': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    'no-console': process.env.NODE_ENV === 'production' ? ['error', { "allow": ["error"] }] : 'off',
+    'no-console':
+      process.env.NODE_ENV === 'production'
+        ? ['error', { allow: ['error'] }]
+        : 'off'
   },
   overrides: [
     {
       files: ['*.vue'],
       rules: {
-        'indent': 'off',
-        'vue/script-indent': ['error', 2, {
-          'baseIndent': 1,
-          'switchCase': 1
-        }]
+        indent: 'off',
+        'vue/script-indent': [
+          'error',
+          2,
+          {
+            baseIndent: 1,
+            switchCase: 1
+          }
+        ]
       }
     }
   ],
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: '@babel/eslint-parser'
   }
 }

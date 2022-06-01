@@ -12,9 +12,11 @@ use A17\Twill\Models\Model;
 
 class ReorderNestedModuleItems implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable;
-
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
     protected $modelClass;
+
     protected $ids;
 
     public function __construct(Model $model, array $ids)

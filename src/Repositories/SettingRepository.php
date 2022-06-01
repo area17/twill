@@ -17,10 +17,6 @@ class SettingRepository extends ModuleRepository
      */
     protected $config;
 
-    /**
-     * @param Setting $model
-     * @param Config $config
-     */
     public function __construct(Setting $model, Config $config)
     {
         $this->model = $model;
@@ -64,6 +60,7 @@ class SettingRepository extends ModuleRepository
                         $carry[$locale][$setting->key] = parent::getFormFields($setting)['medias'][$locale][$setting->key];
                     }
                 }
+
                 return $carry;
             });
         } else {

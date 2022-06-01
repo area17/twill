@@ -15,19 +15,12 @@ trait HandleTags
             if (!$this->shouldIgnoreFieldBeforeSave('tags')) {
                 $object->setTags($fields['tags'] ?? []);
             }
-
-        } else {
-            if (!$this->shouldIgnoreFieldBeforeSave('bulk_tags')) {
-                $previousCommonTags = $fields['previous_common_tags']->pluck('name')->toArray();
-
-                if (!empty($previousCommonTags)) {
-                    if (!empty($difference = array_diff($previousCommonTags, $fields['bulk_tags'] ?? []))) {
-                        $object->untag($difference);
-                    }
-                }
-
-                $object->tag($fields['bulk_tags'] ?? []);
+        } elseif (!$this->shouldIgnoreFieldBeforeSave('bulk_tags')) {
+            $previousCommonTags = $fields['previous_common_tags']->pluck('name')->toArray();
+            if (!empty($previousCommonTags) && !empty($difference = array_diff($previousCommonTags, $fields['bulk_tags'] ?? []))) {
+                $object->untag($difference);
             }
+            $object->tag($fields['bulk_tags'] ?? []);
         }
     }
 
@@ -54,12 +47,10 @@ trait HandleTags
             $tagQuery->where('slug', 'like', '%' . $query . '%');
         }
 
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $tagQuery->whereHas('tagged', function ($query) use ($id) {
-                    $query->where('taggable_id', $id);
-                });
-            }
+        foreach ($ids as $id) {
+            $tagQuery->whereHas('tagged', function ($query) use ($id) {
+                $query->where('taggable_id', $id);
+            });
         }
 
         return $tagQuery->get();

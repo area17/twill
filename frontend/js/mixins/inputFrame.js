@@ -19,6 +19,13 @@ export default {
       type: String,
       default: 'large' // large, small
     },
+    variant: {
+      type: String,
+      default: '' // free string
+    },
+    fixedErrorKey: {
+      type: String
+    },
     note: {
       type: String,
       default: ''
@@ -26,6 +33,9 @@ export default {
   },
   computed: {
     errorKey () {
+      if (this.fixedErrorKey) {
+        return this.hasLocale ? (this.fixedErrorKey.replace('[', '.').replace(']', '')) : this.fixedErrorKey
+      }
       return this.hasLocale ? (this.name.replace('[', '.').replace(']', '')) : this.name
     },
     errorLocales () {

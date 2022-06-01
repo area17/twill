@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\File;
 
 class TwillBlocks
 {
+    /**
+     * @var string
+     */
     public const DIRECTORY_TYPE_VENDOR = 'vendor';
 
     /**
@@ -87,12 +90,15 @@ class TwillBlocks
             foreach ($this->readBlocksFromDirectory($repeaterDir, $data['type'], Block::TYPE_REPEATER, $data['renderNamespace']) as $repeater) {
                 $this->blockCollection->add($repeater);
             }
+
             unset(self::$repeatersDirectories[$repeaterDir]);
         }
+
         foreach (self::$blockDirectories as $blockDir => $data) {
             foreach ($this->readBlocksFromDirectory($blockDir, $data['type'], Block::TYPE_BLOCK, $data['renderNamespace']) as $block) {
                 $this->blockCollection->add($block);
             }
+
             unset(self::$blockDirectories[$blockDir]);
         }
 

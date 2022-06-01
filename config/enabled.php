@@ -23,4 +23,5 @@ return [
     'activitylog' => true,
     'users-2fa' => false,
     'users-oauth' => false,
+    'permissions-management' => false,
 ];

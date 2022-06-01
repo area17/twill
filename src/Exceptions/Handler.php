@@ -15,7 +15,6 @@ class Handler extends ExceptionHandler
     /**
      * Get the view used to render HTTP exceptions.
      *
-     * @param  \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface  $e
      * @return string
      */
     protected function getHttpExceptionView(HttpExceptionInterface $e)
@@ -26,7 +25,7 @@ class Handler extends ExceptionHandler
         $isSubdomainAdmin = !$usesAdminPath && Str::contains(Request::url(), $adminAppUrl);
         $isSubdirectoryAdmin = $usesAdminPath && Str::startsWith(Request::path(), config('twill.admin_app_path'));
 
-        return $this->getTwillErrorView($e->getStatusCode(), !($isSubdomainAdmin || $isSubdirectoryAdmin));
+        return $this->getTwillErrorView($e->getStatusCode(), !$isSubdomainAdmin && !$isSubdirectoryAdmin);
     }
 
     /**
@@ -43,7 +42,7 @@ class Handler extends ExceptionHandler
             return view()->exists($view)? $view : "errors::{$statusCode}";
         }
 
-        $view = "admin.errors.$statusCode";
+        $view = "twill.errors.$statusCode";
 
         return view()->exists($view) ? $view : "twill::errors.$statusCode";
     }

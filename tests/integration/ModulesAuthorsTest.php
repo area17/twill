@@ -10,13 +10,6 @@ use Illuminate\Support\Str;
 
 class ModulesAuthorsTest extends ModulesTestBase
 {
-    public function testCanCopyFiles()
-    {
-        collect($this->allFiles)->each(function ($destination, $source) {
-            $this->assertFileExists($this->makeFileName($destination, $source));
-        });
-    }
-
     public function testCanMigrateDatabase()
     {
         $this->assertTrue(Schema::hasTable('authors'));
@@ -157,6 +150,8 @@ class ModulesAuthorsTest extends ModulesTestBase
         $data = [
             'id' => 1,
             'type' => 'a17-block-quote',
+            'editor_name' => 'default',
+            'is_repeater' => false,
             'content' => [
                 'quote' => ($quote = $this->fakeText(70)),
             ],
@@ -171,28 +166,27 @@ class ModulesAuthorsTest extends ModulesTestBase
         $this->assertSee(json_encode(['quote' => $quote]));
     }
 
-    public function testCanPreviewAuthor()
+    public function testErrorWhenPreviewIsMissing()
     {
-        $this->createAuthor();
+        $author = $this->createAuthor();
+        $this->assertTrue($this->files->delete(base_path() . '/resources/views/site/author.blade.php'));
 
         $this->httpRequestAssert(
-            "/twill/personnel/authors/preview/{$this->author->id}",
+            "/twill/personnel/authors/preview/{$author->id}",
             'PUT'
         );
 
         $this->assertSee(
             'Previews have not been configured on this Twill module, please let the development team know about it.'
         );
+    }
 
-        $this->files->copy(
-            $this->makeFileName(
-                '{$stubs}/modules/authors/site.author.blade.php'
-            ),
-            $this->makeFileName('{$resources}/views/site/author.blade.php')
-        );
+    public function testCanPreviewAuthor()
+    {
+        $author = $this->createAuthor();
 
         $this->httpRequestAssert(
-            "/twill/personnel/authors/preview/{$this->author->id}",
+            "/twill/personnel/authors/preview/{$author->id}",
             'PUT',
             ['activeLanguage' => 'en']
         );
@@ -286,7 +280,7 @@ class ModulesAuthorsTest extends ModulesTestBase
 
     public function testCanReturnWhenReorderingWrongAuthor()
     {
-        /**
+        /*
          * Should not return Error 500
          *
          * TODO

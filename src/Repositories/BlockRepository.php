@@ -4,31 +4,28 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Behaviors\HasMedias;
-use A17\Twill\Models\Block;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Services\Blocks\Block as BlockConfig;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Collection;
-use Log;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use ReflectionException;
-use Schema;
 
 class BlockRepository extends ModuleRepository
 {
-    use HandleMedias, HandleFiles;
-
+    use HandleMedias;
+    use HandleFiles;
     /**
      * @var Config
      */
     protected $config;
 
-    /**
-     * @param Block $model
-     */
-    public function __construct(Block $model, Config $config)
+    public function __construct(Config $config)
     {
-        $this->model = $model;
+        $blockModel = twillModel('block');
+        $this->model = new $blockModel;
         $this->config = $config;
     }
 
@@ -55,8 +52,8 @@ class BlockRepository extends ModuleRepository
                             'browser_name' => $browserName,
                         ]);
 
-                    } catch (ReflectionException $e) {
-                        Log::error($e);
+                    } catch (ReflectionException $reflectionException) {
+                        Log::error($reflectionException);
                     }
                 });
             });
@@ -73,12 +70,10 @@ class BlockRepository extends ModuleRepository
      */
     public function afterSave($object, $fields)
     {
-        if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
-            if (isset($fields['browsers'])) {
-                Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($object) {
-                    $object->saveRelated($items, $browserName);
-                });
-            }
+        if (Schema::hasTable(config('twill.related_table', 'twill_related')) && isset($fields['browsers'])) {
+            Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($object) {
+                $object->saveRelated($items, $browserName);
+            });
         }
 
         parent::afterSave($object, $fields);
@@ -107,7 +102,7 @@ class BlockRepository extends ModuleRepository
 
         $block['instance'] = $blockInstance;
 
-        $block['content'] = empty($block['content']) ? new \stdClass : (object) $block['content'];
+        $block['content'] = empty($block['content']) ? new \stdClass() : (object) $block['content'];
 
         if ($block['browsers']) {
             $browsers = Collection::make($block['browsers'])->map(function ($items) {

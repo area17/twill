@@ -219,15 +219,15 @@ trait HandleBrowsers
     {
         return collect($this->browsers)->map(function ($browser, $key) {
             $browserName = is_string($browser) ? $browser : $key;
-            $moduleName = ! empty($browser['moduleName']) ? $browser['moduleName'] : $this->inferModuleNameFromBrowserName($browserName);
+            $moduleName = empty($browser['moduleName']) ? $this->inferModuleNameFromBrowserName($browserName) : $browser['moduleName'];
 
             return [
-                'relation' => ! empty($browser['relation']) ? $browser['relation'] : $this->inferRelationFromBrowserName($browserName),
+                'relation' => empty($browser['relation']) ? $this->inferRelationFromBrowserName($browserName) : $browser['relation'],
                 'routePrefix' => isset($browser['routePrefix']) ? $browser['routePrefix'] : null,
-                'titleKey' => ! empty($browser['titleKey']) ? $browser['titleKey'] : 'title',
+                'titleKey' => empty($browser['titleKey']) ? 'title' : $browser['titleKey'],
                 'moduleName' => $moduleName,
-                'model' => ! empty($browser['model']) ? $browser['model'] : $this->inferModelFromModuleName($moduleName),
-                'positionAttribute' => ! empty($browser['positionAttribute']) ? $browser['positionAttribute'] : 'position',
+                'model' => empty($browser['model']) ? $this->inferModelFromModuleName($moduleName) : $browser['model'],
+                'positionAttribute' => empty($browser['positionAttribute']) ? 'position' : $browser['positionAttribute'],
                 'browserName' => $browserName,
             ];
         })->values();
@@ -235,9 +235,6 @@ trait HandleBrowsers
 
     /**
      * Guess the browser's relation name (shoud be lower camel case, ex. userGroup, contactOffice).
-     *
-     * @param string $browserName
-     * @return string
      */
     protected function inferRelationFromBrowserName(string $browserName): string
     {
@@ -246,9 +243,6 @@ trait HandleBrowsers
 
     /**
      * Guess the module's model name (should be singular upper camel case, ex. User, ArticleType).
-     *
-     * @param string $moduleName
-     * @return string
      */
     protected function inferModelFromModuleName(string $moduleName): string
     {
@@ -257,9 +251,6 @@ trait HandleBrowsers
 
     /**
      * Guess the browser's module name (should be plural lower camel case, ex. userGroups, contactOffices).
-     *
-     * @param string $browserName
-     * @return string
      */
     protected function inferModuleNameFromBrowserName(string $browserName): string
     {

@@ -105,6 +105,7 @@ trait HandleFiles
                 }
             }
         }
+
         return $fields;
     }
 }

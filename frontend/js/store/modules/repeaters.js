@@ -42,6 +42,10 @@ const mutations = {
     block.type = blockModel.component
     block.title = blockModel.title
 
+    // Metadata for rendering
+    block.twillUi = {}
+    block.twillUi.isNew = true
+
     // create new repeater object if required
     if (isNew) {
       const newBlocks = {}
@@ -53,12 +57,62 @@ const mutations = {
       state.repeaters[blockName].push(block) // or add a new block at the end of the list
     }
   },
+  [FORM.ADD_REPEATER_FROM_SELECTION] (state, blockInfos) {
+    const blockName = blockInfos.name
+    const blockType = blockInfos.type
+
+    const blockModel = state.availableRepeaters[blockType]
+    const isNew = (!state.repeaters[blockName])
+
+    if (!blockModel) return
+
+    const newBlocks = {}
+    newBlocks[blockName] = []
+
+    blockInfos.selection.forEach((item) => {
+
+      const block = {}
+      block.id = setBlockID()
+      block.type = blockModel.component
+      block.title = blockModel.title
+      block.repeater_target_id = item.id
+
+      const fieldData = [];
+
+      for (const key in item.repeaterFields) {
+        if (item.repeaterFields.hasOwnProperty(key)) {
+          fieldData.push({
+            name: `blocks[${block.id}][${key}]`,
+            value: item.repeaterFields[key]
+          })
+        }
+      }
+
+      this.commit(FORM.ADD_FORM_FIELDS, fieldData)
+
+      if (!isNew) {
+        state.repeaters[blockName].push(block)
+      }
+      else {
+        newBlocks[blockName].push(block)
+      }
+    })
+
+    if (isNew) {
+      state.repeaters = Object.assign({}, state.repeaters, newBlocks)
+    }
+  },
   [FORM.DELETE_FORM_BLOCK] (state, blockInfos) {
     state.repeaters[blockInfos.name].splice(blockInfos.index, 1)
   },
   [FORM.DUPLICATE_FORM_BLOCK] (state, blockInfos) {
     const clone = Object.assign({}, state.repeaters[blockInfos.name][blockInfos.index])
     clone.id = setBlockID()
+
+    // Metadata for rendering
+    clone.twillUi = {}
+    clone.twillUi.isNew = true
+
     state.repeaters[blockInfos.name].splice(blockInfos.index + 1, 0, clone)
   },
   [FORM.REORDER_FORM_BLOCKS] (state, newValues) {

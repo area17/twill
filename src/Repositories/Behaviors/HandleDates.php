@@ -31,6 +31,7 @@ trait HandleDates
                 }
             }
         }
+
         return $fields;
     }
 
@@ -41,11 +42,7 @@ trait HandleDates
      */
     public function prepareDatesField($fields, $f)
     {
-        if ($date = Carbon::parse($fields[$f])) {
-            $fields[$f] = $date->format("Y-m-d H:i:s");
-        } else {
-            $fields[$f] = null;
-        }
+        $fields[$f] = ($date = Carbon::parse($fields[$f])) ? $date->format("Y-m-d H:i:s") : null;
 
         return $fields;
     }

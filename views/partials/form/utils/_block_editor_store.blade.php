@@ -1,4 +1,4 @@
-window['{{ config('twill.js_namespace') }}'].STORE.form.blocks = {!! json_encode($form_fields['blocks']) !!}
+window['{{ config('twill.js_namespace') }}'].STORE.form.blocks = {!! json_encode($form_fields['blocks'] ?? []) !!}
 
 @foreach($form_fields['blocksFields'] ?? [] as $field)
     window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({!! json_encode($field) !!})

@@ -12,11 +12,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 trait ShowWithPreview
 {
     /**
-     * @param string $slug
-     * @param Request $request
-     * @param Redirector $redirector
-     * @param ViewFactory $viewFactory
-     * @param Config $config
      * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
      * @throws \Exception
      */

@@ -1,34 +1,14 @@
-@php
-    $options = is_object($options) && method_exists($options, 'map') ? $options->map(function($label, $value) {
-        return [
-            'value' => $value,
-            'label' => $label
-        ];
-    })->values()->toArray() : $options;
-
-    $note = $note ?? false;
-    $placeholder = $placeholder ?? false;
-    $required = $required ?? false;
-    $searchable = $searchable ?? false;
-    $disabled = $disabled ?? false;
-    $columns = $columns ?? 0;
-
-    // do not use for now, but this will allow you to create a new option directly from the form
-    $addNew = $addNew ?? false;
-    $moduleName = $moduleName ?? null;
-    $storeUrl = $storeUrl ?? '';
-    $inModal = $fieldsInModal ?? false;
-@endphp
-
 @if ($unpack ?? false)
     <a17-singleselect
         label="{{ $label }}"
-        @include('twill::partials.form.utils._field_name')
+        {!! $formFieldName() !!}
         :options='{{ json_encode($options) }}'
         :columns="{{ $columns }}"
         @if (isset($default)) selected="{{ $default }}" @endif
         @if ($required) :required="true" @endif
         @if ($inModal) :in-modal="true" @endif
+        @if ($inTable) :in-table="true" :inline="true" @endif
+        @if (!$inGrid) :grid="false" @endif
         @if ($disabled) disabled @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"
@@ -46,7 +26,7 @@
 @elseif ($native ?? false)
     <a17-select
         label="{{ $label }}"
-        @include('twill::partials.form.utils._field_name')
+        {!! $formFieldName() !!}
         :options='{{ json_encode($options) }}'
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
         @if (isset($default)) selected="{{ $default }}" @endif
@@ -70,7 +50,7 @@
 @else
     <a17-vselect
         label="{{ $label }}"
-        @include('twill::partials.form.utils._field_name')
+        {!! $formFieldName() !!}
         :options='{{ json_encode($options) }}'
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif

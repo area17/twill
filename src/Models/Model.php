@@ -10,11 +10,15 @@ use Cartalyst\Tags\TaggableTrait;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 abstract class Model extends BaseModel implements TaggableInterface
 {
-    use HasPresenter, SoftDeletes, TaggableTrait, IsTranslatable;
+    use HasPresenter;
+    use SoftDeletes;
+    use TaggableTrait;
+    use IsTranslatable;
 
     public $timestamps = true;
 
@@ -28,11 +32,43 @@ abstract class Model extends BaseModel implements TaggableInterface
         return $query->where("{$this->getTable()}.published", true);
     }
 
+    public function scopeAccessible($query)
+    {
+        if (! config('twill.enabled.permissions-management')) {
+            return $query;
+        }
+
+        $model = get_class($query->getModel());
+        $moduleName = isPermissionableModule(getModuleNameByModel($model));
+
+        if ($moduleName && ! Auth::user()->isSuperAdmin()) {
+            // Get all permissions the logged in user has regards to the model.
+            $allPermissions = Auth::user()->allPermissions();
+            $allModelPermissions = (clone $allPermissions)->ofModel($model);
+
+            // If the user has any module permissions, or global manage all modules permissions, all items will be return
+            if ((clone $allModelPermissions)->module()->whereIn('name', Permission::available(Permission::SCOPE_MODULE))->exists()
+                || (clone $allPermissions)->global()->where('name', 'manage-modules')->exists()) {
+                return $query;
+            }
+
+            // If the module is submodule, skip the scope.
+            if (strpos($moduleName, '.')) {
+                return $query;
+            }
+
+            $authorizedItemsIds = $allModelPermissions->moduleItem()->pluck('permissionable_id');
+
+            return $query->whereIn($this->getTable() . '.id', $authorizedItemsIds);
+        }
+
+        return $query;
+    }
+
     public function scopePublishedInListings($query)
     {
         if ($this->isFillable('public')) {
             $query->where("{$this->getTable()}.public", true);
-
         }
 
         return $query->published()->visible();
@@ -84,13 +120,13 @@ abstract class Model extends BaseModel implements TaggableInterface
             $this->isTranslationModel() &&
             property_exists($this, 'baseModuleModel')
         ) {
-            $fillable = (new $this->baseModuleModel)->getTranslatedAttributes();
+            $fillable = (new $this->baseModuleModel())->getTranslatedAttributes();
 
-            if (!collect($fillable)->contains('locale')) {
+            if (! collect($fillable)->contains('locale')) {
                 $fillable[] = 'locale';
             }
 
-            if (!collect($fillable)->contains('active')) {
+            if (! collect($fillable)->contains('active')) {
                 $fillable[] = 'active';
             }
         }
@@ -109,7 +145,7 @@ abstract class Model extends BaseModel implements TaggableInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function tags(): MorphToMany
     {

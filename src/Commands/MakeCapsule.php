@@ -18,6 +18,7 @@ class MakeCapsule extends ModuleMake
         {--P|hasPosition}
         {--R|hasRevisions}
         {--N|hasNesting}
+        {--E|generatePreview}
         {--all}
         {--force}';
 
@@ -31,12 +32,12 @@ class MakeCapsule extends ModuleMake
     /**
      * @var null
      */
-    protected $capsulesDirectory = null;
+    protected $capsulesDirectory;
 
     /**
      * @var null
      */
-    protected $namespace = null;
+    protected $namespace;
 
     /**
      * @var bool

@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 
 class ModuleMake extends Command
 {
+    public $capsuleNamespace;
     use HandlesStubs;
 
     /**
@@ -30,6 +31,7 @@ class ModuleMake extends Command
         {--P|hasPosition}
         {--R|hasRevisions}
         {--N|hasNesting}
+        {--E|generatePreview}
         {--all}';
 
     /**
@@ -52,12 +54,12 @@ class ModuleMake extends Command
     /**
      * @var string[]
      */
-    protected $modelTraits;
+    protected $modelTraits = [];
 
     /**
      * @var string[]
      */
-    protected $repositoryTraits;
+    protected $repositoryTraits = [];
 
     /**
      * @var Config
@@ -136,11 +138,6 @@ class ModuleMake extends Command
      */
     protected $customDirs = false;
 
-    /**
-     * @param Filesystem $files
-     * @param Composer $composer
-     * @param Config $config
-     */
     public function __construct(Filesystem $files, Composer $composer, Config $config)
     {
         parent::__construct();
@@ -221,7 +218,7 @@ class ModuleMake extends Command
         $moduleName = Str::camel(Str::plural(lcfirst($this->argument('moduleName'))));
 
         // e.g. newsItem
-        $singularModuleName = Str::camel(lcfirst($this->argument('moduleName')));
+        $singularModuleName = Str::camel(Str::singular(lcfirst($this->argument('moduleName'))));
 
         // e.g. NewsItems
         $moduleTitle = Str::studly($moduleName);
@@ -234,6 +231,7 @@ class ModuleMake extends Command
             if (! $this->confirm('Creating capsule in ' . $dir, true)) {
                 exit(1);
             }
+
             $this->customDirs = true;
             $this->capsule = new Capsule(
                 $moduleTitle,
@@ -301,13 +299,14 @@ class ModuleMake extends Command
             } else {
                 $this->createCapsuleSeed();
             }
+
             $this->createCapsuleRoutes();
         } elseif ($this->isSingleton) {
             $this->createSingletonSeed($modelName);
-            $this->info("\nAdd to routes/admin.php:\n");
+            $this->info("\nAdd to routes/twill.php:\n");
             $this->info("    Route::singleton('{$singularModuleName}');\n");
         } else {
-            $this->info("\nAdd to routes/admin.php:\n");
+            $this->info("\nAdd to routes/twill.php:\n");
             $this->info("    Route::module('{$moduleName}');\n");
         }
 
@@ -345,7 +344,7 @@ class ModuleMake extends Command
 
         $this->info('Enjoy.');
 
-        if ($this->nestable && ! class_exists('\Kalnoy\Nestedset\NestedSet')) {
+        if ($this->nestable && ! class_exists(\Kalnoy\Nestedset\NestedSet::class)) {
             $this->warn("\nTo support module nesting, you must install the `kalnoy/nestedset` package:");
             $this->warn("\n    composer require kalnoy/nestedset\n");
         }
@@ -367,7 +366,7 @@ class ModuleMake extends Command
 
         $migrationName = 'create_' . $table . '_tables';
 
-        if (! count(glob($this->databasePath('migrations/*' . $migrationName . '.php')))) {
+        if (count(glob($this->databasePath('migrations/*' . $migrationName . '.php'))) === 0) {
             $migrationPath = $this->databasePath() . '/migrations';
 
             $this->makeDir($migrationPath);
@@ -381,7 +380,7 @@ class ModuleMake extends Command
             );
 
             if ($this->translatable) {
-                $stub = preg_replace('/{{!hasTranslation}}[\s\S]+?{{\/!hasTranslation}}/', '', $stub);
+                $stub = preg_replace('#{{!hasTranslation}}[\s\S]+?{{\/!hasTranslation}}#', '', $stub);
             } else {
                 $stub = str_replace([
                     '{{!hasTranslation}}',
@@ -395,7 +394,7 @@ class ModuleMake extends Command
             $stub = $this->renderStubForOption($stub, 'hasPosition', $this->sortable);
             $stub = $this->renderStubForOption($stub, 'hasNesting', $this->nestable);
 
-            $stub = preg_replace('/\}\);[\s\S]+?Schema::create/', "});\n\n        Schema::create", $stub);
+            $stub = preg_replace('#\}\);[\s\S]+?Schema::create#', "});\n\n        Schema::create", $stub);
 
             $this->files->put($fullPath, $stub);
 
@@ -570,13 +569,13 @@ class ModuleMake extends Command
      */
     private function createRepository($modelName = 'Item', $activeTraits = [])
     {
-        $modelsDir = $this->isCapsule ? $this->capsule->getRepositoriesDir() : 'Repositories';
+        $repositoriesDir = $this->isCapsule ? $this->capsule->getRepositoriesDir() : 'Repositories';
 
         $modelClass = $this->isCapsule ? $this->capsule->getModel() : config(
             'twill.namespace'
         ) . "\Models\\{$modelName}";
 
-        $this->makeTwillDirectory($modelsDir);
+        $this->makeTwillDirectory($repositoriesDir);
 
         $repositoryClassName = $modelName . 'Repository';
 
@@ -622,7 +621,7 @@ class ModuleMake extends Command
             $this->files->get(__DIR__ . '/stubs/repository.stub')
         );
 
-        $this->putTwillStub(twill_path("{$modelsDir}/" . $repositoryClassName . '.php'), $stub);
+        twill_put_stub(twill_path("{$repositoriesDir}/" . $repositoryClassName . '.php'), $stub);
 
         $this->info('Repository created successfully! Control all the things!');
     }
@@ -639,7 +638,7 @@ class ModuleMake extends Command
     {
         $controllerClassName = $modelName . 'Controller';
 
-        $dir = $this->isCapsule ? $this->capsule->getControllersDir() : 'Http/Controllers/Admin';
+        $dir = $this->isCapsule ? $this->capsule->getControllersDir() : 'Http/Controllers/Twill';
 
         if ($this->isSingleton) {
             $baseController = config('twill.base_singleton_controller');
@@ -653,12 +652,7 @@ class ModuleMake extends Command
 
         $stub = str_replace(
             ['{{moduleName}}', '{{controllerClassName}}', '{{namespace}}', '{{baseController}}'],
-            [
-                $moduleName,
-                $controllerClassName,
-                $this->namespace('controllers', 'Http\Controllers\Admin'),
-                $baseController,
-            ],
+            [$moduleName, $controllerClassName, $this->namespace('controllers', 'Http\Controllers\Twill'), $baseController],
             $this->files->get(__DIR__ . '/stubs/controller.stub')
         );
 
@@ -674,7 +668,7 @@ class ModuleMake extends Command
 
             $stub = str_replace(['{{hasNesting}}', '{{/hasNesting}}'], '', $stub);
         } else {
-            $stub = preg_replace('/{{hasNesting}}[\s\S]+?{{\/hasNesting}}/', '', $stub);
+            $stub = preg_replace('#{{hasNesting}}[\s\S]+?{{\/hasNesting}}#', '', $stub);
         }
 
         $stub = str_replace(
@@ -684,7 +678,7 @@ class ModuleMake extends Command
         );
 
         // Remove lines including only whitespace, leave true empty lines untouched
-        $stub = preg_replace('/^[\s]+\n/m', '', $stub);
+        $stub = preg_replace('#^[\s]+\n#m', '', $stub);
 
         $this->putTwillStub(twill_path("$dir/" . $controllerClassName . '.php'), $stub);
 
@@ -700,7 +694,7 @@ class ModuleMake extends Command
      */
     private function createRequest($modelName = 'Item')
     {
-        $dir = $this->isCapsule ? $this->capsule->getRequestsDir() : 'Http/Requests/Admin';
+        $dir = $this->isCapsule ? $this->capsule->getRequestsDir() : 'Http/Requests/Twill';
 
         $this->makeTwillDirectory($dir);
 
@@ -708,7 +702,7 @@ class ModuleMake extends Command
 
         $stub = str_replace(
             ['{{requestClassName}}', '{{namespace}}', '{{baseRequest}}'],
-            [$requestClassName, $this->namespace('requests', 'Http\Requests\Admin'), config('twill.base_request')],
+            [$requestClassName, $this->namespace('requests', 'Http\Requests\Twill'), config('twill.base_request')],
             $this->files->get(__DIR__ . '/stubs/request.stub')
         );
 
@@ -720,11 +714,9 @@ class ModuleMake extends Command
     /**
      * Creates appropriate module Blade view files.
      *
-     * @param string $moduleName
-     * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function createViews($moduleName = 'items')
+    private function createViews(string $moduleName = 'items'): void
     {
         $viewsPath = $this->viewPath($moduleName);
 
@@ -737,14 +729,18 @@ class ModuleMake extends Command
             $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub')
         );
 
-        $this->info('Form view created successfully! Include your form fields using @formField directives!');
+        $this->info('Form view created successfully! You can now include your form fields.');
+
+        if ($this->checkOption('generatePreview') === true) {
+            $previewViewsPath = $this->previewViewPath();
+            twill_put_stub($previewViewsPath . '/' . Str::singular($moduleName) . '.blade.php', $this->files->get(__DIR__ . '/stubs/preview_module.blade.stub'));
+        }
     }
 
     /**
      * Creates a basic routes file for the Capsule.
      *
      * @param string $moduleName
-     * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function createCapsuleRoutes(): void
@@ -768,7 +764,6 @@ class ModuleMake extends Command
      * Creates a new capsule database seed file.
      *
      * @param string $moduleName
-     * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     private function createCapsuleSeed(): void
@@ -875,6 +870,7 @@ class ModuleMake extends Command
             'hasPosition' => 'Do you need to manage the position of records on this module?',
             'hasRevisions' => 'Do you need to enable revisions on this module?',
             'hasNesting' => 'Do you need to enable nesting on this module?',
+            'generatePreview' => 'Do you also want to generate the preview file?',
         ];
 
         $defaultAnswers = [
@@ -966,6 +962,10 @@ class ModuleMake extends Command
             return "App\\{$suffix}{$class}";
         }
 
+        if (! $this->isCapsule) {
+            return "App\\{$suffix}{$class}";
+        }
+
         if ($type === 'models') {
             return $this->capsule->getModelNamespace() . $class;
         }
@@ -985,14 +985,25 @@ class ModuleMake extends Command
         throw new \Exception('Missing Implementation.');
     }
 
-    public function viewPath($moduleName)
+    public function viewPath(string $moduleName): string
     {
-        if (! $this->isCapsule) {
+        if (!$this->isCapsule) {
             return $this->config->get('view.paths')[0] . '/admin/' . $moduleName;
         }
 
-        $dir = "$this->moduleBasePath/resources/views/admin";
+        $dir = "$this->moduleBasePath/resources/views/twill";
         $this->makeDir($dir);
+
+        return $dir;
+    }
+
+    public function previewViewPath(): string
+    {
+        if (!$this->isCapsule) {
+            return $this->config->get('view.paths')[0] . '/site/';
+        }
+
+        $this->makeDir($dir = "{$this->moduleBasePath}/resources/views");
 
         return $dir;
     }

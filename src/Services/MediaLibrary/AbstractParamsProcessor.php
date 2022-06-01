@@ -24,6 +24,9 @@ namespace A17\Twill\Services\MediaLibrary;
  */
 abstract class AbstractParamsProcessor
 {
+    /**
+     * @var array<string, string>
+     */
     const COMPATIBLE_PARAMS = [
         'w' => 'width',
         'h' => 'height',
@@ -33,10 +36,15 @@ abstract class AbstractParamsProcessor
     ];
 
     protected $params;
+
     protected $width;
+
     protected $height;
+
     protected $format;
+
     protected $quality;
+
     protected $fit;
 
     /**

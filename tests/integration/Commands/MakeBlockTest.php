@@ -21,7 +21,8 @@ class MakeBlockTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
 
-        $this->artisan('twill:make:block')->run();
+        $this->artisan('twill:make:block')
+            ->run();
     }
 
     public function testCanExecuteModuleCommand()
@@ -30,7 +31,7 @@ class MakeBlockTest extends TestCase
             'name' => 'SuperQuote',
             'base' => 'quote',
             'icon' => 'text',
-        ]);
+        ])->expectsConfirmation('Should we also generate a view file for rendering the block?', 'no');
 
         $this->getCommand($command)
             ->getBlockMaker()
@@ -51,7 +52,7 @@ class MakeBlockTest extends TestCase
             'name' => 'SuperCarousel',
             'base' => 'carousel',
             'icon' => 'text',
-        ]);
+        ])->expectsConfirmation('Should we also generate a view file for rendering the block?', 'no');
 
         $this->getCommand($command)
             ->getBlockMaker()
@@ -77,7 +78,7 @@ class MakeBlockTest extends TestCase
             'name' => 'WillBeMissed',
             'base' => 'missing-block',
             'icon' => 'text',
-        ]);
+        ])->expectsConfirmation('Should we also generate a view file for rendering the block?', 'no');
 
         $this->getCommand($command)
             ->getBlockMaker()
@@ -93,7 +94,7 @@ class MakeBlockTest extends TestCase
             'name' => 'IconWillBeMissed',
             'base' => 'quote',
             'icon' => 'missing-icon',
-        ]);
+        ])->expectsConfirmation('Should we also generate a view file for rendering the block?', 'no');
 
         $this->getCommand($command)
             ->getBlockMaker()
@@ -109,7 +110,7 @@ class MakeBlockTest extends TestCase
             'name' => 'SuperQuote',
             'base' => 'quote',
             'icon' => 'text',
-        ]);
+        ])->expectsConfirmation('Should we also generate a view file for rendering the block?', 'no');
 
         $this->getCommand($command)
             ->getBlockMaker()
@@ -122,7 +123,7 @@ class MakeBlockTest extends TestCase
             'name' => 'SuperQuote',
             'base' => 'quote',
             'icon' => 'text',
-        ]);
+        ])->expectsConfirmation('Should we also generate a view file for rendering the block?', 'no');
 
         $this->getCommand($command)
             ->getBlockMaker()

@@ -6,7 +6,7 @@ pageClass: twill-doc
 
 Classic Laravel 5 [form request validation](https://laravel.com/docs/5.5/validation#form-request-validation).
 
-Once you generated the module using Twill's CLI module generator, it will also prepare the `App/Http/Requests/Admin/ModuleNameRequest.php` for you to use.
+Once you generated the module using Twill's CLI module generator, it will also prepare the `App/Http/Requests/Twill/ModuleNameRequest.php` for you to use.
 You can choose to use different rules for creation and update by implementing the following 2 functions instead of the classic `rules` one:
 
 ```php

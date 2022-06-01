@@ -92,6 +92,7 @@ return [
             'open-in-editor' => 'Open in editor',
             'preview' => 'Preview',
             'add-item' => 'Add item',
+            'select-existing' => 'Select existing',
             'clone-block' => 'Clone block',
         ],
         'browser' => [
@@ -328,10 +329,12 @@ return [
     'nav' => [
         'admin' => 'Admin',
         'cms-users' => 'CMS Users',
+        'profile' => 'Profile',
         'logout' => 'Logout',
         'media-library' => 'Media Library',
         'settings' => 'Settings',
         'close-menu' => 'Close menu',
+        'open-live-site' => 'Open live site',
     ],
     'notifications' => [
         'reset' => [
@@ -348,6 +351,18 @@ return [
     ],
     'overlay' => [
         'close' => 'Close',
+    ],
+    'permissions' => [
+        'groups' => [
+            'title' => 'Groups',
+            'published' => 'Enabled',
+            'draft' => 'Disabled',
+        ],
+        'roles' => [
+            'title' => 'Roles',
+            'published' => 'Enabled',
+            'draft' => 'Disabled',
+        ],
     ],
     'previewer' => [
         'compare-view' => 'Compare view',
@@ -411,9 +426,15 @@ return [
         '2fa' => '2-factor authentication',
         '2fa-description' => 'Please scan this QR code with a Google Authenticator compatible application and enter your one time password below before submitting. See a list of compatible applications <a href=":link" target="_blank" rel="noopener">here</a>.',
         '2fa-disable' => 'Enter your one time password to disable the 2-factor authentication',
+        'force-2fa-disable' => 'Disable 2FA',
+        'force-2fa-disable-description' => 'Type text shown in the field to disable 2FA for this user',
+        'force-2fa-disable-challenge' => 'Disable 2FA for :user',
         'active' => 'Active',
+        'pending' => 'Pending',
+        'activation-pending' => 'Pending activation',
+        'user-image' => 'Image',
+        'content-fieldset-label' => 'Account',
         'cancel' => 'Cancel',
-        'content-fieldset-label' => 'User settings',
         'description' => 'Description',
         'disabled' => 'Disabled',
         'edit-modal-title' => 'Edit user name',

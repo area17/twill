@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Facades\TwillCapsules;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\View;
 
 abstract class SingletonModuleController extends ModuleController
 {
@@ -29,12 +30,14 @@ abstract class SingletonModuleController extends ModuleController
                 $this->seed();
                 return $this->editSingleton();
             }
+
             throw new \Exception("$model is not seeded");
         }
 
         Session::put('pages_back_link', url()->current());
 
-        return view($this->viewPrefix . ".form", $this->form($item->id));
+        View::share('form', $this->form($item->id));
+        return view("twill.{$this->moduleName}.form", $this->form($item->id));
     }
 
     private function seed(): void
@@ -43,6 +46,7 @@ abstract class SingletonModuleController extends ModuleController
         if (!class_exists($seederName)) {
             throw new \Exception("$seederName is missing");
         }
+
         $seeder = new $seederName();
         $seeder->run();
     }

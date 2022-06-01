@@ -67,18 +67,13 @@ class TwillRoutes
 
     public function registerRoutePatterns(): void
     {
-        if (($patterns = config('twill.admin_route_patterns')) != null) {
-            if (is_array($patterns)) {
-                foreach ($patterns as $label => $pattern) {
-                    Route::pattern($label, $pattern);
-                }
+        if (($patterns = config('twill.admin_route_patterns')) != null && is_array($patterns)) {
+            foreach ($patterns as $label => $pattern) {
+                Route::pattern($label, $pattern);
             }
         }
     }
 
-    /**
-     * @return array
-     */
     public function getRouteGroupOptions(): array
     {
         return [
@@ -115,14 +110,14 @@ class TwillRoutes
 
     public function registerCapsuleRoutes($router, Capsule $capsule): void
     {
-        if ($capsule->routesFileExists()) {
+        if ($routesFile = $capsule->getRoutesFileIfExists()) {
             $this->registerRoutes(
                 $router,
                 $this->getRouteGroupOptions(),
                 $this->getRouteMiddleware(),
                 $this->supportSubdomainRouting(),
                 $capsule->getControllersNamespace(),
-                $capsule->getRoutesFile(),
+                $routesFile,
                 // When it is not a package capsule we can register it immediately.
                 ! $capsule->packageCapsule
             );

@@ -3,6 +3,7 @@
 namespace A17\Twill\Models\Behaviors;
 
 use Kalnoy\Nestedset\NodeTrait;
+use A17\Twill\Models\NestedsetCollection;
 
 trait HasNesting
 {
@@ -63,12 +64,10 @@ trait HasNesting
                     $nodeModel->position = $nodeArray['position'];
                     $nodeModel->saveAsRoot();
                 }
-            } else {
-                if ($nodeModel->position !== $nodeArray['position'] || $nodeModel->parent_id !== $nodeArray['parent_id']) {
-                    $nodeModel->position = $nodeArray['position'];
-                    $nodeModel->parent_id = $nodeArray['parent_id'];
-                    $nodeModel->save();
-                }
+            } elseif ($nodeModel->position !== $nodeArray['position'] || $nodeModel->parent_id !== $nodeArray['parent_id']) {
+                $nodeModel->position = $nodeArray['position'];
+                $nodeModel->parent_id = $nodeArray['parent_id'];
+                $nodeModel->save();
             }
         }
     }
@@ -92,5 +91,13 @@ trait HasNesting
         }
 
         return $nodeArrays;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function newCollection(array $models = [])
+    {
+        return new NestedsetCollection($models);
     }
 }
