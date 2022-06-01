@@ -248,7 +248,6 @@ $table->string('linkable_type')->nullable();
 
 Then in our `MenuItemRepository` we have to setup a few things:
 
-Before the 
 ```php
     // Prepare the fields.
     public function prepareFieldsBeforeCreate($fields)
