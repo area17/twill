@@ -16,7 +16,7 @@
                     @partialView(($moduleName ?? null), 'navigation._title')
                     {{-- @CHECK-HERE --}}
                     <x-twill.layout::global-navigation />
-                    {{--                    @partialView(($moduleName ?? null), 'navigation._global_navigation')--}}
+                    {{-- @partialView(($moduleName ?? null), 'navigation._global_navigation') --}}
                     <div class="header__user" id="headerUser" v-cloak>
                         @partialView(($moduleName ?? null), 'navigation._user')
                     </div>

@@ -25,21 +25,21 @@ class GlobalNavigation extends Component
     public function getNavigationItems(): array
     {
         $final = [];
-        foreach (config('twill-navigation') as $global_navigation_key => $global_navigation_element) {
-            $is_settings = $global_navigation_key === 'settings';
-            $is_module = $is_settings || ($global_navigation_element['module'] ?? false);
-            $gate = $is_settings ? 'edit-settings' : ($global_navigation_element['can'] ?? 'access-module-list');
+        foreach (config('twill-navigation') as $navigationKey => $navigationElement) {
+            $isSetting = $navigationKey === 'settings';
+            $isModule = $isSetting || ($navigationElement['module'] ?? false);
+            $gate = $isSetting ? 'edit-settings' : ($navigationElement['can'] ?? 'access-module-list');
 
-            if (!$is_module || Auth::user()->can($gate, $global_navigation_key)) {
+            if (!$isModule || Auth::user()->can($gate, $navigationKey)) {
                 $final[] = [
                     'is_active' => isActiveNavigation(
-                        $global_navigation_element,
-                        $global_navigation_key,
+                        $navigationElement,
+                        $navigationKey,
                         $this->activeMenu()
                     ),
-                    'href' => getNavigationUrl($global_navigation_element, $global_navigation_key),
-                    'target_blank' => isset($global_navigation_element['target']) && $global_navigation_element['target'] === 'external',
-                    'title' => $global_navigation_element['title'],
+                    'href' => getNavigationUrl($navigationElement, $navigationKey),
+                    'target_blank' => isset($navigationElement['target']) && $navigationElement['target'] === 'external',
+                    'title' => $navigationElement['title'],
                 ];
             }
         }

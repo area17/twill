@@ -238,13 +238,17 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         Route::macro('module', function (
-            $slug,
+            $slugOrModelClass,
             $options = [],
             $resource_options = [],
             $resource = true
         ) {
-            $slugs = explode('.', $slug);
-            $prefixSlug = str_replace('.', '/', $slug);
+            if (Str::contains($slugOrModelClass, '\\')) {
+                $slugOrModelClass = \A17\Twill\Facades\TwillRoutes::modelToModuleName($slugOrModelClass);
+            }
+
+            $slugs = explode('.', $slugOrModelClass);
+            $prefixSlug = str_replace('.', '/', $slugOrModelClass);
             Arr::last($slugs);
             $className = implode(
                 '',
@@ -306,10 +310,10 @@ class RouteServiceProvider extends ServiceProvider
 
             // Check if name will be a duplicate, and prevent if needed/allowed
             if (RouteServiceProvider::shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)) {
-                $customRoutePrefix = "{$groupPrefix}.{$slug}";
+                $customRoutePrefix = "{$groupPrefix}.{$slugOrModelClass}";
                 $resourceCustomGroupPrefix = "{$groupPrefix}.";
             } else {
-                $customRoutePrefix = $slug;
+                $customRoutePrefix = $slugOrModelClass;
 
                 // Prevent Laravel from generating route names with duplication
                 $resourceCustomGroupPrefix = '';
@@ -326,7 +330,7 @@ class RouteServiceProvider extends ServiceProvider
                     Route::get($routeSlug, $mapping);
                 }
 
-                if ($route == 'restoreRevision') {
+                if ($route === 'restoreRevision') {
                     Route::get($routeSlug . '/{id}', $mapping);
                 }
 
@@ -341,11 +345,11 @@ class RouteServiceProvider extends ServiceProvider
                     Route::put($routeSlug, $mapping);
                 }
 
-                if ($route == 'duplicate') {
+                if ($route === 'duplicate') {
                     Route::put($routeSlug . '/{id}', $mapping);
                 }
 
-                if ($route == 'preview') {
+                if ($route === 'preview') {
                     Route::put($routeSlug . '/{id}', $mapping);
                 }
 
@@ -366,9 +370,9 @@ class RouteServiceProvider extends ServiceProvider
             if ($resource) {
                 Route::group(
                     ['as' => $resourceCustomGroupPrefix],
-                    function () use ($slug, $className, $resource_options) {
+                    function () use ($slugOrModelClass, $className, $resource_options) {
                         Route::resource(
-                            $slug,
+                            $slugOrModelClass,
                             "{$className}Controller",
                             $resource_options
                         );
