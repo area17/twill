@@ -1,10 +1,10 @@
 <?php
 
-namespace A17\Twill\View\Components;
+namespace A17\Twill\View\Components\Fields;
 
 use Illuminate\Contracts\View\View;
 
-class Input extends TwillFormComponent
+class DatePicker extends TwillFormComponent
 {
     public function __construct(
         string $name,
@@ -19,18 +19,15 @@ class Input extends TwillFormComponent
         bool $readOnly = false,
         bool $inModal = false,
         // Component specific
-        public string $type = 'text',
-        public ?string $placeholder = '',
-        public ?int $maxlength = null,
-        public ?int $rows = null,
-        public ?string $ref = null,
-        public ?string $onChange = null,
-        public ?string $onChangeAttribute = null,
-        public ?string $prefix = null,
-        public ?int $min = null,
-        public ?int $max = null,
-        public ?int $step = null,
-        public ?string $mask = null,
+        public bool $withTime = true,
+        public bool $allowInput = false,
+        public bool $allowClear = false,
+        public ?string $placeholder = null,
+        public bool $timeOnly = false,
+        public bool $time24Hr = false,
+        public ?string $altFormat = null,
+        public ?int $hourIncrement = null,
+        public ?int $minuteIncrement = null
     ) {
         parent::__construct(
             name: $name,
@@ -49,11 +46,6 @@ class Input extends TwillFormComponent
 
     public function render(): View
     {
-        return view(
-            'twill::partials.form._input',
-            array_merge($this->data(), [
-                'onChangeFullAttribute' => $this->onChangeAttribute ? "('" . $this->onChangeAttribute . "', ...arguments)" : "",
-            ])
-        );
+        return view('twill::partials.form._date_picker', $this->data());
     }
 }

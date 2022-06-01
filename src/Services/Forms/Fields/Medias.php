@@ -35,7 +35,7 @@ class Medias extends BaseFormField
     public static function make(): static
     {
         $instance = new self(
-            component: \A17\Twill\View\Components\Medias::class,
+            component: \A17\Twill\View\Components\Fields\Medias::class,
             mandatoryProperties: ['name', 'label']
         );
 

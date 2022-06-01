@@ -29,7 +29,7 @@ class DatePicker extends BaseFormField
     public static function make(): static
     {
         return new self(
-            component: \A17\Twill\View\Components\DatePicker::class,
+            component: \A17\Twill\View\Components\Fields\DatePicker::class,
             mandatoryProperties: ['name', 'label']
         );
     }

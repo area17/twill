@@ -17,7 +17,7 @@ class Radios extends BaseFormField
     public static function make(): static
     {
         return new self(
-            component: \A17\Twill\View\Components\Radios::class,
+            component: \A17\Twill\View\Components\Fields\Radios::class,
             mandatoryProperties: ['name', 'label', 'options']
         );
     }

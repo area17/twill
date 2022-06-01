@@ -19,7 +19,7 @@ class Map extends BaseFormField
     public static function make(): static
     {
         return new self(
-            component: \A17\Twill\View\Components\Map::class,
+            component: \A17\Twill\View\Components\Fields\Map::class,
             mandatoryProperties: ['name', 'label']
         );
     }

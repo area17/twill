@@ -38,7 +38,7 @@ class Wysiwyg extends BaseFormField
     public static function make(): static
     {
         return new self(
-            component: \A17\Twill\View\Components\Wysiwyg::class,
+            component: \A17\Twill\View\Components\Fields\Wysiwyg::class,
             mandatoryProperties: ['name', 'label']
         );
     }

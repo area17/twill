@@ -17,7 +17,7 @@ class Select extends BaseFormField
     public static function make(): static
     {
         return new self(
-            component: \A17\Twill\View\Components\Select::class,
+            component: \A17\Twill\View\Components\Fields\Select::class,
             mandatoryProperties: ['name', 'label', 'options']
         );
     }

@@ -1,10 +1,10 @@
 <?php
 
-namespace A17\Twill\View\Components;
+namespace A17\Twill\View\Components\Fields;
 
 use Illuminate\Contracts\View\View;
 
-class MultiSelect extends FieldWithOptions
+class Radios extends FieldWithOptions
 {
     public function __construct(
         string $name,
@@ -23,14 +23,13 @@ class MultiSelect extends FieldWithOptions
         bool $unpack = false,
         int $columns = 0,
         bool $searchable = false,
-        ?string $placeholder = null,
+        string $placeholder = '',
         bool $addNew = false,
         ?string $moduleName = null,
         ?string $storeUrl = null,
         // Component specific
-        public ?int $min = null,
-        public ?int $max = null,
-        public ?string $endpoint = null,
+        public bool $inline = false,
+        public bool $border = false,
     ) {
         parent::__construct(
             name: $name,
@@ -51,12 +50,12 @@ class MultiSelect extends FieldWithOptions
             placeholder: $placeholder,
             addNew: $addNew,
             moduleName: $moduleName,
-            storeUrl: $storeUrl,
+            storeUrl: $storeUrl
         );
     }
 
     public function render(): View
     {
-        return view('twill::partials.form._multi_select', $this->data());
+        return view('twill::partials.form._radios', $this->data());
     }
 }
