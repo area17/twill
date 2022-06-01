@@ -269,14 +269,16 @@ abstract class ModuleController extends Controller
     protected $indexOptions;
 
     /**
+     * @var array
      * @deprecated please use the getIndexTableColumns method. Will be removed in Twill 4.0
      */
-    protected ?array $indexColumns = null;
+    protected $indexColumns = [];
 
     /**
+     * @var array
      * @deprecated please use the getBrowserTableColumns method. Will be removed in Twill 4.0
      */
-    protected ?array $browserColumns = null;
+    protected $browserColumns = [];
 
     /**
      * @var string
@@ -378,7 +380,7 @@ abstract class ModuleController extends Controller
     {
         $columns = TableColumns::make();
 
-        if ($this->browserColumns) {
+        if ($this->browserColumns !== []) {
             $this->handleLegacyColumns($columns, $this->browserColumns);
         } else {
             if ($this->moduleHas('medias')) {
@@ -418,7 +420,7 @@ abstract class ModuleController extends Controller
         }
 
         // Consume Deprecated data.
-        if ($this->indexColumns) {
+        if ($this->indexColumns !== []) {
             $this->handleLegacyColumns($columns, $this->indexColumns);
         } else {
             $columns->add(

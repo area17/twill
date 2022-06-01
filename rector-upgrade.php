@@ -6,14 +6,13 @@ use A17\Twill\Rector\RenameRoutes;
 use A17\Twill\Rector\RenameViews;
 use Rector\Core\Configuration\Option;
 use Rector\Renaming\Rector\Namespace_\RenameNamespaceRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 /**
  * This rector file is the one used by the UpgradeCommand for upgrading users code bases.
  */
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (\Rector\Config\RectorConfig $config): void {
     // Refactoring for Twill 2.6 to Twill 3.0.
-    $parameters = $containerConfigurator->parameters();
+    $parameters = $config->parameters();
     $parameters->set(Option::PATHS, [
         getcwd() . '/app',
         getcwd() . '/resources',
@@ -21,12 +20,11 @@ return static function (ContainerConfigurator $containerConfigurator): void {
         getcwd() . '/config',
     ]);
 
-    $services = $containerConfigurator->services();
-    $services->set(RenameRoutes::class)->configure(['path' =>  getcwd()]);
-    $services->set(RenameViews::class)->configure(['path' =>  getcwd()]);
+    $services = $config->services();
+    $services->set(RenameRoutes::class)->configure(['path' => getcwd()]);
+    $services->set(RenameViews::class)->configure(['path' => getcwd()]);
     $services->set(RenameNamespaceRector::class)->configure([
         'App\Http\Controllers\Admin' => 'App\Http\Controllers\Twill',
-        'App\Http\Requests\Admin' => 'App\Http\Requests\Twill'
+        'App\Http\Requests\Admin' => 'App\Http\Requests\Twill',
     ]);
 };
-
