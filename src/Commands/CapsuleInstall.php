@@ -44,9 +44,6 @@ class CapsuleInstall extends Command
 
     protected string $namespace;
 
-    /**
-     * @return string
-     */
     private function getUnzippedPath(): string
     {
         return TwillCapsules::getProjectCapsulesPath() .
@@ -218,7 +215,7 @@ class CapsuleInstall extends Command
             $this->error('A capsule with this name already exists!');
 
             return false;
-        } catch (NoCapsuleFoundException $e) {
+        } catch (NoCapsuleFoundException $noCapsuleFoundException) {
         }
 
         if ($this->directoryExists()) {

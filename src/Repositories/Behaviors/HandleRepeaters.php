@@ -256,6 +256,7 @@ trait HandleRepeaters
                     unset($relationField['id']);
                     $newRelation = $relationRepository->create($relationField);
                 }
+
                 $currentIdList[] = $newRelation['id'];
 
                 $pivotFieldData = $this->encodePivotFields(collect($relationField)->only($pivotFields)->all());
@@ -478,6 +479,7 @@ trait HandleRepeaters
                 if ($pivotField === 'id') {
                     continue;
                 }
+
                 $itemFields[$pivotField] = $this->decodePivotField($relationItem->pivot->{$pivotField} ?? null);
             }
 
@@ -513,11 +515,11 @@ trait HandleRepeaters
         }
 
         if (!empty($repeatersMedias) && config('twill.media_library.translated_form_fields', false)) {
-            $repeatersMedias = call_user_func_array('array_merge', $repeatersMedias);
+            $repeatersMedias = array_merge(...$repeatersMedias);
         }
 
         if (!empty($repeatersFiles)) {
-            $repeatersFiles = call_user_func_array('array_merge', $repeatersFiles);
+            $repeatersFiles = array_merge(...$repeatersFiles);
         }
 
         $fields['repeaters'][$repeaterName] = $repeaters;
@@ -658,11 +660,11 @@ trait HandleRepeaters
         }
 
         if (!empty($repeatersMedias) && config('twill.media_library.translated_form_fields', false)) {
-            $repeatersMedias = call_user_func_array('array_merge', $repeatersMedias);
+            $repeatersMedias = array_merge(...$repeatersMedias);
         }
 
         if (!empty($repeatersFiles)) {
-            $repeatersFiles = call_user_func_array('array_merge', $repeatersFiles);
+            $repeatersFiles = array_merge(...$repeatersFiles);
         }
 
         $fields['repeaters'][$repeaterName] = $repeaters;
@@ -699,12 +701,12 @@ trait HandleRepeaters
             $repeaterName = is_string($repeater) ? $repeater : $key;
 
             return [
-                'relation' => !empty($repeater['relation']) ? $repeater['relation'] : $this->inferRelationFromRepeaterName(
+                'relation' => empty($repeater['relation']) ? $this->inferRelationFromRepeaterName(
                     $repeaterName
-                ),
-                'model' => !empty($repeater['model']) ? $repeater['model'] : $this->inferModelFromRepeaterName(
+                ) : $repeater['relation'],
+                'model' => empty($repeater['model']) ? $this->inferModelFromRepeaterName(
                     $repeaterName
-                ),
+                ) : $repeater['model'],
                 'repeaterName' => $repeaterName,
             ];
         })->values();
@@ -712,9 +714,6 @@ trait HandleRepeaters
 
     /**
      * Guess the relation name (shoud be lower camel case, ex. userGroup, contactOffice).
-     *
-     * @param string $repeaterName
-     * @return string
      */
     protected function inferRelationFromRepeaterName(string $repeaterName): string
     {
@@ -723,9 +722,6 @@ trait HandleRepeaters
 
     /**
      * Guess the model name (should be singular upper camel case, ex. User, ArticleType).
-     *
-     * @param string $repeaterName
-     * @return string
      */
     protected function inferModelFromRepeaterName(string $repeaterName): string
     {

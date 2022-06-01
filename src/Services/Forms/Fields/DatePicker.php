@@ -11,18 +11,25 @@ class DatePicker extends BaseFormField
     use hasPlaceholder;
 
     protected bool $withTime = true;
+
     protected bool $allowInput = false;
+
     protected bool $allowClear = false;
+
     protected bool $timeOnly = false;
+
     protected bool $time24h = false;
+
     protected ?string $altFormat = null;
+
     protected ?int $minuteIncrement = null;
+
     protected ?int $hourIncrement = null;
 
     public static function make(): static
     {
         return new self(
-            component: \A17\Twill\View\Components\DatePicker::class,
+            component: \A17\Twill\View\Components\Fields\DatePicker::class,
             mandatoryProperties: ['name', 'label']
         );
     }
@@ -64,7 +71,7 @@ class DatePicker extends BaseFormField
     {
         $this->withTime = true;
         $this->timeOnly = $timeOnly;
-        $this->altFormat = $this->altFormat ?? (($this->time24Hr ?? false) ? 'H:i' : 'h:i K');
+        $this->altFormat = $this->altFormat ?? (($this->time24h ?? false) ? 'H:i' : 'h:i K');
 
         return $this;
     }
@@ -102,9 +109,9 @@ class DatePicker extends BaseFormField
     /**
      * Set how many minutes are increment when using the + and - actions.
      */
-    public function minuteIncrement(int $minutIncrement = 1): self
+    public function minuteIncrement(int $minuteIncrement = 1): self
     {
-        $this->minuteIncrement = $minutIncrement;
+        $this->minuteIncrement = $minuteIncrement;
 
         return $this;
     }

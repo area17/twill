@@ -83,7 +83,7 @@ trait HasRelated
                 'browser_name' => $browser_name,
                 'position' => $position,
             ]);
-            $position++;
+            ++$position;
         });
     }
 }

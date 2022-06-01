@@ -108,7 +108,6 @@ class LoginController extends Controller
     }
 
     /**
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function logout(Request $request)
@@ -123,7 +122,6 @@ class LoginController extends Controller
     }
 
     /**
-     * @param Request $request
      * @param \Illuminate\Foundation\Auth\User $user
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -158,7 +156,6 @@ class LoginController extends Controller
     }
 
     /**
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
@@ -214,29 +211,23 @@ class LoginController extends Controller
             // If that provider has been linked
             if ($repository->oauthIsUserLinked($oauthUser, $provider)) {
                 $user = $repository->oauthUpdateProvider($oauthUser, $provider);
+                // Login and redirect
+                $this->authManager->guard('twill_users')->login($user);
+                return $this->afterAuthentication($request, $user);
+            } elseif ($user->password) {
+                // If the user has a password then redirect to a form to ask for it
+                // before linking a provider to that email
+                $request->session()->put('oauth:user_id', $user->id);
+                $request->session()->put('oauth:user', $oauthUser);
+                $request->session()->put('oauth:provider', $provider);
+                return $this->redirector->to(route('twill.login.oauth.showPasswordForm'));
+            } else {
+                $user->linkProvider($oauthUser, $provider);
 
                 // Login and redirect
                 $this->authManager->guard('twill_users')->login($user);
 
                 return $this->afterAuthentication($request, $user);
-            } else {
-                if ($user->password) {
-                    // If the user has a password then redirect to a form to ask for it
-                    // before linking a provider to that email
-
-                    $request->session()->put('oauth:user_id', $user->id);
-                    $request->session()->put('oauth:user', $oauthUser);
-                    $request->session()->put('oauth:provider', $provider);
-
-                    return $this->redirector->to(route('twill.login.oauth.showPasswordForm'));
-                } else {
-                    $user->linkProvider($oauthUser, $provider);
-
-                    // Login and redirect
-                    $this->authManager->guard('twill_users')->login($user);
-
-                    return $this->afterAuthentication($request, $user);
-                }
             }
         } else {
             // If the user doesn't exist, create it

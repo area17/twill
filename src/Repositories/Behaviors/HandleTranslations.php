@@ -93,6 +93,7 @@ trait HandleTranslations
                                 }
                             }
                         }
+
                         unset($fields['translations'][$attribute]);
                     } else {
                         $fields['translations'][$attribute][$translation->locale] = $translation->{$attribute};

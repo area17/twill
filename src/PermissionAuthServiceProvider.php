@@ -183,6 +183,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
                 if (!isPermissionableModule($moduleName)) {
                     return true;
                 }
+
                 return $user->can('manage-modules')
                 || $user->role->permissions()->module()->ofModuleName($moduleName)->where('name', 'manage-module')->exists()
                 || isUserGroupPermissionModuleExists($user, $moduleName, 'manage-module');

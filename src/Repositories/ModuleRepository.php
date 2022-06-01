@@ -283,7 +283,7 @@ abstract class ModuleRepository
     {
         $object = $this->model->where($attributes)->first();
 
-        if (! $object) {
+        if (!$object instanceof \A17\Twill\Models\Model) {
             return $this->create($fields);
         }
 
@@ -435,10 +435,10 @@ abstract class ModuleRepository
                 Collection::make($ids)->each(function ($id) {
                     $this->delete($id);
                 });
-            } catch (Exception $e) {
-                Log::error($e);
+            } catch (Exception $exception) {
+                Log::error($exception);
                 if (config('app.debug')) {
-                    throw $e;
+                    throw $exception;
                 }
 
                 return false;
@@ -482,8 +482,8 @@ abstract class ModuleRepository
                 $objects->each(function ($object) {
                     $this->afterDelete($object);
                 });
-            } catch (Exception $e) {
-                Log::error($e);
+            } catch (Exception $exception) {
+                Log::error($exception);
 
                 return false;
             }
@@ -526,8 +526,8 @@ abstract class ModuleRepository
                 $objects->each(function ($object) {
                     $this->afterRestore($object);
                 });
-            } catch (Exception $e) {
-                Log::error($e);
+            } catch (Exception $exception) {
+                Log::error($exception);
 
                 return false;
             }
@@ -546,11 +546,7 @@ abstract class ModuleRepository
         if (property_exists($this->model, 'checkboxes')) {
             foreach ($this->model->checkboxes as $field) {
                 if (! $this->shouldIgnoreFieldBeforeSave($field)) {
-                    if (! isset($fields[$field])) {
-                        $fields[$field] = false;
-                    } else {
-                        $fields[$field] = ! empty($fields[$field]);
-                    }
+                    $fields[$field] = isset($fields[$field]) && ! empty($fields[$field]);
                 }
             }
         }
@@ -565,9 +561,10 @@ abstract class ModuleRepository
 
         foreach ($fields as $key => $value) {
             if (! $this->shouldIgnoreFieldBeforeSave($key)) {
-                if (is_array($value) && empty($value)) {
+                if ($value === []) {
                     $fields[$key] = null;
                 }
+
                 if ($value === '') {
                     $fields[$key] = null;
                 }
@@ -693,7 +690,6 @@ abstract class ModuleRepository
 
     /**
      * @param \Illuminate\Database\Query\Builder $query
-     * @param array $scopes
      * @return \Illuminate\Database\Query\Builder
      */
     public function filter($query, array $scopes = [])
@@ -714,16 +710,14 @@ abstract class ModuleRepository
         foreach ($scopes as $column => $value) {
             if (method_exists($this->model, 'scope' . ucfirst($column))) {
                 $query->$column();
-            } else {
-                if (is_array($value)) {
-                    $query->whereIn($column, $value);
-                } elseif ($column[0] == '%') {
-                    $value && ($value[0] == '!') ? $query->where(substr($column, 1), "not $likeOperator", '%' . substr($value, 1) . '%') : $query->where(substr($column, 1), $likeOperator, '%' . $value . '%');
-                } elseif (isset($value[0]) && $value[0] == '!') {
-                    $query->where($column, '<>', substr($value, 1));
-                } elseif ($value !== '') {
-                    $query->where($column, $value);
-                }
+            } elseif (is_array($value)) {
+                $query->whereIn($column, $value);
+            } elseif ($column[0] == '%') {
+                $value && ($value[0] == '!') ? $query->where(substr($column, 1), "not $likeOperator", '%' . substr($value, 1) . '%') : $query->where(substr($column, 1), $likeOperator, '%' . $value . '%');
+            } elseif (isset($value[0]) && $value[0] == '!') {
+                $query->where($column, '<>', substr($value, 1));
+            } elseif ($value !== '') {
+                $query->where($column, $value);
             }
         }
 
@@ -732,7 +726,6 @@ abstract class ModuleRepository
 
     /**
      * @param \Illuminate\Database\Query\Builder $query
-     * @param array $orders
      * @return \Illuminate\Database\Query\Builder
      */
     public function order($query, array $orders = [])

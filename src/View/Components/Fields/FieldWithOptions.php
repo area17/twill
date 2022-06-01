@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\View\Components;
+namespace A17\Twill\View\Components\Fields;
 
 use A17\Twill\Exceptions\MissingRequiredComponentData;
 
@@ -8,7 +8,9 @@ abstract class FieldWithOptions extends TwillFormComponent
 {
     /** Below are unused but needed to keep compatible  */
     public ?string $confirmMessageText;
+
     public ?string $confirmTitleText;
+
     public ?bool $requireConfirmation;
 
     public function __construct(
@@ -59,6 +61,7 @@ abstract class FieldWithOptions extends TwillFormComponent
         if (null === $this->options) {
             throw new MissingRequiredComponentData('options');
         }
+
         return is_object($this->options) && method_exists($this->options, 'map') ? $this->options->map(
             function ($label, $value) {
                 return [

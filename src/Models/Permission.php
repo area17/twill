@@ -75,7 +75,6 @@ class Permission extends BaseModel
                     'access-media-library',
                     'edit-media-library'
                 ];
-                break;
             case Permission::SCOPE_MODULE:
                 return array_merge(
                     [
@@ -84,14 +83,12 @@ class Permission extends BaseModel
                     ],
                     (config('twill.permissions.level') === 'roleGroupItem' ? ['manage-module'] : [])
                 );
-                break;
             case Permission::SCOPE_ITEM:
                 return [
                     'view-item',
                     'edit-item',
                     'manage-item'
                 ];
-                break;
         }
     }
 
@@ -162,7 +159,6 @@ class Permission extends BaseModel
     /**
      * Scope a query to only include global scope permissions.
      *
-     * @param Builder $query
      * @return Builder
      */
     public function scopeGlobal(Builder $query)
@@ -173,7 +169,6 @@ class Permission extends BaseModel
     /**
      * Scope a query to only include module scope permissions.
      *
-     * @param Builder $query
      * @return Builder
      */
     public function scopeModule(Builder $query)
@@ -184,7 +179,6 @@ class Permission extends BaseModel
     /**
      * Scope a query to only include module item scope permissions.
      *
-     * @param Builder $query
      * @return Builder
      */
     public function scopeModuleItem(Builder $query)
@@ -195,8 +189,6 @@ class Permission extends BaseModel
     /**
      * Scope a query to only include permissions related to an item.
      *
-     * @param Builder $query
-     * @param BaseModel $item
      * @return Builder
      */
     public function scopeOfItem(Builder $query, BaseModel $item)
@@ -219,7 +211,6 @@ class Permission extends BaseModel
     /**
      * Scope a query to only include permissions related to a Twill module.
      *
-     * @param Builder $query
      * @param string $moduleName
      * @return Builder
      */
@@ -229,13 +220,13 @@ class Permission extends BaseModel
         if (strpos($moduleName, '.')) {
             $moduleName = explode('.', $moduleName)[0];
         }
+
         return $query->ofModel(getModelByModuleName($moduleName));
     }
 
     /**
      * Scope a query to only include permissions related to a model.
      *
-     * @param Builder $query
      * @param string $model
      * @return Builder
      */

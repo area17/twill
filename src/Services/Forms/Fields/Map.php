@@ -9,14 +9,17 @@ class Map extends BaseFormField
     use isTranslatable;
 
     protected bool $showMap = true;
+
     protected bool $openMap = false;
+
     protected bool $saveExtendedData = false;
+
     protected bool $autoDetectLatLngValue = false;
 
     public static function make(): static
     {
         return new self(
-            component: \A17\Twill\View\Components\Map::class,
+            component: \A17\Twill\View\Components\Fields\Map::class,
             mandatoryProperties: ['name', 'label']
         );
     }

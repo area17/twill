@@ -34,10 +34,6 @@ class CreateSuperAdmin extends Command
      */
     protected $config;
 
-    /**
-     * @param ValidatorFactory $validatorFactory
-     * @param Config $config
-     */
     public function __construct(ValidatorFactory $validatorFactory, Config $config)
     {
         parent::__construct();
@@ -91,6 +87,7 @@ class CreateSuperAdmin extends Command
         if (filled($email = $this->argument('email'))) {
             return $email;
         }
+
         $email = $this->ask('Enter an email');
         if ($this->validateEmail($email)) {
             return $email;
@@ -110,6 +107,7 @@ class CreateSuperAdmin extends Command
         if (filled($email = $this->argument('password'))) {
             return $email;
         }
+
         $password = $this->secret('Enter a password');
         if ($this->validatePassword($password)) {
             $confirmPassword = $this->secret('Confirm the password');

@@ -74,7 +74,6 @@ class SettingController extends Controller
 
     /**
      * @param mixed $section
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update($section, Request $request)

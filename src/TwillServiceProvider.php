@@ -71,8 +71,6 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Bootstraps the package services.
-     *
-     * @return void
      */
     public function boot(): void
     {
@@ -93,9 +91,6 @@ class TwillServiceProvider extends ServiceProvider
         $this->check2FA();
     }
 
-    /**
-     * @return void
-     */
     private function requireHelpers(): void
     {
         require_once __DIR__ . '/Helpers/routes_helpers.php';
@@ -120,7 +115,8 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->app->bind(TwillCapsules::class);
 
-        Blade::componentNamespace('A17\\Twill\\View\\Components', 'twill');
+        Blade::componentNamespace('A17\\Twill\\View\\Components\\Layout', 'twill.layout');
+        Blade::componentNamespace('A17\\Twill\\View\\Components\\Fields', 'twill');
 
         // Laravel 7 compatability.
         Collection::macro('doesntContain', [Collection::class, 'missing']);
@@ -173,8 +169,6 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Registers the package facade aliases.
-     *
-     * @return void
      */
     private function registerAliases(): void
     {
@@ -191,8 +185,6 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Defines the package configuration files for publishing.
-     *
-     * @return void
      */
     private function publishConfigs(): void
     {
@@ -229,8 +221,6 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Merges the package configuration files into the given configuration namespaces.
-     *
-     * @return void
      */
     private function mergeConfigs(): void
     {
@@ -303,9 +293,6 @@ class TwillServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * @return void
-     */
     private function publishAssets(): void
     {
         $this->publishes([
@@ -313,9 +300,6 @@ class TwillServiceProvider extends ServiceProvider
         ], 'assets');
     }
 
-    /**
-     * @return void
-     */
     private function registerAndPublishViews(): void
     {
         $viewPath = __DIR__ . '/../views';
@@ -324,9 +308,6 @@ class TwillServiceProvider extends ServiceProvider
         $this->publishes([$viewPath => resource_path('views/vendor/twill')], 'views');
     }
 
-    /**
-     * @return void
-     */
     private function registerCommands(): void
     {
         $this->commands([
@@ -357,15 +338,14 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @param string $view
      * @param string $expression
-     * @return string
      */
     private function includeView($view, $expression): string
     {
-        [$name] = str_getcsv($expression, ',', '\'');
+        [$name] = str_getcsv($expression, ',', "'");
 
-        if (preg_match('/::/', $name)) {
+        if (preg_match('#::#', $name)) {
             // if there's a namespace separator, we'll assume it's a package
-            [$namespace, $name] = preg_split('/::/', $name);
+            [$namespace, $name] = preg_split('#::#', $name);
             $partialNamespace = "$namespace::admin.";
         } else {
             $partialNamespace = view()->exists('twill.' . $view . $name) ? 'twill.' : 'twill::';
@@ -373,37 +353,37 @@ class TwillServiceProvider extends ServiceProvider
 
         $view = $partialNamespace . $view . $name;
 
+        $expression = explode(',', $expression);
+        array_shift($expression);
+
         if (class_exists(Blade::getClassComponentNamespaces()['twill'] . '\\' . Str::studly($name))) {
-            $expression = explode(',', $expression);
-            array_shift($expression);
             $expression = implode(',', $expression);
             if ($expression === "") {
                 $expression = '[]';
             }
+
             $expression = str_replace("'", "\\'", $expression);
 
             $php = '<?php' . PHP_EOL;
             $php .= "\$data = eval('return $expression;');";
-            $php .= '$attributes = "";';
+            $php .= '$fieldAttributes = "";';
             $php .= 'foreach(array_keys($data) as $attribute) {';
-            $php .= '  $attributes .= " :$attribute=\'$" . $attribute . "\'";';
+            $php .= '  $fieldAttributes .= " :$attribute=\'$" . $attribute . "\'";';
             $php .= '}' . PHP_EOL;
             $php .= 'if ($renderForBlocks ?? false) {';
-            $php .= '  $attributes .= " :render-for-blocks=\'true\'";';
+            $php .= '  $fieldAttributes .= " :render-for-blocks=\'true\'";';
             $php .= '}';
             $php .= 'if ($renderForModal ?? false) {';
-            $php .= '  $attributes .= " :render-for-modal=\'true\'";';
+            $php .= '  $fieldAttributes .= " :render-for-modal=\'true\'";';
             $php .= '}';
             $php .= '$name = "' . $name . '";';
-            $php .= 'echo Blade::render("<x-twill::$name $attributes />", $data); ?>';
+            $php .= 'echo Blade::render("<x-twill::$name $fieldAttributes />", $data); ?>';
 
             return $php;
         }
 
         // Legacy behaviour.
         // @TODO: Not sure if we should keep this.
-        $expression = explode(',', $expression);
-        array_shift($expression);
         $expression = '(' . implode(',', $expression) . ')';
         if ($expression === '()') {
             $expression = '([])';
@@ -414,8 +394,6 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Defines the package additional Blade Directives.
-     *
-     * @return void
      */
     private function extendBlade(): void
     {
@@ -435,7 +413,7 @@ class TwillServiceProvider extends ServiceProvider
         });
 
         $blade->directive('partialView', function ($expression) {
-            $expressionAsArray = str_getcsv($expression, ',', '\'');
+            $expressionAsArray = str_getcsv($expression, ',', "'");
 
             [$moduleName, $viewName] = $expressionAsArray;
             $partialNamespace = 'twill::partials';
@@ -536,8 +514,6 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Registers the package additional View Composers.
-     *
-     * @return void
      */
     private function addViewComposers(): void
     {
@@ -569,8 +545,6 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Registers and publishes the package additional translations.
-     *
-     * @return void
      */
     private function registerAndPublishTranslations(): void
     {
@@ -582,8 +556,6 @@ class TwillServiceProvider extends ServiceProvider
 
     /**
      * Get the version number of Twill.
-     *
-     * @return string
      */
     public function version(): string
     {

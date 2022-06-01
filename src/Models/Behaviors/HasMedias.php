@@ -104,7 +104,7 @@ trait HasMedias
      */
     public function image($role, $crop = 'default', $params = [], $has_fallback = false, $cms = false, $media = null)
     {
-        if (! $media) {
+        if ($media === null) {
             $media = $this->findMedia($role, $crop);
         }
 
@@ -182,7 +182,7 @@ trait HasMedias
      */
     public function imageAsArray($role, $crop = 'default', $params = [], $media = null)
     {
-        if (! $media) {
+        if ($media === null) {
             $media = $this->findMedia($role, $crop);
         }
 
@@ -255,7 +255,7 @@ trait HasMedias
      */
     public function imageAltText($role, $media = null)
     {
-        if (! $media) {
+        if ($media === null) {
             $media = $this->medias->first(function ($media) use ($role) {
                 if (config('twill.media_library.translated_form_fields', false)) {
                     $localeScope = $media->pivot->locale === app()->getLocale();
@@ -281,7 +281,7 @@ trait HasMedias
      */
     public function imageCaption($role, $media = null)
     {
-        if (! $media) {
+        if ($media === null) {
             $media = $this->medias->first(function ($media) use ($role) {
                 if (config('twill.media_library.translated_form_fields', false)) {
                     $localeScope = $media->pivot->locale === app()->getLocale();
@@ -307,7 +307,7 @@ trait HasMedias
      */
     public function imageVideo($role, $media = null)
     {
-        if (! $media) {
+        if ($media === null) {
             $media = $this->medias->first(function ($media) use ($role) {
                 if (config('twill.media_library.translated_form_fields', false)) {
                     $localeScope = $media->pivot->locale === app()->getLocale();

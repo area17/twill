@@ -11,8 +11,9 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 class RenameViews extends LaravelAwareRectorRule
 {
-    public static $ROUTES = null;
-    public $baseDir = null;
+    public static $ROUTES;
+
+    public $baseDir;
 
     public function getRuleDefinition(): RuleDefinition
     {

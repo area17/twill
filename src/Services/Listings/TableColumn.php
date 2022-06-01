@@ -34,6 +34,7 @@ abstract class TableColumn
         if ($this->key === null) {
             throw new ColumnMissingPropertyException();
         }
+
         return $this->key;
     }
 
@@ -48,9 +49,11 @@ abstract class TableColumn
         if (!$this->key) {
             $this->key = $field;
         }
+
         if (!$this->title) {
             $this->title = Str::headline($field);
         }
+
         return $this;
     }
 
@@ -168,6 +171,7 @@ abstract class TableColumn
             if ($link instanceof Closure) {
                 $link = $link($model);
             }
+
             // Link via the closure can be null so we recheck it and only then use it.
             if ($link) {
                 return view('twill::listings.columns.linked-cell', [
@@ -176,12 +180,13 @@ abstract class TableColumn
                 ]);
             }
         }
+
         return $this->getRenderValue($model);
     }
 
     protected function getRenderValue(Model $model): string
     {
-        if ($renderFunction = $this->render) {
+        if (($renderFunction = $this->render) !== null) {
             return $renderFunction($model);
         }
 

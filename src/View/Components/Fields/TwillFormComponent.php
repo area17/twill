@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\View\Components;
+namespace A17\Twill\View\Components\Fields;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
@@ -14,8 +14,11 @@ use Illuminate\View\Component;
 abstract class TwillFormComponent extends Component
 {
     public ?Model $item;
+
     public array $form_fields;
+
     public ?string $moduleName;
+
     public ?string $routePrefix;
 
     public function __construct(
@@ -50,6 +53,7 @@ abstract class TwillFormComponent extends Component
             if ($asAttributes) {
                 return "name: fieldName('$this->name')";
             }
+
             return ":name=\"fieldName('$this->name')\"";
         }
 

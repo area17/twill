@@ -9,7 +9,7 @@ use ReflectionClass;
 abstract class BaseFormField
 {
     /**
-     * @var \A17\Twill\View\Components\TwillFormComponent $component
+     * @var \A17\Twill\View\Components\Fields\TwillFormComponent $component
      */
     protected function __construct(
         protected string $component,
@@ -75,7 +75,7 @@ abstract class BaseFormField
     {
         $vars = collect(get_object_vars($this))->except(['component']);
 
-        if (count($this->mandatoryProperties) > 0) {
+        if ($this->mandatoryProperties !== []) {
             // If the view component has mandatory parameters we construct it
             // slightly different from regular ones.
             // This allows more control.
@@ -88,6 +88,7 @@ abstract class BaseFormField
                         "Missing required field property '$property' on " . $this::class
                     );
                 }
+
                 $args[$property] = $this->getValue($property);
             }
 
@@ -95,7 +96,7 @@ abstract class BaseFormField
 
             $component = $class->newInstance(...$args);
         } else {
-            /** @var \A17\Twill\View\Components\TwillFormComponent $component */
+            /** @var \A17\Twill\View\Components\Fields\TwillFormComponent $component */
             $component = new $this->component();
         }
 

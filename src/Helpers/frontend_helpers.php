@@ -21,7 +21,7 @@ if (!function_exists('revAsset')) {
                 if (isset($manifest[$file])) {
                     return (rtrim(config('twill.frontend.dist_assets_path'), '/') . '/') . $manifest[$file];
                 }
-            } catch (Exception $e) {
+            } catch (Exception $exception) {
                 return '/' . $file;
             }
         }
@@ -61,7 +61,7 @@ if (!function_exists('icon')) {
         $svg_link = config('twill.frontend.svg_sprites_use_hash_only') ? "#icon--$name" : revAsset(
                 config('twill.frontend.svg_sprites_path')
             ) . "#icon--$name";
-        return "<svg class=\"icon--$name $css_class\" $title $role><use xlink:href=\"" . $svg_link . "\"></use></svg>";
+        return "<svg class=\"icon--$name $css_class\" $title $role><use xlink:href=\"" . $svg_link . '"></use></svg>';
     }
 }
 
@@ -81,7 +81,7 @@ if (!function_exists('twillViewName')) {
 
         try {
             $prefix = TwillCapsules::getCapsuleForModule($module)->getViewPrefix();
-        } catch (NoCapsuleFoundException $e) {
+        } catch (NoCapsuleFoundException $noCapsuleFoundException) {
             $prefix = null;
         }
 

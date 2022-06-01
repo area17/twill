@@ -93,7 +93,7 @@ trait HasPermissions
     {
         $this->checkPermissionAvailable($name, Permission::SCOPE_MODULE);
         $permission = Permission::ofModel($permissionableType)->where('name', $name)->first();
-        if ($permission) {
+        if ($permission !== null) {
             $this->permissions()->module()->detach($permission->id);
         }
     }
@@ -149,7 +149,7 @@ trait HasPermissions
         $this->checkPermissionAvailable($name, Permission::SCOPE_ITEM);
 
         $permission = Permission::ofItem($permissionableItem)->where('name', $name)->first();
-        if ($permission) {
+        if ($permission !== null) {
             $this->permissions()->ofItem($permissionableItem)->detach($permission->id);
         }
     }

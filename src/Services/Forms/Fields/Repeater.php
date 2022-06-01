@@ -11,12 +11,13 @@ class Repeater extends BaseFormField
     use canReorder;
 
     protected ?string $type = null;
+
     protected bool $buttonAsLink = false;
 
     public static function make(): static
     {
         return new self(
-            component: \A17\Twill\View\Components\Repeater::class,
+            component: \A17\Twill\View\Components\Fields\Repeater::class,
             mandatoryProperties: ['type']
         );
     }

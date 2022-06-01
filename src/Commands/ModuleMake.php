@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 
 class ModuleMake extends Command
 {
+    public $capsuleNamespace;
     use HandlesStubs;
 
     /**
@@ -53,12 +54,12 @@ class ModuleMake extends Command
     /**
      * @var string[]
      */
-    protected $modelTraits;
+    protected $modelTraits = [];
 
     /**
      * @var string[]
      */
-    protected $repositoryTraits;
+    protected $repositoryTraits = [];
 
     /**
      * @var Config
@@ -137,11 +138,6 @@ class ModuleMake extends Command
      */
     protected $customDirs = false;
 
-    /**
-     * @param Filesystem $files
-     * @param Composer $composer
-     * @param Config $config
-     */
     public function __construct(Filesystem $files, Composer $composer, Config $config)
     {
         parent::__construct();
@@ -235,6 +231,7 @@ class ModuleMake extends Command
             if (! $this->confirm('Creating capsule in ' . $dir, true)) {
                 exit(1);
             }
+
             $this->customDirs = true;
             $this->capsule = new Capsule(
                 $moduleTitle,
@@ -302,6 +299,7 @@ class ModuleMake extends Command
             } else {
                 $this->createCapsuleSeed();
             }
+
             $this->createCapsuleRoutes();
         } elseif ($this->isSingleton) {
             $this->createSingletonSeed($modelName);
@@ -346,7 +344,7 @@ class ModuleMake extends Command
 
         $this->info('Enjoy.');
 
-        if ($this->nestable && ! class_exists('\Kalnoy\Nestedset\NestedSet')) {
+        if ($this->nestable && ! class_exists(\Kalnoy\Nestedset\NestedSet::class)) {
             $this->warn("\nTo support module nesting, you must install the `kalnoy/nestedset` package:");
             $this->warn("\n    composer require kalnoy/nestedset\n");
         }
@@ -368,7 +366,7 @@ class ModuleMake extends Command
 
         $migrationName = 'create_' . $table . '_tables';
 
-        if (! count(glob($this->databasePath('migrations/*' . $migrationName . '.php')))) {
+        if (count(glob($this->databasePath('migrations/*' . $migrationName . '.php'))) === 0) {
             $migrationPath = $this->databasePath() . '/migrations';
 
             $this->makeDir($migrationPath);
@@ -382,7 +380,7 @@ class ModuleMake extends Command
             );
 
             if ($this->translatable) {
-                $stub = preg_replace('/{{!hasTranslation}}[\s\S]+?{{\/!hasTranslation}}/', '', $stub);
+                $stub = preg_replace('#{{!hasTranslation}}[\s\S]+?{{\/!hasTranslation}}#', '', $stub);
             } else {
                 $stub = str_replace([
                     '{{!hasTranslation}}',
@@ -396,7 +394,7 @@ class ModuleMake extends Command
             $stub = $this->renderStubForOption($stub, 'hasPosition', $this->sortable);
             $stub = $this->renderStubForOption($stub, 'hasNesting', $this->nestable);
 
-            $stub = preg_replace('/\}\);[\s\S]+?Schema::create/', "});\n\n        Schema::create", $stub);
+            $stub = preg_replace('#\}\);[\s\S]+?Schema::create#', "});\n\n        Schema::create", $stub);
 
             $this->files->put($fullPath, $stub);
 
@@ -670,7 +668,7 @@ class ModuleMake extends Command
 
             $stub = str_replace(['{{hasNesting}}', '{{/hasNesting}}'], '', $stub);
         } else {
-            $stub = preg_replace('/{{hasNesting}}[\s\S]+?{{\/hasNesting}}/', '', $stub);
+            $stub = preg_replace('#{{hasNesting}}[\s\S]+?{{\/hasNesting}}#', '', $stub);
         }
 
         $stub = str_replace(
@@ -680,7 +678,7 @@ class ModuleMake extends Command
         );
 
         // Remove lines including only whitespace, leave true empty lines untouched
-        $stub = preg_replace('/^[\s]+\n/m', '', $stub);
+        $stub = preg_replace('#^[\s]+\n#m', '', $stub);
 
         $this->putTwillStub(twill_path("$dir/" . $controllerClassName . '.php'), $stub);
 
@@ -716,8 +714,6 @@ class ModuleMake extends Command
     /**
      * Creates appropriate module Blade view files.
      *
-     * @param string $moduleName
-     * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     private function createViews(string $moduleName = 'items'): void
@@ -745,7 +741,6 @@ class ModuleMake extends Command
      * Creates a basic routes file for the Capsule.
      *
      * @param string $moduleName
-     * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function createCapsuleRoutes(): void
@@ -769,7 +764,6 @@ class ModuleMake extends Command
      * Creates a new capsule database seed file.
      *
      * @param string $moduleName
-     * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     private function createCapsuleSeed(): void

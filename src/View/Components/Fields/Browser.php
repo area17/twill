@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\View\Components;
+namespace A17\Twill\View\Components\Fields;
 
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
@@ -68,13 +68,13 @@ class Browser extends TwillFormComponent
         $this->endpoints = $this->endpoints ?? $endpointsFromModules ?? [];
 
         if (empty($this->endpoints)) {
-            $this->endpoint = $this->endpoint ?? (!empty($endpoints) ? null : moduleRoute(
+            $this->endpoint = $this->endpoint ?? (empty($endpoints) ? moduleRoute(
                     $this->moduleName,
                     $this->routePrefix,
                     'browser',
                     $this->params,
                     false
-                ));
+                ) : null);
         }
 
         $this->itemLabel = $this->itemLabel ?? strtolower($this->label);

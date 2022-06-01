@@ -15,19 +15,27 @@ class Medias extends BaseFormField
     use canHaveButtonOnTop;
 
     protected bool $withAddInfo = true;
+
     protected bool $withVideoUrl = true;
+
     protected bool $withCaption = true;
+
     protected ?int $altTextMaxLength = null;
+
     protected ?int $captionMaxLength = null;
+
     protected array $extraMetadatas = [];
+
     protected int $widthMin = 0;
+
     protected int $heightMin = 0;
+
     protected bool $activeCrop = true;
 
     public static function make(): static
     {
         $instance = new self(
-            component: \A17\Twill\View\Components\Medias::class,
+            component: \A17\Twill\View\Components\Fields\Medias::class,
             mandatoryProperties: ['name', 'label']
         );
 

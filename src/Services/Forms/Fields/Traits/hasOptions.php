@@ -8,6 +8,7 @@ use A17\Twill\Services\Forms\Options;
 trait hasOptions
 {
     protected Options|null $options = null;
+
     protected int $columns = 0;
 
     /**

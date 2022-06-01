@@ -188,6 +188,7 @@ class Capsule
         if (File::exists($this->path . '/Database')) {
             return $this->path . '/Database';
         }
+
         return $this->path . '/database';
     }
 
@@ -292,6 +293,7 @@ class Capsule
         if (file_exists($this->getRoutesFile())) {
             return $this->getRoutesFile();
         }
+
         if (file_exists($this->getLegacyRoutesFile())) {
             return $this->getLegacyRoutesFile();
         }

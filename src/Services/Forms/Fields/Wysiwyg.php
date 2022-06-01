@@ -18,19 +18,27 @@ class Wysiwyg extends BaseFormField
     use hasOnChange;
 
     public bool $hideCounter = false;
+
     public bool $editSource = false;
+
     public ?array $toolbarOptions = null;
+
     public ?array $options = null;
+
     public string $type = 'quill';
+
     public bool $limitHeight = false;
+
     public bool $syntax = false;
+
     public string $customTheme = 'github';
+
     public ?array $customOptions = null;
 
     public static function make(): static
     {
         return new self(
-            component: \A17\Twill\View\Components\Wysiwyg::class,
+            component: \A17\Twill\View\Components\Fields\Wysiwyg::class,
             mandatoryProperties: ['name', 'label']
         );
     }

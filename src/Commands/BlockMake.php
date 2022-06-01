@@ -16,6 +16,7 @@ class BlockMake extends Command
         '{name : Name of the new block.} ' .
         '{base? : Block on which the new block should be based.}' .
         '{icon? : Icon for the new block. List icons using the twill:list:icons command.}';
+
     /**
      * The console command description.
      *
@@ -38,9 +39,6 @@ class BlockMake extends Command
         $this->blockMaker = $blockMaker;
     }
 
-    /**
-     * @return \A17\Twill\Services\Blocks\BlockMaker
-     */
     public function getBlockMaker(): \A17\Twill\Services\Blocks\BlockMaker
     {
         return $this->blockMaker;

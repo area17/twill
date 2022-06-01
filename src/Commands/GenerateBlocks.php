@@ -12,8 +12,14 @@ use Illuminate\View\Factory as ViewFactory;
 
 class GenerateBlocks extends Command
 {
+    /**
+     * @var string
+     */
     public const NO_BLOCKS_DEFINED = 'There are no blocks defined yet. Please refer to https://twill.io/docs/#block-editor-3 in order to create blocks.';
 
+    /**
+     * @var string
+     */
     public const SCANNING_BLOCKS = 'Starting to scan block views directory...';
 
     /**
@@ -40,10 +46,6 @@ class GenerateBlocks extends Command
      */
     protected $viewFactory;
 
-    /**
-     * @param Filesystem $filesystem
-     * @param ViewFactory $viewFactory
-     */
     public function __construct(Filesystem $filesystem, ViewFactory $viewFactory)
     {
         parent::__construct();

@@ -1,10 +1,10 @@
 <?php
 
-namespace A17\Twill\View\Components;
+namespace A17\Twill\View\Components\Fields;
 
 use Illuminate\Contracts\View\View;
 
-class Checkboxes extends FieldWithOptions
+class MultiSelect extends FieldWithOptions
 {
     public function __construct(
         string $name,
@@ -23,15 +23,14 @@ class Checkboxes extends FieldWithOptions
         bool $unpack = false,
         int $columns = 0,
         bool $searchable = false,
-        string $placeholder = '',
+        ?string $placeholder = null,
         bool $addNew = false,
         ?string $moduleName = null,
         ?string $storeUrl = null,
         // Component specific
         public ?int $min = null,
         public ?int $max = null,
-        public bool $inline = false,
-        public bool $border = false
+        public ?string $endpoint = null,
     ) {
         parent::__construct(
             name: $name,
@@ -52,12 +51,12 @@ class Checkboxes extends FieldWithOptions
             placeholder: $placeholder,
             addNew: $addNew,
             moduleName: $moduleName,
-            storeUrl: $storeUrl
+            storeUrl: $storeUrl,
         );
     }
 
     public function render(): View
     {
-        return view('twill::partials.form._checkboxes', $this->data());
+        return view('twill::partials.form._multi_select', $this->data());
     }
 }

@@ -8,7 +8,7 @@ class BlockEditor extends BaseFormField
 
     public static function make(): static
     {
-        $field = new self(\A17\Twill\View\Components\BlockEditor::class);
+        $field = new self(\A17\Twill\View\Components\Fields\BlockEditor::class);
         $field->name('default');
 
         return $field;
@@ -19,6 +19,7 @@ class BlockEditor extends BaseFormField
         if ($this->label === 'Default') {
             $this->label = null;
         }
+
         return parent::name($name);
     }
 

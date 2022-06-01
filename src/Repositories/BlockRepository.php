@@ -15,16 +15,13 @@ use ReflectionException;
 
 class BlockRepository extends ModuleRepository
 {
-    use HandleMedias, HandleFiles;
-
+    use HandleMedias;
+    use HandleFiles;
     /**
      * @var Config
      */
     protected $config;
 
-    /**
-     * @param Config $config
-     */
     public function __construct(Config $config)
     {
         $blockModel = twillModel('block');
@@ -55,8 +52,8 @@ class BlockRepository extends ModuleRepository
                             'browser_name' => $browserName,
                         ]);
 
-                    } catch (ReflectionException $e) {
-                        Log::error($e);
+                    } catch (ReflectionException $reflectionException) {
+                        Log::error($reflectionException);
                     }
                 });
             });
@@ -73,12 +70,10 @@ class BlockRepository extends ModuleRepository
      */
     public function afterSave($object, $fields)
     {
-        if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
-            if (isset($fields['browsers'])) {
-                Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($object) {
-                    $object->saveRelated($items, $browserName);
-                });
-            }
+        if (Schema::hasTable(config('twill.related_table', 'twill_related')) && isset($fields['browsers'])) {
+            Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($object) {
+                $object->saveRelated($items, $browserName);
+            });
         }
 
         parent::afterSave($object, $fields);

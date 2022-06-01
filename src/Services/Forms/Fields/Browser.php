@@ -16,20 +16,29 @@ class Browser extends BaseFormField
     use canHaveButtonOnTop;
 
     protected ?string $moduleName = null;
+
     protected array $modules = [];
+
     protected array $endpoints = [];
+
     protected array $params = [];
+
     protected ?string $browserNote = null;
+
     protected ?string $itemLabel = null;
+
     protected bool $wide = false;
+
     protected bool $sortable = false;
+
     protected ?string $routePrefix = null;
+
     protected ?string $connectedBrowserField = null;
 
     public static function make(): static
     {
         $instance = new self(
-            component: \A17\Twill\View\Components\Browser::class,
+            component: \A17\Twill\View\Components\Fields\Browser::class,
             mandatoryProperties: ['label']
         );
         $instance->max = 1;

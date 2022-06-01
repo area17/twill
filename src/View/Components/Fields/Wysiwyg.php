@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\View\Components;
+namespace A17\Twill\View\Components\Fields;
 
 use Illuminate\Contracts\View\View;
 
@@ -53,15 +53,19 @@ class Wysiwyg extends TwillFormComponent
                 if ($option === 'list-unordered') {
                     return (object)['list' => 'bullet'];
                 }
+
                 if ($option === 'list-ordered') {
                     return (object)['list' => 'ordered'];
                 }
+
                 if ($option === 'h1') {
                     return (object)['header' => 1];
                 }
+
                 if ($option === 'h2') {
                     return (object)['header' => 2];
                 }
+
                 return $option;
             }, $this->toolbarOptions);
 

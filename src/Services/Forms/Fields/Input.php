@@ -14,10 +14,29 @@ use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
  */
 class Input extends BaseFormField
 {
+    /**
+     * @var string
+     */
     public const TYPE_TEXT = 'text';
+
+    /**
+     * @var string
+     */
     public const TYPE_NUMBER = 'number';
+
+    /**
+     * @var string
+     */
     public const TYPE_TEXTAREA = 'textarea';
+
+    /**
+     * @var string
+     */
     public const TYPE_EMAIL = 'email';
+
+    /**
+     * @var string
+     */
     public const TYPE_URL = 'url';
 
     use isTranslatable;
@@ -28,14 +47,17 @@ class Input extends BaseFormField
     use hasOnChange;
 
     protected string $type = self::TYPE_TEXT;
+
     protected string $prefix;
+
     protected ?string $mask = null;
+
     protected ?int $rows;
 
     public static function make(): static
     {
         return new self(
-            component: \A17\Twill\View\Components\Input::class,
+            component: \A17\Twill\View\Components\Fields\Input::class,
             mandatoryProperties: ['name', 'label']
         );
     }

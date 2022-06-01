@@ -64,12 +64,10 @@ trait HasNesting
                     $nodeModel->position = $nodeArray['position'];
                     $nodeModel->saveAsRoot();
                 }
-            } else {
-                if ($nodeModel->position !== $nodeArray['position'] || $nodeModel->parent_id !== $nodeArray['parent_id']) {
-                    $nodeModel->position = $nodeArray['position'];
-                    $nodeModel->parent_id = $nodeArray['parent_id'];
-                    $nodeModel->save();
-                }
+            } elseif ($nodeModel->position !== $nodeArray['position'] || $nodeModel->parent_id !== $nodeArray['parent_id']) {
+                $nodeModel->position = $nodeArray['position'];
+                $nodeModel->parent_id = $nodeArray['parent_id'];
+                $nodeModel->save();
             }
         }
     }
