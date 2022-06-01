@@ -115,6 +115,7 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->app->bind(TwillCapsules::class);
 
+        Blade::componentNamespace('A17\\Twill\\View\\Components\\Layout', 'twill.layout');
         Blade::componentNamespace('A17\\Twill\\View\\Components\\Fields', 'twill');
 
         // Laravel 7 compatability.
