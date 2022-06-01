@@ -73,7 +73,7 @@ class UpgradeCommand extends Command
 
         $config = $this->fsAsStorage->get('config/twill.php');
         $fixedConfig = str_replace('admin.', 'twill.', $config);
-        $this->fsAsStorage->update('config/twill-navigation.php', $fixedConfig);
+        $this->fsAsStorage->update('config/twill.php', $fixedConfig);
     }
 
     protected function moveResourcesAdminFolder(): void
