@@ -21,7 +21,7 @@ class Checkboxes extends BaseFormField
     public static function make(): static
     {
         return new self(
-            component: \A17\Twill\View\Components\Checkboxes::class,
+            component: \A17\Twill\View\Components\Fields\Checkboxes::class,
             mandatoryProperties: ['name', 'label', 'options']
         );
     }

@@ -115,7 +115,8 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->app->bind(TwillCapsules::class);
 
-        Blade::componentNamespace('A17\\Twill\\View\\Components', 'twill');
+        Blade::componentNamespace('A17\\Twill\\View\\Components\\Layout', 'twill.layout');
+        Blade::componentNamespace('A17\\Twill\\View\\Components\\Fields', 'twill');
 
         // Laravel 7 compatability.
         Collection::macro('doesntContain', [Collection::class, 'missing']);
@@ -352,9 +353,10 @@ class TwillServiceProvider extends ServiceProvider
 
         $view = $partialNamespace . $view . $name;
 
+        $expression = explode(',', $expression);
+        array_shift($expression);
+
         if (class_exists(Blade::getClassComponentNamespaces()['twill'] . '\\' . Str::studly($name))) {
-            $expression = explode(',', $expression);
-            array_shift($expression);
             $expression = implode(',', $expression);
             if ($expression === "") {
                 $expression = '[]';
@@ -364,26 +366,24 @@ class TwillServiceProvider extends ServiceProvider
 
             $php = '<?php' . PHP_EOL;
             $php .= "\$data = eval('return $expression;');";
-            $php .= '$attributes = "";';
+            $php .= '$fieldAttributes = "";';
             $php .= 'foreach(array_keys($data) as $attribute) {';
-            $php .= '  $attributes .= " :$attribute=\'$" . $attribute . "\'";';
+            $php .= '  $fieldAttributes .= " :$attribute=\'$" . $attribute . "\'";';
             $php .= '}' . PHP_EOL;
             $php .= 'if ($renderForBlocks ?? false) {';
-            $php .= '  $attributes .= " :render-for-blocks=\'true\'";';
+            $php .= '  $fieldAttributes .= " :render-for-blocks=\'true\'";';
             $php .= '}';
             $php .= 'if ($renderForModal ?? false) {';
-            $php .= '  $attributes .= " :render-for-modal=\'true\'";';
+            $php .= '  $fieldAttributes .= " :render-for-modal=\'true\'";';
             $php .= '}';
             $php .= '$name = "' . $name . '";';
-            $php .= 'echo Blade::render("<x-twill::$name $attributes />", $data); ?>';
+            $php .= 'echo Blade::render("<x-twill::$name $fieldAttributes />", $data); ?>';
 
             return $php;
         }
 
         // Legacy behaviour.
         // @TODO: Not sure if we should keep this.
-        $expression = explode(',', $expression);
-        array_shift($expression);
         $expression = '(' . implode(',', $expression) . ')';
         if ($expression === '()') {
             $expression = '([])';

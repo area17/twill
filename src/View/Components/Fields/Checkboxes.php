@@ -1,10 +1,10 @@
 <?php
 
-namespace A17\Twill\View\Components;
+namespace A17\Twill\View\Components\Fields;
 
 use Illuminate\Contracts\View\View;
 
-class Radios extends FieldWithOptions
+class Checkboxes extends FieldWithOptions
 {
     public function __construct(
         string $name,
@@ -28,8 +28,10 @@ class Radios extends FieldWithOptions
         ?string $moduleName = null,
         ?string $storeUrl = null,
         // Component specific
+        public ?int $min = null,
+        public ?int $max = null,
         public bool $inline = false,
-        public bool $border = false,
+        public bool $border = false
     ) {
         parent::__construct(
             name: $name,
@@ -56,6 +58,6 @@ class Radios extends FieldWithOptions
 
     public function render(): View
     {
-        return view('twill::partials.form._radios', $this->data());
+        return view('twill::partials.form._checkboxes', $this->data());
     }
 }

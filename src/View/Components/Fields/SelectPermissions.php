@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\View\Components;
+namespace A17\Twill\View\Components\Fields;
 
 use A17\Twill\Models\Group;
 use Illuminate\Contracts\View\View;

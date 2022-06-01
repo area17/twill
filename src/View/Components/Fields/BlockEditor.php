@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\View\Components;
+namespace A17\Twill\View\Components\Fields;
 
 use Illuminate\Support\Str;
 use Illuminate\Contracts\View\View;

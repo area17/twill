@@ -6,7 +6,7 @@ class Tags extends BaseFormField
 {
     public static function make(): static
     {
-        $instance = new self(\A17\Twill\View\Components\Tags::class);
+        $instance = new self(\A17\Twill\View\Components\Fields\Tags::class);
         $instance->name('tags');
 
         return $instance;

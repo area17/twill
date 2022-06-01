@@ -22,7 +22,7 @@ class Files extends BaseFormField
     public static function make(): static
     {
         $instance = new self(
-            component: \A17\Twill\View\Components\Files::class,
+            component: \A17\Twill\View\Components\Fields\Files::class,
             mandatoryProperties: ['name', 'label']
         );
 

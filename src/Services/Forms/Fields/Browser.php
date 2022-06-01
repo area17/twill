@@ -38,7 +38,7 @@ class Browser extends BaseFormField
     public static function make(): static
     {
         $instance = new self(
-            component: \A17\Twill\View\Components\Browser::class,
+            component: \A17\Twill\View\Components\Fields\Browser::class,
             mandatoryProperties: ['label']
         );
         $instance->max = 1;

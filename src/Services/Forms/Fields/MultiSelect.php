@@ -35,7 +35,7 @@ class MultiSelect extends BaseFormField
     public static function make(): static
     {
         return new self(
-            component: \A17\Twill\View\Components\MultiSelect::class,
+            component: \A17\Twill\View\Components\Fields\MultiSelect::class,
             mandatoryProperties: ['name', 'label']
         );
     }
