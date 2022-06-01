@@ -61,7 +61,7 @@ class GroupController extends ModuleController
         ];
     }
 
-    protected ?array $indexColumns = [
+    protected $indexColumns = [
         'name' => [
             'title' => 'Name',
             'field' => 'name',

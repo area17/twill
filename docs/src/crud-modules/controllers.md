@@ -113,7 +113,7 @@ Let's say we have a controller with certain fields displayed:
 File: `app/Http/Controllers/Twill/PlayController.php`
 
 ```php
-    protected ?array $indexColumns = [
+    protected $indexColumns = [
         'image' => [
             'thumb' => true, // image column
             'variant' => [
