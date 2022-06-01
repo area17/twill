@@ -4,24 +4,46 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
-if (!function_exists('moduleRoute')) {
+if (! function_exists('moduleRoute')) {
     /**
-     * @deprecated use TwillRoutes::getModelRoute with the model class instead.
+     * @param string $moduleName
+     * @param string $prefix
+     * @param string $action
+     * @param array $parameters
+     * @param bool $absolute
+     * @return string
      */
-    function moduleRoute(string $moduleName, ?string $prefix = null, string $action = '', array $parameters = [], bool $absolute = true)
+    function moduleRoute($moduleName, $prefix, $action = '', $parameters = [], $absolute = true)
     {
-        $modelClass = $moduleName;
-        // Get the class for the module name.
-        if (!Str::contains($moduleName, '\\')) {
-            // @todo: This wont work with capsules.
-            // @todo: Dashboard refactor.
-            $modelClass = getModelByModuleName($moduleName);
+        // Fix module name case
+        $moduleName = Str::camel($moduleName);
+
+        // Nested module, pass in current parameters for deeply nested modules
+        if (Str::contains($moduleName, '.')) {
+            $parameters = array_merge(Route::current()->parameters(), $parameters);
         }
-        return \A17\Twill\Facades\TwillRoutes::getModelRoute($modelClass, $action, $parameters, $absolute, $prefix);
+
+        // Create base route name
+        $routeName = 'twill.' . ($prefix ? $prefix . '.' : '');
+
+        // Prefix it with module name only if prefix doesn't contains it already
+        if (
+            config('twill.allow_duplicates_on_route_names', true) ||
+            ($prefix !== $moduleName &&
+                ! Str::endsWith($prefix, '.' . $moduleName))
+        ) {
+            $routeName .= "{$moduleName}";
+        }
+
+        //  Add the action name
+        $routeName .= $action ? ".{$action}" : '';
+
+        // Build the route
+        return route($routeName, $parameters, $absolute);
     }
 }
 
-if (!function_exists('getNavigationUrl')) {
+if (! function_exists('getNavigationUrl')) {
     /**
      * @param array $element
      * @param string $key
@@ -40,14 +62,14 @@ if (!function_exists('getNavigationUrl')) {
         } elseif ($isSingleton) {
             return moduleRoute($key, $prefix);
         } elseif ($element['raw'] ?? false) {
-            return !empty($element['route']) ? $element['route'] : '#';
+            return ! empty($element['route']) ? $element['route'] : '#';
         }
 
-        return !empty($element['route']) ? route($element['route'], $element['params'] ?? []) : '#';
+        return ! empty($element['route']) ? route($element['route'], $element['params'] ?? []) : '#';
     }
 }
 
-if (!function_exists('isActiveNavigation')) {
+if (! function_exists('isActiveNavigation')) {
     function isActiveNavigation(array $navigationElement, string $navigationKey, string $activeNavigationKey): bool
     {
         $keysAreMatching = $navigationKey === $activeNavigationKey;
@@ -56,10 +78,7 @@ if (!function_exists('isActiveNavigation')) {
             return true;
         }
 
-        $urlsAreMatching = ($navigationElement['raw'] ?? false) && Str::endsWith(
-                Request::url(),
-                $navigationElement['route']
-            );
+        $urlsAreMatching = ($navigationElement['raw'] ?? false) && Str::endsWith(Request::url(), $navigationElement['route']);
 
         return $urlsAreMatching;
     }
