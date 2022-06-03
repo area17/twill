@@ -64,11 +64,7 @@ trait HasRelated
      */
     public function saveRelated($items, $browser_name)
     {
-        RelatedItem::where([
-            'browser_name' => $browser_name,
-            'subject_id' => $this->getKey(),
-            'subject_type' => $this->getMorphClass(),
-        ])->delete();
+        $this->clearRelated($browser_name);
 
         $position = 1;
 
@@ -85,5 +81,17 @@ trait HasRelated
             ]);
             $position++;
         });
+    }
+
+    public function clearRelated($browserName): void {
+        RelatedItem::where([
+            'browser_name' => $browserName,
+            'subject_id' => $this->getKey(),
+            'subject_type' => $this->getMorphClass(),
+        ])->delete();
+    }
+
+    public function clearAllRelated(): void {
+        $this->relatedItems()->delete();
     }
 }
