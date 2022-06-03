@@ -83,7 +83,8 @@ trait HasRelated
         });
     }
 
-    public function clearRelated($browserName): void {
+    public function clearRelated($browserName): void
+    {
         RelatedItem::where([
             'browser_name' => $browserName,
             'subject_id' => $this->getKey(),
@@ -91,7 +92,8 @@ trait HasRelated
         ])->delete();
     }
 
-    public function clearAllRelated(): void {
+    public function clearAllRelated(): void
+    {
         $this->relatedItems()->delete();
     }
 }
