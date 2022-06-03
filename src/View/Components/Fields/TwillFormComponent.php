@@ -47,21 +47,22 @@ abstract class TwillFormComponent extends Component
         }
     }
 
-    public function formFieldName(bool $asAttributes = false): string
+    public function formFieldName(bool $asAttributes = false, ?string $customName = null): string
     {
+        $name = $customName ?? $this->name;
         if ($this->renderForBlocks) {
             if ($asAttributes) {
-                return "name: fieldName('$this->name')";
+                return "name: fieldName('$name')";
             }
 
-            return ":name=\"fieldName('$this->name')\"";
+            return ":name=\"fieldName('$name')\"";
         }
 
         if ($asAttributes) {
-            return "name: '$this->name'";
+            return "name: '$name'";
         }
 
-        return "name=\"$this->name\"";
+        return "name=\"$name\"";
     }
 
     abstract public function render(): View;

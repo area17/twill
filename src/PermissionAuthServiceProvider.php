@@ -200,7 +200,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
             return self::$cache['manage-module-' . $moduleName] = $this->authorize(
                 $user,
                 function ($user) use ($moduleName) {
-                    if (!isPermissionableModule($moduleName)) {
+                    if (!TwillPermissions::getPermissionModule($moduleName)) {
                         return true;
                     }
 

@@ -118,7 +118,7 @@
         @endif
     @endcan
 
-    @if(TwillPermissions::levelIsOneOf([PermissionLevel::LEVEL_ROLE_GROUP ,PermissionLevel::LEVEL_ROLE_GROUP_ITEM]))
+    @if(\A17\Twill\Facades\TwillPermissions::levelIsOneOf([\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP, \A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM]))
         @can('edit-user-groups')
             <x-twill::browser
                 module-name="groups"

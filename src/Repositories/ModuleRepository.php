@@ -4,6 +4,7 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Exceptions\NoCapsuleFoundException;
+use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Model;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
@@ -99,7 +100,7 @@ abstract class ModuleRepository
         $query = $this->model->where($scope);
 
         if (config('twill.enabled.permissions-management') &&
-            (isPermissionableModule(getModuleNameByModel($this->model)) || method_exists($this->model, 'scopeAccessible'))
+            (TwillPermissions::getPermissionModule(getModuleNameByModel($this->model)) || method_exists($this->model, 'scopeAccessible'))
         ) {
             $query = $query->accessible();
         }

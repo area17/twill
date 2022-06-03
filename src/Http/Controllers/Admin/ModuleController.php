@@ -5,6 +5,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillCapsules;
+use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Helpers\FlashLevel;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Group;
@@ -1335,7 +1336,7 @@ abstract class ModuleController extends Controller
      */
     protected function getIndexItems($scopes = [], $forcePagination = false)
     {
-        if (config('twill.enabled.permissions-management') && isPermissionableModule($this->moduleName)) {
+        if (TwillPermissions::enabled() && TwillPermissions::getPermissionModule($this->moduleName)) {
             $scopes = $scopes + ['accessible' => true];
         }
 
@@ -2161,8 +2162,8 @@ abstract class ModuleController extends Controller
 
     protected function getShowPermissionFieldset($item)
     {
-        if (config('twill.enabled.permissions-management')) {
-            $permissionModuleName = isPermissionableModule(getModuleNameByModel($item));
+        if (TwillPermissions::enabled()) {
+            $permissionModuleName = TwillPermissions::getPermissionModule(getModuleNameByModel($item));
 
             return $permissionModuleName && !strpos($permissionModuleName, '.');
         }

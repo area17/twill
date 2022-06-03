@@ -129,10 +129,10 @@ trait HandlePermissions
         }
     }
 
-    private function shouldProcessPermissions($moduleName)
+    private function shouldProcessPermissions($moduleName): bool
     {
-        return TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP)
-            && isPermissionableModule($moduleName);
+        return TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)
+            && TwillPermissions::getPermissionModule($moduleName);
     }
 
     private function storePermissionFields($moduleName, $object, $permissionFields)
