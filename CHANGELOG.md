@@ -2,6 +2,13 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.8.6 (2022-06-03)
+
+### Fixes
+
+- Fixed an issue that would not cleanup removed browser items in blocks [`#1675`](https://github.com/area17/twill/pull/1675)
+- Fixed an issue that would not display fields translatable in the edit modal window [`#1676`](https://github.com/area17/twill/pull/1676)
+
 ## 2.8.5 (2022-05-27)
 
 ### Fixes
