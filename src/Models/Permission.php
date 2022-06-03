@@ -83,7 +83,7 @@ class Permission extends BaseModel
                         'view-module',
                         'edit-module'
                     ],
-                    (TwillPermissions::permissionLevelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM) ? ['manage-module'] : [])
+                    (TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM) ? ['manage-module'] : [])
                 );
             case self::SCOPE_ITEM:
                 return [

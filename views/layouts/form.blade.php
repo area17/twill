@@ -122,7 +122,7 @@
                             </a17-fieldset>
                         @endunless
 
-                        @if(\A17\Twill\Facades\TwillPermissions::permissionLevelIs(\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM))
+                        @if(\A17\Twill\Facades\TwillPermissions::levelIs(\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM))
                             @if($showPermissionFieldset ?? null)
                                 @can('manage-item', isset($item) ? $item : null)
                                     <a17-fieldset title="User Permissions" id="permissions">
