@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Enums\PermissionLevel;
+use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Group;
 use A17\Twill\Models\Model;
 use Illuminate\Support\Str;
@@ -18,7 +20,7 @@ trait HandleGroupPermissions
      */
     public function getFormFieldsHandleGroupPermissions($object, $fields)
     {
-        if (config('twill.permissions.level') === 'roleGroup') {
+        if (TwillPermissions::permissionLevelIs(PermissionLevel::LEVEL_ROLE_GROUP)) {
             // Add active global permissions
             foreach ($object->permissions()->global()->pluck('name') as $permissionName) {
                 $fields[$permissionName] = true;
@@ -33,7 +35,7 @@ trait HandleGroupPermissions
                     $fields['module_' . $moduleName . '_permissions'] = 'none';
                 }
             }
-        } elseif (config('twill.permissions.level') === 'roleGroupItem') {
+        } elseif (TwillPermissions::permissionLevelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)) {
             // Add active item permissions
             foreach ($object->permissions()->moduleItem()->get() as $permission) {
                 $model = $permission->permissionable()->first();

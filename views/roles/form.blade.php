@@ -64,7 +64,7 @@
                                 'label' => 'Edit ' . $module_name
                             ]
                         ],
-                        (config('twill.permissions.level')==='roleGroupItem' ? [['value' => 'manage-module', 'label' => 'Manage ' . $module_name ]] : []))"
+                        (\A17\Twill\Facades\TwillPermissions::permissionLevelIs(\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM) ? [['value' => 'manage-module', 'label' => 'Manage ' . $module_name ]] : []))"
                 />
             @endforeach
         </x-twill::formConnectedFields>
