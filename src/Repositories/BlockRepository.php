@@ -5,6 +5,7 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Block;
+use A17\Twill\Models\RelatedItem;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Services\Blocks\Block as BlockConfig;
@@ -78,6 +79,8 @@ class BlockRepository extends ModuleRepository
                 Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($object) {
                     $object->saveRelated($items, $browserName);
                 });
+            } else {
+                $object->clearAllRelated();
             }
         }
 
@@ -90,7 +93,7 @@ class BlockRepository extends ModuleRepository
         $object->files()->sync([]);
 
         if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
-            $object->relatedItems()->delete();
+            $object->clearAllRelated();
         }
     }
 
