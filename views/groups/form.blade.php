@@ -17,7 +17,7 @@
         :max="999"
     />
 
-    @if(config('twill.permissions.level') === 'roleGroup')
+    @if(\A17\Twill\Facades\TwillPermissions::levelIs(\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP))
         <x-twill::fieldRows title="Content permissions">
             <x-twill::checkbox
                 name="manage-modules"
@@ -64,7 +64,7 @@
     @endif
 @stop
 
-@if(config('twill.permissions.level') === 'roleGroupItem')
+@if(\A17\Twill\Facades\TwillPermissions::levelIs(\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM))
     @can('edit-user-groups')
         @section('fieldsets')
             @foreach($permissionModules as $moduleName => $moduleItems)

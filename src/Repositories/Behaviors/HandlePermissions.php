@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Enums\PermissionLevel;
+use A17\Twill\Facades\TwillPermissions;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
 use A17\Twill\Models\Permission;
@@ -127,11 +129,10 @@ trait HandlePermissions
         }
     }
 
-    private function shouldProcessPermissions($moduleName)
+    private function shouldProcessPermissions($moduleName): bool
     {
-        return config('twill.enabled.permissions-management')
-            && config('twill.permissions.level') === 'roleGroupItem'
-            && isPermissionableModule($moduleName);
+        return TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)
+            && TwillPermissions::getPermissionModule($moduleName);
     }
 
     private function storePermissionFields($moduleName, $object, $permissionFields)

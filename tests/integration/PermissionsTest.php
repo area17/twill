@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use A17\Twill\Enums\PermissionLevel;
 use A17\Twill\Models\Group;
 use A17\Twill\Models\Role;
 use A17\Twill\Models\User;
@@ -89,7 +90,7 @@ class PermissionsTest extends PermissionsTestBase
 
     public function testRolePermissions()
     {
-        app('config')->set('twill.permissions.level', 'role');
+        app('config')->set('twill.permissions.level', PermissionLevel::LEVEL_ROLE);
 
         $role = $this->createRole('Tester');
         $user = $this->createUser($role);
@@ -142,7 +143,7 @@ class PermissionsTest extends PermissionsTestBase
             $this->httpRequestAssert("/twill/roles/{$tempRole->id}/edit", 'GET', [], 200);
         });
 
-        // User can't access groups list (feature not enabled with `twill.permissions.level` === 'role')
+        // User can't access groups list (feature not enabled with `twill.permissions.level` === \A17\Twill\Enums\PermissionLevel::LEVEL_ROLE)
         $this->httpRequestAssert('/twill/groups', 'GET', [], 403);
 
         $posting = $this->createPosting();
@@ -176,7 +177,7 @@ class PermissionsTest extends PermissionsTestBase
 
     public function testGroupPermissions()
     {
-        app('config')->set('twill.permissions.level', 'roleGroup');
+        app('config')->set('twill.permissions.level', PermissionLevel::LEVEL_ROLE_GROUP);
 
         $role = $this->createRole('Tester');
         $group = $this->createGroup('Beta');
@@ -222,7 +223,7 @@ class PermissionsTest extends PermissionsTestBase
 
     public function testModulePermissions()
     {
-        app('config')->set('twill.permissions.level', 'roleGroupItem');
+        app('config')->set('twill.permissions.level', PermissionLevel::LEVEL_ROLE_GROUP_ITEM);
 
         $role = $this->createRole('Tester');
         $group = $this->createGroup('Beta');
@@ -265,7 +266,7 @@ class PermissionsTest extends PermissionsTestBase
 
     public function testUserModulePermissions()
     {
-        app('config')->set('twill.permissions.level', 'roleGroupItem');
+        app('config')->set('twill.permissions.level', PermissionLevel::LEVEL_ROLE_GROUP_ITEM);
 
         $role = $this->createRole('Tester');
         $user = $this->createUser($role);
@@ -299,7 +300,7 @@ class PermissionsTest extends PermissionsTestBase
 
     public function testEveryoneGroup()
     {
-        app('config')->set('twill.permissions.level', 'roleGroupItem');
+        app('config')->set('twill.permissions.level', PermissionLevel::LEVEL_ROLE_GROUP_ITEM);
 
         $everyoneGroup = Group::getEveryoneGroup();
 
@@ -345,12 +346,12 @@ class PermissionsTest extends PermissionsTestBase
 
     public function testRoleBasedAccessLevel()
     {
-        app('config')->set('twill.permissions.level', 'roleGroupItem');
+        app('config')->set('twill.permissions.level', PermissionLevel::LEVEL_ROLE_GROUP_ITEM);
 
         Role::truncate();
         User::truncate();
 
-        list($role1, $role2, $role3) = collect([1, 2, 3])->map(function ($i) {
+        [$role1, $role2, $role3] = collect([1, 2, 3])->map(function ($i) {
             $role = $this->createRole("Role $i");
             $role->position = $i;
             $role->save();
@@ -419,7 +420,7 @@ class PermissionsTest extends PermissionsTestBase
 
     public function testHandlePermissionsGetFormFields()
     {
-        app('config')->set('twill.permissions.level', 'roleGroupItem');
+        app('config')->set('twill.permissions.level', PermissionLevel::LEVEL_ROLE_GROUP_ITEM);
 
         User::truncate();
         Role::truncate();
@@ -480,7 +481,7 @@ class PermissionsTest extends PermissionsTestBase
 
     public function testHandlePermissionsAfterSave()
     {
-        app('config')->set('twill.permissions.level', 'roleGroupItem');
+        app('config')->set('twill.permissions.level', PermissionLevel::LEVEL_ROLE_GROUP_ITEM);
 
         User::truncate();
         Role::truncate();

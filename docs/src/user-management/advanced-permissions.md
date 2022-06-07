@@ -40,7 +40,7 @@ return [
     'permissions-management'
   ],
   'permissions' => [
-      'level' => 'role',
+      'level' => \A17\Twill\Enums\PermissionLevel::LEVEL_ROLE,
       'modules' => ['blogs'],
   ],
 ]

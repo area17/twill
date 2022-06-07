@@ -4,10 +4,10 @@ namespace A17\Twill\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class TwillUtil extends Facade
+class TwillPermissions extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \A17\Twill\TwillUtil::class;
+        return \A17\Twill\TwillPermissions::class;
     }
 }

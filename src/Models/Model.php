@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\IsTranslatable;
 use Carbon\Carbon;
@@ -39,7 +40,7 @@ abstract class Model extends BaseModel implements TaggableInterface
         }
 
         $model = get_class($query->getModel());
-        $moduleName = isPermissionableModule(getModuleNameByModel($model));
+        $moduleName = TwillPermissions::getPermissionModule(getModuleNameByModel($model));
 
         if ($moduleName && ! Auth::user()->isSuperAdmin()) {
             // Get all permissions the logged in user has regards to the model.

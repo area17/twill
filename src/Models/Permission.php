@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Enums\PermissionLevel;
+use A17\Twill\Facades\TwillPermissions;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -65,7 +67,7 @@ class Permission extends BaseModel
     public static function available($scope)
     {
         switch ($scope) {
-            case Permission::SCOPE_GLOBAL:
+            case self::SCOPE_GLOBAL:
                 return [
                     'edit-settings',
                     'edit-users',
@@ -75,15 +77,15 @@ class Permission extends BaseModel
                     'access-media-library',
                     'edit-media-library'
                 ];
-            case Permission::SCOPE_MODULE:
+            case self::SCOPE_MODULE:
                 return array_merge(
                     [
                         'view-module',
                         'edit-module'
                     ],
-                    (config('twill.permissions.level') === 'roleGroupItem' ? ['manage-module'] : [])
+                    (TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM) ? ['manage-module'] : [])
                 );
-            case Permission::SCOPE_ITEM:
+            case self::SCOPE_ITEM:
                 return [
                     'view-item',
                     'edit-item',

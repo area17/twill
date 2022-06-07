@@ -5,7 +5,7 @@ return [
         'permissions-management' => true,
     ],
     'permissions' => [
-        'level' => 'roleGroupItem',
+        'level' => \A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM,
         'modules' => ['blogs', 'categories'],
     ],
     'block_editor' => [

@@ -118,7 +118,7 @@
         @endif
     @endcan
 
-    @if(config('twill.enabled.permissions-management') && config('twill.permissions.level') !== 'role')
+    @if(\A17\Twill\Facades\TwillPermissions::levelIsOneOf([\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP, \A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM]))
         @can('edit-user-groups')
             <x-twill::browser
                 module-name="groups"
@@ -156,8 +156,7 @@
 
 
 @section('fieldsets')
-
-    @if(config('twill.enabled.permissions-management') && config('twill.permissions.level') == 'roleGroupItem')
+    @if(\A17\Twill\Facades\TwillPermissions::levelIs(\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM))
         @can('edit-users')
             @unless($item->isSuperAdmin() || $item->id === $currentUser->id)
                 <x-twill::formConnectedFields

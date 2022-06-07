@@ -69,29 +69,6 @@ if (! function_exists('getModelRepository')) {
     }
 }
 
-if (! function_exists('isPermissionableModule')) {
-    /**
-     * Return the module name if the module is permissionable, otherwise return false.
-     *
-     * @param string $moduleName
-     * @return string|bool
-     */
-    function isPermissionableModule($moduleName)
-    {
-        $submodule = Permission::permissionableModules()->filter(function ($module) use ($moduleName) {
-            return strpos($module, '.') && explode('.', $module)[1] === $moduleName;
-        })->first();
-
-        if (Permission::permissionableModules()->contains($moduleName)) {
-            return $moduleName;
-        } elseif ($submodule) {
-            return $submodule;
-        } else {
-            return false;
-        }
-    }
-}
-
 if (! function_exists('updatePermissionOptions')) {
     function updatePermissionOptions($options, $user, $item)
     {
