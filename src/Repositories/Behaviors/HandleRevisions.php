@@ -2,14 +2,25 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Facades\TwillConfig;
 use A17\Twill\Models\Behaviors\HasRelated;
 use A17\Twill\Models\RelatedItem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use A17\Twill\Jobs\CleanupRevisions;
 
 trait HandleRevisions
 {
+
+    /**
+     * The Laravel queue name to be used for the reviosions limiting.
+     *
+     * @var string
+     */
+
+    protected $revisionLimitJobQueue = 'default';
+
     /**
      * @param \A17\Twill\Models\Model $object
      * @param array $fields
@@ -41,11 +52,16 @@ trait HandleRevisions
     {
         $lastRevisionPayload = json_decode($object->revisions->first()->payload ?? "{}", true);
 
-        if ($fields != $lastRevisionPayload) {
+        if ($fields !== $lastRevisionPayload) {
             $object->revisions()->create([
                 'payload' => json_encode($fields),
                 'user_id' => Auth::guard('twill_users')->user()->id ?? null,
             ]);
+        }
+
+        if (isset($object->limitRevisions) || TwillConfig::getRevisionLimit()) {
+            CleanupRevisions::dispatch($object)
+                ->onQueue($this->revisionLimitJobQueue);
         }
 
         return $fields;
