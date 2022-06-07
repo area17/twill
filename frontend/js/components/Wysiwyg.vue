@@ -222,6 +222,14 @@
         // emit ready
         this.$emit('ready', this.quill)
       },
+      insertDivider () {
+        const range = this.quill.getSelection(true)
+        if (range) {
+          this.quill.insertText(range.index, '\n')
+          this.quill.insertEmbed(range.index + 1, 'divider', true)
+          this.quill.setSelection(range.index + 2)
+        }
+      },
       anchorHandler (value) {
         if (value === true) {
           value = prompt('Enter anchor:')
@@ -303,6 +311,10 @@
       // register anchor toolbar handler
       if (toolbar.container.includes('anchor')) {
         toolbar.handlers.anchor = this.anchorHandler
+      }
+
+      if (toolbar.container.includes('divider')) {
+        toolbar.handlers.divider = this.insertDivider
       }
 
       localOptions.modules.toolbar = toolbar

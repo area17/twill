@@ -7,6 +7,18 @@ const Break = Quill.import('blots/break')
 const Embed = Quill.import('blots/embed')
 const Inline = Quill.import('blots/inline')
 const Link = Quill.import('formats/link')
+const BlockEmbed = Quill.import('blots/block/embed')
+
+/**
+ * Support for horizontal line
+ * https://quilljs.com/guides/cloning-medium-with-parchment/#dividers
+ */
+class DividerBlot extends BlockEmbed {}
+
+DividerBlot.blotName = 'divider'
+DividerBlot.tagName = 'hr'
+
+Quill.register(DividerBlot)
 
 /*
 * Support for shift enter
@@ -158,7 +170,6 @@ function getIcon (shape) {
 const icons = Quill.import('ui/icons') // custom icons
 icons.bold = getIcon('bold')
 icons.italic = getIcon('italic')
-icons.italic = getIcon('italic')
 icons.anchor = getIcon('anchor')
 icons.link = getIcon('link')
 icons.header['1'] = getIcon('header')
@@ -167,6 +178,7 @@ icons.header['3'] = getIcon('header-3')
 icons.header['4'] = getIcon('header-4')
 icons.header['5'] = getIcon('header-5')
 icons.header['6'] = getIcon('header-6')
+icons.divider = getIcon('horizontal-rule')
 
 /*
 * ClipBoard manager
@@ -195,7 +207,8 @@ const QuillDefaultFormats = [
   'code-block',
   'formula',
   'image',
-  'video'
+  'video',
+  'divider'
 ]
 
 function getQuillFormats (toolbarEls) {
