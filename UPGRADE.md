@@ -4,7 +4,6 @@ With Twill 3.x some files and classes are moved.
 
 We provide an automated upgrade path using `php artisan twill:upgrade`.
 
-
 What changed:
 
 - The `resources/views/admin` folder should be renamed `resources/views/twill`
@@ -16,28 +15,30 @@ app/Http/Controllers/Admin -> app/Http/Controllers/Twill
 app/Http/Requests/Admin -> app/Http/Requests/Twill
 ```
 
-## withVideo on media defaults to false
+## Other changes
+
+### withVideo on media defaults to false
 
 Previously `withVideo` was true by default, if you relied on this you have to update these media fields to
 `'withVideo' => true`.
 
-## media/file library
+### media/file library
 
 The default for media and file libraries are now local and glide, if you relied on the default config for aws
 then you now need to specify this in your `.env`.
 
-## Block editor render children
+### Block editor render children
 
 The `renderBlocks` method now by default will NOT render the nested repeaters below the block. If you relied on this
 you now need to update to `renderBlocks(true)`
 
-## Crops
+### Crops
 
 Model crops are now a global config, if you do not need model specific crops you can manage them globally from your
 config.
 
 
-## twillIncrementsMethod and twillIntegerMethod are removed
+### twillIncrementsMethod and twillIntegerMethod are removed
 
 The default now is bigIncrements and bigInteger. If you relied on these functions for custom
 logic you can add them to your own codebase. For reference the functions are below:
