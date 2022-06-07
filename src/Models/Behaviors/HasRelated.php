@@ -51,6 +51,11 @@ trait HasRelated
         return $this->relatedCache[$browser_name] = $this->relatedItems
             ->where('browser_name', $browser_name)
             ->map(function ($item) {
+                if (filled($item->related) && !isset($item->related->position))
+                {
+                    $item->related->position = $item->position ?? null;
+                }
+
                 return $item->related;
             });
     }
