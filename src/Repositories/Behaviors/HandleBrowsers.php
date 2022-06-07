@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -17,7 +18,7 @@ trait HandleBrowsers
      * [
      *     'books',
      *     'publications'
-     * ]
+     * ].
      *
      * When only the browser name is given, the rest of the parameters are inferred from the name.
      * The parameters can also be overridden with an array:
@@ -74,7 +75,7 @@ trait HandleBrowsers
     public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position', $browserName = null, $pivotAttributes = [])
     {
         $browserName = $browserName ?? $relationship;
-        $fieldsHasElements = isset($fields['browsers'][$browserName]) && !empty($fields['browsers'][$browserName]);
+        $fieldsHasElements = isset($fields['browsers'][$browserName]) && ! empty($fields['browsers'][$browserName]);
         $relatedElements = $fieldsHasElements ? $fields['browsers'][$browserName] : [];
 
         $relatedElementsWithPosition = [];
@@ -85,9 +86,21 @@ trait HandleBrowsers
         }
 
         if ($object->$relationship() instanceof BelongsTo) {
+            $isMorphTo = method_exists($object, $relationship) && $object->$relationship() instanceof MorphTo;
+
             $foreignKey = $object->$relationship()->getForeignKeyName();
-            $id = Arr::get($relatedElements, '0.id', null);
-            $object->update([$foreignKey => $id]);
+            $id = Arr::get($relatedElements, '0.id');
+
+            // Set the target id.
+            $object->$foreignKey = $id;
+
+            // If it is a morphTo, we also update the type.
+            if ($isMorphTo) {
+                $type = Arr::get($relatedElements, '0.endpointType');
+                $object->{$object->$relationship()->getMorphType()} = $type;
+            }
+
+            $object->save();
         } elseif ($object->$relationship() instanceof HasOne ||
                   $object->$relationship() instanceof HasMany
         ) {
@@ -151,8 +164,15 @@ trait HandleBrowsers
     {
         $fields = $this->getRelatedElementsAsCollection($object, $relation);
 
+        $isMorphTo = method_exists($object, $relation) && $object->$relation() instanceof MorphTo;
+
         if ($fields->isNotEmpty()) {
-            return $fields->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName) {
+            return $fields->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName, $isMorphTo) {
+                if ($isMorphTo && ! $moduleName) {
+                    // @todo: Maybe there is an existing helper for this?
+                    $moduleName = Str::plural(Arr::last(explode('\\', get_class($relatedElement))));
+                }
+
                 return [
                     'id' => $relatedElement->id,
                     'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
