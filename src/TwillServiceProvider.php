@@ -116,9 +116,6 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->app->bind(TwillCapsules::class);
 
-        // Laravel 7 compatability.
-        Collection::macro('doesntContain', [Collection::class, 'missing']);
-
         Relation::morphMap([
             'users' => User::class,
             'media' => Media::class,

@@ -864,7 +864,7 @@ abstract class ModuleRepository
     {
         if (!$modelOrRepository) {
             if (class_exists($relation) && (new $relation) instanceof Model) {
-                $modelOrRepository = Str::afterLast($relation, '\\');
+                $modelOrRepository = str_after_last($relation, '\\');
             } else {
                 $morphedModel = Relation::getMorphedModel($relation);
                 if (class_exists($morphedModel) && (new $morphedModel) instanceof Model) {
