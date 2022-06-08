@@ -70,14 +70,19 @@ abstract class ModuleRepository
      * @param array $orders
      * @param int $perPage
      * @param bool $forcePagination
+     * @param \A17\Twill\Services\Listings\Filters\TwillFilterContract[] $appliedFilters
      * @return \Illuminate\Support\Collection|\Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function get($with = [], $scopes = [], $orders = [], $perPage = 20, $forcePagination = false)
+    public function get($with = [], $scopes = [], $orders = [], $perPage = 20, $forcePagination = false, array $appliedFilters = [])
     {
         $query = $this->model->with($with);
 
         $query = $this->filter($query, $scopes);
         $query = $this->order($query, $orders);
+
+        foreach ($appliedFilters as $filter) {
+            $filter->applyFilter($query);
+        }
 
         if (! $forcePagination && $this->model instanceof Sortable) {
             return $query->ordered()->get();

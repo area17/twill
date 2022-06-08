@@ -21,11 +21,14 @@ use A17\Twill\Services\Listings\Columns\PublishStatus;
 use A17\Twill\Services\Listings\Columns\Relation;
 use A17\Twill\Services\Listings\Columns\ScheduledStatus;
 use A17\Twill\Services\Listings\Columns\Text;
+use A17\Twill\Services\Listings\Filters\QuickFilter;
+use A17\Twill\Services\Listings\Filters\QuickFilters;
 use A17\Twill\Services\Listings\TableColumn;
 use A17\Twill\Services\Listings\TableColumns;
 use A17\Twill\Services\Listings\TableDataContext;
 use A17\Twill\Services\Forms\Form;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -1289,7 +1292,7 @@ abstract class ModuleController extends Controller
                     request(),
                     $this->getIndexOption('reorder')
                 ),
-                'tableMainFilters' => $this->getIndexTableMainFilters($items),
+                'tableMainFilters' => $this->quickFilters($items)->toFrontendArray(),
                 'filters' => json_decode($this->request->get('filter'), true) ?? [],
                 'hiddenFilters' => array_keys(Arr::except($this->filters, array_keys($this->defaultFilters))),
                 'filterLinks' => $this->filterLinks ?? [],
@@ -1340,13 +1343,28 @@ abstract class ModuleController extends Controller
             $scopes = $scopes + ['accessible' => true];
         }
 
+        $appliedFilters = [];
+
+        // Get the builder queries to apply.
+        $requestFilters = $this->getRequestFilters();
+        if (array_key_exists('status', $requestFilters)) {
+            $filter = $this->quickFilters()->filter(
+                fn(QuickFilter $filter) => $filter->getQueryString() === $requestFilters['status']
+            )->first();
+
+            if ($filter !== null) {
+                $appliedFilters[] = $filter;
+            }
+        }
+
         return $this->transformIndexItems(
             $this->repository->get(
                 $this->indexWith,
                 $scopes,
                 $this->orderScope(),
                 $this->request->get('offset') ?? $this->perPage ?? 50,
-                $forcePagination
+                $forcePagination,
+                $appliedFilters
             )
         );
     }
@@ -1422,55 +1440,47 @@ abstract class ModuleController extends Controller
         return $item->{$this->identifierColumnKey};
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Collection $items
-     * @param array $scopes
-     * @return array
-     */
-    protected function getIndexTableMainFilters($items, $scopes = [])
+    public function quickFilters(): QuickFilters
     {
-        $statusFilters = [];
+        return $this->getDefaultQuickFilters();
+    }
 
+    protected function getDefaultQuickFilters(): QuickFilters
+    {
         $scope = ($this->submodule ? [
-                $this->getParentModuleForeignKey() => $this->submoduleParentId,
-            ] : []) + $scopes;
+            $this->getParentModuleForeignKey() => $this->submoduleParentId,
+        ] : []);
 
-        $statusFilters[] = [
-            'name' => twillTrans('twill::lang.listing.filter.all-items'),
-            'slug' => 'all',
-            'number' => $this->repository->getCountByStatusSlug('all', $scope),
-        ];
-
-        if ($this->moduleHas('revisions') && $this->getIndexOption('create')) {
-            $statusFilters[] = [
-                'name' => twillTrans('twill::lang.listing.filter.mine'),
-                'slug' => 'mine',
-                'number' => $this->repository->getCountByStatusSlug('mine', $scope),
-            ];
-        }
-
-        if ($this->getIndexOption('publish')) {
-            $statusFilters[] = [
-                'name' => $this->getTransLabel('listing.filter.published'),
-                'slug' => 'published',
-                'number' => $this->repository->getCountByStatusSlug('published', $scope),
-            ];
-            $statusFilters[] = [
-                'name' => $this->getTransLabel('listing.filter.draft'),
-                'slug' => 'draft',
-                'number' => $this->repository->getCountByStatusSlug('draft', $scope),
-            ];
-        }
-
-        if ($this->getIndexOption('restore')) {
-            $statusFilters[] = [
-                'name' => twillTrans('twill::lang.listing.filter.trash'),
-                'slug' => 'trash',
-                'number' => $this->repository->getCountByStatusSlug('trash', $scope),
-            ];
-        }
-
-        return $statusFilters;
+        return QuickFilters::make([
+            QuickFilter::make()
+                ->label(twillTrans('twill::lang.listing.filter.all-items'))
+                ->queryString('all')
+                ->amountClosure(fn() => $this->repository->getCountByStatusSlug('all', $scope)),
+            QuickFilter::make()
+                ->label(twillTrans('twill::lang.listing.filter.mine'))
+                ->queryString('mine')
+                ->apply(fn(Builder $builder) => $builder->scopes(['mine']))
+                ->onlyEnableWhen($this->moduleHas('revisions') && $this->getIndexOption('create'))
+                ->amountClosure(fn() => $this->repository->getCountByStatusSlug('mine', $scope)),
+            QuickFilter::make()
+                ->label($this->getTransLabel('listing.filter.published'))
+                ->queryString('published')
+                ->apply(fn(Builder $builder) => $builder->scopes(['published']))
+                ->onlyEnableWhen($this->getIndexOption('publish'))
+                ->amountClosure(fn() => $this->repository->getCountByStatusSlug('published', $scope)),
+            QuickFilter::make()
+                ->label($this->getTransLabel('listing.filter.draft'))
+                ->queryString('draft')
+                ->apply(fn(Builder $builder) => $builder->scopes(['draft']))
+                ->onlyEnableWhen($this->getIndexOption('publish'))
+                ->amountClosure(fn() => $this->repository->getCountByStatusSlug('draft', $scope)),
+            QuickFilter::make()
+                ->label(twillTrans('twill::lang.listing.filter.trash'))
+                ->queryString('trash')
+                ->apply(fn(Builder $builder) => $builder->scopes(['onlyTrashed']))
+                ->onlyEnableWhen($this->getIndexOption('restore'))
+                ->amountClosure(fn() => $this->repository->getCountByStatusSlug('trash', $scope)),
+        ]);
     }
 
     /**
@@ -1560,7 +1570,6 @@ abstract class ModuleController extends Controller
     protected function getBrowserTableData(Collection|LengthAwarePaginator $items, bool $forRepeater = false): array
     {
         return $items->map(function (BaseModel $item) use ($forRepeater) {
-
             $repeaterFields = [];
             if ($forRepeater) {
                 $translatedAttributes = $item->getTranslatedAttributes();
@@ -1608,24 +1617,8 @@ abstract class ModuleController extends Controller
 
         $this->filters = array_merge($this->filters, $this->defaultFilters);
 
-        if (array_key_exists('status', $requestFilters)) {
-            switch ($requestFilters['status']) {
-                case 'published':
-                    $scope['published'] = true;
-                    break;
-                case 'draft':
-                    $scope['draft'] = true;
-                    break;
-                case 'trash':
-                    $scope['onlyTrashed'] = true;
-                    break;
-                case 'mine':
-                    $scope['mine'] = true;
-                    break;
-            }
-
-            unset($requestFilters['status']);
-        }
+        // @todo: Refactor so it is no longer used.
+        unset($requestFilters['status']);
 
         foreach ($this->filters as $key => $field) {
             if (array_key_exists($key, $requestFilters)) {

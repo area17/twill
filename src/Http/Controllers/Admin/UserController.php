@@ -242,7 +242,7 @@ class UserController extends ModuleController
      * @param array $scopes
      * @return array
      */
-    public function getIndexTableMainFilters($items, $scopes = [])
+    public function getDefaultQuickFilters($items, $scopes = [])
     {
         $statusFilters = [];
 
