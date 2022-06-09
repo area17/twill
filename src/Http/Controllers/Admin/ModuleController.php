@@ -23,6 +23,8 @@ use A17\Twill\Services\Listings\Columns\ScheduledStatus;
 use A17\Twill\Services\Listings\Columns\Text;
 use A17\Twill\Services\Listings\Filters\QuickFilter;
 use A17\Twill\Services\Listings\Filters\QuickFilters;
+use A17\Twill\Services\Listings\Filters\TableFilter;
+use A17\Twill\Services\Listings\Filters\TableFilters;
 use A17\Twill\Services\Listings\TableColumn;
 use A17\Twill\Services\Listings\TableColumns;
 use A17\Twill\Services\Listings\TableDataContext;
@@ -187,6 +189,8 @@ abstract class ModuleController extends Controller
      * from your repository in the filter() function.
      *
      * @var array
+     *
+     * @deprecated use the method `filters` instead.
      */
     protected $filters = [];
 
@@ -203,6 +207,8 @@ abstract class ModuleController extends Controller
      * Example: 'filter_key' => 'default_filter_value'
      *
      * @var array
+     *
+     * @deprecated use the method `filters` instead.
      */
     protected $filtersDefaultOptions = [];
 
@@ -291,6 +297,7 @@ abstract class ModuleController extends Controller
 
     /**
      * @var array
+     * @todo: Implement backward compatability.
      */
     protected $defaultFilters;
 
@@ -1286,6 +1293,10 @@ abstract class ModuleController extends Controller
         $scopes = $this->filterScope($prependScope);
         $items = $this->getIndexItems($scopes);
 
+//        dd(array_keys(Arr::except($this->filters, array_keys($this->defaultFilters))));
+        // @todo: Does not take into account yet the default filters.
+//        $tableFilters = $this->filters()->map(fn(TableFilter $filter) => $filter->getQueryString())->toArray();
+
         $data = [
                 'tableData' => $this->getIndexTableData($items),
                 'tableColumns' => $this->getTableColumns('index')->toCmsArray(
@@ -1294,7 +1305,8 @@ abstract class ModuleController extends Controller
                 ),
                 'tableMainFilters' => $this->quickFilters($items)->toFrontendArray(),
                 'filters' => json_decode($this->request->get('filter'), true) ?? [],
-                'hiddenFilters' => array_keys(Arr::except($this->filters, array_keys($this->defaultFilters))),
+                // HiddenFilters are called "hidden" because they only show when the filters button is clicked.
+                'hiddenFilters' => $this->filters(),
                 'filterLinks' => $this->filterLinks ?? [],
                 'maxPage' => method_exists($items, 'lastPage') ? $items->lastPage() : 1,
                 'defaultMaxPage' => method_exists($items, 'total') ? ceil($items->total() / $this->perPage) : 1,
@@ -1320,7 +1332,16 @@ abstract class ModuleController extends Controller
             'additionalTableActions' => $this->additionalTableActions(),
         ];
 
-        return array_replace_recursive($data + $options, $this->indexData($this->request));
+        // @todo: use $this->filters instead of indexData.
+        $indexDataWithoutFilters = $this->indexData($this->request);
+        foreach ($indexDataWithoutFilters as $key => $value) {
+            if (Str::endsWith($key, 'List')) {
+                unset($indexDataWithoutFilters[$key]);
+            }
+        }
+        $filters = $this->filters()->toFrontendArray();
+
+        return array_replace_recursive($data + $options, $indexDataWithoutFilters + $filters);
     }
 
     /**
@@ -1345,8 +1366,9 @@ abstract class ModuleController extends Controller
 
         $appliedFilters = [];
 
-        // Get the builder queries to apply.
         $requestFilters = $this->getRequestFilters();
+
+        // Get the applied quick filter..
         if (array_key_exists('status', $requestFilters)) {
             $filter = $this->quickFilters()->filter(
                 fn(QuickFilter $filter) => $filter->getQueryString() === $requestFilters['status']
@@ -1354,6 +1376,19 @@ abstract class ModuleController extends Controller
 
             if ($filter !== null) {
                 $appliedFilters[] = $filter;
+            }
+        }
+
+        unset($requestFilters['status']);
+
+        // Get other filters that need to applied.
+        foreach ($requestFilters as $filterKey => $filterValue) {
+            $filter = $this->filters()->filter(
+                fn(TableFilter $filter) => $filter->getQueryString() === $filterKey
+            )->first();
+
+            if ($filter !== null) {
+                $appliedFilters[] = $filter->withFilterValue($filterValue);
             }
         }
 
@@ -1438,6 +1473,30 @@ abstract class ModuleController extends Controller
     protected function getItemIdentifier($item)
     {
         return $item->{$this->identifierColumnKey};
+    }
+
+    public function filters(): TableFilters
+    {
+        $tableFilters = TableFilters::make();
+
+        foreach ($this->indexData($this->request) as $key => $value) {
+            if (Str::endsWith($key, 'List')) {
+                $queryString = Str::beforeLast($key, 'List');
+
+                if ($filterKey = ($this->filters[$queryString] ?? false)) {
+                    $tableFilters->add(
+                        TableFilter::make()
+                            ->queryString($queryString)
+                            ->options($value)
+                            ->apply(function (Builder $builder, int $value) use ($filterKey) {
+                                $builder->where($filterKey, '=', $value);
+                            })
+                    );
+                }
+            }
+        }
+
+        return $tableFilters;
     }
 
     public function quickFilters(): QuickFilters
@@ -1608,37 +1667,39 @@ abstract class ModuleController extends Controller
     /**
      * @param array $prepend
      * @return array
+     * @deprecated @todo: Remove this method.
      */
     protected function filterScope($prepend = [])
     {
-        $scope = [];
+        return [];
+//        $scope = [];
 
-        $requestFilters = $this->getRequestFilters();
+//        $requestFilters = $this->getRequestFilters();
 
-        $this->filters = array_merge($this->filters, $this->defaultFilters);
+//        $this->filters = array_merge($this->filters, $this->defaultFilters);
 
-        // @todo: Refactor so it is no longer used.
-        unset($requestFilters['status']);
+//         @todo: Refactor so it is no longer used.
+//        unset($requestFilters['status']);
 
-        foreach ($this->filters as $key => $field) {
-            if (array_key_exists($key, $requestFilters)) {
-                $value = $requestFilters[$key];
-                if ($value == 0 || !empty($value)) {
-                    // add some syntaxic sugar to scope the same filter on multiple columns
-                    $fieldSplitted = explode('|', $field);
-                    if (count($fieldSplitted) > 1) {
-                        $requestValue = $requestFilters[$key];
-                        Collection::make($fieldSplitted)->each(function ($scopeKey) use (&$scope, $requestValue) {
-                            $scope[$scopeKey] = $requestValue;
-                        });
-                    } else {
-                        $scope[$field] = $requestFilters[$key];
-                    }
-                }
-            }
-        }
+//        foreach ($this->filters as $key => $field) {
+//            if (array_key_exists($key, $requestFilters)) {
+//                $value = $requestFilters[$key];
+//                if ($value == 0 || !empty($value)) {
+//                    // add some syntaxic sugar to scope the same filter on multiple columns
+//                    $fieldSplitted = explode('|', $field);
+//                    if (count($fieldSplitted) > 1) {
+//                        $requestValue = $requestFilters[$key];
+//                        Collection::make($fieldSplitted)->each(function ($scopeKey) use (&$scope, $requestValue) {
+//                            $scope[$scopeKey] = $requestValue;
+//                        });
+//                    } else {
+//                        $scope[$field] = $requestFilters[$key];
+//                    }
+//                }
+//            }
+//        }
 
-        return $prepend + $scope;
+//        return $prepend + $scope;
     }
 
     /**

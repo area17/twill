@@ -19,7 +19,7 @@
                 @php
                     unset($note, $placeholder, $emptyText, $default, $required, $inModal, $addNew, $options);
                 @endphp
-                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+                @partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
             </div>
         @endif
     </a17-singleselect>
@@ -43,7 +43,7 @@
                 @php
                     unset($note, $placeholder, $emptyText, $default, $required, $inModal, $addNew, $options);
                 @endphp
-                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+                @partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
             </div>
         @endif
     </a17-select>
@@ -71,7 +71,7 @@
                 @php
                     unset($note, $placeholder, $emptyText, $default, $required, $inModal, $addNew, $options);
                 @endphp
-                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+                @partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
             </div>
         @endif
     </a17-vselect>

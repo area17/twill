@@ -73,7 +73,7 @@ class QuickFilter implements Arrayable, TwillFilterContract
         return $this->queryString;
     }
 
-    public function applyFilter(Builder $builder, mixed $value = null): Builder
+    public function applyFilter(Builder $builder): Builder
     {
         if ($closure = $this->apply) {
             $closure($builder);

@@ -6,7 +6,7 @@
     :searchable="true"
     :taggable="true"
     :push-tags="true"
-    endpoint="{{ moduleRoute($moduleName, $routePrefix, 'tags') }}"
+    endpoint="{{ moduleRoute($formModuleName, $routePrefix, 'tags') }}"
     in-store="inputValue"
 ></a17-vselect>
 
