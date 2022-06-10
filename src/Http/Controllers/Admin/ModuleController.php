@@ -23,7 +23,7 @@ use A17\Twill\Services\Listings\Columns\ScheduledStatus;
 use A17\Twill\Services\Listings\Columns\Text;
 use A17\Twill\Services\Listings\Filters\QuickFilter;
 use A17\Twill\Services\Listings\Filters\QuickFilters;
-use A17\Twill\Services\Listings\Filters\TableFilter;
+use A17\Twill\Services\Listings\Filters\BasicFilter;
 use A17\Twill\Services\Listings\Filters\TableFilters;
 use A17\Twill\Services\Listings\TableColumn;
 use A17\Twill\Services\Listings\TableColumns;
@@ -1384,7 +1384,7 @@ abstract class ModuleController extends Controller
         // Get other filters that need to applied.
         foreach ($requestFilters as $filterKey => $filterValue) {
             $filter = $this->filters()->filter(
-                fn(TableFilter $filter) => $filter->getQueryString() === $filterKey
+                fn(BasicFilter $filter) => $filter->getQueryString() === $filterKey
             )->first();
 
             if ($filter !== null) {
@@ -1485,7 +1485,7 @@ abstract class ModuleController extends Controller
 
                 if ($filterKey = ($this->filters[$queryString] ?? false)) {
                     $tableFilters->add(
-                        TableFilter::make()
+                        BasicFilter::make()
                             ->queryString($queryString)
                             ->options($value)
                             ->apply(function (Builder $builder, int $value) use ($filterKey) {
@@ -1514,31 +1514,31 @@ abstract class ModuleController extends Controller
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.listing.filter.all-items'))
                 ->queryString('all')
-                ->amountClosure(fn() => $this->repository->getCountByStatusSlug('all', $scope)),
+                ->amount(fn() => $this->repository->getCountByStatusSlug('all', $scope)),
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.listing.filter.mine'))
                 ->queryString('mine')
                 ->apply(fn(Builder $builder) => $builder->scopes(['mine']))
                 ->onlyEnableWhen($this->moduleHas('revisions') && $this->getIndexOption('create'))
-                ->amountClosure(fn() => $this->repository->getCountByStatusSlug('mine', $scope)),
+                ->amount(fn() => $this->repository->getCountByStatusSlug('mine', $scope)),
             QuickFilter::make()
                 ->label($this->getTransLabel('listing.filter.published'))
                 ->queryString('published')
                 ->apply(fn(Builder $builder) => $builder->scopes(['published']))
                 ->onlyEnableWhen($this->getIndexOption('publish'))
-                ->amountClosure(fn() => $this->repository->getCountByStatusSlug('published', $scope)),
+                ->amount(fn() => $this->repository->getCountByStatusSlug('published', $scope)),
             QuickFilter::make()
                 ->label($this->getTransLabel('listing.filter.draft'))
                 ->queryString('draft')
                 ->apply(fn(Builder $builder) => $builder->scopes(['draft']))
                 ->onlyEnableWhen($this->getIndexOption('publish'))
-                ->amountClosure(fn() => $this->repository->getCountByStatusSlug('draft', $scope)),
+                ->amount(fn() => $this->repository->getCountByStatusSlug('draft', $scope)),
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.listing.filter.trash'))
                 ->queryString('trash')
                 ->apply(fn(Builder $builder) => $builder->scopes(['onlyTrashed']))
                 ->onlyEnableWhen($this->getIndexOption('restore'))
-                ->amountClosure(fn() => $this->repository->getCountByStatusSlug('trash', $scope)),
+                ->amount(fn() => $this->repository->getCountByStatusSlug('trash', $scope)),
         ]);
     }
 

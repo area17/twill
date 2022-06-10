@@ -5,7 +5,7 @@ namespace A17\Twill\Services\Listings\Filters;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
-class TableFilter implements TwillFilterContract
+class BasicFilter extends TwillBaseFilter
 {
     public const OPTION_ALL = 'all';
 
@@ -19,23 +19,6 @@ class TableFilter implements TwillFilterContract
         protected bool $includeAll = false,
         protected mixed $default = null
     ) {
-    }
-
-    public static function make(): self
-    {
-        return new self();
-    }
-
-    public function queryString(string $queryString): self
-    {
-        $this->queryString = $queryString;
-
-        return $this;
-    }
-
-    public function getQueryString(): string
-    {
-        return $this->queryString;
     }
 
     public function withFilterValue(mixed $value): self
@@ -55,13 +38,6 @@ class TableFilter implements TwillFilterContract
     public function options(Collection $options): self
     {
         $this->options = $options;
-
-        return $this;
-    }
-
-    public function apply(\Closure $closure): self
-    {
-        $this->apply = $closure;
 
         return $this;
     }

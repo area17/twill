@@ -71,7 +71,7 @@ abstract class ModuleRepository
      * @param array $orders
      * @param int $perPage
      * @param bool $forcePagination
-     * @param \A17\Twill\Services\Listings\Filters\TwillFilterContract[] $appliedFilters
+     * @param \A17\Twill\Services\Listings\Filters\TwillBaseFilter[] $appliedFilters
      * @return \Illuminate\Support\Collection|\Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function get($with = [], $scopes = [], $orders = [], $perPage = 20, $forcePagination = false, array $appliedFilters = [])

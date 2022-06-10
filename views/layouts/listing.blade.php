@@ -39,13 +39,13 @@
                             v-on:clear="clearFiltersAndReloadDatas">
                     <a17-table-filters slot="navigation"></a17-table-filters>
 
-                    @php /** @var \A17\Twill\Services\Listings\Filters\TableFilter $filter */ @endphp
+                    @php /** @var \A17\Twill\Services\Listings\Filters\BasicFilter $filter */ @endphp
                     @if (count($hiddenFilters) > 0)
                         <div slot="hidden-filters">
                             @foreach($hiddenFilters as $filter)
                                 @php
                                     $options = $filter->getOptions()->map(function($label, $value) use($filter) {
-                                            if ($value === \A17\Twill\Services\Listings\Filters\TableFilter::OPTION_ALL) {
+                                            if ($value === \A17\Twill\Services\Listings\Filters\BasicFilter::OPTION_ALL) {
                                                 // @todo: TwillTrans
                                                 $label = "All " . strtolower(\Illuminate\Support\Str::plural($filter->getQueryString()));
                                             }

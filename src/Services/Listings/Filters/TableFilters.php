@@ -10,7 +10,7 @@ class TableFilters extends Collection
     {
         $result = [];
 
-        /** @var \A17\Twill\Services\Listings\Filters\TableFilter $filter */
+        /** @var \A17\Twill\Services\Listings\Filters\BasicFilter $filter */
         foreach ($this->items as $filter) {
 //
 //            if (!$filters->isEnabled()) {
