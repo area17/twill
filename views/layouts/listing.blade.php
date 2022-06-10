@@ -46,8 +46,8 @@
                                 @php
                                     $options = $filter->getOptions()->map(function($label, $value) use($filter) {
                                             if ($value === \A17\Twill\Services\Listings\Filters\BasicFilter::OPTION_ALL) {
-                                                // @todo: TwillTrans
-                                                $label = "All " . strtolower(\Illuminate\Support\Str::plural($filter->getQueryString()));
+                                                // @PRtodo: TwillTrans
+                                                $label = "All " . $filter->getLabel() ?? '';
                                             }
                                             return [
                                                 'value' => $value,

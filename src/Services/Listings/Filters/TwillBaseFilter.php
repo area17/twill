@@ -3,6 +3,7 @@
 namespace A17\Twill\Services\Listings\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 /**
  * @PRtodo: Add docblocks to describe the purpose.
@@ -37,6 +38,11 @@ abstract class TwillBaseFilter
     public function queryString(string $queryString): self
     {
         $this->queryString = $queryString;
+
+        // If there is no label, we set it automatically.
+        if ($this->label === null) {
+            $this->label(Str::lower(Str::plural($queryString)));
+        }
 
         return $this;
     }

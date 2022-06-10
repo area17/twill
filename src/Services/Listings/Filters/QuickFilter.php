@@ -6,14 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 
 class QuickFilter extends TwillBaseFilter
 {
-    protected function __construct(
-        protected ?string $label = null,
-        protected ?string $queryString = null,
-        protected ?\Closure $amount = null,
-        protected bool $enabled = true,
-        protected ?\Closure $apply = null
-    ) {
-    }
+    protected ?\Closure $amount = null;
 
     public function amount(\Closure $callback): self
     {

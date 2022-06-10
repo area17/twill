@@ -9,17 +9,10 @@ class BasicFilter extends TwillBaseFilter
 {
     public const OPTION_ALL = 'all';
 
-    protected function __construct(
-        protected ?string $label = null,
-        protected ?string $queryString = null,
-        protected bool $enabled = true,
-        protected ?\Closure $apply = null,
-        protected ?Collection $options = null,
-        protected mixed $appliedValue = null,
-        protected bool $includeAll = false,
-        protected mixed $default = null
-    ) {
-    }
+    protected ?Collection $options = null;
+    protected mixed $appliedValue = null;
+    protected bool $includeAll = false;
+    protected mixed $default = null;
 
     public function withFilterValue(mixed $value): self
     {
