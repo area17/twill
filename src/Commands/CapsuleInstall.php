@@ -112,7 +112,7 @@ class CapsuleInstall extends Command
 
         $this->repositoryUri = $capsule;
 
-        $this->capsuleName = Str::afterLast($capsule, '/');
+        $this->capsuleName = str_after_last($capsule, '/');
 
         $this->repositoryUrl = $url;
 
@@ -160,7 +160,7 @@ class CapsuleInstall extends Command
 
     protected function makeCapsuleName($capsule)
     {
-        $capsule = Str::afterLast($capsule, '/');
+        $capsule = str_after_last($capsule, '/');
 
         return Str::after($capsule, $this->getCapsulePrefix() . '-');
     }

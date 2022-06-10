@@ -123,6 +123,6 @@ class GeneratePackageCommand extends Command
 
     protected function getProviderName()
     {
-        return Str::afterLast($this->psr4Base, '\\');
+        return str_after_last($this->psr4Base, '\\');
     }
 }
