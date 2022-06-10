@@ -112,7 +112,7 @@ trait HandleBlocks
 
             try {
                 $this->validate(
-                    $block['content'],
+                    $block['content'] + $block['medias'] + $block['browsers'] + $block['blocks'],
                     $block['id'],
                     $blockInstance->getRules(),
                     $handleTranslations ? $blockInstance->getRulesForTranslatedFields() : []

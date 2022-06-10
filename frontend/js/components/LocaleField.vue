@@ -4,7 +4,7 @@
       <div class="locale__item" v-for="language in languages" :key="language.value">
         <component
             v-bind:is="`${type}`"
-            v-if="language === currentLocale || isCustomForm"
+            v-if="language.value === currentLocale.value || isCustomForm"
             :data-lang="language.value"
             v-bind="attributesPerLang(language.value)"
             :name="`${attributes.name}[${language.value}]`"
