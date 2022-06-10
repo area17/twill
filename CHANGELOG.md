@@ -2,6 +2,19 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.8.7 (2022-06-10)
+
+### Features
+
+- Added `divider` (<hr>) support to the Quill toolbar [`#1679`](https://github.com/area17/twill/pull/1679)
+
+### Fixes
+
+- Fixed issue that would cause Twill ui to crash when using Quill [`#1680`](https://github.com/area17/twill/pull/1680)
+- Fixed some backwards compatability issues with older Laravel versions [`#1684`](https://github.com/area17/twill/pull/1684)
+- Fixed issue with browsers in the block editor [`#1689`](https://github.com/area17/twill/pull/1689)
+
+
 ## 2.8.6 (2022-06-03)
 
 ### Fixes
