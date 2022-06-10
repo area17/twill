@@ -3,7 +3,6 @@ import Quill from 'quill'
 Quill.debug('error')
 
 const Delta = Quill.import('delta')
-const Break = Quill.import('blots/break')
 const Embed = Quill.import('blots/embed')
 const Inline = Quill.import('blots/inline')
 const Link = Quill.import('formats/link')
@@ -25,12 +24,10 @@ Quill.register(DividerBlot)
 * @see https://github.com/quilljs/quill/issues/252
 * @see https://codepen.io/mackermedia/pen/gmNwZP
 */
-const lineBreak = {
-  blotName: 'break',
-  tagName: 'BR'
-}
-
-class SmartBreak extends Break {
+class SoftLineBreakBlot extends Embed {
+  static blotName = 'softbreak'
+  static tagName = 'br'
+  static className = 'softbreak'
   length () {
     return 1
   }
@@ -44,8 +41,7 @@ class SmartBreak extends Break {
   }
 }
 
-SmartBreak.blotName = lineBreak.blotName
-SmartBreak.tagName = lineBreak.tagName
+Quill.register(SoftLineBreakBlot)
 
 const lineBreakHandle = {
   key: 13,
@@ -55,12 +51,12 @@ const lineBreakHandle = {
       const currentLeaf = this.quill.getLeaf(range.index)[0]
       const nextLeaf = this.quill.getLeaf(range.index + 1)[0]
 
-      this.quill.insertEmbed(range.index, lineBreak.blotName, true, 'user')
+      this.quill.insertEmbed(range.index, 'softbreak', true, 'user')
 
       // Insert a second break if:
       // At the end of the editor, OR next leaf has a different parent (<p>)
       if (nextLeaf === null || (currentLeaf.parent !== nextLeaf.parent)) {
-        this.quill.insertEmbed(range.index, lineBreak.blotName, true, 'user')
+        this.quill.insertEmbed(range.index, 'softbreak', true, 'user')
       }
 
       // Now that we've inserted a line break, move the cursor forward
@@ -70,11 +66,9 @@ const lineBreakHandle = {
 
 function lineBreakMatcher () {
   const newDelta = new Delta()
-  newDelta.insert({ break: '' })
+  newDelta.insert({ softbreak: '' })
   return newDelta
 }
-
-Quill.register(SmartBreak)
 
 const anchor = {
   blotName: 'anchor',
@@ -212,7 +206,7 @@ const QuillDefaultFormats = [
 ]
 
 function getQuillFormats (toolbarEls) {
-  const formats = [lineBreak.blotName, anchor.blotName] // Allow linebreak and anchor
+  const formats = [SoftLineBreakBlot.blotName, anchor.blotName] // Allow linebreak and anchor
 
   function addFormat (format) {
     if (formats.indexOf(format) > -1 || QuillDefaultFormats.indexOf(format) === -1) return
@@ -238,7 +232,7 @@ export default {
   Quill: Quill,
   lineBreak: {
     handle: lineBreakHandle,
-    clipboard: [lineBreak.tagName, lineBreakMatcher]
+    clipboard: [SoftLineBreakBlot.tagName, lineBreakMatcher]
   },
   getFormats: getQuillFormats
 }

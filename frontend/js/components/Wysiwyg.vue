@@ -368,6 +368,9 @@
 </style>
 <style lang="scss">
   /* Not scoped style here because we want to overwrite default style of the wysiwig */
+  .ql-divider {
+    overflow: hidden;
+  }
 
   $height_input: 45px;
   .wysiwyg__limit {
