@@ -9,6 +9,8 @@ use A17\Twill\Helpers\FlashLevel;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Events\ModuleCreate;
+use A17\Twill\Events\ModuleUpdate;
+use A17\Twill\Events\ModulePublish;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -549,6 +551,8 @@ abstract class ModuleController extends Controller
             // @todo(3.x): Deprecated.
             $this->fireEvent();
 
+            ModuleUpdate::dispatch($this->moduleName, $this->repository);
+
             if (isset($input['cmsSaveType'])) {
                 if (Str::endsWith($input['cmsSaveType'], '-close')) {
                     return $this->respondWithRedirect($this->getBackLink());
@@ -666,6 +670,8 @@ abstract class ModuleController extends Controller
 
                 // @todo(3.x): Deprecated.
                 $this->fireEvent();
+
+                ModulePublish::dispatch($this->moduleName, $this->repository, $this->request->get('id'), !$this->request->get('active'));
 
                 if ($this->request->get('active')) {
                     return $this->respondWithSuccess(twillTrans('twill::lang.listing.publish.unpublished', ['modelTitle' => $this->modelTitle]));
