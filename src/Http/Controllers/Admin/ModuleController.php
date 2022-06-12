@@ -8,6 +8,7 @@ use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Helpers\FlashLevel;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Services\Blocks\Block;
+use A17\Twill\Events\ModuleCreate;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -401,7 +402,10 @@ abstract class ModuleController extends Controller
 
         activity()->performedOn($item)->log('created');
 
+        // @todo(3.x): Deprecated.
         $this->fireEvent($input);
+
+        ModuleCreate::dispatch($this->moduleName, $item);
 
         Session::put($this->moduleName . '_retain', true);
 
@@ -542,6 +546,7 @@ abstract class ModuleController extends Controller
 
             activity()->performedOn($item)->log('updated');
 
+            // @todo(3.x): Deprecated.
             $this->fireEvent();
 
             if (isset($input['cmsSaveType'])) {
@@ -659,6 +664,7 @@ abstract class ModuleController extends Controller
                     ($this->request->get('active') ? 'un' : '') . 'published'
                 );
 
+                // @todo(3.x): Deprecated.
                 $this->fireEvent();
 
                 if ($this->request->get('active')) {
@@ -683,7 +689,10 @@ abstract class ModuleController extends Controller
             if ($this->repository->updateBasic(explode(',', $this->request->get('ids')), [
                 'published' => $this->request->get('publish'),
             ])) {
+
+                // @todo(3.x): Deprecated.
                 $this->fireEvent();
+
                 if ($this->request->get('publish')) {
                     return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-publish.published', ['modelTitle' => $this->modelTitle]));
                 } else {
@@ -710,7 +719,10 @@ abstract class ModuleController extends Controller
 
         $item = $this->repository->getById($id);
         if ($newItem = $this->repository->duplicate($id, $this->titleColumnKey)) {
+
+            // @todo(3.x): Deprecated.
             $this->fireEvent();
+
             activity()->performedOn($item)->log('duplicated');
 
             return Response::json([
@@ -741,7 +753,10 @@ abstract class ModuleController extends Controller
 
         $item = $this->repository->getById($id);
         if ($this->repository->delete($id)) {
+
+            // @todo(3.x): Deprecated.
             $this->fireEvent();
+
             activity()->performedOn($item)->log('deleted');
 
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.delete.success', ['modelTitle' => $this->modelTitle]));
@@ -756,6 +771,8 @@ abstract class ModuleController extends Controller
     public function bulkDelete()
     {
         if ($this->repository->bulkDelete(explode(',', $this->request->get('ids')))) {
+
+            // @todo(3.x): Deprecated.
             $this->fireEvent();
 
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-delete.success', ['modelTitle' => $this->modelTitle]));
@@ -770,6 +787,8 @@ abstract class ModuleController extends Controller
     public function forceDelete()
     {
         if ($this->repository->forceDelete($this->request->get('id'))) {
+
+            // @todo(3.x): Deprecated.
             $this->fireEvent();
 
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.force-delete.success', ['modelTitle' => $this->modelTitle]));
@@ -784,6 +803,8 @@ abstract class ModuleController extends Controller
     public function bulkForceDelete()
     {
         if ($this->repository->bulkForceDelete(explode(',', $this->request->get('ids')))) {
+
+            // @todo(3.x): Deprecated.
             $this->fireEvent();
 
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-force-delete.success', ['modelTitle' => $this->modelTitle]));
@@ -798,7 +819,10 @@ abstract class ModuleController extends Controller
     public function restore()
     {
         if ($this->repository->restore($this->request->get('id'))) {
+
+            // @todo(3.x): Deprecated.
             $this->fireEvent();
+
             activity()->performedOn($this->repository->getById($this->request->get('id')))->log('restored');
 
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.restore.success', ['modelTitle' => $this->modelTitle]));
@@ -813,6 +837,8 @@ abstract class ModuleController extends Controller
     public function bulkRestore()
     {
         if ($this->repository->bulkRestore(explode(',', $this->request->get('ids')))) {
+
+            // @todo(3.x): Deprecated.
             $this->fireEvent();
 
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-restore.success', ['modelTitle' => $this->modelTitle]));
@@ -845,6 +871,7 @@ abstract class ModuleController extends Controller
                 ($this->request->get('active') ? 'un' : '') . 'featured'
             );
 
+            // @todo(3.x): Deprecated.
             $this->fireEvent();
 
             if ($this->request->get('active')) {
@@ -867,6 +894,8 @@ abstract class ModuleController extends Controller
             $featured = $this->request->get('feature') ?? true;
             // we don't need to check if unique feature since bulk operation shouldn't be allowed in this case
             $this->repository->updateBasic($ids, [$featuredField => $featured]);
+
+            // @todo(3.x): Deprecated.
             $this->fireEvent();
 
             if ($this->request->get('feature')) {
@@ -886,6 +915,8 @@ abstract class ModuleController extends Controller
     {
         if (($values = $this->request->get('ids')) && ! empty($values)) {
             $this->repository->setNewOrder($values);
+
+            // @todo(3.x): Deprecated.
             $this->fireEvent();
 
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.reorder.success', ['modelTitle' => $this->modelTitle]));

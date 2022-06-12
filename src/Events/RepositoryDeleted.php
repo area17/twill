@@ -20,7 +20,7 @@ class RepositoryDeleted
     /**
      * Create a new event instance.
      *
-     * @param  Object  $repository
+     * @param  \A17\Twill\Repositories\ModuleRepository  $repository
      * @return void
      */
     public function __construct($repository)

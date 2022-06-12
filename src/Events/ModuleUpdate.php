@@ -6,9 +6,16 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
  
-class RepositorySaved
+class ModuleUpdate
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
+
+    /**
+     * Name of the module.
+     *
+     * @var string
+     */
+    public $module;
  
     /**
      * The repository instance.
@@ -18,22 +25,15 @@ class RepositorySaved
     public $repository;
 
     /**
-     * Additional data.
-     *
-     * @var array
-     */
-    public $fields;
-
-    /**
      * Create a new event instance.
      *
-     * @param  \A17\Twill\Repositories\ModuleRepository  $repository
-     * @param array $fields
+     * @param string $module
+     * @param \A17\Twill\Repositories\ModuleRepository  $repository
      * @return void
      */
-    public function __construct($repository, $fields = [])
+    public function __construct($module, $repository)
     {
+        $this->module = $module;
         $this->repository = $repository;
-        $this->fields = $fields;
     }
 }

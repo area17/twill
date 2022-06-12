@@ -27,8 +27,8 @@ class RepositorySaving
     /**
      * Create a new event instance.
      *
-     * @param  Object  $repository
-     * @param array $data
+     * @param  \A17\Twill\Repositories\ModuleRepository  $repository
+     * @param array $fields
      * @return void
      */
     public function __construct($repository, $fields = [])
