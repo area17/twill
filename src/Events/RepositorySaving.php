@@ -6,7 +6,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
  
-class ModuleDeleted
+class RepositorySaving
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
  
@@ -18,13 +18,22 @@ class ModuleDeleted
     public $repository;
 
     /**
+     * Additional data.
+     *
+     * @var array
+     */
+    public $fields;
+
+    /**
      * Create a new event instance.
      *
      * @param  Object  $repository
+     * @param array $data
      * @return void
      */
-    public function __construct($repository)
+    public function __construct($repository, $fields = [])
     {
         $this->repository = $repository;
+        $this->fields = $fields;
     }
 }
