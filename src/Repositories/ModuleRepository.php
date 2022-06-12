@@ -2,6 +2,9 @@
 
 namespace A17\Twill\Repositories;
 
+use A17\Twill\Events\ModuleDeleted;
+use A17\Twill\Events\ModuleSaving;
+use A17\Twill\Events\ModuleSaved;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Model;
@@ -580,6 +583,8 @@ abstract class ModuleRepository
             $fields = $this->$method($object, $fields);
         }
 
+        ModuleSaving::dispatch($object, $fields);
+
         return $fields;
     }
 
@@ -617,6 +622,8 @@ abstract class ModuleRepository
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object, $fields);
         }
+
+        ModuleSaved::dispatch($object, $fields);
     }
 
     /**
@@ -628,6 +635,8 @@ abstract class ModuleRepository
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object);
         }
+
+        ModuleDeleted::dispatch($object);
     }
 
     /**
