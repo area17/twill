@@ -6,7 +6,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
  
-class ModulePublish
+class ModuleDuplicate
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -25,42 +25,25 @@ class ModulePublish
     public $repository;
 
     /**
-     * The module ID.
+     * Name of the index column.
      *
      * @var array
      */
-    public $ids;
+    public $columnName;
 
-    /**
-     * The module ID.
-     *
-     * @var bool
-     */
-    public $published;
-
-     /**
-     * Type of publish (single or bulk).
-     *
-     * @var string
-     */
-    public $type;
 
     /**
      * Create a new event instance.
      *
      * @param string $module
      * @param \A17\Twill\Repositories\ModuleRepository  $repository
-     * @param int $id
-     * @param bool $published
-     * @param string $type
+     * @param string $columnName
      * @return void
      */
-    public function __construct($module, $repository, $ids, $published, $type = 'single')
+    public function __construct($module, $repository, $columnName)
     {
         $this->module = $module;
         $this->repository = $repository;
-        $this->ids = array_values($ids);
-        $this->published = $published;
-        $this->type = $type;
+        $this->columnName = $columnName;
     }
 }

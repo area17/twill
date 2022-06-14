@@ -11,6 +11,7 @@ use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Events\ModuleCreate;
 use A17\Twill\Events\ModuleUpdate;
 use A17\Twill\Events\ModulePublish;
+use A17\Twill\Events\ModuleDuplicate;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -671,7 +672,7 @@ abstract class ModuleController extends Controller
                 // @todo(3.x): Deprecated.
                 $this->fireEvent();
 
-                ModulePublish::dispatch($this->moduleName, $this->repository, $this->request->get('id'), !$this->request->get('active'));
+                ModulePublish::dispatch($this->moduleName, $this->repository, [$this->request->get('id')], !$this->request->get('active'));
 
                 if ($this->request->get('active')) {
                     return $this->respondWithSuccess(twillTrans('twill::lang.listing.publish.unpublished', ['modelTitle' => $this->modelTitle]));
@@ -698,6 +699,8 @@ abstract class ModuleController extends Controller
 
                 // @todo(3.x): Deprecated.
                 $this->fireEvent();
+
+                ModulePublish::dispatch($this->moduleName, $this->repository, explode(',', $this->request->get('ids')), $this->request->get('publish'), 'bulk');
 
                 if ($this->request->get('publish')) {
                     return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-publish.published', ['modelTitle' => $this->modelTitle]));
@@ -728,6 +731,8 @@ abstract class ModuleController extends Controller
 
             // @todo(3.x): Deprecated.
             $this->fireEvent();
+
+            ModuleDuplicate::dispatch($this->moduleName, $this->repository, $this->titleColumnKey);
 
             activity()->performedOn($item)->log('duplicated');
 
