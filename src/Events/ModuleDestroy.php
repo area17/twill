@@ -6,7 +6,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
  
-class ModulePublish
+class ModuleDestroy
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -32,16 +32,9 @@ class ModulePublish
     public $ids;
 
     /**
-     * Published status.
+     * Type of destroy (single or bulk).
      *
-     * @var bool
-     */
-    public $published;
-
-     /**
-     * Type of publish (single or bulk).
-     *
-     * @var string
+     * @var array
      */
     public $type;
 
@@ -50,17 +43,15 @@ class ModulePublish
      *
      * @param string $module
      * @param \A17\Twill\Repositories\ModuleRepository  $repository
-     * @param int $id
-     * @param bool $published
+     * @param array $ids
      * @param string $type
      * @return void
      */
-    public function __construct($module, $repository, $ids, $published, $type = 'single')
+    public function __construct($module, $repository, $ids, $type = 'single')
     {
         $this->module = $module;
         $this->repository = $repository;
         $this->ids = array_values($ids);
-        $this->published = $published;
         $this->type = $type;
     }
 }

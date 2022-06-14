@@ -12,6 +12,8 @@ use A17\Twill\Events\ModuleCreate;
 use A17\Twill\Events\ModuleUpdate;
 use A17\Twill\Events\ModulePublish;
 use A17\Twill\Events\ModuleDuplicate;
+use A17\Twill\Events\ModuleDelete;
+use A17\Twill\Events\ModuleDestroy;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -732,7 +734,7 @@ abstract class ModuleController extends Controller
             // @todo(3.x): Deprecated.
             $this->fireEvent();
 
-            ModuleDuplicate::dispatch($this->moduleName, $this->repository, $this->titleColumnKey);
+            ModuleDuplicate::dispatch($this->moduleName, $newItem, $this->titleColumnKey);
 
             activity()->performedOn($item)->log('duplicated');
 
@@ -768,6 +770,8 @@ abstract class ModuleController extends Controller
             // @todo(3.x): Deprecated.
             $this->fireEvent();
 
+            ModuleDelete::dispatch($this->moduleName, $this->repository, [$id]);
+
             activity()->performedOn($item)->log('deleted');
 
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.delete.success', ['modelTitle' => $this->modelTitle]));
@@ -786,6 +790,8 @@ abstract class ModuleController extends Controller
             // @todo(3.x): Deprecated.
             $this->fireEvent();
 
+            ModuleDelete::dispatch($this->moduleName, $this->repository, explode(',', $this->request->get('ids')), 'bulk');
+
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-delete.success', ['modelTitle' => $this->modelTitle]));
         }
 
@@ -802,6 +808,8 @@ abstract class ModuleController extends Controller
             // @todo(3.x): Deprecated.
             $this->fireEvent();
 
+            ModuleDestroy::dispatch($this->moduleName, $this->repository, [$this->request->get('id')]);
+
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.force-delete.success', ['modelTitle' => $this->modelTitle]));
         }
 
@@ -817,6 +825,8 @@ abstract class ModuleController extends Controller
 
             // @todo(3.x): Deprecated.
             $this->fireEvent();
+
+            ModuleDestroy::dispatch($this->moduleName, $this->repository, explode(',', $this->request->get('ids')), 'bulk');
 
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-force-delete.success', ['modelTitle' => $this->modelTitle]));
         }
