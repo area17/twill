@@ -14,6 +14,7 @@ use A17\Twill\Events\ModulePublish;
 use A17\Twill\Events\ModuleDuplicate;
 use A17\Twill\Events\ModuleDelete;
 use A17\Twill\Events\ModuleDestroy;
+use A17\Twill\Events\ModuleRestore;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -844,6 +845,8 @@ abstract class ModuleController extends Controller
             // @todo(3.x): Deprecated.
             $this->fireEvent();
 
+            ModuleRestore::dispatch($this->moduleName, $this->repository, [$this->request->get('id')]);
+
             activity()->performedOn($this->repository->getById($this->request->get('id')))->log('restored');
 
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.restore.success', ['modelTitle' => $this->modelTitle]));
@@ -861,6 +864,8 @@ abstract class ModuleController extends Controller
 
             // @todo(3.x): Deprecated.
             $this->fireEvent();
+
+            ModuleRestore::dispatch($this->moduleName, $this->repository, explode(',', $this->request->get('ids')), 'bulk');
 
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-restore.success', ['modelTitle' => $this->modelTitle]));
         }
