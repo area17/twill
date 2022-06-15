@@ -51,12 +51,13 @@ trait HasRelated
             ->where('browser_name', $browser_name)
             ->map(function ($item) {
                 /** @var \A17\Twill\Models\Model $model */
-                $model = $item->related;
+                if ($model = $item->related) {
+                    $model->setRelation('pivot', $item);
+                    return $model;
+                }
 
-                $model->setRelation('pivot', $item);
-
-                return $model;
-            });
+                return null;
+            })->filter();
     }
 
     /**
