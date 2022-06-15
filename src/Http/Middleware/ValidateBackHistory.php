@@ -18,7 +18,7 @@ class ValidateBackHistory
         $response = $next($request);
 
         return !method_exists($response, 'header') ? $response : $response
-            ->header('Cache-Control', 'nocache, no-store, max-age=0, must-revalidate')
+            ->header('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate')
             ->header('Pragma', 'no-cache')
             ->header('Expires', 'Sat, 01 Jan 1990 00:00:00 GMT');
     }
