@@ -14,7 +14,7 @@
       </div>
       <div class="block__actions">
         <slot name="block-actions"/>
-        <a17-dropdown :ref="addDropdown" position="bottom-right" :maxHeight="270" @open="hover = true" @close="hover = false" v-if="withAddDropdown">
+        <a17-dropdown :ref="addDropdown" position="bottom-right" :maxHeight="430" @open="hover = true" @close="hover = false" v-if="withAddDropdown">
           <a17-button variant="icon" data-action @click="$refs[addDropdown].toggle()"><span v-svg symbol="add"></span>
           </a17-button>
           <div slot="dropdown__content">
