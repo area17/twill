@@ -140,7 +140,7 @@ return [
 ];
 ```
 
-Since Twill 2.0, migrations are not published anymore but loaded automatically in Twill's service provider. 
+Since Twill 2.0, migrations are not published anymore but loaded automatically in Twill's service provider.
 Set to false to prevent this from happening if you need to customize Twill's tables.
 
 ```php
@@ -192,7 +192,7 @@ return [
 
 Enabling this allows adding top level keys to Twill's navigation and dashboard modules configuration, mapping to a subdomain.
 This is a very simple way to implement multi-tenant CMS/sites in Twill. A navigation array looking like the following would expose your CMS on
-the `admin.subdomain1.app-url.test` and `admin.subdomain2.app-url.test` urls, with its corresponding links: 
+the `admin.subdomain1.app-url.test` and `admin.subdomain2.app-url.test` urls, with its corresponding links:
 
 ```php
 <?php
@@ -246,11 +246,25 @@ return [
         'init_alt_text_from_filename' => true,
         'prefix_uuid_with_local_path' => config('twill.file_library.prefix_uuid_with_local_path', false),
         'translated_form_fields' => false,
+        /*
+        |--------------------------------------------------------------------------
+        | Wysiwyg options for the caption field.
+        |--------------------------------------------------------------------------
+        */
+        'media_caption_use_wysiwyg' => false,
+        'media_caption_wysiwyg_options' => [
+            'modules' => [
+                'toolbar' => [
+                    'bold',
+                    'italic',
+                ],
+            ],
+        ],
     ],
 ];
 ```
 
-Twill's media library supports the following endpoint types: `s3`, `azure` and `local`. 
+Twill's media library supports the following endpoint types: `s3`, `azure` and `local`.
 
 #### S3 endpoint
 
@@ -278,7 +292,7 @@ When uploading images to S3, Twill sets the `acl` parameter to `private`. This i
 #### Azure endpoint
 
 Twill supports `azure` endpoint type to store your uploads on an Microsoft Azure container.
- 
+
 To authorize uploads to Azure, provide your application with the following environment variables:
 
 ```bash
@@ -321,6 +335,10 @@ To render uploaded images, Twill's preferred service is [Imgix](https://imgix.co
 
 If you do not want or cannot use a third party service, or have very limited image rendering needs, Twill also provides a local image rendering service powered by [Glide](https://glide.thephpleague.com/). The following .env variables should get you up and running:
 
+::: warning
+If the media cropper is not working, it is adviced to add `img/*` to the `cors.php` exceptions.
+:::
+
 ```bash
 MEDIA_LIBRARY_ENDPOINT_TYPE=local
 MEDIA_LIBRARY_IMAGE_SERVICE=A17\Twill\Services\MediaLibrary\Glide
@@ -330,7 +348,7 @@ If you want to add support for other image formats, which aren't covered by Glid
 
 ## Imgix
 
-As noted above, by default, Twill uses and recommends using [Imgix](https://imgix.com) to transform, optimize, and intelligently cache your uploaded images. 
+As noted above, by default, Twill uses and recommends using [Imgix](https://imgix.com) to transform, optimize, and intelligently cache your uploaded images.
 
 Specify your Imgix source url using the `IMGIX_SOURCE_HOST` environment variable or `source_host` configuration option.
 
@@ -340,7 +358,7 @@ IMGIX_SOURCE_HOST=source.imgix.net
 
 By default, Twill will render Imgix urls with the `https` scheme. We do not see any reason why you would do so nowadays, but you can decide to opt-out using the `IMGIX_USE_HTTPS` environment variable or `use_https` configuration option.
 
-Imgix offers the ability to use signed urls to prevent users from accessing images without parameters or different parameters than the ones you choose to use in your own application. You can enable that feature in Twill using the `IMGIX_USE_SIGNED_URLS` environment variable or `use_signed_urls` configuration option. If you enable signed urls, Imgix provides you with a signature key. Provide it to Twill using the `IMGIX_SIGN_KEY` environment variable. 
+Imgix offers the ability to use signed urls to prevent users from accessing images without parameters or different parameters than the ones you choose to use in your own application. You can enable that feature in Twill using the `IMGIX_USE_SIGNED_URLS` environment variable or `use_signed_urls` configuration option. If you enable signed urls, Imgix provides you with a signature key. Provide it to Twill using the `IMGIX_SIGN_KEY` environment variable.
 
 ```bash
 IMGIX_USE_SIGNED_URLS=true
@@ -348,7 +366,7 @@ IMGIX_SIGN_KEY=xxxxxxxxxxxxxxxx
 ```
 
 :::danger
-You should never store any sort of credentials in source control (eg. Git). 
+You should never store any sort of credentials in source control (eg. Git).
 
 That's exactly why in the case of the Imgix signature key, we do not say that you could provide it to Twill using the sign_key configuration option of the Imgix configuration array.
 
@@ -422,7 +440,7 @@ return [
 ];
 ```
 
-Twill's file library supports the following endpoint types: `s3` and `local`. 
+Twill's file library supports the following endpoint types: `s3` and `local`.
 
 #### S3 endpoint
 

@@ -3,7 +3,6 @@
 namespace A17\Twill\Models\Behaviors;
 
 use A17\Twill\Models\RelatedItem;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
@@ -51,7 +50,12 @@ trait HasRelated
         return $this->relatedCache[$browser_name] = $this->relatedItems
             ->where('browser_name', $browser_name)
             ->map(function ($item) {
-                return $item->related;
+                /** @var \A17\Twill\Models\Model $model */
+                $model = $item->related;
+
+                $model->setRelation('pivot', $item);
+
+                return $model;
             });
     }
 
@@ -64,11 +68,7 @@ trait HasRelated
      */
     public function saveRelated($items, $browser_name)
     {
-        RelatedItem::where([
-            'browser_name' => $browser_name,
-            'subject_id' => $this->getKey(),
-            'subject_type' => $this->getMorphClass(),
-        ])->delete();
+        $this->clearRelated($browser_name);
 
         $position = 1;
 
@@ -85,5 +85,19 @@ trait HasRelated
             ]);
             $position++;
         });
+    }
+
+    public function clearRelated($browserName): void
+    {
+        RelatedItem::where([
+            'browser_name' => $browserName,
+            'subject_id' => $this->getKey(),
+            'subject_type' => $this->getMorphClass(),
+        ])->delete();
+    }
+
+    public function clearAllRelated(): void
+    {
+        $this->relatedItems()->delete();
     }
 }

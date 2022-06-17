@@ -7,6 +7,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use League\Glide\Responses\LaravelResponseFactory;
 use League\Glide\ServerFactory;
 use League\Glide\Signatures\SignatureFactory;
@@ -65,6 +66,10 @@ class Glide implements ImageServiceInterface
             rtrim($baseUrlHost, '/'),
             ltrim($this->config->get('twill.glide.base_path'), '/'),
         ]);
+
+        if (!empty($baseUrlHost) && !Str::startsWith($baseUrl, ['http://', 'https://'])) {
+            $baseUrl = $this->request->getScheme() . '://' . $baseUrl;
+        }
 
         $this->server = ServerFactory::create([
             'response' => new LaravelResponseFactory($this->request),
@@ -274,9 +279,6 @@ class Glide implements ImageServiceInterface
      */
     private function getOriginalMediaUrl($id)
     {
-        $libraryDisk = $this->config->get('twill.media_library.disk');
-        $endpointType = $this->config->get('twill.media_library.endpoint_type');
-        $localMediaLibraryUrl = $this->config->get("filesystems.disks.$libraryDisk.url");
         $originalMediaForExtensions = $this->config->get('twill.glide.original_media_for_extensions');
         $addParamsToSvgs = $this->config->get('twill.glide.add_params_to_svgs', false);
 
@@ -284,20 +286,6 @@ class Glide implements ImageServiceInterface
             return null;
         }
 
-        switch ($endpointType) {
-            case 'local':
-                $endpoint = $localMediaLibraryUrl;
-                break;
-            case 's3':
-                $endpoint = s3Endpoint($libraryDisk);
-                break;
-            case 'azure':
-                $endpoint = azureEndpoint($libraryDisk);
-                break;
-            default:
-                $endpoint = '';
-        }
-
-        return $endpoint . '/' . $id;
+        return Storage::disk(config('twill.media_library.disk'))->url($id);
     }
 }

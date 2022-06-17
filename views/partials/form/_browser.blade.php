@@ -21,9 +21,11 @@
     $wide = $wide ?? false;
     $buttonOnTop = $buttonOnTop ?? false;
     $browserNote = $browserNote ?? '';
+    $disabled = $disabled ?? false;
+    $connectedBrowserField = $connectedBrowserField ?? false;
 @endphp
 
-<a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}" note="{{ $fieldNote }}">
+<a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}" note="{{ $fieldNote }}" @if($renderForBlocks) :fixed-error-key="$parent.blockFieldName !== undefined ? $parent.blockFieldName('{{$name}}') : ''" @endif>
     <a17-browserfield
         @include('twill::partials.form.utils._field_name')
         item-label="{{ $itemLabel }}"
@@ -34,7 +36,11 @@
         modal-title="{{ twillTrans('twill::lang.fields.browser.attach') . ' ' . strtolower($label) }}"
         :draggable="{{ json_encode($sortable) }}"
         browser-note="{{ $browserNote }}"
-        @if ($buttonOnTop) :button-on-top="true" @endif
+        @if($buttonOnTop) :button-on-top="true" @endif
+        @if($disabled) disabled @endif
+        @if($renderForBlocks && $connectedBrowserField) :connected-browser-field="fieldName('{{ $connectedBrowserField }}')"
+        @elseif($connectedBrowserField) connected-browser-field="{{ $connectedBrowserField }}"
+        @endif
     >{{ $note }}</a17-browserfield>
 </a17-inputframe>
 

@@ -83,10 +83,10 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
     {
         if (class_exists(Locale::class)) {
             if ($native) {
-                return ucfirst(Locale::getDisplayLanguage($code, $code));
-            } else {
-                return ucfirst(Locale::getDisplayLanguage($code, config('twill.locale', config('twill.fallback_locale', 'en'))));
+                return Locale::getDisplayName($code, $code);
             }
+
+            return Locale::getDisplayName($code, config('twill.locale', config('twill.fallback_locale', 'en')));
         }
 
         $codeToLanguageMappings = getCodeToLanguageMappings();
@@ -96,6 +96,11 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             if (is_array($lang) && isset($lang[1]) && $native) {
                 return $lang[1];
             }
+
+            if (is_array($lang) && isset($lang[0])) {
+                return $lang[0];
+            }
+
             return $lang;
         }
         return $code;

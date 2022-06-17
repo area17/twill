@@ -332,6 +332,7 @@ return [
         'media-library' => 'Media Library',
         'settings' => 'Settings',
         'close-menu' => 'Close menu',
+        'open-live-site' => 'Open live site',
     ],
     'notifications' => [
         'reset' => [
@@ -372,6 +373,8 @@ return [
         'last-edit' => 'Last edited',
         'preview' => 'Preview changes',
         'publish' => 'Publish',
+        'scheduled' => 'Scheduled',
+        'expired' => 'Expired',
         'publish-close' => 'Publish and close',
         'publish-new' => 'Publish and create new',
         'published-on' => 'Published on',
@@ -396,6 +399,7 @@ return [
         'parent-page' => 'Parent page',
         'review-status' => 'Review status',
         'visibility' => 'Visibility',
+        'unsaved-changes' => 'There are unsaved changes',
     ],
     'select' => [
         'empty-text' => 'Sorry, no matching options.',

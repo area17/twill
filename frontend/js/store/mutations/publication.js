@@ -6,6 +6,7 @@ export const UPDATE_PUBLISH_SUBMIT = 'updatePublishSubmit'
 export const UPDATE_PUBLISH_VISIBILITY = 'updatePublishVisibility'
 export const UPDATE_REVIEW_PROCESS = 'updateReviewProcess'
 export const UPDATE_SAVE_TYPE = 'updateSaveType'
+export const UPDATE_HAS_UNSAVED_CHANGES = 'updateHasUnsavedChanges'
 
 export default {
   UPDATE_PUBLISH_START_DATE,
@@ -14,5 +15,6 @@ export default {
   UPDATE_PUBLISH_VISIBILITY,
   UPDATE_REVIEW_PROCESS,
   UPDATE_PUBLISH_SUBMIT,
-  UPDATE_SAVE_TYPE
+  UPDATE_SAVE_TYPE,
+  UPDATE_HAS_UNSAVED_CHANGES
 }

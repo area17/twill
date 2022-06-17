@@ -14,6 +14,7 @@
     $heightMin = $heightMin ?? 0;
     $buttonOnTop = $buttonOnTop ?? false;
     $activeCrop = $activeCrop ?? true;
+    $disabled = $disabled ?? false;
 @endphp
 
 @if (config('twill.media_library.translated_form_fields', $translated ?? false) && ($translated ?? true))
@@ -26,6 +27,8 @@
             widthMin: {{ $widthMin }},
             heightMin: {{ $heightMin }},
             note: '{{ $fieldNote }}',
+            @if($renderForBlocks) fixedErrorKey: $parent.blockFieldName !== undefined ? $parent.blockFieldName('{{$name}}') : '', @endif
+            @if ($disabled) disabled: true, @endif
             @if ($extraMetadatas) extraMetadatas: {{ json_encode($extraMetadatas) }}, @endif
             @if ($altTextMaxLength) :altTextMaxLength: {{ $altTextMaxLength }}, @endif
             @if ($captionMaxLength) :captionMaxLength: {{ $captionMaxLength }}, @endif
@@ -51,22 +54,23 @@
     @endpush
     @endunless
 @else
-    <a17-inputframe label="{{ $label }}" name="medias.{{ $name }}" @if ($required) :required="true" @endif @if ($fieldNote) note="{{ $fieldNote }}" @endif>
+    <a17-inputframe @if($renderForBlocks) :fixed-error-key="$parent.blockFieldName !== undefined ? $parent.blockFieldName('{{$name}}') : ''" @endif label="{{ $label }}" name="medias.{{ $name }}" @if ($required) :required="true" @endif @if ($fieldNote) note="{{ $fieldNote }}" @endif>
         @if($multiple) <a17-slideshow @else <a17-mediafield @endif
             @include('twill::partials.form.utils._field_name')
             crop-context="{{ $name }}"
             :width-min="{{ $widthMin }}"
             :height-min="{{ $heightMin }}"
             @if($multiple) :max="{{ $max }}" @endif
-            @if ($extraMetadatas) :extra-metadatas="{{ json_encode($extraMetadatas) }}" @endif
-            @if ($required) :required="true" @endif
-            @if (!$withAddInfo) :with-add-info="false" @endif
-            @if (!$withVideoUrl) :with-video-url="false" @endif
-            @if (!$withCaption) :with-caption="false" @endif
-            @if ($altTextMaxLength) :alt-text-max-length="{{ $altTextMaxLength }}" @endif
-            @if ($captionMaxLength) :caption-max-length="{{ $captionMaxLength }}" @endif
-            @if ($buttonOnTop) :button-on-top="true" @endif
-            @if (!$activeCrop) :active-crop="false" @endif
+            @if($disabled) disabled @endif
+            @if($extraMetadatas) :extra-metadatas="{{ json_encode($extraMetadatas) }}" @endif
+            @if($required) :required="true" @endif
+            @if(!$withAddInfo) :with-add-info="false" @endif
+            @if(!$withVideoUrl) :with-video-url="false" @endif
+            @if(!$withCaption) :with-caption="false" @endif
+            @if($altTextMaxLength) :alt-text-max-length="{{ $altTextMaxLength }}" @endif
+            @if($captionMaxLength) :caption-max-length="{{ $captionMaxLength }}" @endif
+            @if($buttonOnTop) :button-on-top="true" @endif
+            @if(!$activeCrop) :active-crop="false" @endif
         >{{ $note }}@if($multiple) </a17-slideshow> @else </a17-mediafield> @endif
     </a17-inputframe>
 

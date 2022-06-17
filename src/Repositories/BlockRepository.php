@@ -5,9 +5,10 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Block;
+use A17\Twill\Models\RelatedItem;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
-use A17\Twill\Services\Blocks\BlockCollection;
+use A17\Twill\Services\Blocks\Block as BlockConfig;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Collection;
 use Log;
@@ -78,6 +79,8 @@ class BlockRepository extends ModuleRepository
                 Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($object) {
                     $object->saveRelated($items, $browserName);
                 });
+            } else {
+                $object->clearAllRelated();
             }
         }
 
@@ -90,7 +93,7 @@ class BlockRepository extends ModuleRepository
         $object->files()->sync([]);
 
         if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
-            $object->relatedItems()->delete();
+            $object->clearAllRelated();
         }
     }
 
@@ -101,15 +104,11 @@ class BlockRepository extends ModuleRepository
      */
     public function buildFromCmsArray($block, $repeater = false)
     {
-        if ($repeater) {
-            $blocksList = app(BlockCollection::class)->getRepeaterList();
-        } else {
-            $blocksList = app(BlockCollection::class)->getBlockList();
-        }
+        $blockInstance = BlockConfig::getForComponent($block['type'], $repeater);
 
-        $block['type'] = $blocksList->keyBy('name')->search(function ($blockConfig) use ($block) {
-            return $blockConfig['component'] === $block['type'];
-        });
+        $block['type'] = $blockInstance->name;
+
+        $block['instance'] = $blockInstance;
 
         $block['content'] = empty($block['content']) ? new \stdClass : (object) $block['content'];
 

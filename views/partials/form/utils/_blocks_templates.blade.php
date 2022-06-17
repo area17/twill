@@ -1,5 +1,5 @@
 @php
-    $blocks = app(\A17\Twill\Services\Blocks\BlockCollection::class)
+    $blocks = \A17\Twill\Facades\TwillBlocks::getBlockCollection()
         ->collect()
         ->reject(function ($block) {
             return $block->compiled ?? false;

@@ -44,16 +44,6 @@ class CapsuleAutoloadTest extends TestCase
             '{$app}/Twill/Capsules/Posts/PostsCapsuleServiceProvider.php',
     ];
 
-    /** @var \A17\Twill\Services\Capsules\Manager */
-    public $manager;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->manager = app('twill.capsules.manager');
-    }
-
     public function getPackageProviders($app)
     {
         config()->set([

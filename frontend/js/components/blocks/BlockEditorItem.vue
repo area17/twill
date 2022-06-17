@@ -1,7 +1,7 @@
 <template>
   <div class="block" :class="blockClasses">
     <div class="block__header" @dblclick.prevent="toggleExpand()">
-      <span class="block__handle"></span>
+      <span v-if="withHandle" class="block__handle"></span>
       <div class="block__toggle">
         <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown" :maxHeight="270">
           <span class="block__counter f--tiny" @click="$refs[moveDropdown].toggle()">{{ index + 1 }}</span>
@@ -34,7 +34,7 @@
         </a17-dropdown>
       </div>
     </div>
-    <div class="block__content" :aria-hidden="!visible ? true : null">
+    <div class="block__content" v-if="visible">
       <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes" :key="`form_${block.type}_${block.id}`">
         <!-- dynamic components -->
       </component>
@@ -66,11 +66,15 @@
       block: {
         type: Object,
         default: () => {}
+      },
+      withHandle: {
+        type: Boolean,
+        default: true
       }
     },
     data () {
       return {
-        visible: true,
+        visible: false,
         hover: false,
         withMoveDropdown: true,
         withAddDropdown: true
@@ -124,6 +128,11 @@
     watch: {
       opened () {
         this.visible = this.opened
+      }
+    },
+    created () {
+      if (this.block.ui && this.block.ui.isNew) {
+        this.toggleExpand()
       }
     },
     methods: {

@@ -279,7 +279,7 @@ If needed you can customize the permalink displayed in the admin interface when 
 useful if you are using Laravel for displaying your front-end as you do not need to keep your permalink and routes in
 sync.
 
-![screenshot](/docs/_media/custom-permalink.png)
+![screenshot](../.vuepress/public/_media/custom-permalink.png)
 
 This can be done by setting the `customPermalink` via the `formData` method in the model controller.
 
