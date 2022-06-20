@@ -12,7 +12,7 @@ class BasicFilter extends TwillBaseFilter
 
     protected ?Collection $options = null;
     protected mixed $appliedValue = null;
-    protected bool $includeAll = false;
+    protected bool $includeAll = true;
     protected mixed $default = null;
 
     /**
@@ -28,11 +28,11 @@ class BasicFilter extends TwillBaseFilter
     }
 
     /**
-     * This adds a "All" option.
+     * This removes the "All" option.
      */
-    public function includeAll(bool $includeAll = true): self
+    public function withoutIncludeAll(bool $removeIncludeAll = true): self
     {
-        $this->includeAll = $includeAll;
+        $this->includeAll = !$removeIncludeAll;
 
         return $this;
     }

@@ -14,6 +14,7 @@ use A17\Twill\Notifications\TemporaryPassword as TemporaryPasswordNotification;
 use A17\Twill\Notifications\Welcome as WelcomeNotification;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as AuthenticatableContract;
 use Illuminate\Notifications\Notifiable;
@@ -159,7 +160,7 @@ class User extends AuthenticatableContract
 
     public function scopeOnlyTrashed($query)
     {
-        return $query->whereNotNull('deleted_at');
+        return $query->whereNotNull('deleted_at')->withoutGlobalScope(SoftDeletingScope::class);
     }
 
     public function scopeNotSuperAdmin($query)

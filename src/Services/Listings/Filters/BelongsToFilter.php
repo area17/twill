@@ -16,11 +16,6 @@ class BelongsToFilter extends BasicFilter
     protected ?string $model = null;
     private string $valueLabelField = 'title';
 
-    public function __construct()
-    {
-        $this->includeAll();
-    }
-
     public function applyFilter(Builder $builder): Builder
     {
         if ($this->appliedValue && $this->appliedValue !== self::OPTION_ALL) {

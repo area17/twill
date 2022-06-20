@@ -12,7 +12,6 @@ class BooleanFilter extends BasicFilter
     {
         // @PRtodo: introduce translatable string
         $this->options(collect(['true' => twillTrans('Yes'), 'false' => twillTrans('No')]));
-        $this->includeAll();
     }
 
     public function applyFilter(Builder $builder): Builder

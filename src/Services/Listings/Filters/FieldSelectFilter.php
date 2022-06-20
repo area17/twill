@@ -15,11 +15,6 @@ class FieldSelectFilter extends BasicFilter
 {
     protected string $field;
 
-    public function __construct()
-    {
-        $this->includeAll();
-    }
-
     public function applyFilter(Builder $builder): Builder
     {
         if ($this->appliedValue && $this->appliedValue !== self::OPTION_ALL) {

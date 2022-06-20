@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 class QuickFilter extends TwillBaseFilter
 {
     protected ?\Closure $amount = null;
+    protected ?string $scope = null;
 
     /**
      * The callback that will tell the filter how many results there are.
@@ -18,10 +19,22 @@ class QuickFilter extends TwillBaseFilter
         return $this;
     }
 
+    /**
+     * The scope to apply.
+     */
+    public function scope(string $scope): self
+    {
+        $this->scope = $scope;
+
+        return $this;
+    }
+
     public function applyFilter(Builder $builder): Builder
     {
         if ($closure = $this->apply) {
             $closure($builder);
+        } elseif ($this->scope) {
+            $builder->scopes($this->scope);
         }
 
         return $builder;

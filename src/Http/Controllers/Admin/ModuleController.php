@@ -1290,8 +1290,8 @@ abstract class ModuleController extends Controller
      */
     protected function getIndexData($prependScope = [])
     {
-        $scopes = $this->filterScope($prependScope);
-        $items = $this->getIndexItems($scopes);
+//        $scopes = $this->filterScope($prependScope);
+        $items = $this->getIndexItems();
 
 //        dd(array_keys(Arr::except($this->filters, array_keys($this->defaultFilters))));
         // @todo: Does not take into account yet the default filters.
@@ -1354,14 +1354,12 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param array $scopes
-     * @param bool $forcePagination
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    protected function getIndexItems($scopes = [], $forcePagination = false)
+    protected function getIndexItems(array $scopes = [], bool $forcePagination = false)
     {
         if (TwillPermissions::enabled() && TwillPermissions::getPermissionModule($this->moduleName)) {
-            $scopes = $scopes + ['accessible' => true];
+            $scopes += ['accessible' => true];
         }
 
         $appliedFilters = [];
@@ -1484,6 +1482,12 @@ abstract class ModuleController extends Controller
                 $queryString = Str::beforeLast($key, 'List');
 
                 if ($filterKey = ($this->filters[$queryString] ?? false)) {
+                    if (!$value instanceof Collection) {
+                        $value = collect($value)->mapWithKeys(function ($valueLabel) {
+                            return [$valueLabel['value'] => $valueLabel['label']];
+                        });
+                    }
+
                     $tableFilters->add(
                         BasicFilter::make()
                             ->queryString($queryString)
@@ -1662,44 +1666,6 @@ abstract class ModuleController extends Controller
     protected function getBrowserItems(array $scopes = [])
     {
         return $this->getIndexItems($scopes, true);
-    }
-
-    /**
-     * @param array $prepend
-     * @return array
-     * @deprecated @todo: Remove this method.
-     */
-    protected function filterScope($prepend = [])
-    {
-        return [];
-//        $scope = [];
-
-//        $requestFilters = $this->getRequestFilters();
-
-//        $this->filters = array_merge($this->filters, $this->defaultFilters);
-
-//         @todo: Refactor so it is no longer used.
-//        unset($requestFilters['status']);
-
-//        foreach ($this->filters as $key => $field) {
-//            if (array_key_exists($key, $requestFilters)) {
-//                $value = $requestFilters[$key];
-//                if ($value == 0 || !empty($value)) {
-//                    // add some syntaxic sugar to scope the same filter on multiple columns
-//                    $fieldSplitted = explode('|', $field);
-//                    if (count($fieldSplitted) > 1) {
-//                        $requestValue = $requestFilters[$key];
-//                        Collection::make($fieldSplitted)->each(function ($scopeKey) use (&$scope, $requestValue) {
-//                            $scope[$scopeKey] = $requestValue;
-//                        });
-//                    } else {
-//                        $scope[$field] = $requestFilters[$key];
-//                    }
-//                }
-//            }
-//        }
-
-//        return $prepend + $scope;
     }
 
     /**
