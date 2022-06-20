@@ -21,6 +21,7 @@ use A17\Twill\Services\Listings\Columns\PublishStatus;
 use A17\Twill\Services\Listings\Columns\Relation;
 use A17\Twill\Services\Listings\Columns\ScheduledStatus;
 use A17\Twill\Services\Listings\Columns\Text;
+use A17\Twill\Services\Listings\Filters\FreeTextSearch;
 use A17\Twill\Services\Listings\Filters\QuickFilter;
 use A17\Twill\Services\Listings\Filters\QuickFilters;
 use A17\Twill\Services\Listings\Filters\BasicFilter;
@@ -295,11 +296,11 @@ abstract class ModuleController extends Controller
      */
     protected $permalinkBase;
 
-    /**
-     * @var array
-     * @todo: Implement backward compatability.
-     */
-    protected $defaultFilters;
+//    /**
+//     * @var array
+//     * @todo: Implement backward compatability.
+//     */
+//    protected $defaultFilters;
 
     /**
      * @var string
@@ -324,6 +325,13 @@ abstract class ModuleController extends Controller
      * @var array
      */
     protected $labels = [];
+
+    /**
+     * The columns to search for when using the search field.
+     *
+     * Do not modify this directly but use the method setSearchColumns().
+     */
+    protected array $searchColumns = ['title'];
 
     /**
      * Default label translation keys that can be overridden in the labels array.
@@ -364,16 +372,38 @@ abstract class ModuleController extends Controller
          * Default filters for the index view
          * By default, the search field will run a like query on the title field
          */
-        if (!isset($this->defaultFilters)) {
-            $this->defaultFilters = [
-                'search' => ($this->moduleHas('translations') ? '' : '%') . $this->titleColumnKey,
-            ];
-        }
+//        if (!isset($this->defaultFilters)) {
+//            $this->defaultFilters = [
+//                'search' => ($this->moduleHas('translations') ? '' : '%') . $this->titleColumnKey,
+//            ];
+//        }
+
+        $this->setUpController();
 
         /*
          * Apply any filters that are selected by default
          */
         $this->applyFiltersDefaultOptions();
+    }
+
+    /**
+     * The setup method that is called when the controller is booted.
+     *
+     * You can use setters in here like:
+     * - setSearchColumns([..])
+     */
+    public function setUpController(): void
+    {
+    }
+
+    /**
+     * Set the columns to search in.
+     *
+     * SearchColumns are automatically prefixes/suffixed with %.
+     */
+    public function setSearchColumns(array $searchColumns): void
+    {
+        $this->searchColumns = $searchColumns;
     }
 
     /**
@@ -1387,6 +1417,10 @@ abstract class ModuleController extends Controller
 
             if ($filter !== null) {
                 $appliedFilters[] = $filter->withFilterValue($filterValue);
+            } elseif ($filterKey === 'search') {
+                $appliedFilters[] = FreeTextSearch::make()
+                    ->searchFor($filterValue)
+                    ->searchColumns($this->searchColumns);
             }
         }
 
@@ -1611,19 +1645,14 @@ abstract class ModuleController extends Controller
         });
     }
 
-    /**
-     * @param array $prependScope
-     * @return array
-     */
-    protected function getBrowserData($prependScope = [])
+    protected function getBrowserData(array $scopes = []): array
     {
         if ($this->request->has('except')) {
-            $prependScope['exceptIds'] = $this->request->get('except');
+            $scopes['exceptIds'] = $this->request->get('except');
         }
 
         $forRepeater = $this->request->get('forRepeater', false) === 'true';
 
-        $scopes = $this->filterScope($prependScope);
         $items = $this->getBrowserItems($scopes);
         $data = $this->getBrowserTableData($items, $forRepeater);
 

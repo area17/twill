@@ -66,16 +66,16 @@ abstract class ModuleRepository
     public $fieldsGroupsFormFieldNameSeparator = '_';
 
     /**
-     * @param array $with
-     * @param array $scopes
-     * @param array $orders
-     * @param int $perPage
-     * @param bool $forcePagination
-     * @param \A17\Twill\Services\Listings\Filters\TwillBaseFilter[] $appliedFilters
      * @return \Illuminate\Support\Collection|\Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function get($with = [], $scopes = [], $orders = [], $perPage = 20, $forcePagination = false, array $appliedFilters = [])
-    {
+    public function get(
+        array $with = [],
+        array $scopes = [],
+        array $orders = [],
+        int $perPage = 20,
+        bool $forcePagination = false,
+        array $appliedFilters = []
+    ) {
         $query = $this->model->with($with);
 
         $query = $this->filter($query, $scopes);
@@ -85,7 +85,7 @@ abstract class ModuleRepository
             $filter->applyFilter($query);
         }
 
-        if (! $forcePagination && $this->model instanceof Sortable) {
+        if (!$forcePagination && $this->model instanceof Sortable) {
             return $query->ordered()->get();
         }
 
@@ -106,7 +106,10 @@ abstract class ModuleRepository
         $query = $this->model->where($scope);
 
         if (config('twill.enabled.permissions-management') &&
-            (TwillPermissions::getPermissionModule(getModuleNameByModel($this->model)) || method_exists($this->model, 'scopeAccessible'))
+            (TwillPermissions::getPermissionModule(getModuleNameByModel($this->model)) || method_exists(
+                    $this->model,
+                    'scopeAccessible'
+                ))
         ) {
             $query = $query->accessible();
         }
@@ -132,8 +135,8 @@ abstract class ModuleRepository
     }
 
     /**
-     * @deprecated To be removed in Twill 3.0
      * @return int
+     * @deprecated To be removed in Twill 3.0
      */
     public function getCountForAll()
     {
@@ -143,8 +146,8 @@ abstract class ModuleRepository
     }
 
     /**
-     * @deprecated To be removed in Twill 3.0
      * @return int
+     * @deprecated To be removed in Twill 3.0
      */
     public function getCountForPublished()
     {
@@ -154,8 +157,8 @@ abstract class ModuleRepository
     }
 
     /**
-     * @deprecated To be removed in Twill 3.0
      * @return int
+     * @deprecated To be removed in Twill 3.0
      */
     public function getCountForDraft()
     {
@@ -165,8 +168,8 @@ abstract class ModuleRepository
     }
 
     /**
-     * @deprecated To be removed in Twill 3.0
      * @return int
+     * @deprecated To be removed in Twill 3.0
      */
     public function getCountForTrash()
     {
@@ -176,15 +179,13 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param $id
-     * @param array $with
-     * @param array $withCount
-     * @return \A17\Twill\Models\Model
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function getById($id, $with = [], $withCount = [])
+    public function getById(int $id, array $with = [], array $withCount = []): Model
     {
-        return $this->model->with($with)->withCount($withCount)->findOrFail($id);
+        return once(function () use ($id, $with, $withCount) {
+            return $this->model->with($with)->withCount($withCount)->findOrFail($id);
+        });
     }
 
     /**
@@ -203,7 +204,7 @@ abstract class ModuleRepository
 
         if ($this->model instanceof Sortable) {
             $query = $query->ordered();
-        } elseif (! empty($orders)) {
+        } elseif (!empty($orders)) {
             $query = $this->order($query, $orders);
         }
 
@@ -420,7 +421,7 @@ abstract class ModuleRepository
                 return false;
             }
 
-            if (! method_exists($object, 'canDeleteSafely') || $object->canDeleteSafely()) {
+            if (!method_exists($object, 'canDeleteSafely') || $object->canDeleteSafely()) {
                 $object->delete();
                 $this->afterDelete($object);
 
@@ -552,22 +553,22 @@ abstract class ModuleRepository
     {
         if (property_exists($this->model, 'checkboxes')) {
             foreach ($this->model->checkboxes as $field) {
-                if (! $this->shouldIgnoreFieldBeforeSave($field)) {
-                    $fields[$field] = isset($fields[$field]) && ! empty($fields[$field]);
+                if (!$this->shouldIgnoreFieldBeforeSave($field)) {
+                    $fields[$field] = isset($fields[$field]) && !empty($fields[$field]);
                 }
             }
         }
 
         if (property_exists($this->model, 'nullable')) {
             foreach ($this->model->nullable as $field) {
-                if (! isset($fields[$field]) && ! $this->shouldIgnoreFieldBeforeSave($field)) {
+                if (!isset($fields[$field]) && !$this->shouldIgnoreFieldBeforeSave($field)) {
                     $fields[$field] = null;
                 }
             }
         }
 
         foreach ($fields as $key => $value) {
-            if (! $this->shouldIgnoreFieldBeforeSave($key)) {
+            if (!$this->shouldIgnoreFieldBeforeSave($key)) {
                 if ($value === []) {
                     $fields[$key] = null;
                 }
@@ -720,7 +721,11 @@ abstract class ModuleRepository
             } elseif (is_array($value)) {
                 $query->whereIn($column, $value);
             } elseif ($column[0] == '%') {
-                $value && ($value[0] == '!') ? $query->where(substr($column, 1), "not $likeOperator", '%' . substr($value, 1) . '%') : $query->where(substr($column, 1), $likeOperator, '%' . $value . '%');
+                $value && ($value[0] == '!') ? $query->where(
+                    substr($column, 1),
+                    "not $likeOperator",
+                    '%' . substr($value, 1) . '%'
+                ) : $query->where(substr($column, 1), $likeOperator, '%' . $value . '%');
             } elseif (isset($value[0]) && $value[0] == '!') {
                 $query->where($column, '<>', substr($value, 1));
             } elseif ($value !== '') {
@@ -764,7 +769,7 @@ abstract class ModuleRepository
             }
 
             foreach ($object->$relationship as $relationshipObject) {
-                if (! in_array($relationshipObject->$attribute, $fields[$formField])) {
+                if (!in_array($relationshipObject->$attribute, $fields[$formField])) {
                     $relationshipObject->delete();
                 }
             }
@@ -849,8 +854,8 @@ abstract class ModuleRepository
     public function addIgnoreFieldsBeforeSave($ignore = [])
     {
         $this->ignoreFieldsBeforeSave = is_array($ignore)
-        ? array_merge($this->ignoreFieldsBeforeSave, $ignore)
-        : array_merge($this->ignoreFieldsBeforeSave, [$ignore]);
+            ? array_merge($this->ignoreFieldsBeforeSave, $ignore)
+            : array_merge($this->ignoreFieldsBeforeSave, [$ignore]);
     }
 
     /**
@@ -882,7 +887,7 @@ abstract class ModuleRepository
      */
     protected function getModelRepository($relation, $modelOrRepository = null)
     {
-        if (! $modelOrRepository) {
+        if (!$modelOrRepository) {
             if (class_exists($relation) && (new $relation()) instanceof Model) {
                 $modelOrRepository = Str::afterLast($relation, '\\');
             } else {
@@ -896,8 +901,8 @@ abstract class ModuleRepository
         }
 
         $repository = class_exists($modelOrRepository)
-        ? App::make($modelOrRepository)
-        : $modelOrRepository;
+            ? App::make($modelOrRepository)
+            : $modelOrRepository;
 
         if ($repository instanceof ModuleRepository) {
             return $repository;
