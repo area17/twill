@@ -8,6 +8,9 @@ class QuickFilter extends TwillBaseFilter
 {
     protected ?\Closure $amount = null;
 
+    /**
+     * The callback that will tell the filter how many results there are.
+     */
     public function amount(\Closure $callback): self
     {
         $this->amount = $callback;

@@ -13,6 +13,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - run: |
+          if grep --exclude-dir={.git,.github,vendor} -rE "PRtodo"; then
+               exit 1
+          else
+              echo "All good"
+          fi
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:

@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Listings\Filters;
 
+use A17\Twill\Repositories\ModuleRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -14,6 +15,11 @@ class BasicFilter extends TwillBaseFilter
     protected bool $includeAll = false;
     protected mixed $default = null;
 
+    /**
+     * Sets the applied value of the filter.
+     *
+     * This is usually something you do not want to run manually.
+     */
     public function withFilterValue(mixed $value): self
     {
         $this->appliedValue = $value;
@@ -21,6 +27,9 @@ class BasicFilter extends TwillBaseFilter
         return $this;
     }
 
+    /**
+     * This adds a "All" option.
+     */
     public function includeAll(bool $includeAll = true): self
     {
         $this->includeAll = $includeAll;
@@ -28,6 +37,9 @@ class BasicFilter extends TwillBaseFilter
         return $this;
     }
 
+    /**
+     * Sets the options that can be used to select, it should be a key->value collection.
+     */
     public function options(Collection $options): self
     {
         $this->options = $options;
@@ -35,6 +47,9 @@ class BasicFilter extends TwillBaseFilter
         return $this;
     }
 
+    /**
+     * Set the default value of the filter.
+     */
     public function default(mixed $default): self
     {
         $this->default = $default;
@@ -69,7 +84,7 @@ class BasicFilter extends TwillBaseFilter
         return $this->queryString . 'List';
     }
 
-    public function getOptions(): Collection
+    public function getOptions(ModuleRepository $repository): Collection
     {
         if ($this->includeAll) {
             $this->options->prepend('All', self::OPTION_ALL);

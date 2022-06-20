@@ -2,9 +2,13 @@
 
 namespace A17\Twill\Services\Listings\Filters;
 
+use A17\Twill\Repositories\ModuleRepository;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
+/**
+ * This filter uses a relation (BelongsTo) to make a filter select.
+ */
 class BelongsToFilter extends BasicFilter
 {
     protected string $field;
@@ -28,7 +32,7 @@ class BelongsToFilter extends BasicFilter
         return $builder;
     }
 
-    public function getOptions(): Collection
+    public function getOptions(ModuleRepository $repository): Collection
     {
         /** @var \A17\Twill\Models\Model $model */
         $model = $this->getModel();
@@ -48,6 +52,9 @@ class BelongsToFilter extends BasicFilter
         return $options;
     }
 
+    /**
+     * The relation field to use, this is usually something like "partner".
+     */
     public function field(string $fieldName): self
     {
         $this->field = $fieldName;
@@ -66,6 +73,9 @@ class BelongsToFilter extends BasicFilter
         return $this;
     }
 
+    /**
+     * The model of the relation target, if field is `partner` this would be `Partner::class`.
+     */
     public function model(string $model): self
     {
         $this->model = $model;

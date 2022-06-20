@@ -636,7 +636,7 @@ abstract class ModuleController extends Controller
             return View::exists($view);
         });
 
-        return View::make($view, $indexData);
+        return View::make($view, $indexData + ['repository' => $this->repository]);
     }
 
     /**
@@ -1339,7 +1339,7 @@ abstract class ModuleController extends Controller
                 unset($indexDataWithoutFilters[$key]);
             }
         }
-        $filters = $this->filters()->toFrontendArray();
+        $filters = $this->filters()->toFrontendArray($this->repository);
 
         return array_replace_recursive($data + $options, $indexDataWithoutFilters + $filters);
     }

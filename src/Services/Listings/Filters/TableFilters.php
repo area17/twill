@@ -2,11 +2,12 @@
 
 namespace A17\Twill\Services\Listings\Filters;
 
+use A17\Twill\Repositories\ModuleRepository;
 use Illuminate\Support\Collection;
 
 class TableFilters extends Collection
 {
-    public function toFrontendArray(): array
+    public function toFrontendArray(ModuleRepository $repository): array
     {
         $result = [];
 
@@ -16,7 +17,7 @@ class TableFilters extends Collection
 //            if (!$filters->isEnabled()) {
 //                continue;
 //            }
-            $result[$filter->getKey()] = $filter->getOptions();
+            $result[$filter->getKey()] = $filter->getOptions($repository);
         }
 
         return $result;

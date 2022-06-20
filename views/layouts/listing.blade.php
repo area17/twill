@@ -44,7 +44,7 @@
                         <div slot="hidden-filters">
                             @foreach($hiddenFilters as $filter)
                                 @php
-                                    $options = $filter->getOptions()->map(function($label, $value) use($filter) {
+                                    $options = $filter->getOptions($repository)->map(function($label, $value) use($filter) {
                                             if ($value === \A17\Twill\Services\Listings\Filters\BasicFilter::OPTION_ALL) {
                                                 // @PRtodo: TwillTrans
                                                 $label = "All " . $filter->getLabel() ?? '';
