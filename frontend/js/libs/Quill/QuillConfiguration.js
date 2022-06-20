@@ -172,7 +172,7 @@ icons.header['3'] = getIcon('header-3')
 icons.header['4'] = getIcon('header-4')
 icons.header['5'] = getIcon('header-5')
 icons.header['6'] = getIcon('header-6')
-icons.divider = getIcon('horizontal-rule')
+icons.divider = getIcon('hr')
 
 /*
 * ClipBoard manager
