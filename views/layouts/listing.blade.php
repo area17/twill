@@ -46,8 +46,7 @@
                                 @php
                                     $options = $filter->getOptions($repository)->map(function($label, $value) use($filter) {
                                             if ($value === \A17\Twill\Services\Listings\Filters\BasicFilter::OPTION_ALL) {
-                                                // @PRtodo: TwillTrans
-                                                $label = "All " . $filter->getLabel() ?? '';
+                                                $label = twillTrans('listing.filters.all-label', ['label' => $filter->getLabel() ?? '']);
                                             }
                                             return [
                                                 'value' => $value,
@@ -57,9 +56,7 @@
 
                                     $currentValue = $requestFilter[$filter->getQueryString()] ?? $filter->getDefaultValue();
 
-                                    $selectedIndex = array_search($currentValue, array_column($options, 'value'));
-                                    // @todo: When the user presses "Reset" in the filters, we should reset them to our
-                                    // default ($filter->getDefaultValue)
+                                    $selectedIndex = array_search($currentValue, array_column($options, 'value'), true);
                                 @endphp
                                 <a17-vselect
                                     name="{{ $filter->getQueryString() }}"

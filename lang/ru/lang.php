@@ -198,11 +198,11 @@ return [
     'nav' => [
         'admin' => 'Администратор',
         'cms-users' => 'Пользователи CMS',
-        'profile' => 'Profile',
         'logout' => 'Выйти',
         'media-library' => 'Медиа библиотека',
         'settings' => 'Настройки',
         'close-menu' => 'Закрыть меню',
+        'profile' => 'Profile',
     ],
     'notifications' => [
         'reset' => [

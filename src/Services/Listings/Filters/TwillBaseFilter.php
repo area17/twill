@@ -5,9 +5,6 @@ namespace A17\Twill\Services\Listings\Filters;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
-/**
- * @PRtodo: Add docblocks to describe the purpose.
- */
 abstract class TwillBaseFilter
 {
     protected ?string $label = null;
@@ -22,7 +19,9 @@ abstract class TwillBaseFilter
         return new static();
     }
 
-    // @PRtodo: Implement label for Basicfilter ui.
+    /**
+     * Set a label to use for the filter.
+     */
     public function label(string $label): self
     {
         $this->label = $label;
@@ -35,6 +34,9 @@ abstract class TwillBaseFilter
         return $this->label;
     }
 
+    /**
+     * Set the query string to use in the url
+     */
     public function queryString(string $queryString): self
     {
         $this->queryString = $queryString;
@@ -52,6 +54,9 @@ abstract class TwillBaseFilter
         return $this->queryString;
     }
 
+    /**
+     * When passing a boolean, the filter will only be enabled when it is true.
+     */
     public function onlyEnableWhen(bool $enable = true): self
     {
         $this->enabled = $enable;
@@ -59,6 +64,9 @@ abstract class TwillBaseFilter
         return $this;
     }
 
+    /**
+     * When passing a boolean, the filter will be disabled when it is true.
+     */
     public function disable(bool $disable = true): self
     {
         $this->enabled = !$disable;
@@ -66,6 +74,9 @@ abstract class TwillBaseFilter
         return $this;
     }
 
+    /**
+     * The closure to apply the filter.
+     */
     public function apply(\Closure $closure): self
     {
         $this->apply = $closure;
