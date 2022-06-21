@@ -991,18 +991,23 @@ abstract class ModuleController extends Controller
     public function publish(): JsonResponse
     {
         try {
-            if ($this->repository->updateBasic($this->request->get('id'), [
-                'published' => !$this->request->get('active'),
+            $data = $this->validate($this->request, [
+                'id' => 'integer|required',
+                'active' => 'bool|required',
+            ]);
+
+            if ($this->repository->updateBasic($data['id'], [
+                'published' => !$data['active'],
             ])) {
                 activity()->performedOn(
-                    $this->repository->getById($this->request->get('id'))
+                    $this->repository->getById($data['id'])
                 )->log(
                     ($this->request->get('active') ? 'un' : '') . 'published'
                 );
 
                 $this->fireEvent();
 
-                if ($this->request->get('active')) {
+                if ($data['active']) {
                     return $this->respondWithSuccess(
                         twillTrans('twill::lang.listing.publish.unpublished', ['modelTitle' => $this->modelTitle])
                     );
