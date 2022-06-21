@@ -14,6 +14,10 @@ abstract class TwillBaseFilter
 
     abstract public function applyFilter(Builder $builder): Builder;
 
+    final public function __construct()
+    {
+    }
+
     public static function make(): self
     {
         return new static();

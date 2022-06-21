@@ -8,9 +8,16 @@ class BooleanFilter extends BasicFilter
 {
     protected string $field;
 
-    public function __construct()
+    public static function make(): self
     {
-        $this->options(collect(['true' => twillTrans('listing.filter.yes'), 'false' => twillTrans('listing.filter.no')]));
+        $filter = parent::make();
+        $filter->options(
+            collect([
+                'true' => twillTrans('listing.filter.yes'),
+                'false' => twillTrans('listing.filter.no'),
+            ])
+        );
+        return $filter;
     }
 
     public function applyFilter(Builder $builder): Builder

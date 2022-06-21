@@ -1333,7 +1333,7 @@ abstract class ModuleController extends Controller
                     request(),
                     $this->getIndexOption('reorder')
                 ),
-                'tableMainFilters' => $this->quickFilters($items)->toFrontendArray(),
+                'tableMainFilters' => $this->quickFilters()->toFrontendArray(),
                 'filters' => json_decode($this->request->get('filter'), true) ?? [],
                 // HiddenFilters are called "hidden" because they only show when the filters button is clicked.
                 'hiddenFilters' => $this->filters(),
