@@ -103,8 +103,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
      */
     public function getIndexData($prependScope = [])
     {
-        $scopes = $this->filterScope($prependScope);
-        $items = $this->getIndexItems($scopes);
+        $items = $this->getIndexItems($prependScope);
 
         return [
             'items' => $items->map(function ($item) {
@@ -259,8 +258,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             $this->repository->update($id, ['bulk_tags' => $newTags, 'previous_common_tags' => $previousCommonTags]);
         }
 
-        $scopes = $this->filterScope(['id' => $ids]);
-        $items = $this->getIndexItems($scopes);
+        $items = $this->getIndexItems(['id' => $ids]);
 
         return $this->responseFactory->json([
             'items' => $items->map(function ($item) {

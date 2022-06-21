@@ -14,7 +14,6 @@ use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
 use A17\Twill\Repositories\Behaviors\HandlePermissions;
 use A17\Twill\Repositories\Behaviors\HandleRelatedBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleRepeaters;
-use A17\Twill\Services\Listings\Filters\QuickFilter;
 use Exception;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
@@ -24,7 +23,6 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use PDO;
 use ReflectionClass;
 
 abstract class ModuleRepository
@@ -37,7 +35,7 @@ abstract class ModuleRepository
     use HandlePermissions;
 
     /**
-     * @var \A17\Twill\Models\ModelInterface&\Illuminate\Database\Eloquent\Model
+     * @var \A17\Twill\Models\Contracts\TwillModelContract&\Illuminate\Database\Eloquent\Model
      */
     protected $model;
 
@@ -880,15 +878,11 @@ abstract class ModuleRepository
         }
     }
 
-    /**
-     * @param string|null $method
-     * @return array
-     */
-    protected function traitsMethods(string $method = null)
+    protected function traitsMethods(?string $method = null): array
     {
         $method = $method ?? debug_backtrace()[1]['function'];
 
-        $traits = array_values(class_uses_recursive(get_called_class()));
+        $traits = array_values(class_uses_recursive(static::class));
 
         $uniqueTraits = array_unique(array_map('class_basename', $traits));
 
@@ -897,7 +891,7 @@ abstract class ModuleRepository
         }, $uniqueTraits);
 
         return array_filter($methods, function (string $method) {
-            return method_exists(get_called_class(), $method);
+            return method_exists(static::class, $method);
         });
     }
 
@@ -906,7 +900,7 @@ abstract class ModuleRepository
      */
     protected function getLikeOperator()
     {
-        if (DB::connection()->getPDO()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') {
+        if (DB::connection()->getPDO()->getAttribute(\PDO::ATTR_DRIVER_NAME) === 'pgsql') {
             return 'ILIKE';
         }
 

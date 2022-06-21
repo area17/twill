@@ -103,8 +103,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
      */
     protected function getIndexData($prependScope = [])
     {
-        $scopes = $this->filterScope($prependScope);
-        $items = $this->getIndexItems($scopes);
+        $items = $this->getIndexItems($prependScope);
 
         return [
             'items' => $items->map(function ($item) {
@@ -262,8 +261,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             ] + $extraMetadatas);
         }
 
-        $scopes = $this->filterScope(['id' => $ids]);
-        $items = $this->getIndexItems($scopes);
+        $items = $this->getIndexItems(['id' => $ids]);
 
         return $this->responseFactory->json([
             'items' => $items->map(function ($item) {
