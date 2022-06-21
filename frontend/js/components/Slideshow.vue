@@ -6,7 +6,7 @@
     </div>
     <draggable class="slideshow__content" v-model="slides" :options="dragOptions" v-if="slides.length">
       <transition-group name="draggable_list" tag='div'>
-        <div class="slide" v-for="(slide, index) in slides" :key="slide.id">
+        <div class="slide" v-for="(slide, index) in slides" :key="`${slide.id}_${index}`">
             <div class="slide__handle">
               <div class="slide__handle--drag"></div>
             </div>
@@ -106,9 +106,6 @@
         // destroy all the medias of the slideshow
         this.$store.commit(MEDIA_LIBRARY.DESTROY_MEDIAS, this.name)
       }
-    },
-    beforeDestroy: function () {
-      this.deleteSlideshow()
     }
   }
 </script>
@@ -116,34 +113,33 @@
 <style lang="scss" scoped>
 
   .slideshow {
-    // width: 100%;
     display: block;
     border-radius: 2px;
     border: 1px solid $color__border;
-    /*overflow-x: hidden;*/
     background:$color__background;
   }
 
   .slideshow__trigger {
     padding:10px;
-    position:relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     border-top: 1px solid $color__border--light;
 
     &:first-child {
-      border-top:0 none
+      border-top:0 none;
     }
   }
 
   .slideshow__note {
     color: $color__text--light;
-    float: right;
-    position: absolute;
-    bottom: 18px;
-    right: 15px;
+    padding: 5px;
+    flex: 1;
+    justify-content: flex-end;
     display:none;
 
     @include breakpoint('small+') {
-      display: inline-block;
+      display: flex;
     }
 
     @include breakpoint('medium') {

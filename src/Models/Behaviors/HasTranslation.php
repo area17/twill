@@ -2,8 +2,12 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use A17\Twill\Commands\Build;
+use A17\Twill\Facades\TwillCapsules;
 use Astrotomic\Translatable\Translatable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\JoinClause;
+use Illuminate\Support\Collection;
 
 trait HasTranslation
 {
@@ -22,24 +26,19 @@ trait HasTranslation
             return $repository;
         }
 
-        return $this->getCapsuleTranslationClass(class_basename($this));
+        return TwillCapsules::getCapsuleForModel(class_basename($this))->getTranslationModel();
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string|null $locale
-     * @return \Illuminate\Database\Eloquent\Builder|null
-     */
-    public function scopeWithActiveTranslations($query, $locale = null)
+    public function scopeWithActiveTranslations(Builder $query, ?string $locale = null): Builder
     {
         if (method_exists($query->getModel(), 'translations')) {
-            $locale = $locale == null ? app()->getLocale() : $locale;
+            $locale = $locale ?? app()->getLocale();
 
             $query->whereHas('translations', function ($query) use ($locale) {
                 $query->whereActive(true);
                 $query->whereLocale($locale);
 
-                if (config('translatable.use_property_fallback', false)) {
+                if (config('translatable.use_fallback') && config('translatable.use_property_fallback', false)) {
                     $query->orWhere('locale', config('translatable.fallback_locale'));
                 }
             });
@@ -48,11 +47,13 @@ trait HasTranslation
                 $query->whereActive(true);
                 $query->whereLocale($locale);
 
-                if (config('translatable.use_property_fallback', false)) {
+                if (config('translatable.use_fallback') && config('translatable.use_property_fallback', false)) {
                     $query->orWhere('locale', config('translatable.fallback_locale'));
                 }
             }]);
         }
+
+        return $query;
     }
 
     /**
@@ -130,16 +131,15 @@ trait HasTranslation
      */
     public function getActiveLanguages()
     {
-        return $this->translations->map(function ($translation) {
+        return Collection::make(getLocales())->map(function ($locale) {
+            $translation = $this->translations->firstWhere('locale', $locale);
+
             return [
-                'shortlabel' => strtoupper($translation->locale),
-                'label' => getLanguageLabelFromLocaleCode($translation->locale),
-                'value' => $translation->locale,
+                'shortlabel' => strtoupper($locale),
+                'label' => getLanguageLabelFromLocaleCode($locale),
+                'value' => $locale,
                 'published' => $translation->active ?? false,
             ];
-        })->sortBy(function ($translation) {
-            $localesOrdered = getLocales();
-            return array_search($translation['value'], $localesOrdered);
         })->values();
     }
 

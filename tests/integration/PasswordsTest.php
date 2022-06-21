@@ -31,15 +31,15 @@ class PasswordsTest extends TestCase
         ], 404);
 
         Notification::assertSentTo(
-            $user = User::where(
+            User::where(
                 'email',
-                $email = $this->superAdmin()->email
+                $this->superAdmin()->email
             )->first(),
             Reset::class
         );
 
         $resetUrl = route(
-            'admin.password.reset.form',
+            'twill.password.reset.form',
             Notification::token(),
             false
         );

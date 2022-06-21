@@ -6,7 +6,7 @@
 
                 <div class="headerMobile__list">
                     @foreach(config('twill-navigation') as $global_navigation_key => $global_navigation_element)
-                        @can($global_navigation_element['can'] ?? 'list')
+                        @can($global_navigation_element['can'] ?? 'access-module-list', $global_navigation_key)
                             @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
                                 <a class="s--on" href="{{ getNavigationUrl($global_navigation_element, $global_navigation_key) }}">{{ $global_navigation_element['title'] }}</a><br />
                             @else
@@ -20,9 +20,9 @@
                         <a href="#" data-closenav-btn data-medialib-btn>{{ twillTrans('twill::lang.nav.media-library') }}</a><br />
                     @endif
                     @if(isset($currentUser))
-                        <a href="{{ route('admin.users.index') }}">{{ twillTrans('twill::lang.nav.cms-users') }}</a><br />
-                        <a href="{{ route('admin.users.edit', $currentUser->id) }}">{{ twillTrans('twill::lang.nav.settings') }}</a><br />
-                        <a href="{{ route('admin.logout') }}">{{ twillTrans('twill::lang.nav.logout') }}</a>
+                        <a href="{{ route('twill.users.index') }}">{{ twillTrans('twill::lang.nav.cms-users') }}</a><br />
+                        <a href="{{ route('twill.users.edit', $currentUser->id) }}">{{ twillTrans('twill::lang.nav.profile') }}</a><br />
+                        <a href="#" data-logout-btn>{{ twillTrans('twill::lang.nav.logout') }}</a>
                     @endif
                 </div>
             </div>
@@ -31,7 +31,7 @@
 
     <button class="ham @if(isset($search) && $search) ham--search @endif" data-ham-btn>
         @foreach(config('twill-navigation') as $global_navigation_key => $global_navigation_element)
-            @can($global_navigation_element['can'] ?? 'list')
+            @can($global_navigation_element['can'] ?? 'access-module-list', $global_navigation_key)
                 @if(isActiveNavigation($global_navigation_element, $global_navigation_key, $_global_active_navigation))
                     <span class="ham__label">{{ $global_navigation_element['title'] }}</span>
                 @endif

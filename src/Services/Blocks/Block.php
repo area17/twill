@@ -2,20 +2,27 @@
 
 namespace A17\Twill\Services\Blocks;
 
+use A17\Twill\Facades\TwillBlocks;
 use Exception;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
+/**
+ * @todo(3.x): This is not really a service, and we should move this to another location.
+ */
 class Block
 {
-    const SOURCE_APP = 'app';
+    public const SOURCE_APP = 'app';
 
-    const SOURCE_TWILL = 'twill';
+    public const SOURCE_TWILL = 'twill';
 
-    const SOURCE_CUSTOM = 'custom';
+    public const SOURCE_CUSTOM = 'custom';
 
-    const TYPE_BLOCK = 'block';
+    public const TYPE_BLOCK = 'block';
 
-    const TYPE_REPEATER = 'repeater';
+    public const TYPE_REPEATER = 'repeater';
+
+    public const PREG_REPLACE_INNER = '(\(((?>[^()]+)|(?-2))*\))';
 
     /**
      * @var string
@@ -28,7 +35,7 @@ class Block
     public $titleField;
 
     /**
-     * @var boolean
+     * @var bool
      */
     public $hideTitlePrefix;
 
@@ -36,6 +43,11 @@ class Block
      * @var string
      */
     public $trigger;
+
+    /**
+     * For repeaters only: The select existing button text
+     */
+    public ?string $selectTrigger;
 
     /**
      * @var string
@@ -63,7 +75,7 @@ class Block
     public $icon;
 
     /**
-     * @var boolean
+     * @var bool
      */
     public $compiled;
 
@@ -73,12 +85,12 @@ class Block
     public $component;
 
     /**
-     * @var integer
+     * @var int
      */
     public $max = 999;
 
     /**
-     * @var boolean
+     * @var bool
      */
     public $isNewFormat;
 
@@ -95,17 +107,101 @@ class Block
     /**
      * @var string
      */
+    public $renderNamespace;
+
+    /**
+     * @var string
+     */
     public $contents;
 
     /**
-     * Block constructor.
+     * @var array
+     */
+    public $rules = [];
+
+    /**
+     * @var array
+     */
+    public $rulesForTranslatedFields = [];
+
+    /**
+     * Renderedata.
+     */
+    public ?RenderData $renderData = null;
+
+    /**
+     * Make a block instance out of arguments.
+     *
      * @param $file
      * @param $type
      * @param $source
      * @param $name
+     * @param string $renderNamespace
+     *   Mainly for packages, but this will get the preview/render view file from that namespace.
+     * @return static
+     */
+    public static function make($file, $type, $source, $name = null, string $renderNamespace = null): self
+    {
+        $name = $name ?? Str::before(
+                $file->getFilename(),
+                '.blade.php'
+            );
+
+        $transformed = Str::studly($name) . 'Block';
+        // @todo: Package block classes?
+        $className = "\App\Twill\Block\\$transformed";
+        if (class_exists($className)) {
+            return new $className($file, $type, $source, $name);
+        }
+
+        return new self($file, $type, $source, $name, $renderNamespace);
+    }
+
+    /**
+     * Gets the first match being a block or repeater.
+     */
+    public static function findFirstWithType(string $type): ?self
+    {
+        return app(BlockCollection::class)->findByName($type);
+    }
+
+    public static function getForType(string $type, bool $repeater = false): self
+    {
+        if ($repeater) {
+            $blocksList = TwillBlocks::getRepeaters();
+        } else {
+            $blocksList = TwillBlocks::getBlocks();
+        }
+
+        return $blocksList->first(function (self $blockConfig) use ($type) {
+            return $blockConfig->name === $type;
+        });
+    }
+
+    public static function getForComponent(string $type, bool $repeater = false): self
+    {
+        if ($repeater) {
+            $blocksList = TwillBlocks::getRepeaters();
+        } else {
+            $blocksList = TwillBlocks::getBlocks();
+        }
+
+        return $blocksList->first(function (self $blockConfig) use ($type) {
+            return $blockConfig->component === $type;
+        });
+    }
+
+    /**
+     * Block constructor.
+     * @param Symfony\Component\Finder\SplFileInfo $file
+     * @param $type
+     * @param $source
+     * @param $name
+     * @param string $renderNamespace
+     *   Mainly for packages, but this will get the preview/render view file from that namespace.
      * @throws \Exception
      */
-    public function __construct($file, $type, $source, $name = null)
+    public function __construct($file, $type, $source, $name = null, ?string $renderNamespace = null)
     {
         $this->file = $file;
 
@@ -113,16 +209,18 @@ class Block
 
         $this->source = $source;
 
-        $this->fileName = $this->getFilename();
+        // @change: This now holds the full file path instead of just the fileName.
+        $this->fileName = $this->file ? $this->file->getPathName() : 'Custom vue file';
+
+        $this->renderNamespace = $renderNamespace;
 
         $this->name = $name ?? Str::before(
-            $this->file->getFilename(),
-            '.blade.php'
-        );
+                $this->file->getFilename(),
+                '.blade.php'
+            );
 
-        if ($type === self::TYPE_BLOCK
-            && config('twill.block_editor.repeaters.' . $this->name) !== null
-        ) {
+        // @todo: This may not be needed.
+        if ($type === self::TYPE_BLOCK && config('twill.block_editor.repeaters.' . $this->name) !== null) {
             $this->type = self::TYPE_REPEATER;
         }
 
@@ -140,6 +238,24 @@ class Block
         return $this;
     }
 
+    public function getData(array $data, \A17\Twill\Models\Block $block): array
+    {
+        return $data;
+    }
+
+    /**
+     * Gets the form data. This is only called once and not per create.
+     *
+     * This function is not aware of the context. If you need to know the current module you have to figure that out
+     * yourself by for example parsing the route.
+     *
+     * @return array
+     */
+    public function getFormData(): array
+    {
+        return [];
+    }
+
     /**
      * @return \Illuminate\Support\Collection
      */
@@ -150,6 +266,7 @@ class Block
             'titleField' => $this->titleField,
             'hideTitlePrefix' => $this->hideTitlePrefix,
             'trigger' => $this->trigger,
+            'selectTrigger' => $this->selectTrigger,
             'name' => $this->name,
             'group' => $this->group,
             'type' => $this->type,
@@ -159,6 +276,8 @@ class Block
             'new_format' => $this->isNewFormat ? 'yes' : '-',
             'file' => $this->getFilename(),
             'component' => $this->component,
+            'rules' => $this->getRules(),
+            'rulesForTranslatedFields' => $this->getRulesForTranslatedFields(),
             'max' => $this->type === self::TYPE_REPEATER ? $this->max : null,
         ]);
     }
@@ -192,24 +311,54 @@ class Block
      */
     public function parse()
     {
-        $contents = $this->file ? file_get_contents((string) $this->file->getPathName()) : '';
+        $contents = $this->file ? file_get_contents((string)$this->file->getPathName()) : '';
 
         $this->title = $this->parseProperty('title', $contents, $this->name);
-        $this->trigger = $this->parseProperty('trigger', $contents, $this->name, $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.add-item') : null);
-        $this->max = (int) $this->parseProperty('max', $contents, $this->name, 999);
+        $this->trigger = $this->parseProperty(
+            'trigger',
+            $contents,
+            $this->name,
+            $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.add-item') : null
+        );
+        $this->selectTrigger = $this->parseProperty('SelectTrigger', $contents, $this->name, $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.select-existing') : null);
+        $this->max = (int)$this->parseProperty('max', $contents, $this->name, 999);
         $this->group = $this->parseProperty('group', $contents, $this->name, 'app');
         $this->icon = $this->parseProperty('icon', $contents, $this->name, 'text');
-        $this->compiled = (boolean) $this->parseProperty('compiled', $contents, $this->name, false);
+        $this->compiled = (bool)$this->parseProperty('compiled', $contents, $this->name, false);
         $this->component = $this->parseProperty('component', $contents, $this->name, "a17-block-{$this->name}");
         $this->isNewFormat = $this->isNewFormat($contents);
         $this->contents = $contents;
 
+        $this->parseArrayProperty('ValidationRules', $contents, $this->name, function ($value) {
+            $this->rules = $value ?? $this->rules;
+        });
+
+        $this->parseArrayProperty('ValidationRulesForTranslatedFields', $contents, $this->name, function ($value) {
+            $this->rulesForTranslatedFields = $value ?? $this->rulesForTranslatedFields;
+        });
+
         $this->parseMixedProperty('titleField', $contents, $this->name, function ($value, $options) {
             $this->titleField = $value;
-            $this->hideTitlePrefix = (boolean) ($options['hidePrefix'] ?? false);
+            $this->hideTitlePrefix = (bool)($options['hidePrefix'] ?? false);
         });
 
         return $this;
+    }
+
+    /**
+     * Checks both the blade file or helper class for validation rules. Returns in order the first one with data.
+     */
+    public function getRules(): array
+    {
+        return $this->rules;
+    }
+
+    /**
+     * Checks both the blade file or helper class for validation rules. Returns in order the first one with data.
+     */
+    public function getRulesForTranslatedFields(): array
+    {
+        return $this->rulesForTranslatedFields;
     }
 
     /**
@@ -231,14 +380,50 @@ class Block
         $bladeProperty = ucfirst($property);
 
         foreach (['twillProp', 'twillBlock', 'twillRepeater'] as $pattern) {
-            preg_match("/@{$pattern}{$bladeProperty}\('(.*)'\)/", $block, $matches);
+            preg_match("/@{$pattern}{$bladeProperty}" . self::PREG_REPLACE_INNER . '/', $block, $matches);
 
             if (filled($matches)) {
-                return $matches[1];
+                $result = $matches[1];
+
+                $result = Str::replaceLast(')', '', Str::replaceFirst('(', '', $result));
+
+                // Process the match if it is __(translatable).
+                if (Str::startsWith($result, '__(')) {
+                    return twillTrans(preg_replace('/__\((?:"|\')(.*)(?:"|\')\)/', '$1', $result));
+                }
+
+                // Process the match if it is twillTrans(translatable).
+                if (Str::startsWith($result, 'twillTrans(')) {
+                    return twillTrans(preg_replace('/twillTrans\((?:"|\')(.*)(?:"|\')\)/', '$1', $result));
+                }
+
+                return trim($result, '\'"');
             }
         }
 
         return $this->parsePropertyFallback($property, $blockName, $default);
+    }
+
+    /**
+     * Parse an array property directive in the form of `@twillTypeProperty([...])`
+     * and pass the result to a given callback.
+     *
+     * @param string $property
+     * @param string $block
+     * @param string $blockName
+     * @param callable $callback Should have the following signature: `function (array $value)`
+     * @return void
+     * @throws \Exception
+     */
+    public function parseArrayProperty(
+        $property,
+        $block,
+        $blockName,
+        $callback
+    ): void {
+        $this->parseMixedProperty($property, $block, $blockName, function ($value) use ($callback) {
+            $callback($value);
+        });
     }
 
     /**
@@ -248,7 +433,7 @@ class Block
      * @param string $property
      * @param string $block
      * @param string $blockName
-     * @param Callable $callback  Should have the following signature: `function ($value, $options)`
+     * @param callable $callback Should have the following signature: `function ($value, $options)`
      * @return mixed
      * @throws \Exception
      */
@@ -276,7 +461,7 @@ class Block
 
                 return $callback($value, $options);
             }
-        };
+        }
 
         $value = $this->parseProperty($property, $block, $blockName, null);
 
@@ -287,7 +472,7 @@ class Block
      * @param $property
      * @param $blockName
      * @param null $default
-     * @return array
+     * @return mixed
      * @throws \Exception
      */
     private function parsePropertyFallback(
@@ -311,16 +496,24 @@ class Block
             return $value;
         }
 
-        if ($configBlock = collect(config("twill.block_editor.blocks"))->filter(function ($block) use ($blockName) {
-            return Str::contains($block['component'], $blockName);
-        })->first()) {
+        if (
+            $configBlock = collect(config('twill.block_editor.blocks'))->filter(
+                function ($block) use ($blockName) {
+                    return Str::contains($block['component'], $blockName);
+                }
+            )->first()
+        ) {
             if ($value = ($configBlock[$property] ?? null)) {
                 return $value;
             }
         }
-        if ($configRepeater = collect(config("twill.block_editor.repeaters"))->filter(function ($repeater) use ($blockName) {
-            return Str::contains($repeater['component'], $blockName);
-        })->first()) {
+        if (
+            $configRepeater = collect(config('twill.block_editor.repeaters'))->filter(
+                function ($repeater) use ($blockName) {
+                    return Str::contains($repeater['component'], $blockName);
+                }
+            )->first()
+        ) {
             if ($value = ($configRepeater[$property] ?? null)) {
                 return $value;
             }
@@ -333,8 +526,8 @@ class Block
         // Title is mandatory
         throw new Exception(
             "Block {$blockName} does not exists or the mandatory property '{$property}' " .
-            "was not found on this block. If you are still using blocks on the twill.php " .
-            "file, please check if the block is present and properly configured."
+            'was not found on this block. If you are still using blocks on the twill.php ' .
+            'file, please check if the block is present and properly configured.'
         );
     }
 
@@ -359,28 +552,68 @@ class Block
 
     /**
      * @return string
-     * @throws \Symfony\Component\Debug\Exception\FatalThrowableError
+     * @throws \Throwable
      */
-    public function render()
+    public function renderForm()
     {
-        return BladeCompiler::render(
-            self::removeSpecialBladeTags($this->contents),
+        View::share('TwillUntilConsumed', ['renderForBlocks' => true]);
+        $block = BladeCompiler::render(
+            $this->contents,
             [
                 'renderForBlocks' => true,
-            ]
+            ] + $this->getFormData()
         );
+        View::share('TwillUntilConsumed', []);
+        return $block;
     }
 
-    /**
-     * @param $contents
-     * @return string
-     */
-    public static function removeSpecialBladeTags($contents)
+    public function getBlockView($blockViewMappings = [])
     {
-        return preg_replace([
-            "/@twillProp.*\((.*)\)/sU",
-            "/@twillBlock.*\((.*)\)/sU",
-            "/@twillRepeater.*\((.*)\)/sU",
-        ], '', $contents);
+        if ($this->renderNamespace) {
+            $view = $this->renderNamespace . '::' . $this->name;
+        } else {
+            $view = config('twill.block_editor.block_views_path') . '.' . $this->name;
+        }
+
+        if (array_key_exists($this->name, $blockViewMappings)) {
+            $view = $blockViewMappings[$this->name];
+        }
+
+        return $view;
+    }
+
+    public function setRenderData(RenderData $renderData): void
+    {
+        $this->renderData = $renderData;
+    }
+
+    public function renderView(
+        array $blockViewMappings,
+        array $data,
+        bool $inEditor = false
+    ): string {
+        if (!$this->renderData) {
+            throw new \Exception('Cannot render without renderData');
+        }
+
+        $data['inEditor'] = $inEditor;
+
+        $view = $this->getBlockView($blockViewMappings);
+        $data = $this->getData($data, $this->renderData->block);
+
+        $data['block'] = $this->renderData->block;
+        $data['renderData'] = $this->renderData;
+
+        try {
+            return view($view, $data)->render();
+        } catch (Exception $e) {
+            if (config('twill.debug')) {
+                $error = $e->getMessage() . ' in ' . $e->getFile();
+
+                return View::make('twill::errors.block', ['view' => $view, 'error' => $error])->render();
+            }
+        }
+
+        return '';
     }
 }

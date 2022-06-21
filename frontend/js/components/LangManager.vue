@@ -1,12 +1,14 @@
 <template>
   <div class="languageManager" v-if="languages.length > 1">
     <div class="languageManager__switcher">
-      <a17-langswitcher :in-modal="true"/>
+      <a17-langswitcher :in-modal="true" :all-published="!controlPublication" />
     </div>
     <a17-dropdown class="languageManager__dropdown"
                   ref="languageManagerDropdown"
                   position="bottom-right"
-                  :clickable="true">
+                  :clickable="true"
+                  v-if="controlPublication"
+    >
       <button class="languageManager__button"
               type="button"
               @click="$refs.languageManagerDropdown.toggle()">
@@ -38,6 +40,10 @@
       'a17-langswitcher': a17LangSwitcher
     },
     props: {
+      controlPublication: {
+        type: Boolean,
+        default: true
+      },
       value: {
         default: function () { return [] }
       }

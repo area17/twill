@@ -43,7 +43,6 @@ class ForgotPasswordController extends Controller
     }
 
     /**
-     * @param ViewFactory $viewFactory
      * @return \Illuminate\Contracts\View\View
      */
     public function showLinkRequestForm(ViewFactory $viewFactory)

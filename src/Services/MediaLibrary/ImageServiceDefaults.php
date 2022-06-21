@@ -12,10 +12,7 @@ trait ImageServiceDefaults
         'crop_h',
     ];
 
-    /**
-     * @return string
-     */
-    public function getSocialFallbackUrl()
+    public function getSocialFallbackUrl(): string
     {
         if ($id = config("twill.seo.image_default_id")) {
             return $this->getSocialUrl($id);
@@ -24,10 +21,7 @@ trait ImageServiceDefaults
         return config("twill.seo.image_local_fallback");
     }
 
-    /**
-     * @return string
-     */
-    public function getTransparentFallbackUrl()
+    public function getTransparentFallbackUrl(): string
     {
         return "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
     }

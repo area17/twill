@@ -75,15 +75,35 @@ trait HandleTranslations
      */
     public function getFormFieldsHandleTranslations($object, $fields)
     {
+        // Keep a copy of the slugs to add it again after.
+        $slug = $fields['translations']['slug'] ?? null;
         unset($fields['translations']);
 
         if ($object->translations != null && $object->translatedAttributes != null) {
             foreach ($object->translations as $translation) {
                 foreach ($object->translatedAttributes as $attribute) {
                     unset($fields[$attribute]);
-                    $fields['translations'][$attribute][$translation->locale] = $translation->{$attribute};
+                    if (array_key_exists($attribute, $this->fieldsGroups) && is_array($translation->{$attribute})) {
+                        foreach ($this->fieldsGroups[$attribute] as $field_name) {
+                            if (isset($translation->{$attribute}[$field_name])) {
+                                if ($this->fieldsGroupsFormFieldNamesAutoPrefix) {
+                                    $fields['translations'][$attribute . $this->fieldsGroupsFormFieldNameSeparator . $field_name][$translation->locale] = $translation->{$attribute}[$field_name];
+                                } else {
+                                    $fields['translations'][$field_name][$translation->locale] = $translation->{$attribute}[$field_name];
+                                }
+                            }
+                        }
+
+                        unset($fields['translations'][$attribute]);
+                    } else {
+                        $fields['translations'][$attribute][$translation->locale] = $translation->{$attribute};
+                    }
                 }
             }
+        }
+
+        if ($slug) {
+            $fields['translations']['slug'] = $slug;
         }
 
         return $fields;
@@ -96,7 +116,7 @@ trait HandleTranslations
             $query->whereHas('translations', function ($q) use ($scopes, $attributes) {
                 foreach ($attributes as $attribute) {
                     if (isset($scopes[$attribute]) && is_string($scopes[$attribute])) {
-                        $q->where($attribute, 'like', '%' . $scopes[$attribute] . '%');
+                        $q->where($attribute, $this->getLikeOperator(), '%' . $scopes[$attribute] . '%');
                     }
                 }
             });

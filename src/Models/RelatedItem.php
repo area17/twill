@@ -8,7 +8,7 @@ class RelatedItem extends BaseModel
 {
     protected $guarded = [];
 
-    protected $primaryKey = null;
+    protected $primaryKey;
 
     public $incrementing = false;
 

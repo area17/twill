@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Blocks;
 
+use A17\Twill\Facades\TwillBlocks;
 use Exception;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
@@ -80,9 +81,7 @@ class BlockCollection extends Collection
      */
     public function getBlockList()
     {
-        return $this->getBlocks()->map(function (Block $block) {
-            return $block->toList();
-        });
+        return $this->getBlocks();
     }
 
     /**
@@ -98,19 +97,18 @@ class BlockCollection extends Collection
      * @param $source
      * @param null $type
      * @return \Illuminate\Support\Collection
+     *
+     * @deprecated Removed in 3.x
      */
     public function readBlocks($directory, $source, $type = null)
     {
-        if (!$this->fileSystem->exists($directory)) {
+        if (! $this->fileSystem->exists($directory)) {
             $this->addMissingDirectory($directory);
 
             return collect();
         }
 
-        return collect($this->fileSystem->files($directory))
-            ->map(function ($file) use ($source, $type) {
-                return new Block($file, $type, $source);
-            });
+        return TwillBlocks::readBlocksFromDirectory($directory, $source, $type);
     }
 
     /**
@@ -140,29 +138,21 @@ class BlockCollection extends Collection
     }
 
     /**
-     * @param Block $block
      * @return string
      */
     public function detectCustomSources(Block $block)
     {
-        if ($block->source === Block::SOURCE_APP) {
-            if (
-                $this->collect()
-                ->where('fileName', $block->getFileName())
-                ->where('source', Block::SOURCE_TWILL)
-                ->isNotEmpty()
-            ) {
-                return Block::SOURCE_CUSTOM;
-            }
+        if ($block->source === Block::SOURCE_APP && $this->collect()
+        ->where('fileName', $block->getFileName())
+        ->where('source', Block::SOURCE_TWILL)
+        ->isNotEmpty()) {
+            return Block::SOURCE_CUSTOM;
         }
 
         return $block->source;
     }
 
-    /**
-     * @return $this
-     */
-    public function load()
+    public function load(): self
     {
         $this->generatePaths();
 
@@ -191,7 +181,7 @@ class BlockCollection extends Collection
         // remove duplicate Twill blocks
         $appBlocks = $this->collect()->whereIn('source', [Block::SOURCE_APP, Block::SOURCE_CUSTOM]);
         $this->items = $this->collect()->filter(function ($item) use ($appBlocks) {
-            return !$appBlocks->contains(function ($block) use ($item) {
+            return ! $appBlocks->contains(function ($block) use ($item) {
                 return $item->source === Block::SOURCE_TWILL && $item->name === $block->name;
             });
         })->values()->toArray();
@@ -204,15 +194,11 @@ class BlockCollection extends Collection
     }
 
     /**
-     * This function will add blocks and repeaters that are only defined in the config
+     * This function will add blocks and repeaters that are only defined in the config.
      *
      * For compatibility with 2.0.2 and lower
-     *
-     * @param Collection $items
-     * @param string $type
-     * @return void
      */
-    public function addBlocksFromConfig(Collection $items, $type)
+    public function addBlocksFromConfig(Collection $items, string $type): self
     {
         $items->reject(function ($value, $blockName) use ($type) {
             return $this->contains(function ($block) use ($blockName, $type) {
@@ -220,11 +206,7 @@ class BlockCollection extends Collection
             }) ? [$blockName, $value] : false;
         })
             ->each(function ($block, $blockName) use ($type) {
-                if ($block['compiled'] ?? false) {
-                    $file = null;
-                } else {
-                    $file = $this->findFileByComponentName($block['component']);
-                }
+                $file = $block['compiled'] ?? false ? null : $this->findFileByComponentName($block['component']);
 
                 $this->push($this->blockFromComponentName(
                     $file,
@@ -248,9 +230,7 @@ class BlockCollection extends Collection
     {
         $this->logDeprecatedBlockConfig($blockName, $type);
 
-        $block = new Block($file, $type, $source, $blockName);
-
-        return $block;
+        return Block::make($file, $type, $source, $blockName);
     }
 
     /**
@@ -338,8 +318,6 @@ class BlockCollection extends Collection
      */
     public function getRepeaterList()
     {
-        return $this->getRepeaters()->map(function (Block $block) {
-            return $block->toList();
-        });
+        return $this->getRepeaters();
     }
 }

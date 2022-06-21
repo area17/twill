@@ -1,5 +1,5 @@
 <template>
-  <a17-block-model :editor-name="editorName" v-slot="{ add, edit, unEdit }">
+  <a17-blockeditor-model :editor-name="editorName" v-slot="{ add, edit, unEdit }">
     <div class="editorPreview"
          :class="previewClass"
          :style="previewStyle"
@@ -15,7 +15,7 @@
                  @add="onAdd(add, edit, $event)"
                  @update="onUpdate">
         <template v-for="savedBlock in blocks">
-          <a17-block-model :block="savedBlock"
+          <a17-blockeditor-model :block="savedBlock"
                            :key="savedBlock.id"
                            :editor-name="editorName"
                            v-slot="{ block, isActive, blockIndex, move, remove, edit, unEdit }">
@@ -28,23 +28,23 @@
                                       @block:select="_selectBlock(edit, blockIndex)"
                                       @block:unselect="_unselectBlock(unEdit, blockIndex)"
                                       @block:move="move"
-                                      @block:delete="deleteBlock(remove)"
+                                      @block:delete="_deleteBlock(remove)"
                                       @scroll-to="scrollToActive"/>
-          </a17-block-model>
+          </a17-blockeditor-model>
         </template>
       </draggable>
       <a17-spinner v-if="loading"
                    :visible="true">{{ $trans('fields.block-editor.loading', 'Loading') }}&hellip;
       </a17-spinner>
     </div>
-  </a17-block-model>
+  </a17-blockeditor-model>
 </template>
 
 <script>
   import { DraggableMixin, BlockEditorMixin } from '@/mixins'
 
   import A17EditorBlockPreview from '@/components/editor/EditorPreviewBlockItem'
-  import A17BlockModel from '@/components/blocks/BlockModel'
+  import A17BlockEditorModel from '@/components/blocks/BlockEditorModel'
   import A17Spinner from '@/components/Spinner.vue'
 
   import { PREVIEW } from '@/store/mutations/index'
@@ -56,7 +56,7 @@
   import debounce from 'lodash/debounce'
 
   export default {
-    name: 'A17editorpreview',
+    name: 'A17editorPreview',
     props: {
       bgColor: {
         type: String,
@@ -73,16 +73,13 @@
     components: {
       draggable,
       'a17-editor-block-preview': A17EditorBlockPreview,
-      'a17-block-model': A17BlockModel,
+      'a17-blockeditor-model': A17BlockEditorModel,
       'a17-spinner': A17Spinner
     },
     data () {
       return {
         loading: false,
         blockSelectIndex: -1,
-        unSubscribe: function () {
-          return null
-        },
         handle: '.editorPreview__dragger' // Drag handle override
       }
     },
@@ -126,13 +123,13 @@
         if (fn) {
           this.selectBlock(fn, index)
         }
+
         if (this.blockSelectIndex !== index) {
+          this.unSubscribe()
           this.blockSelectIndex = index
-          this.unSubscribe = this.$store.subscribe((mutation) => {
-            // console.log('mutation', mutation)
+          this._unSubscribeInternal = this.$store.subscribe((mutation) => {
             // Don't trigger a refresh of the preview every single time, just when necessary
             if (PREVIEW.REFRESH_BLOCK_PREVIEW.includes(mutation.type)) {
-              // console.log('Editor - store changed : ' + mutation.type)
               if (PREVIEW.REFRESH_BLOCK_PREVIEW_ALL.includes(mutation.type)) {
                 this.getAllPreviews()
               } else {
@@ -143,10 +140,20 @@
         }
       },
       _unselectBlock (fn, index = this.blockSelectIndex) {
+        this.unSubscribe()
         this.getPreview(index)
         this.unselectBlock(fn, index)
         this.blockSelectIndex = -1
+      },
+      _deleteBlock (fn) {
         this.unSubscribe()
+        this.deleteBlock(fn)
+      },
+      unSubscribe () {
+        if (!this._unSubscribeInternal) return
+
+        this._unSubscribeInternal()
+        this._unSubscribeInternal = null
       },
 
       // Previews management

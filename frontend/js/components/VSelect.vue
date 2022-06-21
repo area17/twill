@@ -1,25 +1,27 @@
 <template>
   <div class="vselectOuter">
-    <a17-inputframe :error="error" :label="label" :note="note" :size="size" :name="name" :label-for="uniqId" :required="required" :add-new="addNew">
+    <a17-inputframe :error="error" :label="label" :note="note" :size="size" :name="name" :label-for="uniqId"
+                    :required="required" :add-new="addNew">
       <div class="vselect" :class="vselectClasses">
         <div class="vselect__field">
-          <input type="hidden" :name="name" :id="uniqId" :value="inputValue" />
+          <input type="hidden" :name="name" :id="uniqId" :value="inputValue"/>
           <v-select
-            :multiple="multiple"
-            :placeholder="placeholder"
-            :value="value"
-            :options="currentOptions"
-            :searchable="searchable"
-            :clearSearchOnSelect="clearSearchOnSelect"
-            :label="optionsLabel"
-            :on-search="getOptions"
-            :taggable="taggable"
-            :pushTags="pushTags"
-            :transition="transition"
-            :requiredValue="required"
-            :maxHeight="maxHeight"
-            :disabled="disabled"
-            @input="updateValue"
+              :multiple="multiple"
+              :placeholder="placeholder"
+              :value="value"
+              :options="currentOptions"
+              :searchable="searchable"
+              :selectable="selectable"
+              :clearSearchOnSelect="clearSearchOnSelect"
+              :label="optionsLabel"
+              :taggable="taggable"
+              :pushTags="pushTags"
+              :transition="transition"
+              :requiredValue="required"
+              :maxHeight="maxHeight"
+              :disabled="disabled"
+              @input="updateValue"
+              @search="getOptions"
           >
             <span slot="no-options">{{ emptyText }}</span>
           </v-select>
@@ -40,9 +42,9 @@
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
   import AttributesMixin from '@/mixins/addAttributes'
-  import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue' // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
+  import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue'
+  // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
   // import vSelect from 'vue-select' // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
-
   export default {
     name: 'A17VueSelect',
     mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
@@ -79,6 +81,10 @@
         type: Boolean,
         default: false
       },
+      selectable: {
+        type: Function,
+        default: option => option.selectable ?? true,
+      },
       clearSearchOnSelect: {
         type: Boolean,
         default: true
@@ -92,7 +98,9 @@
         }
       },
       options: {
-        default: function () { return [] }
+        default: function () {
+          return []
+        }
       },
       optionsLabel: { // label in vueselect
         type: String,
@@ -146,7 +154,6 @@
                 if (typeof this.value[0] === 'object') {
                   return this.value.map(e => e.value)
                 }
-
                 return this.value.join(',')
               }
             }
@@ -163,7 +170,14 @@
               this.value = this.options.filter(o => value.includes(o.value))
             }
           } else {
-            this.value = this.options.find(o => o.value === value)
+            this.value = this.options.find(o => {
+              // Try to always compare to the same type. But we only check for a numeric value. Because it can only be
+              // a string or a number for now.
+              if (typeof o.value === 'number') {
+                return o.value === parseInt(value)
+              }
+              return o.value === String(value)
+            })
           }
         }
       },
@@ -188,12 +202,10 @@
         // see formStore mixin
         this.value = value
         this.saveIntoStore()
-
         this.$emit('change', value)
       },
       getOptions: debounce(function (search, loading) {
         if (!this.isAjax()) return true
-
         loading(true)
         this.$http.get(this.ajaxUrl, { params: { q: search } }).then((resp) => {
           if (resp.data.items && resp.data.items.length) {

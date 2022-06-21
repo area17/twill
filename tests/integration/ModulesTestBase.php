@@ -2,110 +2,60 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use Illuminate\Support\Str;
+use A17\Twill\Models\Model;
+use App\Models\Author;
+use App\Models\Category;
 use App\Models\Translations\AuthorTranslation;
 use App\Models\Translations\CategoryTranslation;
+use Illuminate\Support\Str;
 
 abstract class ModulesTestBase extends TestCase
 {
     public $name;
+
     public $name_en;
+
     public $name_fr;
+
     public $slug_en;
+
     public $slug_fr;
+
     public $description_en;
+
     public $description_fr;
+
     public $bio_en;
+
     public $bio_fr;
+
     public $birthday;
+
     public $block_id;
+
     public $block_editor_name;
+
     public $block_quote;
+
     public $translation;
-    public $author;
+
+    public ?Author $author;
+
     public $title;
+
     public $title_en;
+
     public $title_fr;
+
     public $category;
 
-    protected $allFiles = [
-        '{$stubs}/modules/authors/2019_10_18_193753_create_authors_tables.php' =>
-            '{$database}/migrations/',
-
-        '{$stubs}/modules/authors/admin.php' => '{$base}/routes/admin.php',
-
-        '{$stubs}/modules/authors/Author.php' => '{$app}/Models/',
-
-        '{$stubs}/modules/authors/AuthorController.php' =>
-            '{$app}/Http/Controllers/Admin/',
-
-        '{$stubs}/modules/authors/AuthorTranslation.php' =>
-            '{$app}/Models/Translations/',
-
-        '{$stubs}/modules/authors/AuthorRevision.php' =>
-            '{$app}/Models/Revisions/',
-
-        '{$stubs}/modules/authors/AuthorSlug.php' => '{$app}/Models/Slugs/',
-
-        '{$stubs}/modules/authors/AuthorRepository.php' =>
-            '{$app}/Repositories/',
-
-        '{$stubs}/modules/authors/AuthorRequest.php' =>
-            '{$app}/Http/Requests/Admin/',
-
-        '{$stubs}/modules/authors/form.blade.php' =>
-            '{$resources}/views/admin/authors/',
-
-        '{$stubs}/modules/authors/translatable.php' => '{$config}/',
-
-        '{$stubs}/modules/authors/twill-navigation.php' => '{$config}/',
-
-        '{$stubs}/modules/authors/site.blocks.quote.blade.php' =>
-            '{$resources}/views/site/blocks/quote.blade.php',
-
-        '{$stubs}/modules/authors/site.layouts.block.blade.php' =>
-            '{$resources}/views/site/layouts/block.blade.php',
-
-        // ------------------------------------------
-
-        '{$stubs}/modules/categories/2019_10_24_174613_create_categories_tables.php' =>
-            '{$database}/migrations/',
-
-        '{$stubs}/modules/categories/Category.php' => '{$app}/Models/',
-
-        '{$stubs}/modules/categories/CategoryController.php' =>
-            '{$app}/Http/Controllers/Admin/',
-
-        '{$stubs}/modules/categories/CategoryTranslation.php' =>
-            '{$app}/Models/Translations/',
-
-        '{$stubs}/modules/categories/CategoryRevision.php' =>
-            '{$app}/Models/Revisions/',
-
-        '{$stubs}/modules/categories/CategorySlug.php' =>
-            '{$app}/Models/Slugs/',
-
-        '{$stubs}/modules/categories/CategoryRepository.php' =>
-            '{$app}/Repositories/',
-
-        '{$stubs}/modules/categories/CategoryRequest.php' =>
-            '{$app}/Http/Requests/Admin/',
-
-        '{$stubs}/modules/categories/form.blade.php' =>
-            '{$resources}/views/admin/categories/',
-    ];
+    public $example = 'tests-modules';
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->copyFiles($this->allFiles);
-
-        $this->loadModulesConfig();
-
-        $this->migrate();
-
-        $this->login();
+        $this->actingAs($this->superAdmin, 'twill_users');
     }
 
     protected function assertSomethingWrongHappened()
@@ -137,13 +87,13 @@ abstract class ModulesTestBase extends TestCase
 
     public function searchReplaceFile($search, $replace, $file)
     {
-        /**
+        /*
          * Usage
          *
          *      $this->searchReplaceFile(
          *          "'editInModal' => false",
          *          "'editInModal' => true",
-         *          twill_path('Http/Controllers/Admin/AuthorController.php')
+         *          twill_path('Http/Controllers/Twill/AuthorController.php')
          *      );
          *
          */
@@ -202,7 +152,7 @@ abstract class ModulesTestBase extends TestCase
         $this->assertEquals($data['endpointType'], 'App\Models\Author');
     }
 
-    protected function createAuthor($count = 1)
+    protected function createAuthor($count = 1): Author
     {
         foreach (range(1, $count) as $c) {
             $this->httpRequestAssert(
@@ -221,6 +171,8 @@ abstract class ModulesTestBase extends TestCase
         $this->assertNotNull($this->translation);
 
         $this->assertCount(3, $this->author->slugs);
+
+        return $this->author;
     }
 
     protected function destroyAuthor()
@@ -249,7 +201,7 @@ abstract class ModulesTestBase extends TestCase
         );
     }
 
-    protected function editAuthor()
+    protected function editAuthor(): void
     {
         $this->httpRequestAssert(
             "/twill/personnel/authors/{$this->author->id}",
@@ -382,7 +334,7 @@ abstract class ModulesTestBase extends TestCase
         return $this->getUpdateAuthorData() + [
             'blocks' => [
                 $this->getAuthorBlock(),
-                $this->getAuthorBlock($this->block_editor_name = 'unique-name')
+                $this->getAuthorBlock($this->block_editor_name = 'unique-name'),
             ],
             'repeaters' => [],
         ];
@@ -451,7 +403,7 @@ abstract class ModulesTestBase extends TestCase
         ];
     }
 
-    protected function createCategory($count = 1)
+    protected function createCategory($count = 1): Category
     {
         foreach (range(1, $count) as $c) {
             $this->httpRequestAssert(
@@ -473,5 +425,7 @@ abstract class ModulesTestBase extends TestCase
         $this->assertNotNull($this->translation);
 
         $this->assertCount(3, $this->category->slugs);
+
+        return $this->category;
     }
 }

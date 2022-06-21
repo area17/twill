@@ -1,5 +1,5 @@
 @php
-    $blocks = app(\A17\Twill\Services\Blocks\BlockCollection::class)
+    $blocks = \A17\Twill\Facades\TwillBlocks::getBlockCollection()
         ->collect()
         ->reject(function ($block) {
             return $block->compiled ?? false;
@@ -15,7 +15,7 @@
 @foreach($blocks as $block)
     <script type="text/x-template" id="{{ $block->component }}">
         <div class="block__body">
-            {!! $block->render() !!}
+            {!! $block->renderForm() !!}
         </div>
     </script>
 @endforeach

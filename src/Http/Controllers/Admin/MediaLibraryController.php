@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 
 class MediaLibraryController extends ModuleController implements SignUploadListener
 {
@@ -57,7 +56,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     /**
      * @var array
      */
-    protected $customFields;
+    protected $customFields = [];
 
     /**
      * @var Illuminate\Routing\ResponseFactory
@@ -79,8 +78,8 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         $this->responseFactory = $responseFactory;
         $this->config = $config;
 
-        $this->removeMiddleware('can:edit');
-        $this->middleware('can:edit', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
+        $this->middleware('can:access-media-library', ['only' => ['index']]);
+        $this->middleware('can:edit-media-library', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
         $this->endpointType = $this->config->get('twill.media_library.endpoint_type');
         $this->customFields = $this->config->get('twill.media_library.extra_metadatas_fields');
     }
@@ -102,7 +101,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
      * @param array $prependScope
      * @return array
      */
-    public function getIndexData($prependScope = [])
+    protected function getIndexData($prependScope = [])
     {
         $scopes = $this->filterScope($prependScope);
         $items = $this->getIndexItems($scopes);
@@ -144,11 +143,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     public function store($parentModuleId = null)
     {
         $request = $this->app->make(MediaRequest::class);
-        if ($this->endpointType === 'local') {
-            $media = $this->storeFile($request);
-        } else {
-            $media = $this->storeReference($request);
-        }
+        $media = $this->endpointType === 'local' ? $this->storeFile($request) : $this->storeReference($request);
 
         return $this->responseFactory->json(['media' => $media->toCmsArray(), 'success' => true], 200);
     }
@@ -175,11 +170,11 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
         $disk = $this->config->get('twill.media_library.disk');
 
-        $request->file('qqfile')->storeAs($fileDirectory, $filename, $disk);
+        $uploadedFile = $request->file('qqfile');
 
-        $filePath = Storage::disk($disk)->path($fileDirectory . '/' . $filename);
+        list($w, $h) = getimagesize($uploadedFile->path());
 
-        list($w, $h) = getimagesize($filePath);
+        $uploadedFile->storeAs($fileDirectory, $filename, $disk);
 
         $fields = [
             'uuid' => $uuid,
@@ -279,8 +274,6 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     }
 
     /**
-     * @param Request $request
-     * @param SignS3Upload $signS3Upload
      * @return mixed
      */
     public function signS3Upload(Request $request, SignS3Upload $signS3Upload)
@@ -289,8 +282,6 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     }
 
     /**
-     * @param Request $request
-     * @param SignAzureUpload $signAzureUpload
      * @return mixed
      */
     public function signAzureUpload(Request $request, SignAzureUpload $signAzureUpload)

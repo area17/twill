@@ -13,34 +13,19 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 class Handler extends ExceptionHandler
 {
     /**
-     * Convert an authentication exception into a response.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Auth\AuthenticationException  $exception
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    protected function unauthenticated($request, AuthenticationException $exception)
-    {
-        return $request->expectsJson()
-            ? response()->json(['message' => $exception->getMessage()], 401)
-            : redirect()->guest($exception->redirectTo() ?? route('admin.login', Route::current()->parameters()));
-    }
-
-    /**
      * Get the view used to render HTTP exceptions.
      *
-     * @param  \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface  $e
      * @return string
      */
     protected function getHttpExceptionView(HttpExceptionInterface $e)
     {
         $usesAdminPath = !empty(config('twill.admin_app_path'));
-        $adminAppUrl = parse_url(config('twill.admin_app_url'));
+        $adminAppUrl = config('twill.admin_app_url');
 
-        $isSubdomainAdmin = !$usesAdminPath && $adminAppUrl['host'] == Request::getHost();
+        $isSubdomainAdmin = !$usesAdminPath && Str::contains(Request::url(), $adminAppUrl);
         $isSubdirectoryAdmin = $usesAdminPath && Str::startsWith(Request::path(), config('twill.admin_app_path'));
 
-        return $this->getTwillErrorView($e->getStatusCode(), !($isSubdomainAdmin || $isSubdirectoryAdmin));
+        return $this->getTwillErrorView($e->getStatusCode(), !$isSubdomainAdmin && !$isSubdirectoryAdmin);
     }
 
     /**
@@ -57,7 +42,7 @@ class Handler extends ExceptionHandler
             return view()->exists($view)? $view : "errors::{$statusCode}";
         }
 
-        $view = "admin.errors.$statusCode";
+        $view = "twill.errors.$statusCode";
 
         return view()->exists($view) ? $view : "twill::errors.$statusCode";
     }

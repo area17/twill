@@ -10,16 +10,11 @@ class SignS3Upload
 
     private $secret;
 
-    private $endpoint;
-
     /**
      * @var Config
      */
     protected $config;
 
-    /**
-     * @param Config $config
-     */
     public function __construct(Config $config)
     {
         $this->config = $config;
@@ -29,17 +24,11 @@ class SignS3Upload
     {
         $policyObject = json_decode($policy, true);
         $policyJson = json_encode($policyObject);
-        $policyHeaders = $policyObject["headers"] ?? null;
 
         $this->bucket = $this->config->get('filesystems.disks.' . $disk . '.bucket');
         $this->secret = $this->config->get('filesystems.disks.' . $disk . '.secret');
-        $this->endpoint = s3Endpoint($disk);
 
-        if ($policyHeaders) {
-            $signedPolicy = $this->signChunkedRequest($policyHeaders);
-        } else {
-            $signedPolicy = $this->signPolicy($policyJson);
-        }
+        $signedPolicy = $this->signPolicy($policyJson);
 
         if ($signedPolicy) {
             return $listener->uploadIsSigned($signedPolicy);
@@ -54,10 +43,11 @@ class SignS3Upload
 
         if ($this->isValid($policyObject)) {
             $encodedPolicy = base64_encode($policyJson);
-            $signedPolicy = array(
+            $signedPolicy = [
                 'policy' => $encodedPolicy,
                 'signature' => $this->signV4Policy($policyObject, $encodedPolicy),
-            );
+            ];
+
             return $signedPolicy;
         }
 
@@ -67,15 +57,14 @@ class SignS3Upload
     private function isValid($policy)
     {
         $expectedMaxSize = null;
-        $conditions = $policy["conditions"];
+        $conditions = $policy['conditions'];
         $bucket = null;
         $parsedMaxSize = null;
 
-        for ($i = 0; $i < count($conditions); ++$i) {
-            $condition = $conditions[$i];
-            if (isset($condition["bucket"])) {
-                $bucket = $condition["bucket"];
-            } else if (isset($condition[0]) && $condition[0] == "content-length-range") {
+        foreach ($conditions as $condition) {
+            if (isset($condition['bucket'])) {
+                $bucket = $condition['bucket'];
+            } elseif (isset($condition[0]) && $condition[0] == 'content-length-range') {
                 $parsedMaxSize = $condition[2];
             }
         }
@@ -85,14 +74,14 @@ class SignS3Upload
 
     private function signV4Policy($policy, $encodedPolicy)
     {
-        foreach ($policy["conditions"] as $condition) {
-            if (isset($condition["x-amz-credential"])) {
-                $credentialCondition = $condition["x-amz-credential"];
+        foreach ($policy['conditions'] as $condition) {
+            if (isset($condition['x-amz-credential'])) {
+                $credentialCondition = $condition['x-amz-credential'];
             }
         }
 
         $pattern = "/.+\/(.+)\\/(.+)\/s3\/aws4_request/";
-        preg_match($pattern, $credentialCondition, $matches);
+        preg_match($pattern, $credentialCondition ?? '', $matches);
 
         $dateKey = hash_hmac('sha256', $matches[1], 'AWS4' . $this->secret, true);
         $dateRegionKey = hash_hmac('sha256', $matches[2], $dateKey, true);
@@ -101,36 +90,4 @@ class SignS3Upload
 
         return hash_hmac('sha256', $encodedPolicy, $signingKey);
     }
-
-    private function signChunkedRequest($policyHeaders)
-    {
-        if ($this->isValidChunckRequest($policyHeaders)) {
-            $signedRequest = array('signature' => $this->signV4ChunkRequest($policyHeaders));
-            return $signedRequest;
-        }
-
-        return null;
-    }
-
-    private function isValidChunckRequest($policyHeaders)
-    {
-        $pattern = "/host:$this->endpoint/";
-        preg_match($pattern, $policyHeaders, $matches);
-
-        return count($matches) > 0;
-    }
-
-    private function signV4ChunkRequest($policyHeaders)
-    {
-        $pattern = "/.+\\n.+\\n(\\d+)\/(.+)\/s3\/aws4_request\\n(.+)/s";
-        preg_match($pattern, $policyHeaders, $matches);
-        $hashedCanonicalRequest = hash('sha256', $matches[3]);
-        $stringToSign = preg_replace("/^(.+)\/s3\/aws4_request\\n.+$/s", '$1/s3/aws4_request' . "\n" . $hashedCanonicalRequest, $policyHeaders);
-        $dateKey = hash_hmac('sha256', $matches[1], 'AWS4' . $this->secret, true);
-        $dateRegionKey = hash_hmac('sha256', $matches[2], $dateKey, true);
-        $dateRegionServiceKey = hash_hmac('sha256', 's3', $dateRegionKey, true);
-        $signingKey = hash_hmac('sha256', 'aws4_request', $dateRegionServiceKey, true);
-        return hash_hmac('sha256', $stringToSign, $signingKey);
-    }
-
 }

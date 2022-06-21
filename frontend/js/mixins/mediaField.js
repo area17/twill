@@ -6,7 +6,7 @@ export default {
     },
     withVideoUrl: {
       type: Boolean,
-      default: true
+      default: false
     },
     withCaption: {
       type: Boolean,
@@ -19,6 +19,10 @@ export default {
     captionMaxLength: {
       type: Number,
       default: 0
+    },
+    note: {
+      type: String,
+      default: ''
     },
     // current crop context put in store. eg: slideshow, cover...
     cropContext: {

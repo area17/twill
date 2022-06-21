@@ -10,7 +10,10 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Block extends BaseModel
 {
-    use HasMedias, HasFiles, HasPresenter, HasRelated;
+    use HasMedias;
+    use HasFiles;
+    use HasPresenter;
+    use HasRelated;
 
     public $timestamps = false;
 
@@ -45,7 +48,7 @@ class Block extends BaseModel
 
     public function children()
     {
-        return $this->hasMany('A17\Twill\Models\Block', 'parent_id');
+        return $this->hasMany(twillModel('block'), 'parent_id');
     }
 
     public function input($name)
@@ -58,7 +61,7 @@ class Block extends BaseModel
         $value = $this->content[$name] ?? null;
 
         $locale = $forceLocale ?? (
-            config('translatable.use_property_fallback', false) && (!array_key_exists(app()->getLocale(), $value ?? []))
+            config('translatable.use_property_fallback', false) && (! array_key_exists(app()->getLocale(), $value ?? []))
             ? config('translatable.fallback_locale')
             : app()->getLocale()
         );

@@ -1,17 +1,11 @@
-@php
-    $showMap = $showMap ?? true;
-    $openMap = $openMap ?? false;
-    $inModal = $fieldsInModal ?? false;
-    $saveExtendedData = $saveExtendedData ?? false;
-@endphp
-
 <a17-locationfield
     label="{{ $label }}"
-    @include('twill::partials.form.utils._field_name')
+    {!! $formFieldName() !!}
     @if ($showMap) show-map @else :show-map="false" @endif
     @if ($openMap) open-map @endif
     @if ($inModal) :in-modal="true" @endif
     @if ($saveExtendedData) :save-extended-data="true" @endif
+    @if ($autoDetectLatLngValue) auto-detect-lat-lng-value @endif
     in-store="value"
 ></a17-locationfield>
 

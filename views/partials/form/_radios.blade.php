@@ -1,35 +1,11 @@
-@php
-    $note = $note ?? false;
-    $options = is_object($options) && method_exists($options, 'map') ? $options->map(function($label, $value) {
-        return [
-            'value' => $value,
-            'label' => $label
-        ];
-    })->values()->toArray() : $options;
-
-    $required = $required ?? false;
-    $default = $default ?? false;
-    $inline = $inline ?? false;
-    $border = $border ?? false;
-    $columns = $columns ?? 0;
-
-    // do not use for now, but this will allow you to create a new option directly from the form
-    $addNew = $addNew ?? false;
-    $moduleName = $moduleName ?? null;
-    $storeUrl = $storeUrl ?? '';
-    $inModal = $fieldsInModal ?? false;
-    $confirmMessageText = $confirmMessageText ?? '';
-    $confirmTitleText = $confirmTitleText ?? '';
-    $requireConfirmation = $requireConfirmation ?? false;
-@endphp
-
 <a17-singleselect
     label="{{ $label }}"
-    @include('twill::partials.form.utils._field_name')
+    {!! $formFieldName() !!}
     :options="{{ json_encode($options) }}"
     @if ($default) selected="{{ $default }}" @endif
     :grid="false"
     :columns="{{ $columns }}"
+    :disabled="{{$disabled ? 'true' : 'false'}}"
     @if ($inline) :inline="true" @endif
     @if ($border) :border="true" @endif
     @if ($required) :required="true" @endif
@@ -43,13 +19,12 @@
 >
     @if($addNew)
         <div slot="addModal">
-            {{-- unset($note, $options, $required, $default, $inline, $addNew, $inModal); --}}
-            @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+            @partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
         </div>
     @endif
 </a17-singleselect>
 
-@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
+@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name, $default)))
 @push('vuexStore')
     @include('twill::partials.form.utils._selector_input_store')
 @endpush

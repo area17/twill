@@ -19,6 +19,22 @@ abstract class Request extends FormRequest
     }
 
     /**
+     * @return array
+     */
+    public function rulesForCreate()
+    {
+        return [];
+    }
+
+    /**
+     * @return array
+     */
+    public function rulesForUpdate()
+    {
+        return [];
+    }
+
+    /**
      * Gets the validation rules that apply to the request.
      *
      * @return array
@@ -26,62 +42,98 @@ abstract class Request extends FormRequest
     public function rules()
     {
         switch ($this->method()) {
-            case 'POST':{return $this->rulesForCreate();}
-            case 'PUT':{return $this->rulesForUpdate();}
-            default:break;
+            case 'POST':
+                return $this->rulesForCreate();
+            case 'PUT':
+                return $this->rulesForUpdate();
+            default:
+                break;
         }
 
         return [];
     }
 
-    /**
-     * Gets the validation rules that apply to the translated fields.
-     *
-     * @return array
-     */
-    protected function rulesForTranslatedFields($rules, $fields)
+    protected function rulesForTranslatedFields(array $existingRules, array $translatedFieldRules): array
     {
         $locales = getLocales();
         $localeActive = false;
-        foreach ($locales as $locale) {
-            if ($this->request->has('languages')) {
-                $languageFromRequest = Collection::make($this->request->get('languages'))->where('value', $locale)->first();
-                if ($languageFromRequest['published']) {
+
+        if ($this->request->has('languages')) {
+            foreach ($locales as $locale) {
+                $language = Collection::make($this->request->all('languages'))->where('value', $locale)->first();
+                $currentLocaleActive = $language['published'] ?? false;
+                $existingRules = $this->updateRules($existingRules, $translatedFieldRules, $locale, $currentLocaleActive);
+
+                if ($currentLocaleActive) {
                     $localeActive = true;
-                    $rules = $this->updateRules($rules, $fields, $locale);
                 }
             }
         }
 
-        if (!$localeActive) {
-            $rules = $this->updateRules($rules, $fields, reset($locales));
+        if (! $localeActive) {
+            $existingRules = $this->updateRules($existingRules, $translatedFieldRules, reset($locales));
         }
 
-        return $rules;
+        return $existingRules;
     }
 
     /**
      * @param array $rules
      * @param array $fields
      * @param string $locale
+     * @param bool $localeActive
      * @return array
      */
-    private function updateRules($rules, $fields, $locale)
+    private function updateRules($rules, $fields, $locale, $localeActive = true)
     {
-        foreach ($fields as $field => $field_rules) {
-            // allows using validation rule that references other fields even for translated fields
-            if (Str::contains($field_rules, $fields)) {
-                foreach ($fields as $fieldName => $fieldRules) {
-                    if (Str::contains($field_rules, $fieldName) && Str::startsWith('required_', $field_rules)) {
-                        $field_rules = str_replace($fieldName, "{$fieldName}.{$locale}", $field_rules);
-                    }
+        $fieldNames = array_keys($fields);
+
+        foreach ($fields as $field => $fieldRules) {
+            if (is_string($fieldRules)) {
+                $fieldRules = explode('|', $fieldRules);
+            }
+
+            $fieldRules = Collection::make($fieldRules);
+
+            // Remove required rules, when locale is not active
+            if (! $localeActive) {
+                $hasRequiredRule = $fieldRules->contains(function ($rule) {
+                    return $this->ruleStartsWith($rule, 'required');
+                });
+
+                $fieldRules = $fieldRules->reject(function ($rule) {
+                    return $this->ruleStartsWith($rule, 'required');
+                });
+
+                if ($hasRequiredRule && $fieldRules->doesntContain('nullable')) {
+                    $fieldRules->add('nullable');
                 }
             }
 
-            $rules["{$field}.{$locale}"] = $field_rules;
+            $rules["{$field}.{$locale}"] = $fieldRules->map(function ($rule) use ($locale, $fieldNames) {
+                // allows using validation rule that references other fields even for translated fields
+                if ($this->ruleStartsWith($rule, 'required_') && Str::contains($rule, $fieldNames)) {
+                    foreach ($fieldNames as $fieldName) {
+                        $rule = str_replace($fieldName, "{$fieldName}.{$locale}", $rule);
+                    }
+                }
+
+                return $rule;
+            })->toArray();
         }
 
         return $rules;
+    }
+
+    /**
+     * @param mixed $rule
+     * @param string $needle
+     *
+     * @return bool
+     */
+    private function ruleStartsWith($rule, $needle)
+    {
+        return is_string($rule) && Str::startsWith($rule, $needle);
     }
 
     /**

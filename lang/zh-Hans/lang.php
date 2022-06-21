@@ -214,6 +214,7 @@ return [
     'nav' => [
         'admin' => '管理员',
         'cms-users' => '用户',
+        'profile' => 'Profile',
         'logout' => '注销',
         'media-library' => '媒体库',
         'settings' => '设置',

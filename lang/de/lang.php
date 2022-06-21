@@ -264,7 +264,7 @@ return [
         'files' => 'Dateien',
         'filter-select-label' => 'Nach Tags filtern',
         'images' => 'Bilder',
-        'insert' => 'Einfügen: ',
+        'insert' => 'Einfügen:',
         'sidebar' => [
             'alt-text' => 'Alternativtext',
             'caption' => 'Bildunterschrift',
@@ -275,7 +275,7 @@ return [
             'tags' => 'Tags',
         ],
         'title' => 'Medien',
-        'update' => 'Aktualisieren: ',
+        'update' => 'Aktualisieren:',
         'unused-filter-label' => 'Nur ungenutzte anzeigen',
         'no-tags-found' => 'Leider keine Tags gefunden.',
         'dialogs' => [
@@ -326,7 +326,8 @@ return [
     ],
     'nav' => [
         'admin' => 'Admin',
-        'cms-users' => 'CMS-Benutzer',
+        'cms-users' => 'CMS Benutzer',
+        'profile' => 'Profile',
         'logout' => 'Abmelden',
         'media-library' => 'Medien',
         'settings' => 'Einstellungen',
@@ -334,15 +335,15 @@ return [
     ],
     'notifications' => [
         'reset' => [
-            'action' => 'Reset password',
-            'content' => 'You are receiving this email because we received a password reset. If you did not request a password reset, no further action is required.',
-            'subject' => ':appName | Reset password',
+            'action' => 'Passwort zurücksetzen',
+            'content' => 'Sie erhalten diese E-Mail, weil das Zurücksetzen des Passworts angefordert wurde. Wenn Sie das Zurücksetzen des Passworts nicht angefordert haben, ist keine weitere Aktion erforderlich.',
+            'subject' => ':appName | Passwort zurücksetzen',
         ],
         'welcome' => [
-            'action' => 'Choose your own password',
-            'content' => 'You are receiving this email because an account was created for you on :name.',
-            'title' => 'Welcome',
-            'subject' => ':appName | Welcome',
+            'action' => 'Vergeben Sie Ihr Passwort',
+            'content' => 'Sie erhalten diese E-Mail, weil ein Konto für :name für Sie erstellt wurde.',
+            'title' => 'Willkommen',
+            'subject' => ':appName | Willkommen',
         ],
     ],
     'overlay' => [

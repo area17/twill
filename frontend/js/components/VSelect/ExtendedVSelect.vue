@@ -1,6 +1,7 @@
 <script>
 // ExtendedVSelect.vue
   import vSelect from 'vue-select'
+  import 'vue-select/dist/vue-select.css'
 
   export default {
     extends: vSelect,
@@ -39,12 +40,6 @@
     computed: {
       showClearButton () {
         return false
-      }
-    },
-    watch: {
-      search () {
-        this.onSearch(this.search, this.toggleLoading)
-        this.$emit('search', this.search, this.toggleLoading)
       }
     },
     methods: {
@@ -87,6 +82,9 @@
        * https://github.com/sagalbot/vue-select/commit/8a601c0ac3311adb89bc6e31b8cf215b1343d93c
        */
       isOptionSelected (option) {
+        if (this.valueAsArray === undefined) {
+          return false;
+        }
         return this.valueAsArray.some(value => {
           if (typeof value === 'object') {
             return this.optionObjectComparator(value, option)
@@ -96,7 +94,7 @@
       }
     },
     mounted () {
-      if (this.taggable) this.onSearch(this.search, this.toggleLoading)
+      if (this.taggable) this.$emit('search', this.search, this.toggleLoading)
     }
   }
 </script>

@@ -3,18 +3,13 @@
 namespace A17\Twill\Tests\Integration;
 
 use App\Models\Author;
+use App\Models\Category;
 use App\Models\Revisions\AuthorRevision;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class ModulesAuthorsTest extends ModulesTestBase
 {
-    public function testCanCopyFiles()
-    {
-        collect($this->allFiles)->each(function ($destination, $source) {
-            $this->assertFileExists($this->makeFileName($destination, $source));
-        });
-    }
-
     public function testCanMigrateDatabase()
     {
         $this->assertTrue(Schema::hasTable('authors'));
@@ -155,6 +150,8 @@ class ModulesAuthorsTest extends ModulesTestBase
         $data = [
             'id' => 1,
             'type' => 'a17-block-quote',
+            'editor_name' => 'default',
+            'is_repeater' => false,
             'content' => [
                 'quote' => ($quote = $this->fakeText(70)),
             ],
@@ -169,28 +166,27 @@ class ModulesAuthorsTest extends ModulesTestBase
         $this->assertSee(json_encode(['quote' => $quote]));
     }
 
-    public function testCanPreviewAuthor()
+    public function testErrorWhenPreviewIsMissing()
     {
-        $this->createAuthor();
+        $author = $this->createAuthor();
+        $this->assertTrue($this->files->delete(base_path() . '/resources/views/site/author.blade.php'));
 
         $this->httpRequestAssert(
-            "/twill/personnel/authors/preview/{$this->author->id}",
+            "/twill/personnel/authors/preview/{$author->id}",
             'PUT'
         );
 
         $this->assertSee(
             'Previews have not been configured on this Twill module, please let the development team know about it.'
         );
+    }
 
-        $this->files->copy(
-            $this->makeFileName(
-                '{$stubs}/modules/authors/site.author.blade.php'
-            ),
-            $this->makeFileName('{$resources}/views/site/author.blade.php')
-        );
+    public function testCanPreviewAuthor()
+    {
+        $author = $this->createAuthor();
 
         $this->httpRequestAssert(
-            "/twill/personnel/authors/preview/{$this->author->id}",
+            "/twill/personnel/authors/preview/{$author->id}",
             'PUT',
             ['activeLanguage' => 'en']
         );
@@ -284,7 +280,7 @@ class ModulesAuthorsTest extends ModulesTestBase
 
     public function testCanReturnWhenReorderingWrongAuthor()
     {
-        /**
+        /*
          * Should not return Error 500
          *
          * TODO
@@ -313,6 +309,26 @@ class ModulesAuthorsTest extends ModulesTestBase
         $this->assertEquals(
             5,
             count(json_decode($this->content(), true)['tableData'])
+        );
+    }
+
+    public function testCanShowAuthorRelationshipColumn()
+    {
+        $this->createAuthor(1);
+        $author = Author::first();
+
+        $this->createCategory(2);
+        $categories = Category::all();
+
+        $author->categories()->attach($categories);
+
+        $this->ajax('/twill/personnel/authors')->assertStatus(200);
+
+        $content = json_decode($this->content(), true);
+
+        $this->assertEquals(
+            $content['tableData'][0]['categoriesTitle'],
+            $categories->pluck('title')->join(', ')
         );
     }
 
@@ -375,5 +391,36 @@ class ModulesAuthorsTest extends ModulesTestBase
         $this->assertSee(
             '<script*type="text/x-template"*id="a17-block-quote">'
         );
+    }
+
+    public function testCannotHaveDuplicateSlugs(): void
+    {
+        $dataItem1 = $this->getCreateAuthorData();
+        $dataItem1['languages'][1]['published'] = true;
+
+        $slugEn = Str::slug($dataItem1['name']['en']);
+        $slugFr = Str::slug($dataItem1['name']['fr']);
+
+        $this->httpRequestAssert(
+            '/twill/personnel/authors',
+            'POST',
+            $dataItem1
+        );
+
+        $this->httpRequestAssert(
+            '/twill/personnel/authors',
+            'POST',
+            $dataItem1
+        );
+
+        $item1 = Author::first();
+
+        $this->assertEquals($slugEn, $item1->slug);
+        $this->assertEquals($slugFr, $item1->getSlug('fr'));
+
+        $item2 = Author::orderBy('id', 'desc')->first();
+
+        $this->assertEquals($slugEn . '-2', $item2->slug);
+        $this->assertEquals($slugFr . '-2', $item2->getSlug('fr'));
     }
 }

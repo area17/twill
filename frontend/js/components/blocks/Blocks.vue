@@ -12,10 +12,10 @@
           <div class="blocks__item"
                v-for="savedBlock in savedBlocks"
                :key="savedBlock.id">
-            <a17-block-model :editor-name="editorName"
+            <a17-blockeditor-model :editor-name="editorName"
                              :block="savedBlock"
                              v-slot="{ block, blockIndex, add, edit, move, remove, duplicate }">
-              <a17-block-item ref="blockList"
+              <a17-blockeditor-item ref="blockList"
                               :block="block"
                               :index="blockIndex"
                               :opened="opened"
@@ -49,7 +49,7 @@
                           {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
                   </button>
                   <button type="button"
-                          v-if="editor"
+                          v-if="editor && !editorName.includes('|')"
                           @click="openInEditor(edit, blockIndex, editorName)">
                           {{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}
                   </button>
@@ -72,8 +72,8 @@
                         @click="move(n - 1)"
                         :key="n">{{ n }}
                 </button>
-              </a17-block-item>
-            </a17-block-model>
+              </a17-blockeditor-item>
+            </a17-blockeditor-model>
           </div>
         </transition-group>
       </draggable>
@@ -93,7 +93,7 @@
 
           <div slot="dropdown__content">
             <template v-for="availableBlock in availableBlocks">
-              <a17-block-model :editor-name="editorName"
+              <a17-blockeditor-model :editor-name="editorName"
                                :block="availableBlock"
                                :key="availableBlock.component"
                                v-slot="{ add, block }">
@@ -110,11 +110,11 @@
                   ></span>
                   <span class="blocks__title">{{ availableBlock.title }}</span>
                 </button>
-              </a17-block-model>
+              </a17-blockeditor-model>
             </template>
           </div>
         </a17-dropdown>
-        <div class="blocks__secondaryActions">
+        <div class="blocks__secondaryActions" v-if="!editorName.includes('|')">
           <a href="#"
              class="f--link f--link-underlined--o"
              v-if="editor"
@@ -131,15 +131,15 @@
   import { mapState, mapGetters } from 'vuex'
   import { DraggableMixin, EditorMixin } from '@/mixins/index'
   import draggable from 'vuedraggable'
-  import BlockItem from '@/components/blocks/BlockItem.vue'
+  import BlockEditorItem from '@/components/blocks/BlockEditorItem.vue'
   import BlocksList from '@/components/blocks/BlocksList'
-  import BlockModel from '@/components/blocks/BlockModel'
+  import BlockEditorModel from '@/components/blocks/BlockEditorModel'
 
   export default {
     name: 'A17Blocks',
     components: {
-      'a17-block-item': BlockItem,
-      'a17-block-model': BlockModel,
+      'a17-blockeditor-item': BlockEditorItem,
+      'a17-blockeditor-model': BlockEditorModel,
       'a17-blocks-list': BlocksList,
       draggable
     },
@@ -190,7 +190,7 @@
         this.opened = true
       },
       checkExpandBlocks () {
-        this.allBlocksExpands = this.$refs.blockList.every((blocks) => blocks.visible)
+        this.$refs.blockList[this.$refs.blockList.length - 1].toggleExpand()
       },
       handleOnMove (e) {
         const { draggedContext, relatedContext } = e
@@ -222,6 +222,9 @@
       },
       handleClone (cloneFn, blockIndex, block) {
         cloneFn && cloneFn({ block, index: blockIndex + 1 })
+        this.$nextTick(() => {
+          this.checkExpandBlocks()
+        })
       },
       handleBlockAdd (fn, block, index = -1) {
         fn(block, index)
@@ -265,7 +268,9 @@
     mounted () {
       // if there are blocks, these should be all collapse by default
       this.$nextTick(function () {
-        if (this.blocks(this.editorName) && this.blocks(this.editorName).length > 3) this.collapseAllBlocks()
+        if (this.$refs.blockList && this.blocks(this.editorName) && this.blocks(this.editorName).length < 4) {
+          this.$refs.blockList.forEach((block) => block.toggleExpand())
+        }
       })
     }
   }

@@ -26,9 +26,6 @@ class Build extends Command
      */
     protected $filesystem;
 
-    /**
-     * @param Filesystem $filesystem
-     */
     public function __construct(Filesystem $filesystem)
     {
         parent::__construct();
@@ -84,13 +81,16 @@ class Build extends Command
         $this->copyComponents();
         sleep(1);
 
+        $this->copyVendorComponents();
+        sleep(1);
+
         $this->info('');
         $progressBar->setMessage("Building assets...\n\n");
         $progressBar->advance();
 
         if ($this->option('hot')) {
             $this->startWatcher(resource_path('assets/js/**/*.vue'), 'php artisan twill:build --copyOnly');
-            $this->runProcessInTwill(['npm', 'run', 'serve'], true);
+            $this->runProcessInTwill(['npm', 'run', 'serve', '--', "--port={$this->getDevPort()}"], true);
         } elseif ($this->option('watch')) {
             $this->startWatcher(resource_path('assets/js/**/*.vue'), 'php artisan twill:build --copyOnly');
             $this->runProcessInTwill(['npm', 'run', 'watch'], true);
@@ -106,6 +106,16 @@ class Build extends Command
             $progressBar->setMessage("Done.");
             $progressBar->finish();
         }
+    }
+
+    /**
+     * @return string
+     */
+    private function getDevPort()
+    {
+        preg_match('#^.*:(\d+)#', config('twill.dev_mode_url'), $matches);
+
+        return $matches[1] ?? '8080';
     }
 
     /**
@@ -127,8 +137,8 @@ class Build extends Command
 
             try {
                 $process->start();
-            } catch(\Exception $e) {
-                $this->warn("Could not start the chokidar watcher ({$e->getMessage()})\n");
+            } catch(\Exception $exception) {
+                $this->warn("Could not start the chokidar watcher ({$exception->getMessage()})\n");
             }
         } else {
             $this->warn("The `chokidar-cli` package was not found. It is required to watch custom blocks & components in development. You can install it by running:\n");
@@ -198,9 +208,30 @@ class Build extends Command
         }
 
         $this->filesystem->cleanDirectory($twillCustomComponentsPath);
+        $this->filesystem->put($twillCustomComponentsPath . '/.keep', '');
 
         if ($this->filesystem->exists($localCustomComponentsPath)) {
             $this->filesystem->copyDirectory($localCustomComponentsPath, $twillCustomComponentsPath);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function copyVendorComponents()
+    {
+        $localVendorComponentsPath = resource_path(config('twill.vendor_components_resource_path', 'assets/vendor/js/components'));
+        $twillVendorComponentsPath = base_path(config('twill.vendor_path')) . '/frontend/js/components/customs-vendor';
+
+        if (!$this->filesystem->exists($twillVendorComponentsPath)) {
+            $this->filesystem->makeDirectory($twillVendorComponentsPath, 0755, true);
+        }
+
+        $this->filesystem->cleanDirectory($twillVendorComponentsPath);
+        $this->filesystem->put($twillVendorComponentsPath . '/.keep', '');
+
+        if ($this->filesystem->exists($localVendorComponentsPath)) {
+            $this->filesystem->copyDirectory($localVendorComponentsPath, $twillVendorComponentsPath);
         }
     }
 }

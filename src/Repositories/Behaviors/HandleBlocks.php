@@ -2,16 +2,23 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Facades\TwillBlocks;
+use A17\Twill\Facades\TwillUtil;
 use A17\Twill\Models\Behaviors\HasMedias;
+use A17\Twill\Models\Block;
+use A17\Twill\Models\Model;
 use A17\Twill\Repositories\BlockRepository;
-use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 use Log;
 use Schema;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 trait HandleBlocks
 {
+    private ?\Illuminate\Validation\Validator $blockValidator = null;
+
     /**
      * @param \A17\Twill\Models\Model $object
      * @param array $fields
@@ -19,17 +26,21 @@ trait HandleBlocks
      * @param int|null $parentId
      * @param \Illuminate\Support\Collection|null $blocksFromFields
      * @param \Illuminate\Support\Collection|null $mainCollection
-     * @param int|null $mainCollection|void
-     * @return \A17\Twill\Models\Model
+     * @return \A17\Twill\Models\Model|null
      */
-    public function hydrateHandleBlocks($object, $fields, &$fakeBlockId = 0, $parentId = null, $blocksFromFields = null, $mainCollection = null)
-    {
+    public function hydrateHandleBlocks(
+        $object,
+        $fields,
+        &$fakeBlockId = 0,
+        $parentId = null,
+        $blocksFromFields = null,
+        $mainCollection = null
+    ) {
         if ($this->shouldIgnoreFieldBeforeSave('blocks')) {
-            return;
+            return null;
         }
 
         $firstItem = false;
-        $blocksCollection = Collection::make();
         if ($mainCollection === null) {
             $firstItem = true;
             $mainCollection = Collection::make();
@@ -39,8 +50,15 @@ trait HandleBlocks
         }
 
         $blockRepository = app(BlockRepository::class);
-        $blocksCollection = $this->getChildrenBlocks($blocksFromFields, $blockRepository, $parentId, $fakeBlockId, $mainCollection);
+        $blocksCollection = $this->getChildrenBlocks(
+            $blocksFromFields,
+            $blockRepository,
+            $parentId,
+            $fakeBlockId,
+            $mainCollection
+        );
         $object->setRelation('blocks', $firstItem ? $mainCollection : $blocksCollection);
+
         return $object;
     }
 
@@ -57,22 +75,25 @@ trait HandleBlocks
             $fakeBlockId++;
             $newChildBlock->id = $fakeBlockId;
             if (!empty($childBlock['blocks'])) {
-                $childBlockHydrated = $this->hydrateHandleBlocks($newChildBlock, $childBlock, $fakeBlockId, $newChildBlock->id, $childBlock['blocks'], $mainCollection);
+                $childBlockHydrated = $this->hydrateHandleBlocks(
+                    $newChildBlock,
+                    $childBlock,
+                    $fakeBlockId,
+                    $newChildBlock->id,
+                    $childBlock['blocks'],
+                    $mainCollection
+                );
                 $newChildBlock->setRelation('children', $childBlockHydrated->blocks);
             }
 
             $mainCollection->push($newChildBlock);
             $childBlocksCollection->push($newChildBlock);
         }
+
         return $childBlocksCollection;
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @return void
-     */
-    public function afterSaveHandleBlocks($object, $fields)
+    public function afterSaveHandleBlocks(Model $object, array $fields): void
     {
         if ($this->shouldIgnoreFieldBeforeSave('blocks')) {
             return;
@@ -80,30 +101,144 @@ trait HandleBlocks
 
         $blockRepository = app(BlockRepository::class);
 
-        $blockRepository->bulkDelete($object->blocks()->pluck('id')->toArray());
-        $this->getBlocks($object, $fields)->each(function ($block) use ($object, $blockRepository) {
-            $this->createBlock($blockRepository, $block);
-        });
+        $this->blockValidator = Validator::make([], []);
+
+        foreach ($fields['blocks'] ?? [] as $block) {
+            $blockCmsData = app(BlockRepository::class)->buildFromCmsArray($block);
+
+            /** @var \A17\Twill\Services\Blocks\Block $blockInstance */
+            $blockInstance = $blockCmsData['instance'];
+
+            // Figure out if the class has translations.
+            $handleTranslations = property_exists($object, 'translatedAttributes');
+
+            $this->validateBlockArray($block, $blockInstance, $handleTranslations);
+        }
+
+        $existingBlockIds = $object->blocks()->pluck('id')->toArray();
+
+        $usedBlockIds = [];
+
+        $blocks = $this->getBlocks($object, $fields);
+
+        // At this point we have parsed all content so we can throw the validation exception.
+        if ($this->blockValidator->errors()->isNotEmpty()) {
+            throw new ValidationException($this->blockValidator);
+        }
+
+        foreach ($blocks as $blockData) {
+            $this->updateOrCreateBlock($blockRepository, $blockData, $existingBlockIds, $usedBlockIds);
+        }
+
+        // Delete the unused existing blocks.
+        $unusedBlockIds = array_diff($existingBlockIds, $usedBlockIds);
+        $blockRepository->bulkDelete($unusedBlockIds);
+    }
+
+    private function updateOrCreateBlock(
+        BlockRepository $blockRepository,
+        array $blockData,
+        array $existingBlockIds,
+        array &$usedBlockIds
+    ): void {
+        // Find an existing block id based on the frontend id.
+        if (
+            !in_array($blockData['id'] ?? null, $existingBlockIds, false) &&
+            $id = TwillUtil::hasBlockIdFor($blockData['id'])
+        ) {
+            $originalBlockId = $blockData['id'];
+            $blockData['id'] = $id;
+        }
+        // Check if the block already exists.
+        if (in_array($blockData['id'] ?? null, $existingBlockIds, false)) {
+            $blockObject = $this->updateBlock($blockRepository, $blockData, $existingBlockIds, $usedBlockIds);
+        } else {
+            $blockObject = $this->createBlock($blockRepository, $blockData, $existingBlockIds, $usedBlockIds);
+            TwillUtil::registerBlockId($originalBlockId ?? $blockData['id'], $blockObject->id);
+        }
+
+        $usedBlockIds[] = $blockObject->id;
+    }
+
+    private function updateBlock(
+        BlockRepository $blockRepository,
+        array $blockData,
+        array $existingBlockIds,
+        array &$usedBlockIds
+    ): Block {
+        $blockRepository->update($blockData['id'], $blockData);
+        $blockCreated = $blockRepository->findOrFail($blockData['id']);
+
+        $this->updateOrCreateChildBlocks(
+            $blockCreated,
+            $blockRepository,
+            $blockData,
+            $existingBlockIds,
+            $usedBlockIds
+        );
+
+        return $blockCreated;
+    }
+
+    private function validate(array $formData, int $id, array $basicRules, array $translatedFieldRules): void
+    {
+        $finalValidator = $this->blockValidator;
+        foreach ($translatedFieldRules as $field => $rules) {
+            foreach (config('translatable.locales') as $locale) {
+                $data = $formData[$field][$locale] ?? null;
+                $validator = Validator::make([$field => $data], [$field => $rules]);
+                foreach ($validator->messages()->getMessages() as $key => $errors) {
+                    foreach ($errors as $error) {
+                        $finalValidator->getMessageBag()->add("blocks.$id" . "[$key][$locale]", $error);
+                        $finalValidator->getMessageBag()->add("blocks.$locale", 'Failed');
+                    }
+                }
+            }
+        }
+        foreach ($basicRules as $field => $rules) {
+            $validator = Validator::make([$field => $formData[$field] ?? null], [$field => $rules]);
+            foreach ($validator->messages()->getMessages() as $key => $errors) {
+                foreach ($errors as $error) {
+                    $finalValidator->getMessageBag()->add("blocks[$id][$key]", $error);
+                }
+            }
+        }
     }
 
     /**
-     * Create a block from formFields, and recursively create it's child blocks
-     *
-     * @param  \A17\Twill\Repositories\BlockRepository $blockRepository
-     * @param  array $blockFields
-     * @return \A17\Twill\Models\Block $blockCreated
+     * Create a block from formFields, and recursively create it's child blocks.
      */
-    private function createBlock(BlockRepository $blockRepository, $blockFields)
-    {
-        $blockCreated = $blockRepository->create($blockFields);
+    private function createBlock(
+        BlockRepository $blockRepository,
+        array $blockData,
+        array $existingBlockIds,
+        array &$usedBlockIds
+    ): Block {
+        $blockCreated = $blockRepository->create($blockData);
 
-        // Handle child blocks
-        $blockFields['blocks']->each(function ($childBlock) use ($blockCreated, $blockRepository) {
-            $childBlock['parent_id'] = $blockCreated->id;
-            $this->createBlock($blockRepository, $childBlock);
-        });
+        $this->updateOrCreateChildBlocks(
+            $blockCreated,
+            $blockRepository,
+            $blockData,
+            $existingBlockIds,
+            $usedBlockIds
+        );
 
         return $blockCreated;
+    }
+
+    private function updateOrCreateChildBlocks(
+        Block $parentBlock,
+        BlockRepository $blockRepository,
+        array $blockData,
+        array $existingBlockIds,
+        array &$usedBlockIds
+    ): void {
+        foreach ($blockData['blocks'] as $childBlock) {
+            $childBlock['parent_id'] = $parentBlock->id;
+
+            $this->updateOrCreateBlock($blockRepository, $childBlock, $existingBlockIds, $usedBlockIds);
+        }
     }
 
     /**
@@ -117,20 +252,24 @@ trait HandleBlocks
         if (isset($fields['blocks']) && is_array($fields['blocks'])) {
             foreach ($fields['blocks'] as $index => $block) {
                 $block = $this->buildBlock($block, $object);
+
+                $this->validateBlockArray($block, $block['instance'], true);
+
                 $block['position'] = $index + 1;
                 $block['blocks'] = $this->getChildBlocks($object, $block);
 
                 $blocks->push($block);
             }
         }
+
         return $blocks;
     }
 
     /**
-     * Recursively generate child blocks from the fields of a block
+     * Recursively generate child blocks from the fields of a block.
      *
-     * @param  \A17\Twill\Models\Model $object
-     * @param  array $parentBlockFields
+     * @param \A17\Twill\Models\Model $object
+     * @param array $parentBlockFields
      * @return \Illuminate\Support\Collection
      */
     private function getChildBlocks($object, $parentBlockFields)
@@ -139,7 +278,8 @@ trait HandleBlocks
 
         foreach ($parentBlockFields['blocks'] as $childKey => $childBlocks) {
             foreach ($childBlocks as $index => $childBlock) {
-                $childBlock = $this->buildBlock($childBlock, $object, true);
+                $childBlock = $this->buildBlock($childBlock, $object, $childBlock['is_repeater'] ?? true);
+                $this->validateBlockArray($childBlock, $childBlock['instance'], true);
                 $childBlock['child_key'] = $childKey;
                 $childBlock['position'] = $index + 1;
                 $childBlock['editor_name'] = $parentBlockFields['editor_name'] ?? 'default';
@@ -150,6 +290,19 @@ trait HandleBlocks
         }
 
         return $childBlocksList;
+    }
+
+    private function validateBlockArray(
+        array $block,
+        \A17\Twill\Services\Blocks\Block $blockInstance,
+        bool $handleTranslations
+    ): void {
+        $this->validate(
+            (array)$block['content'] + $block['medias'] + $block['browsers'] + $block['blocks'],
+            $block['id'],
+            $blockInstance->getRules(),
+            $handleTranslations ? $blockInstance->getRulesForTranslatedFields() : []
+        );
     }
 
     /**
@@ -176,12 +329,8 @@ trait HandleBlocks
         $fields['blocks'] = null;
 
         if ($object->has('blocks')) {
-            $blocksList = app(BlockCollection::class)->list()->keyBy('name');
-
             foreach ($object->blocks as $block) {
-                $isInRepeater = isset($block->parent_id);
-                $configKey = $isInRepeater ? 'repeaters' : 'blocks';
-                $blockTypeConfig = $blocksList[$block->type] ?? null;
+                $blockTypeConfig = TwillBlocks::findByName($block->type);
 
                 if (is_null($blockTypeConfig)) {
                     continue;
@@ -189,28 +338,36 @@ trait HandleBlocks
 
                 $blockItem = [
                     'id' => $block->id,
-                    'type' => $blockTypeConfig['component'],
-                    'title' => $blockTypeConfig['title'],
+                    'type' => $blockTypeConfig->component,
+                    'title' => $blockTypeConfig->title,
                     'name' => $block->editor_name ?? 'default',
-                    'titleField' => $blockTypeConfig['titleField'],
-                    'hideTitlePrefix' => $blockTypeConfig['hideTitlePrefix'],
-                    'attributes' => $blockTypeConfig['attributes'] ?? [],
+                    'titleField' => $blockTypeConfig->titleField,
+                    'hideTitlePrefix' => $blockTypeConfig->hideTitlePrefix,
+                    // @todo: Figure out what attributes were coming from/used for.
+                    // $blockTypeConfig['attributes'] ?? []
+                    'attributes' => [],
                 ];
 
-                if ($isInRepeater) {
-                    $fields['blocksRepeaters']["blocks-{$block->parent_id}_{$block->child_key}"][] = $blockItem + [
-                        'trigger' => $blockTypeConfig['trigger'],
-                    ] + (isset($blockTypeConfig['max']) ? [
-                        'max' => $blockTypeConfig['max'],
-                    ] : []);
+                if (isset($block->parent_id) && $blockTypeConfig->type !== 'block') {
+                    $fields['blocksRepeaters']["blocks-{$block->parent_id}|{$block->child_key}"][] = $blockItem + [
+                            'trigger' => $blockTypeConfig->trigger,
+                            'selectTrigger' => $blockTypeConfig->selectTrigger,
+                            'max' => $blockTypeConfig->max,
+                        ];
                 } else {
-                    $fields['blocks'][$blockItem['name']][] = $blockItem + [
-                        'icon' => $blockTypeConfig['icon'],
-                    ];
+                    if (isset($block->parent_id)) {
+                        $fields['blocks']["blocks-{$block->parent_id}|{$block->child_key}"][] = $blockItem + [
+                                'icon' => $blockTypeConfig->icon,
+                            ];
+                    } else {
+                        $fields['blocks'][$blockItem['name']][] = $blockItem + [
+                                'icon' => $blockTypeConfig->icon,
+                            ];
+                    }
                 }
 
                 $fields['blocksFields'][] = Collection::make($block['content'])->filter(function ($value, $key) {
-                    return $key !== "browsers";
+                    return $key !== 'browsers';
                 })->map(function ($value, $key) use ($block) {
                     return [
                         'name' => "blocks[$block->id][$key]",
@@ -224,19 +381,25 @@ trait HandleBlocks
 
                 if ($medias) {
                     if (config('twill.media_library.translated_form_fields', false)) {
-                        $fields['blocksMedias'][] = Collection::make($medias)->mapWithKeys(function ($mediasByLocale, $locale) use ($block) {
-                            return Collection::make($mediasByLocale)->mapWithKeys(function ($value, $key) use ($block, $locale) {
-                                return [
-                                    "blocks[$block->id][$key][$locale]" => $value,
-                                ];
-                            });
-                        })->filter()->toArray();
+                        $fields['blocksMedias'][] = Collection::make($medias)->mapWithKeys(
+                            function ($mediasByLocale, $locale) use ($block) {
+                                return Collection::make($mediasByLocale)->mapWithKeys(
+                                    function ($value, $key) use ($block, $locale) {
+                                        return [
+                                            "blocks[$block->id][$key][$locale]" => $value,
+                                        ];
+                                    }
+                                );
+                            }
+                        )->filter()->toArray();
                     } else {
-                        $fields['blocksMedias'][] = Collection::make($medias)->mapWithKeys(function ($value, $key) use ($block) {
-                            return [
-                                "blocks[$block->id][$key]" => $value,
-                            ];
-                        })->filter()->toArray();
+                        $fields['blocksMedias'][] = Collection::make($medias)->mapWithKeys(
+                            function ($value, $key) use ($block) {
+                                return [
+                                    "blocks[$block->id][$key]" => $value,
+                                ];
+                            }
+                        )->filter()->toArray();
                     }
                 }
 
@@ -244,11 +407,13 @@ trait HandleBlocks
 
                 if ($files) {
                     Collection::make($files)->each(function ($rolesWithFiles, $locale) use (&$fields, $block) {
-                        $fields['blocksFiles'][] = Collection::make($rolesWithFiles)->mapWithKeys(function ($files, $role) use ($locale, $block) {
-                            return [
-                                "blocks[$block->id][$role][$locale]" => $files,
-                            ];
-                        })->toArray();
+                        $fields['blocksFiles'][] = Collection::make($rolesWithFiles)->mapWithKeys(
+                            function ($files, $role) use ($locale, $block) {
+                                return [
+                                    "blocks[$block->id][$role][$locale]" => $files,
+                                ];
+                            }
+                        )->toArray();
                     });
                 }
 
@@ -284,7 +449,8 @@ trait HandleBlocks
     protected function getBlockBrowsers($block)
     {
         return Collection::make($block['content']['browsers'])->mapWithKeys(function ($ids, $relation) use ($block) {
-            if (Schema::hasTable(config('twill.related_table', 'twill_related')) && $block->getRelated($relation)->isNotEmpty()) {
+            if (Schema::hasTable(config('twill.related_table', 'twill_related')) && $block->getRelated($relation)
+                    ->isNotEmpty()) {
                 $items = $this->getFormFieldsForRelatedBrowser($block, $relation);
                 foreach ($items as &$item) {
                     if (!isset($item['edit'])) {
@@ -300,14 +466,18 @@ trait HandleBlocks
                             Log::notice(
                                 "Twill warning: The url for the \"{$relation}\" browser items can't " .
                                 "be resolved. You might be missing a {$relation} key in your " .
-                                "twill.block_editor.browser_route_prefixes configuration."
+                                'twill.block_editor.browser_route_prefixes configuration.'
                             );
                         }
                     }
                 }
             } else {
-                $relationRepository = $this->getModelRepository($relation);
-                $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);
+                try {
+                    $relationRepository = $this->getModelRepository($relation);
+                    $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);
+                } catch (\Throwable $th) {
+                    $relatedItems = collect();
+                }
                 $sortedRelatedItems = array_flip($ids);
 
                 foreach ($relatedItems as $item) {
@@ -318,14 +488,20 @@ trait HandleBlocks
                     return is_object($value);
                 })->map(function ($relatedElement) use ($relation) {
                     return [
-                        'id' => $relatedElement->id,
-                        'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
-                        'edit' => moduleRoute($relation, config('twill.block_editor.browser_route_prefixes.' . $relation), 'edit', $relatedElement->id),
-                    ] + (classHasTrait($relatedElement, HasMedias::class) ? [
-                        'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
-                    ] : []);
+                            'id' => $relatedElement->id,
+                            'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
+                            'edit' => moduleRoute(
+                                $relation,
+                                config('twill.block_editor.browser_route_prefixes.' . $relation),
+                                'edit',
+                                $relatedElement->id
+                            ),
+                        ] + (classHasTrait($relatedElement, HasMedias::class) ? [
+                            'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
+                        ] : []);
                 })->toArray();
             }
+
             return [
                 "blocks[$block->id][$relation]" => $items,
             ];

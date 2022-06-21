@@ -11,18 +11,17 @@
               {{ currentEditorLabel }} <span v-svg symbol="dropdown_module"></span>
             </a17-button>
             <div slot="dropdown__content">
-              <button type="button" class="editorDropdown" @click="updateEditorName(editorName.value)" v-for="editorName in editorNames"  :key="editorName.value">
+              <button type="button" class="editorDropdown" @click="updateEditorName(editorName.value)" v-for="editorName in editorNames" :key="editorName.value">
                 {{ editorName.label }}
               </button>
             </div>
           </a17-dropdown>
     </template>
-    <a17-block-list :editor-name="editorName" v-slot="{
+    <a17-blocks-list :editor-name="editorName" v-slot="{
       availableBlocks,
       hasBlockActive,
       savedBlocks,
       editorNames,
-      reorderBlocks,
       moveBlock
     }">
       <div class="editor">
@@ -66,7 +65,7 @@
           </div>
         </div>
       </div>
-    </a17-block-list>
+    </a17-blocks-list>
   </a17-overlay>
 </template>
 
@@ -84,7 +83,7 @@
     components: {
       'a17-editorsidebar': A17EditorSidebar,
       'a17-editorpreview': A17EditorPreview,
-      'a17-block-list': A17BlocksList
+      'a17-blocks-list': A17BlocksList
     },
     props: {
       bgColor: {
@@ -110,11 +109,14 @@
       },
       ...mapState({
         revisions: state => state.revision.all,
-        editorNames: state => state.blocks.editorNames
+        editorNamesBase: state => state.blocks.editorNames
       }),
       ...mapGetters([
         'blocks'
-      ])
+      ]),
+      editorNames() {
+        return this.editorNamesBase.filter(editor => editor.nested === false)
+      }
     },
     provide () {
       return {

@@ -7,6 +7,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use League\Glide\Responses\LaravelResponseFactory;
 use League\Glide\ServerFactory;
 use League\Glide\Signatures\SignatureFactory;
@@ -41,11 +42,6 @@ class Glide implements ImageServiceInterface
      */
     private $urlBuilder;
 
-    /**
-     * @param Config $config
-     * @param Application $app
-     * @param Request $request
-     */
     public function __construct(Config $config, Application $app, Request $request)
     {
         $this->config = $config;
@@ -61,10 +57,14 @@ class Glide implements ImageServiceInterface
             )
         );
 
-        $baseUrl = join('/', [
+        $baseUrl = implode('/', [
             rtrim($baseUrlHost, '/'),
             ltrim($this->config->get('twill.glide.base_path'), '/'),
         ]);
+
+        if (!empty($baseUrlHost) && !Str::startsWith($baseUrl, ['http://', 'https://'])) {
+            $baseUrl = $this->request->getScheme() . '://' . $baseUrl;
+        }
 
         $this->server = ServerFactory::create([
             'response' => new LaravelResponseFactory($this->request),
@@ -97,7 +97,6 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
      * @return string
      */
     public function getUrl($id, array $params = [])
@@ -110,8 +109,6 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $cropParams
-     * @param array $params
      * @return string
      */
     public function getUrlWithCrop($id, array $cropParams, array $params = [])
@@ -121,10 +118,8 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $cropParams
      * @param mixed $width
      * @param mixed $height
-     * @param array $params
      * @return string
      */
     public function getUrlWithFocalCrop($id, array $cropParams, $width, $height, array $params = [])
@@ -134,7 +129,6 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
      * @return string
      */
     public function getLQIPUrl($id, array $params = [])
@@ -150,7 +144,6 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
      * @return string
      */
     public function getSocialUrl($id, array $params = [])
@@ -212,7 +205,7 @@ class Glide implements ImageServiceInterface
                 'width' => $w,
                 'height' => $h,
             ];
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             return [
                 'width' => 0,
                 'height' => 0,
@@ -262,23 +255,18 @@ class Glide implements ImageServiceInterface
             $fpY = number_format($fpY, 0, ".", "");
             $fpZ = number_format($fpZ, 4, ".", "");
 
-            $params = ['fit' => 'crop-' . $fpX . '-' . $fpY . '-' . $fpZ];
-
-            return $params;
+            return ['fit' => 'crop-' . $fpX . '-' . $fpY . '-' . $fpZ];
         }
 
         return [];
     }
 
     /**
-     * @param string $id 
+     * @param string $id
      * @return string
      */
     private function getOriginalMediaUrl($id)
     {
-        $libraryDisk = $this->config->get('twill.media_library.disk');
-        $endpointType = $this->config->get('twill.media_library.endpoint_type');
-        $localMediaLibraryUrl = $this->config->get("filesystems.disks.$libraryDisk.url");
         $originalMediaForExtensions = $this->config->get('twill.glide.original_media_for_extensions');
         $addParamsToSvgs = $this->config->get('twill.glide.add_params_to_svgs', false);
 
@@ -286,21 +274,6 @@ class Glide implements ImageServiceInterface
             return null;
         }
 
-        /** @var string $endpoint */
-        $endpoint;
-
-        switch ($endpointType) {
-            case 'local':
-                $endpoint = $localMediaLibraryUrl;
-                break;
-            case 's3':
-                $endpoint = s3Endpoint($libraryDisk);
-                break;
-            case 'azure':
-                $endpoint = azureEndpoint($libraryDisk);
-                break;
-        }
-
-        return $endpoint . '/' . $id;
+        return Storage::disk(config('twill.media_library.disk'))->url($id);
     }
 }

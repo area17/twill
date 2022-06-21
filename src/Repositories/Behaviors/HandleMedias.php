@@ -63,23 +63,21 @@ trait HandleMedias
 
         if (isset($fields['medias'])) {
             foreach ($fields['medias'] as $role => $mediasForRole) {
-                if (config('twill.media_library.translated_form_fields', false)) {
-                    if (Str::contains($role, ['[', ']'])) {
-                        $start = strpos($role, '[') + 1;
-                        $finish = strpos($role, ']', $start);
-                        $locale = substr($role, $start, $finish - $start);
-                        $role = strtok($role, '[');
-                    }
+                if (config('twill.media_library.translated_form_fields', false) && Str::contains($role, ['[', ']'])) {
+                    $start = strpos($role, '[') + 1;
+                    $finish = strpos($role, ']', $start);
+                    $locale = substr($role, $start, $finish - $start);
+                    $role = strtok($role, '[');
                 }
 
                 $locale = $locale ?? config('app.locale');
 
-                if (in_array($role, array_keys($this->model->mediasParams ?? []))
-                    || in_array($role, array_keys(config('twill.block_editor.crops', [])))
-                    || in_array($role, array_keys(config('twill.settings.crops', [])))) {
+                if (array_key_exists($role, $this->model->getMediasParams())
+                    || array_key_exists($role, config('twill.block_editor.crops', []))
+                    || array_key_exists($role, config('twill.settings.crops', []))) {
                     Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
-                        if (isset($media['crops']) && !empty($media['crops'])) {
+                        if (isset($media['crops']) && ! empty($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
                                 $medias->push([
                                     'id' => $media['id'],
@@ -154,7 +152,7 @@ trait HandleMedias
     {
         $itemsForForm = [];
 
-        foreach ($medias->groupBy('id') as $id => $mediasById) {
+        foreach ($medias->groupBy('id') as $mediasById) {
             $item = $mediasById->first();
 
             $itemForForm = $item->toCmsArray();
@@ -184,6 +182,6 @@ trait HandleMedias
      */
     public function getCrops($role)
     {
-        return $this->model->mediasParams[$role];
+        return $this->model->getMediasParams()[$role];
     }
 }

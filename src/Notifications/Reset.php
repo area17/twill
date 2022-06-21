@@ -20,7 +20,7 @@ class Reset extends ResetPassword
                 'appName' => config('app.name')
             ]))
             ->markdown('twill::emails.html.email', [
-                'url' => route('admin.password.reset.form', $this->token),
+                'url' => route('twill.password.reset.form', $this->token),
                 'actionText' => twillTrans('twill::lang.notifications.reset.action'),
                 'copy' => twillTrans('twill::lang.notifications.reset.content'),
             ]);
