@@ -23,7 +23,7 @@ module.exports = {
     ['meta', { name: 'twitter:creator', content: '@twillcms' }]
   ],
   markdown:{
-    toc: {includeLevel: [2, 3, 4]}
+    toc: {includeLevel: [2, 3, 4, 5]}
   },
   themeConfig: {
     docsRepo: 'area17/twill',

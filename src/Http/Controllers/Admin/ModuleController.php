@@ -1534,6 +1534,9 @@ abstract class ModuleController extends Controller
         return $tableFilters;
     }
 
+    /**
+     * The quick filters to apply to the listing table.
+     */
     public function quickFilters(): QuickFilters
     {
         return $this->getDefaultQuickFilters();

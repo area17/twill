@@ -21,7 +21,7 @@ Both take an array of `[field => rules]` values. All Laravel validation rules ar
 
 Example:
 
-```blade
+```html
 @twillBlockValidationRules([
     'text' => 'required'
 ])

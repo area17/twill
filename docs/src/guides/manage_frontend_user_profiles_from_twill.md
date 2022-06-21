@@ -88,7 +88,7 @@ information for the current user via `Auth::user()->profile`.
 Upon registration, a user profile is created with a `draft` status (ie.
 not published). This can be used to implement a user approval workflow:
 
-```blade
+```html
     @if (Auth::user()->profile->published)
         {{-- Account has been approved, show the dashboard --}}
     @else
