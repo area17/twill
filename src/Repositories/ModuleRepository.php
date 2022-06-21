@@ -136,39 +136,6 @@ abstract class ModuleRepository
     }
 
     /**
-     * @return int
-     * @deprecated To be removed in Twill 3.0
-     */
-    public function getCountForAll()
-    {
-        $query = $this->model->newQuery();
-
-        return $this->filter($query, $this->countScope)->count();
-    }
-
-    /**
-     * @return int
-     * @deprecated To be removed in Twill 3.0
-     */
-    public function getCountForPublished()
-    {
-        $query = $this->model->newQuery();
-
-        return $this->filter($query, $this->countScope)->published()->count();
-    }
-
-    /**
-     * @return int
-     * @deprecated To be removed in Twill 3.0
-     */
-    public function getCountForDraft()
-    {
-        $query = $this->model->newQuery();
-
-        return $this->filter($query, $this->countScope)->draft()->count();
-    }
-
-    /**
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function getById(int $id, array $with = [], array $withCount = []): TwillModelContract
