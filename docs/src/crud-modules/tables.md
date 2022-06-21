@@ -203,6 +203,8 @@ There are 2 types of filters that can be applied to a table.
 
 Quick filters and filters work together. They are not "or".
 
+![Filters](./assets/filters.png)
+
 ### Quick filters
 
 By default every module comes with the following quick filters:
