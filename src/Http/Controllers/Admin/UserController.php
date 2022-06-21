@@ -228,7 +228,7 @@ class UserController extends ModuleController
     /**
      * @return array
      */
-    protected function getRequestFilters()
+    protected function getRequestFilters(): array
     {
         if ($this->request->has('search')) {
             return ['search' => $this->request->get('search')];

@@ -79,7 +79,10 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         $this->config = $config;
 
         $this->middleware('can:access-media-library', ['only' => ['index']]);
-        $this->middleware('can:edit-media-library', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
+        $this->middleware(
+            'can:edit-media-library',
+            ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]
+        );
         $this->endpointType = $this->config->get('twill.media_library.endpoint_type');
         $this->customFields = $this->config->get('twill.media_library.extra_metadatas_fields');
     }
@@ -118,7 +121,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     /**
      * @return array
      */
-    protected function getRequestFilters()
+    protected function getRequestFilters(): array
     {
         if ($this->request->has('search')) {
             $requestFilters['search'] = $this->request->get('search');
@@ -128,7 +131,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             $requestFilters['tag'] = $this->request->get('tag');
         }
 
-        if ($this->request->has('unused') && (int) $this->request->unused === 1) {
+        if ($this->request->has('unused') && (int)$this->request->unused === 1) {
             $requestFilters['unused'] = $this->request->get('unused');
         }
 
@@ -171,7 +174,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
         $uploadedFile = $request->file('qqfile');
 
-        list($w, $h) = getimagesize($uploadedFile->path());
+        [$w, $h] = getimagesize($uploadedFile->path());
 
         $uploadedFile->storeAs($fileDirectory, $filename, $disk);
 
@@ -245,7 +248,10 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             return is_null($meta);
         })->toArray();
 
-        $extraMetadatas = array_diff_key($metadatasFromRequest, array_flip((array) $this->request->get('fieldsRemovedFromBulkEditing', [])));
+        $extraMetadatas = array_diff_key(
+            $metadatasFromRequest,
+            array_flip((array)$this->request->get('fieldsRemovedFromBulkEditing', []))
+        );
 
         if (in_array('tags', $this->request->get('fieldsRemovedFromBulkEditing', []))) {
             $this->repository->addIgnoreFieldsBeforeSave('bulk_tags');
@@ -255,10 +261,13 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         }
 
         foreach ($ids as $id) {
-            $this->repository->update($id, [
-                'bulk_tags' => $newTags ?? [],
-                'previous_common_tags' => $previousCommonTags ?? [],
-            ] + $extraMetadatas);
+            $this->repository->update(
+                $id,
+                [
+                    'bulk_tags' => $newTags ?? [],
+                    'previous_common_tags' => $previousCommonTags ?? [],
+                ] + $extraMetadatas
+            );
         }
 
         $items = $this->getIndexItems(['id' => $ids]);
@@ -295,8 +304,8 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     public function uploadIsSigned($signature, $isJsonResponse = true)
     {
         return $isJsonResponse
-        ? $this->responseFactory->json($signature, 200)
-        : $this->responseFactory->make($signature, 200, ['Content-Type' => 'text/plain']);
+            ? $this->responseFactory->json($signature, 200)
+            : $this->responseFactory->make($signature, 200, ['Content-Type' => 'text/plain']);
     }
 
     /**

@@ -47,7 +47,7 @@ abstract class TwillBaseFilter
 
         // If there is no label, we set it automatically.
         if ($this->label === null) {
-            $this->label(Str::lower(Str::plural($queryString)));
+            $this->label(Str::lower(Str::plural(Str::replace('_', ' ', $queryString))));
         }
 
         return $this;

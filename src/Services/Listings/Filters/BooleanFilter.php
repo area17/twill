@@ -8,13 +8,16 @@ class BooleanFilter extends BasicFilter
 {
     protected string $field;
 
+    public const TRUE = 'yes';
+    public const FALSE = 'no';
+
     public static function make(): self
     {
         $filter = parent::make();
         $filter->options(
             collect([
-                'true' => twillTrans('listing.filter.yes'),
-                'false' => twillTrans('listing.filter.no'),
+                self::TRUE => twillTrans('twill::lang.listing.filter.yes'),
+                self::FALSE => twillTrans('twill::lang.listing.filter.no'),
             ])
         );
         return $filter;
@@ -22,11 +25,11 @@ class BooleanFilter extends BasicFilter
 
     public function applyFilter(Builder $builder): Builder
     {
-        if (($this->appliedValue === 'true')) {
+        if (($this->appliedValue === self::TRUE)) {
             return $builder->where($this->field, '=', true);
         }
 
-        if (($this->appliedValue === 'false')) {
+        if (($this->appliedValue === self::FALSE)) {
             return $builder->where($this->field, '=', false);
         }
 

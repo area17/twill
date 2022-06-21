@@ -189,11 +189,16 @@ return [
             'unpublish' => 'Unpublish',
         ],
         'filter' => [
+            'no' => 'No',
+            'yes' => 'Yes',
             'all-items' => 'All items',
             'draft' => 'Draft',
             'mine' => 'Mine',
             'published' => 'Published',
             'trash' => 'Trash',
+        ],
+        'filters' => [
+            'all-label' => 'All :label',
         ],
         'languages' => 'Languages',
         'listing-empty-message' => 'There is no item here yet.',

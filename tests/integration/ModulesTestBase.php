@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use A17\Twill\Models\Model;
 use App\Models\Author;
 use App\Models\Category;
 use App\Models\Translations\AuthorTranslation;

@@ -46,7 +46,7 @@
                                 @php
                                     $options = $filter->getOptions($repository)->map(function($label, $value) use($filter) {
                                             if ($value === \A17\Twill\Services\Listings\Filters\BasicFilter::OPTION_ALL) {
-                                                $label = twillTrans('listing.filters.all-label', ['label' => $filter->getLabel() ?? '']);
+                                                $label = twillTrans('twill::lang.listing.filters.all-label', ['label' => $filter->getLabel() ?? '']);
                                             }
                                             return [
                                                 'value' => $value,

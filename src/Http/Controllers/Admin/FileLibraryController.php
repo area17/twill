@@ -135,7 +135,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     /**
      * @return array
      */
-    protected function getRequestFilters()
+    protected function getRequestFilters(): array
     {
         if ($this->request->has('search')) {
             $requestFilters['search'] = $this->request->get('search');

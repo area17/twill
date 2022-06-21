@@ -335,16 +335,6 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * Our dd.
-     *
-     * @param $value
-     */
-    public function dd($value)
-    {
-        dd($value ?? $this->app[Kernel::class]->output());
-    }
-
-    /**
      * Get or make a super admin.
      *
      * @param $force

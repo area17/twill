@@ -3,6 +3,7 @@
 namespace A17\Twill\Services\Listings\Filters;
 
 use A17\Twill\Repositories\ModuleRepository;
+use A17\Twill\Services\Listings\Filters\Exceptions\FilterOptionsMissingException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -86,6 +87,9 @@ class BasicFilter extends TwillBaseFilter
 
     public function getOptions(ModuleRepository $repository): Collection
     {
+        if ($this->options === null) {
+            throw new FilterOptionsMissingException($this->queryString . ' filter is missing options');
+        }
         if ($this->includeAll) {
             $this->options->prepend('All', self::OPTION_ALL);
         }

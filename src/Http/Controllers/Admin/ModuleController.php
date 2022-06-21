@@ -210,7 +210,7 @@ abstract class ModuleController extends Controller
      *
      * @var array
      *
-     * @deprecated use the method `filters` instead.
+     * @deprecated use the method `default` in `filters` instead.
      */
     protected $filtersDefaultOptions = [];
 
@@ -380,11 +380,6 @@ abstract class ModuleController extends Controller
 //        }
 
         $this->setUpController();
-
-        /*
-         * Apply any filters that are selected by default
-         */
-        $this->applyFiltersDefaultOptions();
     }
 
     /**
@@ -1697,32 +1692,40 @@ abstract class ModuleController extends Controller
         return $this->getIndexItems($scopes, true);
     }
 
-    /**
-     * @return array
-     */
-    protected function getRequestFilters()
+    protected function getRequestFilters(): array
     {
         if ($this->request->has('search')) {
             return ['search' => $this->request->get('search')];
         }
 
+        $this->applyFiltersDefaultOptions();
+
         return json_decode($this->request->get('filter'), true) ?? [];
     }
 
-    /**
-     * @return void
-     */
-    protected function applyFiltersDefaultOptions()
+    protected function applyFiltersDefaultOptions(): void
     {
-        if (!count($this->filtersDefaultOptions) || $this->request->has('search')) {
+        if ($this->request->has('search')) {
             return;
         }
 
-        $filters = $this->getRequestFilters();
+        $filters = json_decode($this->request->get('filter'), true) ?? [];
 
         foreach ($this->filtersDefaultOptions as $filterName => $defaultOption) {
             if (!isset($filters[$filterName])) {
                 $filters[$filterName] = $defaultOption;
+            }
+        }
+
+        // @PRtodo: Also do this for the main filter.
+
+        /** @var \A17\Twill\Services\Listings\Filters\BasicFilter $filter */
+        foreach ($this->filters() as $filter) {
+            if (!isset($filters[$filter->getQueryString()]) &&
+                $filter->getDefaultValue() &&
+                $filter->getDefaultValue() !== $filter::OPTION_ALL
+            ) {
+                $filters[$filter->getQueryString()] = $filter->getDefaultValue();
             }
         }
 
