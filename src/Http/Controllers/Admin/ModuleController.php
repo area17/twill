@@ -33,6 +33,7 @@ use A17\Twill\Services\Listings\TableDataContext;
 use A17\Twill\Services\Forms\Form;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
@@ -987,10 +988,7 @@ abstract class ModuleController extends Controller
         return View::make($view, $this->form($id, $item));
     }
 
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function publish()
+    public function publish(): JsonResponse
     {
         try {
             if ($this->repository->updateBasic($this->request->get('id'), [
@@ -1008,11 +1006,11 @@ abstract class ModuleController extends Controller
                     return $this->respondWithSuccess(
                         twillTrans('twill::lang.listing.publish.unpublished', ['modelTitle' => $this->modelTitle])
                     );
-                } else {
-                    return $this->respondWithSuccess(
-                        twillTrans('twill::lang.listing.publish.published', ['modelTitle' => $this->modelTitle])
-                    );
                 }
+
+                return $this->respondWithSuccess(
+                    twillTrans('twill::lang.listing.publish.published', ['modelTitle' => $this->modelTitle])
+                );
             }
         } catch (\Exception $e) {
             Log::error($e);
@@ -1023,10 +1021,7 @@ abstract class ModuleController extends Controller
         );
     }
 
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function bulkPublish()
+    public function bulkPublish(): JsonResponse
     {
         try {
             if ($this->repository->updateBasic(explode(',', $this->request->get('ids')), [
