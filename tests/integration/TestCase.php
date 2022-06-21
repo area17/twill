@@ -2,14 +2,13 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use _PHPStan_61858e129\Nette\DI\Definitions\Reference;
 use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
 use Carbon\Carbon;
-use Composer\Autoload\ClassLoader;
+use Exception;
 use Faker\Factory as Faker;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Filesystem\Filesystem;
@@ -17,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Illuminate\Testing\TestResponse;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
@@ -707,7 +707,7 @@ abstract class TestCase extends OrchestraTestCase
     public function assertExitCodeIsGood($exitCode)
     {
         if ($exitCode !== 0) {
-            throw new \Exception(
+            throw new Exception(
                 "Test ended with exit code {$exitCode}. Non-fatal errors possibly happened during tests."
             );
         }
@@ -722,7 +722,7 @@ abstract class TestCase extends OrchestraTestCase
     public function assertExitCodeIsNotGood($exitCode)
     {
         if ($exitCode === 0) {
-            throw new \Exception(
+            throw new Exception(
                 "Test ended with exit code 0, but this wasn't supposed to happen!"
             );
         }
@@ -731,6 +731,21 @@ abstract class TestCase extends OrchestraTestCase
     public function getCommand($commandName)
     {
         return $this->app->make(Kernel::class)->all()[$commandName];
+    }
+
+    public function httpJsonRequestAssert($url, $method = 'GET', $data = [], $expectedStatusCode = 200)
+    {
+        $response = $this->json(
+            $method,
+            $url,
+            $data
+        );
+
+        $this->assertLogStatusCode($response, $expectedStatusCode);
+
+        $response->assertStatus($expectedStatusCode);
+
+        return $response;
     }
 
     public function httpRequestAssert($url, $method = 'GET', $data = [], $expectedStatusCode = 200)
@@ -768,7 +783,7 @@ abstract class TestCase extends OrchestraTestCase
     {
         try {
             DB::table('twill_users')->truncate();
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
         }
     }
 
