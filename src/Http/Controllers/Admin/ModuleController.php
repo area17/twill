@@ -16,6 +16,7 @@ use A17\Twill\Events\ModuleDelete;
 use A17\Twill\Events\ModuleDestroy;
 use A17\Twill\Events\ModuleRestore;
 use A17\Twill\Events\ModuleFeature;
+use A17\Twill\Events\ModuleReorder;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -949,6 +950,8 @@ abstract class ModuleController extends Controller
 
             // @todo(3.x): Deprecated.
             $this->fireEvent();
+
+            ModuleReorder::dispatch($this->moduleName, $this->repository);
 
             return $this->respondWithSuccess(twillTrans('twill::lang.listing.reorder.success', ['modelTitle' => $this->modelTitle]));
         }
