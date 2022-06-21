@@ -290,7 +290,7 @@ class UserController extends ModuleController
     }
 
     /**
-     * @param \A17\Twill\Models\Model $item
+     * @param \A17\Twill\Models\ModelInterface $item
      * @return array
      */
     protected function indexItemData($item)

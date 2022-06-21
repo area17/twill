@@ -36,7 +36,7 @@ abstract class ModuleRepository
     use HandlePermissions;
 
     /**
-     * @var \A17\Twill\Models\Model
+     * @var \A17\Twill\Models\ModelInterface&\Illuminate\Database\Eloquent\Model
      */
     protected $model;
 
@@ -545,7 +545,7 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\ModelInterface $object
      * @param array $fields
      * @return array
      */
@@ -594,7 +594,7 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\ModelInterface $object
      * @param array $fields
      * @return string[]
      */
@@ -610,7 +610,7 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\ModelInterface $object
      * @param array $fields
      * @return void
      */
@@ -622,7 +622,7 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\ModelInterface $object
      * @param array $fields
      * @return void
      */
@@ -634,7 +634,7 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\ModelInterface $object
      * @param array $fields
      * @return void
      */
@@ -646,7 +646,7 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\ModelInterface $object
      * @return void
      */
     public function afterDelete($object)
@@ -657,7 +657,7 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\ModelInterface $object
      * @return void
      */
     public function afterRestore($object)
@@ -668,7 +668,7 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\ModelInterface $object
      * @param array $fields
      * @return \A17\Twill\Models\Model
      */
@@ -682,7 +682,7 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\ModelInterface $object
      * @return array
      */
     public function getFormFields($object)
@@ -754,7 +754,7 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\ModelInterface $object
      * @param array $fields
      * @param string $relationship
      * @param string $formField
@@ -779,7 +779,7 @@ abstract class ModuleRepository
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\ModelInterface $object
      * @param array $fields
      * @param string $relationship
      * @return void

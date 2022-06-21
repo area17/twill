@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
-abstract class Model extends BaseModel implements TaggableInterface
+abstract class Model extends BaseModel implements TaggableInterface, ModelInterface
 {
     use HasPresenter;
     use SoftDeletes;

@@ -10,6 +10,7 @@ use A17\Twill\Helpers\FlashLevel;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Group;
 use A17\Twill\Models\Model;
+use A17\Twill\Models\ModelInterface;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Listings\Columns\Boolean;
 use A17\Twill\Services\Listings\Columns\Browser;
@@ -1490,7 +1491,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param \A17\Twill\Models\Model $item
+     * @param \A17\Twill\Models\ModelInterface $item
      * @return array
      */
     protected function indexItemData($item)
@@ -1499,10 +1500,9 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param \A17\Twill\Models\Model $item
-     * @return int|string
+     * @return int
      */
-    protected function getItemIdentifier($item)
+    protected function getItemIdentifier(ModelInterface $item)
     {
         return $item->{$this->identifierColumnKey};
     }
