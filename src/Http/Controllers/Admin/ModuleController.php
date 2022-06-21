@@ -15,6 +15,7 @@ use A17\Twill\Events\ModuleDuplicate;
 use A17\Twill\Events\ModuleDelete;
 use A17\Twill\Events\ModuleDestroy;
 use A17\Twill\Events\ModuleRestore;
+use A17\Twill\Events\ModuleFeature;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -900,6 +901,8 @@ abstract class ModuleController extends Controller
             // @todo(3.x): Deprecated.
             $this->fireEvent();
 
+            ModuleFeature::dispatch($this->moduleName, $this->repository, [$this->request->get('id')], !$this->request->get('active'));
+
             if ($this->request->get('active')) {
                 return $this->respondWithSuccess(twillTrans('twill::lang.listing.featured.unfeatured', ['modelTitle' => $this->modelTitle]));
             } else {
@@ -923,6 +926,8 @@ abstract class ModuleController extends Controller
 
             // @todo(3.x): Deprecated.
             $this->fireEvent();
+
+            ModuleFeature::dispatch($this->moduleName, $this->repository, explode(',', $this->request->get('ids')), $this->request->get('feature'),  'bulk');
 
             if ($this->request->get('feature')) {
                 return $this->respondWithSuccess(twillTrans('twill::lang.listing.bulk-featured.featured', ['modelTitle' => $this->modelTitle]));
