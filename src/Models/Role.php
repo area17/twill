@@ -7,11 +7,12 @@ use A17\Twill\Models\Behaviors\HasPermissions;
 use A17\Twill\Models\Behaviors\IsTranslatable;
 use A17\Twill\Models\Behaviors\HasPosition;
 use A17\Twill\Models\Behaviors\Sortable;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model as BaseModel;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Role model
@@ -22,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static Builder draft() Get draft roles
  * @method static Builder onlyTrashed() Get trashed roles
  */
-class Role extends BaseModel implements Sortable
+class Role extends BaseModel implements Sortable, TwillModelContract
 {
     use HasMedias, SoftDeletes, HasPermissions, IsTranslatable, HasPosition;
 
@@ -45,95 +46,62 @@ class Role extends BaseModel implements Sortable
         'in_everyone_group' => 'boolean',
     ];
 
-    /**
-     * Scope accessible roles for the current user.
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeAccessible($query)
+    public function scopeAccessible($query): Builder
     {
         $currentUser = auth('twill_users')->user();
 
-        if ($currentUser->isSuperAdmin()) {
+        if ($currentUser?->isSuperAdmin()) {
             return $query;
         }
 
-        $accessibleRoleIds = $currentUser->role->accessibleRoles->pluck('id')->toArray();
+        $accessibleRoleIds = $currentUser?->role->accessibleRoles->pluck('id')->toArray();
 
         return $query->whereIn('id', $accessibleRoleIds);
     }
 
-    /**
-     * Scope published roles.
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopePublished($query)
+    public function scopePublished($query): Builder
     {
         return $query->wherePublished(true);
     }
 
-    /**
-     * Scope unpublished (draft) roles.
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeDraft($query)
+    public function scopeDraft($query): Builder
     {
         return $query->wherePublished(false);
     }
 
-    /**
-     * Scope trashed roles.
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeOnlyTrashed($query)
+    public function scopeOnlyTrashed($query): Builder
     {
         return $query->whereNotNull('deleted_at');
     }
 
-    /**
-     * User model relationship
-     *
-     * @return BelongsToMany|Collection|User[]
-     */
-    public function users()
+    public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
 
-    /**
-     * Return the formatted created date
-     *
-     * @return string
-     */
-    public function getCreatedAtAttribute($value)
+    public function getCreatedAtAttribute($value): string
     {
         return \Carbon\Carbon::parse($value)->format('d M Y');
     }
 
     /**
      * Return the formatted number of users in this group
-     *
-     * @return string
      */
-    public function getUsersCountAttribute($value)
+    public function getUsersCountAttribute($value): string
     {
         return $this->users->count() . ' users';
     }
 
     /**
      * Return the roles that are considered accessible for this role
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getAccessibleRolesAttribute()
+    public function getAccessibleRolesAttribute(): Collection
     {
         return static::where('position', '>=', $this->position)->get();
+    }
+
+    public function getTranslatedAttributes(): array
+    {
+        return [];
     }
 }

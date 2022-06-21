@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Services\Listings\Columns;
 
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Services\Listings\TableColumn;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class NestedData extends TableColumn
@@ -15,7 +15,7 @@ class NestedData extends TableColumn
         return $item;
     }
 
-    protected function getRenderValue(Model $model): string
+    protected function getRenderValue(TwillModelContract $model): string
     {
         $nestedCount = $model->{$this->field}()->count();
 

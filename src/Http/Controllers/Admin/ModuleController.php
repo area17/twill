@@ -8,9 +8,9 @@ use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Helpers\FlashLevel;
 use A17\Twill\Models\Behaviors\HasSlug;
+use A17\Twill\Models\Contracts\TwillModelContract;
+use A17\Twill\Models\Contracts\TwillSchedulableModel;
 use A17\Twill\Models\Group;
-use A17\Twill\Models\Model;
-use A17\Twill\Models\ModelInterface;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Listings\Columns\Boolean;
 use A17\Twill\Services\Listings\Columns\Browser;
@@ -33,7 +33,6 @@ use A17\Twill\Services\Listings\TableDataContext;
 use A17\Twill\Services\Forms\Form;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
@@ -437,7 +436,7 @@ abstract class ModuleController extends Controller
             $columns->add(
                 Text::make()
                     ->field($this->titleColumnKey)
-                    ->linkCell(function (Model $model) {
+                    ->linkCell(function (TwillModelContract $model) {
                         if ($this->getIndexOption('edit', $model)) {
                             return $this->getModuleRoute($model->id, 'edit');
                         }
@@ -468,7 +467,7 @@ abstract class ModuleController extends Controller
             $columns->add(
                 Text::make()
                     ->field($this->titleColumnKey)
-                    ->linkCell(function (Model $model) {
+                    ->linkCell(function (TwillModelContract $model) {
                         if ($this->getIndexOption('edit', $model)) {
                             return $this->getModuleRoute($model->id, 'edit');
                         }
@@ -524,7 +523,7 @@ abstract class ModuleController extends Controller
                         ->sortKey($indexColumn['sortKey'] ?? null)
                         ->sortable($indexColumn['sort'] ?? false)
                         ->optional($indexColumn['optional'] ?? false)
-                        ->linkCell(function (Model $model) use ($indexColumn) {
+                        ->linkCell(function (TwillModelContract $model) use ($indexColumn) {
                             $module = Str::singular(last(explode('.', $this->moduleName)));
 
                             return moduleRoute(
@@ -939,8 +938,8 @@ abstract class ModuleController extends Controller
         }
 
         $previewView = $this->previewView ?? (Config::get('twill.frontend.views_path', 'site') . '.' . Str::singular(
-                    $this->moduleName
-                ));
+                $this->moduleName
+            ));
 
         return View::exists($previewView) ? View::make(
             $previewView,
@@ -1447,13 +1446,13 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Collection|\A17\Twill\Models\Model[] $items
+     * @param \Illuminate\Database\Eloquent\Collection|TwillModelContract[] $items
      */
     protected function getIndexTableData(Collection|LengthAwarePaginator $items): array
     {
         $translated = $this->moduleHas('translations');
 
-        return $items->map(function (BaseModel $item) use ($translated) {
+        return $items->map(function (TwillModelContract $item) use ($translated) {
             $columnsData = $this->getTableColumns('index')->getArrayForModel($item);
 
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
@@ -1463,11 +1462,13 @@ abstract class ModuleController extends Controller
 
             $itemId = $this->getItemIdentifier($item);
 
+            $publishable = $item instanceof TwillSchedulableModel;
+
             return array_replace(
                 [
                     'id' => $itemId,
-                    'publish_start_date' => $item->publish_start_date,
-                    'publish_end_date' => $item->publish_end_date,
+                    'publish_start_date' => $publishable ? $item->publish_start_date : null,
+                    'publish_end_date' => $publishable ? $item->publish_end_date : null,
                     'edit' => $canEdit ? $this->getModuleRoute($itemId, 'edit') : null,
                     'duplicate' => $canDuplicate ? $this->getModuleRoute($itemId, 'duplicate') : null,
                     'delete' => $itemCanDelete ? $this->getModuleRoute($itemId, 'destroy') : null,
@@ -1475,7 +1476,7 @@ abstract class ModuleController extends Controller
                     'editInModal' => $this->getModuleRoute($itemId, 'edit'),
                     'updateUrl' => $this->getModuleRoute($itemId, 'update'),
                 ] : []) + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? [
-                    'published' => $item->published,
+                    'published' => $publishable ? $item->published : null,
                 ] : []) + ($this->getIndexOption('feature', $item) && ($item->canFeature ?? true) ? [
                     'featured' => $item->{$this->featureField},
                 ] : []) + (($this->getIndexOption('restore', $item) && $itemIsTrashed) ? [
@@ -1490,11 +1491,7 @@ abstract class ModuleController extends Controller
         })->toArray();
     }
 
-    /**
-     * @param \A17\Twill\Models\ModelInterface $item
-     * @return array
-     */
-    protected function indexItemData($item)
+    protected function indexItemData(TwillModelContract $item)
     {
         return [];
     }
@@ -1502,7 +1499,7 @@ abstract class ModuleController extends Controller
     /**
      * @return int
      */
-    protected function getItemIdentifier(ModelInterface $item)
+    protected function getItemIdentifier(TwillModelContract $item)
     {
         return $item->{$this->identifierColumnKey};
     }
@@ -1661,7 +1658,7 @@ abstract class ModuleController extends Controller
 
     protected function getBrowserTableData(Collection|LengthAwarePaginator $items, bool $forRepeater = false): array
     {
-        return $items->map(function (BaseModel $item) use ($forRepeater) {
+        return $items->map(function (TwillModelContract $item) use ($forRepeater) {
             $repeaterFields = [];
             if ($forRepeater) {
                 $translatedAttributes = $item->getTranslatedAttributes();
@@ -1755,12 +1752,7 @@ abstract class ModuleController extends Controller
         return $orders + $defaultOrders;
     }
 
-    /**
-     * @param int $id
-     * @param \A17\Twill\Models\Model|null $item
-     * @return array
-     */
-    protected function form($id, $item = null)
+    protected function form(int $id, ?TwillModelContract $item = null): array
     {
         if (!$item && $id) {
             $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
@@ -1928,10 +1920,7 @@ abstract class ModuleController extends Controller
         return '';
     }
 
-    /**
-     * @return string
-     */
-    protected function getModulePermalinkBase()
+    protected function getModulePermalinkBase(): string
     {
         $base = '';
         $moduleParts = explode('.', $this->moduleName);
@@ -2030,7 +2019,7 @@ abstract class ModuleController extends Controller
             . ($this->moduleHas('translations') ? '{language}/' : '')
             . ($this->moduleHas('revisions') ? '{preview}/' : '')
             . (empty($this->getLocalizedPermalinkBase()) ? ($this->permalinkBase ?? $this->getModulePermalinkBase(
-                )) : '')
+            )) : '')
             . (((isset($this->permalinkBase) && empty($this->permalinkBase)) || !empty(
                 $this->getLocalizedPermalinkBase()
                 )) ? '' : '/');
@@ -2092,11 +2081,11 @@ abstract class ModuleController extends Controller
         if (!isset($back_link)) {
             if (($back_link = Session::get($this->getBackLinkSessionKey())) == null) {
                 $back_link = $this->request->headers->get('referer') ?? moduleRoute(
-                        $this->moduleName,
-                        $this->routePrefix,
-                        'index',
-                        $params
-                    );
+                    $this->moduleName,
+                    $this->routePrefix,
+                    'index',
+                    $params
+                );
             }
         }
 
@@ -2242,7 +2231,7 @@ abstract class ModuleController extends Controller
         return twillTrans(Arr::has($this->labels, $key) ? Arr::get($this->labels, $key) : $key, $replace);
     }
 
-    public function getForm(\Illuminate\Database\Eloquent\Model $model): Form
+    public function getForm(TwillModelContract $model): Form
     {
         return new Form();
     }

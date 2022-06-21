@@ -6,6 +6,7 @@ use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Behaviors\Sortable;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Model;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleDates;
@@ -168,20 +169,9 @@ abstract class ModuleRepository
     }
 
     /**
-     * @return int
-     * @deprecated To be removed in Twill 3.0
-     */
-    public function getCountForTrash()
-    {
-        $query = $this->model->newQuery();
-
-        return $this->filter($query, $this->countScope)->onlyTrashed()->count();
-    }
-
-    /**
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function getById(int $id, array $with = [], array $withCount = []): Model
+    public function getById(int $id, array $with = [], array $withCount = []): TwillModelContract
     {
         return once(function () use ($id, $with, $withCount) {
             return $this->model->with($with)->withCount($withCount)->findOrFail($id);

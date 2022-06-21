@@ -3,8 +3,8 @@
 namespace A17\Twill\Services\Listings\Columns;
 
 use A17\Twill\Exceptions\ColumnMissingPropertyException;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Services\Listings\TableColumn;
-use Illuminate\Database\Eloquent\Model;
 
 class Browser extends TableColumn
 {
@@ -16,7 +16,7 @@ class Browser extends TableColumn
         return $this;
     }
 
-    protected function getRenderValue(Model $model): string
+    protected function getRenderValue(TwillModelContract $model): string
     {
         if (null === $this->browser) {
             throw new ColumnMissingPropertyException('Browser column missing browser value: ' . $this->field);

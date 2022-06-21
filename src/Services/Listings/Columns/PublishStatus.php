@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Services\Listings\Columns;
 
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Services\Listings\TableColumn;
-use Illuminate\Database\Eloquent\Model;
 
 class PublishStatus extends TableColumn
 {
@@ -16,7 +16,7 @@ class PublishStatus extends TableColumn
         return $column;
     }
 
-    protected function getRenderValue(Model $model): string
+    protected function getRenderValue(TwillModelContract $model): string
     {
         return '';
     }
