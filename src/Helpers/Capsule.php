@@ -88,7 +88,7 @@ class Capsule
     {
         $serviceProviderName = $this->name . 'CapsuleServiceProvider';
 
-        if (File::exists($this->path . '/' . $serviceProviderName . '.php')) {
+        if (File::exists($this->path . DIRECTORY_SEPARATOR . $serviceProviderName . '.php')) {
             App::register($this->namespace . '\\' . $serviceProviderName);
         }
     }
