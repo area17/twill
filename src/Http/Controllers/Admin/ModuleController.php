@@ -372,17 +372,6 @@ abstract class ModuleController extends Controller
             return $next($request);
         });
 
-        /*
-         * Default filters for the index view
-         * By default, the search field will run a like query on the title field
-         */
-        // @PRtodo: Do we need this?
-//        if (!isset($this->defaultFilters)) {
-//            $this->defaultFilters = [
-//                'search' => ($this->moduleHas('translations') ? '' : '%') . $this->titleColumnKey,
-//            ];
-//        }
-
         $this->searchColumns = [$this->titleColumnKey];
 
         $this->setUpController();
