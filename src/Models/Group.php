@@ -85,7 +85,7 @@ class Group extends BaseModel implements TwillModelContract
      */
     public function scopeOnlyTrashed(Builder $query): Builder
     {
-        return $query->whereNotNull('deleted_at');
+        return $query->onlyTrashed();
     }
 
     public function users(): BelongsToMany

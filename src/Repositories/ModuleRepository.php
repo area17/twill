@@ -15,6 +15,8 @@ use A17\Twill\Repositories\Behaviors\HandlePermissions;
 use A17\Twill\Repositories\Behaviors\HandleRelatedBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleRepeaters;
 use Exception;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -34,39 +36,21 @@ abstract class ModuleRepository
     use HandleFieldsGroups;
     use HandlePermissions;
 
-    /**
-     * @var \A17\Twill\Models\Contracts\TwillModelContract&\Illuminate\Database\Eloquent\Model
-     */
-    protected $model;
+    protected TwillModelContract $model;
 
     /**
      * @var string[]
      */
-    protected $ignoreFieldsBeforeSave = [];
+    protected array $ignoreFieldsBeforeSave = [];
 
-    /**
-     * @var array
-     */
-    protected $countScope = [];
+    protected array $countScope = [];
 
-    /**
-     * @var array
-     */
-    protected $fieldsGroups = [];
+    protected array $fieldsGroups = [];
 
-    /**
-     * @var bool
-     */
-    public $fieldsGroupsFormFieldNamesAutoPrefix = false;
+    public bool $fieldsGroupsFormFieldNamesAutoPrefix = false;
 
-    /**
-     * @var string|null
-     */
-    public $fieldsGroupsFormFieldNameSeparator = '_';
+    public string $fieldsGroupsFormFieldNameSeparator = '_';
 
-    /**
-     * @return \Illuminate\Support\Collection|\Illuminate\Contracts\Pagination\LengthAwarePaginator
-     */
     public function get(
         array $with = [],
         array $scopes = [],
@@ -74,14 +58,14 @@ abstract class ModuleRepository
         int $perPage = 20,
         bool $forcePagination = false,
         array $appliedFilters = []
-    ) {
+    ): LengthAwarePaginator|Collection {
         $query = $this->model->with($with);
 
         $query = $this->filter($query, $scopes);
         $query = $this->order($query, $orders);
 
         foreach ($appliedFilters as $filter) {
-            $filter->applyFilter($query);
+            $query = $filter->applyFilter($query);
         }
 
         if (!$forcePagination && $this->model instanceof Sortable) {
@@ -95,20 +79,15 @@ abstract class ModuleRepository
         return $query->paginate($perPage);
     }
 
-    /**
-     * @param string $slug
-     * @param array $scope
-     * @return int
-     */
-    public function getCountByStatusSlug($slug, $scope = [])
+    public function getCountByStatusSlug(string $slug, array $scope = []): int
     {
         $query = $this->model->where($scope);
 
-        if (config('twill.enabled.permissions-management') &&
-            (TwillPermissions::getPermissionModule(getModuleNameByModel($this->model)) || method_exists(
-                    $this->model,
-                    'scopeAccessible'
-                ))
+        if (TwillPermissions::enabled() &&
+            (
+                TwillPermissions::getPermissionModule(getModuleNameByModel($this->model))
+                || method_exists($this->model, 'scopeAccessible')
+            )
         ) {
             $query = $query->accessible();
         }
@@ -143,15 +122,9 @@ abstract class ModuleRepository
         });
     }
 
-    /**
-     * @param string $column
-     * @param array $orders
-     * @param null $exceptId
-     * @return \Illuminate\Support\Collection
-     */
-    public function listAll($column = 'title', $orders = [], $exceptId = null)
+    public function listAll(string $column = 'title', array $orders = [], int|string|null $exceptId = null): Collection
     {
-        $query = $this->model->newQuery();
+        $query = $this->model::query();
 
         if ($exceptId) {
             $query = $query->where($this->model->getTable() . '.id', '<>', $exceptId);
@@ -159,7 +132,7 @@ abstract class ModuleRepository
 
         if ($this->model instanceof Sortable) {
             $query = $query->ordered();
-        } elseif (!empty($orders)) {
+        } elseif ($orders !== []) {
             $query = $this->order($query, $orders);
         }
 
@@ -170,97 +143,72 @@ abstract class ModuleRepository
         return $query->get()->pluck($column, 'id');
     }
 
-    /**
-     * @param $search
-     * @param array $fields
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function cmsSearch($search, $fields = [])
+    public function cmsSearch(string $search, array $fields = []): Collection
     {
-        $query = $this->model->latest();
+        $builder = $this->model->latest();
 
         $translatedAttributes = $this->model->translatedAttributes ?? [];
 
         foreach ($fields as $field) {
-            if (in_array($field, $translatedAttributes)) {
-                $query->orWhereHas('translations', function ($q) use ($field, $search) {
-                    $q->where($field, $this->getLikeOperator(), "%{$search}%");
-                });
+            if (in_array($field, $translatedAttributes, true)) {
+                $builder->orWhereTranslationLike($field, "%$search%");
             } else {
-                $query->orWhere($field, $this->getLikeOperator(), "%{$search}%");
+                $builder->orWhere($field, $this->getLikeOperator(), "%$search%");
             }
         }
 
-        return $query->get();
+        return $builder->get();
     }
 
-    /**
-     * @param $attributes
-     * @param $fields
-     * @return \A17\Twill\Models\Model
-     */
-    public function firstOrCreate($attributes, $fields = [])
+    public function firstOrCreate(array $attributes, array $fields = []): TwillModelContract
     {
         return $this->model->where($attributes)->first() ?? $this->create($attributes + $fields);
     }
 
-    /**
-     * @param string[] $fields
-     * @return \A17\Twill\Models\Model
-     */
-    public function create($fields)
+    public function create(array $fields): TwillModelContract
     {
         return DB::transaction(function () use ($fields) {
             $original_fields = $fields;
 
             $fields = $this->prepareFieldsBeforeCreate($fields);
 
-            $object = $this->model->create(Arr::except($fields, $this->getReservedFields()));
+            $model = $this->model->create(Arr::except($fields, $this->getReservedFields()));
 
-            $this->beforeSave($object, $original_fields);
+            $this->beforeSave($model, $original_fields);
 
-            $fields = $this->prepareFieldsBeforeSave($object, $fields);
+            $fields = $this->prepareFieldsBeforeSave($model, $fields);
 
-            $object->save();
+            $model->save();
 
-            $this->afterSave($object, $fields);
+            $this->afterSave($model, $fields);
 
-            return $object;
+            return $model;
         }, 3);
     }
 
-    /**
-     * @param array $fields
-     * @return \A17\Twill\Models\Model
-     */
-    public function createForPreview($fields)
+    public function createForPreview(array $fields): TwillModelContract
     {
         $fields = $this->prepareFieldsBeforeCreate($fields);
 
-        $object = $this->model->newInstance(Arr::except($fields, $this->getReservedFields()));
+        $model = $this->model->newInstance(Arr::except($fields, $this->getReservedFields()));
 
-        return $this->hydrate($object, $fields);
+        return $this->hydrate($model, $fields);
     }
 
-    public function updateOrCreate(array $attributes, array $fields): Model
+    public function updateOrCreate(array $attributes, array $fields): TwillModelContract
     {
-        $object = $this->model->where($attributes)->first();
+        $model = $this->model->where($attributes)->first();
 
-        if (!$object instanceof \A17\Twill\Models\Model) {
+        if (!$model) {
             return $this->create($fields);
         }
 
-        $this->update($object->id, $fields);
+        $this->update($model->id, $fields);
 
-        return $object;
+        return $model;
     }
 
-    /**
-     * @param mixed $id
-     * @param array $fields
-     * @return void
-     */
-    public function update($id, $fields)
+    public function update(int|string $id, array $fields): void
     {
         DB::transaction(function () use ($id, $fields) {
             $object = $this->model->findOrFail($id);
@@ -277,18 +225,12 @@ abstract class ModuleRepository
         }, 3);
     }
 
-    /**
-     * @param mixed $id
-     * @param array $values
-     * @param array $scopes
-     * @return mixed
-     */
-    public function updateBasic($id, $values, $scopes = [])
+    public function updateBasic(int|string|null|array $id, array $values, array $scopes = []): bool
     {
         return DB::transaction(function () use ($id, $values, $scopes) {
             // apply scopes if no id provided
-            if (is_null($id)) {
-                $query = $this->model->query();
+            if ($id === null) {
+                $query = $this->model::query();
 
                 foreach ($scopes as $column => $value) {
                     $query->where($column, $value);
@@ -296,8 +238,9 @@ abstract class ModuleRepository
 
                 $query->update($values);
 
-                $query->get()->each(function ($object) use ($values) {
-                    $this->afterUpdateBasic($object, $values);
+                $query->get()->each(function ($model) use ($values) {
+                    /** @var TwillModelContract $model */
+                    $this->afterUpdateBasic($model, $values);
                 });
 
                 return true;
@@ -315,9 +258,9 @@ abstract class ModuleRepository
                 return true;
             }
 
-            if (($object = $this->model->find($id)) != null) {
-                $object->update($values);
-                $this->afterUpdateBasic($object, $values);
+            if ($model = $this->model->find($id)) {
+                $model->update($values);
+                $this->afterUpdateBasic($model, $values);
 
                 return true;
             }
@@ -326,72 +269,54 @@ abstract class ModuleRepository
         }, 3);
     }
 
-    /**
-     * @param array $ids
-     * @return void
-     */
-    public function setNewOrder($ids)
+    public function setNewOrder(array $ids): void
     {
         DB::transaction(function () use ($ids) {
-            $this->model->setNewOrder($ids);
+            $this->model::setNewOrder($ids);
         }, 3);
     }
 
-    /**
-     * @param mixed $id
-     * @return mixed
-     */
-    public function duplicate($id, $titleColumnKey = 'title')
+    public function duplicate(int|string $id, string $titleColumnKey = 'title'): ?TwillModelContract
     {
-        if (($object = $this->model->find($id)) === null) {
-            return false;
+        if ($object = $this->model->find($id)) {
+            if ($revision = $object->revisions()->orderBy('created_at', 'desc')->first()) {
+                $revisionInput = json_decode($revision->payload, true);
+                $baseInput = collect($revisionInput)->only([
+                    $titleColumnKey,
+                    'slug',
+                    'languages',
+                ])->filter()->toArray();
+
+                $newObject = $this->create($baseInput);
+
+                $this->update($newObject->id, $revisionInput);
+
+                return $newObject;
+            }
+
+            return null;
         }
 
-        if (($revision = $object->revisions()->orderBy('created_at', 'desc')->first()) === null) {
-            return false;
-        }
-
-        $revisionInput = json_decode($revision->payload, true);
-        $baseInput = collect($revisionInput)->only([
-            $titleColumnKey,
-            'slug',
-            'languages',
-        ])->filter()->toArray();
-
-        $newObject = $this->create($baseInput);
-
-        $this->update($newObject->id, $revisionInput);
-
-        return $newObject;
+        return null;
     }
 
-    /**
-     * @param mixed $id
-     * @return mixed
-     */
-    public function delete($id)
+    public function delete(int|string $id): bool
     {
         return DB::transaction(function () use ($id) {
-            if (($object = $this->model->find($id)) === null) {
-                return false;
-            }
+            if ($object = $this->model->find($id)) {
+                if (!method_exists($object, 'canDeleteSafely') || $object->canDeleteSafely()) {
+                    $object->delete();
+                    $this->afterDelete($object);
 
-            if (!method_exists($object, 'canDeleteSafely') || $object->canDeleteSafely()) {
-                $object->delete();
-                $this->afterDelete($object);
-
-                return true;
+                    return true;
+                }
             }
 
             return false;
         }, 3);
     }
 
-    /**
-     * @param array $ids
-     * @return mixed
-     */
-    public function bulkDelete($ids)
+    public function bulkDelete(array $ids): bool
     {
         return DB::transaction(function () use ($ids) {
             try {
@@ -411,29 +336,21 @@ abstract class ModuleRepository
         }, 3);
     }
 
-    /**
-     * @param mixed $id
-     * @return mixed
-     */
-    public function forceDelete($id)
+    public function forceDelete(int|string $id): bool
     {
         return DB::transaction(function () use ($id) {
-            if (($object = $this->model->onlyTrashed()->find($id)) === null) {
-                return false;
-            } else {
+            if ($object = $this->model->onlyTrashed()->find($id)) {
                 $object->forceDelete();
                 $this->afterDelete($object);
 
                 return true;
             }
+
+            return false;
         }, 3);
     }
 
-    /**
-     * @param mixed $id
-     * @return mixed
-     */
-    public function bulkForceDelete($ids)
+    public function bulkForceDelete(array $ids): bool
     {
         return DB::transaction(function () use ($ids) {
             try {
@@ -455,14 +372,10 @@ abstract class ModuleRepository
         }, 3);
     }
 
-    /**
-     * @param mixed $id
-     * @return mixed
-     */
-    public function restore($id)
+    public function restore(int|string $id): bool
     {
         return DB::transaction(function () use ($id) {
-            if (($object = $this->model->withTrashed()->find($id)) != null) {
+            if ($object = $this->model::withTrashed()->find($id)) {
                 $object->restore();
                 $this->afterRestore($object);
 
@@ -473,15 +386,11 @@ abstract class ModuleRepository
         }, 3);
     }
 
-    /**
-     * @param array $ids
-     * @return mixed
-     */
-    public function bulkRestore($ids)
+    public function bulkRestore(array $ids): bool
     {
         return DB::transaction(function () use ($ids) {
             try {
-                $query = $this->model->withTrashed()->whereIn('id', $ids);
+                $query = $this->model::withTrashed()->whereIn('id', $ids);
                 $objects = $query->get();
 
                 $query->restore();
@@ -499,12 +408,7 @@ abstract class ModuleRepository
         }, 3);
     }
 
-    /**
-     * @param \A17\Twill\Models\ModelInterface $object
-     * @param array $fields
-     * @return array
-     */
-    public function cleanupFields($object, $fields)
+    public function cleanupFields(?TwillModelContract $object, array $fields): array
     {
         if (property_exists($this->model, 'checkboxes')) {
             foreach ($this->model->checkboxes as $field) {
@@ -548,12 +452,7 @@ abstract class ModuleRepository
         return $fields;
     }
 
-    /**
-     * @param \A17\Twill\Models\ModelInterface $object
-     * @param array $fields
-     * @return string[]
-     */
-    public function prepareFieldsBeforeSave($object, $fields)
+    public function prepareFieldsBeforeSave(TwillModelContract $object, array $fields): array
     {
         $fields = $this->cleanupFields($object, $fields);
 
@@ -564,83 +463,51 @@ abstract class ModuleRepository
         return $fields;
     }
 
-    /**
-     * @param \A17\Twill\Models\ModelInterface $object
-     * @param array $fields
-     * @return void
-     */
-    public function afterUpdateBasic($object, $fields)
+    public function afterUpdateBasic(TwillModelContract $object, array $fields): void
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object, $fields);
         }
     }
 
-    /**
-     * @param \A17\Twill\Models\ModelInterface $object
-     * @param array $fields
-     * @return void
-     */
-    public function beforeSave($object, $fields)
+    public function beforeSave(TwillModelContract $object, array $fields): void
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object, $fields);
         }
     }
 
-    /**
-     * @param \A17\Twill\Models\ModelInterface $object
-     * @param array $fields
-     * @return void
-     */
-    public function afterSave($object, $fields)
+    public function afterSave(TwillModelContract $model, array $fields): void
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
-            $this->$method($object, $fields);
+            $this->$method($model, $fields);
         }
     }
 
-    /**
-     * @param \A17\Twill\Models\ModelInterface $object
-     * @return void
-     */
-    public function afterDelete($object)
+    public function afterDelete(TwillModelContract $object): void
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object);
         }
     }
 
-    /**
-     * @param \A17\Twill\Models\ModelInterface $object
-     * @return void
-     */
-    public function afterRestore($object)
+    public function afterRestore(TwillModelContract $object): void
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object);
         }
     }
 
-    /**
-     * @param \A17\Twill\Models\ModelInterface $object
-     * @param array $fields
-     * @return \A17\Twill\Models\Model
-     */
-    public function hydrate($object, $fields)
+    public function hydrate(TwillModelContract $model, array $fields): TwillModelContract
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
-            $object = $this->$method($object, $fields);
+            $model = $this->$method($model, $fields);
         }
 
-        return $object;
+        return $model;
     }
 
-    /**
-     * @param \A17\Twill\Models\ModelInterface $object
-     * @return array
-     */
-    public function getFormFields($object)
+    public function getFormFields(TwillModelContract $object): array
     {
         $fields = $object->attributesToArray();
 
@@ -651,11 +518,7 @@ abstract class ModuleRepository
         return $fields;
     }
 
-    /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @return \Illuminate\Database\Query\Builder
-     */
-    public function filter($query, array $scopes = [])
+    public function filter(Builder $query, array $scopes = []): Builder
     {
         $likeOperator = $this->getLikeOperator();
 
@@ -675,13 +538,13 @@ abstract class ModuleRepository
                 $query->$column();
             } elseif (is_array($value)) {
                 $query->whereIn($column, $value);
-            } elseif ($column[0] == '%') {
-                $value && ($value[0] == '!') ? $query->where(
+            } elseif ($column[0] === '%') {
+                $value && ($value[0] === '!') ? $query->where(
                     substr($column, 1),
                     "not $likeOperator",
                     '%' . substr($value, 1) . '%'
                 ) : $query->where(substr($column, 1), $likeOperator, '%' . $value . '%');
-            } elseif (isset($value[0]) && $value[0] == '!') {
+            } elseif (isset($value[0]) && $value[0] === '!') {
                 $query->where($column, '<>', substr($value, 1));
             } elseif ($value !== '') {
                 $query->where($column, $value);
@@ -691,33 +554,26 @@ abstract class ModuleRepository
         return $query;
     }
 
-    /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @return \Illuminate\Database\Query\Builder
-     */
-    public function order($query, array $orders = [])
+    public function order(Builder $builder, array $orders = []): Builder
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
-            $this->$method($query, $orders);
+            $this->$method($builder, $orders);
         }
 
         foreach ($orders as $column => $direction) {
-            $query->orderBy($column, $direction);
+            $builder->orderBy($column, $direction);
         }
 
-        return $query;
+        return $builder;
     }
 
-    /**
-     * @param \A17\Twill\Models\ModelInterface $object
-     * @param array $fields
-     * @param string $relationship
-     * @param string $formField
-     * @param string $attribute
-     * @return void
-     */
-    public function updateOneToMany($object, $fields, $relationship, $formField, $attribute)
-    {
+    public function updateOneToMany(
+        TwillModelContract $object,
+        array $fields,
+        string $relationship,
+        string $formField,
+        string $attribute
+    ): void {
         if (isset($fields[$formField])) {
             foreach ($fields[$formField] as $id) {
                 $object->$relationship()->updateOrCreate([$attribute => $id]);
@@ -733,26 +589,17 @@ abstract class ModuleRepository
         }
     }
 
-    /**
-     * @param \A17\Twill\Models\ModelInterface $object
-     * @param array $fields
-     * @param string $relationship
-     * @return void
-     */
-    public function updateMultiSelect($object, $fields, $relationship)
+    public function updateMultiSelect(TwillModelContract $object, array $fields, string $relationship): void
     {
         $object->$relationship()->sync($fields[$relationship] ?? []);
     }
 
-    /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param array $scopes
-     * @param string $scopeField
-     * @param string $scopeRelation
-     * @return void
-     */
-    public function addRelationFilterScope($query, &$scopes, $scopeField, $scopeRelation)
-    {
+    public function addRelationFilterScope(
+        Builder $query,
+        array &$scopes,
+        string $scopeField,
+        string $scopeRelation
+    ): void {
         if (isset($scopes[$scopeField])) {
             $id = $scopes[$scopeField];
             $query->whereHas($scopeRelation, function ($query) use ($id, $scopeField) {
@@ -762,13 +609,7 @@ abstract class ModuleRepository
         }
     }
 
-    /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param array $scopes
-     * @param string $scopeField
-     * @return void
-     */
-    public function addLikeFilterScope($query, &$scopes, $scopeField)
+    public function addLikeFilterScope(Builder $query, array &$scopes, string $scopeField): void
     {
         if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
             $query->where($scopeField, $this->getLikeOperator(), '%' . $scopes[$scopeField] . '%');
@@ -776,56 +617,27 @@ abstract class ModuleRepository
         }
     }
 
-    /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param array $scopes
-     * @param string $scopeField
-     * @param string[] $orFields
-     */
-//    public function searchIn($query, &$scopes, $scopeField, $orFields = [])
-//    {
-//        if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
-//            $query->where(function ($query) use (&$scopes, $scopeField, $orFields) {
-//                foreach ($orFields as $field) {
-//                    $query->orWhere($field, $this->getLikeOperator(), '%' . $scopes[$scopeField] . '%');
-//                    unset($scopes[$field]);
-//                }
-//            });
-//        }
-//    }
-
-    /**
-     * @return bool
-     */
-    public function isUniqueFeature()
+    public function isUniqueFeature(): bool
     {
         return false;
     }
 
-    /**
-     * @param array $ignore
-     * @return void
-     */
-    public function addIgnoreFieldsBeforeSave($ignore = [])
+    public function addIgnoreFieldsBeforeSave(array $ignore = []): void
     {
         $this->ignoreFieldsBeforeSave = is_array($ignore)
             ? array_merge($this->ignoreFieldsBeforeSave, $ignore)
             : array_merge($this->ignoreFieldsBeforeSave, [$ignore]);
     }
 
-    /**
-     * @param string $ignore
-     * @return bool
-     */
-    public function shouldIgnoreFieldBeforeSave($ignore)
+    public function shouldIgnoreFieldBeforeSave(string $ignore): bool
     {
-        return in_array($ignore, $this->ignoreFieldsBeforeSave);
+        return in_array($ignore, $this->ignoreFieldsBeforeSave, true);
     }
 
     /**
      * @return string[]
      */
-    public function getReservedFields()
+    public function getReservedFields(): array
     {
         return [
             'medias',
@@ -835,13 +647,10 @@ abstract class ModuleRepository
         ];
     }
 
-    /**
-     * @param string $relation
-     * @param \A17\Twill\Models\Model|\A17\Twill\Repositories\ModuleRepository|null $modelOrRepository
-     * @return mixed
-     */
-    protected function getModelRepository($relation, $modelOrRepository = null)
-    {
+    protected function getModelRepository(
+        string $relation,
+        string|ModuleRepository|null $modelOrRepository = null
+    ): ModuleRepository {
         if (!$modelOrRepository) {
             if (class_exists($relation) && (new $relation()) instanceof Model) {
                 $modelOrRepository = Str::afterLast($relation, '\\');
@@ -859,7 +668,7 @@ abstract class ModuleRepository
             ? App::make($modelOrRepository)
             : $modelOrRepository;
 
-        if ($repository instanceof ModuleRepository) {
+        if ($repository instanceof self) {
             return $repository;
         }
 
@@ -874,7 +683,7 @@ abstract class ModuleRepository
 
             return App::make($capsule->getRepositoryClass());
         } catch (NoCapsuleFoundException) {
-            throw new \Exception("Repository class not found for model '{$modelOrRepository}'");
+            throw new \Exception("Repository class not found for model '$modelOrRepository'");
         }
     }
 
@@ -895,10 +704,7 @@ abstract class ModuleRepository
         });
     }
 
-    /**
-     * @return string
-     */
-    protected function getLikeOperator()
+    protected function getLikeOperator(): string
     {
         if (DB::connection()->getPDO()->getAttribute(\PDO::ATTR_DRIVER_NAME) === 'pgsql') {
             return 'ILIKE';
@@ -907,35 +713,23 @@ abstract class ModuleRepository
         return 'LIKE';
     }
 
-    /**
-     * @param string $method
-     * @param array $parameters
-     * @return mixed
-     */
-    public function __call($method, $parameters)
+    public function __call(string $method, array $parameters): mixed
     {
         return $this->model->$method(...$parameters);
     }
 
-    /**
-     * @param string $behavior
-     * @return bool
-     */
-    public function hasBehavior($behavior)
+    public function hasBehavior(string $behavior): bool
     {
         $hasBehavior = classHasTrait($this, 'A17\Twill\Repositories\Behaviors\Handle' . ucfirst($behavior));
 
         if (Str::startsWith($behavior, 'translation')) {
-            $hasBehavior = $hasBehavior && $this->model->isTranslatable();
+            return $hasBehavior && $this->model->isTranslatable();
         }
 
         return $hasBehavior;
     }
 
-    /**
-     * @return bool
-     */
-    public function isTranslatable($column)
+    public function isTranslatable($column): bool
     {
         return $this->model->isTranslatable($column);
     }

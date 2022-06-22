@@ -71,7 +71,7 @@ class Role extends BaseModel implements Sortable, TwillModelContract
 
     public function scopeOnlyTrashed($query): Builder
     {
-        return $query->whereNotNull('deleted_at');
+        return $query->onlyTrashed();
     }
 
     public function users(): HasMany

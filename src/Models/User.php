@@ -162,7 +162,7 @@ class User extends AuthenticatableContract implements TwillModelContract
 
     public function scopeOnlyTrashed($query): Builder
     {
-        return $query->whereNotNull('deleted_at')->withoutGlobalScope(SoftDeletingScope::class);
+        return $query->onlyTrashed();
     }
 
     public function scopeNotSuperAdmin($query)

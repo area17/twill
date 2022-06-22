@@ -1546,25 +1546,25 @@ abstract class ModuleController extends Controller
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.listing.filter.mine'))
                 ->queryString('mine')
-                ->apply(fn(Builder $builder) => $builder->scopes(['mine']))
+                ->scope('mine')
                 ->onlyEnableWhen($this->moduleHas('revisions') && $this->getIndexOption('create'))
                 ->amount(fn() => $this->repository->getCountByStatusSlug('mine', $scope)),
             QuickFilter::make()
                 ->label($this->getTransLabel('listing.filter.published'))
                 ->queryString('published')
-                ->apply(fn(Builder $builder) => $builder->scopes(['published']))
+                ->scope('published')
                 ->onlyEnableWhen($this->getIndexOption('publish'))
                 ->amount(fn() => $this->repository->getCountByStatusSlug('published', $scope)),
             QuickFilter::make()
                 ->label($this->getTransLabel('listing.filter.draft'))
                 ->queryString('draft')
-                ->apply(fn(Builder $builder) => $builder->scopes(['draft']))
+                ->scope('draft')
                 ->onlyEnableWhen($this->getIndexOption('publish'))
                 ->amount(fn() => $this->repository->getCountByStatusSlug('draft', $scope)),
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.listing.filter.trash'))
                 ->queryString('trash')
-                ->apply(fn(Builder $builder) => $builder->scopes(['onlyTrashed']))
+                ->scope('onlyTrashed')
                 ->onlyEnableWhen($this->getIndexOption('restore'))
                 ->amount(fn() => $this->repository->getCountByStatusSlug('trash', $scope)),
         ]);

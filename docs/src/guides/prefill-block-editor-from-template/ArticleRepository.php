@@ -19,12 +19,12 @@ class ArticleRepository extends ModuleRepository
         $this->model = $model;
     }
 
-    public function afterSave($object, $fields)
+    public function afterSave($model, $fields)
     {
-        parent::afterSave($object, $fields);
+        parent::afterSave($model, $fields);
 
-        if ($object->wasRecentlyCreated) {
-            $object->prefillBlockSelection();
+        if ($model->wasRecentlyCreated) {
+            $model->prefillBlockSelection();
         }
     }
 }

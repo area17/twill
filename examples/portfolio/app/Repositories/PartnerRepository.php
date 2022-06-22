@@ -18,10 +18,10 @@ class PartnerRepository extends ModuleRepository
         $this->model = $model;
     }
 
-    public function afterSave($object, $fields)
+    public function afterSave($model, $fields)
     {
         $this->updateRepeaterMorphMany(
-            $object,
+            $model,
             $fields,
             'comments',
             'commentable',
@@ -29,7 +29,7 @@ class PartnerRepository extends ModuleRepository
             'comment'
         );
 
-        parent::afterSave($object, $fields);
+        parent::afterSave($model, $fields);
     }
 
     public function getFormFields($object)

@@ -57,7 +57,7 @@ class SettingController extends Controller
      * @param string $section
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function index($section)
+    public function index(string $section)
     {
         return $this->viewFactory->exists('twill.settings.' . $section)
         ? $this->viewFactory->make('twill.settings.' . $section, [
@@ -65,7 +65,7 @@ class SettingController extends Controller
             'editableTitle' => false,
             'customTitle' => ucfirst($section) . ' settings',
             'section' => $section,
-            'form_fields' => $this->settings->getFormFields($section),
+            'form_fields' => $this->settings->getFormFieldsForSection($section),
             'saveUrl' => $this->urlGenerator->route('twill.settings.update', $section),
             'translate' => true,
         ])

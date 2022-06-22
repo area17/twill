@@ -8,7 +8,7 @@ Depending on the model feature, include one or multiple of these traits: `Handle
 
 Repositories allows you to modify the default behavior of your models by providing some entry points in the form of methods that you might implement:
 
-#### Filtering
+### Filtering
 
 ```php
 <?php

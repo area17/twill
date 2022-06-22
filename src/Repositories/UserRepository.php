@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Repositories;
 
+use A17\Twill\Facades\TwillPermissions;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\User;
 use A17\Twill\Models\Group;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
@@ -12,37 +14,20 @@ use Illuminate\Auth\Passwords\PasswordBrokerManager;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Database\DatabaseManager as DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserRepository extends ModuleRepository
 {
     use HandleMedias, HandleOauth, HandleUserPermissions;
 
-    /**
-     * @var Config
-     */
-    protected $config;
+    protected Config $config;
 
-    /**
-     * @var DB
-     */
-    protected $db;
+    protected DB $db;
 
-    /**
-     * @var PasswordBrokerManager
-     */
-    protected $passwordBrokerManager;
+    protected PasswordBrokerManager $passwordBrokerManager;
 
-    /**
-     * @var AuthFactory
-     */
-    protected $authFactory;
+    protected AuthFactory $authFactory;
 
-    /**
-     * @param DB $db
-     * @param Config $config
-     * @param PasswordBrokerManager $passwordBrokerManager
-     * @param AuthFactory $authFactory
-     */
     public function __construct(
         DB $db,
         Config $config,
@@ -57,7 +42,7 @@ class UserRepository extends ModuleRepository
         $this->db = $db;
     }
 
-    public function getFormFields($user)
+    public function getFormFields(TwillModelContract|User $user): array
     {
         $fields = parent::getFormFields($user);
 
@@ -72,13 +57,9 @@ class UserRepository extends ModuleRepository
         return $fields;
     }
 
-    /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @return \Illuminate\Database\Query\Builder
-     */
-    public function filter($query, $scopes = [])
+    public function filter(Builder $query, array $scopes = []): Builder
     {
-        if (config('twill.enabled.permissions-management')) {
+        if (TwillPermissions::enabled()) {
             $query->where('is_superadmin', '<>', true);
         } else {
             $query->where('role', '<>', 'SUPERADMIN');
@@ -86,11 +67,16 @@ class UserRepository extends ModuleRepository
         return parent::filter($query, $scopes);
     }
 
-    public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
-    {
+    public function getFormFieldsForBrowser(
+        $object,
+        $relation,
+        $routePrefix = null,
+        $titleKey = 'title',
+        $moduleName = null
+    ) {
         $browserFields = parent::getFormFieldsForBrowser($object, $relation, $routePrefix, $titleKey, $moduleName);
 
-        if (config('twill.enabled.permissions-management')) {
+        if (TwillPermissions::enabled()) {
             foreach ($browserFields as $index => $browserField) {
                 if ($browserField['id'] === Group::getEveryoneGroup()->id &&
                     $browserField['name'] === Group::getEveryoneGroup()->name
@@ -103,25 +89,17 @@ class UserRepository extends ModuleRepository
         return $browserFields;
     }
 
-    /**
-     * @param \A17\Twill\Models\ModelInterface $user
-     * @param array $fields
-     */
-    public function afterUpdateBasic($user, $fields)
+    public function afterUpdateBasic(TwillModelContract|User $user, array $fields): void
     {
         $this->sendWelcomeEmail($user);
         parent::afterUpdateBasic($user, $fields);
     }
 
-    /**
-     * @param \A17\Twill\Models\ModelInterface $user
-     * @param array $fields
-     * @return string[]
-     */
-    public function prepareFieldsBeforeSave($user, $fields)
+    public function prepareFieldsBeforeSave(TwillModelContract|User $user, array $fields): array
     {
+        /** @var \A17\Twill\Models\User $editor */
         $editor = $this->authFactory->guard('twill_users')->user();
-        $with2faSettings = $this->config->get('twill.enabled.users-2fa', false) && $editor->id === $user->id;
+        $with2faSettings = $this->config->get('twill.enabled.users-2fa', false) && $editor?->id === $user->id;
 
         if ($with2faSettings
             && $user->google_2fa_enabled
@@ -139,12 +117,7 @@ class UserRepository extends ModuleRepository
         return parent::prepareFieldsBeforeSave($user, $fields);
     }
 
-    /**
-     * @param \A17\Twill\Models\Model|User $user
-     * @param array $fields
-     * @return void
-     */
-    public function afterSave($user, $fields)
+    public function afterSave(TwillModelContract|user $user, array $fields): void
     {
         $this->sendWelcomeEmail($user);
 
@@ -165,27 +138,21 @@ class UserRepository extends ModuleRepository
             $user->save();
         }
 
-        if (config('twill.enabled.permissions-management')
-            && auth('twill_users')->user()->can('edit-user-groups')
-        ) {
+        if (TwillPermissions::enabled() && auth('twill_users')->user()->can('edit-user-groups')) {
             $this->updateBrowser($user, $fields, 'groups');
         }
 
         parent::afterSave($user, $fields);
     }
 
-    /**
-     * @param User $user
-     * @return void
-     */
-    private function sendWelcomeEmail($user)
+    private function sendWelcomeEmail(User $user): void
     {
         if (empty($user->password)
             && $user->published
             && !$this->db
-            ->table($this->config->get('twill.password_resets_table', 'twill_password_resets'))
-            ->where('email', $user->email)
-            ->exists()
+                ->table($this->config->get('twill.password_resets_table', 'twill_password_resets'))
+                ->where('email', $user->email)
+                ->exists()
         ) {
             $user->sendWelcomeNotification(
                 $this->passwordBrokerManager->broker('twill_users')->getRepository()->create($user)
