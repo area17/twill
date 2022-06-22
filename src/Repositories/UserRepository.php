@@ -74,20 +74,14 @@ class UserRepository extends ModuleRepository
 
     /**
      * @param \Illuminate\Database\Query\Builder $query
-     * @param array $scopes
      * @return \Illuminate\Database\Query\Builder
      */
-    public function filter($query, array $scopes = [])
+    public function filter($query, $scopes = [])
     {
         if (config('twill.enabled.permissions-management')) {
             $query->where('is_superadmin', '<>', true);
-            $this->searchIn($query, $scopes, 'search', ['name', 'email']);
         } else {
-            $query->when(isset($scopes['role']), function ($query) use ($scopes) {
-                $query->where('role', $scopes['role']);
-            });
             $query->where('role', '<>', 'SUPERADMIN');
-            $this->searchIn($query, $scopes, 'search', ['name', 'email', 'role']);
         }
         return parent::filter($query, $scopes);
     }
@@ -117,42 +111,6 @@ class UserRepository extends ModuleRepository
     {
         $this->sendWelcomeEmail($user);
         parent::afterUpdateBasic($user, $fields);
-    }
-
-    /**
-     * @deprecated To be removed in Twill 3.0
-     * @return int
-     */
-    public function getCountForAll()
-    {
-        return $this->model->notSuperAdmin()->count();
-    }
-
-    /**
-     * @deprecated To be removed in Twill 3.0
-     * @return int
-     */
-    public function getCountForPublished()
-    {
-        return $this->model->notSuperAdmin()->published()->count();
-    }
-
-    /**
-     * @deprecated To be removed in Twill 3.0
-     * @return int
-     */
-    public function getCountForDraft()
-    {
-        return $this->model->notSuperAdmin()->draft()->count();
-    }
-
-    /**
-     * @deprecated To be removed in Twill 3.0
-     * @return int
-     */
-    public function getCountForTrash()
-    {
-        return $this->model->notSuperAdmin()->onlyTrashed()->count();
     }
 
     /**

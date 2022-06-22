@@ -51,11 +51,4 @@ class GroupRepository extends ModuleRepository
 
         return parent::bulkDelete($ids);
     }
-
-    public function filter($query, array $scopes = [])
-    {
-        $this->searchIn($query, $scopes, 'search', ['name']);
-
-        return parent::filter($query, $scopes);
-    }
 }

@@ -51,13 +51,6 @@ class UserController extends ModuleController
     /**
      * @var array
      */
-    protected $defaultFilters = [
-        'search' => 'search',
-    ];
-
-    /**
-     * @var array
-     */
     protected $filters = [];
 
     /**
@@ -160,6 +153,11 @@ class UserController extends ModuleController
 
         $this->filters['role'] = User::getRoleColumnName();
         $this->indexColumns['role_value']['sortKey'] = User::getRoleColumnName();
+    }
+
+    public function setUpController(): void
+    {
+        $this->setSearchColumns(['name', 'email']);
     }
 
     /**

@@ -204,17 +204,6 @@ abstract class ModuleController extends Controller
     protected $filterLinks = [];
 
     /**
-     * Filters that are selected by default in the index view.
-     *
-     * Example: 'filter_key' => 'default_filter_value'
-     *
-     * @var array
-     *
-     * @deprecated use the method `default` in `filters` instead.
-     */
-    protected $filtersDefaultOptions = [];
-
-    /**
      * Default orders for the index view.
      *
      * @var array
@@ -297,11 +286,25 @@ abstract class ModuleController extends Controller
      */
     protected $permalinkBase;
 
-//    /**
-//     * @var array
-//     * @todo: Implement backward compatability.
-//     */
-//    protected $defaultFilters;
+    /**
+     * Filters that are selected by default in the index view.
+     *
+     * Example: 'filter_key' => 'default_filter_value'
+     *
+     * @var array
+     *
+     * @deprecated use the method `default` in `filters` instead.
+     */
+    protected $filtersDefaultOptions = [];
+
+    /**
+     * @var array
+     *
+     * Can be something like ['search' => 'title|search']
+     *
+     * @deprecated use the method `default` in `filters` instead.
+     */
+    protected $defaultFilters;
 
     /**
      * @var string

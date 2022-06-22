@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\Twill\Models\Group;
 use Illuminate\Http\Request;
 use A17\Twill\Models\Permission;
 use Illuminate\Contracts\Foundation\Application;
@@ -14,10 +13,6 @@ class GroupController extends ModuleController
     protected $moduleName = 'groups';
 
     protected $defaultOrders = ['name' => 'asc'];
-
-    protected $defaultFilters = [
-        'search' => 'search',
-    ];
 
     protected $titleColumnKey = 'name';
 

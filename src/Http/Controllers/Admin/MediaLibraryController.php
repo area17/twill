@@ -4,11 +4,15 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Http\Requests\Admin\MediaRequest;
 use A17\Twill\Models\Media;
+use A17\Twill\Services\Listings\Filters\BasicFilter;
+use A17\Twill\Services\Listings\Filters\TableFilters;
+use A17\Twill\Services\Listings\Filters\TwillBaseFilter;
 use A17\Twill\Services\Uploader\SignAzureUpload;
 use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignUploadListener;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
@@ -32,15 +36,6 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
      */
     protected $defaultOrders = [
         'id' => 'desc',
-    ];
-
-    /**
-     * @var array
-     */
-    protected $defaultFilters = [
-        'search' => 'search',
-        'tag' => 'tag_id',
-        'unused' => 'unused',
     ];
 
     /**
@@ -85,6 +80,29 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         );
         $this->endpointType = $this->config->get('twill.media_library.endpoint_type');
         $this->customFields = $this->config->get('twill.media_library.extra_metadatas_fields');
+    }
+
+    public function setUpController(): void
+    {
+        $this->setSearchColumns(['alt_text', 'filename', 'caption']);
+    }
+
+    public function filters(): TableFilters
+    {
+        return TableFilters::make([
+            BasicFilter::make()->queryString('tag')->apply(function (Builder $builder, int $value) {
+                $builder->whereHas('tags', function (Builder $builder) use ($value) {
+                    $builder->where('tag_id', $value);
+                });
+                return $builder;
+            }),
+            BasicFilter::make()->queryString('unused')->apply(function (Builder $builder, bool $value) {
+                if ($value) {
+                    return $builder->unused();
+                }
+                return $builder;
+            }),
+        ]);
     }
 
     /**
@@ -190,9 +208,9 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             $this->repository->afterDelete($media);
             $media->replace($fields);
             return $media->fresh();
-        } else {
-            return $this->repository->create($fields);
         }
+
+        return $this->repository->create($fields);
     }
 
     /**
@@ -213,9 +231,9 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             $this->repository->afterDelete($media);
             $media->update($fields);
             return $media->fresh();
-        } else {
-            return $this->repository->create($fields);
         }
+
+        return $this->repository->create($fields);
     }
 
     /**

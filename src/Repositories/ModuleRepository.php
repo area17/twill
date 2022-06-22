@@ -782,17 +782,17 @@ abstract class ModuleRepository
      * @param string $scopeField
      * @param string[] $orFields
      */
-    public function searchIn($query, &$scopes, $scopeField, $orFields = [])
-    {
-        if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
-            $query->where(function ($query) use (&$scopes, $scopeField, $orFields) {
-                foreach ($orFields as $field) {
-                    $query->orWhere($field, $this->getLikeOperator(), '%' . $scopes[$scopeField] . '%');
-                    unset($scopes[$field]);
-                }
-            });
-        }
-    }
+//    public function searchIn($query, &$scopes, $scopeField, $orFields = [])
+//    {
+//        if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
+//            $query->where(function ($query) use (&$scopes, $scopeField, $orFields) {
+//                foreach ($orFields as $field) {
+//                    $query->orWhere($field, $this->getLikeOperator(), '%' . $scopes[$scopeField] . '%');
+//                    unset($scopes[$field]);
+//                }
+//            });
+//        }
+//    }
 
     /**
      * @return bool

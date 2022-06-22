@@ -5,7 +5,6 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Models\Media;
 use A17\Twill\Repositories\Behaviors\HandleTags;
 use A17\Twill\Services\MediaLibrary\ImageService;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -17,12 +16,6 @@ class MediaRepository extends ModuleRepository
     public function __construct(Media $model)
     {
         $this->model = $model;
-    }
-
-    public function filter($query, array $scopes = [])
-    {
-        $this->searchIn($query, $scopes, 'search', ['alt_text', 'filename', 'caption']);
-        return parent::filter($query, $scopes);
     }
 
     public function afterDelete($object): void

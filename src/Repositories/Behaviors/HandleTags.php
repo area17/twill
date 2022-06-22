@@ -24,10 +24,11 @@ trait HandleTags
         }
     }
 
-    protected function filterHandleTags($query, &$scopes)
-    {
-        $this->addRelationFilterScope($query, $scopes, 'tag_id', 'tags');
-    }
+    // @PRtodo: needed?
+//    protected function filterHandleTags($query, &$scopes)
+//    {
+//        $this->addRelationFilterScope($query, $scopes, 'tag_id', 'tags');
+//    }
 
     private function getTagsQuery()
     {
