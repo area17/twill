@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Tests\Unit\Components;
 
-use A17\Twill\View\Components\Medias;
+use A17\Twill\View\Components\Fields\Medias;
 
 class MediasFieldTest extends ComponentTestBase
 {

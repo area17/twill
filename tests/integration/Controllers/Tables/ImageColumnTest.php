@@ -1,11 +1,12 @@
 <?php
 
-namespace A17\Twill\Tests\Integration\Tables;
+namespace A17\Twill\Tests\Integration\Controllers\Tables;
 
 use A17\Twill\Models\Media;
 use A17\Twill\Repositories\MediaRepository;
 use A17\Twill\Services\Listings\Columns\Image;
 use A17\Twill\Tests\Integration\ModulesTestBase;
+use A17\Twill\Tests\Unit\Components\WysiwygFieldTest;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -46,7 +47,7 @@ class ImageColumnTest extends ModulesTestBase
 
     private function helperUploadMedia(): array
     {
-        $path = __DIR__ . '/../../stubs/images/area17.png';
+        $path = __DIR__ . '/../../../stubs/images/area17.png';
 
         $originalFilename = basename($path);
         $filename = sanitizeFilename($originalFilename);
@@ -176,6 +177,6 @@ class ImageColumnTest extends ModulesTestBase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Cannot use image column on model not implementing HasMedias trait');
-        $column->getRenderValue(new Category());
+        $column->renderCell(new Category());
     }
 }

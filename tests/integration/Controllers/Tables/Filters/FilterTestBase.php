@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Tests\Integration\Tables\Filters;
+namespace A17\Twill\Tests\Integration\Controllers\Tables\Filters;
 
 use A17\Twill\Services\Listings\Filters\QuickFilters;
 use A17\Twill\Services\Listings\Filters\TableFilters;
@@ -34,7 +34,6 @@ class FilterTestBase extends ModulesTestBase
                 parent::__construct($app, $request);
 
                 $this->user = Auth::user();
-                $this->routePrefix = 'personnel';
             }
 
             public function quickFilters(): QuickFilters

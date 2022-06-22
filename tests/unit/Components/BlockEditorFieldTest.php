@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Tests\Unit\Components;
 
-use A17\Twill\View\Components\BlockEditor;
+use A17\Twill\View\Components\Fields\BlockEditor;
 use Illuminate\Support\Facades\View;
 
 class BlockEditorFieldTest extends ComponentTestBase

@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use A17\Twill\Repositories\Behaviors\HandleSlugs;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
@@ -18,7 +19,7 @@ class PartnerRepository extends ModuleRepository
         $this->model = $model;
     }
 
-    public function afterSave($model, $fields)
+    public function afterSave(TwillModelContract $model, array $fields): void
     {
         $this->updateRepeaterMorphMany(
             $model,
@@ -32,7 +33,7 @@ class PartnerRepository extends ModuleRepository
         parent::afterSave($model, $fields);
     }
 
-    public function getFormFields($object)
+    public function getFormFields(TwillModelContract $object): array
     {
         $fields = parent::getFormFields($object);
 

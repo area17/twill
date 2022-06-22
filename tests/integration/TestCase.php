@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use A17\Twill\Models\Model;
 use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
@@ -12,6 +13,7 @@ use Exception;
 use Faker\Factory as Faker;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
@@ -378,6 +380,7 @@ abstract class TestCase extends OrchestraTestCase
         $this->truncateTwillUsers();
 
         if ($this->example) {
+            ray($this->example);
             $this->artisan('twill:install ' . $this->example)
                 ->expectsConfirmation(
                     'Are you sure to install this preset? This can overwrite your models, config and routes.',
@@ -753,9 +756,9 @@ abstract class TestCase extends OrchestraTestCase
         return $response;
     }
 
-    public function assertLogStatusCode($response, $expectedStatusCode = 200)
+    public function assertLogStatusCode(TestResponse $response, $expectedStatusCode = 200)
     {
-        if ($response->getStatusCode() != $expectedStatusCode) {
+        if ($response->getStatusCode() !== $expectedStatusCode) {
             var_dump('------------------- ORIGINAL RESPONSE');
             var_dump($response->getContent());
         }

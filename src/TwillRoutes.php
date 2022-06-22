@@ -30,6 +30,12 @@ class TwillRoutes
                             'middleware' => $middlewares,
                         ],
                         function () use ($routesFile) {
+                            ray($routesFile);
+                            ray(file_get_contents($routesFile));
+                            if (ray()->enabled()) {
+                                ray()->pause();
+                            }
+                            ray(file_get_contents($routesFile));
                             require $routesFile;
                         }
                     );
@@ -56,7 +62,7 @@ class TwillRoutes
         };
 
         if ($instant) {
-            // For some reasone the afterResolving does not work for the core routes.
+            // For some reason the afterResolving does not work for the core routes.
             // In other cases it is important to use the afterResolving because the routes are otherwise registered too
             // early.
             $callback();

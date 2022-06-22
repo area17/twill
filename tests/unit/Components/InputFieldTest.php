@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Tests\Unit\Components;
 
-use A17\Twill\View\Components\Input;
+use A17\Twill\View\Components\Fields\Input;
 
 class InputFieldTest extends ComponentTestBase
 {

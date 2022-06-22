@@ -4,7 +4,7 @@ namespace A17\Twill\Tests\Unit\Components;
 
 use A17\Twill\Services\Forms\Option;
 use A17\Twill\Services\Forms\Options;
-use A17\Twill\View\Components\Checkboxes;
+use A17\Twill\View\Components\Fields\Checkboxes;
 
 class CheckboxesFieldTest extends ComponentWithOptionsTestBase
 {
