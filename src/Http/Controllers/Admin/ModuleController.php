@@ -332,7 +332,7 @@ abstract class ModuleController extends Controller
      *
      * Do not modify this directly but use the method setSearchColumns().
      */
-    protected array $searchColumns = ['title'];
+    protected array $searchColumns = [];
 
     /**
      * Default label translation keys that can be overridden in the labels array.
@@ -373,11 +373,14 @@ abstract class ModuleController extends Controller
          * Default filters for the index view
          * By default, the search field will run a like query on the title field
          */
+        // @PRtodo: Do we need this?
 //        if (!isset($this->defaultFilters)) {
 //            $this->defaultFilters = [
 //                'search' => ($this->moduleHas('translations') ? '' : '%') . $this->titleColumnKey,
 //            ];
 //        }
+
+        $this->searchColumns = [$this->titleColumnKey];
 
         $this->setUpController();
     }
@@ -1717,7 +1720,20 @@ abstract class ModuleController extends Controller
             }
         }
 
-        // @PRtodo: Also do this for the main filter.
+        // Try to figure out which is the default filter. If there is no default filter, we will use the first one.
+        if (!isset($filters['status'])) {
+            /** @var QuickFilter $quickFilter */
+            foreach ($this->quickFilters() as $quickFilter) {
+                if ($quickFilter->isDefault()) {
+                    $filters['status'] = $quickFilter->getQueryString();
+                    break;
+                }
+            }
+
+            if (!isset($filters['status'])) {
+                $filters['status'] = $this->quickFilters()->first()->getQueryString();
+            }
+        }
 
         /** @var \A17\Twill\Services\Listings\Filters\BasicFilter $filter */
         foreach ($this->filters() as $filter) {

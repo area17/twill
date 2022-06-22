@@ -8,6 +8,7 @@ class QuickFilter extends TwillBaseFilter
 {
     protected ?\Closure $amount = null;
     protected ?string $scope = null;
+    protected bool $isDefaultQuickFilter = false;
 
     /**
      * The callback that will tell the filter how many results there are.
@@ -15,6 +16,18 @@ class QuickFilter extends TwillBaseFilter
     public function amount(\Closure $callback): self
     {
         $this->amount = $callback;
+
+        return $this;
+    }
+
+    public function isDefault(): bool
+    {
+        return $this->isDefaultQuickFilter;
+    }
+
+    public function default(): self
+    {
+        $this->isDefaultQuickFilter = true;
 
         return $this;
     }

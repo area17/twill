@@ -28,8 +28,6 @@ class BasicFilterTest extends FilterTestBase
 
         $data = $this->controllerWithFiltersAndQuickFilters($filters)->index()->getData();
 
-        $this->assertEmpty($data['filters']);
-
         /** @var BasicFilter $basicFilter */
         $basicFilter = $data['hiddenFilters'][0];
 

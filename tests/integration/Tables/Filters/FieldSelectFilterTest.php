@@ -3,13 +3,8 @@
 namespace A17\Twill\Tests\Integration\Tables\Filters;
 
 use A17\Twill\Services\Listings\Filters\BasicFilter;
-use A17\Twill\Services\Listings\Filters\BelongsToFilter;
-use A17\Twill\Services\Listings\Filters\Exceptions\MissingModelForFilterException;
 use A17\Twill\Services\Listings\Filters\FieldSelectFilter;
-use App\Models\Author;
-use App\Models\Category;
 use App\Repositories\AuthorRepository;
-use Illuminate\Support\Str;
 
 class FieldSelectFilterTest extends FilterTestBase
 {
@@ -27,8 +22,6 @@ class FieldSelectFilterTest extends FilterTestBase
         $this->author->year = '2022';
         $this->author->save();
     }
-
-    // @PRtodo: Implement option to have no "null" search.
 
     public function testInferredFromField(): void
     {
@@ -78,8 +71,6 @@ class FieldSelectFilterTest extends FilterTestBase
         $filters = [FieldSelectFilter::make()->field('year')];
 
         $data = $this->controllerWithFiltersAndQuickFilters($filters)->index()->getData();
-
-        $this->assertEmpty($data['filters']);
 
         /** @var BasicFilter $basicFilter */
         $basicFilter = $data['hiddenFilters'][0];
