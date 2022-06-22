@@ -362,6 +362,9 @@ It can be useful for example to make a select of "years" that a model can belong
 FieldSelectFilter::make()->field('year');
 ```
 
+A fieldSelectFilter can also add a `Without value` option. This is disabled by default but you can enable it by calling
+`->withWithoutValueOption()` on the filter.
+
 ##### BelongsToFilter
 
 The `BelongsToFilter` will make a select with all titles of a relation.

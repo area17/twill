@@ -16,6 +16,9 @@ use A17\Twill\Models\Model;
 use App\Models\Slugs\AuthorSlug;
 use App\Models\Revisions\AuthorRevision;
 use App\TestPresenter;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Author extends Model implements Sortable
 {
@@ -37,9 +40,11 @@ class Author extends Model implements Sortable
         'description',
         'bio',
         'birthday',
+        'year',
         'featured',
         'position',
         'public',
+        'category_id',
         'publish_start_date',
         'publish_end_date',
     ];
@@ -88,20 +93,28 @@ class Author extends Model implements Sortable
                     'ratio' => 3 / 4,
                 ],
             ],
-        ]
+        ],
     ];
 
-    public function slugs()
+    public function slugs(): HasMany
     {
         return $this->hasMany(AuthorSlug::class);
     }
 
-    public function revisions()
+    public function revisions(): HasMany
     {
         return $this->hasMany(AuthorRevision::class);
     }
 
-    public function categories()
+    /**
+     * The main category.
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class);
     }

@@ -3,6 +3,7 @@
 namespace A17\Twill\Services\Listings\Filters;
 
 use A17\Twill\Repositories\ModuleRepository;
+use A17\Twill\Services\Listings\Filters\Exceptions\MissingModelForFilterException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 
@@ -19,8 +20,11 @@ class BelongsToFilter extends BasicFilter
     public function applyFilter(Builder $builder): Builder
     {
         if ($this->appliedValue && $this->appliedValue !== self::OPTION_ALL) {
-            $builder->whereHas($this->field, function (Builder $builder) {
-                $builder->where($this->model::make()->getKeyName(), $this->appliedValue);
+            /** @var \Illuminate\Database\Eloquent\Model $modelClass */
+            $modelClass = $this->getModel();
+
+            $builder->whereHas($this->field, function (Builder $builder) use ($modelClass) {
+                $builder->where($modelClass::make()->getKeyName(), $this->appliedValue);
             });
         }
 
@@ -80,6 +84,10 @@ class BelongsToFilter extends BasicFilter
 
     public function getModel(): string
     {
+        if (!$this->model) {
+            throw new MissingModelForFilterException('Model is not set for BelongsToFilter ' . $this->field);
+        }
+
         return $this->model;
     }
 

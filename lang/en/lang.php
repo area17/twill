@@ -191,6 +191,7 @@ return [
         'filter' => [
             'no' => 'No',
             'yes' => 'Yes',
+            'not-set' => 'Without value',
             'all-items' => 'All items',
             'draft' => 'Draft',
             'mine' => 'Mine',

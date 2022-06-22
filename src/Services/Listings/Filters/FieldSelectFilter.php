@@ -13,12 +13,23 @@ use Illuminate\Support\Collection;
  */
 class FieldSelectFilter extends BasicFilter
 {
+    /**
+     * The option not set allows to filter by "null" values.
+     * @var string
+     */
+    public const OPTION_NOT_SET = 'null';
+
     protected string $field;
+    private bool $addWithoutValueOption = false;
 
     public function applyFilter(Builder $builder): Builder
     {
         if ($this->appliedValue && $this->appliedValue !== self::OPTION_ALL) {
-            $builder->where($this->field, $this->appliedValue);
+            if ($this->appliedValue === self::OPTION_NOT_SET) {
+                $builder->whereNull($this->field);
+            } else {
+                $builder->where($this->field, $this->appliedValue);
+            }
         }
 
         return $builder;
@@ -30,6 +41,14 @@ class FieldSelectFilter extends BasicFilter
         $optionsBase = $repository->groupBy($this->field)->pluck($this->field);
 
         $options = collect(array_combine($optionsBase->all(), $optionsBase->all()));
+
+        if ($options->has(null)) {
+            $options = $options->forget([null]);
+
+            if ($this->addWithoutValueOption) {
+                $options->put(self::OPTION_NOT_SET, twillTrans('twill::lang.listing.filter.not-set'));
+            }
+        }
 
         if ($this->includeAll) {
             $options->prepend('All', self::OPTION_ALL);
@@ -45,6 +64,16 @@ class FieldSelectFilter extends BasicFilter
         if ($this->queryString === null) {
             $this->queryString($fieldName);
         }
+
+        return $this;
+    }
+
+    /**
+     * This adds the "Without value" option if there are result with "null" value.
+     */
+    public function withWithoutValueOption(bool $withoutValueOption = true): self
+    {
+        $this->addWithoutValueOption = $withoutValueOption;
 
         return $this;
     }
