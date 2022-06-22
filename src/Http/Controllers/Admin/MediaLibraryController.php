@@ -6,7 +6,6 @@ use A17\Twill\Http\Requests\Admin\MediaRequest;
 use A17\Twill\Models\Media;
 use A17\Twill\Services\Listings\Filters\BasicFilter;
 use A17\Twill\Services\Listings\Filters\TableFilters;
-use A17\Twill\Services\Listings\Filters\TwillBaseFilter;
 use A17\Twill\Services\Uploader\SignAzureUpload;
 use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignUploadListener;
@@ -90,13 +89,15 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     public function filters(): TableFilters
     {
         return TableFilters::make([
-            BasicFilter::make()->queryString('tag')->apply(function (Builder $builder, int $value) {
-                $builder->whereHas('tags', function (Builder $builder) use ($value) {
-                    $builder->where('tag_id', $value);
-                });
+            BasicFilter::make()->queryString('tag')->apply(function (Builder $builder, ?int $value) {
+                if ($value) {
+                    $builder->whereHas('tags', function (Builder $builder) use ($value) {
+                        $builder->where('tag_id', $value);
+                    });
+                }
                 return $builder;
             }),
-            BasicFilter::make()->queryString('unused')->apply(function (Builder $builder, bool $value) {
+            BasicFilter::make()->queryString('unused')->apply(function (Builder $builder, ?bool $value) {
                 if ($value) {
                     return $builder->unused();
                 }

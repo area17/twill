@@ -89,13 +89,15 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     public function filters(): TableFilters
     {
         return TableFilters::make([
-            BasicFilter::make()->queryString('tag')->apply(function (Builder $builder, int $value) {
-                $builder->whereHas('tags', function (Builder $builder) use ($value) {
-                    $builder->where('tag_id', $value);
-                });
+            BasicFilter::make()->queryString('tag')->apply(function (Builder $builder, ?int $value) {
+                if ($value) {
+                    $builder->whereHas('tags', function (Builder $builder) use ($value) {
+                        $builder->where('tag_id', $value);
+                    });
+                }
                 return $builder;
             }),
-            BasicFilter::make()->queryString('unused')->apply(function (Builder $builder, bool $value) {
+            BasicFilter::make()->queryString('unused')->apply(function (Builder $builder, ?bool $value) {
                 if ($value) {
                     return $builder->unused();
                 }
