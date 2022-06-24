@@ -6,6 +6,7 @@ use A17\Twill\Tests\Integration\ModulesTestBase;
 use App\Models\Partner;
 use App\Models\Project;
 use App\Repositories\ProjectRepository;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Tests the belongToMany with pivots.

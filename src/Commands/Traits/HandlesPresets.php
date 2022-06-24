@@ -17,8 +17,8 @@ trait HandlesPresets
         $this->checkMeetsRequirementsForPreset($preset);
 
         // First publish the config as we overwrite it later.
-        // @phpstan-ignore-next-line
         if (!$fromTests) {
+            // @phpstan-ignore-next-line
             $this->publishConfig();
         }
 
