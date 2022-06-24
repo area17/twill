@@ -272,7 +272,7 @@ trait HandleRepeaters
         $current = $object->{$relation}()->withPivot('id')->get();
         if ($current->isNotEmpty()) {
             foreach ($current as $existingRelation) {
-                if (!in_array($existingRelation->pivot->id, $currentIdList, true)) {
+                if (!in_array((int)$existingRelation->pivot->id, $currentIdList, true)) {
                     // The pivot table is treated differently.
                     $object->{$relation}()->detach($existingRelation->pivot->id);
                 }

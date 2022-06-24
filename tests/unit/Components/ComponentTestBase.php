@@ -3,7 +3,7 @@
 namespace A17\Twill\Tests\Unit\Components;
 
 use A17\Twill\Tests\Unit\TestCase;
-use A17\Twill\View\Components\TwillFormComponent;
+use A17\Twill\View\Components\Fields\TwillFormComponent;
 
 abstract class ComponentTestBase extends TestCase
 {
@@ -54,7 +54,8 @@ abstract class ComponentTestBase extends TestCase
     public function testFieldClass(): void
     {
         if ($this->noFieldTest) {
-            $this->markTestSkipped($this->component . ' has no need for a field class test');
+            $this->assertTrue(true);
+            return;
         }
         /** @var \A17\Twill\Services\Forms\Fields\BaseFormField $class */
         $class = $this->field::make();

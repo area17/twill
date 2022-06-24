@@ -2,7 +2,8 @@
 
 namespace A17\Twill\Tests\Unit\Components;
 
-use A17\Twill\View\Components\Checkbox;
+
+use A17\Twill\View\Components\Fields\Checkbox;
 
 class CheckboxFieldTest extends ComponentTestBase
 {

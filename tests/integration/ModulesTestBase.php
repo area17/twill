@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Translations\AuthorTranslation;
 use App\Models\Translations\CategoryTranslation;
 use Illuminate\Support\Str;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 abstract class ModulesTestBase extends TestCase
 {
@@ -154,8 +155,8 @@ abstract class ModulesTestBase extends TestCase
     protected function createAuthor($count = 1): Author
     {
         foreach (range(1, $count) as $c) {
-            $this->httpRequestAssert(
-                '/twill/personnel/authors',
+            $this->httpJsonRequestAssert(
+                route('twill.personnel.authors.store'),
                 'POST',
                 $this->getCreateAuthorData()
             );
@@ -231,7 +232,11 @@ abstract class ModulesTestBase extends TestCase
      */
     protected function getCreateAuthorData(): array
     {
-        $name = $this->name = $this->faker->name;
+        $name = $this->faker->name;
+        // These are escaped and would not work properly (they work but not in test text comparisons')
+        $name = str_replace('\'', '-', $name);
+
+        $this->name = $name;
 
         return [
             'name' => [
@@ -331,12 +336,12 @@ abstract class ModulesTestBase extends TestCase
     public function getUpdateAuthorWithBlock()
     {
         return $this->getUpdateAuthorData() + [
-            'blocks' => [
-                $this->getAuthorBlock(),
-                $this->getAuthorBlock($this->block_editor_name = 'unique-name'),
-            ],
-            'repeaters' => [],
-        ];
+                'blocks' => [
+                    $this->getAuthorBlock(),
+                    $this->getAuthorBlock($this->block_editor_name = 'unique-name'),
+                ],
+                'repeaters' => [],
+            ];
     }
 
     public function getAuthorBlock($name = 'default')

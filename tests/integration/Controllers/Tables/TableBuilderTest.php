@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Tests\Integration\Tables;
+namespace A17\Twill\Tests\Integration\Controllers\Tables;
 
 use A17\Twill\Services\Listings\Columns\Text;
 use A17\Twill\Services\Listings\TableColumns;
@@ -46,14 +46,15 @@ class TableBuilderTest extends ModulesTestBase
     {
         $builder = new TableColumns();
         $builder->add(Text::make()->field('name'));
-        $context = new TableDataContext('name', 'id', 'authors', 'personnel', 'author', true);
+        $context = new TableDataContext('name', 'id', 'authors', 'personnel', 'author', true, []);
         $this->assertEquals(
             [
                 'name' => $this->author->name,
                 'id' => $this->author->id,
                 'edit' => 'http://twill.test/twill/personnel/authors/1/edit',
                 'endpointType' => 'author',
-                'thumbnail' => 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+                'thumbnail' => 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
+                'repeaterFields' => [],
             ],
             $builder->getArrayForModelBrowser($this->author, $context)
         );

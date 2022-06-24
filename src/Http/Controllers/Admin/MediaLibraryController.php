@@ -119,11 +119,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         return $this->getIndexData($prependScope ?? []);
     }
 
-    /**
-     * @param array $prependScope
-     * @return array
-     */
-    protected function getIndexData($prependScope = [])
+    protected function getIndexData(array $prependScope = []): array
     {
         $items = $this->getIndexItems($prependScope);
 

@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Tests\Unit\Components;
 
-use A17\Twill\View\Components\Files;
+use A17\Twill\View\Components\Fields\Files;
 
 class FilesFieldTest extends ComponentTestBase
 {

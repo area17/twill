@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Tests\Unit\Components;
 
-use A17\Twill\View\Components\Repeater;
+use A17\Twill\View\Components\Fields\Repeater;
 
 class RepeaterFieldTest extends ComponentTestBase
 {

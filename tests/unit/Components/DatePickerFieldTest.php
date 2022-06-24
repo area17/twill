@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Tests\Unit\Components;
 
-use A17\Twill\View\Components\DatePicker;
+use A17\Twill\View\Components\Fields\DatePicker;
 
 class DatePickerFieldTest extends ComponentTestBase
 {

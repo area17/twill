@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Tests\Unit\Components;
 
-use A17\Twill\View\Components\Map;
+use A17\Twill\View\Components\Fields\Map;
 
 class MapFieldTest extends ComponentTestBase
 {

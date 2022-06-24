@@ -62,6 +62,7 @@ class AuthorController extends ModuleController
     {
         parent::__construct($app, $request);
 
+        $this->routePrefix = 'personnel';
         $this->indexOptions['editInModal'] = env('EDIT_IN_MODAL', false);
     }
 

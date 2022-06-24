@@ -184,7 +184,7 @@ abstract class TableColumn
         return $this->getRenderValue($model);
     }
 
-    protected function getRenderValue(TwillModelContract $model): string
+    protected function getRenderValue(TwillModelContract $model): int|bool|string
     {
         if (($renderFunction = $this->render) !== null) {
             return $renderFunction($model);

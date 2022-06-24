@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Tests\Integration\Tables\Filters;
+namespace A17\Twill\Tests\Integration\Controllers\Tables\Filters;
 
 class SearchTest extends FilterTestBase
 {

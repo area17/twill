@@ -217,7 +217,7 @@ class RepositoryRepeatersTest extends ModulesTestBase
 
     public function testGetBrowserDataForRepeater(): void
     {
-        $this->get(route('twill.partners.browser', ['forRepeater' => 'true']))
+        $this->getJson(route('twill.partners.browser', ['forRepeater' => 'true']))
             ->assertJsonPath(
                 'data.0.repeaterFields',
                 [

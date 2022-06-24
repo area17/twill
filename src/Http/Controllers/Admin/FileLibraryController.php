@@ -119,11 +119,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
         return $this->getIndexData($prependScope ?? []);
     }
 
-    /**
-     * @param array $prependScope
-     * @return array
-     */
-    public function getIndexData($prependScope = [])
+    protected function getIndexData(array $prependScope = []): array
     {
         $items = $this->getIndexItems($prependScope);
 

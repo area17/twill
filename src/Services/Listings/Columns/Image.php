@@ -68,7 +68,7 @@ class Image extends TableColumn
             throw new InvalidArgumentException('Cannot use image column on model not implementing HasMedias trait');
         }
 
-        if (($renderFunction = $this->render) !== null) {
+        if ($renderFunction = $this->render) {
             return $renderFunction($model);
         }
 
