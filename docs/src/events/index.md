@@ -20,6 +20,9 @@ Twill events are native Laravel events so check [documentation](https://laravel.
 *   [Module restore](./#module-restore)
 *   [Module update](./#module-update)
 
+**Buckets event**
+*   [Buckets save](./#buckets-save)
+
 
 ### Handle events
 To properly handle events you will need event listeners.
@@ -249,6 +252,26 @@ public function handle(ModuleUpdate $event)
 {
     $event->module;
     $event->repository;
+}
+```
+
+
+### Buckets save
+
+```
+A17\Twill\Events\BucketSave
+```
+
+`BucketSave` event is fired on buckets save.
+
+`buckets` - buckets saved (array)  
+  
+
+
+```php
+public function handle(BucketSave $event)
+{
+    $event->buckets;
 }
 ```
 

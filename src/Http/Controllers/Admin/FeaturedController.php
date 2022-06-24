@@ -5,6 +5,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Models\Feature;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
+use A17\Twill\Events\BucketSave;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\DatabaseManager as DB;
@@ -225,7 +226,10 @@ class FeaturedController extends Controller
             });
         }, 5);
 
+        // @todo(3.x): Deprecated.
         fireCmsEvent('cms-buckets.saved');
+
+        BucketSave::dispatch($request->get('buckets'));
     }
 
     /**
