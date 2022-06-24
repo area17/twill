@@ -6,7 +6,6 @@ use A17\Twill\Tests\Integration\ModulesTestBase;
 use App\Models\Partner;
 use App\Models\Project;
 use App\Repositories\ProjectRepository;
-use Illuminate\Support\Facades\DB;
 
 /**
  * Tests the belongToMany with pivots.
@@ -218,7 +217,7 @@ class RepositoryRepeatersTest extends ModulesTestBase
 
     public function testGetBrowserDataForRepeater(): void
     {
-        $this->get(route('twill.partners.browser', ['forRepeater' => 'true']))
+        $this->getJson(route('twill.partners.browser', ['forRepeater' => 'true']))
             ->assertJsonPath(
                 'data.0.repeaterFields',
                 [

@@ -1304,18 +1304,9 @@ abstract class ModuleController extends Controller
         return [];
     }
 
-    /**
-     * @param array $prependScope
-     * @return array
-     */
-    protected function getIndexData($prependScope = [])
+    protected function getIndexData(array $prependScope = []): array
     {
-//        $scopes = $this->filterScope($prependScope);
-        $items = $this->getIndexItems();
-
-//        dd(array_keys(Arr::except($this->filters, array_keys($this->defaultFilters))));
-        // @todo: Does not take into account yet the default filters.
-//        $tableFilters = $this->filters()->map(fn(TableFilter $filter) => $filter->getQueryString())->toArray();
+        $items = $this->getIndexItems($prependScope);
 
         $data = [
                 'tableData' => $this->getIndexTableData($items),
@@ -1486,10 +1477,7 @@ abstract class ModuleController extends Controller
         return [];
     }
 
-    /**
-     * @return int
-     */
-    protected function getItemIdentifier(TwillModelContract $item)
+    protected function getItemIdentifier(TwillModelContract $item): int|string
     {
         return $item->{$this->identifierColumnKey};
     }
@@ -1659,6 +1647,11 @@ abstract class ModuleController extends Controller
                     if (in_array($field, $translatedAttributes, true)) {
                         $repeaterFields[$field] = $item->translatedAttribute($field);
                     } else {
+                        // @todo: In php 8.1 this is an int by itself. In php8.1 it is not.
+                        if ($field === 'published') {
+                            $repeaterFields[$field] = (int)$item->{$field};
+                            continue;
+                        }
                         $repeaterFields[$field] = $item->{$field};
                     }
                 }
