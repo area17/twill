@@ -386,6 +386,11 @@ module.exports = [
         "children": [],
       },
       {
+        "title": "Events",
+        "path": "/events/",
+        "children": [],
+      },
+      {
         "title": "API Documentation",
         "path": "/api-documentation/",
         "children": [],
