@@ -84,7 +84,7 @@ class RouteServiceProvider extends ServiceProvider
             $supportSubdomainRouting
         ) {
             $router->group(['middleware' => $middlewares], function ($router) {
-                require_once __DIR__ . '/../routes/admin.php';
+                require __DIR__ . '/../routes/admin.php';
             });
 
             $router->group(
@@ -94,7 +94,7 @@ class RouteServiceProvider extends ServiceProvider
                         : [],
                 ],
                 function ($router) {
-                    require_once __DIR__ . '/../routes/auth.php';
+                    require __DIR__ . '/../routes/auth.php';
                 }
             );
 
@@ -105,7 +105,7 @@ class RouteServiceProvider extends ServiceProvider
                         : [],
                 ],
                 function ($router) {
-                    require_once __DIR__ . '/../routes/templates.php';
+                    require __DIR__ . '/../routes/templates.php';
                 }
             );
         };
@@ -154,7 +154,7 @@ class RouteServiceProvider extends ServiceProvider
                                 : [],
                         ],
                         function ($router) {
-                            require_once __DIR__ . '/../routes/templates.php';
+                            require __DIR__ . '/../routes/templates.php';
                         }
                     );
                 }

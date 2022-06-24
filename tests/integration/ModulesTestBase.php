@@ -51,12 +51,6 @@ abstract class ModulesTestBase extends TestCase
 
     public $example = 'tests-modules';
 
-    // @PRtodo: REmove this
-    public static function setUpBeforeClass(): void
-    {
-        ray()->disable();
-    }
-
     public function setUp(): void
     {
         parent::setUp();
@@ -238,7 +232,11 @@ abstract class ModulesTestBase extends TestCase
      */
     protected function getCreateAuthorData(): array
     {
-        $name = $this->name = $this->faker->name;
+        $name = $this->faker->name;
+        // These are escaped and would not work properly (they work but not in test text comparisons')
+        $name = str_replace('\'', '-', $name);
+
+        $this->name = $name;
 
         return [
             'name' => [

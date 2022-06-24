@@ -197,7 +197,7 @@ if (!function_exists('twillModel')) {
     }
 }
 
-if (!function_exists('generate_list_of_allowed_blocks')) {
+if (!function_exists('generate_list_of_available_blocks')) {
     /**
      * @param array $blocks
      * @param array $groups

@@ -54,7 +54,8 @@ abstract class ComponentTestBase extends TestCase
     public function testFieldClass(): void
     {
         if ($this->noFieldTest) {
-            $this->markTestSkipped($this->component . ' has no need for a field class test');
+            $this->assertTrue(true);
+            return;
         }
         /** @var \A17\Twill\Services\Forms\Fields\BaseFormField $class */
         $class = $this->field::make();

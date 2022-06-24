@@ -14,8 +14,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - run: |
+      - name: Checking for prtodo's.
+        run: |
           if grep --exclude-dir={.git,.github,vendor} -rE "PRtodo"; then
+               exit 1
+          else
+              echo "All good"
+          fi
+
+      - name: Checking for leftover "ray" usages.
+        run: |
+          if grep --exclude-dir={.git,.github,vendor} -rE "ray("; then
                exit 1
           else
               echo "All good"

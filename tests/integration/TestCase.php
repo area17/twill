@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use A17\Twill\Models\Model;
+use A17\Twill\Commands\Traits\HandlesPresets;
 use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
@@ -13,7 +13,6 @@ use Exception;
 use Faker\Factory as Faker;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +24,7 @@ use Orchestra\Testbench\TestCase as OrchestraTestCase;
 abstract class TestCase extends OrchestraTestCase
 {
     use CopyBlocks;
+    use HandlesPresets;
 
     public const DATABASE_MEMORY = ':memory:';
 
@@ -115,6 +115,31 @@ abstract class TestCase extends OrchestraTestCase
                 $this->files->makeDirectory($directory, 0755, true);
             }
         });
+    }
+
+    /**
+     * After a long debugging session I found that this flow is the most stable.
+     * Running the example installer in the setup would cause the files to be not on time when tests shift from
+     * one example to another.
+     */
+    public function createApplication()
+    {
+        $app = $this->resolveApplication();
+
+        $this->resolveApplicationBindings($app);
+        $this->resolveApplicationExceptionHandler($app);
+        $this->resolveApplicationCore($app);
+        $this->resolveApplicationConfiguration($app);
+        $this->resolveApplicationHttpKernel($app);
+        $this->resolveApplicationConsoleKernel($app);
+
+        if ($this->example) {
+            $this->installPresetFiles($this->example, true);
+        }
+
+        $this->resolveApplicationBootstrappers($app);
+
+        return $app;
     }
 
     /**
@@ -375,12 +400,11 @@ abstract class TestCase extends OrchestraTestCase
     /**
      * Install Twill.
      */
-    public function installTwill()
+    public function installTwill(): void
     {
         $this->truncateTwillUsers();
 
         if ($this->example) {
-            ray($this->example);
             $this->artisan('twill:install ' . $this->example)
                 ->expectsConfirmation(
                     'Are you sure to install this preset? This can overwrite your models, config and routes.',

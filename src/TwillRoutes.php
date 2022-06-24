@@ -30,12 +30,6 @@ class TwillRoutes
                             'middleware' => $middlewares,
                         ],
                         function () use ($routesFile) {
-                            ray($routesFile);
-                            ray(file_get_contents($routesFile));
-                            if (ray()->enabled()) {
-                                ray()->pause();
-                            }
-                            ray(file_get_contents($routesFile));
                             require $routesFile;
                         }
                     );

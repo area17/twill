@@ -2,47 +2,47 @@
 
 namespace A17\Twill\Commands\Traits;
 
-use Illuminate\Filesystem\FilesystemAdapter;
-use Illuminate\Support\Facades\Storage;
-
 /**
  * @method void publishConfig;
  */
 trait HandlesPresets
 {
-    /**
-     * @var \Illuminate\Filesystem\FilesystemAdapter[]
-     */
-    protected $examplesStorage = [];
-
-    /**
-     * @var \Illuminate\Filesystem\FilesystemAdapter
-     */
-    protected $appRootStorage;
-
     protected function presetExists(string $preset): bool
     {
-        return $this->getExamplesDirectoryStorage()->exists($preset);
+        return file_exists($this->getExamplesStoragePath($preset)) && is_dir($this->getExamplesStoragePath($preset));
     }
 
-    protected function installPresetFiles(string $preset): void
+    protected function installPresetFiles(string $preset, bool $fromTests = false): void
     {
         $this->checkMeetsRequirementsForPreset($preset);
 
         // First publish the config as we overwrite it later.
         // @phpstan-ignore-next-line
-        $this->publishConfig();
-
-        $examplesStorage = $this->getExamplesStorage($preset);
-        $appRootStorage = $this->getAppRootStorage();
-
-        foreach ($examplesStorage->allDirectories() as $directory) {
-            if ($appRootStorage->makeDirectory($directory)) {
-                foreach ($examplesStorage->files($directory) as $file) {
-                    $appRootStorage->put($file, $examplesStorage->get($file));
-                }
-            }
+        if (!$fromTests) {
+            $this->publishConfig();
         }
+
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($this->getExamplesStoragePath($preset))
+        );
+
+        $files = [];
+
+        foreach ($iterator as $file) {
+            if ($file->isDir()) {
+                continue;
+            }
+            $files[] = [
+                'from' => $file->getPathname(),
+                'to' => str_replace(
+                    $this->getExamplesStoragePath($preset),
+                    $this->getAppRootPath(),
+                    $file->getPathname()
+                ),
+            ];
+        }
+
+        $this->copyPresetFiles($files);
     }
 
     /**
@@ -53,51 +53,63 @@ trait HandlesPresets
      */
     protected function updatePreset(string $preset): void
     {
-        $examplesStorage = $this->getExamplesStorage($preset);
-        $appRootStorage = $this->getAppRootStorage();
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($this->getExamplesStoragePath($preset))
+        );
 
-        foreach ($examplesStorage->allDirectories() as $directory) {
-            foreach ($examplesStorage->files($directory) as $file) {
-                $examplesStorage->put($file, $appRootStorage->get($file));
+        $files = [];
+
+        foreach ($iterator as $file) {
+            if ($file->isDir()) {
+                continue;
             }
+            $files[] = [
+                'to' => $file->getPathname(),
+                'from' => str_replace(
+                    $this->getExamplesStoragePath($preset),
+                    $this->getAppRootPath(),
+                    $file->getPathname()
+                ),
+            ];
+        }
+
+        $this->copyPresetFiles($files);
+    }
+
+    private function copyPresetFiles(array $files): void
+    {
+        foreach ($files as $file) {
+            $fileName = trim(substr($file['to'], strrpos($file['to'], DIRECTORY_SEPARATOR) + 1));
+            $dir = str_replace($fileName, '', $file['to']);
+
+            if (!file_exists($dir)) {
+                if (!mkdir($dir, 0777, true) && !is_dir($dir)) {
+                    throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
+                }
+            }
+
+            copy($file['from'], $file['to']);
         }
     }
 
-    private function getExamplesStorage(string $preset): FilesystemAdapter
+    private function getExamplesStoragePath(string $preset): string
     {
-        if (! isset($this->examplesStorage[$preset])) {
-            $this->examplesStorage[$preset] = Storage::build([
-                'driver' => 'local',
-                'root' => __DIR__ . '/../../../examples/' . $preset,
-            ]);
-        }
-
-        return $this->examplesStorage[$preset];
+        return $this->getExamplesDirectoryPath() . DIRECTORY_SEPARATOR . $preset;
     }
 
-    private function getExamplesDirectoryStorage(): FilesystemAdapter
+    private function getExamplesDirectoryPath(): string
     {
-        return Storage::build([
-            'driver' => 'local',
-            'root' => __DIR__ . '/../../../examples/',
-        ]);
+        return dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'examples';
     }
 
-    private function getAppRootStorage(): FilesystemAdapter
+    private function getAppRootPath(): string
     {
-        if (! $this->appRootStorage) {
-            $this->appRootStorage = Storage::build([
-                'driver' => 'local',
-                'root' => base_path(),
-            ]);
-        }
-
-        return $this->appRootStorage;
+        return base_path();
     }
 
     private function checkMeetsRequirementsForPreset(string $preset): void
     {
-        if ($preset === 'blog' && ! \Composer\InstalledVersions::isInstalled('kalnoy/nestedset')) {
+        if ($preset === 'blog' && !\Composer\InstalledVersions::isInstalled('kalnoy/nestedset')) {
             throw new \RuntimeException(
                 'Missing nestedset, please install it using "composer require kalnoy/nestedset"'
             );
