@@ -246,7 +246,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             $this->request->only('tags')
         );
 
-        FileUpdated::dispatch($this->repository, [$this->request->input('id')]);
+        FileUpdated::dispatch($this->repository, [$this->request->input('id')], $this->request->only('tags'));
 
         return $this->responseFactory->json([], 200);
     }

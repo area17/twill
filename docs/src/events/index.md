@@ -27,6 +27,9 @@ Twill events are native Laravel events so check [documentation](https://laravel.
 *   [File stored](./#file-stored)
 *   [File updated](./#file-updated)
 
+**Media events**
+*   [Media stored](./#media-stored)
+*   [Media updated](./#media-updated)
 
 ### Handle events
 To properly handle events you will need event listeners.
@@ -55,8 +58,8 @@ class ExampleListener
 }
 ```
 
-::: warning
-Media and File are Twill modules and delete events can be cacthed via `ModuleDelete`. Module names are `file` and `media`.
+::: tip
+Media and File are Twill modules and delete events can be cacthed via `ModuleDelete`. Module names are `files` and `medias`.
 :::
 
 ### Module create
@@ -317,6 +320,46 @@ public function handle(FileUpdated $event)
     $event->repository;
     $event->ids;
     $event->tags;
+    $event->type;
+}
+```
+
+### Media stored
+
+```
+A17\Twill\Events\MediaStored
+```
+
+`MediaStored` event is fired on media upload.
+
+`repository` - module model instance    
+  
+```php
+public function handle(MediaStored $event)
+{
+    $event->repository;
+}
+```
+
+### Media updated
+
+```
+A17\Twill\Events\MediaUpdated
+```
+
+`MediaUpdated` event is fired on media update (tags, altext, caption).
+
+`repository` - module model instance  
+`ids` - affected ids (array)  
+`data` - data submitted   
+`type` - `single` or `bulk`    
+  
+```php
+public function handle(MediaUpdated $event)
+{
+    $event->repository;
+    $event->ids;
+    $event->data;
     $event->type;
 }
 ```
