@@ -23,6 +23,10 @@ Twill events are native Laravel events so check [documentation](https://laravel.
 **Buckets event**
 *   [Buckets save](./#buckets-save)
 
+**File events**
+*   [File stored](./#file-stored)
+*   [File updated](./#file-updated)
+
 
 ### Handle events
 To properly handle events you will need event listeners.
@@ -51,7 +55,9 @@ class ExampleListener
 }
 ```
 
-
+::: warning
+Media and File are Twill modules and delete events can be cacthed via `ModuleDelete`. Module names are `file` and `media`.
+:::
 
 ### Module create
 
@@ -272,6 +278,46 @@ A17\Twill\Events\BucketSave
 public function handle(BucketSave $event)
 {
     $event->buckets;
+}
+```
+
+### File stored
+
+```
+A17\Twill\Events\FileStored
+```
+
+`FileStored` event is fired on file upload.
+
+`repository` - module model instance    
+  
+```php
+public function handle(FileStored $event)
+{
+    $event->repository;
+}
+```
+
+### File updated
+
+```
+A17\Twill\Events\FileUpdated
+```
+
+`FileUpdated` event is fired on file update (tags).
+
+`repository` - module model instance  
+`ids` - affected ids (array)  
+`tags` - tags submitted   
+`type` - `single` or `bulk`    
+  
+```php
+public function handle(FileUpdated $event)
+{
+    $event->repository;
+    $event->ids;
+    $event->tags;
+    $event->type;
 }
 ```
 
