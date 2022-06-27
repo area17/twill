@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Tests\Unit\Components;
 
-use A17\Twill\View\Components\Wysiwyg;
+use A17\Twill\View\Components\Fields\Wysiwyg;
 
 class WysiwygFieldTest extends ComponentTestBase
 {

@@ -4,7 +4,6 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Models\File;
 use A17\Twill\Repositories\Behaviors\HandleTags;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -16,12 +15,6 @@ class FileRepository extends ModuleRepository
     public function __construct(File $model)
     {
         $this->model = $model;
-    }
-
-    public function filter($query, array $scopes = [])
-    {
-        $this->searchIn($query, $scopes, 'search', ['filename']);
-        return parent::filter($query, $scopes);
     }
 
     public function afterDelete($object): void

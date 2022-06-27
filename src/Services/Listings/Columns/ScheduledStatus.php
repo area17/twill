@@ -2,9 +2,9 @@
 
 namespace A17\Twill\Services\Listings\Columns;
 
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Services\Listings\TableColumn;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
 
 class ScheduledStatus extends TableColumn
 {
@@ -16,7 +16,7 @@ class ScheduledStatus extends TableColumn
         return $column;
     }
 
-    protected function getRenderValue(Model $model): string
+    protected function getRenderValue(TwillModelContract $model): string
     {
         $this->html = true;
 

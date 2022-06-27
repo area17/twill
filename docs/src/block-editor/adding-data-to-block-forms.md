@@ -28,7 +28,7 @@ class TextBlock extends Block
 
 Now in your form you can use it as:
 
-```blade
+```html
 @twillBlockTitle('Text')
 @twillBlockIcon('text')
 @twillBlockGroup('app')

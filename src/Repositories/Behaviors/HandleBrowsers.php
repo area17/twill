@@ -64,7 +64,7 @@ trait HandleBrowsers
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\Contracts\TwillModelContract $object
      * @param array $fields
      * @param string $relationship
      * @param string $positionAttribute
@@ -153,7 +153,7 @@ trait HandleBrowsers
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\Contracts\TwillModelContract $object
      * @param string $relation
      * @param string|null $routePrefix
      * @param string $titleKey

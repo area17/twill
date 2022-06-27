@@ -3,9 +3,9 @@
 namespace A17\Twill\Services\Listings\Columns;
 
 use A17\Twill\Models\Behaviors\HasMedias;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Model as TwillModel;
 use A17\Twill\Services\Listings\TableColumn;
-use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 
 class Image extends TableColumn
@@ -62,20 +62,20 @@ class Image extends TableColumn
         return $data;
     }
 
-    protected function getRenderValue(Model $model): string
+    protected function getRenderValue(TwillModelContract $model): string
     {
         if (!classHasTrait($model::class, HasMedias::class)) {
             throw new InvalidArgumentException('Cannot use image column on model not implementing HasMedias trait');
         }
 
-        if (($renderFunction = $this->render) !== null) {
+        if ($renderFunction = $this->render) {
             return $renderFunction($model);
         }
 
         return $this->getThumbnail($model);
     }
 
-    public function getThumbnail(TwillModel $model): ?string
+    public function getThumbnail(TwillModelContract $model): ?string
     {
         $role = $this->role ?? head(array_keys($model->getMediasParams()));
         $crop = $this->crop ?? head(array_keys($model->getMediasParams()[$role]));

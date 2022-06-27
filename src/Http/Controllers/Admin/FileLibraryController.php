@@ -3,12 +3,15 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Http\Requests\Admin\FileRequest;
+use A17\Twill\Services\Listings\Filters\BasicFilter;
+use A17\Twill\Services\Listings\Filters\TableFilters;
 use A17\Twill\Services\Uploader\SignAzureUpload;
 use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignUploadListener;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
@@ -31,15 +34,6 @@ class FileLibraryController extends ModuleController implements SignUploadListen
      */
     protected $defaultOrders = [
         'id' => 'desc',
-    ];
-
-    /**
-     * @var array
-     */
-    protected $defaultFilters = [
-        'search' => 'search',
-        'tag' => 'tag_id',
-        'unused' => 'unused',
     ];
 
     /**
@@ -80,8 +74,36 @@ class FileLibraryController extends ModuleController implements SignUploadListen
         $this->config = $config;
 
         $this->middleware('can:access-media-library', ['only' => ['index']]);
-        $this->middleware('can:edit-media-library', ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]);
+        $this->middleware(
+            'can:edit-media-library',
+            ['only' => ['signS3Upload', 'signAzureUpload', 'tags', 'store', 'singleUpdate', 'bulkUpdate']]
+        );
         $this->endpointType = $this->config->get('twill.file_library.endpoint_type');
+    }
+
+    public function setUpController(): void
+    {
+        $this->setSearchColumns(['alt_text', 'filename', 'caption']);
+    }
+
+    public function filters(): TableFilters
+    {
+        return TableFilters::make([
+            BasicFilter::make()->queryString('tag')->apply(function (Builder $builder, ?int $value) {
+                if ($value) {
+                    $builder->whereHas('tags', function (Builder $builder) use ($value) {
+                        $builder->where('tag_id', $value);
+                    });
+                }
+                return $builder;
+            }),
+            BasicFilter::make()->queryString('unused')->apply(function (Builder $builder, ?bool $value) {
+                if ($value) {
+                    return $builder->unused();
+                }
+                return $builder;
+            }),
+        ]);
     }
 
     /**
@@ -97,14 +119,9 @@ class FileLibraryController extends ModuleController implements SignUploadListen
         return $this->getIndexData($prependScope ?? []);
     }
 
-    /**
-     * @param array $prependScope
-     * @return array
-     */
-    public function getIndexData($prependScope = [])
+    protected function getIndexData(array $prependScope = []): array
     {
-        $scopes = $this->filterScope($prependScope);
-        $items = $this->getIndexItems($scopes);
+        $items = $this->getIndexItems($prependScope);
 
         return [
             'items' => $items->map(function ($item) {
@@ -123,20 +140,25 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     private function buildFile($item)
     {
         return $item->toCmsArray() + [
-            'tags' => $item->tags->map(function ($tag) {
-                return $tag->name;
-            }),
-            'deleteUrl' => $item->canDeleteSafely() ? moduleRoute($this->moduleName, $this->routePrefix, 'destroy', $item->id) : null,
-            'updateUrl' => $this->urlGenerator->route('twill.file-library.files.single-update'),
-            'updateBulkUrl' => $this->urlGenerator->route('twill.file-library.files.bulk-update'),
-            'deleteBulkUrl' => $this->urlGenerator->route('twill.file-library.files.bulk-delete'),
-        ];
+                'tags' => $item->tags->map(function ($tag) {
+                    return $tag->name;
+                }),
+                'deleteUrl' => $item->canDeleteSafely() ? moduleRoute(
+                    $this->moduleName,
+                    $this->routePrefix,
+                    'destroy',
+                    $item->id
+                ) : null,
+                'updateUrl' => $this->urlGenerator->route('twill.file-library.files.single-update'),
+                'updateBulkUrl' => $this->urlGenerator->route('twill.file-library.files.bulk-update'),
+                'deleteBulkUrl' => $this->urlGenerator->route('twill.file-library.files.bulk-delete'),
+            ];
     }
 
     /**
      * @return array
      */
-    protected function getRequestFilters()
+    protected function getRequestFilters(): array
     {
         if ($this->request->has('search')) {
             $requestFilters['search'] = $this->request->get('search');
@@ -146,7 +168,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             $requestFilters['tag'] = $this->request->get('tag');
         }
 
-        if ($this->request->has('unused') && (int) $this->request->unused === 1) {
+        if ($this->request->has('unused') && (int)$this->request->unused === 1) {
             $requestFilters['unused'] = $this->request->get('unused');
         }
 
@@ -206,9 +228,9 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             $this->repository->afterDelete($file);
             $file->update($fields);
             return $file->fresh();
-        } else {
-            return $this->repository->create($fields);
         }
+
+        return $this->repository->create($fields);
     }
 
     /**
@@ -227,9 +249,9 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             $this->repository->afterDelete($file);
             $file->update($fields);
             return $file->fresh();
-        } else {
-            return $this->repository->create($fields);
         }
+
+        return $this->repository->create($fields);
     }
 
     /**
@@ -259,8 +281,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             $this->repository->update($id, ['bulk_tags' => $newTags, 'previous_common_tags' => $previousCommonTags]);
         }
 
-        $scopes = $this->filterScope(['id' => $ids]);
-        $items = $this->getIndexItems($scopes);
+        $items = $this->getIndexItems(['id' => $ids]);
 
         return $this->responseFactory->json([
             'items' => $items->map(function ($item) {
@@ -298,8 +319,8 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     public function uploadIsSigned($signature, $isJsonResponse = true)
     {
         return $isJsonResponse
-        ? $this->responseFactory->json($signature, 200)
-        : $this->responseFactory->make($signature, 200, ['Content-Type' => 'text/plain']);
+            ? $this->responseFactory->json($signature, 200)
+            : $this->responseFactory->make($signature, 200, ['Content-Type' => 'text/plain']);
     }
 
     /**

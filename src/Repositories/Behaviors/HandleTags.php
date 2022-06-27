@@ -24,11 +24,6 @@ trait HandleTags
         }
     }
 
-    protected function filterHandleTags($query, &$scopes)
-    {
-        $this->addRelationFilterScope($query, $scopes, 'tag_id', 'tags');
-    }
-
     private function getTagsQuery()
     {
         return $this->model->allTags()->orderBy('count', 'desc');

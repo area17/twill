@@ -17,7 +17,7 @@ abstract class TwillFormComponent extends Component
 
     public array $form_fields;
 
-    public ?string $moduleName;
+    public ?string $formModuleName;
 
     public ?string $routePrefix;
 
@@ -38,7 +38,7 @@ abstract class TwillFormComponent extends Component
         $form = ViewFacade::shared("form");
         $this->item = $form['item'] ?? null;
         $this->form_fields = $form['form_fields'] ?? [];
-        $this->moduleName = $form['moduleName'] ?? null;
+        $this->formModuleName = $form['moduleName'] ?? null;
         $this->routePrefix = $form['routePrefix'] ?? null;
 
         $shared = ViewFacade::shared('TwillUntilConsumed', []);

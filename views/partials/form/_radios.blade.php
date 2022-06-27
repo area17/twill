@@ -19,7 +19,7 @@
 >
     @if($addNew)
         <div slot="addModal">
-            @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+            @partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
         </div>
     @endif
 </a17-singleselect>

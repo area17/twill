@@ -10,7 +10,7 @@ use A17\Twill\Http\Middleware\Permission;
 use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
 use A17\Twill\Http\Middleware\SupportSubdomainRouting;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
-use A17\Twill\Services\Routing\HasRoutes;
+use A17\Twill\Services\MediaLibrary\Glide;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
@@ -90,8 +90,8 @@ class RouteServiceProvider extends ServiceProvider
             $router->group(
                 [
                     'middleware' => $supportSubdomainRouting
-                    ? ['supportSubdomainRouting']
-                    : [],
+                        ? ['supportSubdomainRouting']
+                        : [],
                 ],
                 function ($router) {
                     require __DIR__ . '/../routes/auth.php';
@@ -101,8 +101,8 @@ class RouteServiceProvider extends ServiceProvider
             $router->group(
                 [
                     'middleware' => $this->app->environment('production')
-                    ? ['twill_auth:twill_users']
-                    : [],
+                        ? ['twill_auth:twill_users']
+                        : [],
                 ],
                 function ($router) {
                     require __DIR__ . '/../routes/templates.php';
@@ -126,8 +126,8 @@ class RouteServiceProvider extends ServiceProvider
                     $router->group(
                         [
                             'domain' => config('twill.admin_app_subdomain', 'admin') .
-                            '.{subdomain}.' .
-                            config('app.url'),
+                                '.{subdomain}.' .
+                                config('app.url'),
                         ],
                         $internalRoutes
                     );
@@ -150,8 +150,8 @@ class RouteServiceProvider extends ServiceProvider
                             'middleware' => $this->app->environment(
                                 'production'
                             )
-                            ? ['twill_auth:twill_users']
-                            : [],
+                                ? ['twill_auth:twill_users']
+                                : [],
                         ],
                         function ($router) {
                             require __DIR__ . '/../routes/templates.php';
@@ -161,10 +161,7 @@ class RouteServiceProvider extends ServiceProvider
             );
         }
 
-        if (
-            config('twill.media_library.image_service') ===
-            \A17\Twill\Services\MediaLibrary\Glide::class
-        ) {
+        if (config('twill.media_library.image_service') === Glide::class) {
             $router
                 ->get(
                     '/' . config('twill.glide.base_path') . '/{path}',
@@ -217,13 +214,13 @@ class RouteServiceProvider extends ServiceProvider
             }
 
             $routePrefix = empty($routePrefix)
-            ? '/'
-            : (Str::startsWith($routePrefix, '/')
-                ? $routePrefix
-                : '/' . $routePrefix);
+                ? '/'
+                : (Str::startsWith($routePrefix, '/')
+                    ? $routePrefix
+                    : '/' . $routePrefix);
             $routePrefix = Str::endsWith($routePrefix, '/')
-            ? $routePrefix
-            : $routePrefix . '/';
+                ? $routePrefix
+                : $routePrefix . '/';
 
             Route::name($moduleName . '.show')->get(
                 $routePrefix . '{slug}',
@@ -291,12 +288,12 @@ class RouteServiceProvider extends ServiceProvider
             if (isset($options['only'])) {
                 $customRoutes = array_intersect(
                     $defaults,
-                    (array) $options['only']
+                    (array)$options['only']
                 );
             } elseif (isset($options['except'])) {
                 $customRoutes = array_diff(
                     $defaults,
-                    (array) $options['except']
+                    (array)$options['except']
                 );
             }
 
@@ -326,7 +323,7 @@ class RouteServiceProvider extends ServiceProvider
                     Route::get($routeSlug, $mapping);
                 }
 
-                if ($route == 'restoreRevision') {
+                if ($route === 'restoreRevision') {
                     Route::get($routeSlug . '/{id}', $mapping);
                 }
 
@@ -341,11 +338,11 @@ class RouteServiceProvider extends ServiceProvider
                     Route::put($routeSlug, $mapping);
                 }
 
-                if ($route == 'duplicate') {
+                if ($route === 'duplicate') {
                     Route::put($routeSlug . '/{id}', $mapping);
                 }
 
-                if ($route == 'preview') {
+                if ($route === 'preview') {
                     Route::put($routeSlug . '/{id}', $mapping);
                 }
 
@@ -405,9 +402,9 @@ class RouteServiceProvider extends ServiceProvider
 
     public static function shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)
     {
-        return ! empty($groupPrefix) && (blank($lastRouteGroupName) ||
-            config('twill.allow_duplicates_on_route_names', true) ||
-            (! Str::endsWith($lastRouteGroupName, ".{$groupPrefix}.")));
+        return !empty($groupPrefix) && (blank($lastRouteGroupName) ||
+                config('twill.allow_duplicates_on_route_names', true) ||
+                (!Str::endsWith($lastRouteGroupName, ".{$groupPrefix}.")));
     }
 
     public static function getLastRouteGroupName()
@@ -426,7 +423,7 @@ class RouteServiceProvider extends ServiceProvider
             '.'
         );
 
-        if (! empty(config('twill.admin_app_path'))) {
+        if (!empty(config('twill.admin_app_path'))) {
             $groupPrefix = ltrim(
                 str_replace(
                     config('twill.admin_app_path'),

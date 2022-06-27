@@ -7,13 +7,16 @@ use A17\Twill\Models\Behaviors\HasOauth;
 use A17\Twill\Models\Behaviors\HasPermissions;
 use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\IsTranslatable;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Enums\UserRole;
 use A17\Twill\Notifications\PasswordResetByAdmin as PasswordResetByAdminNotification;
 use A17\Twill\Notifications\Reset as ResetNotification;
 use A17\Twill\Notifications\TemporaryPassword as TemporaryPasswordNotification;
 use A17\Twill\Notifications\Welcome as WelcomeNotification;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as AuthenticatableContract;
 use Illuminate\Notifications\Notifiable;
@@ -21,7 +24,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Session;
 use PragmaRX\Google2FAQRCode\Google2FA;
 
-class User extends AuthenticatableContract
+class User extends AuthenticatableContract implements TwillModelContract
 {
     use Authenticatable;
     use Authorizable;
@@ -87,7 +90,7 @@ class User extends AuthenticatableContract
      * @param Builder $query
      * @return Builder
      */
-    public function scopeAccessible($query)
+    public function scopeAccessible($query): Builder
     {
         /** @var self $currentUser */
         $currentUser = auth('twill_users')->user();
@@ -147,19 +150,19 @@ class User extends AuthenticatableContract
         return $query->whereNull('registered_at')->published();
     }
 
-    public function scopePublished($query)
+    public function scopePublished($query): Builder
     {
         return $query->wherePublished(true);
     }
 
-    public function scopeDraft($query)
+    public function scopeDraft($query): Builder
     {
         return $query->wherePublished(false);
     }
 
-    public function scopeOnlyTrashed($query)
+    public function scopeOnlyTrashed($query): Builder
     {
-        return $query->whereNotNull('deleted_at');
+        return $query->onlyTrashed();
     }
 
     public function scopeNotSuperAdmin($query)
@@ -310,5 +313,10 @@ class User extends AuthenticatableContract
             $this->google_2fa_secret,
             200
         );
+    }
+
+    public function getTranslatedAttributes(): array
+    {
+        return [];
     }
 }

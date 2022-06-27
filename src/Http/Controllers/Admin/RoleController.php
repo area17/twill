@@ -16,10 +16,6 @@ class RoleController extends ModuleController
 
     protected $defaultOrders = ['name' => 'asc'];
 
-    protected $defaultFilters = [
-        'search' => 'search',
-    ];
-
     protected $titleColumnKey = 'name';
 
     protected $indexOptions = [
@@ -89,7 +85,7 @@ class RoleController extends ModuleController
 
     protected function getIndexItems($scopes = [], $forcePagination = false)
     {
-        $scopes = $scopes + ['accessible' => true];
+        $scopes += ['accessible' => true];
 
         return parent::getIndexItems($scopes, $forcePagination);
     }

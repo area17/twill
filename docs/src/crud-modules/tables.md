@@ -4,6 +4,10 @@ pageClass: twill-doc
 
 # Tables
 
+[[toc]]
+
+## Columns
+
 In Twill you can customize the module tables and browser tables to your own need.
 
 To modify the table you start by overwriting the `getIndexTableColumns(): TableColumns` method or
@@ -12,9 +16,7 @@ the `getBrowserTableColumns(): TableColumns` method for browser lists.
 You can manage this in 2 ways, but the easiest is to self define the columns without
 calling `parent::getIndexTableColumns`.
 
-[[toc]]
-
-## Defining columns
+### Defining columns
 
 To define columns start by instantiating a `TableColumns` object:
 
@@ -47,14 +49,14 @@ protected function getIndexTableColumns(): TableColumns
 }
 ```
 
-## Column methods
+### Column methods
 
 There are currently 10 different columns. Most column share a set of setters that you can use. Because these columns
 are regular php objects, you can always use your editor's autocomplete function to discover.
 
 All columns are placed under the `src/Services/Listings/Columns` directory.
 
-#### Frequently used
+##### Frequently used
 
 - `field(string $field)`: Sets the field in the model where the data should be fetched. This is usually mandatory but in
   some special columns it is not.
@@ -63,7 +65,7 @@ All columns are placed under the `src/Services/Listings/Columns` directory.
 - `optional(bool $optional = true)`: Makes a column optional.
 - `hide(bool $hide = true)`: Hide the field by default. Only usable with optional.
 
-#### Other methods
+##### Other methods
 
 - `sortKey(?string $sortkey = null)`: The key to use when sorting.
 - `renderHtml(bool $html = true)`: If the cms should render the contents as html. (Be careful when using this with
@@ -71,7 +73,7 @@ All columns are placed under the `src/Services/Listings/Columns` directory.
 - `customRender(Closure $renderFunction)`: A closure with a custom render function instead of using the raw field value.
 - `linkCell(Closure|string $link)`: A closure or string on where to link the field contents to.
 
-### CustomRender
+#### CustomRender
 
 CustomRender can be useful if you want more control over how you want to render a certain column.
 
@@ -85,23 +87,23 @@ Text::make()
   });
 ```
 
-## Column types
+### Column types
 
 Below is a list of columns and their function:
 
-#### Text
+##### Text
 
 `Text::make()->...`
 
 Renders the (translated)value from the model
 
-#### Boolean
+##### Boolean
 
 `Boolean::make()->...`
 
 Renders a ✅ or ❌ if the `field` is true or false.
 
-#### Image
+##### Image
 
 `Image:::make()->`
 
@@ -112,33 +114,33 @@ If you add `rounded()` the image will be round.
 
 Check the `Image` column class for more options.
 
-#### PublishStatus
+##### PublishStatus
 
 `PublishStatus:::make()->`
 
 This field requires no additional methods, it shows on what dates the content will be published and when it will be
 unpublished.
 
-#### ScheduledStatus
+##### ScheduledStatus
 
 `ScheduledStatus:::make()->`
 
 This field requires no additional methods, it shows on what dates the content will be published and when it will be
 unpublished.
 
-#### NestedData
+##### NestedData
 
 `NestedData::make()`
 
 This field requires no additional methods, it shows information about the nested models.
 
-#### Languages
+##### Languages
 
 `Languages::make()`
 
 This field requires no additional methods, it will render the languages the content is available in.
 
-#### Relation
+##### Relation
 
 `Relation::make()->...`
 
@@ -146,7 +148,7 @@ Renders the `field` of a  `relation` column.
 
 For this column type both the relation and field should be provided. If one is missing an exception will be thrown.
 
-#### Browser
+##### Browser
 
 `Browser::make()->...`
 
@@ -154,7 +156,7 @@ Renders the `field` of a  `browser` column.
 
 For this column type both the browser and field should be provided. If one is missing an exception will be thrown.
 
-#### Presenter
+##### Presenter
 
 `Presenter::make()`
 
@@ -165,6 +167,213 @@ Presenters are currently undocumented and are here for backward compatability. I
 a column you can use the `customRender` method.
 :::
 
-## Custom columns
+### Custom columns
 
 If you need you can easily define custom columns in your project by creating a class extending the `TableColumn`.
+
+## Search
+
+A search field will by default be shown on the top right of the listing. It will by default search the `title` of your
+module, but you can extend or change that.
+
+You can add `setSearchColumns` to your `setUpController` method like this:
+
+```php
+namespace App\Http\Controllers\Twill;
+
+use A17\Twill\Http\Controllers\Admin\ModuleController;
+
+class ProjectController extends BaseModuleController
+{
+    ...
+    
+    public function setUpController(): void
+    {
+        $this->setSearchColumns(['title', 'year']);
+    }
+}
+```
+
+## Filters
+
+There are 2 types of filters that can be applied to a table.
+
+- Quick filters, these provide instant access to a scoped list, such as published, drafts etc.
+- Filters, these can be used for more in depth filtering of the results.
+
+Quick filters and filters work together. They are not "or".
+
+![Filters](./assets/filters.png)
+
+### Quick filters
+
+By default every module comes with the following quick filters:
+
+- All items
+- Mine
+- Published
+- Draft
+- Trash
+
+To extend or modify this list we have to extend or overwrite the `quickFilters` method in the module controller.
+
+```php
+use A17\Twill\Services\Listings\Filters\QuickFilters;
+
+public function quickFilters(): QuickFilters;
+```
+
+#### Adding quick filters
+
+`QuickFilters` is a basic Laravel collection, this means you can do all known manipulations on that list.
+
+You can get the default set of filters by calling:
+
+```php
+public function quickFilters(): QuickFilters
+{
+    return $this->getDefaultQuickFilters(); 
+}
+```
+
+Then to, for example, add a new filter on top of that you can do the following:
+
+```php
+public function quickFilters(): QuickFilters
+{
+    $filters = $this->getDefaultQuickFilters();
+    $filters->add(
+        QuickFilter::make()
+            ->queryString('test')
+            ->label('Test only')
+            ->amount(fn() => $this->repository->whereTranslation('title', 'test')->count())
+            ->apply(fn(Builder $builder) => $builder->whereTranslation('title', 'test'))
+    );
+
+    return $filters;
+}
+```
+
+A quick filter, as shown above has a few methods that can/need to be called:
+
+- `queryString`: The unique query string that will be used in the url.
+- `label`: The label to show in the filter, will be a "titled" version of queryString if not provided.
+- `apply`: A closure with the Builder as parameter, this will by applied to the query of the list when the filter is
+  active.
+- `amount`: A closure that should return the amount of matches. Can be left out to show no number.
+- `onlyEnableWhen`: A boolean indicating when the filter should be shown. By default the filter will always be visible.
+- `disable`: Disables the filter.
+
+#### Overriding quickfilters
+
+If you want to use non of the existing filters but only apply your own you can create a new
+instance `return Quickfilters::make(...);`.
+
+### Filters
+
+To further enhance user experience you can add more filters that can be used to refine the results.
+
+Currently filters are only available as select lists. In the future we might extend on these.
+
+#### Adding filters
+
+By default no filters will be applied to you module listing.
+
+In order to get started you will have to add the `filters` method to your module controller:
+
+```php
+use A17\Twill\Services\Listings\Filters\TableFilters;
+
+public function filters(): TableFilters;
+```
+
+The same as with quick filters, the `TableFilters` object is an extension of a Laravel collection.
+
+Example:
+
+```php
+public function filters(): TableFilters
+{
+    return TableFilters::make([
+        BelongsToFilter::make()->field('partner'),
+        FieldSelectFilter::make()->field('year'),
+        BooleanFilter::make()->field('published')->label('Published'),
+        BasicFilter::make()
+            ->queryString('verified')
+            ->options(collect(['yes' => 'Verified', 'no' => 'Not verified']))
+            ->apply(function (Builder $builder, string $value) {
+                if ($value === 'yes') {
+                    $builder->where('is_verified', true);
+                } elseif ($value === 'no') {
+                    $builder->where('is_verified', false);
+                }
+            }),
+    ]);
+}
+```
+
+Filter methods:
+
+- `label`: The label to show in the filter, will be a "titled" version of queryString if not provided.
+- `queryString`: The unique query string that will be used in the url.
+- `options`: A collection of key/value's that will be shown as selectable options.
+- `apply`: The callback to apply the filter.
+- `default`: Sets the default value of the filter.
+- `withoutIncludeAll`: To remove the `all` option.
+- `onlyEnableWhen`: A boolean indicating when the filter should be shown. By default the filter will always be visible.
+- `disable`: Disables the filter.
+
+#### Available filters
+
+There are a few filters that you can use:
+
+##### BasicFilter
+
+Below is an example of a basic filter, you can use this to have full control over the values and queries.
+
+```php
+BasicFilter::make()
+    ->queryString('verified')
+    ->options(collect(['yes' => 'Verified', 'no' => 'Not verified']))
+    ->apply(function (Builder $builder, string $value) {
+        if ($value === 'yes') {
+            $builder->where('is_verified', true);
+        } elseif ($value === 'no') {
+            $builder->where('is_verified', false);
+        }
+    });
+```
+
+##### BooleanFilter
+
+The `BooleanFilter` can be used for simple true/false filters.
+
+```php
+BooleanFilter::make()->field('published')->label('Published');
+```
+
+##### FieldSelectFilter
+
+This field will collect the available options from the list in the database.
+
+It can be useful for example to make a select of "years" that a model can belong to.
+
+```php
+FieldSelectFilter::make()->field('year');
+```
+
+A fieldSelectFilter can also add a `Without value` option. This is disabled by default but you can enable it by calling
+`->withWithoutValueOption()` on the filter.
+
+##### BelongsToFilter
+
+The `BelongsToFilter` will make a select with all titles of a relation.
+
+```php
+BelongsToFilter::make()->field('partner');
+```
+
+Additional parameters can be added, but Twill will try to figure these out for you if not provided:
+
+- `model`: The model that should be used, for example `Partner::class`.
+- `valueLabelField`: The field name that should be used for displaying the item label. Example: `title`

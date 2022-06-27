@@ -3,8 +3,8 @@
 namespace A17\Twill\Services\Listings;
 
 use A17\Twill\Exceptions\ColumnMissingPropertyException;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use Closure;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 abstract class TableColumn
@@ -165,7 +165,7 @@ abstract class TableColumn
         ];
     }
 
-    public function renderCell(Model $model): string
+    public function renderCell(TwillModelContract $model): string
     {
         if ($link = $this->link) {
             if ($link instanceof Closure) {
@@ -184,7 +184,7 @@ abstract class TableColumn
         return $this->getRenderValue($model);
     }
 
-    protected function getRenderValue(Model $model): string
+    protected function getRenderValue(TwillModelContract $model): int|bool|string
     {
         if (($renderFunction = $this->render) !== null) {
             return $renderFunction($model);

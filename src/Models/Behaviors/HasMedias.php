@@ -102,9 +102,9 @@ trait HasMedias
      * @param Media|null $media Provide a media object if you already retrieved one to prevent more SQL queries.
      * @return string|null
      */
-    public function image($role, $crop = 'default', $params = [], $has_fallback = false, $cms = false, $media = null)
+    public function image($role, $crop = 'default', $params = [], $has_fallback = false, $cms = false, Media|null|bool $media = null)
     {
-        if ($media === null) {
+        if (!$media) {
             $media = $this->findMedia($role, $crop);
         }
 

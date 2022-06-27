@@ -2,13 +2,13 @@
 
 namespace A17\Twill\Services\Listings;
 
-use Illuminate\Database\Eloquent\Model as BaseModel;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 class TableColumns extends Collection
 {
-    public function getArrayForModelBrowser(BaseModel $model, TableDataContext $tableDataContext): array
+    public function getArrayForModelBrowser(TwillModelContract $model, TableDataContext $tableDataContext): array
     {
         $data = $this->getArrayForModel($model);
 
@@ -32,7 +32,7 @@ class TableColumns extends Collection
         return $data;
     }
 
-    public function getArrayForModel(BaseModel $model): array
+    public function getArrayForModel(TwillModelContract $model): array
     {
         $data = [];
 

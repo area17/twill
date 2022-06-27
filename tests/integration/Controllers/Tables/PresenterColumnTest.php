@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Tests\Integration\Tables;
+namespace A17\Twill\Tests\Integration\Controllers\Tables;
 
 use A17\Twill\Services\Listings\Columns\Presenter;
 use A17\Twill\Tests\Integration\ModulesTestBase;

@@ -442,6 +442,7 @@ class DashboardController extends Controller
                 $drafts = $query->mine();
             }
 
+            // @todo: ????
             $drafts = $query->get();
 
             return $drafts->map(function ($draft) use ($module) {

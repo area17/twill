@@ -128,11 +128,11 @@ class ModulesAuthorsTest extends ModulesTestBase
         $this->assertEquals('1', $this->author->published);
     }
 
-    public function testCanDisplayErrorWhenPublishHasWrongData()
+    public function testCanDisplayErrorWhenPublishHasWrongData(): void
     {
-        $this->httpRequestAssert('/twill/personnel/authors/publish', 'PUT');
-
-        $this->assertSomethingWrongHappened();
+        $this->putJson('/twill/personnel/authors/publish')->assertJson(
+            ['message' => 'Author was not published. Something wrong happened!']
+        );
     }
 
     public function testCanRaiseHttpNotFoundOnAnEmptyRestoreRevision()

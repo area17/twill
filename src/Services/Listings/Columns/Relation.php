@@ -3,8 +3,8 @@
 namespace A17\Twill\Services\Listings\Columns;
 
 use A17\Twill\Exceptions\ColumnMissingPropertyException;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Services\Listings\TableColumn;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class Relation extends TableColumn
@@ -29,7 +29,7 @@ class Relation extends TableColumn
         return $this;
     }
 
-    protected function getRenderValue(Model $model): string
+    protected function getRenderValue(TwillModelContract $model): string
     {
         if (null === $this->relation) {
             throw new ColumnMissingPropertyException('Relation column missing relation value: ' . $this->field);

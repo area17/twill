@@ -10,7 +10,7 @@ class MakeModuleTest extends TestCase
     {
         $this->assertExitCodeIsGood(
             $this->artisan('twill:make:module', [
-                'moduleName' => 'Posts',
+                'moduleName' => 'Example',
                 '--hasBlocks' => true,
                 '--hasTranslation' => true,
                 '--hasSlug' => true,
@@ -25,11 +25,11 @@ class MakeModuleTest extends TestCase
         );
 
         $this->assertFileExists(
-            twill_path('Http/Controllers/Twill/PostController.php')
+            twill_path('Http/Controllers/Twill/ExampleController.php')
         );
 
         $this->assertIsObject(
-            $this->app->make(\App\Http\Controllers\Twill\PostController::class)
+            $this->app->make(\App\Http\Controllers\Twill\ExampleController::class)
         );
     }
 }
