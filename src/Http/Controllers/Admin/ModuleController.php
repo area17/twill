@@ -383,8 +383,184 @@ abstract class ModuleController extends Controller
      * You can use setters in here like:
      * - setSearchColumns([..])
      */
-    public function setUpController(): void
+    protected function setUpController(): void
     {
+    }
+
+    /**
+     * Removes the "Create" button on the listing page.
+     */
+    protected function disableCreate(): void
+    {
+        $this->indexOptions['create'] = false;
+    }
+
+    /**
+     * Disables table interaction and removes edit links.
+     */
+    protected function disableEdit(): void
+    {
+        $this->indexOptions['edit'] = false;
+    }
+
+    /**
+     * Removes the publish/un-publish icon on the content listing.
+     */
+    protected function disablePublish(): void
+    {
+        $this->indexOptions['publish'] = false;
+    }
+
+    /**
+     * Removes the "publish" option from the bulk operations.
+     */
+    protected function disableBulkPublish(): void
+    {
+        $this->indexOptions['bulkPublish'] = false;
+    }
+
+    /**
+     * Removes "restore" from the list item dropdown on the "Trash" content list.
+     */
+    protected function disableRestore(): void
+    {
+        $this->indexOptions['restore'] = false;
+    }
+
+    /**
+     * Removes the "Trash" quick filter.
+     */
+    protected function disableBulkRestore(): void
+    {
+        $this->indexOptions['bulkRestore'] = false;
+    }
+
+    /**
+     * Removes the "delete" option from the "Trash" content list.
+     */
+    protected function disableForceDelete(): void
+    {
+        $this->indexOptions['forceDelete'] = false;
+    }
+
+    /**
+     * Removes "restore" from the bulk operations on the "Trash" content list.
+     */
+    protected function disableBulkForceDelete(): void
+    {
+        $this->indexOptions['bulkForceDelete'] = false;
+    }
+
+    /**
+     * Removes the "delete" option from the content lists.
+     */
+    protected function disableDelete(): void
+    {
+        $this->indexOptions['delete'] = false;
+    }
+
+    /**
+     * Removes the "delete" option from the bulk operations.
+     */
+    protected function disableBulkDelete(): void
+    {
+        $this->indexOptions['bulkDelete'] = false;
+    }
+
+    /**
+     * Removes the permalink from the create/edit screens.
+     */
+    protected function disablePermalink(): void
+    {
+        $this->indexOptions['permalink'] = false;
+    }
+
+    /**
+     * @PRtodo: To check what this does.
+     */
+    protected function disableBulkEdit(): void
+    {
+        $this->indexOptions['bulkEdit'] = false;
+    }
+
+    /**
+     * Hides publish scheduling information from the content list.
+     *
+     * This does not affect custom table builders. Unless implemented.
+     */
+    protected function disableIncludeScheduledInList(): void
+    {
+        $this->indexOptions['includeScheduledInList'] = false;
+    }
+
+    /**
+     * Disables the create modal and directly forwards you to the full edit page.
+     */
+    protected function enableSkipCreateModal(): void
+    {
+        $this->indexOptions['skipCreateModal'] = true;
+    }
+
+    /**
+     * Allow to feature the content. This requires a 'featured' fillable boolean on the model.
+     *
+     * If you want to use a different column you can use the `setFeaturedField` method.
+     */
+    protected function enableFeature(): void
+    {
+        // @PRtodo: Add featured table column.
+        // @PRtodo: Featuring and unfeaturing does not seem to properly reflect on the state.
+        // @PRtodo: Also expand on the documentation about this. Also mention isUniqueFeature that only one can be featured + test this.
+        $this->indexOptions['feature'] = true;
+    }
+
+    /**
+     * Set the field to use for featuring content.
+     */
+    protected function setFeatureField(string $field): void
+    {
+        $this->featureField = $field;
+    }
+
+    /**
+     * Enables the "Feature" bulk operation.
+     */
+    protected function enableBulkFeature(): void
+    {
+        $this->indexOptions['bulkFeature'] = true;
+    }
+
+    /**
+     * Enables the "Duplicate" option from the content lists.
+     */
+    protected function enableDuplicate(): void
+    {
+        $this->indexOptions['duplicate'] = true;
+    }
+
+    /**
+     * Allows to reorder the items, if this was setup on the model.
+     */
+    protected function enableReorder(): void
+    {
+        $this->indexOptions['reorder'] = true;
+    }
+
+    /**
+     * Enables the function that content is edited in the create modal.
+     */
+    protected function enableEditInModal(): void
+    {
+        // @PRtodo: When this is enabled, the "link" to the model in the listing does not work (Redirects back).
+        $this->indexOptions['editInModal'] = true;
+    }
+
+    /**
+     * Shows the thumbnail of the content in the list.
+     */
+    protected function enableShowImage(): void
+    {
+        $this->indexOptions['showImage'] = true;
     }
 
     /**
@@ -392,7 +568,7 @@ abstract class ModuleController extends Controller
      *
      * SearchColumns are automatically prefixes/suffixed with %.
      */
-    public function setSearchColumns(array $searchColumns): void
+    protected function setSearchColumns(array $searchColumns): void
     {
         $this->searchColumns = $searchColumns;
     }
@@ -451,6 +627,17 @@ abstract class ModuleController extends Controller
             );
         }
 
+        if ($this->indexColumns === []) {
+            // Add default columns.
+            if ($this->getIndexOption('showImage')) {
+                $columns->add(
+                    Image::make()
+                        ->field('thumbnail')
+                        ->title(twillTrans('Image'))
+                );
+            }
+        }
+
         // Consume Deprecated data.
         if ($this->indexColumns !== []) {
             $this->handleLegacyColumns($columns, $this->indexColumns);
@@ -466,18 +653,9 @@ abstract class ModuleController extends Controller
             );
         }
 
-        // Add default columns.
-        if ($this->getIndexOption('showImage')) {
-            $columns->add(
-                Image::make()
-                    ->field('thumbnail')
-                    ->rounded()
-                    ->title(twillTrans('Image'))
-            );
-        }
-
         if ($this->getIndexOption('feature')) {
             $columns->add(
+            // @PRtodo: This should become that "star"
                 Boolean::make()
                     ->field('featured')
                     ->title(twillTrans('twill::lang.listing.columns.featured'))
@@ -1477,7 +1655,7 @@ abstract class ModuleController extends Controller
         return [];
     }
 
-    protected function getItemIdentifier(TwillModelContract $item): int|string
+    protected function getItemIdentifier(TwillModelContract $item): null|int|string
     {
         return $item->{$this->identifierColumnKey};
     }
@@ -1759,7 +1937,7 @@ abstract class ModuleController extends Controller
         return $orders + $defaultOrders;
     }
 
-    protected function form(int $id, ?TwillModelContract $item = null): array
+    protected function form(?int $id, ?TwillModelContract $item = null): array
     {
         if (!$item && $id) {
             $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);

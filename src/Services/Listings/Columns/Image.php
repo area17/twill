@@ -4,7 +4,6 @@ namespace A17\Twill\Services\Listings\Columns;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Contracts\TwillModelContract;
-use A17\Twill\Models\Model as TwillModel;
 use A17\Twill\Services\Listings\TableColumn;
 use InvalidArgumentException;
 
@@ -50,6 +49,7 @@ class Image extends TableColumn
      */
     public function rounded(bool $rounded = true): self
     {
+        // @PRtodo: When this is true, the image does not show.
         $this->rounded = $rounded;
         return $this;
     }
