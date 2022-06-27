@@ -51,12 +51,16 @@ trait HasRelated
         return $this->relatedCache[$browser_name] = $this->relatedItems
             ->where('browser_name', $browser_name)
             ->map(function ($item) {
-                if (filled($item->related) && !isset($item->related->position))
-                {
-                    $item->related->position = $item->position ?? null;
+                if (filled($item->related)) {
+                    /** @var \A17\Twill\Models\Model $model */
+                    $model = $item->related;
+
+                    $model->setRelation('pivot', $item);
+
+                    return $model;
                 }
 
-                return $item->related;
+                return null;
             });
     }
 
