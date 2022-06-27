@@ -261,7 +261,7 @@ abstract class ModuleRepository
     /**
      * @param array $attributes
      * @param array $fields
-     * @return \A17\Twill\Models\Model|void
+     * @return \A17\Twill\Models\Model
      */
     public function updateOrCreate($attributes, $fields)
     {
@@ -271,17 +271,17 @@ abstract class ModuleRepository
             return $this->create($fields);
         }
 
-        $this->update($object->id, $fields);
+        return $this->update($object->id, $fields);
     }
 
     /**
      * @param mixed $id
      * @param array $fields
-     * @return void
+     * @return \A17\Twill\Models\Model
      */
     public function update($id, $fields)
     {
-        DB::transaction(function () use ($id, $fields) {
+        return DB::transaction(function () use ($id, $fields) {
             $object = $this->model->findOrFail($id);
 
             $this->beforeSave($object, $fields);
@@ -293,6 +293,8 @@ abstract class ModuleRepository
             $object->save();
 
             $this->afterSave($object, $fields);
+
+            return $object->fresh();
         }, 3);
     }
 
