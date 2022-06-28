@@ -27,6 +27,7 @@ const state = {
     }
   ],
   submitDisableMessage: window[process.env.VUE_APP_NAME].STORE.publication.submitDisableMessage || '',
+  // @todo(3.x): Remove 'submitOptions' default values as they are now defined in ModuleController.php
   submitOptions: window[process.env.VUE_APP_NAME].STORE.publication.submitOptions || {
     draft: [
       {
