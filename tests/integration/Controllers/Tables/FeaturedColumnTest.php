@@ -39,6 +39,7 @@ class FeaturedColumnTest extends TestCase
             ->assertStatus(200);
 
         $this->getJson(route('twill.servers.index'))
+            ->dump()
             ->assertJsonPath('tableData.0.featured', 0);
 
         // Feature the content

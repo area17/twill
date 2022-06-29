@@ -73,7 +73,7 @@ class AnonymousModule
                 array $fields = [],
                 string $namePlural = '',
             ) {
-                if (empty(self::$setProps)) {
+                if ($namePlural !== '') {
                     self::$setProps['fillable'] = array_keys($fields);
                     self::$setProps['table'] = $namePlural;
                     self::$setProps['translatedAttributes'] = collect($fields)
@@ -162,11 +162,11 @@ class AnonymousModule
                 Application $app,
                 Request $request,
                 public $moduleName = null,
-                $modelClass = null,
+                ?string $modelClass = null,
                 ?TableColumns $tableColumns = null,
                 ?array $setupMethods = null
             ) {
-                if (empty(self::$setProps)) {
+                if ($modelClass) {
                     self::$setProps['setTableColumns'] = $tableColumns;
                     self::$setProps['setSetupMethods'] = $setupMethods ?? [];
                     self::$setProps['moduleName'] = $this->moduleName;
@@ -217,7 +217,7 @@ class AnonymousModule
 
                     public function __construct($model = null, $modelType = null)
                     {
-                        if (empty(self::$setProps)) {
+                        if ($modelType) {
                             self::$setProps['modelType'] = $modelType;
                         }
 
