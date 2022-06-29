@@ -885,7 +885,7 @@ abstract class ModuleController extends Controller
 
     /**
      * @param int|null $parentModuleId
-     * @return array|\Illuminate\View\View
+     * @return \Illuminate\View\View|JsonResponse
      */
     public function index($parentModuleId = null)
     {
@@ -903,7 +903,7 @@ abstract class ModuleController extends Controller
         );
 
         if ($this->request->ajax() || $this->request->expectsJson()) {
-            return $indexData + ['replaceUrl' => true];
+            return new JsonResponse($indexData + ['replaceUrl' => true]);
         }
 
         if ($this->request->has('openCreate') && $this->request->get('openCreate')) {
