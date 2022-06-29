@@ -30,7 +30,7 @@ class TextAndColumnBaseTest extends ModulesTestBase
         $column = Text::make()->field('name');
 
         $this->assertEquals('name', $column->getKey());
-        $this->assertNull($column->getSortKey());
+        $this->assertEquals('name', $column->getSortKey());
         $this->assertEquals('Name', $column->toColumnArray()['label']);
         $this->assertTrue(true, $column->toColumnArray()['visible']);
         $this->assertFalse($column->toColumnArray()['optional']);
@@ -80,7 +80,7 @@ class TextAndColumnBaseTest extends ModulesTestBase
 
         $this->assertEquals('name', $column->getKey());
         $this->assertEquals('Name', $column->toColumnArray()['label']);
-        $this->assertNull($column->getSortKey());
+        $this->assertEquals('name', $column->getSortKey());
         $this->assertTrue($column->toColumnArray()['visible']);
         $this->assertFalse($column->toColumnArray()['sortable']);
         $this->assertFalse($column->toColumnArray()['html']);

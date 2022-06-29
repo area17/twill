@@ -17,6 +17,14 @@ class Image extends TableColumn
 
     protected bool $rounded = false;
 
+    public static function make(): static
+    {
+        $column = parent::make();
+        $column->specificType = 'thumbnail';
+
+        return $column;
+    }
+
     /**
      * The image role that is defined in your model. Can be left out as it will take the first one available.
      */
@@ -49,7 +57,6 @@ class Image extends TableColumn
      */
     public function rounded(bool $rounded = true): self
     {
-        // @PRtodo: When this is true, the image does not show.
         $this->rounded = $rounded;
         return $this;
     }

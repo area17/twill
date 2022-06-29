@@ -16,11 +16,14 @@ abstract class TableColumn
         protected ?string $sortKey = null,
         protected bool $sortable = false,
         protected bool $defaultSort = false,
+        protected string $defaultSortDirection = 'ASC',
         protected bool $optional = false,
         protected bool $visible = true,
         protected bool $html = false,
         protected Closure|string|null $link = null,
-        protected ?Closure $render = null
+        protected ?Closure $render = null,
+        protected ?Closure $sortFunction = null,
+        protected ?string $specificType = null,
     ) {
     }
 
@@ -78,14 +81,25 @@ abstract class TableColumn
     /**
      * When enabled this will be the default column the list is sorted by.
      */
-    public function sortByDefault(bool $defaultSort = true): self
+    public function sortByDefault(bool $defaultSort = true, string $direction = 'ASC'): self
     {
         $this->defaultSort = $defaultSort;
+        $this->defaultSortDirection = $direction;
         return $this;
     }
 
-    public function isDefaultSort(): bool {
+    public function isDefaultSort(): bool
+    {
         return $this->defaultSort;
+    }
+
+    // @PRtodo: Test
+    public function getDefaultSortDirection(): string
+    {
+        if (!in_array($this->defaultSortDirection, ['ASC', 'DESC', 'asc', 'desc'], true)) {
+            throw new \Exception('Sort can only be ASC or DESC');
+        }
+        return $this->defaultSortDirection;
     }
 
     /**
@@ -127,13 +141,36 @@ abstract class TableColumn
     /**
      * A separate sortKey if different from the field name.
      */
-    public function sortKey(?string $sortKey): self {
+    public function sortKey(?string $sortKey): self
+    {
         $this->sortKey = $sortKey;
         return $this;
     }
 
-    public function getSortKey(): ?string {
-        return  $this->sortKey;
+    public function getSortKey(): string
+    {
+        return $this->sortKey ?? $this->field;
+    }
+
+    /**
+     * An optional closure accepting the QueryBuilder and sort direction to apply
+     * when this field is being sorted.
+     *
+     * If you are using the Relation field, this sort is required to make it work.
+     * Please note that when you are having a belongsToMany you have to carefully write your
+     * join because otherwise you may end up with duplicate rows.
+     *
+     * @PRtodo: write tests for this sorting (especially on relation fields.) + document
+     */
+    public function order(\Closure $sortFunction): self
+    {
+        $this->sortFunction = $sortFunction;
+        return $this;
+    }
+
+    public function getOrderFunction(): ?\Closure
+    {
+        return $this->sortFunction;
     }
 
     /**
@@ -162,6 +199,9 @@ abstract class TableColumn
             'optional' => $this->optional,
             'sortable' => $sortable && $this->sortable,
             'html' => $this->html,
+            // SpecificType corresponds to datatableRow isSpecificColumn to make sure we render the correct type.
+            // For example, for images this should be 'thumbnail'
+            'specificType' => $this->specificType ?? null,
         ];
     }
 

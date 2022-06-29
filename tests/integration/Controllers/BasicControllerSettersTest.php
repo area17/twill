@@ -34,6 +34,11 @@ class BasicControllerSettersTest extends ModulesTestBase
                 'method' => 'disableCreate',
                 'default' => true,
             ],
+            'sortable' => [
+                'indexOption' => 'sortable',
+                'method' => 'disableSortable',
+                'default' => true,
+            ],
             'edit' => [
                 'indexOption' => 'edit',
                 'method' => 'disableEdit',
