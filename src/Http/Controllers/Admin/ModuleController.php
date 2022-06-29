@@ -14,6 +14,7 @@ use A17\Twill\Models\Group;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Listings\Columns\Boolean;
 use A17\Twill\Services\Listings\Columns\Browser;
+use A17\Twill\Services\Listings\Columns\FeaturedStatus;
 use A17\Twill\Services\Listings\Columns\Image;
 use A17\Twill\Services\Listings\Columns\Languages;
 use A17\Twill\Services\Listings\Columns\NestedData;
@@ -517,9 +518,8 @@ abstract class ModuleController extends Controller
      */
     protected function enableFeature(): void
     {
-        // @PRtodo: Add featured table column.
-        // @PRtodo: Featuring and unfeaturing does not seem to properly reflect on the state.
-        // @PRtodo: Also expand on the documentation about this. Also mention isUniqueFeature that only one can be featured + test this.
+        // @todo: Also expand on the documentation about this.
+        // Also mention isUniqueFeature that only one can be featured + test this.
         $this->indexOptions['feature'] = true;
     }
 
@@ -712,6 +712,13 @@ abstract class ModuleController extends Controller
                         ->title(twillTrans('Image'))
                 );
             }
+
+            if ($this->getIndexOption('feature')) {
+                $columns->add(
+                    FeaturedStatus::make()
+                        ->title(twillTrans('twill::lang.listing.columns.featured'))
+                );
+            }
         }
 
         // Consume Deprecated data.
@@ -727,15 +734,6 @@ abstract class ModuleController extends Controller
                             return $this->getModuleRoute($model->id, 'edit');
                         }
                     })
-            );
-        }
-
-        if ($this->getIndexOption('feature')) {
-            $columns->add(
-            // @PRtodo: This should become that "star"
-                Boolean::make()
-                    ->field('featured')
-                    ->title(twillTrans('twill::lang.listing.columns.featured'))
             );
         }
 
@@ -817,7 +815,7 @@ abstract class ModuleController extends Controller
 
                 // If it is a the title, we always want to link it.
                 if ($this->titleColumnKey === ($indexColumn['field'] ?? $key)) {
-                    $textColumn->linkCell(function(TwillModelContract $model) {
+                    $textColumn->linkCell(function (TwillModelContract $model) {
                         if ($this->getIndexOption('edit', $model)) {
                             return $this->getModuleRoute($model->id, 'edit');
                         }

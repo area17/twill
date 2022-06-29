@@ -56,6 +56,7 @@ export default {
   },
 
   toggleFeatured (row, callback) {
+    console.log(window[process.env.VUE_APP_NAME].CMS_URLS.feature)
     axios.put(window[process.env.VUE_APP_NAME].CMS_URLS.feature, { id: row.id, active: row.featured }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
