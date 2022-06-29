@@ -43,6 +43,12 @@ class AuthorController extends ModuleController
             'visible' => true,
         ],
 
+        'year' => [
+            'field' => 'year',
+            'title' => 'Year',
+            'sort' => true,
+        ],
+
         'birthday' => [
             'field' => 'birthday',
             'title' => 'Birth day',

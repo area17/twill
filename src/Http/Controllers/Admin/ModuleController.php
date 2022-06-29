@@ -904,7 +904,7 @@ abstract class ModuleController extends Controller
             ] : []
         );
 
-        if ($this->request->ajax()) {
+        if ($this->request->ajax() || $this->request->expectsJson()) {
             return $indexData + ['replaceUrl' => true];
         }
 
