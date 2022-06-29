@@ -114,7 +114,7 @@ class BelongsToFilterTest extends FilterTestBase
 
         $this->assertCount(1, $data['tableData']);
 
-        $this->assertEquals($this->author->name, $data['tableData'][0]['name']);
+        $this->assertStringContainsString($this->author->name, $data['tableData'][0]['name']);
     }
 
     public function testFilterWithRequestData(): void
@@ -127,7 +127,7 @@ class BelongsToFilterTest extends FilterTestBase
 
         $this->assertCount(1, $data['tableData']);
 
-        $this->assertEquals($this->author->name, $data['tableData'][0]['name']);
+        $this->assertStringContainsString($this->author->name, $data['tableData'][0]['name']);
 
         // Category 2 is not attached to anything so we should have no results
         $data = $this->controllerWithFiltersAndQuickFilters($filters, active: ['category' => $this->category2->id])

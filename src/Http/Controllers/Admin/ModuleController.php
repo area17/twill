@@ -816,7 +816,7 @@ abstract class ModuleController extends Controller
                     ->sortable($indexColumn['sort'] ?? false);
 
                 // If it is a the title, we always want to link it.
-                if ($this->titleColumnKey === $indexColumn['field']) {
+                if ($this->titleColumnKey === ($indexColumn['field'] ?? $key)) {
                     $textColumn->linkCell(function(TwillModelContract $model) {
                         if ($this->getIndexOption('edit', $model)) {
                             return $this->getModuleRoute($model->id, 'edit');

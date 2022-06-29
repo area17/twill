@@ -28,6 +28,7 @@ class TableBuilderTest extends ModulesTestBase
                 'optional' => false,
                 'sortable' => false,
                 'html' => false,
+                'specificType' => null,
             ],
         ], $builder->toCmsArray(request()));
     }

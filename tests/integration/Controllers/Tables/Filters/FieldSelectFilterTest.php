@@ -97,7 +97,7 @@ class FieldSelectFilterTest extends FilterTestBase
 
         $this->assertCount(1, $data['tableData']);
 
-        $this->assertEquals($this->author->name, $data['tableData'][0]['name']);
+        $this->assertStringContainsString($this->author->name, $data['tableData'][0]['name']);
     }
 
     public function testFilterWithRequestData(): void
@@ -110,7 +110,7 @@ class FieldSelectFilterTest extends FilterTestBase
 
         $this->assertCount(1, $data['tableData']);
 
-        $this->assertEquals($this->author->name, $data['tableData'][0]['name']);
+        $this->assertStringContainsString($this->author->name, $data['tableData'][0]['name']);
 
         $data = $this->controllerWithFiltersAndQuickFilters($filters, active: ['year' => '2000'])
             ->index()
@@ -118,7 +118,7 @@ class FieldSelectFilterTest extends FilterTestBase
 
         $this->assertCount(1, $data['tableData']);
 
-        $this->assertEquals($this->author2->name, $data['tableData'][0]['name']);
+        $this->assertStringContainsString($this->author2->name, $data['tableData'][0]['name']);
     }
 
     public function testWithInvalidData(): void
