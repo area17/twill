@@ -93,7 +93,6 @@ abstract class TableColumn
         return $this->defaultSort;
     }
 
-    // @PRtodo: Test
     public function getDefaultSortDirection(): string
     {
         if (!in_array($this->defaultSortDirection, ['ASC', 'DESC', 'asc', 'desc'], true)) {
@@ -159,8 +158,6 @@ abstract class TableColumn
      * If you are using the Relation field, this sort is required to make it work.
      * Please note that when you are having a belongsToMany you have to carefully write your
      * join because otherwise you may end up with duplicate rows.
-     *
-     * @PRtodo: write tests for this sorting (especially on relation fields.) + document
      */
     public function order(\Closure $sortFunction): self
     {
@@ -214,10 +211,10 @@ abstract class TableColumn
 
             // Link via the closure can be null so we recheck it and only then use it.
             if ($link) {
-                return view('twill::listings.columns.linked-cell', [
+                return trim(view('twill::listings.columns.linked-cell', [
                     'slot' => $this->getRenderValue($model),
                     'link' => $link,
-                ]);
+                ]));
             }
         }
 
