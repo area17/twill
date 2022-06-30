@@ -1,5 +1,6 @@
 // import global style
-import 'styles/app.scss'
+// import 'styles/app.scss'
+import "../scss/app.scss";
 // General behaviors
 import Vue from 'vue'
 import navToggle from '@/behaviors/navToggle'

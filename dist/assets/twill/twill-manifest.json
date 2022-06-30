@@ -1,30 +1,153 @@
 {
-  "Inter-Bold.woff": "/assets/twill/fonts/Inter-Bold.61c493e3.woff",
-  "Inter-Bold.woff2": "/assets/twill/fonts/Inter-Bold.34356f6b.woff2",
-  "Inter-BoldItalic.woff": "/assets/twill/fonts/Inter-BoldItalic.6fbcf86a.woff",
-  "Inter-BoldItalic.woff2": "/assets/twill/fonts/Inter-BoldItalic.57acb479.woff2",
-  "Inter-Italic.woff": "/assets/twill/fonts/Inter-Italic.35cf8109.woff",
-  "Inter-Italic.woff2": "/assets/twill/fonts/Inter-Italic.381444ec.woff2",
-  "Inter-Medium.woff": "/assets/twill/fonts/Inter-Medium.c09fb389.woff",
-  "Inter-Medium.woff2": "/assets/twill/fonts/Inter-Medium.2e5e0884.woff2",
-  "Inter-MediumItalic.woff": "/assets/twill/fonts/Inter-MediumItalic.ad6e093c.woff",
-  "Inter-MediumItalic.woff2": "/assets/twill/fonts/Inter-MediumItalic.7a7fd735.woff2",
-  "Inter-Regular.woff": "/assets/twill/fonts/Inter-Regular.aebfbb3c.woff",
-  "Inter-Regular.woff2": "/assets/twill/fonts/Inter-Regular.bffaed79.woff2",
-  "chunk-common.css": "/assets/twill/css/chunk-common.2269e7a5.css",
-  "chunk-common.js": "/assets/twill/js/chunk-common.540dab81.js",
-  "chunk-vendors.css": "/assets/twill/css/chunk-vendors.e0f3ef32.css",
-  "chunk-vendors.js": "/assets/twill/js/chunk-vendors.103afada.js",
-  "icons-files.php": "/views/partials/icons/icons-files-svg.blade.php",
-  "icons-wysiwyg.php": "/views/partials/icons/icons-wysiwyg-svg.blade.php",
-  "icons.php": "/views/partials/icons/icons-svg.blade.php",
-  "main-buckets.css": "/assets/twill/css/main-buckets.11521a66.css",
-  "main-buckets.js": "/assets/twill/js/main-buckets.ab0f7789.js",
-  "main-dashboard.css": "/assets/twill/css/main-dashboard.de4cecb9.css",
-  "main-dashboard.js": "/assets/twill/js/main-dashboard.c1a45d15.js",
-  "main-form.css": "/assets/twill/css/main-form.0faaf401.css",
-  "main-form.js": "/assets/twill/js/main-form.74a3ebcc.js",
-  "main-free.js": "/assets/twill/js/main-free.75070804.js",
-  "main-listing.css": "/assets/twill/css/main-listing.f459aaa2.css",
-  "main-listing.js": "/assets/twill/js/main-listing.9dccd3ee.js"
+  "frontend/js/main-buckets.js": {
+    "file": "assets/main-buckets.cfdc24fc.js",
+    "src": "frontend/js/main-buckets.js",
+    "isEntry": true,
+    "imports": [
+      "_form.3ed58db1.js",
+      "_index.a3183894.js",
+      "_Paginate.a60b2bf7.js",
+      "_Fieldset.e2160e02.js",
+      "_pushState.5b409387.js",
+      "_language.2baf5859.js",
+      "_toggleVisibility.ff8a4ceb.js"
+    ],
+    "css": [
+      "assets/main-buckets.4677ee58.css"
+    ]
+  },
+  "frontend/js/main-dashboard.js": {
+    "file": "assets/main-dashboard.f4cd5185.js",
+    "src": "frontend/js/main-dashboard.js",
+    "isEntry": true,
+    "imports": [
+      "_form.3ed58db1.js",
+      "_language.2baf5859.js",
+      "_datatable.06f2efa1.js",
+      "_pushState.5b409387.js"
+    ],
+    "css": [
+      "assets/main-dashboard.358fa12d.css"
+    ]
+  },
+  "frontend/js/main-form.js": {
+    "file": "assets/main-form.95365706.js",
+    "src": "frontend/js/main-form.js",
+    "isEntry": true,
+    "imports": [
+      "_form.3ed58db1.js",
+      "_attributes.e78ecf2e.js",
+      "_Fieldset.e2160e02.js",
+      "_toggleVisibility.ff8a4ceb.js",
+      "_index.a3183894.js",
+      "_browser.ee6ca469.js",
+      "_language.2baf5859.js"
+    ],
+    "css": [
+      "assets/main-form.eba9d3f4.css"
+    ]
+  },
+  "frontend/js/main-listing.js": {
+    "file": "assets/main-listing.9868071f.js",
+    "src": "frontend/js/main-listing.js",
+    "isEntry": true,
+    "imports": [
+      "_form.3ed58db1.js",
+      "_index.a3183894.js",
+      "_language.2baf5859.js",
+      "_Paginate.a60b2bf7.js",
+      "_attributes.e78ecf2e.js",
+      "_datatable.06f2efa1.js",
+      "_toggleVisibility.ff8a4ceb.js",
+      "_pushState.5b409387.js"
+    ],
+    "css": [
+      "assets/main-listing.824b5478.css"
+    ]
+  },
+  "frontend/js/main-free.js": {
+    "file": "assets/main-free.79494e63.js",
+    "src": "frontend/js/main-free.js",
+    "isEntry": true,
+    "imports": [
+      "_form.3ed58db1.js",
+      "_browser.ee6ca469.js",
+      "_Fieldset.e2160e02.js",
+      "_toggleVisibility.ff8a4ceb.js"
+    ]
+  },
+  "_form.3ed58db1.js": {
+    "file": "assets/form.3ed58db1.js",
+    "css": [
+      "assets/form.d918b6d5.css"
+    ]
+  },
+  "_language.2baf5859.js": {
+    "file": "assets/language.2baf5859.js",
+    "imports": [
+      "_form.3ed58db1.js"
+    ]
+  },
+  "_Paginate.a60b2bf7.js": {
+    "file": "assets/Paginate.a60b2bf7.js",
+    "imports": [
+      "_form.3ed58db1.js"
+    ],
+    "css": [
+      "assets/Paginate.9ebfc1d4.css"
+    ]
+  },
+  "_Fieldset.e2160e02.js": {
+    "file": "assets/Fieldset.e2160e02.js",
+    "imports": [
+      "_toggleVisibility.ff8a4ceb.js",
+      "_form.3ed58db1.js"
+    ],
+    "css": [
+      "assets/Fieldset.751c234e.css"
+    ]
+  },
+  "_index.a3183894.js": {
+    "file": "assets/index.a3183894.js",
+    "imports": [
+      "_form.3ed58db1.js",
+      "_language.2baf5859.js"
+    ],
+    "css": [
+      "assets/index.14715fca.css"
+    ]
+  },
+  "_toggleVisibility.ff8a4ceb.js": {
+    "file": "assets/toggleVisibility.ff8a4ceb.js"
+  },
+  "_pushState.5b409387.js": {
+    "file": "assets/pushState.5b409387.js"
+  },
+  "_datatable.06f2efa1.js": {
+    "file": "assets/datatable.06f2efa1.js",
+    "imports": [
+      "_form.3ed58db1.js",
+      "_pushState.5b409387.js",
+      "_language.2baf5859.js"
+    ]
+  },
+  "_browser.ee6ca469.js": {
+    "file": "assets/browser.ee6ca469.js",
+    "imports": [
+      "_form.3ed58db1.js"
+    ],
+    "css": [
+      "assets/browser.87baa1fe.css"
+    ]
+  },
+  "_attributes.e78ecf2e.js": {
+    "file": "assets/attributes.e78ecf2e.js",
+    "imports": [
+      "_form.3ed58db1.js",
+      "_toggleVisibility.ff8a4ceb.js"
+    ],
+    "css": [
+      "assets/attributes.fa7822fa.css"
+    ]
+  }
 }

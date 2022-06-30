@@ -136,8 +136,8 @@
   import isEqual from 'lodash/isEqual'
   import FormDataAsObj from '@/utils/formDataAsObj.js'
   import a17VueFilters from '@/utils/filters.js'
-  import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
-  import a17Langswitcher from '@/components/LangSwitcher'
+  import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload.vue'
+  import a17Langswitcher from '@/components/LangSwitcher.vue'
 
   export default {
     name: 'A17MediaSidebar',

@@ -158,7 +158,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
+  @import 'styles/setup/_mixins-colors-vars.scss';
 
   .multiselectorPermissions__items {
     border: 1px solid $color__border;

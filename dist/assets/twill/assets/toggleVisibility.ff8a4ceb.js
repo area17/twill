@@ -1,0 +1,1 @@
+var i={props:{open:{type:Boolean,default:!1}},data:function(){return{visible:this.open}},computed:{visibilityClasses:function(){return{"s--open":this.visible}}},methods:{onClickVisibility:function(){this.visible=!this.visible,this.$emit("toggleVisibility",this.visible)}}};export{i as V};

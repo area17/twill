@@ -13,13 +13,13 @@
 
 <!-- CSS -->
 @if(app()->isProduction())
-    <link href="{{ twillAsset('chunk-common.css') }}" rel="preload" as="style" crossorigin/>
-    <link href="{{ twillAsset('chunk-vendors.css') }}" rel="preload" as="style" crossorigin/>
+{{--    <link href="{{ twillAsset('chunk-common.css') }}" rel="preload" as="style" crossorigin/>--}}
+{{--    <link href="{{ twillAsset('chunk-vendors.css') }}" rel="preload" as="style" crossorigin/>--}}
 @endif
 
 @unless(config('twill.dev_mode', false))
-    <link href="{{ twillAsset('chunk-common.css') }}" rel="stylesheet" crossorigin/>
-    <link href="{{ twillAsset('chunk-vendors.css' )}}" rel="stylesheet" crossorigin/>
+{{--    <link href="{{ twillAsset('chunk-common.css') }}" rel="stylesheet" crossorigin/>--}}
+{{--    <link href="{{ twillAsset('chunk-vendors.css' )}}" rel="stylesheet" crossorigin/>--}}
 @endunless
 
 <!-- head.js -->

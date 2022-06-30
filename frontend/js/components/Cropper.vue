@@ -209,6 +209,7 @@
 </script>
 
 <style lang="scss" scoped>
+  @import "styles/setup/_settings.scss";
 
   $height_li: 35px;
 

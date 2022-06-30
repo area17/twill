@@ -322,6 +322,7 @@
 </script>
 
 <style lang="scss" scoped>
+  @import "styles/setup/_settings.scss";
 
   $height_small_btn: 35px;
 

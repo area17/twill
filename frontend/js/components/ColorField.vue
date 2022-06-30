@@ -31,7 +31,7 @@
   import InputMixin from '@/mixins/input'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
-  import ColorPicker from '@/components/ColorPicker'
+  import ColorPicker from '@/components/ColorPicker.vue'
 
   export default {
     name: 'a17ColorField',

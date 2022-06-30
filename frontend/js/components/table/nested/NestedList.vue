@@ -27,7 +27,7 @@
   import { DATATABLE } from '@/store/mutations'
   import draggable from 'vuedraggable'
   import { DatatableMixin, DraggableMixin, NestedDraggableMixin } from '@/mixins/index'
-  import NestedItem from './NestedItem'
+  import NestedItem from './NestedItem.vue'
 
   export default {
     name: 'a17-nested-list',

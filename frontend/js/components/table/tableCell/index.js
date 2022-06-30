@@ -1,13 +1,13 @@
-import TableCellActions_ from './TableCellActions'
-import TableCellBulk_ from './TableCellBulk'
-import TableCellDates_ from './TableCellDates'
-import TableCellFeatured_ from './TableCellFeatured'
-import TableCellDraggable_ from './TableCellDraggable'
-import TableCellLanguages_ from './TableCellLanguages'
-import TableCellPublished_ from './TableCellPublished'
-import TableCellGeneric_ from './TableCellGeneric'
-import TableCellNested_ from './TableCellNested'
-import TableCellThumbnail_ from './TableCellThumbnail'
+import TableCellActions_ from './TableCellActions.vue'
+import TableCellBulk_ from './TableCellBulk.vue'
+import TableCellDates_ from './TableCellDates.vue'
+import TableCellFeatured_ from './TableCellFeatured.vue'
+import TableCellDraggable_ from './TableCellDraggable.vue'
+import TableCellLanguages_ from './TableCellLanguages.vue'
+import TableCellPublished_ from './TableCellPublished.vue'
+import TableCellGeneric_ from './TableCellGeneric.vue'
+import TableCellNested_ from './TableCellNested.vue'
+import TableCellThumbnail_ from './TableCellThumbnail.vue'
 
 export const TableCellSpecificColumns = [
   'draggable',

@@ -86,9 +86,9 @@
   import BucketSourceItem from './BucketSourceItem.vue'
   import draggableMixin from '@/mixins/draggable'
   import draggable from 'vuedraggable'
-  import Paginate from '@/components/table/Paginate'
+  import Paginate from '@/components/table/Paginate.vue'
   import Fieldset from '@/components/Fieldset.vue'
-  import Filter from '@/components/Filter'
+  import Filter from '@/components/Filter.vue'
   import VSelect from '@/components/VSelect.vue'
 
   export default {

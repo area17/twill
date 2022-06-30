@@ -70,7 +70,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
+  @import 'styles/setup/_mixins-colors-vars.scss';
 
   .editorSidebar__blocks--in-fieldset {
     padding-top: 20px;

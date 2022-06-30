@@ -102,7 +102,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/_mixins-colors-vars.scss';
+  @import 'styles/setup/_mixins-colors-vars.scss';
 
   .editorPreview__item {
     min-height: 80px;

@@ -58,7 +58,7 @@
 </script>
 
 <style lang="scss" scoped>
-  @import '~styles/setup/mixins-colors-vars';
+  @import 'styles/setup/mixins-colors-vars';
 
   .editorSidebar__item {
     padding: 0 10px 0 20px;

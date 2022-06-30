@@ -5,8 +5,8 @@
 </template>
 
 <script>
-  import A17TableCellName from './generic/TableCellName'
-  import A17TableCellHTML from './generic/TableCellHTML'
+  import A17TableCellName from './generic/TableCellName.vue'
+  import A17TableCellHTML from './generic/TableCellHTML.vue'
 
   import { TableCellMixin } from '@/mixins'
 

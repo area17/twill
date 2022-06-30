@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html dir="ltr" lang="{{ config('twill.locale', 'en') }}">
+{{--<html dir="ltr" lang="{{ config('twill.locale', 'en') }}">--}}
     <head>
         @include('twill::partials.head')
     </head>
@@ -133,8 +133,8 @@
 
             @stack('vuexStore')
         </script>
-        <script src="{{ twillAsset('chunk-vendors.js') }}"></script>
-        <script src="{{ twillAsset('chunk-common.js') }}"></script>
+{{--        <script src="{{ twillAsset('chunk-vendors.js') }}"></script>--}}
+{{--        <script src="{{ twillAsset('chunk-common.js') }}"></script>--}}
         @stack('extra_js')
     </body>
 </html>

@@ -170,7 +170,7 @@
     Underline,
     History
   } from 'tiptap-extensions'
-  import WysiwygMenuBarBtn from '@/components/WysiwygMenuBarButton'
+  import WysiwygMenuBarBtn from '@/components/WysiwygMenuBarButton.vue'
 
   import { mapState } from 'vuex'
   import debounce from 'lodash/debounce'

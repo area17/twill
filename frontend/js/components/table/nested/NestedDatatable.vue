@@ -29,7 +29,7 @@
   import a17Table from './../Table.vue'
   import a17Tablehead from './../TableHead.vue'
   import { DATATABLE } from '@/store/mutations/index'
-  import NestedList from './NestedList'
+  import NestedList from './NestedList.vue'
 
   export default {
     name: 'A17NestedDatatable',

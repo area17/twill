@@ -43,7 +43,7 @@
 <script>
   import { DraggableMixin, BlockEditorMixin } from '@/mixins'
 
-  import A17EditorBlockPreview from '@/components/editor/EditorPreviewBlockItem'
+  import A17EditorBlockPreview from '@/components/editor/EditorPreviewBlockItem.vue'
   import A17BlockEditorModel from '@/components/blocks/BlockEditorModel'
   import A17Spinner from '@/components/Spinner.vue'
 

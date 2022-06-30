@@ -27,7 +27,7 @@ class Twill
         $fileName =
             public_path(config('twill.public_directory', 'twill')) .
             '/' .
-            config('twill.manifest_file', 'twill-manifest.json');
+            config('twill.manifest_file', 'manifest.json');
 
         if (file_exists($fileName)) {
             return $fileName;

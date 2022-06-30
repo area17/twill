@@ -48,8 +48,8 @@
 <script>
   import { PUBLICATION } from '@/store/mutations'
   import { BlockEditorMixin } from '@/mixins'
-  import A17EditorSidebarBlockItem from '@/components/editor/EditorSidebarBlockItem'
-  import A17EditorSidebarBlockList from '@/components/editor/EditorSidebarBlockList'
+  import A17EditorSidebarBlockItem from '@/components/editor/EditorSidebarBlockItem.vue'
+  import A17EditorSidebarBlockList from '@/components/editor/EditorSidebarBlockList.vue'
   import A17BlocksList from '@/components/blocks/BlocksList'
   import A17BlockEditorModel from '@/components/blocks/BlockEditorModel'
 

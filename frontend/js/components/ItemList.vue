@@ -141,7 +141,6 @@
 </script>
 
 <style lang="scss" scoped>
-
   .itemlist {
     padding: 10px;
     overflow:hidden;

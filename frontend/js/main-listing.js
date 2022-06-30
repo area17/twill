@@ -16,7 +16,7 @@ import { mapState } from 'vuex'
 
 // components
 import a17Datatable from '@/components/table/Datatable.vue'
-import a17NestedDatatable from '@/components/table/nested/NestedDatatable'
+import a17NestedDatatable from '@/components/table/nested/NestedDatatable.vue'
 import a17Filter from '@/components/Filter.vue'
 import a17TableFilters from '@/components/table/TableFilters.vue'
 import a17BulkEdit from '@/components/table/BulkEdit.vue'

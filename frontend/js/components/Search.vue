@@ -193,6 +193,7 @@
 </script>
 
 <style lang="scss" scoped>
+  @import "styles/setup/_settings.scss";
 
   .search {
     display: block;
