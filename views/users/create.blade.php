@@ -18,3 +18,5 @@
         ])
     @endcan
 @endunless
+
+@includeIf('twill::users.create-custom-fields')

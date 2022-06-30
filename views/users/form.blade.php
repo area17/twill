@@ -90,7 +90,11 @@
             @endcomponent
         @endunless
     @endif
+
+    @includeIf('twill::users.form-custom-fields')
 @stop
+
+@includeIf('twill::users.form-custom-fieldsets')
 
 @push('vuexStore')
     window['{{ config('twill.js_namespace') }}'].STORE.publication.submitOptions = {
