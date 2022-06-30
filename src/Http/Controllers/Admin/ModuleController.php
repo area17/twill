@@ -8,6 +8,7 @@ use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Helpers\FlashLevel;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Services\Blocks\Block;
+use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -538,7 +539,20 @@ abstract class ModuleController extends Controller
         } else {
             $formRequest = $this->validateFormRequest();
 
-            $this->repository->update($id, $formRequest->all());
+            $allData = $formRequest->all();
+            // Convert publish dates.
+            if (isset($allData["publish_start_date"]) && !empty($allData["publish_start_date"])) {
+                $allData["publish_start_date"] = Carbon::parse($allData["publish_start_date"])
+                    ->shiftTimezone(config('app.timezone'))
+                    ->format('Y-m-d H:i');
+            }
+            if (isset($allData["publish_end_date"]) && !empty($allData["publish_end_date"])) {
+                $allData["publish_end_date"] = Carbon::parse($allData["publish_end_date"])
+                    ->shiftTimezone(config('app.timezone'))
+                    ->format('Y-m-d H:i');
+            }
+
+            $this->repository->update($id, $allData);
 
             activity()->performedOn($item)->log('updated');
 
@@ -1031,8 +1045,8 @@ abstract class ModuleController extends Controller
             return array_replace([
                 'id' => $itemId,
                 'name' => $name,
-                'publish_start_date' => $item->publish_start_date,
-                'publish_end_date' => $item->publish_end_date,
+                'publish_start_date' => $item->publish_start_date ? Carbon::parse($item->publish_start_date)->toIso8601ZuluString() : null,
+                'publish_end_date' => $item->publish_end_date ? Carbon::parse($item->publish_end_date)->toIso8601ZuluString() : null,
                 'edit' => $canEdit ? $this->getModuleRoute($itemId, 'edit') : null,
                 'duplicate' => $canDuplicate ? $this->getModuleRoute($itemId, 'duplicate') : null,
                 'delete' => $itemCanDelete ? $this->getModuleRoute($itemId, 'destroy') : null,

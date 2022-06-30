@@ -149,8 +149,8 @@
         scheduledLabel: '{{twillTrans('twill::lang.publisher.scheduled')}}',
         draftLabel: '{{ $customDraftLabel ?? twillTrans('twill::lang.main.draft') }}',
         submitDisableMessage: '{{ $submitDisableMessage ?? '' }}',
-        startDate: '{{ $item->publish_start_date ?? '' }}',
-        endDate: '{{ $item->publish_end_date ?? '' }}',
+        startDate: '{{ $item->publish_start_date ? \Carbon\Carbon::parse($item->publish_start_date)->toIso8601ZuluString() : '' }}',
+        endDate: '{{ $item->publish_end_date ?\Carbon\Carbon::parse($item->publish_end_date)->toIso8601ZuluString() : '' }}',
         visibility: '{{ isset($item) && $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}',
         reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!},
         submitOptions: @if(isset($item) && $item->cmsRestoring) {

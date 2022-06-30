@@ -126,6 +126,7 @@
           wrap: true,
           altInput: true,
           altFormat: self.altFormatComputed,
+          dateFormat: 'Z',
           static: self.staticMode,
           appendTo: self.staticMode ? self.$refs[self.refs.flatPicker] : undefined,
           enableTime: self.enableTime,
