@@ -41,7 +41,7 @@
     hide: window.$trans('fields.map.hide')
   }
   const GOOGLEMAPURL = 'https://maps.googleapis.com/maps/api/js?libraries=places&key='
-  const APIKEY = window[process.env.VUE_APP_NAME].hasOwnProperty('APIKEYS') && window[process.env.VUE_APP_NAME].APIKEYS.hasOwnProperty('googleMapApi') ? window[process.env.VUE_APP_NAME].APIKEYS.googleMapApi : null
+  const APIKEY = window[import.meta.env.VITE_APP_NAME].hasOwnProperty('APIKEYS') && window[import.meta.env.VITE_APP_NAME].APIKEYS.hasOwnProperty('googleMapApi') ? window[import.meta.env.VITE_APP_NAME].APIKEYS.googleMapApi : null
 
   /* global google */
 

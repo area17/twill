@@ -1,120 +1,243 @@
 {
   "frontend/js/main-buckets.js": {
-    "file": "assets/main-buckets.cfdc24fc.js",
+    "file": "assets/main-buckets.b22bdf2d.js",
     "src": "frontend/js/main-buckets.js",
     "isEntry": true,
     "imports": [
-      "_form.3ed58db1.js",
-      "_index.a3183894.js",
-      "_Paginate.a60b2bf7.js",
-      "_Fieldset.e2160e02.js",
+      "_form.af977733.js",
+      "_index.735893e9.js",
+      "_Paginate.30894ad4.js",
+      "_Fieldset.3d54f463.js",
       "_pushState.5b409387.js",
-      "_language.2baf5859.js",
+      "_language.bdacb39e.js",
       "_toggleVisibility.ff8a4ceb.js"
     ],
     "css": [
-      "assets/main-buckets.4677ee58.css"
+      "assets/main-buckets.689ab6fc.css"
+    ],
+    "assets": [
+      "assets/Inter-Regular.77ca5687.woff2",
+      "assets/Inter-Regular.abb55c09.woff",
+      "assets/Inter-Italic.a427ac8d.woff2",
+      "assets/Inter-Italic.67c88fd0.woff",
+      "assets/Inter-Medium.6a74b41e.woff2",
+      "assets/Inter-Medium.cf3e9f32.woff",
+      "assets/Inter-MediumItalic.96974597.woff2",
+      "assets/Inter-MediumItalic.a7252b03.woff",
+      "assets/Inter-Bold.d9d881c1.woff2",
+      "assets/Inter-Bold.3d6bdb4d.woff",
+      "assets/Inter-BoldItalic.81dc7be2.woff2",
+      "assets/Inter-BoldItalic.298da3f2.woff"
     ]
   },
   "frontend/js/main-dashboard.js": {
-    "file": "assets/main-dashboard.f4cd5185.js",
+    "file": "assets/main-dashboard.654d0df6.js",
     "src": "frontend/js/main-dashboard.js",
     "isEntry": true,
     "imports": [
-      "_form.3ed58db1.js",
-      "_language.2baf5859.js",
-      "_datatable.06f2efa1.js",
+      "_form.af977733.js",
+      "_language.bdacb39e.js",
+      "_datatable.058b61f9.js",
       "_pushState.5b409387.js"
     ],
     "css": [
-      "assets/main-dashboard.358fa12d.css"
+      "assets/main-dashboard.0401ff22.css"
+    ],
+    "assets": [
+      "assets/Inter-Regular.77ca5687.woff2",
+      "assets/Inter-Regular.abb55c09.woff",
+      "assets/Inter-Italic.a427ac8d.woff2",
+      "assets/Inter-Italic.67c88fd0.woff",
+      "assets/Inter-Medium.6a74b41e.woff2",
+      "assets/Inter-Medium.cf3e9f32.woff",
+      "assets/Inter-MediumItalic.96974597.woff2",
+      "assets/Inter-MediumItalic.a7252b03.woff",
+      "assets/Inter-Bold.d9d881c1.woff2",
+      "assets/Inter-Bold.3d6bdb4d.woff",
+      "assets/Inter-BoldItalic.81dc7be2.woff2",
+      "assets/Inter-BoldItalic.298da3f2.woff"
     ]
   },
   "frontend/js/main-form.js": {
-    "file": "assets/main-form.95365706.js",
+    "file": "assets/main-form.28e95306.js",
     "src": "frontend/js/main-form.js",
     "isEntry": true,
     "imports": [
-      "_form.3ed58db1.js",
-      "_attributes.e78ecf2e.js",
-      "_Fieldset.e2160e02.js",
+      "_form.af977733.js",
+      "_attributes.d3935126.js",
+      "_Fieldset.3d54f463.js",
       "_toggleVisibility.ff8a4ceb.js",
-      "_index.a3183894.js",
-      "_browser.ee6ca469.js",
-      "_language.2baf5859.js"
+      "_index.735893e9.js",
+      "_browser.5ebaed40.js",
+      "_language.bdacb39e.js"
     ],
     "css": [
-      "assets/main-form.eba9d3f4.css"
+      "assets/main-form.76881401.css"
+    ],
+    "assets": [
+      "assets/Inter-Regular.77ca5687.woff2",
+      "assets/Inter-Regular.abb55c09.woff",
+      "assets/Inter-Italic.a427ac8d.woff2",
+      "assets/Inter-Italic.67c88fd0.woff",
+      "assets/Inter-Medium.6a74b41e.woff2",
+      "assets/Inter-Medium.cf3e9f32.woff",
+      "assets/Inter-MediumItalic.96974597.woff2",
+      "assets/Inter-MediumItalic.a7252b03.woff",
+      "assets/Inter-Bold.d9d881c1.woff2",
+      "assets/Inter-Bold.3d6bdb4d.woff",
+      "assets/Inter-BoldItalic.81dc7be2.woff2",
+      "assets/Inter-BoldItalic.298da3f2.woff"
     ]
   },
   "frontend/js/main-listing.js": {
-    "file": "assets/main-listing.9868071f.js",
+    "file": "assets/main-listing.9ca00b92.js",
     "src": "frontend/js/main-listing.js",
     "isEntry": true,
     "imports": [
-      "_form.3ed58db1.js",
-      "_index.a3183894.js",
-      "_language.2baf5859.js",
-      "_Paginate.a60b2bf7.js",
-      "_attributes.e78ecf2e.js",
-      "_datatable.06f2efa1.js",
+      "_form.af977733.js",
+      "_index.735893e9.js",
+      "_language.bdacb39e.js",
+      "_Paginate.30894ad4.js",
+      "_attributes.d3935126.js",
+      "_datatable.058b61f9.js",
       "_toggleVisibility.ff8a4ceb.js",
       "_pushState.5b409387.js"
     ],
     "css": [
-      "assets/main-listing.824b5478.css"
+      "assets/main-listing.06d4ffcd.css"
+    ],
+    "assets": [
+      "assets/Inter-Regular.77ca5687.woff2",
+      "assets/Inter-Regular.abb55c09.woff",
+      "assets/Inter-Italic.a427ac8d.woff2",
+      "assets/Inter-Italic.67c88fd0.woff",
+      "assets/Inter-Medium.6a74b41e.woff2",
+      "assets/Inter-Medium.cf3e9f32.woff",
+      "assets/Inter-MediumItalic.96974597.woff2",
+      "assets/Inter-MediumItalic.a7252b03.woff",
+      "assets/Inter-Bold.d9d881c1.woff2",
+      "assets/Inter-Bold.3d6bdb4d.woff",
+      "assets/Inter-BoldItalic.81dc7be2.woff2",
+      "assets/Inter-BoldItalic.298da3f2.woff"
     ]
   },
   "frontend/js/main-free.js": {
-    "file": "assets/main-free.79494e63.js",
+    "file": "assets/main-free.36cf48fe.js",
     "src": "frontend/js/main-free.js",
     "isEntry": true,
     "imports": [
-      "_form.3ed58db1.js",
-      "_browser.ee6ca469.js",
-      "_Fieldset.e2160e02.js",
+      "_form.af977733.js",
+      "_browser.5ebaed40.js",
+      "_Fieldset.3d54f463.js",
       "_toggleVisibility.ff8a4ceb.js"
     ]
   },
-  "_form.3ed58db1.js": {
-    "file": "assets/form.3ed58db1.js",
-    "css": [
-      "assets/form.d918b6d5.css"
-    ]
-  },
-  "_language.2baf5859.js": {
-    "file": "assets/language.2baf5859.js",
-    "imports": [
-      "_form.3ed58db1.js"
-    ]
-  },
-  "_Paginate.a60b2bf7.js": {
-    "file": "assets/Paginate.a60b2bf7.js",
-    "imports": [
-      "_form.3ed58db1.js"
+  "_form.af977733.js": {
+    "file": "assets/form.af977733.js",
+    "dynamicImports": [
+      "_index.8bcb6c67.js",
+      "_index.c88b0ec3.js",
+      "_index.8b0dcac6.js",
+      "_index.40156884.js",
+      "_index.9115c015.js",
+      "_index.d2ff5f6c.js",
+      "_index.dbbaaae6.js",
+      "_index.91767a59.js",
+      "_browser.5cc7745f.js"
     ],
     "css": [
-      "assets/Paginate.9ebfc1d4.css"
+      "assets/form.ed50c000.css"
+    ],
+    "assets": [
+      "assets/Inter-Regular.77ca5687.woff2",
+      "assets/Inter-Regular.abb55c09.woff",
+      "assets/Inter-Italic.a427ac8d.woff2",
+      "assets/Inter-Italic.67c88fd0.woff",
+      "assets/Inter-Medium.6a74b41e.woff2",
+      "assets/Inter-Medium.cf3e9f32.woff",
+      "assets/Inter-MediumItalic.96974597.woff2",
+      "assets/Inter-MediumItalic.a7252b03.woff",
+      "assets/Inter-Bold.d9d881c1.woff2",
+      "assets/Inter-Bold.3d6bdb4d.woff",
+      "assets/Inter-BoldItalic.81dc7be2.woff2",
+      "assets/Inter-BoldItalic.298da3f2.woff"
     ]
   },
-  "_Fieldset.e2160e02.js": {
-    "file": "assets/Fieldset.e2160e02.js",
+  "_language.bdacb39e.js": {
+    "file": "assets/language.bdacb39e.js",
+    "imports": [
+      "_form.af977733.js"
+    ]
+  },
+  "_Paginate.30894ad4.js": {
+    "file": "assets/Paginate.30894ad4.js",
+    "imports": [
+      "_form.af977733.js"
+    ],
+    "css": [
+      "assets/Paginate.31a9f482.css"
+    ],
+    "assets": [
+      "assets/Inter-Regular.77ca5687.woff2",
+      "assets/Inter-Regular.abb55c09.woff",
+      "assets/Inter-Italic.a427ac8d.woff2",
+      "assets/Inter-Italic.67c88fd0.woff",
+      "assets/Inter-Medium.6a74b41e.woff2",
+      "assets/Inter-Medium.cf3e9f32.woff",
+      "assets/Inter-MediumItalic.96974597.woff2",
+      "assets/Inter-MediumItalic.a7252b03.woff",
+      "assets/Inter-Bold.d9d881c1.woff2",
+      "assets/Inter-Bold.3d6bdb4d.woff",
+      "assets/Inter-BoldItalic.81dc7be2.woff2",
+      "assets/Inter-BoldItalic.298da3f2.woff"
+    ]
+  },
+  "_Fieldset.3d54f463.js": {
+    "file": "assets/Fieldset.3d54f463.js",
     "imports": [
       "_toggleVisibility.ff8a4ceb.js",
-      "_form.3ed58db1.js"
+      "_form.af977733.js"
     ],
     "css": [
-      "assets/Fieldset.751c234e.css"
+      "assets/Fieldset.a17a9b12.css"
+    ],
+    "assets": [
+      "assets/Inter-Regular.77ca5687.woff2",
+      "assets/Inter-Regular.abb55c09.woff",
+      "assets/Inter-Italic.a427ac8d.woff2",
+      "assets/Inter-Italic.67c88fd0.woff",
+      "assets/Inter-Medium.6a74b41e.woff2",
+      "assets/Inter-Medium.cf3e9f32.woff",
+      "assets/Inter-MediumItalic.96974597.woff2",
+      "assets/Inter-MediumItalic.a7252b03.woff",
+      "assets/Inter-Bold.d9d881c1.woff2",
+      "assets/Inter-Bold.3d6bdb4d.woff",
+      "assets/Inter-BoldItalic.81dc7be2.woff2",
+      "assets/Inter-BoldItalic.298da3f2.woff"
     ]
   },
-  "_index.a3183894.js": {
-    "file": "assets/index.a3183894.js",
+  "_index.735893e9.js": {
+    "file": "assets/index.735893e9.js",
     "imports": [
-      "_form.3ed58db1.js",
-      "_language.2baf5859.js"
+      "_form.af977733.js",
+      "_language.bdacb39e.js"
     ],
     "css": [
-      "assets/index.14715fca.css"
+      "assets/index.6849bef4.css"
+    ],
+    "assets": [
+      "assets/Inter-Regular.77ca5687.woff2",
+      "assets/Inter-Regular.abb55c09.woff",
+      "assets/Inter-Italic.a427ac8d.woff2",
+      "assets/Inter-Italic.67c88fd0.woff",
+      "assets/Inter-Medium.6a74b41e.woff2",
+      "assets/Inter-Medium.cf3e9f32.woff",
+      "assets/Inter-MediumItalic.96974597.woff2",
+      "assets/Inter-MediumItalic.a7252b03.woff",
+      "assets/Inter-Bold.d9d881c1.woff2",
+      "assets/Inter-Bold.3d6bdb4d.woff",
+      "assets/Inter-BoldItalic.81dc7be2.woff2",
+      "assets/Inter-BoldItalic.298da3f2.woff"
     ]
   },
   "_toggleVisibility.ff8a4ceb.js": {
@@ -123,31 +246,119 @@
   "_pushState.5b409387.js": {
     "file": "assets/pushState.5b409387.js"
   },
-  "_datatable.06f2efa1.js": {
-    "file": "assets/datatable.06f2efa1.js",
+  "_datatable.058b61f9.js": {
+    "file": "assets/datatable.058b61f9.js",
     "imports": [
-      "_form.3ed58db1.js",
+      "_form.af977733.js",
       "_pushState.5b409387.js",
-      "_language.2baf5859.js"
+      "_language.bdacb39e.js"
     ]
   },
-  "_browser.ee6ca469.js": {
-    "file": "assets/browser.ee6ca469.js",
+  "_browser.5ebaed40.js": {
+    "file": "assets/browser.5ebaed40.js",
     "imports": [
-      "_form.3ed58db1.js"
+      "_form.af977733.js"
     ],
     "css": [
-      "assets/browser.87baa1fe.css"
+      "assets/browser.da008474.css"
+    ],
+    "assets": [
+      "assets/Inter-Regular.77ca5687.woff2",
+      "assets/Inter-Regular.abb55c09.woff",
+      "assets/Inter-Italic.a427ac8d.woff2",
+      "assets/Inter-Italic.67c88fd0.woff",
+      "assets/Inter-Medium.6a74b41e.woff2",
+      "assets/Inter-Medium.cf3e9f32.woff",
+      "assets/Inter-MediumItalic.96974597.woff2",
+      "assets/Inter-MediumItalic.a7252b03.woff",
+      "assets/Inter-Bold.d9d881c1.woff2",
+      "assets/Inter-Bold.3d6bdb4d.woff",
+      "assets/Inter-BoldItalic.81dc7be2.woff2",
+      "assets/Inter-BoldItalic.298da3f2.woff"
     ]
   },
-  "_attributes.e78ecf2e.js": {
-    "file": "assets/attributes.e78ecf2e.js",
+  "_attributes.d3935126.js": {
+    "file": "assets/attributes.d3935126.js",
     "imports": [
-      "_form.3ed58db1.js",
+      "_form.af977733.js",
       "_toggleVisibility.ff8a4ceb.js"
     ],
     "css": [
-      "assets/attributes.fa7822fa.css"
+      "assets/attributes.a4d25164.css"
+    ],
+    "assets": [
+      "assets/Inter-Regular.77ca5687.woff2",
+      "assets/Inter-Regular.abb55c09.woff",
+      "assets/Inter-Italic.a427ac8d.woff2",
+      "assets/Inter-Italic.67c88fd0.woff",
+      "assets/Inter-Medium.6a74b41e.woff2",
+      "assets/Inter-Medium.cf3e9f32.woff",
+      "assets/Inter-MediumItalic.96974597.woff2",
+      "assets/Inter-MediumItalic.a7252b03.woff",
+      "assets/Inter-Bold.d9d881c1.woff2",
+      "assets/Inter-Bold.3d6bdb4d.woff",
+      "assets/Inter-BoldItalic.81dc7be2.woff2",
+      "assets/Inter-BoldItalic.298da3f2.woff"
     ]
+  },
+  "_index.8bcb6c67.js": {
+    "file": "assets/index.8bcb6c67.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_form.af977733.js"
+    ]
+  },
+  "_index.c88b0ec3.js": {
+    "file": "assets/index.c88b0ec3.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_form.af977733.js"
+    ]
+  },
+  "_index.8b0dcac6.js": {
+    "file": "assets/index.8b0dcac6.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_form.af977733.js"
+    ]
+  },
+  "_index.40156884.js": {
+    "file": "assets/index.40156884.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_form.af977733.js"
+    ]
+  },
+  "_index.9115c015.js": {
+    "file": "assets/index.9115c015.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_form.af977733.js"
+    ]
+  },
+  "_index.d2ff5f6c.js": {
+    "file": "assets/index.d2ff5f6c.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_form.af977733.js"
+    ]
+  },
+  "_index.dbbaaae6.js": {
+    "file": "assets/index.dbbaaae6.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_form.af977733.js"
+    ]
+  },
+  "_index.91767a59.js": {
+    "file": "assets/index.91767a59.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_form.af977733.js"
+    ]
+  },
+  "_browser.5cc7745f.js": {
+    "file": "assets/browser.5cc7745f.js",
+    "isDynamicEntry": true
   }
 }

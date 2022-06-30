@@ -38,14 +38,16 @@ export default defineConfig({
     plugins: [
         vue(),
     ],
+    publicDir: 'assets/twill',
     server: {
         manifest: true,
     },
     resolve: {
         alias: {
+            'vue': 'vue/dist/vue.esm.js',
             "@": path.resolve(__dirname, "./frontend/js"),
             "styles": path.resolve(__dirname, "./frontend/scss"),
-            "fonts": path.resolve(__dirname, "./frontend/fonts"),
+            "~fonts": path.resolve(__dirname, "./frontend/fonts"),
         },
     },
     css: {

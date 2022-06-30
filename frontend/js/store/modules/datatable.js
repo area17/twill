@@ -28,20 +28,20 @@ const deepRemoveFromObj = (items, keys = ['id', 'children'], deep = 'children') 
 }
 
 const state = {
-  baseUrl: window[process.env.VUE_APP_NAME].STORE.datatable.baseUrl || '',
-  data: window[process.env.VUE_APP_NAME].STORE.datatable.data || [],
-  columns: window[process.env.VUE_APP_NAME].STORE.datatable.columns || [],
-  filter: window[process.env.VUE_APP_NAME].STORE.datatable.filter || {},
-  filtersNav: window[process.env.VUE_APP_NAME].STORE.datatable.navigation || [],
-  page: Number(window[process.env.VUE_APP_NAME].STORE.datatable.page || 1),
-  maxPage: Number(window[process.env.VUE_APP_NAME].STORE.datatable.maxPage || 1),
-  defaultMaxPage: Number(window[process.env.VUE_APP_NAME].STORE.datatable.defaultMaxPage || 1),
-  offset: Number(window[process.env.VUE_APP_NAME].STORE.datatable.offset || 60),
-  defaultOffset: Number(window[process.env.VUE_APP_NAME].STORE.datatable.defaultOffset || 60),
-  sortKey: window[process.env.VUE_APP_NAME].STORE.datatable.sortKey || '',
-  sortDir: window[process.env.VUE_APP_NAME].STORE.datatable.sortDir || 'asc',
+  baseUrl: window[import.meta.env.VITE_APP_NAME].STORE.datatable.baseUrl || '',
+  data: window[import.meta.env.VITE_APP_NAME].STORE.datatable.data || [],
+  columns: window[import.meta.env.VITE_APP_NAME].STORE.datatable.columns || [],
+  filter: window[import.meta.env.VITE_APP_NAME].STORE.datatable.filter || {},
+  filtersNav: window[import.meta.env.VITE_APP_NAME].STORE.datatable.navigation || [],
+  page: Number(window[import.meta.env.VITE_APP_NAME].STORE.datatable.page || 1),
+  maxPage: Number(window[import.meta.env.VITE_APP_NAME].STORE.datatable.maxPage || 1),
+  defaultMaxPage: Number(window[import.meta.env.VITE_APP_NAME].STORE.datatable.defaultMaxPage || 1),
+  offset: Number(window[import.meta.env.VITE_APP_NAME].STORE.datatable.offset || 60),
+  defaultOffset: Number(window[import.meta.env.VITE_APP_NAME].STORE.datatable.defaultOffset || 60),
+  sortKey: window[import.meta.env.VITE_APP_NAME].STORE.datatable.sortKey || '',
+  sortDir: window[import.meta.env.VITE_APP_NAME].STORE.datatable.sortDir || 'asc',
   bulk: [],
-  localStorageKey: window[process.env.VUE_APP_NAME].STORE.datatable.localStorageKey || window.location.pathname,
+  localStorageKey: window[import.meta.env.VITE_APP_NAME].STORE.datatable.localStorageKey || window.location.pathname,
   loading: false,
   updateTracker: 0
 }

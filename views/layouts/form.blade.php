@@ -2,22 +2,6 @@
 
 @section('appTypeClass', 'body--form')
 
-@push('extra_css')
-    @if(app()->isProduction())
-        <link href="{{ twillAsset('main-form.css') }}" rel="preload" as="style" crossorigin/>
-    @endif
-
-    @unless(config('twill.dev_mode', false))
-        <link href="{{ twillAsset('main-form.css') }}" rel="stylesheet" crossorigin/>
-    @endunless
-@endpush
-
-@push('extra_js_head')
-    @if(app()->isProduction())
-        <link href="{{ twillAsset('main-form.js') }}" rel="preload" as="script" crossorigin/>
-    @endif
-@endpush
-
 @php
     $editor = $editor ?? false;
     $translate = $translate ?? false;
@@ -279,32 +263,35 @@
     window['{{ config('twill.js_namespace') }}'].STORE.groupUserMapping = {!! isset($groupUserMapping) ? json_encode($groupUserMapping) : '[]' !!};
 @stop
 
+@prepend('extra_js_head')
+    {!! twillAsset('frontend/js/main-form.js') !!}
+@endprepend
+
 @prepend('extra_js')
     @includeWhen(config('twill.block_editor.inline_blocks_templates', true), 'twill::partials.form.utils._blocks_templates')
-    <script src="{{ twillAsset('main-form.js') }}" crossorigin></script>
-    <script>
-        const groupUserMapping = {!! isset($groupUserMapping) ? json_encode($groupUserMapping) : '[]' !!};
-        window['{{ config('twill.js_namespace') }}'].vm.$store.subscribe((mutation, state) => {
-            if (mutation.type === 'updateFormField' && mutation.payload.name.endsWith('group_authorized')) {
-                const groupId = mutation.payload.name.replace('_group_authorized', '')
-                const checked = mutation.payload.value
-                if (!isNaN(groupId)) {
-                    const users = groupUserMapping[groupId]
-                    users.forEach(function (userId) {
-                        // If the user's permission is <= view, it will be updated
-                        const currentPermission = state['form']['fields'].find(function (e) {
-                            return e.name == `user_${userId}_permission`
-                        }).value
-                        if (currentPermission === '' || currentPermission === 'view-item') {
-                            const field = {
-                                name: `user_${userId}_permission`,
-                                value: checked ? 'view-item' : ''
-                            }
-                            window['{{ config('twill.js_namespace') }}'].vm.$store.commit('updateFormField', field)
-                        }
-                    })
-                }
-            }
-        })
-    </script>
+{{--    <script>--}}
+{{--        const groupUserMapping = {!! isset($groupUserMapping) ? json_encode($groupUserMapping) : '[]' !!};--}}
+{{--        window['{{ config('twill.js_namespace') }}'].vm.$store.subscribe((mutation, state) => {--}}
+{{--            if (mutation.type === 'updateFormField' && mutation.payload.name.endsWith('group_authorized')) {--}}
+{{--                const groupId = mutation.payload.name.replace('_group_authorized', '')--}}
+{{--                const checked = mutation.payload.value--}}
+{{--                if (!isNaN(groupId)) {--}}
+{{--                    const users = groupUserMapping[groupId]--}}
+{{--                    users.forEach(function (userId) {--}}
+{{--                        // If the user's permission is <= view, it will be updated--}}
+{{--                        const currentPermission = state['form']['fields'].find(function (e) {--}}
+{{--                            return e.name == `user_${userId}_permission`--}}
+{{--                        }).value--}}
+{{--                        if (currentPermission === '' || currentPermission === 'view-item') {--}}
+{{--                            const field = {--}}
+{{--                                name: `user_${userId}_permission`,--}}
+{{--                                value: checked ? 'view-item' : ''--}}
+{{--                            }--}}
+{{--                            window['{{ config('twill.js_namespace') }}'].vm.$store.commit('updateFormField', field)--}}
+{{--                        }--}}
+{{--                    })--}}
+{{--                }--}}
+{{--            }--}}
+{{--        })--}}
+{{--    </script>--}}
 @endprepend

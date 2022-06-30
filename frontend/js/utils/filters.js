@@ -7,7 +7,7 @@ function dateFormatLocale (date, format) {
   const locale = locales[getCurrentLocale()]
 
   return dateFormat(date, format, {
-    locale: locale !== undefined && locale.hasOwnProperty('date-fns') ? locale['date-fns'] : require('date-fns/locale/en')
+    locale: locale !== undefined && locale.hasOwnProperty('date-fns') ? locale['date-fns'] : import('date-fns/locale/en')
   })
 }
 

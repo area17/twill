@@ -9,44 +9,44 @@ import { Turkish } from 'flatpickr/dist/l10n/tr.js'
 
 export const locales = {
   en: {
-    'date-fns': require('date-fns/locale/en')
+    'date-fns': import('date-fns/locale/en')
   },
   'zh-Hans': {
-    'date-fns': require('date-fns/locale/zh_cn'),
+    'date-fns': import('date-fns/locale/zh_cn'),
     flatpickr: Mandarin
   },
   ru: {
-    'date-fns': require('date-fns/locale/ru'),
+    'date-fns': import('date-fns/locale/ru'),
     flatpickr: Russian
   },
   fr: {
-    'date-fns': require('date-fns/locale/fr'),
+    'date-fns': import('date-fns/locale/fr'),
     flatpickr: French
   },
   pl: {
-    'date-fns': require('date-fns/locale/pl'),
+    'date-fns': import('date-fns/locale/pl'),
     flatpickr: Polish
   },
   de: {
-    'date-fns': require('date-fns/locale/de'),
+    'date-fns': import('date-fns/locale/de'),
     flatpickr: German
   },
   nl: {
-    'date-fns': require('date-fns/locale/nl'),
+    'date-fns': import('date-fns/locale/nl'),
     flatpickr: Dutch
   },
   pt: {
-    'date-fns': require('date-fns/locale/pt'),
+    'date-fns': import('date-fns/locale/pt'),
     flatpickr: Portuguese
   },
   tr: {
-    'date-fns': require('date-fns/locale/tr'),
+    'date-fns': import('date-fns/locale/tr'),
     flatpickr: Turkish
   }
 }
 
 export function getCurrentLocale () {
-  return window[process.env.VUE_APP_NAME].twillLocalization.locale
+  return window[import.meta.env.VITE_APP_NAME].twillLocalization.locale
 }
 
 export function isCurrentLocale24HrFormatted () {

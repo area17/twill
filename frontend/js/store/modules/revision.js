@@ -8,7 +8,7 @@ const state = {
   active: {},
   activeContent: '',
   currentContent: '',
-  all: window[process.env.VUE_APP_NAME].STORE.revisions || []
+  all: window[import.meta.env.VITE_APP_NAME].STORE.revisions || []
 }
 
 // getters

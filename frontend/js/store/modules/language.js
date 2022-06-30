@@ -12,17 +12,17 @@ const state = {
    * Array of all the languages available
    * @type {Array.Object}
    */
-  all: window[process.env.VUE_APP_NAME].STORE.languages.all || [],
+  all: window[import.meta.env.VITE_APP_NAME].STORE.languages.all || [],
   /**
    * Array of all the languages available (initial value (not to be modified))
    * @type {Array.Object}
    */
-  initialAll: window[process.env.VUE_APP_NAME].STORE.languages.all || [],
+  initialAll: window[import.meta.env.VITE_APP_NAME].STORE.languages.all || [],
   /**
    * The language you are currently editing
    * @type {Object}
    */
-  active: window[process.env.VUE_APP_NAME].STORE.languages.active || window[process.env.VUE_APP_NAME].STORE.languages.all[0] || {}
+  active: window[import.meta.env.VITE_APP_NAME].STORE.languages.active || window[import.meta.env.VITE_APP_NAME].STORE.languages.all[0] || {}
 }
 
 // getters

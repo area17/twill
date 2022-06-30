@@ -21,27 +21,27 @@ const state = {
    * Define if we want to have a visual editor
    * @type {Boolean}
    */
-  editor: window[process.env.VUE_APP_NAME].STORE.form.editor || false,
+  editor: window[import.meta.env.VITE_APP_NAME].STORE.form.editor || false,
   /**
    * Array of Object editor names avaialble in this form in value/label pairs
    * @type {Array}
    */
-  editorNames: window[process.env.VUE_APP_NAME].STORE.form.editorNames || [],
+  editorNames: window[import.meta.env.VITE_APP_NAME].STORE.form.editorNames || [],
   /**
    * An object with all the blocks available to add
    * @type {Object}
    */
-  available: window[process.env.VUE_APP_NAME].STORE.form.availableBlocks || {},
+  available: window[import.meta.env.VITE_APP_NAME].STORE.form.availableBlocks || {},
   /**
    * An array with all the blocks created
    * @type {Object.Array}
    */
-  blocks: window[process.env.VUE_APP_NAME].STORE.form.blocks || {},
+  blocks: window[import.meta.env.VITE_APP_NAME].STORE.form.blocks || {},
   /**
    * An object with all the Html for the previews of the blocks
    * @type {Object.string}
    */
-  previews: window[process.env.VUE_APP_NAME].STORE.form.previews || {},
+  previews: window[import.meta.env.VITE_APP_NAME].STORE.form.previews || {},
   /**
    * Block that is currently being edited in the visual Editor
    * @type {Object}

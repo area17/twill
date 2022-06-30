@@ -29,12 +29,12 @@ const state = {
    * Form errors after submitting
    * @type {Object}
    */
-  baseUrl: window[process.env.VUE_APP_NAME].STORE.form.baseUrl || '',
+  baseUrl: window[import.meta.env.VITE_APP_NAME].STORE.form.baseUrl || '',
   /**
    * All the fields that need to be saved
    * @type {Array}
    */
-  fields: window[process.env.VUE_APP_NAME].STORE.form.fields || [],
+  fields: window[import.meta.env.VITE_APP_NAME].STORE.form.fields || [],
   /**
    * All the fields that are in the create/edit modals (so these are not mixed with the form)
    * @type {Array}
@@ -44,22 +44,22 @@ const state = {
    * Url to save/update the form
    * @type {String}
    */
-  saveUrl: window[process.env.VUE_APP_NAME].STORE.form.saveUrl || '',
+  saveUrl: window[import.meta.env.VITE_APP_NAME].STORE.form.saveUrl || '',
   /**
    * Url to get a full preview of the form datas
    * @type {String}
    */
-  previewUrl: window[process.env.VUE_APP_NAME].STORE.form.previewUrl || '',
+  previewUrl: window[import.meta.env.VITE_APP_NAME].STORE.form.previewUrl || '',
   /**
    * Url to restore previous form datas
    * @type {String}
    */
-  restoreUrl: window[process.env.VUE_APP_NAME].STORE.form.restoreUrl || '',
+  restoreUrl: window[import.meta.env.VITE_APP_NAME].STORE.form.restoreUrl || '',
   /**
    * Url to get only the preview of a block
    * @type {String}
    */
-  blockPreviewUrl: window[process.env.VUE_APP_NAME].STORE.form.blockPreviewUrl || '',
+  blockPreviewUrl: window[import.meta.env.VITE_APP_NAME].STORE.form.blockPreviewUrl || '',
   /**
    * Form errors after submitting
    * @type {Object}
@@ -69,12 +69,12 @@ const state = {
    * Is this a custom form (that will let the browser submit the form instead of hooking up the submit event)
    * @type {Boolean}
    */
-  isCustom: window[process.env.VUE_APP_NAME].STORE.form.isCustom || false,
+  isCustom: window[import.meta.env.VITE_APP_NAME].STORE.form.isCustom || false,
   /**
    * Force reload on successful submit
    * @type {Boolean}
    */
-  reloadOnSuccess: window[process.env.VUE_APP_NAME].STORE.form.reloadOnSuccess || false,
+  reloadOnSuccess: window[import.meta.env.VITE_APP_NAME].STORE.form.reloadOnSuccess || false,
   /**
    * Determines if the form should prevent submitting before an input value is pushed into the store
    * @type {Boolean}

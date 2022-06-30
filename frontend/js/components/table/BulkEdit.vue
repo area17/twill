@@ -65,19 +65,19 @@
     },
     methods: {
       bulkPublishable: function ($inverse = false) {
-        return window[process.env.VUE_APP_NAME].CMS_URLS.bulkPublish !== '' && this.bulkStatus.canPublish && ($inverse ? this.bulkStatus.published : !this.bulkStatus.published) && !this.bulkStatus.deleted
+        return window[import.meta.env.VITE_APP_NAME].CMS_URLS.bulkPublish !== '' && this.bulkStatus.canPublish && ($inverse ? this.bulkStatus.published : !this.bulkStatus.published) && !this.bulkStatus.deleted
       },
       bulkFeaturable: function ($inverse = false) {
-        return window[process.env.VUE_APP_NAME].CMS_URLS.bulkFeature !== '' && this.bulkStatus.canFeature && ($inverse ? this.bulkStatus.featured : !this.bulkStatus.featured) && !this.bulkStatus.deleted
+        return window[import.meta.env.VITE_APP_NAME].CMS_URLS.bulkFeature !== '' && this.bulkStatus.canFeature && ($inverse ? this.bulkStatus.featured : !this.bulkStatus.featured) && !this.bulkStatus.deleted
       },
       bulkDeletable: function () {
-        return window[process.env.VUE_APP_NAME].CMS_URLS.bulkDelete !== '' && !this.bulkStatus.deleted && this.bulkStatus.canDelete
+        return window[import.meta.env.VITE_APP_NAME].CMS_URLS.bulkDelete !== '' && !this.bulkStatus.deleted && this.bulkStatus.canDelete
       },
       bulkRestorable: function () {
-        return window[process.env.VUE_APP_NAME].CMS_URLS.bulkRestore !== '' && this.bulkStatus.deleted
+        return window[import.meta.env.VITE_APP_NAME].CMS_URLS.bulkRestore !== '' && this.bulkStatus.deleted
       },
       bulkDestroyable: function () {
-        return window[process.env.VUE_APP_NAME].CMS_URLS.bulkDestroy !== '' && this.bulkStatus.deleted && this.bulkStatus.canDestroy
+        return window[import.meta.env.VITE_APP_NAME].CMS_URLS.bulkDestroy !== '' && this.bulkStatus.deleted && this.bulkStatus.canDestroy
       },
       clearBulkSelect: function () {
         this.$store.commit(DATATABLE.REPLACE_DATATABLE_BULK, [])

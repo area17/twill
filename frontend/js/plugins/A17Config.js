@@ -115,7 +115,7 @@ const A17Config = {
     Vue.prototype.$http = axios
 
     window.$trans = Vue.prototype.$trans = function (key, defaultValue) {
-      return get(window[process.env.VUE_APP_NAME].twillLocalization.lang, key, defaultValue)
+      return get(window[import.meta.env.VITE_APP_NAME].twillLocalization.lang, key, defaultValue)
     }
 
     axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
@@ -129,7 +129,7 @@ const A17Config = {
     // Plugins
     Vue.use(VueTimeago, {
       name: 'timeago', // component name
-      locale: window[process.env.VUE_APP_NAME].twillLocalization.locale,
+      locale: window[import.meta.env.VITE_APP_NAME].twillLocalization.locale,
       locales: mapValues(locales, 'date-fns')
     })
 

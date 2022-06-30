@@ -112,8 +112,8 @@ class MyLink extends Link {
     }
 
     // url starting with the front-end base url wont have target blank
-    if (window[process.env.VUE_APP_NAME].STORE.form.baseUrl) {
-      const url = new URL(window[process.env.VUE_APP_NAME].STORE.form.baseUrl)
+    if (window[import.meta.env.VITE_APP_NAME].STORE.form.baseUrl) {
+      const url = new URL(window[import.meta.env.VITE_APP_NAME].STORE.form.baseUrl)
       if (value.startsWith(url.origin)) {
         node.removeAttribute('target')
       }
@@ -137,8 +137,8 @@ class MyLink extends Link {
     }
 
     // url starting with the front-end base url wont have target blank
-    if (window[process.env.VUE_APP_NAME].STORE.form.baseUrl) {
-      if (value.startsWith(window[process.env.VUE_APP_NAME].STORE.form.baseUrl)) {
+    if (window[import.meta.env.VITE_APP_NAME].STORE.form.baseUrl) {
+      if (value.startsWith(window[import.meta.env.VITE_APP_NAME].STORE.form.baseUrl)) {
         this.domNode.removeAttribute('target')
         return
       }

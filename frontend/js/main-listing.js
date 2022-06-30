@@ -48,7 +48,7 @@ store.registerModule('attributes', attributes)
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
-window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
+window[import.meta.env.VITE_APP_NAME].vm = window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
   components: {
@@ -107,7 +107,7 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
     }
   },
   mounted: function () {
-    if (window[process.env.VUE_APP_NAME].openCreate) this.create()
+    if (window[import.meta.env.VITE_APP_NAME].openCreate) this.create()
   },
   created: function () {
     openMediaLibrary()

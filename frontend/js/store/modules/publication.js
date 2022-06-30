@@ -1,20 +1,20 @@
 import { PUBLICATION } from '../mutations'
 
 const state = {
-  withPublicationToggle: window[process.env.VUE_APP_NAME].STORE.publication.withPublicationToggle || false,
-  published: window[process.env.VUE_APP_NAME].STORE.publication.published || false,
-  publishSubmit: (window[process.env.VUE_APP_NAME].STORE.publication.published || !window[process.env.VUE_APP_NAME].STORE.publication.withPublicationToggle) ? 'update' : 'live',
-  publishedLabel: window[process.env.VUE_APP_NAME].STORE.publication.publishedLabel || 'Live',
-  draftLabel: window[process.env.VUE_APP_NAME].STORE.publication.draftLabel || 'Draft',
-  expiredLabel: window[process.env.VUE_APP_NAME].STORE.publication.expiredLabel || 'Expired',
-  scheduledLabel: window[process.env.VUE_APP_NAME].STORE.publication.scheduledLabel || 'Scheduled',
-  withPublicationTimeframe: window[process.env.VUE_APP_NAME].STORE.publication.withPublicationTimeframe || false,
-  startDate: window[process.env.VUE_APP_NAME].STORE.publication.startDate || null,
-  endDate: window[process.env.VUE_APP_NAME].STORE.publication.endDate || null,
-  visibility: window[process.env.VUE_APP_NAME].STORE.publication.visibility || false,
-  reviewProcess: window[process.env.VUE_APP_NAME].STORE.publication.reviewProcess || [],
-  userInfo: window[process.env.VUE_APP_NAME].STORE.publication.userInfo || null,
-  createWithoutModal: window[process.env.VUE_APP_NAME].STORE.publication.createWithoutModal || false,
+  withPublicationToggle: window[import.meta.env.VITE_APP_NAME].STORE.publication.withPublicationToggle || false,
+  published: window[import.meta.env.VITE_APP_NAME].STORE.publication.published || false,
+  publishSubmit: (window[import.meta.env.VITE_APP_NAME].STORE.publication.published || !window[import.meta.env.VITE_APP_NAME].STORE.publication.withPublicationToggle) ? 'update' : 'live',
+  publishedLabel: window[import.meta.env.VITE_APP_NAME].STORE.publication.publishedLabel || 'Live',
+  draftLabel: window[import.meta.env.VITE_APP_NAME].STORE.publication.draftLabel || 'Draft',
+  expiredLabel: window[import.meta.env.VITE_APP_NAME].STORE.publication.expiredLabel || 'Expired',
+  scheduledLabel: window[import.meta.env.VITE_APP_NAME].STORE.publication.scheduledLabel || 'Scheduled',
+  withPublicationTimeframe: window[import.meta.env.VITE_APP_NAME].STORE.publication.withPublicationTimeframe || false,
+  startDate: window[import.meta.env.VITE_APP_NAME].STORE.publication.startDate || null,
+  endDate: window[import.meta.env.VITE_APP_NAME].STORE.publication.endDate || null,
+  visibility: window[import.meta.env.VITE_APP_NAME].STORE.publication.visibility || false,
+  reviewProcess: window[import.meta.env.VITE_APP_NAME].STORE.publication.reviewProcess || [],
+  userInfo: window[import.meta.env.VITE_APP_NAME].STORE.publication.userInfo || null,
+  createWithoutModal: window[import.meta.env.VITE_APP_NAME].STORE.publication.createWithoutModal || false,
   hasUnsavedChanges: false,
   saveType: undefined,
   visibilityOptions: [
@@ -27,8 +27,8 @@ const state = {
       label: 'Private'
     }
   ],
-  submitDisableMessage: window[process.env.VUE_APP_NAME].STORE.publication.submitDisableMessage || '',
-  submitOptions: window[process.env.VUE_APP_NAME].STORE.publication.submitOptions || {
+  submitDisableMessage: window[import.meta.env.VITE_APP_NAME].STORE.publication.submitDisableMessage || '',
+  submitOptions: window[import.meta.env.VITE_APP_NAME].STORE.publication.submitOptions || {
     draft: [
       {
         name: 'save',

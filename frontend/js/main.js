@@ -28,20 +28,20 @@ Alpine.start()
 // User header dropdown
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
-if (!window[process.env.VUE_APP_NAME]) {
-  window[process.env.VUE_APP_NAME] = {}
+if (!window[import.meta.env.VITE_APP_NAME]) {
+  window[import.meta.env.VITE_APP_NAME] = {}
 }
-window[process.env.VUE_APP_NAME].vheader = new Vue({ el: '#headerUser' })
+window[import.meta.env.VITE_APP_NAME].vheader = new Vue({ el: '#headerUser' })
 
 // Search
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
-window[process.env.VUE_APP_NAME].vsearch = search
+window[import.meta.env.VITE_APP_NAME].vsearch = search
 /* eslint-disable no-console */
-console.log('\x1b[32m', `Made with ${process.env.VUE_APP_NAME} - v${window[process.env.VUE_APP_NAME].version}`)
+console.log('\x1b[32m', `Made with ${import.meta.env.VITE_APP_NAME} - v${window[import.meta.env.VITE_APP_NAME].version}`)
 
 merge(
-  window[process.env.VUE_APP_NAME].STORE,
+  window[import.meta.env.VITE_APP_NAME].STORE,
   window.STORE
 )
 

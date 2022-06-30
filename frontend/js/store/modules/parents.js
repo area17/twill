@@ -11,12 +11,12 @@ const state = {
    * Id of the parent entity. O mean no parent
    * @type {Number}
    */
-  active: window[process.env.VUE_APP_NAME].STORE.parentId || 0,
+  active: window[import.meta.env.VITE_APP_NAME].STORE.parentId || 0,
   /**
    * Array of all the possible parents
    * @type {Array}
    */
-  all: window[process.env.VUE_APP_NAME].STORE.parents || []
+  all: window[import.meta.env.VITE_APP_NAME].STORE.parents || []
 }
 
 // getters

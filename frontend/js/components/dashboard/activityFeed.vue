@@ -78,8 +78,8 @@
         // No pagination
         // this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
         // this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER_STATUS, slug)
-        if (window[process.env.VUE_APP_NAME].STORE.datatable) {
-          if (window[process.env.VUE_APP_NAME].STORE.datatable.hasOwnProperty(slug)) this.rows = window[process.env.VUE_APP_NAME].STORE.datatable[slug]
+        if (window[import.meta.env.VITE_APP_NAME].STORE.datatable) {
+          if (window[import.meta.env.VITE_APP_NAME].STORE.datatable.hasOwnProperty(slug)) this.rows = window[import.meta.env.VITE_APP_NAME].STORE.datatable[slug]
         }
       }
     }

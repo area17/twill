@@ -1056,7 +1056,7 @@ know that `window.STORE` and `window.vm` were being used to hook into Twill's fr
 developers. [This commit](https://github.com/area17/twill/commit/9bc9c24925ea1bf857026f5f6a3db90ab099970f) tried to make
 sure to keep that working , but your mileage may vary if you are overriding Twill views. You should update
 to `window.TWILL.STORE` and `window.TWILL.vm` or even better, using `window.{{ config('twill.js_namespace') }}`  instead
-of directly using `window.TWILL` if you are in a Blade file and `process.env.VUE_APP_NAME` if you are in a Vue file.
+of directly using `window.TWILL` if you are in a Blade file and `import.meta.env.VITE_APP_NAME` if you are in a Vue file.
 
 Finally, to help custom workflows, maintainers and contributors, we made everything configurable:
 

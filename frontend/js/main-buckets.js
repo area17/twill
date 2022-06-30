@@ -28,7 +28,7 @@ store.registerModule('form', form)
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
-window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
+window[import.meta.env.VITE_APP_NAME].vm = window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
   components: {

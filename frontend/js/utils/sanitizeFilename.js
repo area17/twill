@@ -1,4 +1,4 @@
-const truncate = require('truncate-utf8-bytes')
+const truncate = import('truncate-utf8-bytes')
 
 /**
  * Replaces characters in strings that are illegal/unsafe for filenames.

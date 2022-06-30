@@ -1,5 +1,5 @@
 const state = {
-  publishDateDisplayFormat: window[process.env.VUE_APP_NAME].STORE.config.publishDateDisplayFormat
+  publishDateDisplayFormat: window[import.meta.env.VITE_APP_NAME].STORE.config.publishDateDisplayFormat
 }
 
 const getters = {}

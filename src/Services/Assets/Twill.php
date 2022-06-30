@@ -16,6 +16,27 @@ class Twill
         $manifest = $this->readManifest();
 
         if (isset($manifest[$file])) {
+            // Build the script tags.
+            $tags = [];
+            $tags[] = '<script type="module" src="/' . config('twill.public_directory', 'twill') . '/' . $manifest[$file]['file'] . '"></script>';
+
+            foreach ($manifest[$file]['imports'] ?? [] as $import) {
+                $tags[] = '<script type="module" src="/' . config('twill.public_directory', 'twill') . '/' . $manifest[$import]['file'] . '"></script>';
+                foreach ($manifest[$import]['css'] ?? [] as $css) {
+                    $tags[] = '<link href="/' . config('twill.public_directory', 'twill') . '/' . $css . '" rel="stylesheet"/>';
+                }
+                foreach ($manifest[$import]['imports'] ?? [] as $nestedImport) {
+                    $tags[] = '<script type="module" src="/' . config('twill.public_directory', 'twill') . '/' . $manifest[$nestedImport]['file'] . '"></script>';
+                    foreach ($manifest[$nestedImport]['css'] ?? [] as $css) {
+                        $tags[] = '<link href="/' . config('twill.public_directory', 'twill') . '/' . $css . '" rel="stylesheet"/>';
+                    }
+                }
+            }
+            foreach ($manifest[$file]['css'] ?? [] as $css) {
+                $tags[] = '<link href="/' . config('twill.public_directory', 'twill') . '/' . $css . '" rel="stylesheet"/>';
+            }
+
+            return implode(PHP_EOL, $tags);
             return $manifest[$file];
         }
 
@@ -49,11 +70,15 @@ class Twill
         try {
             $manifest = $this->readJson(
                 $devServerUrl .
-                    '/' .
-                    config('twill.manifest_file', 'twill-manifest.json')
+                '/' .
+                config('twill.manifest_file', 'twill-manifest.json')
             );
         } catch (\Exception $exception) {
-            throw new \Exception('Twill dev assets manifest is missing. Make sure you are running the npm run serve command inside Twill.', $exception->getCode(), $exception);
+            throw new \Exception(
+                'Twill dev assets manifest is missing. Make sure you are running the npm run serve command inside Twill.',
+                $exception->getCode(),
+                $exception
+            );
         }
 
         return $devServerUrl . ($manifest[$file] ?? '/' . $file);
@@ -69,7 +94,11 @@ class Twill
                 return $this->readJson($this->getManifestFilename());
             });
         } catch (\Exception $exception) {
-            throw new \Exception('Twill assets manifest is missing. Make sure you published/updated Twill assets using the "php artisan twill:update" command.', $exception->getCode(), $exception);
+            throw new \Exception(
+                'Twill assets manifest is missing. Make sure you published/updated Twill assets using the "php artisan twill:update" command.',
+                $exception->getCode(),
+                $exception
+            );
         }
     }
 

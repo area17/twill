@@ -15,19 +15,8 @@
     $requestFilter = json_decode(request()->get('filter'), true) ?? [];
 @endphp
 
-@push('extra_css')
-    @if(app()->isProduction())
-        <link href="{{ twillAsset('main-listing.css') }}" rel="preload" as="style" crossorigin/>
-    @endif
-    @unless(config('twill.dev_mode', false))
-        <link href="{{ twillAsset('main-listing.css') }}" rel="stylesheet" crossorigin/>
-    @endunless
-@endpush
-
-@push('extra_js_head')
-    @if(app()->isProduction())
-        <link href="{{ twillAsset('main-listing.js') }}" rel="preload" as="script" crossorigin/>
-    @endif
+@push('extra_js')
+    {!! twillAsset('frontend/js/main-listing.js') !!}
 @endpush
 
 @section('content')
@@ -218,7 +207,3 @@
         window['{{ config('twill.js_namespace') }}'].openCreate = {!! json_encode($openCreate) !!}
     @endif
 @stop
-
-@push('extra_js')
-    <script src="{{ twillAsset('main-listing.js') }}" crossorigin></script>
-@endpush

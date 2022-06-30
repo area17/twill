@@ -6,12 +6,12 @@ const state = {
    * An array with all the repeaters created
    * @type {Array.Object}
    */
-  repeaters: window[process.env.VUE_APP_NAME].STORE.form.repeaters || {},
+  repeaters: window[import.meta.env.VITE_APP_NAME].STORE.form.repeaters || {},
   /**
    * An object with all the repeaters available to add
    * @type {Object}
    */
-  availableRepeaters: window[process.env.VUE_APP_NAME].STORE.form.availableRepeaters || {}
+  availableRepeaters: window[import.meta.env.VITE_APP_NAME].STORE.form.availableRepeaters || {}
 }
 
 // getters
