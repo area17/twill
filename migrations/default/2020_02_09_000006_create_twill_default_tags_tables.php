@@ -21,6 +21,8 @@ class CreateTwillDefaultTagsTables extends Migration
                 $table->string('taggable_type');
                 $table->integer('taggable_id')->unsigned();
                 $table->integer('tag_id')->unsigned();
+                $table->string('tag_type')->default('App\\\Models\\\Tag');
+                $table->unsignedInteger('position')->default(0);
                 $table->index(['taggable_type', 'taggable_id']);
             });
         }
