@@ -273,6 +273,8 @@
         if (this.blocks(this.editorName) && this.blocks(this.editorName).length < 4 && this.$refs.blockList) {
           this.$refs.blockList.forEach((block) => block.toggleExpand())
         }
+
+        this.setOpened()
       })
     }
   }
