@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\UserRepository;
+use A17\Twill\Events\Impersonate;
 use Illuminate\Auth\AuthManager;
 
 class ImpersonateController extends Controller
@@ -31,6 +32,8 @@ class ImpersonateController extends Controller
             $this->authManager->guard('twill_users')->user()->setImpersonating($user->id);
         }
 
+        Impersonate::dispatch(true);
+
         return back();
     }
 
@@ -40,6 +43,9 @@ class ImpersonateController extends Controller
     public function stopImpersonate()
     {
         $this->authManager->guard('twill_users')->user()->stopImpersonating();
+
+        Impersonate::dispatch(false);
+
         return back();
     }
 }

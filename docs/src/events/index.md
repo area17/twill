@@ -31,6 +31,9 @@ Twill events are native Laravel events so check [documentation](https://laravel.
 *   [Media stored](./#media-stored)
 *   [Media updated](./#media-updated)
 
+**Auth**
+*   [Impersonate](./#impersonate)
+
 ### Handle events
 To properly handle events you will need event listeners.
 
@@ -361,6 +364,24 @@ public function handle(MediaUpdated $event)
     $event->ids;
     $event->data;
     $event->type;
+}
+```
+
+### Impersonate
+
+```
+A17\Twill\Events\Impersonate
+```
+
+`Impersonate` event is fired on superadmin using impersonate feature.
+
+`impersonate` - (bool)
+
+  
+```php
+public function handle(Impersonate $event)
+{
+    $event->impersonate;
 }
 ```
 
