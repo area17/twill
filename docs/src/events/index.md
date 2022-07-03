@@ -33,6 +33,8 @@ Twill events are native Laravel events so check [documentation](https://laravel.
 
 **Auth**
 *   [Impersonate](./#impersonate)
+*   [Login](./#user-login)
+*   [Logout](./#user-logout)
 
 ### Handle events
 To properly handle events you will need event listeners.
@@ -390,6 +392,40 @@ public function handle(Impersonate $event)
     $event->impersonate;
     $event->admin;
     $event->id;
+}
+```
+
+### User login
+
+```
+A17\Twill\Events\UserLogin
+```
+
+`UserLogin` event is fired on CMS user login action.
+
+`user` - User record from Model  
+
+```php
+public function handle(UserLogin $event)
+{
+    $event->user;
+}
+```
+
+### User logout
+
+```
+A17\Twill\Events\UserLogout
+```
+
+`UserLogout` event is fired on CMS user logout action.
+
+`user` - User record from Model  
+
+```php
+public function handle(UserLogout $event)
+{
+    $event->user;
 }
 ```
 
