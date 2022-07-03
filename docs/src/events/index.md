@@ -375,9 +375,13 @@ A17\Twill\Events\Impersonate
 
 `Impersonate` event is fired on superadmin using impersonate feature.
 
-`impersonate` - (bool)  
-`admin` - admin Twill Model instance
+`impersonate` - true for start, false for end (bool)  
+`admin` - admin Twill Model instance  
 `id` - id of user which admin impersonates (int)
+
+::: warning
+If `id` is 0, that means impersonate session is non existing.
+:::
 
   
 ```php
