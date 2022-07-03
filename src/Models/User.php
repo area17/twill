@@ -115,6 +115,11 @@ class User extends AuthenticatableContract
         return Session::has('impersonate');
     }
 
+    public function getImpersonatingId()
+    {
+        return Session::get('impersonate', 0);
+    }
+
     public function notifyWithCustomMarkdownTheme($instance)
     {
         $hostAppMailConfig = config('mail.markdown.paths');

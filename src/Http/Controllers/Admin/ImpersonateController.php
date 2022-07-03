@@ -5,6 +5,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Repositories\UserRepository;
 use A17\Twill\Events\Impersonate;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Support\Facades\Auth;
 
 class ImpersonateController extends Controller
 {
@@ -30,9 +31,9 @@ class ImpersonateController extends Controller
         if ($this->authManager->guard('twill_users')->user()->can('impersonate')) {
             $user = $users->getById($id);
             $this->authManager->guard('twill_users')->user()->setImpersonating($user->id);
-        }
 
-        Impersonate::dispatch(true);
+            Impersonate::dispatch(true, $this->authManager->guard('twill_users')->user(), $user->id);
+        }
 
         return back();
     }
@@ -42,9 +43,11 @@ class ImpersonateController extends Controller
      */
     public function stopImpersonate()
     {
+
+        $id = $this->authManager->guard('twill_users')->user()->getImpersonatingId();
         $this->authManager->guard('twill_users')->user()->stopImpersonating();
 
-        Impersonate::dispatch(false);
+        Impersonate::dispatch(false, $this->authManager->guard('twill_users')->user(), $id);
 
         return back();
     }

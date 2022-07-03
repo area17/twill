@@ -375,13 +375,17 @@ A17\Twill\Events\Impersonate
 
 `Impersonate` event is fired on superadmin using impersonate feature.
 
-`impersonate` - (bool)
+`impersonate` - (bool)  
+`admin` - admin Twill Model instance
+`id` - id of user which admin impersonates (int)
 
   
 ```php
 public function handle(Impersonate $event)
 {
     $event->impersonate;
+    $event->admin;
+    $event->id;
 }
 ```
 
