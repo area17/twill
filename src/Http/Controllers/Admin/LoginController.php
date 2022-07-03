@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Events\UserLogin;
+use A17\Twill\Events\UserLogout;
 use A17\Twill\Http\Requests\Admin\OauthRequest;
 use A17\Twill\Models\User;
 use A17\Twill\Repositories\UserRepository;
@@ -112,6 +114,8 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
+        UserLogout::dispatch($request->user('twill_users'));
+
         $this->guard()->logout();
 
         $request->session()->invalidate();
@@ -140,6 +144,8 @@ class LoginController extends Controller
 
             return $this->redirector->to(route('admin.login-2fa.form'));
         }
+
+        UserLogin::dispatch($user);
 
         return $this->redirector->intended($this->redirectTo);
     }
