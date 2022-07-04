@@ -74,6 +74,7 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
 
     public function scopePublishedInListings($query): Builder
     {
+        // @todo: Remove? Seems unused.
         if ($this->isFillable('public')) {
             $query->where("{$this->getTable()}.public", true);
         }
@@ -81,6 +82,9 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
         return $query->published()->visible();
     }
 
+    /**
+     * @todo: Document
+     */
     public function scopeVisible($query): Builder
     {
         if ($this->isFillable('publish_start_date')) {

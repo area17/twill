@@ -561,7 +561,12 @@ abstract class ModuleRepository
         }
 
         foreach ($orders as $column => $direction) {
-            $builder->orderBy($column, $direction);
+            if (is_array($direction)) {
+                $callback = $direction['callback'];
+                $builder = $callback($builder, $direction['direction']);
+            } else {
+                $builder->orderBy($column, $direction);
+            }
         }
 
         return $builder;

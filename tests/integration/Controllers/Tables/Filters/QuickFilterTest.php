@@ -85,7 +85,7 @@ class QuickFilterTest extends FilterTestBase
         $data = $this->controllerWithFiltersAndQuickFilters(quickFilters: $filters)->index()->getData();
 
         $this->assertCount(1, $data['tableData']);
-        $this->assertEquals($this->author->name, $data['tableData'][0]['name']);
+        $this->assertStringContainsString($this->author->name, $data['tableData'][0]['name']);
     }
 
     public function testDisabledFilterDoesNotShow(): void {
@@ -143,7 +143,7 @@ class QuickFilterTest extends FilterTestBase
 
         $this->assertCount(1, $data['tableData']);
 
-        $this->assertEquals(Author::first()->name, $data['tableData'][0]['name']);
+        $this->assertStringContainsString(Author::first()->name, $data['tableData'][0]['name']);
     }
 
     public function testFilterWithDefault(): void
@@ -180,7 +180,7 @@ class QuickFilterTest extends FilterTestBase
 
         $this->assertCount(1, $data['tableData']);
 
-        $this->assertEquals(Author::latest()->first()->name, $data['tableData'][0]['name']);
+        $this->assertStringContainsString(Author::latest()->first()->name, $data['tableData'][0]['name']);
     }
 
     public function testFilterWithRequestData(): void
@@ -220,7 +220,7 @@ class QuickFilterTest extends FilterTestBase
 
         $this->assertCount(1, $data['tableData']);
 
-        $this->assertEquals(Author::first()->name, $data['tableData'][0]['name']);
+        $this->assertStringContainsString(Author::first()->name, $data['tableData'][0]['name']);
 
         // Switch the quick filter to the last author one.
         $data = $this->controllerWithFiltersAndQuickFilters(quickFilters: $filters, active: ['status' => 'last_author'])
@@ -229,6 +229,6 @@ class QuickFilterTest extends FilterTestBase
 
         $this->assertCount(1, $data['tableData']);
 
-        $this->assertEquals(Author::latest()->first()->name, $data['tableData'][0]['name']);
+        $this->assertStringContainsString(Author::latest()->first()->name, $data['tableData'][0]['name']);
     }
 }

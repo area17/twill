@@ -36,6 +36,11 @@ class FilterTestBase extends ModulesTestBase
                 $this->user = Auth::user();
             }
 
+            public function setSearchColumnsTest(...$args): void
+            {
+                $this->setSearchColumns(...$args);
+            }
+
             public function quickFilters(): QuickFilters
             {
                 if ($this->testQuickFilters !== []) {

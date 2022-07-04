@@ -41,7 +41,7 @@ class SearchTest extends FilterTestBase
 
         // Set the search columns.
         $controller = $this->controllerWithFiltersAndQuickFilters(active: ['search' => '2022']);
-        $controller->setSearchColumns(['name', 'year']);
+        $controller->setSearchColumnsTest(['name', 'year']);
 
         $data = $controller->index()->getData();
         $this->assertCount(1, $data['tableData']);

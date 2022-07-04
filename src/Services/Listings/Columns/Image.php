@@ -4,7 +4,6 @@ namespace A17\Twill\Services\Listings\Columns;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Contracts\TwillModelContract;
-use A17\Twill\Models\Model as TwillModel;
 use A17\Twill\Services\Listings\TableColumn;
 use InvalidArgumentException;
 
@@ -17,6 +16,14 @@ class Image extends TableColumn
     protected ?array $mediaParams = null;
 
     protected bool $rounded = false;
+
+    public static function make(): static
+    {
+        $column = parent::make();
+        $column->specificType = 'thumbnail';
+
+        return $column;
+    }
 
     /**
      * The image role that is defined in your model. Can be left out as it will take the first one available.

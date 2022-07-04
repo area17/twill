@@ -66,7 +66,7 @@ class BooleanFilterTest extends FilterTestBase
 
         $this->assertCount(1, $data['tableData']);
 
-        $this->assertEquals($this->author->name, $data['tableData'][0]['name']);
+        $this->assertStringContainsString($this->author->name, $data['tableData'][0]['name']);
     }
 
     public function testFilterWithRequestData(): void
@@ -79,7 +79,7 @@ class BooleanFilterTest extends FilterTestBase
 
         $this->assertCount(1, $data['tableData']);
 
-        $this->assertEquals($this->author->name, $data['tableData'][0]['name']);
+        $this->assertStringContainsString($this->author->name, $data['tableData'][0]['name']);
 
         // Test the negative value.
         $data = $this->controllerWithFiltersAndQuickFilters($filters, active: ['public' => BooleanFilter::FALSE])

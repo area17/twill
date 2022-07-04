@@ -463,7 +463,7 @@ abstract class TestCase extends OrchestraTestCase
         }
 
         return collect($routes)->filter(function ($route) {
-            return Str::startsWith($route->action['uses'], 'A17\Twill') ||
+            return is_callable($route->action['uses']) || Str::startsWith($route->action['uses'], 'A17\Twill') ||
                 Str::startsWith($route->action['uses'], 'App\\');
         });
     }
@@ -476,10 +476,17 @@ abstract class TestCase extends OrchestraTestCase
     public function getAllUris()
     {
         return $this->getAllRoutes()
-            ->pluck('uri')
+            ->pluck('uri', 'action.as')
             ->sort()
             ->unique()
             ->values();
+    }
+
+    public function getAllUrisWithName()
+    {
+        return $this->getAllRoutes()->map(function ($route, $index) {
+            return [$route->action['as'] ?? $index => $route->uri];
+        })->all();
     }
 
     /**

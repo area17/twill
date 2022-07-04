@@ -1,13 +1,13 @@
 <template>
   <div :class="getThumbClasses">
     <a
-      :href="!row.hasOwnProperty('deleted') ? editUrl : false"
-      @click="!row.hasOwnProperty('deleted') ? preventEditInPlace($event) : null"
+        :href="!row.hasOwnProperty('deleted') ? editUrl : false"
+        @click="!row.hasOwnProperty('deleted') ? preventEditInPlace($event) : null"
     >
       <template v-if="col.variation === 'rounded'">
         <a17-avatar
-          :name="row.name"
-          :thumbnail="row[colName]"
+            :name="rowTitle"
+            :thumbnail="row[colName]"
         />
       </template>
       <template v-else>
@@ -28,6 +28,9 @@
       'a17-avatar': A17Avatar
     },
     computed: {
+      rowTitle() {
+        return this.row.name ?? this.row.title.replace(/<[^>]*>?/gm, '') ?? ''
+      },
       getThumbClasses () {
         return [
           'tablecell__thumb',

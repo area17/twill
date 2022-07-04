@@ -12,8 +12,8 @@ use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Contracts\TwillSchedulableModel;
 use A17\Twill\Models\Group;
 use A17\Twill\Services\Blocks\Block;
-use A17\Twill\Services\Listings\Columns\Boolean;
 use A17\Twill\Services\Listings\Columns\Browser;
+use A17\Twill\Services\Listings\Columns\FeaturedStatus;
 use A17\Twill\Services\Listings\Columns\Image;
 use A17\Twill\Services\Listings\Columns\Languages;
 use A17\Twill\Services\Listings\Columns\NestedData;
@@ -126,6 +126,7 @@ abstract class ModuleController extends Controller
         'skipCreateModal' => false,
         'includeScheduledInList' => true,
         'showImage' => false,
+        'sortable' => true,
     ];
 
     /**
@@ -155,6 +156,7 @@ abstract class ModuleController extends Controller
         'skipCreateModal' => 'edit-module',
         'includeScheduledInList' => 'edit-module',
         'showImage' => 'edit-module',
+        'sortable' => 'edit-module',
     ];
 
     /**
@@ -204,9 +206,11 @@ abstract class ModuleController extends Controller
     protected $filterLinks = [];
 
     /**
-     * Default orders for the index view.
+     * Default orders for the index view for fields that are not part of the indexColumns.
      *
      * @var array
+     *
+     * @deprecated when possible use getIndexTableColumns instead.
      */
     protected $defaultOrders = [
         'created_at' => 'desc',
@@ -379,12 +383,192 @@ abstract class ModuleController extends Controller
 
     /**
      * The setup method that is called when the controller is booted.
-     *
-     * You can use setters in here like:
-     * - setSearchColumns([..])
      */
-    public function setUpController(): void
+    protected function setUpController(): void
     {
+    }
+
+    /**
+     * Removes the "Create" button on the listing page.
+     */
+    protected function disableCreate(): void
+    {
+        $this->indexOptions['create'] = false;
+    }
+
+    /**
+     * Disables table interaction and removes edit links.
+     */
+    protected function disableEdit(): void
+    {
+        $this->indexOptions['edit'] = false;
+    }
+
+    /**
+     * Disables the ability to sort the table by clicking table headers.
+     */
+    protected function disableSortable(): void
+    {
+        $this->indexOptions['sortable'] = false;
+    }
+
+    /**
+     * Removes the publish/un-publish icon on the content listing.
+     */
+    protected function disablePublish(): void
+    {
+        $this->indexOptions['publish'] = false;
+    }
+
+    /**
+     * Removes the "publish" option from the bulk operations.
+     */
+    protected function disableBulkPublish(): void
+    {
+        $this->indexOptions['bulkPublish'] = false;
+    }
+
+    /**
+     * Removes "restore" from the list item dropdown on the "Trash" content list.
+     */
+    protected function disableRestore(): void
+    {
+        $this->indexOptions['restore'] = false;
+    }
+
+    /**
+     * Removes the "Trash" quick filter.
+     */
+    protected function disableBulkRestore(): void
+    {
+        $this->indexOptions['bulkRestore'] = false;
+    }
+
+    /**
+     * Removes the "delete" option from the "Trash" content list.
+     */
+    protected function disableForceDelete(): void
+    {
+        $this->indexOptions['forceDelete'] = false;
+    }
+
+    /**
+     * Removes "restore" from the bulk operations on the "Trash" content list.
+     */
+    protected function disableBulkForceDelete(): void
+    {
+        $this->indexOptions['bulkForceDelete'] = false;
+    }
+
+    /**
+     * Removes the "delete" option from the content lists.
+     */
+    protected function disableDelete(): void
+    {
+        $this->indexOptions['delete'] = false;
+    }
+
+    /**
+     * Removes the "delete" option from the bulk operations.
+     */
+    protected function disableBulkDelete(): void
+    {
+        $this->indexOptions['bulkDelete'] = false;
+    }
+
+    /**
+     * Removes the permalink from the create/edit screens.
+     */
+    protected function disablePermalink(): void
+    {
+        $this->indexOptions['permalink'] = false;
+    }
+
+    /**
+     * Disables bulk operations.
+     */
+    protected function disableBulkEdit(): void
+    {
+        $this->indexOptions['bulkEdit'] = false;
+    }
+
+    /**
+     * Hides publish scheduling information from the content list.
+     *
+     * This does not affect custom table builders. Unless implemented.
+     */
+    protected function disableIncludeScheduledInList(): void
+    {
+        $this->indexOptions['includeScheduledInList'] = false;
+    }
+
+    /**
+     * Disables the create modal and directly forwards you to the full edit page.
+     */
+    protected function enableSkipCreateModal(): void
+    {
+        $this->indexOptions['skipCreateModal'] = true;
+    }
+
+    /**
+     * Allow to feature the content. This requires a 'featured' fillable boolean on the model.
+     *
+     * If you want to use a different column you can use the `setFeaturedField` method.
+     */
+    protected function enableFeature(): void
+    {
+        // @todo: Also expand on the documentation about this.
+        // Also mention isUniqueFeature that only one can be featured + test this.
+        $this->indexOptions['feature'] = true;
+    }
+
+    /**
+     * Enables the "Feature" bulk operation.
+     */
+    protected function enableBulkFeature(): void
+    {
+        $this->indexOptions['bulkFeature'] = true;
+    }
+
+    /**
+     * Enables the "Duplicate" option from the content lists.
+     */
+    protected function enableDuplicate(): void
+    {
+        $this->indexOptions['duplicate'] = true;
+    }
+
+    /**
+     * Allows to reorder the items, if this was setup on the model.
+     */
+    protected function enableReorder(): void
+    {
+        $this->indexOptions['reorder'] = true;
+    }
+
+    /**
+     * Enables the function that content is edited in the create modal.
+     */
+    protected function enableEditInModal(): void
+    {
+        // @3xtodo: When this is enabled, the "link" to the model in the listing does not work (Redirects back).
+        $this->indexOptions['editInModal'] = true;
+    }
+
+    /**
+     * Shows the thumbnail of the content in the list.
+     */
+    protected function enableShowImage(): void
+    {
+        $this->indexOptions['showImage'] = true;
+    }
+
+    /**
+     * Set the field to use for featuring content.
+     */
+    protected function setFeatureField(string $field): void
+    {
+        $this->featureField = $field;
     }
 
     /**
@@ -392,9 +576,76 @@ abstract class ModuleController extends Controller
      *
      * SearchColumns are automatically prefixes/suffixed with %.
      */
-    public function setSearchColumns(array $searchColumns): void
+    protected function setSearchColumns(array $searchColumns): void
     {
         $this->searchColumns = $searchColumns;
+    }
+
+    /**
+     * Set the name of the module you are working with.
+     */
+    protected function setModuleName(string $moduleName): void
+    {
+        $this->moduleName = $moduleName;
+    }
+
+    /**
+     * The static permalink base to your module. Defaults to `setModuleName` when empty.
+     */
+    protected function setPermalinkBase(string $permalinkBase): void
+    {
+        $this->permalinkBase = $permalinkBase;
+    }
+
+    /**
+     * Sets the field to use as title, defaults to `title`.
+     */
+    protected function setTitleColumnKey(string $titleColumnKey): void
+    {
+        $this->titleColumnKey = $titleColumnKey;
+    }
+
+    /**
+     * Usually not required, but in case customization is needed you can use this method to set the name of the model
+     * this controller acts on.
+     */
+    protected function setModelName(string $modelName): void
+    {
+        $this->modelName = $modelName;
+    }
+
+    /**
+     * Sets the amount of results to show per page, defaults to 20.
+     */
+    protected function setResultsPerPage(int $resultsPerPage): void
+    {
+        $this->perPage = $resultsPerPage;
+    }
+
+    /**
+     * Relations to eager load for the index view.
+     */
+    protected function eagerLoadListingRelations(array $relations): void
+    {
+        $this->indexWith = $relations;
+    }
+
+    /**
+     * Relations to eager load for the form view.
+     *
+     * Add relationship used in multiselect and resource form fields.
+     */
+    protected function eagerLoadFormRelations(array $relations): void
+    {
+        $this->formWith = $relations;
+    }
+
+    /**
+     * Relation count to eager load for the form view.
+     */
+    protected function eagerLoadFormRelationCounts(array $relations): void
+    {
+        $this->formWith = $relations;
     }
 
     /**
@@ -451,6 +702,24 @@ abstract class ModuleController extends Controller
             );
         }
 
+        if ($this->indexColumns === []) {
+            // Add default columns.
+            if ($this->getIndexOption('showImage')) {
+                $columns->add(
+                    Image::make()
+                        ->field('thumbnail')
+                        ->title(twillTrans('Image'))
+                );
+            }
+
+            if ($this->getIndexOption('feature')) {
+                $columns->add(
+                    FeaturedStatus::make()
+                        ->title(twillTrans('twill::lang.listing.columns.featured'))
+                );
+            }
+        }
+
         // Consume Deprecated data.
         if ($this->indexColumns !== []) {
             $this->handleLegacyColumns($columns, $this->indexColumns);
@@ -458,29 +727,12 @@ abstract class ModuleController extends Controller
             $columns->add(
                 Text::make()
                     ->field($this->titleColumnKey)
+                    ->sortable()
                     ->linkCell(function (TwillModelContract $model) {
                         if ($this->getIndexOption('edit', $model)) {
                             return $this->getModuleRoute($model->id, 'edit');
                         }
                     })
-            );
-        }
-
-        // Add default columns.
-        if ($this->getIndexOption('showImage')) {
-            $columns->add(
-                Image::make()
-                    ->field('thumbnail')
-                    ->rounded()
-                    ->title(twillTrans('Image'))
-            );
-        }
-
-        if ($this->getIndexOption('feature')) {
-            $columns->add(
-                Boolean::make()
-                    ->field('featured')
-                    ->title(twillTrans('twill::lang.listing.columns.featured'))
             );
         }
 
@@ -553,14 +805,22 @@ abstract class ModuleController extends Controller
                         ->sortable($indexColumn['sort'] ?? false)
                 );
             } else {
-                $columns->add(
-                    Text::make()
-                        ->title($indexColumn['title'] ?? null)
-                        ->field($indexColumn['field'] ?? $key)
-                        ->sortKey($indexColumn['sortKey'] ?? null)
-                        ->optional($indexColumn['optional'] ?? false)
-                        ->sortable($indexColumn['sort'] ?? false)
-                );
+                $textColumn = Text::make()
+                    ->title($indexColumn['title'] ?? null)
+                    ->field($indexColumn['field'] ?? $key)
+                    ->sortKey($indexColumn['sortKey'] ?? null)
+                    ->optional($indexColumn['optional'] ?? false)
+                    ->sortable($indexColumn['sort'] ?? false);
+
+                // If it is a the title, we always want to link it.
+                if ($this->titleColumnKey === ($indexColumn['field'] ?? $key)) {
+                    $textColumn->linkCell(function (TwillModelContract $model) {
+                        if ($this->getIndexOption('edit', $model)) {
+                            return $this->getModuleRoute($model->id, 'edit');
+                        }
+                    });
+                }
+                $columns->add($textColumn);
             }
         }
     }
@@ -624,7 +884,7 @@ abstract class ModuleController extends Controller
 
     /**
      * @param int|null $parentModuleId
-     * @return array|\Illuminate\View\View
+     * @return \Illuminate\View\View|JsonResponse
      */
     public function index($parentModuleId = null)
     {
@@ -641,8 +901,8 @@ abstract class ModuleController extends Controller
             ] : []
         );
 
-        if ($this->request->ajax()) {
-            return $indexData + ['replaceUrl' => true];
+        if ($this->request->ajax() || $this->request->expectsJson()) {
+            return new JsonResponse($indexData + ['replaceUrl' => true]);
         }
 
         if ($this->request->has('openCreate') && $this->request->get('openCreate')) {
@@ -1312,7 +1572,7 @@ abstract class ModuleController extends Controller
                 'tableData' => $this->getIndexTableData($items),
                 'tableColumns' => $this->getTableColumns('index')->toCmsArray(
                     request(),
-                    $this->getIndexOption('reorder')
+                    $this->getIndexOption('sortable')
                 ),
                 'tableMainFilters' => $this->quickFilters()->toFrontendArray(),
                 'filters' => json_decode($this->request->get('filter'), true) ?? [],
@@ -1407,21 +1667,17 @@ abstract class ModuleController extends Controller
 
         return $this->transformIndexItems(
             $this->repository->get(
-                $this->indexWith,
-                $scopes,
-                $this->orderScope(),
-                $this->request->get('offset') ?? $this->perPage ?? 50,
-                $forcePagination,
-                $appliedFilters
+                with: $this->indexWith,
+                scopes: $scopes,
+                orders: $this->orderScope(),
+                perPage: $this->request->get('offset') ?? $this->perPage ?? 50,
+                forcePagination: $forcePagination,
+                appliedFilters: $appliedFilters
             )
         );
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Collection $items
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    protected function transformIndexItems($items)
+    protected function transformIndexItems(Collection|LengthAwarePaginator $items): Collection|LengthAwarePaginator
     {
         return $items;
     }
@@ -1477,7 +1733,7 @@ abstract class ModuleController extends Controller
         return [];
     }
 
-    protected function getItemIdentifier(TwillModelContract $item): int|string
+    protected function getItemIdentifier(TwillModelContract $item): null|int|string
     {
         return $item->{$this->identifierColumnKey};
     }
@@ -1748,18 +2004,51 @@ abstract class ModuleController extends Controller
                 $indexColumn = $this->getIndexTableColumns()->first(function (TableColumn $column) use ($sortKey) {
                     return $column->getKey() === $sortKey;
                 });
-                $orders[$indexColumn?->getSortKey() ?? $sortKey] = $this->request->get('sortDir');
+                if ($indexColumn) {
+                    if ($indexColumn->getOrderFunction()) {
+                        $orders[$indexColumn->getSortKey()] = [
+                            'callback' => $indexColumn->getOrderFunction(),
+                            'direction' => $this->request->get('sortDir'),
+                        ];
+                    } else {
+                        $orders[$indexColumn->getSortKey()] = $this->request->get('sortDir');
+                    }
+                } else {
+                    $orders[$sortKey] = $this->request->get('sortDir');
+                }
             }
         }
 
+        $defaultOrders = [];
+
         // don't apply default orders if reorder is enabled
-        $reorder = $this->getIndexOption('reorder');
-        $defaultOrders = ($reorder ? [] : ($this->defaultOrders ?? []));
+        if (!$this->getIndexOption('reorder')) {
+            // We override defaultOrder with our table columns.
+            $this->getIndexTableColumns()->each(function (TableColumn $column) use (&$defaultOrders) {
+                if ($column->isDefaultSort()) {
+                    if ($column->getOrderFunction()) {
+                        $defaultOrders[$column->getSortKey()] = [
+                            'callback' => $column->getOrderFunction(),
+                            'direction' => $column->getDefaultSortDirection(),
+                        ];
+                    } else {
+                        $defaultOrders[$column->getSortKey()] = $column->getDefaultSortDirection();
+                    }
+                }
+            });
+
+            // Add the defaults if they are not in the array yet.
+            foreach ($this->defaultOrders ?? [] as $key => $value) {
+                if (!isset($defaultOrders[$key])) {
+                    $defaultOrders[$key] = $value;
+                }
+            }
+        }
 
         return $orders + $defaultOrders;
     }
 
-    protected function form(int $id, ?TwillModelContract $item = null): array
+    protected function form(?int $id, ?TwillModelContract $item = null): array
     {
         if (!$item && $id) {
             $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);

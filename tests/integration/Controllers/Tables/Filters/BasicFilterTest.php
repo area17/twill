@@ -76,7 +76,7 @@ class BasicFilterTest extends FilterTestBase
 
         $this->assertCount(1, $data['tableData']);
 
-        $this->assertEquals(Author::first()->name, $data['tableData'][0]['name']);
+        $this->assertStringContainsString(Author::first()->name, $data['tableData'][0]['name']);
     }
 
     public function testFilterWithRequestData(): void
@@ -95,6 +95,6 @@ class BasicFilterTest extends FilterTestBase
 
         $this->assertCount(1, $data['tableData']);
 
-        $this->assertEquals(Author::first()->name, $data['tableData'][0]['name']);
+        $this->assertStringContainsString(Author::first()->name, $data['tableData'][0]['name']);
     }
 }

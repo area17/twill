@@ -14,6 +14,8 @@ For fields that should default to false in the database when not sent by the for
 Depending upon the Twill features you need on your model, include the related traits and configure their respective
 options:
 
+[[toc]]
+
 #### HasPosition
 
 Implement the `A17\Twill\Models\Behaviors\Sortable` interface and add a position field to your fillables.
@@ -99,3 +101,10 @@ class Author extends Model implements Sortable
 
 You can also set a global revisions limit using by
 setting [TwillConfig::maxRevisions](../getting-started/configuration.md#twillconfig-facade)
+
+#### Scheduling
+
+Also see [Migrations documentation](./migrations.md).
+
+If the database for you model has the fields `publish_start_date` and `publish_end_date` you need to make those fillable
+to allow content scheduling.

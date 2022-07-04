@@ -94,8 +94,8 @@ Items of the child module can't be created independently.
 We'll use the `slug` and `position` features in this example but you can customize as needed:
 
 ```
-php artisan twill:module issues -SP
-php artisan twill:module issueArticles -SP
+php artisan twill:make:module issues -SP
+php artisan twill:make:module issueArticles -SP
 ```
 
 Add the `issue_id` foreign key to the child module's migration:

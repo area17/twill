@@ -152,13 +152,13 @@ abstract class ModulesTestBase extends TestCase
         $this->assertEquals($data['endpointType'], 'App\Models\Author');
     }
 
-    protected function createAuthor($count = 1): Author
+    protected function createAuthor($count = 1, array $data = []): Author
     {
         foreach (range(1, $count) as $c) {
             $this->httpJsonRequestAssert(
                 route('twill.personnel.authors.store'),
                 'POST',
-                $this->getCreateAuthorData()
+                $this->getCreateAuthorData($data)
             );
         }
 
@@ -229,8 +229,9 @@ abstract class ModulesTestBase extends TestCase
 
     /**
      * @return array
+     * @todo: Should get rid of all the properties as they are unreliable.
      */
-    protected function getCreateAuthorData(): array
+    protected function getCreateAuthorData(array $extraData = []): array
     {
         $name = $this->faker->name;
         // These are escaped and would not work properly (they work but not in test text comparisons')
@@ -238,10 +239,10 @@ abstract class ModulesTestBase extends TestCase
 
         $this->name = $name;
 
-        return [
+        $data = [
             'name' => [
-                'en' => ($this->name_en = '[EN] ' . $name),
-                'fr' => ($this->name_fr = '[FR] ' . $name),
+                'en' => ($this->name_en = '[EN] ' . ($extraData['title'] ?? $name)),
+                'fr' => ($this->name_fr = '[FR] ' . ($extraData['title'] ?? $name)),
             ],
             'slug' => [
                 'en' => ($this->slug_en = Str::slug($this->name_en)),
@@ -272,6 +273,21 @@ abstract class ModulesTestBase extends TestCase
                 ],
             ],
         ];
+
+        // Add the other values based on their translatability.
+        unset($extraData['title']);
+        foreach ($extraData as $key => $value) {
+            if (in_array($key, (new Author())->getTranslatedAttributes(), true)) {
+                $data[$key] = [
+                    'en' => '[EN] ' . $value,
+                    'fr' => '[FR] ' . $value,
+                ];
+            } else {
+                $data[$key] = $value;
+            }
+        }
+
+        return $data;
     }
 
     public function getUpdateAuthorData()

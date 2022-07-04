@@ -6,7 +6,6 @@ use A17\Twill\Models\Media;
 use A17\Twill\Repositories\MediaRepository;
 use A17\Twill\Services\Listings\Columns\Image;
 use A17\Twill\Tests\Integration\ModulesTestBase;
-use A17\Twill\Tests\Unit\Components\WysiwygFieldTest;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -85,6 +84,7 @@ class ImageColumnTest extends ModulesTestBase
                 "sortable" => false,
                 "html" => false,
                 "variation" => "square",
+                "specificType" => "thumbnail",
             ],
             $column->toColumnArray()
         );
@@ -100,6 +100,7 @@ class ImageColumnTest extends ModulesTestBase
                 "sortable" => false,
                 "html" => false,
                 "variation" => "rounded",
+                "specificType" => "thumbnail",
             ],
             $column->toColumnArray()
         );
@@ -117,8 +118,9 @@ class ImageColumnTest extends ModulesTestBase
         );
     }
 
-    public function testCustomRenderer(): void {
-        $column = Image::make()->field('image')->customRender(function() {
+    public function testCustomRenderer(): void
+    {
+        $column = Image::make()->field('image')->customRender(function () {
             return "Test";
         });
 
@@ -172,7 +174,8 @@ class ImageColumnTest extends ModulesTestBase
         $column->renderCell($this->author);
     }
 
-    public function testExceptionWhenMissingTrait(): void {
+    public function testExceptionWhenMissingTrait(): void
+    {
         $column = Image::make()->field('image');
 
         $this->expectException(InvalidArgumentException::class);

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Twill;
 
 use A17\Twill\Http\Controllers\Admin\ModuleController;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class CategoryController extends ModuleController
 {
@@ -20,7 +22,7 @@ class CategoryController extends ModuleController
         ];
     }
 
-    protected function transformIndexItems($items)
+    protected function transformIndexItems(Collection|LengthAwarePaginator $items): Collection|LengthAwarePaginator
     {
         return $items->toTree();
     }

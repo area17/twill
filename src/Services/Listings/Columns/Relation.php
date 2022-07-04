@@ -20,6 +20,15 @@ class Relation extends TableColumn
         return $this->relation . Str::studly($this->field);
     }
 
+    public function getSortKey(): string
+    {
+        if (null === $this->sortKey) {
+            return $this->relation . ucfirst($this->field);
+        }
+
+        return $this->sortKey;
+    }
+
     /**
      * Set the relation that should be used.
      */
