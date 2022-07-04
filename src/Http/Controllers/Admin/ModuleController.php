@@ -12,7 +12,6 @@ use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Contracts\TwillSchedulableModel;
 use A17\Twill\Models\Group;
 use A17\Twill\Services\Blocks\Block;
-use A17\Twill\Services\Listings\Columns\Boolean;
 use A17\Twill\Services\Listings\Columns\Browser;
 use A17\Twill\Services\Listings\Columns\FeaturedStatus;
 use A17\Twill\Services\Listings\Columns\Image;
@@ -552,7 +551,7 @@ abstract class ModuleController extends Controller
      */
     protected function enableEditInModal(): void
     {
-        // @PRtodo: When this is enabled, the "link" to the model in the listing does not work (Redirects back).
+        // @3xtodo: When this is enabled, the "link" to the model in the listing does not work (Redirects back).
         $this->indexOptions['editInModal'] = true;
     }
 
