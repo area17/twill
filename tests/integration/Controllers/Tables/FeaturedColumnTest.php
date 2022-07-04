@@ -38,14 +38,19 @@ class FeaturedColumnTest extends TestCase
         $this->post(route('twill.servers.store'), ['title' => 'Test title',])
             ->assertStatus(200);
 
-        $this->getJson(route('twill.servers.index'))
-            ->assertJsonPath('tableData.0.featured', 0);
+        $featured = $this->getJson(route('twill.servers.index'))
+            ->json('tableData.0.featured');
+
+        // Here we use a full fetch as there is a php 8, 8.1 difference regarding how booleans are casted. ('0' and 0).
+        $this->assertEquals(0, (int)$featured);
 
         // Feature the content
         $this->putJson(route('twill.servers.feature'), ['id' => $class::latest()->first()->id, 'active' => false])
             ->assertJsonPath('message', 'Server featured!');
 
-        $this->getJson(route('twill.servers.index'))
-            ->assertJsonPath('tableData.0.featured', 1);
+        $featured = $this->getJson(route('twill.servers.index'))
+            ->json('tableData.0.featured');
+
+        $this->assertEquals(1, (int)$featured);
     }
 }
