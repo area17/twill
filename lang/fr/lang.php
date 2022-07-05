@@ -326,6 +326,7 @@ return [
         'media-library' => 'Galerie de médias',
         'settings' => 'Paramètres',
         'close-menu' => 'Fermer le menu',
+        'profile' => 'Profile',
     ],
     'notifications' => [
         'reset' => [

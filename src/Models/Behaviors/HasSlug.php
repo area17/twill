@@ -160,7 +160,7 @@ trait HasSlug
                 $query->where(function ($query) use ($value) {
                     $query->orWhere('slug', $value);
                     $query->orWhere('slug', $value . '-' . $this->getSuffixSlug());
-                    for ($i = 2; $i <= $this->nb_variation_slug; $i++) {
+                    for ($i = 2; $i <= $this->nb_variation_slug; ++$i) {
                         $query->orWhere('slug', $value . '-' . $i);
                     }
                 });
@@ -207,7 +207,7 @@ trait HasSlug
 
         unset($slugParams['active']);
 
-        for ($i = 2; $i <= $this->nb_variation_slug + 1; $i++) {
+        for ($i = 2; $i <= $this->nb_variation_slug + 1; ++$i) {
             $qCheck = $this->getSlugModelClass()::query();
             $qCheck->whereNull($this->getDeletedAtColumn());
             foreach ($slugParams as $key => $value) {
@@ -419,15 +419,15 @@ trait HasSlug
 
         $char_map = array(
             // Latin
-            'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE', 'Ç' => 'C',
-            'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I',
-            'Ð' => 'D', 'Ñ' => 'N', 'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ő' => 'O',
-            'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U', 'Ű' => 'U', 'Ý' => 'Y', 'Þ' => 'TH',
+            'À' => 'A', 'Á' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A', 'Æ' => 'AE',
+            'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Ï' => 'I',
+            'Ð' => 'D', 'Ñ' => 'N', 'Ò' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ő' => 'O',
+            'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ű' => 'U', 'Ý' => 'Y', 'Þ' => 'TH',
             'ß' => 'ss',
-            'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'ae', 'ç' => 'c',
-            'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
-            'ð' => 'd', 'ñ' => 'n', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ő' => 'o',
-            'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
+            'à' => 'a', 'á' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a', 'æ' => 'ae',
+            'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'ï' => 'i',
+            'ð' => 'd', 'ñ' => 'n', 'ò' => 'o', 'ô' => 'o', 'õ' => 'o', 'ő' => 'o',
+            'ø' => 'o', 'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ű' => 'u', 'ý' => 'y', 'þ' => 'th',
             'ÿ' => 'y',
 
             // Latin symbols
@@ -470,10 +470,7 @@ trait HasSlug
             'ә' => 'a', 'ғ' => 'g', 'қ' => 'q', 'ң' => 'n', 'ө' => 'o', 'ұ' => 'u',
 
             // Czech
-            'Č' => 'C', 'Ď' => 'D', 'Ě' => 'E', 'Ň' => 'N', 'Ř' => 'R', 'Š' => 'S', 'Ť' => 'T', 'Ů' => 'U',
-            'Ž' => 'Z',
-            'č' => 'c', 'ď' => 'd', 'ě' => 'e', 'ň' => 'n', 'ř' => 'r', 'š' => 's', 'ť' => 't', 'ů' => 'u',
-            'ž' => 'z',
+            'Č' => 'C', 'Ď' => 'D', 'Ě' => 'E', 'Ň' => 'N', 'Ř' => 'R', 'Ť' => 'T', 'Ů' => 'U', 'ď' => 'd', 'ě' => 'e', 'ň' => 'n', 'ř' => 'r', 'ť' => 't', 'ů' => 'u',
 
             // Polish
             'Ą' => 'A', 'Ć' => 'C', 'Ę' => 'e', 'Ł' => 'L', 'Ń' => 'N', 'Ó' => 'o', 'Ś' => 'S', 'Ź' => 'Z',
@@ -501,7 +498,7 @@ trait HasSlug
         }
 
         // Replace non-alphanumeric characters with our delimiter
-        $str = preg_replace('/[^\p{L}\p{Nd}]+/u', $options['delimiter'], $str);
+        $str = preg_replace('#[^\p{L}\p{Nd}]+#u', $options['delimiter'], $str);
 
         // Remove duplicate delimiters
         $str = preg_replace('/(' . preg_quote($options['delimiter'], '/') . '){2,}/', '$1', $str);
@@ -523,7 +520,7 @@ trait HasSlug
      */
     public function urlSlugShorter($string)
     {
-        return strtolower(trim(preg_replace('~[^0-9a-z]+~i', '-', html_entity_decode(preg_replace('~&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);~i', '$1', htmlentities($string, ENT_QUOTES, 'UTF-8')), ENT_QUOTES, 'UTF-8')), '-'));
+        return strtolower(trim(preg_replace('#[^0-9a-z]+#i', '-', html_entity_decode(preg_replace('#&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);#i', '$1', htmlentities($string, ENT_QUOTES, 'UTF-8')), ENT_QUOTES, 'UTF-8')), '-'));
     }
 
     /**

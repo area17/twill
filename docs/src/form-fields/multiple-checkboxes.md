@@ -6,6 +6,49 @@ pageClass: twill-doc
 
 ![screenshot](../.vuepress/public/_media/checkboxes.png)
 
+Form view:
+```html
+@php
+    $options = [
+        [
+            'value' => 'arts',
+            'label' => 'Arts & Culture'
+        ],
+        [
+            'value' => 'finance',
+            'label' => 'Banking & Finance'
+        ],
+        [
+            'value' => 'civic',
+            'label' => 'Civic & Public'
+        ],
+    ];
+@endphp
+
+<x-twill::checkboxes
+    name="sectors"
+    label="Sectors"
+    note="3 sectors max"
+    :min="1"
+    :max="3"
+    :inline="true"
+    :options="$options"
+/>
+```
+
+Form builder:
+```php
+Checkboxes::make()
+    ->name('sectors')
+    ->options(
+        Options::make([
+            Option::make('key', 'value'),
+            ...
+        ])
+    );
+```
+
+::: details Old method
 ```php
 @formField('checkboxes', [
     'name' => 'sectors',
@@ -30,9 +73,10 @@ pageClass: twill-doc
     ]
 ])
 ```
+:::
 
 | Option  | Description                                                         | Type    | Default value |
-| :------ | :------------------------------------------------------------------ | :-------| :------------ |
+|:--------|:--------------------------------------------------------------------|:--------|:--------------|
 | name    | Name of the field                                                   | string  |               |
 | label   | Label of the field                                                  | string  |               |
 | min     | Minimum number of selectable options                                | integer |               |

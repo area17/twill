@@ -32,7 +32,7 @@ const WebpackNotifierPlugin = require('webpack-notifier')
 const srcDirectory = 'frontend'
 const partialsDirectory = '../views/partials'
 const outputDir = isProd ? 'dist' : (process.env.TWILL_DEV_ASSETS_PATH || 'dist')
-const assetsDir = process.env.TWILL_ASSETS_DIR || 'assets/admin'
+const assetsDir = process.env.TWILL_ASSETS_DIR || 'assets/twill'
 // Only works with laravel valet.
 const useHttps = process.env.TWILL_DEV_MODE_SSH ? process.env.TWILL_DEV_MODE_SSH === 'true' : false
 

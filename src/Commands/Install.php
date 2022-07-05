@@ -2,17 +2,20 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\Commands\Traits\HandlesPresets;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Filesystem\Filesystem;
 
 class Install extends Command
 {
+    use HandlesPresets;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'twill:install';
+    protected $signature = 'twill:install {preset? : Optional, the preset to install}';
 
     /**
      * The console command description.
@@ -31,10 +34,6 @@ class Install extends Command
      */
     protected $db;
 
-    /**
-     * @param Filesystem $files
-     * @param DatabaseManager $db
-     */
     public function __construct(Filesystem $files, DatabaseManager $db)
     {
         parent::__construct();
@@ -54,21 +53,45 @@ class Install extends Command
         //check the database connection before installing
         try {
             $this->db->connection()->getPdo();
-        } catch (\Exception $e) {
-            $this->error('Could not connect to the database, please check your configuration:' . "\n" . $e);
+        } catch (\Exception $exception) {
+            $this->error('Could not connect to the database, please check your configuration:' . "\n" . $exception);
+
             return;
         }
 
-        $this->addRoutesFile();
+        if (filled($preset = $this->argument('preset'))) {
+            if ($this->presetExists($preset)) {
+                if ($this->confirm('Are you sure to install this preset? This can overwrite your models, config and routes.')) {
+                    $this->installPreset($preset);
+                } else {
+                    $this->warn('Cancelled.');
+                }
+            } else {
+                $this->error("Could not find preset: $preset");
+            }
+        } else {
+            $this->copyBlockPreviewFile();
+            $this->addRoutesFile();
+            $this->call('migrate');
+            $this->publishConfig();
+            $this->publishAssets();
+            $this->createSuperAdmin();
+            $this->info('All good!');
+        }
+    }
+
+    private function installPreset(string $preset): void
+    {
+        $this->installPresetFiles($preset);
+
         $this->call('migrate');
-        $this->publishConfig();
         $this->publishAssets();
         $this->createSuperAdmin();
-        $this->info('All good!');
+        $this->info('Finished installing preset!');
     }
 
     /**
-     * Creates the default `admin.php` route configuration file.
+     * Creates the default `twill.php` route configuration file.
      *
      * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
@@ -77,13 +100,27 @@ class Install extends Command
     {
         $routesPath = base_path('routes');
 
-        if (!$this->files->exists($routesPath)) {
+        if (! $this->files->exists($routesPath)) {
             $this->files->makeDirectory($routesPath, 0755, true);
         }
 
-        if (!$this->files->exists($routesPath . '/admin.php')) {
+        if (! $this->files->exists($routesPath . '/twill.php')) {
             $stub = $this->files->get(__DIR__ . '/stubs/admin.stub');
-            $this->files->put($routesPath . '/admin.php', $stub);
+            $this->files->put($routesPath . '/twill.php', $stub);
+        }
+    }
+
+    private function copyBlockPreviewFile()
+    {
+        $layoutsDirectory = base_path('resources/views/site/layouts');
+
+        if (! $this->files->exists($layoutsDirectory)) {
+            $this->files->makeDirectory($layoutsDirectory, 0755, true);
+        }
+
+        if (! $this->files->exists($layoutsDirectory . '/block.blade.php')) {
+            $stub = $this->files->get(__DIR__ . '/stubs/block.blade.php');
+            $this->files->put($layoutsDirectory . '/block.blade.php', $stub);
         }
     }
 
@@ -94,7 +131,7 @@ class Install extends Command
      */
     private function createSuperAdmin()
     {
-        if (!$this->option('no-interaction')) {
+        if (! $this->option('no-interaction')) {
             $this->call('twill:superadmin');
         }
     }
@@ -107,7 +144,7 @@ class Install extends Command
     private function publishConfig()
     {
         $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--provider' => \A17\Twill\TwillServiceProvider::class,
             '--tag' => 'config',
         ]);
     }
@@ -120,9 +157,8 @@ class Install extends Command
     private function publishAssets()
     {
         $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--provider' => \A17\Twill\TwillServiceProvider::class,
             '--tag' => 'assets',
         ]);
     }
-
 }

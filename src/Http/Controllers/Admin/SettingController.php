@@ -47,6 +47,7 @@ class SettingController extends Controller
 
         $this->config = $config;
         $this->settings = $settings;
+        $this->middleware('can:edit-settings');
         $this->redirector = $redirector;
         $this->urlGenerator = $urlGenerator;
         $this->viewFactory = $viewFactory;
@@ -56,16 +57,16 @@ class SettingController extends Controller
      * @param string $section
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function index($section)
+    public function index(string $section)
     {
-        return $this->viewFactory->exists('admin.settings.' . $section)
-        ? $this->viewFactory->make('admin.settings.' . $section, [
+        return $this->viewFactory->exists('twill.settings.' . $section)
+        ? $this->viewFactory->make('twill.settings.' . $section, [
             'customForm' => true,
             'editableTitle' => false,
             'customTitle' => ucfirst($section) . ' settings',
             'section' => $section,
-            'form_fields' => $this->settings->getFormFields($section),
-            'saveUrl' => $this->urlGenerator->route('admin.settings.update', $section),
+            'form_fields' => $this->settings->getFormFieldsForSection($section),
+            'saveUrl' => $this->urlGenerator->route('twill.settings.update', $section),
             'translate' => true,
         ])
         : $this->redirector->back();
@@ -73,7 +74,6 @@ class SettingController extends Controller
 
     /**
      * @param mixed $section
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update($section, Request $request)

@@ -38,8 +38,8 @@ export default {
     })
   },
   methods: {
-    currentComponent (colName) {
-      return TableCellPrefix + colName.toLowerCase()
+    currentComponent (col) {
+      return TableCellPrefix + (col.specificType ?? col.name.toLowerCase())
     },
     currentComponentProps (col) {
       const props = {
@@ -105,7 +105,7 @@ export default {
       }
     },
     isSpecificColumn: function (col) {
-      return TableCellSpecificColumns.includes(col.name)
+      return TableCellSpecificColumns.includes(col.specificType ?? col.name)
     },
     tableCellUpdate: function (data) {
       switch (data.col) {

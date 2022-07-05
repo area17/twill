@@ -17,6 +17,6 @@
   .tablecell__raw a {
     text-decoration: none;
     cursor: pointer;
-    @include bordered;
+    color: $color__link;
   }
 </style>

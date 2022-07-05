@@ -25,11 +25,11 @@ class ValidationServiceProvider extends ServiceProvider
         }, 'The :attribute should be a valid url (relative or https)');
 
         Validator::extend('web_color', function ($attribute, $value, $parameters, $validator) {
-            return preg_match('/^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i', $value);
+            return preg_match('#^([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$#i', $value);
         });
 
         Validator::extend('phone_number', function ($attribute, $value, $parameters) {
-            return preg_match("/^[+]?[0-9\-\ ]*$/", $value);
+            return preg_match("#^[+]?[0-9\-\ ]*$#", $value);
         });
 
         Validator::extend('validBlocks', function ($attribute, $value, $parameters, $validator) {
@@ -44,15 +44,15 @@ class ValidationServiceProvider extends ServiceProvider
 
                 $blockValidator = Validator::make(array_merge($block['content'], $cmsBlock), $rules);
 
-                if (!$blockValidator->passes()) {
+                if (! $blockValidator->passes()) {
                     foreach ($blockValidator->errors()->all() as $error) {
                         $blockMessages[] = $error;
                     }
                 }
 
-                if (!empty($blockMessages ?? [])) {
+                if (! empty($blockMessages)) {
                     array_unshift($blockMessages, 'This block has validation issues:');
-                    $validator->errors()->add('block.' . $block['id'], join('<br>', $blockMessages));
+                    $validator->errors()->add('block.' . $block['id'], implode('<br>', $blockMessages));
                 }
 
                 $blockMessages = [];
@@ -67,6 +67,5 @@ class ValidationServiceProvider extends ServiceProvider
      */
     public function register()
     {
-
     }
 }

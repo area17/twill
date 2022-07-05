@@ -6,6 +6,23 @@ pageClass: twill-doc
 
 ![screenshot](../.vuepress/public/_media/map.png)
 
+Form view:
+```html
+<x-twill::map
+    name="location"
+    label="Location"
+    :show-map="true"
+/>
+```
+
+Form builder:
+```php
+Map::make()
+    ->name('location')
+    ->openMap()
+```
+
+::: details Old method
 ```php
 @formField('map', [
     'name' => 'location',
@@ -13,13 +30,14 @@ pageClass: twill-doc
     'showMap' => true,
 ])
 ```
+:::
 
 | Option           | Description                                                 | Type/values     | Default value |
-| :--------------- | :---------------------------------------------------------- | :-------------- | :------------ |
+|:-----------------|:------------------------------------------------------------|:----------------|:--------------|
 | name             | Name of the field                                           | string          |               |
 | label            | Label of the field                                          | string          |               |
 | showMap          | Adds a button to toggle the map visibility                  | true<br />false | true          |
-| openMap          | Used with `showMap`, initialize the field with the map open | true<br />false | false          |
+| openMap          | Used with `showMap`, initialize the field with the map open | true<br />false | false         |
 | saveExtendedData | Enables saving Bounding Box Coordinates and Location types  | true<br />false | false         |
 
 This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .env file.

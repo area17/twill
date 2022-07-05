@@ -19,13 +19,13 @@ class CreateTwillDefaultUsersOauthTable extends Migration
 
             if (!Schema::hasTable($twillOauthTable)) {
                 Schema::create($twillOauthTable, function (Blueprint $table) use ($twillUsersTable) {
-                    $table->{twillIncrementsMethod()}('id');
+                    $table->bigIncrements('id');
                     $table->timestamps();
                     $table->string('token')->index();
                     $table->string('provider')->index();
                     $table->string('avatar')->nullable();
                     $table->string('oauth_id')->index();
-                    $table->{twillIntegerMethod()}('user_id')->unsigned()->index();
+                    $table->bigInteger('user_id')->unsigned()->index();
                     $table->foreign('user_id', 'fk_twill_users_id')->references('id')->on($twillUsersTable)->onDelete('cascade');
                 });
             }

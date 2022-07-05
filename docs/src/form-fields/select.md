@@ -6,6 +6,47 @@ pageClass: twill-doc
 
 ![screenshot](../.vuepress/public/_media/select.png)
 
+Form view:
+```html
+@php
+    $selectOptions = [
+        [
+            'value' => 1,
+            'label' => 'New York'
+        ],
+        [
+            'value' => 2,
+            'label' => 'London'
+        ],
+        [
+            'value' => 3,
+            'label' => 'Berlin'
+        ]
+    ];
+@endphp
+
+<x-twill::select 
+    name="office"
+    label="office"
+    placeholder="Select an office"
+    :options="$selectOptions"
+/>
+```
+
+Form builder:
+```php
+Select::make()
+    ->name('sectors')
+    ->options(
+        Options::make([
+            Option::make('key', 'value'),
+            Option::make('key', 'value', selectable: false),
+            ...
+        ])
+    );
+```
+
+::: details Old method
 ```php
 @formField('select', [
     'name' => 'office',
@@ -27,6 +68,7 @@ pageClass: twill-doc
     ]
 ])
 ```
+:::
 
 | Option      | Description                                                  | Type/values     | Default value |
 | :---------- | :----------------------------------------------------------- | :-------------- | :------------ |
@@ -41,6 +83,40 @@ pageClass: twill-doc
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
 | default     |	Sets a default value if empty	      	                       | string          |               |
 | disabled            | Disables the field                                      | boolean         | false         | 
+
+
+Select item option
+| Option      | Description                                                  | Type/values     | Default value |
+| :---------- | :----------------------------------------------------------- | :-------------- | :------------ |
+| selectable  | Defines if select item should be selectable in the select or not | boolean     | true          |
+
+Example of `selectable` prop usage:
+```php
+@php
+    $selectOptions = [
+        [
+            'value' => 1,
+            'label' => 'New York'
+        ],
+        [
+            'value' => 2,
+            'label' => 'London'
+        ],
+        [
+            'value' => 3,
+            'label' => 'Berlin'
+            'selectable' => false // This item will be non-selectable in the select form component
+        ]
+    ];
+@endphp
+
+<x-twill::select 
+    name="office"
+    label="office"
+    placeholder="Select an office"
+    :options="$selectOptions"
+/>
+```
 
 A migration to save a `select` field would be:
 

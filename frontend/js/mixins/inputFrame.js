@@ -19,6 +19,10 @@ export default {
       type: String,
       default: 'large' // large, small
     },
+    variant: {
+      type: String,
+      default: '' // free string
+    },
     fixedErrorKey: {
       type: String
     },

@@ -17,7 +17,7 @@ class CreateTwillDefaultFeaturesTable extends Migration
 
         if (!Schema::hasTable($twillFeaturesTable)) {
             Schema::create($twillFeaturesTable, function (Blueprint $table) use ($twillFeaturesTable) {
-                $table->{twillIncrementsMethod()}('id');
+                $table->bigIncrements('id');
                 $table->string('featured_id', 36);
                 $table->string('featured_type', 255);
                 $table->string('bucket_key')->index();

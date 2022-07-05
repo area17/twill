@@ -17,11 +17,10 @@ return [
         | This array allows you to provide the package with your configuration
         | for the Block editor field and Editor features.
         |
-        */
+         */
         'block_single_layout' => 'site.layouts.block', // layout to use when rendering a single block in the editor
         'block_views_path' => 'site.blocks', // path where a view file per block type is stored
         'block_views_mappings' => [], // custom mapping of block types and views
-        'block_preview_render_childs' => true, // indicates if childs should be rendered when using repeater in blocks
         'block_presenter_path' => null, // allow to set a custom presenter to a block model
         // Indicates if blocks templates should be inlined in HTML.
         // When setting to false, make sure to build Twill with your all your custom blocks.
@@ -70,13 +69,13 @@ return [
                         'source' => A17\Twill\Services\Blocks\Block::SOURCE_TWILL,
                     ],
                     [
-                        'path' => resource_path('views/admin/blocks'),
+                        'path' => resource_path('views/twill/blocks'),
                         'source' => A17\Twill\Services\Blocks\Block::SOURCE_APP,
                     ],
                 ],
                 'repeaters' => [
                     [
-                        'path' => resource_path('views/admin/repeaters'),
+                        'path' => resource_path('views/twill/repeaters'),
                         'source' => A17\Twill\Services\Blocks\Block::SOURCE_APP,
                     ],
                     [
@@ -86,13 +85,13 @@ return [
                 ],
                 'icons' => [
                     base_path('vendor/area17/twill/frontend/icons'),
-                    resource_path('views/admin/icons'),
+                    resource_path('views/twill/icons'),
                 ],
             ],
             'destination' => [
                 'make_dir' => true,
-                'blocks' => resource_path('views/admin/blocks'),
-                'repeaters' => resource_path('views/admin/repeaters'),
+                'blocks' => resource_path('views/twill/blocks'),
+                'repeaters' => resource_path('views/twill/repeaters'),
             ],
         ],
     ],

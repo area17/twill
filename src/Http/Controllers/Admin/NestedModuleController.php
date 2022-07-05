@@ -2,6 +2,9 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use Illuminate\Support\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+
 abstract class NestedModuleController extends ModuleController
 {
     /**
@@ -27,7 +30,7 @@ abstract class NestedModuleController extends ModuleController
         ];
     }
 
-    protected function transformIndexItems($items)
+    protected function transformIndexItems(Collection|LengthAwarePaginator $items): Collection|LengthAwarePaginator
     {
         return $items->toTree();
     }

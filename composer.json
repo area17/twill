@@ -23,15 +23,15 @@
     "chat": "https://discord.link/twill"
   },
   "require": {
-    "php": "^7.1|^8.0",
+    "php": "^8.0",
     "ext-json": "*",
     "ext-pdo": "*",
     "astrotomic/laravel-translatable": "^11.5",
     "cartalyst/tags": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
-    "doctrine/dbal": "^2.12|^3.0",
+    "doctrine/dbal": "^3.0",
     "guzzlehttp/guzzle": "^6.2|^7.0",
     "imgix/imgix-php": "^3.0",
-    "laravel/framework": "~5.6|~5.7|~5.8|^6.0|^7.0|^8.0|^9.0",
+    "laravel/framework": "^8.0|^9.0",
     "laravel/socialite": "^4.2|^5.0",
     "laravel/ui": "^1.0|^2.0|^3.0",
     "league/flysystem-aws-s3-v3": "^1.0|^2.0|^3.0",
@@ -48,8 +48,11 @@
     "kalnoy/nestedset": "^5.0|^6.0",
     "nunomaduro/collision": "^3.0|^4.2|^5.0|^6.0",
     "orchestra/testbench": "~3.3|~3.4|~3.5|~3.6|~3.7|~3.8|^4.0|^5.0|^6.0|^7.0",
+    "nunomaduro/larastan": "^1.0|^2.0",
     "phpunit/phpunit": "~5.0|~6.0|~7.0|~8.0|~9.0",
-    "chillerlan/php-qrcode": "~2.0|~3.0|~4.0"
+    "squizlabs/php_codesniffer": "*",
+    "chillerlan/php-qrcode": "~2.0|~3.0|~4.0",
+    "rector/rector": "^0.12.15"
   },
   "autoload": {
     "psr-4": {
@@ -66,7 +69,7 @@
   "scripts": {
     "test:phpunit": "vendor/bin/phpunit",
     "test:analyse": "php -d memory_limit=-1 vendor/bin/phpstan analyse",
-    "test:syntax": "vendor/bin/php-cs-fixer --dry-run --rules=-@PSR1 fix src",
+    "test:syntax": "vendor/bin/php-cs-fixer --dry-run fix src",
     "test": [
       "@test:syntax",
       "@test:phpunit"
@@ -81,7 +84,8 @@
         "TwillCapsules": "A17\\Twill\\Facades\\TwillCapsules",
         "TwillRoutes": "A17\\Twill\\Facades\\TwillRoutes",
         "TwillBlocks": "A17\\Twill\\Facades\\TwillBlocks",
-        "TwillUtil": "A17\\Twill\\Facades\\TwillUtil"
+        "TwillUtil": "A17\\Twill\\Facades\\TwillUtil",
+        "TwillPermissions": "A17\\Twill\\Facades\\TwillPermissions"
       }
     }
   },

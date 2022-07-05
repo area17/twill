@@ -2,52 +2,107 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\IsTranslatable;
+use A17\Twill\Models\Contracts\TwillModelContract;
+use A17\Twill\Models\Contracts\TwillSchedulableModel;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
-abstract class Model extends BaseModel implements TaggableInterface
+abstract class Model extends BaseModel implements TaggableInterface, TwillModelContract, TwillSchedulableModel
 {
-    use HasPresenter, SoftDeletes, TaggableTrait, IsTranslatable;
+    use HasPresenter;
+    use SoftDeletes;
+    use TaggableTrait;
+    use IsTranslatable;
 
     public $timestamps = true;
 
-    protected function isTranslationModel()
+    protected function isTranslationModel(): bool
     {
         return Str::endsWith(get_class($this), 'Translation');
     }
 
-    public function scopePublished($query)
+    public function scopePublished($query): Builder
     {
         return $query->where("{$this->getTable()}.published", true);
     }
 
-    public function scopePublishedInListings($query)
+    public function scopeAccessible($query): Builder
     {
+        if (!TwillPermissions::enabled()) {
+            return $query;
+        }
+
+        $model = get_class($query->getModel());
+        $moduleName = TwillPermissions::getPermissionModule(getModuleNameByModel($model));
+
+        if ($moduleName && !Auth::user()->isSuperAdmin()) {
+            // Get all permissions the logged in user has regards to the model.
+            $allPermissions = Auth::user()->allPermissions();
+            $allModelPermissions = (clone $allPermissions)->ofModel($model);
+
+            // If the user has any module permissions, or global manage all modules permissions, all items will be return
+            if ((clone $allModelPermissions)->module()
+                    ->whereIn('name', Permission::available(Permission::SCOPE_MODULE))
+                    ->exists()
+                || (clone $allPermissions)->global()->where('name', 'manage-modules')->exists()) {
+                return $query;
+            }
+
+            // If the module is submodule, skip the scope.
+            if (strpos($moduleName, '.')) {
+                return $query;
+            }
+
+            $authorizedItemsIds = $allModelPermissions->moduleItem()->pluck('permissionable_id');
+
+            return $query->whereIn($this->getTable() . '.id', $authorizedItemsIds);
+        }
+
+        return $query;
+    }
+
+    public function scopePublishedInListings($query): Builder
+    {
+        // @todo: Remove? Seems unused.
         if ($this->isFillable('public')) {
             $query->where("{$this->getTable()}.public", true);
-
         }
 
         return $query->published()->visible();
     }
 
-    public function scopeVisible($query)
+    /**
+     * @todo: Document
+     */
+    public function scopeVisible($query): Builder
     {
         if ($this->isFillable('publish_start_date')) {
             $query->where(function ($query) {
-                $query->whereNull("{$this->getTable()}.publish_start_date")->orWhere("{$this->getTable()}.publish_start_date", '<=', Carbon::now());
+                $query->whereNull("{$this->getTable()}.publish_start_date")->orWhere(
+                    "{$this->getTable()}.publish_start_date",
+                    '<=',
+                    Carbon::now()
+                );
             });
 
             if ($this->isFillable('publish_end_date')) {
                 $query->where(function ($query) {
-                    $query->whereNull("{$this->getTable()}.publish_end_date")->orWhere("{$this->getTable()}.publish_end_date", '>=', Carbon::now());
+                    $query->whereNull("{$this->getTable()}.publish_end_date")->orWhere(
+                        "{$this->getTable()}.publish_end_date",
+                        '>=',
+                        Carbon::now()
+                    );
                 });
             }
         }
@@ -55,22 +110,22 @@ abstract class Model extends BaseModel implements TaggableInterface
         return $query;
     }
 
-    public function setPublishStartDateAttribute($value)
+    public function setPublishStartDateAttribute($value): void
     {
         $this->attributes['publish_start_date'] = $value ?? Carbon::now();
     }
 
-    public function scopeDraft($query)
+    public function scopeDraft($query): Builder
     {
         return $query->where("{$this->getTable()}.published", false);
     }
 
-    public function scopeOnlyTrashed($query)
+    public function scopeOnlyTrashed($query): Builder
     {
-        return $query->whereNotNull("{$this->getTable()}.deleted_at");
+        return $query->onlyTrashed();
     }
 
-    public function getFillable()
+    public function getFillable(): array
     {
         // If the fillable attribute is filled, just use it
         $fillable = $this->fillable;
@@ -84,7 +139,7 @@ abstract class Model extends BaseModel implements TaggableInterface
             $this->isTranslationModel() &&
             property_exists($this, 'baseModuleModel')
         ) {
-            $fillable = (new $this->baseModuleModel)->getTranslatedAttributes();
+            $fillable = (new $this->baseModuleModel())->getTranslatedAttributes();
 
             if (!collect($fillable)->contains('locale')) {
                 $fillable[] = 'locale';
@@ -98,18 +153,18 @@ abstract class Model extends BaseModel implements TaggableInterface
         return $fillable;
     }
 
-    public function getTranslatedAttributes()
+    public function getTranslatedAttributes(): array
     {
         return $this->translatedAttributes ?? [];
     }
 
-    protected static function bootTaggableTrait()
+    protected static function bootTaggableTrait(): void
     {
         static::$tagsModel = Tag::class;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function tags(): MorphToMany
     {

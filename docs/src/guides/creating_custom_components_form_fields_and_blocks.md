@@ -71,7 +71,7 @@ This is only for Twill's own dependencies, you don't need to modify what is bein
 
 When the build is done, you can use the new component in your forms:
 
-```blade
+```html
 // file: resources/views/admin/pages/form.blade.php
 
 
@@ -216,7 +216,7 @@ export default {
 
 `resources/views/admin/pages/form.blade.php`
 
-```blade
+```html
 @extends('twill::layouts.form')
 
 @section('contentFields')
@@ -226,17 +226,17 @@ export default {
         { name: 'footer', label: 'Footer' },
     ]">
         <div class="custom-tab custom-tab--header">
-            @formField('input', [
-                'name' => 'header_title',
-                'label' => 'Header Title',
-                'translated' => true,
-            ])
-
-            @formField('input', [
-                'name' => 'header_subtitle',
-                'label' => 'Header Subtitle',
-                'translated' => true,
-            ])
+            <x-twill::input
+                name="header_title"
+                label="Header title"
+                :translated="true"
+            />
+            
+            <x-twill::input
+                name="header_subtitle"
+                label="Header subtitle"
+                :translated="true"
+            />
         </div>
 
         <div class="custom-tab custom-tab--body">
@@ -385,7 +385,7 @@ export default {
 
 `resources/views/admin/partials/form/_custom_number.blade.php`
 
-```blade
+```html
 @php
     $precision = $precision ?? '2';
     $currency = $currency ?? '$';
@@ -417,7 +417,7 @@ export default {
 
 `resources/views/admin/pages/form.blade.php`
 
-```blade
+```html
 @extends('twill::layouts.form')
 
 @section('contentFields')
@@ -451,15 +451,15 @@ This will create the following file in your project:
 
 `resources/views/admin/blocks/banner.blade.php`
 
-```blade
+```html
 @twillBlockTitle('Banner')
 @twillBlockIcon('text')
 @twillBlockGroup('app')
 
-@formField('input', [
-    'name' => 'title',
-    'label' => 'Title',
-])
+<x-twill::input
+    name="title"
+    label="Title"
+/>
 
 // ...
 ```
@@ -472,7 +472,7 @@ Here's an example of our `custom_number` field inside of a custom Blade block:
 
 `resources/views/admin/blocks/price.blade.php`
 
-```blade
+```html
 @twillBlockTitle('Price')
 @twillBlockIcon('text')
 @twillBlockGroup('app')
@@ -492,7 +492,7 @@ Add the `@twillBlockCompiled` directive to your Blade view:
 
 `resources/views/admin/blocks/banner.blade.php`
 
-```blade
+```html
 @twillBlockTitle('Banner')
 @twillBlockIcon('text')
 @twillBlockGroup('app')
@@ -546,14 +546,11 @@ Then the custom block is usable in the block editor:
 
 `resources/views/admin/pages/form.blade.php`
 
-```blade
+```html
 @extends('twill::layouts.form')
 
 @section('contentFields')
 	// ...
-
-    @formField('block_editor', [
-        'blocks' => ['banner'],
-    ])
+    <x-twill::block-editor :blocks="['banner']"/>
 @stop
 ```

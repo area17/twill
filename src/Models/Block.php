@@ -6,11 +6,16 @@ use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\HasRelated;
+use A17\Twill\Models\Contracts\TwillModelContract;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
-class Block extends BaseModel
+class Block extends BaseModel implements TwillModelContract
 {
-    use HasMedias, HasFiles, HasPresenter, HasRelated;
+    use HasMedias;
+    use HasFiles;
+    use HasPresenter;
+    use HasRelated;
 
     public $timestamps = false;
 
@@ -45,7 +50,7 @@ class Block extends BaseModel
 
     public function children()
     {
-        return $this->hasMany('A17\Twill\Models\Block', 'parent_id');
+        return $this->hasMany(twillModel('block'), 'parent_id');
     }
 
     public function input($name)
@@ -58,7 +63,7 @@ class Block extends BaseModel
         $value = $this->content[$name] ?? null;
 
         $locale = $forceLocale ?? (
-            config('translatable.use_property_fallback', false) && (!array_key_exists(app()->getLocale(), $value ?? []))
+        config('translatable.use_property_fallback', false) && (!array_key_exists(app()->getLocale(), $value ?? []))
             ? config('translatable.fallback_locale')
             : app()->getLocale()
         );
@@ -78,7 +83,7 @@ class Block extends BaseModel
 
     public function getPresenterAttribute()
     {
-        if (($presenter = config('twill.block_editor.block_presenter_path')) != null) {
+        if ($presenter = config('twill.block_editor.block_presenter_path')) {
             return $presenter;
         }
 
@@ -88,5 +93,34 @@ class Block extends BaseModel
     public function getTable()
     {
         return config('twill.blocks_table', 'twill_blocks');
+    }
+
+    public function scopePublished(Builder $query): Builder
+    {
+        // @todo: These are not used yet by the block editor.
+        return $query;
+    }
+
+    public function scopeAccessible(Builder $query): Builder
+    {
+        // @todo: These are not used yet by the block editor.
+        return $query;
+    }
+
+    public function scopeOnlyTrashed(Builder $query): Builder
+    {
+        // @todo: These are not used yet by the block editor.
+        return $query;
+    }
+
+    public function scopeDraft(Builder $query): Builder
+    {
+        // @todo: These are not used yet by the block editor.
+        return $query;
+    }
+
+    public function getTranslatedAttributes(): array
+    {
+        return [];
     }
 }

@@ -123,6 +123,7 @@ return [
         'logout' => 'Uitloggen',
         'media-library' => 'Mediabibliotheek',
         'settings' => 'Instellingen',
+        'profile' => 'Profile',
     ],
     'publisher' => [
         'cancel' => 'Annuleren',

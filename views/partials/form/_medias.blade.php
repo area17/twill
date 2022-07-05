@@ -1,22 +1,3 @@
-@php
-    $max = $max ?? 1;
-    $required = $required ?? false;
-    $note = $note ?? '';
-    $fieldNote = $fieldNote ?? '';
-    $withAddInfo = $withAddInfo ?? true;
-    $withVideoUrl = $withVideoUrl ?? true;
-    $withCaption = $withCaption ?? true;
-    $altTextMaxLength = $altTextMaxLength ?? false;
-    $captionMaxLength = $captionMaxLength ?? false;
-    $extraMetadatas = $extraMetadatas ?? false;
-    $multiple = $max > 1 || $max == 0;
-    $widthMin = $widthMin ?? 0;
-    $heightMin = $heightMin ?? 0;
-    $buttonOnTop = $buttonOnTop ?? false;
-    $activeCrop = $activeCrop ?? true;
-    $disabled = $disabled ?? false;
-@endphp
-
 @if (config('twill.media_library.translated_form_fields', $translated ?? false) && ($translated ?? true))
     <a17-locale
         type="a17-mediafield-translated"
@@ -38,7 +19,7 @@
             @if (!$withCaption) withCaption: false, @endif
             @if ($buttonOnTop) buttonOnTop: true, @endif
             @if (!$activeCrop) activeCrop: false, @endif
-            @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
+            {!! $formFieldName(true) !!}
         }"
     >
         {{ $note }}
@@ -56,7 +37,7 @@
 @else
     <a17-inputframe @if($renderForBlocks) :fixed-error-key="$parent.blockFieldName !== undefined ? $parent.blockFieldName('{{$name}}') : ''" @endif label="{{ $label }}" name="medias.{{ $name }}" @if ($required) :required="true" @endif @if ($fieldNote) note="{{ $fieldNote }}" @endif>
         @if($multiple) <a17-slideshow @else <a17-mediafield @endif
-            @include('twill::partials.form.utils._field_name')
+            {!! $formFieldName() !!}
             crop-context="{{ $name }}"
             :width-min="{{ $widthMin }}"
             :height-min="{{ $heightMin }}"

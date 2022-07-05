@@ -202,6 +202,7 @@ return [
         'media-library' => 'Медиа библиотека',
         'settings' => 'Настройки',
         'close-menu' => 'Закрыть меню',
+        'profile' => 'Profile',
     ],
     'notifications' => [
         'reset' => [

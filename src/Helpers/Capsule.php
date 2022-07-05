@@ -280,12 +280,25 @@ class Capsule
 
     public function getRoutesFile(): string
     {
+        return $this->getPsr4Path() . DIRECTORY_SEPARATOR . 'routes' . DIRECTORY_SEPARATOR . 'twill.php';
+    }
+
+    public function getLegacyRoutesFile(): string
+    {
         return $this->getPsr4Path() . DIRECTORY_SEPARATOR . 'routes' . DIRECTORY_SEPARATOR . 'admin.php';
     }
 
-    public function routesFileExists(): bool
+    public function getRoutesFileIfExists(): ?string
     {
-        return file_exists($this->getRoutesFile());
+        if (file_exists($this->getRoutesFile())) {
+            return $this->getRoutesFile();
+        }
+
+        if (file_exists($this->getLegacyRoutesFile())) {
+            return $this->getLegacyRoutesFile();
+        }
+
+        return null;
     }
 
     public function getModel(): string

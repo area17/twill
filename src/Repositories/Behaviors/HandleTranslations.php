@@ -75,6 +75,8 @@ trait HandleTranslations
      */
     public function getFormFieldsHandleTranslations($object, $fields)
     {
+        // Keep a copy of the slugs to add it again after.
+        $slug = $fields['translations']['slug'] ?? null;
         unset($fields['translations']);
 
         if ($object->translations != null && $object->translatedAttributes != null) {
@@ -91,6 +93,7 @@ trait HandleTranslations
                                 }
                             }
                         }
+
                         unset($fields['translations'][$attribute]);
                     } else {
                         $fields['translations'][$attribute][$translation->locale] = $translation->{$attribute};
@@ -99,27 +102,11 @@ trait HandleTranslations
             }
         }
 
-        return $fields;
-    }
-
-    protected function filterHandleTranslations($query, &$scopes)
-    {
-        if ($this->model->isTranslatable()) {
-            $attributes = $this->model->translatedAttributes;
-            $query->whereHas('translations', function ($q) use ($scopes, $attributes) {
-                foreach ($attributes as $attribute) {
-                    if (isset($scopes[$attribute]) && is_string($scopes[$attribute])) {
-                        $q->where($attribute, $this->getLikeOperator(), '%' . $scopes[$attribute] . '%');
-                    }
-                }
-            });
-
-            foreach ($attributes as $attribute) {
-                if (isset($scopes[$attribute])) {
-                    unset($scopes[$attribute]);
-                }
-            }
+        if ($slug) {
+            $fields['translations']['slug'] = $slug;
         }
+
+        return $fields;
     }
 
     /**

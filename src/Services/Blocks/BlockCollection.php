@@ -138,29 +138,21 @@ class BlockCollection extends Collection
     }
 
     /**
-     * @param Block $block
      * @return string
      */
     public function detectCustomSources(Block $block)
     {
-        if ($block->source === Block::SOURCE_APP) {
-            if (
-                $this->collect()
-                ->where('fileName', $block->getFileName())
-                ->where('source', Block::SOURCE_TWILL)
-                ->isNotEmpty()
-            ) {
-                return Block::SOURCE_CUSTOM;
-            }
+        if ($block->source === Block::SOURCE_APP && $this->collect()
+        ->where('fileName', $block->getFileName())
+        ->where('source', Block::SOURCE_TWILL)
+        ->isNotEmpty()) {
+            return Block::SOURCE_CUSTOM;
         }
 
         return $block->source;
     }
 
-    /**
-     * @return $this
-     */
-    public function load()
+    public function load(): self
     {
         $this->generatePaths();
 
@@ -205,12 +197,8 @@ class BlockCollection extends Collection
      * This function will add blocks and repeaters that are only defined in the config.
      *
      * For compatibility with 2.0.2 and lower
-     *
-     * @param Collection $items
-     * @param string $type
-     * @return void
      */
-    public function addBlocksFromConfig(Collection $items, $type)
+    public function addBlocksFromConfig(Collection $items, string $type): self
     {
         $items->reject(function ($value, $blockName) use ($type) {
             return $this->contains(function ($block) use ($blockName, $type) {
@@ -218,11 +206,7 @@ class BlockCollection extends Collection
             }) ? [$blockName, $value] : false;
         })
             ->each(function ($block, $blockName) use ($type) {
-                if ($block['compiled'] ?? false) {
-                    $file = null;
-                } else {
-                    $file = $this->findFileByComponentName($block['component']);
-                }
+                $file = $block['compiled'] ?? false ? null : $this->findFileByComponentName($block['component']);
 
                 $this->push($this->blockFromComponentName(
                     $file,

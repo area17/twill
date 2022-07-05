@@ -4,123 +4,93 @@ pageClass: twill-doc
 
 # Controllers
 
+Controllers take care of the main interaction between backend and the Twill frontend.
+
+There are many things that can be set and changed.
+
+[[toc]]
+
+## Controller setup
+
+The main method you will use in a module controller is `setupController`.
+
+In this method you can set all the options you would like to enable/disable. Keep in mind that for now we only provide
+methods that change the defaults. This means there might be a `disableCreate` method, but not a `enableCreate` as the
+latter does not change anything and would be redundant.
+
+An example of a setupController call:
+
 ```php
 <?php
 
-    protected $moduleName = 'yourModuleName';
+namespace App\Http\Controllers\Twill;
 
-    /*
-     * The static permalink base to your module. Defaults to /yourModuleName
-     * Set to '' if your module's permalinks are directly off the root, like in a Pages module, for example 
-     */
-    protected $permalinkBase = 'yourModuleName';
+class ProjectController extends ModuleController
+{
+    protected $moduleName = 'projects';
+    
+    public function setUpController(): void
+    {
+        $this->enableShowImage();
+    }
+}
+```
 
-    /*
-     * Options of the index view
-     */
-    protected $indexOptions = [
-        'create' => true,
-        'edit' => true,
-        'publish' => true,
-        'bulkPublish' => true,
-        'feature' => false,
-        'bulkFeature' => false,
-        'restore' => true,
-        'bulkRestore' => true,
-        'forceDelete' => true,
-        'bulkForceDelete' => true,
-        'delete' => true,
-        'duplicate' => false,
-        'bulkDelete' => true,
-        'reorder' => false,
-        'permalink' => true,
-        'bulkEdit' => true,
-        'editInModal' => false,
-        'skipCreateModal' => false,
-    ];
+Below is a list of the methods and their purpose:
 
-    /*
-     * Key of the index column to use as title/name/anythingelse column
-     * This will be the first column in the listing and will have a link to the form
-     */
-    protected $titleColumnKey = 'title';
+### Disable defaults
 
-    /*
-     * Available columns of the index view
-     */
-    protected $indexColumns = [
-        'image' => [
-            'thumb' => true, // image column
-            'variant' => [
-                'role' => 'cover',
-                'crop' => 'default',
-            ],
-        ],
-        'title' => [ // field column
-            'title' => 'Title',
-            'field' => 'title',
-        ],
-        'subtitle' => [
-            'title' => 'Subtitle',
-            'field' => 'subtitle',
-            'sort' => true, // column is sortable
-            'visible' => false, // will be available from the columns settings dropdown
-        ],
-        'relationName' => [ // relation column
-            // Take a look at the example in the next section fot the implementation of the sort
-            'title' => 'Relation name',
-            'sort' => true,
-            'relationship' => 'relationName',
-            'field' => 'relationFieldToDisplay'
-        ],
-        'presenterMethodField' => [ // presenter column
-            'title' => 'Field title',
-            'field' => 'presenterMethod',
-            'present' => true,
-        ],
-        'relatedBrowserFieldName' => [ // related browser column
-            'title' => 'Field title',
-            'field' => 'relatedFieldToDisplay',
-            'relatedBrowser' => 'browserName',
-        ]
-    ];
+- **disableCreate**: Removes the "Create" button on the listing page.
+- **disableEdit**: Disables table interaction and removes edit links.
+- **disableSortable**: Disables the ability to sort the table by clicking table headers.
+- **disablePublish**: Removes the publish/un-publish icon on the content listing.
+- **disableBulkPublish**: Removes the "publish" option from the bulk operations.
+- **disableRestore**: Removes "restore" from the list item dropdown on the "Trash" content list.
+- **disableBulkRestore**: Removes the "Trash" quick filter.
+- **disableForceDelete**: Removes the "delete" option from the "Trash" content list.
+- **disableBulkForceDelete**: Removes "restore" from the bulk operations on the "Trash" content list.
+- **disableDelete**: Removes the "delete" option from the content lists.
+- **disableBulkDelete**: Removes the "delete" option from the bulk operations.
+- **disablePermalink**: Removes the permalink from the create/edit screens.
+- **disableBulkEdit**: Disables bulk operations.
+- **disableIncludeScheduledInList**: Hides publish scheduling information from the content list.
 
-    /*
-     * Columns of the browser view for this module when browsed from another module
-     * using a browser form field
-     */
-    protected $browserColumns = [
-        'title' => [
-            'title' => 'Title',
-            'field' => 'title',
-        ],
-    ];
+### Enable defaults
 
-    /*
-     * Relations to eager load for the index view
-     */
-    protected $indexWith = [];
+- **enableSkipCreateModal**: Disables the create modal and directly forwards you to the full edit page.
+- **enableFeature**: Allow to feature the content. This requires a 'featured' fillable boolean on the model.
+- **enableBulkFeature**: Enables the "Feature" bulk operation.
+- **enableDuplicate**: Enables the "Duplicate" option from the content lists.
+- **enableReorder**: Allows to reorder the items, if this was setup on the model.
+- **enableEditInModal**: Enables the function that content is edited in the create modal.
+- **enableShowImage**: Shows the thumbnail of the content in the list.
 
-    /*
-     * Relations to eager load for the form view
-     * Add relationship used in multiselect and resource form fields
-     */
-    protected $formWith = [];
+### Setters
 
-    /*
-     * Relation count to eager load for the form view
-     */
-    protected $formWithCount = [];
+- **setModuleName**('`yourModuleName`'): Set the name of the module you are working with.
+- **setFeatureField**('`fieldname`'): Set the field to use for featuring content.
+- **setSearchColumns**(`['title', 'year']`): Set the columns to search in.
+- **setPermalinkBase**('`example`'): The static permalink base to your module. Defaults to `setModuleName` when empty.
+- **setTitleColumnKey**('`title`'): Sets the field to use as title, defaults to `title`.
+- **setModelName**('`Project`'): Usually not required, but in case customization is needed you can use this method to set
+  the name of the model this controller acts on.
+- **setResultsPerPAge**(`20`): Sets the amount of results to show per page, defaults to 20.
+- **eagerLoadListingRelations**(`['comments', 'author']`): Relations to eager load for the index view.
+- **eagerLoadFormRelations**(`['comments', 'author']`): Relations to eager load for the form view.
+- **eagerLoadFormRelationCounts**(`['comments', 'author']`): Relation count to eager load for the form view.
 
-    /*
-     * Filters mapping ('filterName' => 'filterColumn')
-     * You can associate items list to filters by having a filterNameList key in the indexData array
-     * For example, 'category' => 'category_id' and 'categoryList' => app(CategoryRepository::class)->listAll()
-     */
-    protected $filters = [];
+## Controller methods
 
+There are a few methods that can be usefull to implement based on the needs of your application.
+
+// doucment:
+
+- formData
+- indexData -> CreateFormData
+
+```
     /*
-     * Add anything you would like to have available in your module's index view
+     * Add anything you would like to have available in your module's index view (create modal)
      */
     protected function indexData($request)
     {
@@ -135,23 +105,6 @@ pageClass: twill-doc
     {
         return [];
     }
-
-    // Optional, if the automatic way is not working for you (default is ucfirst(str_singular($moduleName)))
-    protected $modelName = 'model';
-
-    // Optional, to specify a different feature field name than the default 'featured'
-    protected $featureField = 'featured';
-
-    // Optional, specify number of items per page in the listing view (-1 to disable pagination)
-    // If you are implementing Sortable, this parameter is ignored given reordering is not implemented
-    // along with pagination.
-    protected $perPage = 20;
-
-    // Optional, specify the default listing order
-    protected $defaultOrders = ['title' => 'asc'];
-
-    // Optional, specify the default listing filters
-    protected $defaultFilters = ['search' => 'title|search'];
 ```
 
 You can also override all actions and internal functions, checkout the ModuleController source
@@ -161,7 +114,7 @@ in `A17\Twill\Http\Controllers\Admin\ModuleController`.
 
 Let's say we have a controller with certain fields displayed:
 
-File: `app/Http/Controllers/Admin/PlayController.php`
+File: `app/Http/Controllers/Twill/PlayController.php`
 
 ```php
     protected $indexColumns = [
@@ -222,7 +175,7 @@ File: `app/Models/Play.php`
 
 You can override the `additionalTableActions()` method to add custom actions in your module's listing view:
 
-File: `app/Http/Controllers/Admin/NewsletterController.php`
+File: `app/Http/Controllers/Twill/NewsletterController.php`
 
 ```php
     public function additionalTableActions()

@@ -20,8 +20,6 @@ class BladeCompiler
     }
 
     /**
-     * @param string $php
-     * @param array $data
      * @throws \Throwable
      */
     protected static function compile(string $php, array $data)
@@ -32,11 +30,12 @@ class BladeCompiler
             extract(self::absorbApplicationEnvironment($data), EXTR_SKIP);
 
             eval('?' . '>' . $php);
-        } catch (Throwable $e) {
+        } catch (Throwable $throwable) {
             while (ob_get_level() > $obLevel) {
                 ob_end_clean();
             }
-            throw $e;
+
+            throw $throwable;
         }
     }
 

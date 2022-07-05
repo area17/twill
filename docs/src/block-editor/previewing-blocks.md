@@ -36,7 +36,7 @@ view file.
 
 ```html
 <div style="max-width: 500px; margin-left: auto; margin-right: auto;">
-    @isset($inEditor)
+    @if($inEditor)
       I am only visible in the editor
     @endisset
     {!! $block->translatedInput('text') !!}

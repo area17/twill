@@ -8,7 +8,7 @@ Twill includes the ability to create fully custom pages that includes your navig
 
 #### Example
 
-- Create a route in `routes/admin.php`
+- Create a route in `routes/twill.php`
 
 ```php
   Route::name('customPage')->get('/customPage', 'CustomPageController@show');

@@ -4,10 +4,148 @@ namespace A17\Twill;
 
 use A17\Twill\Facades\TwillRoutes as FacadesTwillRoutes;
 use A17\Twill\Helpers\Capsule;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 class TwillRoutes
 {
+    public function buildModuleRoutes(
+        string $slug,
+        array $options = [],
+        array $resource_options = [],
+        bool $resource = true
+    ): void {
+        $slugs = explode('.', $slug);
+        $prefixSlug = str_replace('.', '/', $slug);
+        Arr::last($slugs);
+        $className = implode(
+            '',
+            array_map(function ($s) {
+                return ucfirst(Str::singular($s));
+            }, $slugs)
+        );
+
+        $customRoutes = [
+            'reorder',
+            'publish',
+            'bulkPublish',
+            'browser',
+            'feature',
+            'bulkFeature',
+            'tags',
+            'preview',
+            'restore',
+            'bulkRestore',
+            'forceDelete',
+            'bulkForceDelete',
+            'bulkDelete',
+            'restoreRevision',
+            'duplicate',
+        ];
+        $defaults = [
+            'reorder',
+            'publish',
+            'bulkPublish',
+            'browser',
+            'feature',
+            'bulkFeature',
+            'tags',
+            'preview',
+            'restore',
+            'bulkRestore',
+            'forceDelete',
+            'bulkForceDelete',
+            'bulkDelete',
+            'restoreRevision',
+            'duplicate',
+        ];
+
+        if (isset($options['only'])) {
+            $customRoutes = array_intersect(
+                $defaults,
+                (array)$options['only']
+            );
+        } elseif (isset($options['except'])) {
+            $customRoutes = array_diff(
+                $defaults,
+                (array)$options['except']
+            );
+        }
+
+        $lastRouteGroupName = RouteServiceProvider::getLastRouteGroupName();
+
+        $groupPrefix = RouteServiceProvider::getGroupPrefix();
+
+        // Check if name will be a duplicate, and prevent if needed/allowed
+        if (RouteServiceProvider::shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)) {
+            $customRoutePrefix = "{$groupPrefix}.{$slug}";
+            $resourceCustomGroupPrefix = "{$groupPrefix}.";
+        } else {
+            $customRoutePrefix = $slug;
+
+            // Prevent Laravel from generating route names with duplication
+            $resourceCustomGroupPrefix = '';
+        }
+
+        foreach ($customRoutes as $route) {
+            $routeSlug = "{$prefixSlug}/{$route}";
+            $mapping = [
+                'as' => $customRoutePrefix . ".{$route}",
+                'uses' => "{$className}Controller@{$route}",
+            ];
+
+            if (in_array($route, ['browser', 'tags'])) {
+                Route::get($routeSlug, $mapping);
+            }
+
+            if ($route === 'restoreRevision') {
+                Route::get($routeSlug . '/{id}', $mapping);
+            }
+
+            if (
+                in_array($route, [
+                    'publish',
+                    'feature',
+                    'restore',
+                    'forceDelete',
+                ])
+            ) {
+                Route::put($routeSlug, $mapping);
+            }
+
+            if ($route === 'duplicate' || $route === 'preview') {
+                Route::put($routeSlug . '/{id}', $mapping);
+            }
+
+            if (
+                in_array($route, [
+                    'reorder',
+                    'bulkPublish',
+                    'bulkFeature',
+                    'bulkDelete',
+                    'bulkRestore',
+                    'bulkForceDelete',
+                ])
+            ) {
+                Route::post($routeSlug, $mapping);
+            }
+        }
+
+        if ($resource) {
+            Route::group(
+                ['as' => $resourceCustomGroupPrefix],
+                function () use ($slug, $className, $resource_options) {
+                    Route::resource(
+                        $slug,
+                        "{$className}Controller",
+                        $resource_options
+                    );
+                }
+            );
+        }
+    }
+
     public function registerRoutes(
         $router,
         $groupOptions,
@@ -17,7 +155,14 @@ class TwillRoutes
         $routesFile,
         $instant = false
     ): void {
-        $callback = function () use ($router, $groupOptions, $middlewares, $supportSubdomainRouting, $namespace, $routesFile) {
+        $callback = function () use (
+            $router,
+            $groupOptions,
+            $middlewares,
+            $supportSubdomainRouting,
+            $namespace,
+            $routesFile
+        ) {
             if (file_exists($routesFile)) {
                 $hostRoutes = function ($router) use (
                     $middlewares,
@@ -56,7 +201,7 @@ class TwillRoutes
         };
 
         if ($instant) {
-            // For some reasone the afterResolving does not work for the core routes.
+            // For some reason the afterResolving does not work for the core routes.
             // In other cases it is important to use the afterResolving because the routes are otherwise registered too
             // early.
             $callback();
@@ -67,18 +212,13 @@ class TwillRoutes
 
     public function registerRoutePatterns(): void
     {
-        if (($patterns = config('twill.admin_route_patterns')) != null) {
-            if (is_array($patterns)) {
-                foreach ($patterns as $label => $pattern) {
-                    Route::pattern($label, $pattern);
-                }
+        if (($patterns = config('twill.admin_route_patterns')) != null && is_array($patterns)) {
+            foreach ($patterns as $label => $pattern) {
+                Route::pattern($label, $pattern);
             }
         }
     }
 
-    /**
-     * @return array
-     */
     public function getRouteGroupOptions(): array
     {
         return [
@@ -115,16 +255,16 @@ class TwillRoutes
 
     public function registerCapsuleRoutes($router, Capsule $capsule): void
     {
-        if ($capsule->routesFileExists()) {
+        if ($routesFile = $capsule->getRoutesFileIfExists()) {
             $this->registerRoutes(
                 $router,
                 $this->getRouteGroupOptions(),
                 $this->getRouteMiddleware(),
                 $this->supportSubdomainRouting(),
                 $capsule->getControllersNamespace(),
-                $capsule->getRoutesFile(),
+                $routesFile,
                 // When it is not a package capsule we can register it immediately.
-                ! $capsule->packageCapsule
+                !$capsule->packageCapsule
             );
         }
     }

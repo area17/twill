@@ -34,17 +34,34 @@
     </draggable>
     <div class="content__trigger">
       <a17-button
-        v-if="hasRemainingBlocks && blockType.trigger"
+        v-if="hasRemainingBlocks && blockType.trigger && allowCreate"
         :class="triggerClass"
         :variant="triggerVariant"
         @click="addBlock()"
       >
         {{ blockType.trigger }}
       </a17-button>
+      <a17-button
+          v-if="hasRemainingBlocks && browser"
+          :class="triggerClass"
+          :variant="triggerVariant"
+          @click="openBrowser()"
+      >
+        {{ blockType.selectTrigger }}
+      </a17-button>
       <div class="content__note f--note f--small">
         <slot></slot>
       </div>
     </div>
+    <a17-standalone-browser
+        v-if="browserIsOpen"
+        :endpoint="browser"
+        :for-repeater="true"
+        @selected="addRepeatersFromSelection"
+        ref="localbrowser"
+        @close="browserIsOpen = false"
+        :max="max"
+    />
   </div>
 </template>
 
@@ -55,10 +72,12 @@
   import draggable from 'vuedraggable'
   import draggableMixin from '@/mixins/draggable'
   import BlockEditorItem from '@/components/blocks/BlockEditorItem.vue'
+  import A17StandaloneBrowser from "@/components/StandaloneBrowser.vue"
 
   export default {
     name: 'A17Repeater',
     components: {
+      A17StandaloneBrowser,
       'a17-blockeditor-item': BlockEditorItem,
       draggable
     },
@@ -76,6 +95,19 @@
         type: Boolean,
         default: false
       },
+      browser: {
+        type: Object,
+        required: false,
+        default: null
+      },
+      relation: {
+        type: String,
+        required: false,
+      },
+      allowCreate: {
+        type: Boolean,
+        default: true
+      },
       max: {
         type: [Number, null],
         required: false,
@@ -85,6 +117,7 @@
     data: function () {
       return {
         opened: true,
+        browserIsOpen: false,
         handle: '.block__handle' // drag handle
       }
     },
@@ -141,6 +174,9 @@
       addBlock: function () {
         this.$store.commit(FORM.ADD_FORM_BLOCK, { type: this.type, name: this.name })
       },
+      addRepeatersFromSelection(selected) {
+        this.$store.commit(FORM.ADD_REPEATER_FROM_SELECTION, { type: this.type, name: this.name, selection: selected, relation: this.relation })
+      },
       duplicateBlock: function (index) {
         this.$store.commit(FORM.DUPLICATE_FORM_BLOCK, {
           type: this.type,
@@ -160,6 +196,9 @@
       },
       expandAllBlocks: function () {
         this.opened = true
+      },
+      openBrowser: function () {
+        this.browserIsOpen = true
       }
     },
     mounted: function () {

@@ -1,6 +1,6 @@
 <template>
   <div class="editorSidebar">
-    <template v-show="hasBlockActive">
+    <div v-show="hasBlockActive">
       <a17-blocks-list :editor-name="editorName" v-slot="{ allSavedBlocks }">
         <div class="editorSidebar__edit-list">
           <a17-blockeditor-model
@@ -30,7 +30,7 @@
           </a17-blockeditor-model>
         </div>
       </a17-blocks-list>
-    </template>
+    </div>
 
     <template v-if="!hasBlockActive">
       <div class="editorSidebar__list">
@@ -54,7 +54,7 @@
   import A17BlockEditorModel from '@/components/blocks/BlockEditorModel'
 
   export default {
-    name: 'A17editorsidebar',
+    name: 'A17editorSidebar',
     props: {
       hasBlockActive: {
         type: Boolean,

@@ -94,8 +94,8 @@ Items of the child module can't be created independently.
 We'll use the `slug` and `position` features in this example but you can customize as needed:
 
 ```
-php artisan twill:module issues -SP
-php artisan twill:module issueArticles -SP
+php artisan twill:make:module issues -SP
+php artisan twill:make:module issueArticles -SP
 ```
 
 Add the `issue_id` foreign key to the child module's migration:
@@ -191,7 +191,7 @@ class IssueController extends BaseModuleController
 }
 ```
 
-Add both modules to `routes/admin.php`:
+Add both modules to `routes/twill.php`:
 
 ```php
 Route::module('issues');
@@ -211,7 +211,7 @@ return [
 
 Then, rename and move the `articles/` views folder inside of the parent `issues/` folder:
 ```
-resources/views/admin/
+resources/views/twill/
 └── issues
     ├── articles
     │   └── form.blade.php

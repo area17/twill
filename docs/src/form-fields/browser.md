@@ -6,6 +6,25 @@ pageClass: twill-doc
 
 ![screenshot](../.vuepress/public/_media/browser.png)
 
+Form views:
+```html
+<x-twill::browser
+    module-name="publications"
+    name="publications"
+    label="Publications"
+    :max="4"
+/>
+```
+
+From builder:
+```php
+Browser::make()
+    ->modules([Publications::class])
+    ->name('publications')
+    ->max(4);
+```
+
+::: details Old method
 ```php
 @formField('browser', [
     'moduleName' => 'publications',
@@ -14,6 +33,7 @@ pageClass: twill-doc
     'max' => 4,
 ])
 ```
+:::
 
 | Option                | Description                                                                     | Type    | Default value |
 |:----------------------|:--------------------------------------------------------------------------------|:--------|:--------------|
@@ -68,7 +88,7 @@ class ArticleRepository extends ModuleRepository
 }
 ```
 
-- Add the browser field to `resources/views/admin/articles/form.blade.php`:
+- Add the browser field to `resources/views/twill/articles/form.blade.php`:
 
 ```php
 @extends('twill::layouts.form')
@@ -76,12 +96,12 @@ class ArticleRepository extends ModuleRepository
 @section('contentFields')
     ...
 
-    @formField('browser', [
-        'moduleName' => 'authors',
-        'name' => 'authors',
-        'label' => 'Authors',
-        'max' => 4,
-    ])
+    <x-twill::browser
+        module-name="authors"
+        name="authors"
+        label="Authors"
+        :max="4"
+    />
 @stop
 ```
 
@@ -98,7 +118,7 @@ class ArticleRepository extends ModuleRepository
 }
 ```
 
-- Add the browser field to `resources/views/admin/articles/form.blade.php`:
+- Add the browser field to `resources/views/twill/articles/form.blade.php`:
 
 ```php
 @extends('twill::layouts.form')
@@ -106,8 +126,8 @@ class ArticleRepository extends ModuleRepository
 @section('contentFields')
     ...
 
-    @formField('browser', [
-        'modules' => [
+    <x-twill::browser
+        :modules="[
             [
               'label' => 'Authors',
               'name' => 'authors',
@@ -116,32 +136,32 @@ class ArticleRepository extends ModuleRepository
               'label' => 'Editors',
               'name' => 'editors',
             ],
-        ],
-        'name' => 'collaborators',
-        'label' => 'Collaborators',
-        'max' => 4,
-    ])
+        ]"
+        name="collaborators"
+        label="Collaborators"
+        :max="4"
+    />
 @stop
 ```
 
 - Alternatively, you can use manual endpoints instead of module names:
 
 ```php
-    @formField('browser', [
-        'endpoints' => [
-            [
-              'label' => 'Authors',
-              'value' => '/authors/browser',
-            ],
-            [
-              'label' => 'Editors',
-              'value' => '/editors/browser',
-            ],
+<x-twill::browser
+    :endpoints="[
+        [
+          'label' => 'Authors',
+          'value' => '/authors/browser',
         ],
-        'name' => 'collaborators',
-        'label' => 'Collaborators',
-        'max' => 4,
-    ])
+        [
+          'label' => 'Editors',
+          'value' => '/editors/browser',
+        ],
+    ]"
+    name="collaborators"
+    label="Collaborators"
+    :max="4"
+/>
 ```
 
 ## Working with related items
@@ -165,21 +185,21 @@ Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/st
 The following example demonstrates how to make a browser field depend on the selected items of another browser field.
 
 ```php
-@formField('browser', [
-    'label' => 'Product',
-    'name' => 'product',
-    'moduleName' => 'products',
-    'max' => 1,
-])
+<x-twill::browser
+    module-name="products"
+    name="product"
+    label="Product"
+    :max="1"
+/>
 
-@formField('browser', [
-    'label' => 'Product variant',
-    'name' => 'product_variant',
-    'moduleName' => 'productVariants',
-    'connectedBrowserField' => 'product',
-    'note' => 'Select a product to enable this field.'
-    'max' => 1,
-])
+<x-twill::browser
+    label="Product variant"
+    name="product_variant"
+    module-name="productVariants"
+    connected-browser-field="product"
+    note="Select a product to enable this field"
+    :max="1"
+/>
 ```
 
 The second browser is using the `connectedBrowserField` option, which will:
@@ -203,3 +223,98 @@ public function getBrowserData($prependScope = [])
 ```
 
 In the presented example, this will make sure only variants of the selected product in the first browser can be selected in the second one.
+
+## Morphable browser fields
+
+While a bit more complex to setup, you can target a morphTo.
+
+For example we have a `MenuItem` model, and we want to target multiple types of models in our system.
+
+In our `MenuItem` we add the relation to our `linkable`:
+
+```php
+    public function linkable()
+    {
+        return $this->morphTo();
+    }
+```
+
+This goes with the following migration on the `menu_item`:
+
+```php
+$table->bigInteger('linkable_id')->nullable();
+$table->string('linkable_type')->nullable();
+```
+
+Then in our `MenuItemRepository` we have to setup a few things:
+
+```php
+    // Prepare the fields.
+    public function prepareFieldsBeforeCreate($fields)
+    {
+        $fields = parent::prepareFieldsBeforeCreate($fields);
+        $fields['linkable_id'] = Arr::get($fields, 'browsers.linkables.0.id', null);
+        $fields['linkable_type'] = Arr::get($fields, 'browsers.linkables.0.endpointType', null);
+
+        return $fields;
+    }
+
+    // On save we set the linkable id and type.
+    public function prepareFieldsBeforeSave($object, $fields)
+    {
+        $fields = parent::prepareFieldsBeforeSave($object, $fields);
+
+        $id = Arr::get($fields, 'browsers.linkables.0.id', null);
+        $type = Arr::get($fields, 'browsers.linkables.0.endpointType', null);
+
+        if ($id) {
+            $fields['linkable_id'] = $id;
+        }
+        if ($type) {
+            $fields['linkable_type'] = $type;
+        }
+
+        return $fields;
+    }
+
+    // Set the browser value to our morphed data.
+    public function getFormFields($object)
+    {
+        $fields = parent::getFormFields($object);
+
+        $linkable = $object->linkable;
+
+        if ($linkable) {
+            $fields['browsers']['linkables'] = collect([
+                [
+                    'id' => $linkable->id,
+                    'name' => $linkable->title,
+                    'edit' => moduleRoute($object->linkable->getTable(), 'content', 'edit', $linkable->id),
+                    'thumbnail' => $linkable->defaultCmsImage(['w' => 100, 'h' => 100]),
+                ],
+            ])->toArray();
+        }
+
+        return $fields;
+    }
+```
+
+And finally in our form we can add the field:
+
+```html
+<x-twill::browser
+    label="Link"
+    :max="1"
+    name="linkables"
+    :modules="[
+        [
+        'label' => 'Homepages',
+        'name' => 'homepages',
+        ],
+        [
+        'label' => 'Pages',
+        'name' => 'content.pages'
+        ]
+    ]"
+/>
+```

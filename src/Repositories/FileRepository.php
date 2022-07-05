@@ -6,47 +6,31 @@ use A17\Twill\Models\File;
 use A17\Twill\Repositories\Behaviors\HandleTags;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class FileRepository extends ModuleRepository
 {
     use HandleTags;
 
-    /**
-     * @param File $model
-     */
     public function __construct(File $model)
     {
         $this->model = $model;
     }
 
-    /**
-     * @param \Illuminate\Database\Query\Builder $query
-     * @param array $scopes
-     * @return \Illuminate\Database\Query\Builder
-     */
-    public function filter($query, array $scopes = [])
-    {
-        $this->searchIn($query, $scopes, 'search', ['filename']);
-        return parent::filter($query, $scopes);
-    }
-
-    /**
-     * @param A17\Twill\Models\File $object
-     * @return void
-     */
-    public function afterDelete($object)
+    public function afterDelete($object): void
     {
         $storageId = $object->uuid;
         if (Config::get('twill.file_library.cascade_delete')) {
             Storage::disk(Config::get('twill.file_library.disk'))->delete($storageId);
+            // Get the folder and remove it as well if empty.
+            $folder = Str::finish(Str::beforeLast($storageId, '/'), '/');
+            if (empty(Storage::disk(Config::get('twill.file_library.disk'))->files($folder))) {
+                Storage::disk(Config::get('twill.file_library.disk'))->deleteDirectory($folder);
+            }
         }
     }
 
-    /**
-     * @param array $fields
-     * @return array
-     */
-    public function prepareFieldsBeforeCreate($fields)
+    public function prepareFieldsBeforeCreate(array $fields): array
     {
         if (!isset($fields['size'])) {
             $uuid = str_replace(Config::get('filesystems.disks.twill_file_library.root'), '', $fields['uuid']);

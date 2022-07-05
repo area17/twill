@@ -4,13 +4,17 @@ pageClass: twill-doc
 
 # Models
 
-Set your fillables to prevent mass-assignement. This is very important, as we use `request()->all()` in the module controller.
+Set your fillables to prevent mass-assignement. This is very important, as we use `request()->all()` in the module
+controller.
 
 For fields that should default as null in the database when not sent by the form, use the `nullable` array.
 
 For fields that should default to false in the database when not sent by the form, use the `checkboxes` array.
 
-Depending upon the Twill features you need on your model, include the related traits and configure their respective options:
+Depending upon the Twill features you need on your model, include the related traits and configure their respective
+options:
+
+[[toc]]
 
 #### HasPosition
 
@@ -20,9 +24,11 @@ Implement the `A17\Twill\Models\Behaviors\Sortable` interface and add a position
 
 Add translated fields in the `translatedAttributes` array.
 
-Twill's `HasTranslation` trait is a wrapper around the popular `astronomic/laravel-translatable` package. A default configuration will be automatically published to your `config` directory when you run the `twill:install` command.
+Twill's `HasTranslation` trait is a wrapper around the popular `astronomic/laravel-translatable` package. A default
+configuration will be automatically published to your `config` directory when you run the `twill:install` command.
 
-To setup your list of available languages for translated fields, modify the `locales` array in `config/translatable.php`, using ISO 639-1 two-letter languages codes as in the following example:
+To setup your list of available languages for translated fields, modify the `locales` array in `config/translatable.php`
+, using ISO 639-1 two-letter languages codes as in the following example:
 
 ```php
 <?php
@@ -72,7 +78,7 @@ public $mediasParams = [
 ];
 ```
 
-#### HasFiles: 
+#### HasFiles:
 
 Add the `filesParams` configuration array:
 
@@ -84,4 +90,21 @@ public $filesParams = ['file_role', ...]; // a list of file roles
 
 #### HasRevisions
 
-No options.
+If you want you can limit the amount of revisions that are stored in the database by specifying a property on you model:
+
+```php{3}
+class Author extends Model implements Sortable
+{
+    public int $limitRevisions = 5;
+}
+```
+
+You can also set a global revisions limit using by
+setting [TwillConfig::maxRevisions](../getting-started/configuration.md#twillconfig-facade)
+
+#### Scheduling
+
+Also see [Migrations documentation](./migrations.md).
+
+If the database for you model has the fields `publish_start_date` and `publish_end_date` you need to make those fillable
+to allow content scheduling.

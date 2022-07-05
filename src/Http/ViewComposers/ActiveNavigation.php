@@ -13,9 +13,6 @@ class ActiveNavigation
      */
     protected $request;
 
-    /**
-     * @param Request $request
-     */
     public function __construct(Request $request)
     {
         $this->request = $request;
@@ -24,12 +21,11 @@ class ActiveNavigation
     /**
      * Binds data to the view.
      *
-     * @param View $view
      * @return void
      */
     public function compose(View $view)
     {
-        if ($this->request->route()) {
+        if ($this->request->route() !== null) {
             $routeName = $this->request->route()->getName();
 
             $activeMenus = explode('.', $routeName);
@@ -39,7 +35,7 @@ class ActiveNavigation
 
             if (count($activeMenus) > 2) {
                 $view_active_variables['_primary_active_navigation'] = $activeMenus[2];
-            } else if (count($this->request->route()->parameters()) > 0) {
+            } elseif ($this->request->route()->parameters() !== []) {
                 $view_active_variables['_primary_active_navigation'] = Arr::first($this->request->route()->parameters());
             }
 
