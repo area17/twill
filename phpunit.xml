@@ -19,7 +19,7 @@
     </coverage>
     <testsuites>
         <testsuite name="Browser">
-            <directory>tests/browser</directory>
+            <directory>tests/Browser</directory>
         </testsuite>
         <testsuite name="Unit">
             <directory>tests/unit</directory>
