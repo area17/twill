@@ -48,7 +48,9 @@ jobs:
       - name: Build npm dependencies.
         run: |
           npm install
-          npm run prod
+
+      - name: Build twill.
+        run: php artisan twill:build --noInstall
 
       - name: Upgrade Chrome Driver
         run: php artisan dusk:chrome-driver
