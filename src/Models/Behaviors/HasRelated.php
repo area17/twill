@@ -88,6 +88,25 @@ trait HasRelated
         });
     }
 
+    /**
+     * Duplicate relation on subject duplication
+     * 
+     * @param \A17\Twill\Models\Model|\A17\Twill\Models\Block $newObject
+     * @return void
+     */
+
+    public function duplicateRelated($newObject)
+    {
+        foreach ($this->relatedItems->groupBy('browser_name') as $browserName => $group) {
+            $newObject->saveRelated($group->map(function($item) {
+                return [
+                    'id' => $item->related->id,
+                    'endpointType' => $item->related->getMorphClass(),
+                ];
+            })->toArray(), $browserName);			
+        }
+    }
+
     public function clearRelated($browserName): void
     {
         RelatedItem::where([

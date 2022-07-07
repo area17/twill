@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories;
 
 use A17\Twill\Facades\TwillCapsules;
+use A17\Twill\Models\Behaviors\HasRelated;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Model;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
@@ -56,6 +57,11 @@ abstract class ModuleRepository
      */
     public $fieldsGroupsFormFieldNameSeparator = '_';
 
+    /**
+     * @var array
+     */
+    protected $duplicatedRelations = [];
+    
     /**
      * @param array $with
      * @param array $scopes
@@ -368,20 +374,72 @@ abstract class ModuleRepository
             return false;
         }
 
-        if (($revision = $object->revisions()->orderBy('created_at', 'desc')->first()) === null) {
-            return false;
+        if ($this->hasBehavior('revisions')){
+            if (($revision = $object->revisions()->orderBy('created_at', 'desc')->first()) === null) {
+                return false;
+            }
+            $revisionInput = json_decode($revision->payload, true);
+            $baseInput = collect($revisionInput)->only([
+                $titleColumnKey,
+                'slug',
+                'languages',
+            ])->filter()->toArray();
+            $newObject = $this->create($baseInput);
+            $this->update($newObject->id, $revisionInput);
+        } else {
+            $newObject = $object->replicate();
+            $newObject->save();
+            if ($object->isTranslatable()) {
+                foreach ($object->translations as $translation) {
+                    $relationKey = $newObject->getRelationKey();
+                    $newTranslation = $translation->replicate();
+                    $newTranslation->$relationKey = $newObject->id;
+                    $newTranslation->save();
+                }
+            }
+            if ($this->hasBehavior('medias')) {
+                $this->duplicateMedias($object, $newObject);
+            }
+            if ($this->hasBehavior('files')) {
+                $this->duplicateFiles($object, $newObject);
+            }
+            if ($this->hasBehavior('blocks')) {
+                $this->duplicateBlocks($object, $newObject);
+            }
+            if (classHasTrait($object, HasRelated::class)) {
+                $object->duplicateRelated($newObject);
+            }
+            foreach ($this->duplicatedRelations as $key => $relation) {
+                $relationName = is_array($relation) ? ($relation['name'] ?? $key) : $relation;
+                $moduleName = is_array($relation) ? ($relation['moduleName'] ?? ($relation['name'] ?? $key)) : $relation;
+                $relationClass = str_after_last(get_class($object->$relationName()), '\\');
+                if (in_array($relationClass, ['HasOne', 'HasMany', 'MorphOne', 'MorphMany'])) {
+                     $repository = $this->getModelRepository($moduleName);
+                     $foreignKeyName = $object->$relationName()->getForeignKeyName();
+                     if (($relationClass == 'HasOne' || $relationClass == 'MorphOne') && $object->$relationName instanceof Model) {
+                        $newRelated = $repository->duplicate($object->$relationName->id);
+                        $newRelated->$foreignKeyName = $newObject->id;
+                        $newRelated->save();
+                     } else if ($relationClass == 'HasMany' || $relationClass == 'MorphMany') {
+                        foreach ($object->$relationName as $related) {
+                            if ($related instanceof Model) {
+                                $newRelated = $repository->duplicate($related->id);
+                                $newRelated->$foreignKeyName = $newObject->id;
+                                $newRelated->save();
+                            }
+                        }
+                     }
+                } else if ($relationClass == 'BelongsToMany' || $relationClass == 'MorphToMany') {
+                    $newObject->$relationName()->sync($object->$relationName->mapWithKeys(function($item) use ($object, $relationName) {
+                        return [
+                            $item->id => Collection::make($object->$relationName()->getPivotColumns())->mapWithKeys(function($attribute) use ($item) {
+                                return [$attribute => $item->pivot->$attribute];
+                            })->toArray()
+                        ];
+                    }));
+                }
+            }
         }
-
-        $revisionInput = json_decode($revision->payload, true);
-        $baseInput = collect($revisionInput)->only([
-            $titleColumnKey,
-            'slug',
-            'languages',
-        ])->filter()->toArray();
-
-        $newObject = $this->create($baseInput);
-
-        $this->update($newObject->id, $revisionInput);
 
         return $newObject;
     }

@@ -107,4 +107,16 @@ trait HandleFiles
         }
         return $fields;
     }
+
+    /**
+     * @param \A17\Twill\Models\Model|\A17\Twill\Models\Block $oject
+     * @param \A17\Twill\Models\Model|\A17\Twill\Models\Block $newObject
+     * @return void
+     */
+    public function duplicateFiles($object, $newObject)
+    {
+        $newObject->files()->sync($object->files->mapWithKeys(function($file) {
+            return [$file->id => ['role'] + (config('twill.media_library.translated_form_fields', false) ? ['locale'] : [])];
+        }));
+    }
 }

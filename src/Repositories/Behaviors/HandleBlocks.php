@@ -9,6 +9,7 @@ use A17\Twill\Models\Block;
 use A17\Twill\Models\Model;
 use A17\Twill\Repositories\BlockRepository;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Log;
@@ -491,4 +492,29 @@ trait HandleBlocks
             ];
         })->filter()->toArray();
     }
+
+    /**
+     * @param \A17\Twill\Models\Model|\A17\Twill\Models\Block $object
+     * @param \A17\Twill\Models\Model|\A17\Twill\Models\Block $newObject
+     * @param string $relation
+     * @return void
+     */
+    protected function duplicateBlocks($object, $newObject, $relation = 'blocks')
+    {
+        foreach ($object->$relation as $block) {
+            $newBlock = $block->replicate();
+            if ($relation == 'children') {
+                $newBlock->parent_id = $newObject->id;
+            } else {
+                $newBlock->blockable_id = $newObject->id;
+            }
+            $newBlock->save();
+            $block->duplicateRelated($newBlock);
+            $repository = App::make('\A17\Twill\Repositories\BlockRepository');
+            $repository->duplicateMedias($block, $newBlock);
+            $repository->duplicateFiles($block, $newBlock);
+            $this->duplicateBlocks($block, $newBlock, 'children');
+        }
+    }
+
 }

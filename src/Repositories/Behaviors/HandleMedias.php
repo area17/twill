@@ -147,6 +147,20 @@ trait HandleMedias
     }
 
     /**
+     * @param \A17\Twill\Models\Model|\A17\Twill\Models\Block $object
+     * @param \A17\Twill\Models\Model|\A17\Twill\Models\Block $newObject
+     * @return void
+     */
+    public function duplicateMedias($object, $newObject)
+    {
+        $newObject->medias()->sync($object->medias->mapWithKeys(function($media) use ($object) {
+            return [$media->id => Collection::make($object->medias()->getPivotColumns())->mapWithKeys(function($attribute) use ($media) {
+                return [$attribute => $media->pivot->$attribute];
+            })->toArray()];
+        }));
+    }
+
+    /**
      * @param \Illuminate\Database\Eloquent\Collection $medias
      * @return array
      */
