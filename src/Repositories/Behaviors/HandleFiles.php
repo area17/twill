@@ -115,8 +115,10 @@ trait HandleFiles
      */
     public function duplicateFiles($object, $newObject)
     {
-        $newObject->files()->sync($object->files->mapWithKeys(function($file) {
-            return [$file->id => ['role'] + (config('twill.media_library.translated_form_fields', false) ? ['locale'] : [])];
+        $newObject->files()->sync($object->files->mapWithKeys(function($file) use ($object) {
+            return [$file->id => Collection::make($object->files()->getPivotColumns())->mapWithKeys(function($attribute) use ($file) {
+                return [$attribute => $file->pivot->$attribute];
+            })->toArray()];
         }));
     }
 }
