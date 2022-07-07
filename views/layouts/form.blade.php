@@ -189,8 +189,8 @@
     expiredLabel: '{{twillTrans('twill::lang.publisher.expired')}}',
     scheduledLabel: '{{twillTrans('twill::lang.publisher.scheduled')}}',
     submitDisableMessage: '{{ $submitDisableMessage ?? '' }}',
-    startDate: '{{ $item->publish_start_date ? \Carbon\Carbon::parse($item->publish_start_date)->toIso8601ZuluString() : '' }}',
-    endDate: '{{ $item->publish_end_date ?\Carbon\Carbon::parse($item->publish_end_date)->toIso8601ZuluString() : '' }}',
+    startDate: '{{ $item?->publish_start_date ? \Carbon\Carbon::parse($item->publish_start_date)->toIso8601ZuluString() : '' }}',
+    endDate: '{{ $item?->publish_end_date ?\Carbon\Carbon::parse($item->publish_end_date)->toIso8601ZuluString() : '' }}',
     visibility: '{{ $item?->isFillable('public') ? ($item?->public ? 'public' : 'private') : false }}',
     reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!},
     submitOptions: @if($item?->cmsRestoring)

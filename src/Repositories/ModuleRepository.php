@@ -168,6 +168,7 @@ abstract class ModuleRepository
     public function create(array $fields): TwillModelContract
     {
         return DB::transaction(function () use ($fields) {
+
             $original_fields = $fields;
 
             $fields = $this->prepareFieldsBeforeCreate($fields);
@@ -177,8 +178,6 @@ abstract class ModuleRepository
             $this->beforeSave($model, $original_fields);
 
             $fields = $this->prepareFieldsBeforeSave($model, $fields);
-
-            $model->save();
 
             $this->afterSave($model, $fields);
 

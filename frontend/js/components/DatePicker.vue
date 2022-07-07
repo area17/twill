@@ -1,5 +1,6 @@
 <template>
   <a17-inputframe :name="name" :error="error" :note="note" :label="label" :label-for="uniqId" class="datePicker" :class="{ 'datePicker--static' : staticMode, 'datePicker--mobile' : isMobile }" :required="required">
+    {{Intl.DateTimeFormat().resolvedOptions().timeZone}}
     <div class="datePicker__group" :ref="refs.flatPicker">
       <div class="form__field datePicker__field">
         <input type="text" :name="name" :id="uniqId" :required="required" :placeholder="placeHolder" data-input @blur="onBlur" v-model="date" :disabled="disabled">
@@ -126,7 +127,7 @@
           wrap: true,
           altInput: true,
           altFormat: self.altFormatComputed,
-          dateFormat: 'Z',
+          dateFormat: 'Z', // This is the universal format that will be parsed by the back-end.
           static: self.staticMode,
           appendTo: self.staticMode ? self.$refs[self.refs.flatPicker] : undefined,
           enableTime: self.enableTime,

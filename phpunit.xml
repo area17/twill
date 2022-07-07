@@ -3,6 +3,7 @@
          bootstrap="tests/bootstrap.php" colors="true" convertErrorsToExceptions="true"
          convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false"
          stopOnError="false" stopOnFailure="false" verbose="true"
+         defaultTestSuite="Unit"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
     <coverage processUncoveredFiles="true">
         <include>
@@ -17,7 +18,10 @@
         </report>
     </coverage>
     <testsuites>
-        <testsuite name="Twill Test Suites">
+        <testsuite name="Browser">
+            <directory>tests/browser</directory>
+        </testsuite>
+        <testsuite name="Unit">
             <directory>tests/unit</directory>
             <directory>tests/integration</directory>
         </testsuite>
