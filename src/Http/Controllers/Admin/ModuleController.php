@@ -1116,74 +1116,78 @@ abstract class ModuleController extends Controller
                     [Str::singular($this->moduleName) => $id]
                 )
             );
-        } else {
-            $formRequest = $this->validateFormRequest();
+        }
 
-            $allData = $formRequest->all();
-            // Convert publish dates.
-            if (isset($allData["publish_start_date"]) && !empty($allData["publish_start_date"])) {
-                $allData["publish_start_date"] = Carbon::parse($allData["publish_start_date"])
-                    ->shiftTimezone(config('app.timezone'))
-                    ->format('Y-m-d H:i');
+        $formRequest = $this->validateFormRequest();
+
+        $allData = $formRequest->all();
+        // Convert publish dates.
+        if (isset($allData["publish_start_date"]) && !empty($allData["publish_start_date"])) {
+            $allData["publish_start_date"] = Carbon::parse($allData["publish_start_date"])
+                ->shiftTimezone(config('app.timezone'))
+                ->format('Y-m-d H:i');
+        }
+        if (isset($allData["publish_end_date"]) && !empty($allData["publish_end_date"])) {
+            $allData["publish_end_date"] = Carbon::parse($allData["publish_end_date"])
+                ->shiftTimezone(config('app.timezone'))
+                ->format('Y-m-d H:i');
+        }
+
+        $this->repository->update($id, $allData);
+
+        activity()->performedOn($item)->log('updated');
+
+        $this->fireEvent();
+
+        if (isset($input['cmsSaveType'])) {
+            if (Str::endsWith($input['cmsSaveType'], '-close')) {
+                return $this->respondWithRedirect($this->getBackLink());
             }
-            if (isset($allData["publish_end_date"]) && !empty($allData["publish_end_date"])) {
-                $allData["publish_end_date"] = Carbon::parse($allData["publish_end_date"])
-                    ->shiftTimezone(config('app.timezone'))
-                    ->format('Y-m-d H:i');
-            }
 
-            $this->repository->update($id, $allData);
-
-            activity()->performedOn($item)->log('updated');
-
-            $this->fireEvent();
-
-            if (isset($input['cmsSaveType'])) {
-                if (Str::endsWith($input['cmsSaveType'], '-close')) {
-                    return $this->respondWithRedirect($this->getBackLink());
-                } elseif (Str::endsWith($input['cmsSaveType'], '-new')) {
-                    if ($this->getIndexOption('skipCreateModal')) {
-                        return $this->respondWithRedirect(
-                            moduleRoute(
-                                $this->moduleName,
-                                $this->routePrefix,
-                                'create'
-                            )
-                        );
-                    }
-
+            if (Str::endsWith($input['cmsSaveType'], '-new')) {
+                if ($this->getIndexOption('skipCreateModal')) {
                     return $this->respondWithRedirect(
                         moduleRoute(
                             $this->moduleName,
                             $this->routePrefix,
-                            'index',
-                            ['openCreate' => true]
-                        )
-                    );
-                } elseif ($input['cmsSaveType'] === 'restore') {
-                    Session::flash('status', twillTrans('twill::lang.publisher.restore-success'));
-
-                    return $this->respondWithRedirect(
-                        moduleRoute(
-                            $this->moduleName,
-                            $this->routePrefix,
-                            'edit',
-                            [Str::singular($this->moduleName) => $id]
+                            'create'
                         )
                     );
                 }
+
+                return $this->respondWithRedirect(
+                    moduleRoute(
+                        $this->moduleName,
+                        $this->routePrefix,
+                        'index',
+                        ['openCreate' => true]
+                    )
+                );
             }
 
-            if ($this->moduleHas('revisions')) {
-                return Response::json([
-                    'message' => twillTrans('twill::lang.publisher.save-success'),
-                    'variant' => FlashLevel::SUCCESS,
-                    'revisions' => $item->revisionsArray(),
-                ]);
-            }
+            if ($input['cmsSaveType'] === 'restore') {
+                Session::flash('status', twillTrans('twill::lang.publisher.restore-success'));
 
-            return $this->respondWithSuccess(twillTrans('twill::lang.publisher.save-success'));
+                return $this->respondWithRedirect(
+                    moduleRoute(
+                        $this->moduleName,
+                        $this->routePrefix,
+                        'edit',
+                        [Str::singular($this->moduleName) => $id]
+                    )
+                );
+            }
         }
+
+        if ($this->moduleHas('revisions')) {
+            return Response::json([
+                'message' => twillTrans('twill::lang.publisher.save-success'),
+                'variant' => FlashLevel::SUCCESS,
+                'revisions' => $item->revisionsArray(),
+            ]);
+        }
+
+        return $this->respondWithSuccess(twillTrans('twill::lang.publisher.save-success'));
     }
 
     /**
@@ -1719,8 +1723,12 @@ abstract class ModuleController extends Controller
             return array_replace(
                 [
                     'id' => $itemId,
-                    'publish_start_date' => ($publishable && $item->publish_start_date) ? Carbon::parse($item->publish_start_date)->toIso8601ZuluString() : null,
-                    'publish_end_date' => ($publishable && $item->publish_end_date) ? Carbon::parse($item->publish_end_date)->toIso8601ZuluString() : null,
+                    'publish_start_date' => ($publishable && $item->publish_start_date) ? Carbon::parse(
+                        $item->publish_start_date
+                    )->toIso8601ZuluString() : null,
+                    'publish_end_date' => ($publishable && $item->publish_end_date) ? Carbon::parse(
+                        $item->publish_end_date
+                    )->toIso8601ZuluString() : null,
                     'edit' => $canEdit ? $this->getModuleRoute($itemId, 'edit') : null,
                     'duplicate' => $canDuplicate ? $this->getModuleRoute($itemId, 'duplicate') : null,
                     'delete' => $itemCanDelete ? $this->getModuleRoute($itemId, 'destroy') : null,
