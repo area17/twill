@@ -65,8 +65,7 @@ class TwillServiceProvider extends ServiceProvider
         TranslatableServiceProvider::class,
         TagsServiceProvider::class,
         ActivitylogServiceProvider::class,
-        CapsulesServiceProvider::class,
-        DuskServiceProvider::class
+        CapsulesServiceProvider::class
     ];
 
     /**
@@ -149,6 +148,10 @@ class TwillServiceProvider extends ServiceProvider
 
         foreach ($this->providers as $provider) {
             $this->app->register($provider);
+        }
+
+        if (app()->environment('testing')) {
+            $this->app->register(DuskServiceProvider::class);
         }
 
         if (config('twill.enabled.media-library')) {

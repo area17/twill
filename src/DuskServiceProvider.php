@@ -4,8 +4,6 @@ namespace A17\Twill;
 
 use Carbon\Laravel\ServiceProvider;
 use Facebook\WebDriver\Chrome\ChromeDevToolsDriver;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Laravel\Dusk\Browser;
 
 class DuskServiceProvider extends ServiceProvider
@@ -32,29 +30,6 @@ class DuskServiceProvider extends ServiceProvider
             $devTools->execute('Emulation.setTimezoneOverride', ['timezoneId' => $timezone]);
             $devTools->execute('Emulation.setGeolocationOverride', $location);
             $this->pause(100);
-        });
-
-        Browser::macro('assertDontSeeWithinASecond', function (string $string) {
-            $text = Arr::wrap($string);
-
-            $message = $this->formatTimeOutMessage('Waited %s seconds for text', implode("', '", $text));
-
-            $attempts = 0;
-
-            return $this->waitUsing(1, 100, function () use ($string, &$attempts) {
-                $contains = Str::contains($this->resolver->findOrFail('')->getText(), $string);
-                ray($contains);
-
-                if ($contains) {
-                    return false;
-                }
-
-                if ($attempts === 10) {
-                    return true;
-                }
-
-                $attempts++;
-            }, $message);
         });
     }
 }
