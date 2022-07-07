@@ -50,13 +50,10 @@ jobs:
           npm install
 
       - name: Build twill.
-        run: php artisan twill:build --noInstall
+        run: ./vendor/bin/testbench twill:build --noInstall
 
       - name: Upgrade Chrome Driver
-        run: php artisan dusk:chrome-driver
-
-      - name: Start Chrome Driver
-        run: ./vendor/laravel/dusk/bin/chromedriver-linux > /dev/null 2>&1 &
+        run: ./vendor/bin/testbench dusk:chrome-driver
 
       - name: Run Dusk Tests
         run: |
