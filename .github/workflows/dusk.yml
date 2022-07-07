@@ -49,6 +49,10 @@ jobs:
         run: |
           npm install
 
+      - name: Create blocks dir
+        run: |
+          mkdir ./frontend/js/components/blocks/customs
+
       - name: Build twill.
         run: ./vendor/bin/testbench twill:build --noInstall
 
