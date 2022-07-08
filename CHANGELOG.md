@@ -10,6 +10,8 @@ All notable changes to `twill` will be documented in this file.
 - Table builder [PR](https://github.com/area17/twill/pull/1632)
 - Form builder and blade-x components instead of directives for form
   views [PR](https://github.com/area17/twill/pull/1360)
+- DateTimes are now fully timezone aware, if you previously added workarounds there should be removable. 
+  On the front-end dates will always be displayed in the browsers/systems timezone, but storage is in UTC.
 
 ### Features
 
