@@ -1121,17 +1121,6 @@ abstract class ModuleController extends Controller
         $formRequest = $this->validateFormRequest();
 
         $allData = $formRequest->all();
-        // Convert publish dates.
-        if (isset($allData["publish_start_date"]) && !empty($allData["publish_start_date"])) {
-            $allData["publish_start_date"] = Carbon::parse($allData["publish_start_date"])
-                ->shiftTimezone(config('app.timezone'))
-                ->format('Y-m-d H:i');
-        }
-        if (isset($allData["publish_end_date"]) && !empty($allData["publish_end_date"])) {
-            $allData["publish_end_date"] = Carbon::parse($allData["publish_end_date"])
-                ->shiftTimezone(config('app.timezone'))
-                ->format('Y-m-d H:i');
-        }
 
         $this->repository->update($id, $allData);
 
@@ -1723,12 +1712,8 @@ abstract class ModuleController extends Controller
             return array_replace(
                 [
                     'id' => $itemId,
-                    'publish_start_date' => ($publishable && $item->publish_start_date) ? Carbon::parse(
-                        $item->publish_start_date
-                    )->toIso8601ZuluString() : null,
-                    'publish_end_date' => ($publishable && $item->publish_end_date) ? Carbon::parse(
-                        $item->publish_end_date
-                    )->toIso8601ZuluString() : null,
+                    'publish_start_date' => $publishable ? $item->publish_start_date : null,
+                    'publish_end_date' => $publishable ? $item->publish_end_date : null,
                     'edit' => $canEdit ? $this->getModuleRoute($itemId, 'edit') : null,
                     'duplicate' => $canDuplicate ? $this->getModuleRoute($itemId, 'duplicate') : null,
                     'delete' => $itemCanDelete ? $this->getModuleRoute($itemId, 'destroy') : null,

@@ -77,6 +77,7 @@ class AnonymousModule
         if ($createClass) {
             // When createclass is set to true we create an actual module file. This is usefull when you need to test
             // relational content.
+            // This is not used as it is not 100% done.
             $file = new PhpFile();
 
             $modelName = Str::singular(Str::studly($this->namePlural));
@@ -123,6 +124,10 @@ class AnonymousModule
                     if ($namePlural !== '') {
                         self::$setProps['fillable'] = array_keys($fields);
                         self::$setProps['table'] = $namePlural;
+                        self::$setProps['dates'] = collect($fields)
+                            ->where('type', 'dateTime')
+                            ->keys()
+                            ->all();
                         self::$setProps['translatedAttributes'] = collect($fields)
                             ->where('translatable', true)
                             ->keys()
@@ -169,7 +174,7 @@ class AnonymousModule
                                 ->nullable($data['nullable'] ?? false);
                         } elseif ($data['type'] === 'dateTime') {
                             $table->dateTime($fieldName)
-                                ->default($data['default'] ?? false)
+                                ->default($data['default'] ?? null)
                                 ->nullable($data['nullable'] ?? false);
                         }
                     }

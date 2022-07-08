@@ -1,6 +1,5 @@
 <template>
   <a17-inputframe :name="name" :error="error" :note="note" :label="label" :label-for="uniqId" class="datePicker" :class="{ 'datePicker--static' : staticMode, 'datePicker--mobile' : isMobile }" :required="required">
-    {{Intl.DateTimeFormat().resolvedOptions().timeZone}}
     <div class="datePicker__group" :ref="refs.flatPicker">
       <div class="form__field datePicker__field">
         <input type="text" :name="name" :id="uniqId" :required="required" :placeholder="placeHolder" data-input @blur="onBlur" v-model="date" :disabled="disabled">
@@ -17,6 +16,7 @@
   import { locales, getCurrentLocale, isCurrentLocale24HrFormatted } from '@/utils/locale'
   import FlatPickr from 'flatpickr'
   import 'flatpickr/dist/flatpickr.css'
+  import parse from 'date-fns/parse'
 
   export default {
     name: 'A17DatePicker',
@@ -140,6 +140,23 @@
           hourIncrement: self.hourIncrement,
           minDate: self.minDate,
           maxDate: self.maxDate,
+          parseDate: function (date, format) {
+            const fullFormat = 'yyyy-MM-dd HH:mm:ss';
+            if (date.length === fullFormat.length) {
+              return parse(date + 'Z', fullFormat + 'X', Date.UTC());
+            }
+            const fullFormatNoSeconds = 'yyyy-MM-dd HH:mm';
+            if (date.length === fullFormatNoSeconds.length) {
+              return parse(date + 'Z', fullFormat + 'X', Date.UTC());
+            }
+            const fullFormatNoTime = 'yyyy-MM-dd';
+            if (date.length === fullFormatNoTime.length) {
+              return parse(date, fullFormatNoTime, Date.UTC());
+            }
+
+            // Hope for the best..
+            return date;
+          },
           onOpen: function () {
             setTimeout(function () {
               self.flatPicker.set('maxDate', self.maxDate) // in case maxDate changed since last open

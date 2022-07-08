@@ -7,18 +7,14 @@ use Laravel\Dusk\Browser;
 
 class ScheduleDatesTest extends BrowserTestCase
 {
-    public function configTwill($app): void
-    {
-        parent::configTwill($app);
-        $app['config']->set('twill.publish_date_24h', true);
-        $app['config']->set('twill.publish_date_format', 'Y-m-d H:i');
-        $app['config']->set('twill.publish_date_display_format', 'YYYY-MM-DD HH:mm');
-    }
-
-    public function testWithDateTimeWinter(): void
+    /**
+     * @dataProvider timesDataProvider
+     */
+    public function testWithDateTime(Carbon $from, Carbon $to, array $expectedTime, bool $time24h): void
     {
         $class = null;
-        $this->tweakApplication(function () use (&$class) {
+        $this->tweakApplication(function () use (&$class, $time24h) {
+            config()->set('twill.publish_date_24h', $time24h);
             $class = \A17\Twill\Tests\Integration\Anonymous\AnonymousModule::make('servers', app())
                 ->withFields([
                     'title' => [],
@@ -36,9 +32,9 @@ class ScheduleDatesTest extends BrowserTestCase
 
         $this->assertEquals('UTC', config('app.timezone'));
 
-        $this->browse(function (Browser $paris, Browser $newYork) {
-            $paris->setLocationToParis();
-            $newYork->setLocationToNewYork();
+        $this->browse(function (Browser $paris, Browser $newYork) use ($from, $to, $time24h) {
+            $paris->setBrowserLocationToParis();
+            $newYork->setBrowserLocationToNewYork();
 
             $paris->loginAs($this->superAdmin, 'twill_users');
             $paris->visit('/twill');
@@ -55,64 +51,18 @@ class ScheduleDatesTest extends BrowserTestCase
             // Expand the publisher.
             $paris->click('.accordion__trigger');
 
-            $publishStart = Carbon::create(2022, 01, 10);
-            $publishEnd = Carbon::create(2022, 01, 15);
-
-            // Start date.
-            $paris->with(
-                '.accordion__dropdown .accordion__fields .datePicker:first-child',
-                function ($dropDown) use ($publishStart) {
-                    $targetDate = $publishStart->format('F j, Y');
-
-                    // Select the date and set the hour.
-                    $dropDown->waitFor('.form-control.input');
-                    $dropDown->click('.form-control.input');
-
-                    $dropDown->waitFor('.flatpickr-monthDropdown-months');
-                    $dropDown->select('.flatpickr-monthDropdown-months', $publishStart->month - 1);
-
-                    $dropDown->click('.flatpickr-day[aria-label="' . $targetDate . '"]');
-                    $dropDown->type('.numInput.flatpickr-hour', '10'); // 10.30
-                    $dropDown->type('.numInput.flatpickr-minute', '30');
-                    // We click this element once more to trigger the state update.
-                    $dropDown->click('.flatpickr-day[aria-label="' . $targetDate . '"]');
-                    $dropDown->keys('.numInput.flatpickr-minute', '{enter}');
-
-                    // Check that the date is exactly that what we expected according to our config.
-                    $dropDown->assertInputValue('.form-control.input', $publishStart->format('Y-m-d') . ' 10:30');
-                }
+            $paris->setDateTimeInDatePicker(
+                fieldSelector: '.accordion__dropdown .accordion__fields .datePicker:first-child .form-control',
+                dateTime: $from,
+                dateFormat: $time24h ? 'F j, Y H:i' : 'F j, Y H:i A',
+                staticWrapper: '.accordion__dropdown .accordion__fields .datePicker:first-child'
             );
-
-            // Click something to remove focus and commit.
-            $paris->click('.fieldset__header');
-
-            // End date.
-            $paris->with(
-                '.accordion__dropdown .accordion__fields .datePicker:last-child',
-                function ($dropDown) use ($publishEnd) {
-                    $targetDate = $publishEnd->format('F j, Y');
-
-                    // Select the date and set the hour.
-                    $dropDown->waitFor('.form-control.input');
-                    $dropDown->click('.form-control.input');
-
-                    $dropDown->waitFor('.flatpickr-monthDropdown-months');
-                    $dropDown->select('.flatpickr-monthDropdown-months', $publishEnd->month - 1);
-
-                    $dropDown->click('.flatpickr-day[aria-label="' . $targetDate . '"]');
-                    $dropDown->type('.numInput.flatpickr-hour', '10'); // 10.30
-                    $dropDown->type('.numInput.flatpickr-minute', '30');
-                    // We click this element once more to trigger the state update.
-                    $dropDown->click('.flatpickr-day[aria-label="' . $targetDate . '"]');
-                    $dropDown->keys('.numInput.flatpickr-minute', '{enter}');
-
-                    // Check that the date is exactly that what we expected according to our config.
-                    $dropDown->assertInputValue('.form-control.input', $publishEnd->format('Y-m-d') . ' 10:30');
-                }
+            $paris->setDateTimeInDatePicker(
+                fieldSelector: '.accordion__dropdown .accordion__fields .datePicker:last-child .form-control',
+                dateTime: $to,
+                dateFormat: $time24h ? 'F j, Y H:i' : 'F j, Y H:i A',
+                staticWrapper: '.accordion__dropdown .accordion__fields .datePicker:last-child'
             );
-
-            // Click something to remove focus and commit.
-            $paris->click('.fieldset__header');
 
             $paris->press('Update');
 
@@ -121,12 +71,20 @@ class ScheduleDatesTest extends BrowserTestCase
             // Check after refresh that the date is the same.
             $paris->refresh();
 
+            $shouldSeeDateFormat = $time24h ? 'M, j, Y, H:i' : 'M, j, Y, H:i A';
+
             // Check the label is correctly formatted.
-            $paris->assertSeeIn('.accordion__value div', $publishStart->setTime(10, 30)->format('Y-m-d H:i'));
+            $paris->assertSeeIn('.accordion__value div', $from->format($shouldSeeDateFormat));
+            // We set time to be 24H so we should not see this.
+            if ($time24h) {
+                $paris->assertDontSeeIn('.accordion__value div', 'AM');
+            } else {
+                $paris->assertSeeIn('.accordion__value div', 'AM');
+            }
 
             // NEW YORK
             // Now we also login to the newYork browser.
-            $newYork->setLocationToNewYork();
+            $newYork->setBrowserLocationToNewYork();
 
             $newYork->loginAs($this->superAdmin, 'twill_users');
             $newYork->visit('/twill');
@@ -135,151 +93,68 @@ class ScheduleDatesTest extends BrowserTestCase
             $newYork->clickLink('Digitalocean');
 
             // Check that the date is exactly that what we expected.
-            $newYork->assertSeeIn('.accordion__value div', $publishStart->setTime(04, 30)->format('Y-m-d H:i'));
+            $newYork->assertSeeIn('.accordion__value div', $from->setTime(04, 30)->format($shouldSeeDateFormat));
+            if (!$time24h) {
+                $newYork->assertSeeIn('.accordion__value div', 'AM');
+            } else {
+                $newYork->assertDontSeeIn('.accordion__value div', 'AM');
+            }
         });
 
         $latest = $class::latest()->first();
 
         // Double check that in the database our timezone is in utc.
-        // This is in winter time so we expect it to be one hour different.
         $this->assertEquals(
-            '2022-01-10T09:30:00.000Z',
-            Carbon::parse($latest->publish_start_date)->toIso8601ZuluString('millisecond')
+            $from->setTime($expectedTime['hour'], $expectedTime['minute'])->format('Y-m-d H:i'),
+            $latest->publish_start_date->format('Y-m-d H:i')
+        );
+
+        $this->assertEquals(
+            $to->setTime($expectedTime['hour'], $expectedTime['minute'])->format('Y-m-d H:i'),
+            $latest->publish_end_date->format('Y-m-d H:i')
         );
     }
 
-    public function testWithDateTimeSummer(): void
+    public function timesDataProvider(): array
     {
-        $class = null;
-        $this->tweakApplication(function () use (&$class) {
-            $class = \A17\Twill\Tests\Integration\Anonymous\AnonymousModule::make('servers', app())
-                ->withFields([
-                    'title' => [],
-                    'publish_start_date' => [
-                        'nullable' => true,
-                        'type' => 'dateTime',
-                    ],
-                    'publish_end_date' => [
-                        'nullable' => true,
-                        'type' => 'dateTime',
-                    ],
-                ])
-                ->boot();
-        });
-
-        $this->assertEquals('UTC', config('app.timezone'));
-
-        $this->browse(function (Browser $paris, Browser $newYork) {
-            $paris->setLocationToParis();
-            $newYork->setLocationToNewYork();
-
-            $paris->loginAs($this->superAdmin, 'twill_users');
-            $paris->visit('/twill');
-
-            $paris->clickLink('Servers');
-            $paris->waitForText('There is no item here yet.');
-            $paris->press('Add new');
-            $paris->waitFor('.modal__header');
-            $paris->type('title', 'Digitalocean');
-            $paris->press('Create');
-
-            $paris->waitForReload();
-
-            // Expand the publisher.
-            $paris->click('.accordion__trigger');
-
-            $publishStart = Carbon::create(2022, 06, 10);
-            $publishEnd = Carbon::create(2022, 06, 15);
-
-            // Start date.
-            $paris->with(
-                '.accordion__dropdown .accordion__fields .datePicker:first-child',
-                function (Browser $dropDown) use ($publishStart) {
-                    $targetDate = $publishStart->format('F j, Y');
-
-                    // Select the date and set the hour.
-                    $dropDown->waitFor('.form-control.input');
-                    $dropDown->click('.form-control.input');
-
-                    $dropDown->waitFor('.flatpickr-monthDropdown-months');
-                    $dropDown->select('.flatpickr-monthDropdown-months', $publishStart->month - 1);
-
-                    $dropDown->click('.flatpickr-day[aria-label="' . $targetDate . '"]');
-                    $dropDown->type('.numInput.flatpickr-hour', '10'); // 10.30
-                    $dropDown->type('.numInput.flatpickr-minute', '30');
-                    // We click this element once more to trigger the state update.
-                    $dropDown->click('.flatpickr-day[aria-label="' . $targetDate . '"]');
-                    $dropDown->keys('.numInput.flatpickr-minute', '{enter}');
-
-                    // Check that the date is exactly that what we expected according to our config.
-                    $dropDown->assertInputValue('.form-control.input', $publishStart->format('Y-m-d') . ' 10:30');
-                }
-            );
-
-            // Click something to remove focus and commit.
-            $paris->click('.fieldset__header');
-
-            // End date.
-            $paris->with(
-                '.accordion__dropdown .accordion__fields .datePicker:last-child',
-                function ($dropDown) use ($publishEnd) {
-                    // Select the date and set the hour.
-                    $targetDate = $publishEnd->format('F j, Y');
-
-                    // Select the date and set the hour.
-                    $dropDown->waitFor('.form-control.input');
-                    $dropDown->click('.form-control.input');
-
-                    $dropDown->waitFor('.flatpickr-monthDropdown-months');
-                    $dropDown->select('.flatpickr-monthDropdown-months', $publishEnd->month - 1);
-
-                    $dropDown->click('.flatpickr-day[aria-label="' . $targetDate . '"]');
-                    $dropDown->type('.numInput.flatpickr-hour', '10'); // 10.30
-                    $dropDown->type('.numInput.flatpickr-minute', '30');
-                    // We click this element once more to trigger the state update.
-                    $dropDown->click('.flatpickr-day[aria-label="' . $targetDate . '"]');
-                    $dropDown->keys('.numInput.flatpickr-minute', '{enter}');
-
-                    // Check that the date is exactly that what we expected according to our config.
-                    $dropDown->assertInputValue('.form-control.input', $publishEnd->format('Y-m-d') . ' 10:30');
-                }
-            );
-
-            // Click something to remove focus and commit.
-            $paris->click('.fieldset__header');
-
-            $paris->press('Update');
-
-            $paris->waitForText('Content saved. All good!');
-
-            // Check after refresh that the date is the same.
-            $paris->refresh();
-
-            // Check the label is correctly formatted.
-            $paris->assertSeeIn('.accordion__value div', $publishStart->setTime(10, 30)->format('Y-m-d H:i'));
-
-            // NEW YORK
-            // Now we also login to the newYork browser.
-            $newYork->setLocationToNewYork();
-
-            $newYork->loginAs($this->superAdmin, 'twill_users');
-            $newYork->visit('/twill');
-
-            $newYork->clickLink('Servers');
-            $newYork->clickLink('Digitalocean');
-
-            // Check that the date is exactly that what we expected.
-            $newYork->assertSeeIn('.accordion__value div', $publishStart->setTime(04, 30)->format('Y-m-d H:i'));
-        });
-
-        $latest = $class::latest()->first();
-
-        // Double check that in the database our timezone is in utc.
-        // This is in winter time so we expect it to be one hour different.
-        $this->assertEquals(
-            '2022-06-10T08:30:00.000Z',
-            Carbon::parse($latest->publish_start_date)->toIso8601ZuluString('millisecond')
-        );
+        return [
+            'winterAMPM' => [
+                Carbon::createFromDate(Carbon::now()->year, 01, 10)->setTime(10, 30),
+                Carbon::createFromDate(Carbon::now()->year, 01, 15)->setTime(10, 30),
+                [
+                    'hour' => 9,
+                    'minute' => 30,
+                ],
+                false,
+            ],
+            'summerAMPM' => [
+                Carbon::createFromDate(Carbon::now()->year, 07, 10)->setTime(10, 30),
+                Carbon::createFromDate(Carbon::now()->year, 07, 15)->setTime(10, 30),
+                [
+                    'hour' => 8,
+                    'minute' => 30,
+                ],
+                false,
+            ],
+            'winter24h' => [
+                Carbon::createFromDate(Carbon::now()->year, 01, 10)->setTime(10, 30),
+                Carbon::createFromDate(Carbon::now()->year, 01, 15)->setTime(10, 30),
+                [
+                    'hour' => 9,
+                    'minute' => 30,
+                ],
+                true,
+            ],
+            'summer24h' => [
+                Carbon::createFromDate(Carbon::now()->year, 07, 10)->setTime(10, 30),
+                Carbon::createFromDate(Carbon::now()->year, 07, 15)->setTime(10, 30),
+                [
+                    'hour' => 8,
+                    'minute' => 30,
+                ],
+                true,
+            ],
+        ];
     }
 
 }
