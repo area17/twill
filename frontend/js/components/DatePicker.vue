@@ -139,6 +139,7 @@
           minuteIncrement: self.minuteIncrement,
           hourIncrement: self.hourIncrement,
           minDate: self.minDate,
+          altInputClass: 'flatpickr-input form-control',
           maxDate: self.maxDate,
           parseDate: function (date, format) {
             const fullFormat = 'yyyy-MM-dd HH:mm:ss';
