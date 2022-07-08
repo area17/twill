@@ -72,6 +72,7 @@ const svgConfig = (suffix = null) => {
 let plugins = [
   new CleanWebpackPlugin(),
   new SVGSpritemapPlugin(`${srcDirectory}/icons/**/*.svg`, svgConfig()),
+  new SVGSpritemapPlugin(`${srcDirectory}/icons-custom/**/*.svg`, svgConfig('custom')),
   new SVGSpritemapPlugin(`${srcDirectory}/icons-files/**/*.svg`, svgConfig('files')),
   new SVGSpritemapPlugin(`${srcDirectory}/icons-wysiwyg/**/*.svg`, svgConfig('wysiwyg')),
   new WebpackAssetsManifest({
