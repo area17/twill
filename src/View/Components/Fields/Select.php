@@ -10,6 +10,8 @@ class Select extends FieldWithOptions
         string $name,
         string $label,
         public bool $native = false,
+        public bool $inTable = false,
+        public bool $inGrid = false,
         bool $renderForBlocks = false,
         bool $renderForModal = false,
         bool $translated = false,

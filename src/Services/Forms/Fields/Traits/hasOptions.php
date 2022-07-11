@@ -24,7 +24,11 @@ trait hasOptions
     /**
      * Adds a single option.
      */
-    public function addOption(Option $option): self {
+    public function addOption(Option $option): self
+    {
+        if ($this->options === null) {
+            $this->options = Options::make();
+        }
         $this->options->add($option);
 
         return $this;
