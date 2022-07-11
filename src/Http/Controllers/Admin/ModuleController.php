@@ -712,7 +712,7 @@ abstract class ModuleController extends Controller
                 );
             }
 
-            if ($this->getIndexOption('feature')) {
+            if ($this->getIndexOption('feature') && $this->repository->isFillable('featured')) {
                 $columns->add(
                     FeaturedStatus::make()
                         ->title(twillTrans('twill::lang.listing.columns.featured'))
