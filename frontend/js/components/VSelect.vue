@@ -5,7 +5,6 @@
       <input type="hidden" :name="name" :id="uniqId" :value="inputValue"/>
       <div class="vselect" :class="vselectClasses">
         <div class="vselect__field">
-          {{disabled}}
           <v-select
               :multiple="multiple"
               :placeholder="placeholder"
