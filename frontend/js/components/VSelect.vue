@@ -2,9 +2,9 @@
   <div class="vselectOuter">
     <a17-inputframe :error="error" :label="label" :note="note" :size="size" :name="name" :label-for="uniqId"
                     :required="required" :add-new="addNew">
-      <input type="hidden" :name="name" :id="uniqId" :value="inputValue"/>
       <div class="vselect" :class="vselectClasses">
         <div class="vselect__field">
+          <input type="hidden" :name="name" :id="uniqId" :value="inputValue"/>
           <v-select
               :multiple="multiple"
               :placeholder="placeholder"
