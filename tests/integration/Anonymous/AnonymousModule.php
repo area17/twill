@@ -167,15 +167,15 @@ class AnonymousModule
                         if (!isset($data['type']) || $data['type'] === 'string') {
                             $table->string($fieldName)
                                 ->default($data['default'] ?? null)
-                                ->nullable($data['nullable'] ?? false);
+                                ->nullable($data['nullable'] ?? true);
                         } elseif ($data['type'] === 'boolean') {
                             $table->boolean($fieldName)
                                 ->default($data['default'] ?? false)
-                                ->nullable($data['nullable'] ?? false);
+                                ->nullable($data['nullable'] ?? true);
                         } elseif ($data['type'] === 'dateTime') {
                             $table->dateTime($fieldName)
                                 ->default($data['default'] ?? null)
-                                ->nullable($data['nullable'] ?? false);
+                                ->nullable($data['nullable'] ?? true);
                         }
                     }
                 });

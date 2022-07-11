@@ -42,16 +42,7 @@ class FrontendDateConversionTest extends BrowserTestCase
             $newYork->setBrowserLocationToNewYork();
 
             $paris->loginAs($this->superAdmin, 'twill_users');
-            $paris->visit('/twill');
-
-            $paris->clickLink('Servers');
-            $paris->waitForText('There is no item here yet.');
-            $paris->press('Add new');
-            $paris->waitFor('.modal__header');
-            $paris->type('title', 'Digitalocean');
-            $paris->press('Create');
-
-            $paris->waitForReload();
+            $paris->createModuleEntryWithTitle('Servers', 'Digitalocean');
 
             $paris->setDateTimeInDatePicker(
                 fieldSelector: '.datePicker__field .form-control',
@@ -77,10 +68,7 @@ class FrontendDateConversionTest extends BrowserTestCase
             $newYork->setBrowserLocationToNewYork();
 
             $newYork->loginAs($this->superAdmin, 'twill_users');
-            $newYork->visit('/twill');
-
-            $newYork->clickLink('Servers');
-            $newYork->clickLink('Digitalocean');
+            $newYork->visitModuleEntryWithTitle('Servers', 'Digitalocean');
 
             // Check that the date is exactly that what we expected.
             $newYork->waitForText('Last Booted');
