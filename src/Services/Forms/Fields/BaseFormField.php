@@ -17,6 +17,7 @@ abstract class BaseFormField
         protected ?string $label = null,
         protected ?string $note = null,
         protected ?bool $required = false,
+        protected ?bool $disabled = false,
         /**
          * A list of mandatory properties in order of their component
          * constructor.
@@ -67,6 +68,18 @@ abstract class BaseFormField
     public function required(bool $required = true): self
     {
         $this->required = $required;
+
+        return $this;
+    }
+
+    /**
+     * Marks the field as disabled.
+     *
+     * There might be some fields not supporting this.
+     */
+    public function disabled(bool $disabled = true): self
+    {
+        $this->disabled = $disabled;
 
         return $this;
     }
