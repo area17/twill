@@ -44,15 +44,17 @@
     "spatie/once": "^2.0|^3.0"
   },
   "require-dev": {
+    "chillerlan/php-qrcode": "~2.0|~3.0|~4.0",
     "friendsofphp/php-cs-fixer": "^2.16|^3.0",
     "kalnoy/nestedset": "^5.0|^6.0",
+    "nette/php-generator": "^4.0",
     "nunomaduro/collision": "^3.0|^4.2|^5.0|^6.0",
-    "orchestra/testbench": "~3.3|~3.4|~3.5|~3.6|~3.7|~3.8|^4.0|^5.0|^6.0|^7.0",
     "nunomaduro/larastan": "^1.0|^2.0",
+    "orchestra/testbench": "~3.3|~3.4|~3.5|~3.6|~3.7|~3.8|^4.0|^5.0|^6.0|^7.0",
+    "orchestra/testbench-dusk": "*",
     "phpunit/phpunit": "~5.0|~6.0|~7.0|~8.0|~9.0",
-    "squizlabs/php_codesniffer": "*",
-    "chillerlan/php-qrcode": "~2.0|~3.0|~4.0",
-    "rector/rector": "^0.12.15"
+    "rector/rector": "^0.12.15",
+    "squizlabs/php_codesniffer": "*"
   },
   "autoload": {
     "psr-4": {
@@ -63,6 +65,7 @@
     "psr-4": {
       "A17\\Twill\\Tests\\Unit\\": "tests/unit",
       "A17\\Twill\\Tests\\Integration\\": "tests/integration",
+      "A17\\Twill\\Tests\\Browser\\": "tests/Browser",
       "App\\": "vendor/orchestra/testbench-core/laravel/app"
     }
   },
@@ -73,6 +76,9 @@
     "test": [
       "@test:syntax",
       "@test:phpunit"
+    ],
+    "post-autoload-dump": [
+      "@php ./vendor/bin/testbench package:discover --ansi"
     ]
   },
   "extra": {

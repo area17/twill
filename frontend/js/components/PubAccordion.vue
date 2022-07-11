@@ -3,7 +3,7 @@
     <span slot="accordion__title"><slot></slot></span>
     <div slot="accordion__value">
       <template v-if="startDate">
-        {{ startDate | formatDateWithFormat(dateDisplayFormat) }}
+        {{ startDateForDisplay | formatDateWithFormat(localizedDateDisplayFormat) }}
       </template>
       <template v-else>
         {{ defaultStartDate }}
@@ -51,6 +51,7 @@
 
   import a17Accordion from './Accordion.vue'
   import VisibilityMixin from '@/mixins/toggleVisibility'
+  import parseJson from 'date-fns/parse'
 
   export default {
     name: 'A17Pubaccordion',
@@ -71,7 +72,7 @@
       },
       dateDisplayFormat: {
         type: String,
-        default: 'MMM, DD, YYYY, ' + getTimeFormatForCurrentLocale()
+        default: null
       },
       dateFormat: {
         type: String,
@@ -87,7 +88,16 @@
       ...mapState({
         startDate: state => state.publication.startDate,
         endDate: state => state.publication.endDate
-      })
+      }),
+      startDateForDisplay() {
+        return parseJson(this.startDate + 'Z').toISOString()
+      },
+      localizedDateDisplayFormat() {
+        if (this.dateDisplayFormat) {
+          return this.dateDisplayFormat
+        }
+        return 'MMM, DD, YYYY, ' + getTimeFormatForCurrentLocale(this.date_24h)
+      }
     },
     methods: {
       updateStartDate: function (newValue) {

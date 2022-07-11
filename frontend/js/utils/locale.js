@@ -57,8 +57,8 @@ export function isCurrentLocale24HrFormatted () {
   ).find(part => part.type === 'hour').value.length === 2
 }
 
-export function getTimeFormatForCurrentLocale () {
-  if (isCurrentLocale24HrFormatted()) {
+export function getTimeFormatForCurrentLocale (force24h = false) {
+  if (isCurrentLocale24HrFormatted() || force24h) {
     return 'HH:mm'
   } else {
     return 'hh:mm A'

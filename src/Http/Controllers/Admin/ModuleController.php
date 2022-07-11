@@ -12,6 +12,7 @@ use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Contracts\TwillSchedulableModel;
 use A17\Twill\Models\Group;
 use A17\Twill\Services\Blocks\Block;
+use Carbon\Carbon;
 use A17\Twill\Services\Listings\Columns\Browser;
 use A17\Twill\Services\Listings\Columns\FeaturedStatus;
 use A17\Twill\Services\Listings\Columns\Image;
@@ -41,6 +42,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Response;
@@ -712,7 +714,7 @@ abstract class ModuleController extends Controller
                 );
             }
 
-            if ($this->getIndexOption('feature')) {
+            if ($this->getIndexOption('feature') && $this->repository->isFillable('featured')) {
                 $columns->add(
                     FeaturedStatus::make()
                         ->title(twillTrans('twill::lang.listing.columns.featured'))
@@ -1114,61 +1116,67 @@ abstract class ModuleController extends Controller
                     [Str::singular($this->moduleName) => $id]
                 )
             );
-        } else {
-            $formRequest = $this->validateFormRequest();
+        }
 
-            $this->repository->update($id, $formRequest->all());
+        $formRequest = $this->validateFormRequest();
 
-            activity()->performedOn($item)->log('updated');
+        $allData = $formRequest->all();
 
-            $this->fireEvent();
+        $this->repository->update($id, $allData);
 
-            if (isset($input['cmsSaveType'])) {
-                if (Str::endsWith($input['cmsSaveType'], '-close')) {
-                    return $this->respondWithRedirect($this->getBackLink());
-                } elseif (Str::endsWith($input['cmsSaveType'], '-new')) {
-                    if ($this->getIndexOption('skipCreateModal')) {
-                        return $this->respondWithRedirect(
-                            moduleRoute(
-                                $this->moduleName,
-                                $this->routePrefix,
-                                'create'
-                            )
-                        );
-                    }
+        activity()->performedOn($item)->log('updated');
 
+        $this->fireEvent();
+
+        if (isset($input['cmsSaveType'])) {
+            if (Str::endsWith($input['cmsSaveType'], '-close')) {
+                return $this->respondWithRedirect($this->getBackLink());
+            }
+
+            if (Str::endsWith($input['cmsSaveType'], '-new')) {
+                if ($this->getIndexOption('skipCreateModal')) {
                     return $this->respondWithRedirect(
                         moduleRoute(
                             $this->moduleName,
                             $this->routePrefix,
-                            'index',
-                            ['openCreate' => true]
-                        )
-                    );
-                } elseif ($input['cmsSaveType'] === 'restore') {
-                    Session::flash('status', twillTrans('twill::lang.publisher.restore-success'));
-
-                    return $this->respondWithRedirect(
-                        moduleRoute(
-                            $this->moduleName,
-                            $this->routePrefix,
-                            'edit',
-                            [Str::singular($this->moduleName) => $id]
+                            'create'
                         )
                     );
                 }
+
+                return $this->respondWithRedirect(
+                    moduleRoute(
+                        $this->moduleName,
+                        $this->routePrefix,
+                        'index',
+                        ['openCreate' => true]
+                    )
+                );
             }
 
-            if ($this->moduleHas('revisions')) {
-                return Response::json([
-                    'message' => twillTrans('twill::lang.publisher.save-success'),
-                    'variant' => FlashLevel::SUCCESS,
-                    'revisions' => $item->revisionsArray(),
-                ]);
-            }
+            if ($input['cmsSaveType'] === 'restore') {
+                Session::flash('status', twillTrans('twill::lang.publisher.restore-success'));
 
-            return $this->respondWithSuccess(twillTrans('twill::lang.publisher.save-success'));
+                return $this->respondWithRedirect(
+                    moduleRoute(
+                        $this->moduleName,
+                        $this->routePrefix,
+                        'edit',
+                        [Str::singular($this->moduleName) => $id]
+                    )
+                );
+            }
         }
+
+        if ($this->moduleHas('revisions')) {
+            return Response::json([
+                'message' => twillTrans('twill::lang.publisher.save-success'),
+                'variant' => FlashLevel::SUCCESS,
+                'revisions' => $item->revisionsArray(),
+            ]);
+        }
+
+        return $this->respondWithSuccess(twillTrans('twill::lang.publisher.save-success'));
     }
 
     /**

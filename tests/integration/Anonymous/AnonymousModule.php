@@ -3,21 +3,26 @@
 namespace A17\Twill\Tests\Integration\Anonymous;
 
 use A17\Twill\Http\Controllers\Admin\ModuleController;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Model;
+use A17\Twill\Services\Forms\Form;
 use A17\Twill\Services\Listings\TableColumns;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use A17\Twill\Repositories\ModuleRepository;
+use Nette\PhpGenerator\PhpFile;
 
 class AnonymousModule
 {
     private ?TableColumns $tableColumns = null;
+    private ?Form $formFields = null;
     private array $setupMethods = [];
     public array $fields = ['title' => []];
 
@@ -33,6 +38,12 @@ class AnonymousModule
     public function withTableColumns(TableColumns $tableColumns)
     {
         $this->tableColumns = $tableColumns;
+        return $this;
+    }
+
+    public function withFormFields(Form $formFields)
+    {
+        $this->formFields = $formFields;
         return $this;
     }
 
@@ -61,33 +72,77 @@ class AnonymousModule
      */
     public function boot(): string
     {
-        $modelClass = new class(
-            [],
-            $this->fields,
-            $this->namePlural
-        ) extends Model {
-            public static array $setProps = [];
+        $createClass = false;
+        // The module class is the one thing we really need.
+        if ($createClass) {
+            // When createclass is set to true we create an actual module file. This is usefull when you need to test
+            // relational content.
+            // This is not used as it is not 100% done.
+            $file = new PhpFile();
 
-            public function __construct(
-                array $attributes = [],
-                array $fields = [],
-                string $namePlural = '',
-            ) {
-                if ($namePlural !== '') {
-                    self::$setProps['fillable'] = array_keys($fields);
-                    self::$setProps['table'] = $namePlural;
-                    self::$setProps['translatedAttributes'] = collect($fields)
-                        ->where('translatable', true)
-                        ->keys()
-                        ->all();
-                } else {
-                    foreach (self::$setProps as $prop => $value) {
-                        $this->{$prop} = $value;
-                    }
-                }
-                parent::__construct($attributes);
+            $modelName = Str::singular(Str::studly($this->namePlural));
+            $modelClassName = 'App\Models\\' . $modelName;
+            $modelClass = "\\$modelClassName";
+
+            $class = $file->addClass('App\Models\\' . $modelName);
+
+            $class->addProperty('fillable', array_keys($this->fields));
+            $class->addProperty(
+                'translatedAttributes',
+                collect($this->fields)
+                    ->where('translatable', true)
+                    ->keys()
+                    ->all()
+            );
+            $class->setExtends(Model::class);
+
+            $bp = base_path();
+            $classTargetDir = $bp . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Models';
+            if (!file_exists($classTargetDir)) {
+                mkdir($classTargetDir, 0777, true);
             }
-        };
+
+            $targetFile = $classTargetDir . DIRECTORY_SEPARATOR . $modelName . '.php';
+            if (!file_exists($targetFile)) {
+                file_put_contents($targetFile, (string)$file);
+            }
+            include_once($targetFile);
+        } else {
+            // For simpler modules we can just keep the anonymous classes.
+            $modelClass = new class(
+                [],
+                $this->fields,
+                $this->namePlural
+            ) extends Model {
+                public static array $setProps = [];
+
+                public function __construct(
+                    array $attributes = [],
+                    array $fields = [],
+                    string $namePlural = '',
+                ) {
+                    if ($namePlural !== '') {
+                        self::$setProps['fillable'] = array_keys($fields);
+                        self::$setProps['table'] = $namePlural;
+                        self::$setProps['dates'] = collect($fields)
+                            ->where('type', 'dateTime')
+                            ->keys()
+                            ->all();
+                        self::$setProps['translatedAttributes'] = collect($fields)
+                            ->where('translatable', true)
+                            ->keys()
+                            ->all();
+                    } else {
+                        foreach (self::$setProps as $prop => $value) {
+                            $this->{$prop} = $value;
+                        }
+                    }
+                    parent::__construct($attributes);
+                }
+            };
+
+            $modelClass = $modelClass::class;
+        }
 
         // Create the migration class.
         $migration = new class($this->namePlural, $this->fields) extends Migration {
@@ -100,6 +155,11 @@ class AnonymousModule
 
             public function up(): void
             {
+                // Only create the schema if it does not exist yet.
+                if (Schema::hasTable($this->namePlural)) {
+                    return;
+                }
+
                 Schema::create($this->namePlural, function (Blueprint $table) {
                     createDefaultTableFields($table);
 
@@ -111,6 +171,10 @@ class AnonymousModule
                         } elseif ($data['type'] === 'boolean') {
                             $table->boolean($fieldName)
                                 ->default($data['default'] ?? false)
+                                ->nullable($data['nullable'] ?? false);
+                        } elseif ($data['type'] === 'dateTime') {
+                            $table->dateTime($fieldName)
+                                ->default($data['default'] ?? null)
                                 ->nullable($data['nullable'] ?? false);
                         }
                     }
@@ -142,8 +206,8 @@ class AnonymousModule
             }
         };
 
-        // always cleanup first.
-        $migration->down();
+        // Cleanup only when requested.
+        //        $migration->down();
         $migration->up();
 
         // Build the controller class.
@@ -151,8 +215,9 @@ class AnonymousModule
             $this->app,
             new Request(),
             $this->namePlural,
-            $modelClass::class,
+            $modelClass,
             $this->tableColumns,
+            $this->formFields,
             $this->setupMethods
         ) extends ModuleController {
             public static array $setProps;
@@ -164,10 +229,12 @@ class AnonymousModule
                 public $moduleName = null,
                 ?string $modelClass = null,
                 ?TableColumns $tableColumns = null,
+                ?Form $formFields = null,
                 ?array $setupMethods = null
             ) {
                 if ($modelClass) {
                     self::$setProps['setTableColumns'] = $tableColumns;
+                    self::$setProps['setFormFields'] = $formFields;
                     self::$setProps['setSetupMethods'] = $setupMethods ?? [];
                     self::$setProps['moduleName'] = $this->moduleName;
                     self::$setProps['moduleClass'] = $modelClass;
@@ -180,10 +247,14 @@ class AnonymousModule
                         }
                     }
                 }
+
                 parent::__construct($app, $request);
 
                 if (!isset($this->user) && $request->user()) {
                     $this->user = $request->user();
+                }
+                if (!isset($this->user)) {
+                    $this->user = Auth::guard('twill_users')->user();
                 }
             }
 
@@ -192,6 +263,14 @@ class AnonymousModule
                 foreach (self::$setProps['setSetupMethods'] as $method) {
                     $this->{$method}();
                 }
+            }
+
+            public function getForm(TwillModelContract $model): Form
+            {
+                if (self::$setProps['setFormFields'] !== null) {
+                    return self::$setProps['setFormFields'];
+                }
+                return parent::getForm($model);
             }
 
             public function getIndexTableColumns(): TableColumns
@@ -204,10 +283,10 @@ class AnonymousModule
 
             public function getFormRequestClass()
             {
-                $repository = new class() extends \A17\Twill\Http\Requests\Admin\Request {
+                $request = new class() extends \A17\Twill\Http\Requests\Admin\Request {
                 };
 
-                return $repository::class;
+                return $request::class;
             }
 
             public function getRepositoryClass($model)
@@ -224,7 +303,7 @@ class AnonymousModule
                         if ($model) {
                             $this->model = $model;
                         } else {
-                            $this->model = self::$setProps['modelType']::make();
+                            $this->model = new self::$setProps['modelType']();
                         }
                     }
                 };
@@ -242,8 +321,13 @@ class AnonymousModule
         $router = app()->make('router');
         $router->getRoutes()->refreshNameLookups();
 
+        $this->app['config']['twill-navigation.' . $this->namePlural] = [
+            'title' => Str::title($this->namePlural),
+            'module' => true,
+        ];
+
         // return the model class.
-        return $modelClass::class;
+        return $modelClass;
     }
 
     protected function buildAnonymousRoutes(string $slug, string $className): void
@@ -302,18 +386,22 @@ class AnonymousModule
         // Check if name will be a duplicate, and prevent if needed/allowed
         $customRoutePrefix = $slug;
 
+        $adminAppPath = config('twill.admin_app_path');
+
         foreach ($customRoutes as $route) {
-            $routeSlug = "{$prefixSlug}/{$route}";
+            $routeSlug = "$adminAppPath/{$prefixSlug}/{$route}";
             $mapping = [
                 'as' => $customRoutePrefix . ".{$route}",
             ];
 
             if (in_array($route, ['browser', 'tags'])) {
-                Route::get($routeSlug, [$className => $route])->name('twill.' . $mapping['as']);
+                Route::get($routeSlug, [$className => $route])->name('twill.' . $mapping['as'])
+                    ->middleware(['web', 'twill_auth:twill_users']);
             }
 
             if ($route === 'restoreRevision') {
-                Route::get($routeSlug . '/{id}', [$className => $route])->name('twill.' . $mapping['as']);
+                Route::get($routeSlug . '/{id}', [$className => $route])->name('twill.' . $mapping['as'])
+                    ->middleware(['web', 'twill_auth:twill_users']);
             }
 
             if (
@@ -329,11 +417,14 @@ class AnonymousModule
                     function (Request $request, Application $app) use ($className, $route) {
                         return (new $className($app, $request))->{$route}();
                     }
-                )->name('twill.' . $mapping['as']);
+                )
+                    ->name('twill.' . $mapping['as'])
+                    ->middleware(['web', 'twill_auth:twill_users']);
             }
 
             if ($route === 'duplicate' || $route === 'preview') {
-                Route::put($routeSlug . '/{id}', [$className => $route])->name('twill.' . $mapping['as']);
+                Route::put($routeSlug . '/{id}', [$className => $route])->name('twill.' . $mapping['as'])
+                    ->middleware(['web', 'twill_auth:twill_users']);
             }
 
             if (
@@ -346,13 +437,14 @@ class AnonymousModule
                     'bulkForceDelete',
                 ])
             ) {
-                Route::post($routeSlug, [$className => $route])->name('twill.' . $mapping['as']);
+                Route::post($routeSlug, [$className => $route])->name('twill.' . $mapping['as'])
+                    ->middleware(['web', 'twill_auth:twill_users']);
             }
         }
 
         Route::group(
             [],
-            function () use ($slug, $className) {
+            function () use ($slug, $className, $adminAppPath) {
                 $arrayToAdd = [
                     'index' => [
                         'path' => '/',
@@ -379,40 +471,63 @@ class AnonymousModule
                         'method' => 'destroy',
                         'type' => 'DELETE',
                     ],
+                    'update' => [
+                        'path' => '/{' . Str::singular($slug) . '}',
+                        'method' => 'update',
+                        'type' => 'PUT',
+                    ],
                 ];
 
                 foreach ($arrayToAdd as $name => $data) {
                     $method = $data['method'];
                     if ($data['type'] === 'GET') {
                         Route::get(
-                            $slug . $data['path'],
-                            function (Request $request, Application $app) use (
+                            $adminAppPath . '/' . $slug . $data['path'],
+                            function (Request $request, Application $app, $model = null) use (
                                 $className,
                                 $method
                             ) {
-                                return (new $className($app, $request))->{$method}();
+                                return (new $className($app, $request))->{$method}($model);
                             }
-                        )->name('twill.' . $slug . '.' . $name);
+                        )
+                            ->middleware(['web', 'twill_auth:twill_users'])
+                            ->name('twill.' . $slug . '.' . $name);
                     } elseif ($data['type'] === 'POST') {
                         Route::post(
-                            $slug . $data['path'],
-                            function (Request $request, Application $app) use (
+                            $adminAppPath . '/' . $slug . $data['path'],
+                            function (Request $request, Application $app, $model = null) use (
                                 $className,
                                 $method
                             ) {
-                                return (new $className($app, $request))->{$method}();
+                                return (new $className($app, $request))->{$method}($model);
                             }
-                        )->name('twill.' . $slug . '.' . $name);
+                        )
+                            ->middleware(['web', 'twill_auth:twill_users'])
+                            ->name('twill.' . $slug . '.' . $name);
+                    } elseif ($data['type'] === 'PUT') {
+                        Route::put(
+                            $adminAppPath . '/' . $slug . $data['path'],
+                            function (Request $request, Application $app, $model = null) use (
+                                $className,
+                                $method
+                            ) {
+                                return (new $className($app, $request))->{$method}($model);
+                            }
+                        )
+                            ->middleware(['web', 'twill_auth:twill_users'])
+                            ->name('twill.' . $slug . '.' . $name);
                     } elseif ($data['type'] === 'DELETE') {
                         Route::delete(
-                            $slug . $data['path'],
-                            function (Request $request, Application $app) use (
+                            $adminAppPath . '/' . $slug . $data['path'],
+                            function (Request $request, Application $app, $model = null) use (
                                 $className,
                                 $method
                             ) {
-                                return (new $className($app, $request))->{$method}();
+                                return (new $className($app, $request))->{$method}($model);
                             }
-                        )->name('twill.' . $slug . '.' . $name);
+                        )
+                            ->middleware(['web', 'twill_auth:twill_users'])
+                            ->name('twill.' . $slug . '.' . $name);
                     }
                 }
             }

@@ -10,6 +10,8 @@ All notable changes to `twill` will be documented in this file.
 - Table builder [PR](https://github.com/area17/twill/pull/1632)
 - Form builder and blade-x components instead of directives for form
   views [PR](https://github.com/area17/twill/pull/1360)
+- DateTimes are now fully timezone aware, if you previously added workarounds there should be removable. 
+  On the front-end dates will always be displayed in the browsers/systems timezone, but storage is in UTC.
 
 ### Features
 
@@ -35,6 +37,51 @@ All notable changes to `twill` will be documented in this file.
 ### Documentation
 
 - Documented capsules [PR](https://github.com/area17/twill/pull/1628)
+
+## 2.8.8 (2022-06-27)
+
+###  Features
+
+- `->pivot` is now available when using getRelated (to get the position) [`#1687`](https://github.com/area17/twill/pull/1687)
+- When updating a model via the repository, the updated model is now returned [`#1706`](https://github.com/area17/twill/pull/1706)
+
+### Fixes
+
+- Fixed no-cache header  [`#1695`](https://github.com/area17/twill/pull/1695)
+- Fixed divider icon not showing [`#1699`](https://github.com/area17/twill/pull/1699)
+- Fixed Path separators for windows in capsules [`#1702`](https://github.com/area17/twill/pull/1702)
+
+## 2.8.7 (2022-06-10)
+
+### Features
+
+- Added `divider` (<hr>) support to the Quill toolbar [`#1679`](https://github.com/area17/twill/pull/1679)
+
+### Fixes
+
+- Fixed issue that would cause Twill ui to crash when using Quill [`#1680`](https://github.com/area17/twill/pull/1680)
+- Fixed some backwards compatability issues with older Laravel versions [`#1684`](https://github.com/area17/twill/pull/1684)
+- Fixed issue with browsers in the block editor [`#1689`](https://github.com/area17/twill/pull/1689)
+
+
+## 2.8.6 (2022-06-03)
+
+### Fixes
+
+- Fixed an issue that would not cleanup removed browser items in blocks [`#1675`](https://github.com/area17/twill/pull/1675)
+- Fixed an issue that would not display fields translatable in the edit modal window [`#1676`](https://github.com/area17/twill/pull/1676)
+
+## 2.8.5 (2022-05-27)
+
+### Fixes
+
+- Reverts change in build folder location
+
+## 2.8.4 (2022-05-25)
+
+### Fixes
+
+- Fixed console error when editing block with media in the block editor [`#1659`](https://github.com/area17/twill/pull/1659)
 
 ## 2.8.3 (2022-05-19)
 
