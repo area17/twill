@@ -17,7 +17,6 @@ const state = {
 // getters
 const getters = {
   repeatersByBlockId: (state) => (id) => {
-    console.log(state.repeaters)
     const ids = Object.keys(state.repeaters).filter(key => key.startsWith(`blocks-${id}`))
     const repeaters = {}
     ids.forEach(id => (repeaters[id] = state.repeaters[id]))
