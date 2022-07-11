@@ -31,3 +31,4 @@ parameters:
     - src/Models/User.php
     # Not needed
     - src/Rector/LaravelAwareRectorRule.php
+    - src/DuskServiceProvider.php

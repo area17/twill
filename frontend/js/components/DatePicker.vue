@@ -16,6 +16,7 @@
   import { locales, getCurrentLocale, isCurrentLocale24HrFormatted } from '@/utils/locale'
   import FlatPickr from 'flatpickr'
   import 'flatpickr/dist/flatpickr.css'
+  import parse from 'date-fns/parse'
 
   export default {
     name: 'A17DatePicker',
@@ -126,6 +127,7 @@
           wrap: true,
           altInput: true,
           altFormat: self.altFormatComputed,
+          dateFormat: 'Z', // This is the universal format that will be parsed by the back-end.
           static: self.staticMode,
           appendTo: self.staticMode ? self.$refs[self.refs.flatPicker] : undefined,
           enableTime: self.enableTime,
@@ -137,7 +139,25 @@
           minuteIncrement: self.minuteIncrement,
           hourIncrement: self.hourIncrement,
           minDate: self.minDate,
+          altInputClass: 'flatpickr-input form-control',
           maxDate: self.maxDate,
+          parseDate: function (date, format) {
+            const fullFormat = 'yyyy-MM-dd HH:mm:ss';
+            if (date.length === fullFormat.length) {
+              return parse(date + 'Z', fullFormat + 'X', Date.UTC());
+            }
+            const fullFormatNoSeconds = 'yyyy-MM-dd HH:mm';
+            if (date.length === fullFormatNoSeconds.length) {
+              return parse(date + 'Z', fullFormat + 'X', Date.UTC());
+            }
+            const fullFormatNoTime = 'yyyy-MM-dd';
+            if (date.length === fullFormatNoTime.length) {
+              return parse(date, fullFormatNoTime, Date.UTC());
+            }
+
+            // Hope for the best..
+            return date;
+          },
           onOpen: function () {
             setTimeout(function () {
               self.flatPicker.set('maxDate', self.maxDate) // in case maxDate changed since last open

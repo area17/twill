@@ -190,7 +190,9 @@
         this.opened = true
       },
       checkExpandBlocks () {
-        this.$refs.blockList[this.$refs.blockList.length - 1].toggleExpand()
+        if (this.$refs.blockList[this.$refs.blockList.length - 1] !== undefined) {
+          this.$refs.blockList[this.$refs.blockList.length - 1].toggleExpand()
+        }
       },
       handleOnMove (e) {
         const { draggedContext, relatedContext } = e

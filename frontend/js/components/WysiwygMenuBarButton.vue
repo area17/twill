@@ -35,6 +35,15 @@
   }
 </script>
 
+<style lang="scss">
+  // This icon is not part of the sizes above.
+  .icon--wysiwyg_hr,
+  .icon--wysiwyg_hr svg {
+    width: 14px;
+    height: 14px;
+  }
+</style>
+
 <style lang="scss" scoped>
   @import '~svg-spritemap-webpack-plugin/svg-sprite-icons-wysiwyg';
 

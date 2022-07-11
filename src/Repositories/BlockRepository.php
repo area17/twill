@@ -61,10 +61,14 @@ class BlockRepository extends ModuleRepository
 
     public function afterSave(TwillModelContract $model, array $fields): void
     {
-        if (isset($fields['browsers']) && Schema::hasTable(config('twill.related_table', 'twill_related'))) {
-            Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($model) {
-                $model->saveRelated($items, $browserName);
-            });
+        if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
+            if (isset($fields['browsers'])) {
+                Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($model) {
+                    $model->saveRelated($items, $browserName);
+                });
+            } else {
+                $model->clearAllRelated();
+            }
         }
 
         parent::afterSave($model, $fields);
@@ -76,7 +80,7 @@ class BlockRepository extends ModuleRepository
         $object->files()->sync([]);
 
         if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
-            $object->relatedItems()->delete();
+            $object->clearAllRelated();
         }
     }
 

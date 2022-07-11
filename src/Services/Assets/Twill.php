@@ -75,7 +75,14 @@ class Twill
 
     private function readJson($fileName)
     {
-        return json_decode(file_get_contents($fileName), true);
+        $requestOptionsIgnoreSsl = [
+            "ssl" => [
+                "verify_peer" => false,
+                "verify_peer_name" => false,
+            ],
+        ];
+
+        return json_decode(file_get_contents($fileName, false, stream_context_create($requestOptionsIgnoreSsl)), true);
     }
 
     private function devMode()

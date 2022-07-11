@@ -18,7 +18,7 @@ class DatePicker extends BaseFormField
 
     protected bool $timeOnly = false;
 
-    protected bool $time24h = false;
+    protected bool $time24Hr = false;
 
     protected ?string $altFormat = null;
 
@@ -71,7 +71,7 @@ class DatePicker extends BaseFormField
     {
         $this->withTime = true;
         $this->timeOnly = $timeOnly;
-        $this->altFormat = $this->altFormat ?? (($this->time24h ?? false) ? 'H:i' : 'h:i K');
+        $this->altFormat = $this->altFormat ?? (($this->time24Hr ?? false) ? 'H:i' : 'h:i K');
 
         return $this;
     }
@@ -81,7 +81,7 @@ class DatePicker extends BaseFormField
      */
     public function time24h(bool $time24h = true): self
     {
-        $this->time24h = $time24h;
+        $this->time24Hr = $time24h;
 
         return $this;
     }

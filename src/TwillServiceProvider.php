@@ -39,7 +39,6 @@ use Cartalyst\Tags\TagsServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -66,7 +65,7 @@ class TwillServiceProvider extends ServiceProvider
         TranslatableServiceProvider::class,
         TagsServiceProvider::class,
         ActivitylogServiceProvider::class,
-        CapsulesServiceProvider::class,
+        CapsulesServiceProvider::class
     ];
 
     /**
@@ -118,9 +117,6 @@ class TwillServiceProvider extends ServiceProvider
         Blade::componentNamespace('A17\\Twill\\View\\Components\\Layout', 'twill.layout');
         Blade::componentNamespace('A17\\Twill\\View\\Components\\Fields', 'twill');
 
-        // Laravel 7 compatability.
-        Collection::macro('doesntContain', [Collection::class, 'missing']);
-
         Relation::morphMap([
             'users' => User::class,
             'media' => Media::class,
@@ -152,6 +148,10 @@ class TwillServiceProvider extends ServiceProvider
 
         foreach ($this->providers as $provider) {
             $this->app->register($provider);
+        }
+
+        if (app()->environment('testing')) {
+            $this->app->register(DuskServiceProvider::class);
         }
 
         if (config('twill.enabled.media-library')) {

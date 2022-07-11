@@ -263,3 +263,23 @@ if (! function_exists('capsule_namespace_to_path')) {
         return TwillCapsules::capsuleNamespaceToPath($namespace, $capsuleNamespace, $rootPath);
     }
 }
+
+if (! function_exists('str_after_last')) {
+    /**
+     * @todo: In twill 3.x remove and replace with Str::afterlast
+     */
+    function str_after_last($subject, $search)
+    {
+        if ($search === '') {
+            return $subject;
+        }
+
+        $position = strrpos($subject, (string) $search);
+
+        if ($position === false) {
+            return $subject;
+        }
+
+        return substr($subject, $position + strlen($search));
+    }
+}
