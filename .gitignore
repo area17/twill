@@ -21,3 +21,4 @@ tests/storage
 composer.lock
 .github/clover.xml
 :memory:
+dist

@@ -21,10 +21,7 @@ class Build extends Command
      */
     protected $description = "Build Twill assets with custom Vue components/blocks";
 
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
+    protected Filesystem $filesystem;
 
     public function __construct(Filesystem $filesystem)
     {
@@ -38,19 +35,17 @@ class Build extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
         if ($this->option("copyOnly")) {
-            return $this->copyCustoms();
+            $this->copyCustoms();
+            return;
         }
 
-        return $this->fullBuild();
+        $this->fullBuild();
     }
 
-    /*
-     * @return void
-     */
-    private function fullBuild()
+    private function fullBuild(): void
     {
         $progressBar = $this->output->createProgressBar(5);
         $progressBar->setFormat("%current%/%max% [%bar%] %message%");
@@ -100,7 +95,7 @@ class Build extends Command
             $this->info('');
             $progressBar->setMessage("Publishing assets...\n\n");
             $progressBar->advance();
-            $this->call('twill:update');
+            $this->call('twill:update', ['--fromBuild']);
 
             $this->info('');
             $progressBar->setMessage("Done.");
@@ -108,20 +103,14 @@ class Build extends Command
         }
     }
 
-    /**
-     * @return string
-     */
-    private function getDevPort()
+    private function getDevPort(): string
     {
         preg_match('#^.*:(\d+)#', config('twill.dev_mode_url'), $matches);
 
         return $matches[1] ?? '8080';
     }
 
-    /**
-     * @return void
-     */
-    private function startWatcher($pattern, $command)
+    private function startWatcher(string $pattern, string $command): void
     {
         if (empty($this->filesystem->glob($pattern))) {
             return;
@@ -137,21 +126,20 @@ class Build extends Command
 
             try {
                 $process->start();
-            } catch(\Exception $exception) {
+            } catch (\Exception $exception) {
                 $this->warn("Could not start the chokidar watcher ({$exception->getMessage()})\n");
             }
         } else {
-            $this->warn("The `chokidar-cli` package was not found. It is required to watch custom blocks & components in development. You can install it by running:\n");
+            $this->warn(
+                "The `chokidar-cli` package was not found. It is required to watch custom blocks & components in development. You can install it by running:\n"
+            );
             $this->warn("    php artisan twill:dev\n");
             $this->warn("without the `--noInstall` option.\n");
             sleep(2);
         }
     }
 
-    /**
-     * @return void
-     */
-    private function runProcessInTwill(array $command, $disableTimeout = false)
+    private function runProcessInTwill(array $command, bool $disableTimeout = false): void
     {
         $process = new Process($command, base_path(config('twill.vendor_path')));
         $process->setTty(Process::isTtySupported());
@@ -165,10 +153,7 @@ class Build extends Command
         $process->mustRun();
     }
 
-    /*
-     * @return void
-     */
-    private function copyCustoms()
+    private function copyCustoms(): void
     {
         $this->info("Copying custom blocks & components...");
         $this->copyBlocks();
@@ -176,12 +161,11 @@ class Build extends Command
         $this->info("Done.");
     }
 
-    /**
-     * @return void
-     */
-    private function copyBlocks()
+    private function copyBlocks(): void
     {
-        $localCustomBlocksPath = resource_path(config('twill.block_editor.custom_vue_blocks_resource_path', 'assets/js/blocks'));
+        $localCustomBlocksPath = resource_path(
+            config('twill.block_editor.custom_vue_blocks_resource_path', 'assets/js/blocks')
+        );
         $twillCustomBlocksPath = base_path(config('twill.vendor_path')) . '/frontend/js/components/blocks/customs';
 
         if (!$this->filesystem->exists($twillCustomBlocksPath)) {
@@ -195,12 +179,11 @@ class Build extends Command
         }
     }
 
-    /**
-     * @return void
-     */
-    private function copyComponents()
+    private function copyComponents(): void
     {
-        $localCustomComponentsPath = resource_path(config('twill.custom_components_resource_path', 'assets/js/components'));
+        $localCustomComponentsPath = resource_path(
+            config('twill.custom_components_resource_path', 'assets/js/components')
+        );
         $twillCustomComponentsPath = base_path(config('twill.vendor_path')) . '/frontend/js/components/customs';
 
         if (!$this->filesystem->exists($twillCustomComponentsPath)) {
@@ -215,12 +198,11 @@ class Build extends Command
         }
     }
 
-    /**
-     * @return void
-     */
-    private function copyVendorComponents()
+    private function copyVendorComponents(): void
     {
-        $localVendorComponentsPath = resource_path(config('twill.vendor_components_resource_path', 'assets/vendor/js/components'));
+        $localVendorComponentsPath = resource_path(
+            config('twill.vendor_components_resource_path', 'assets/vendor/js/components')
+        );
         $twillVendorComponentsPath = base_path(config('twill.vendor_path')) . '/frontend/js/components/customs-vendor';
 
         if (!$this->filesystem->exists($twillVendorComponentsPath)) {
