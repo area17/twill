@@ -21,7 +21,7 @@ class Block
 
     public const TYPE_REPEATER = 'repeater';
 
-    public const PREG_REPLACE_INNER = '(?:\'|")(.*)(?:\'|")';
+    public const PREG_REPLACE_INNER = '(?:\'|")(.*)(?:\'|").*';
 
     /**
      * @var string
