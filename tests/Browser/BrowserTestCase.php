@@ -153,7 +153,7 @@ class BrowserTestCase extends TestCase
         $superAdmin = $this->makeNewSuperAdmin();
 
         if ($this->example) {
-            $this->artisan('twill:install ' . $this->example . ' --no-interaction')
+            $this->artisan('twill:install ' . $this->example . ' --no-interaction --fromBuild')
                 ->expectsConfirmation(
                     'Are you sure to install this preset? This can overwrite your models, config and routes.',
                     'yes'

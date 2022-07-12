@@ -12,7 +12,7 @@ class Build extends Command
      *
      * @var string
      */
-    protected $signature = 'twill:build {--noInstall} {--hot} {--watch} {--copyOnly}';
+    protected $signature = 'twill:build {--noInstall} {--hot} {--watch} {--copyOnly} {--customComponentsSource=}';
 
     /**
      * The console command description.
@@ -21,19 +21,13 @@ class Build extends Command
      */
     protected $description = "Build Twill assets with custom Vue components/blocks";
 
-    protected Filesystem $filesystem;
-
-    public function __construct(Filesystem $filesystem)
+    public function __construct(public Filesystem $filesystem)
     {
         parent::__construct();
-
-        $this->filesystem = $filesystem;
     }
 
     /*
      * Executes the console command.
-     *
-     * @return mixed
      */
     public function handle(): void
     {
@@ -58,8 +52,6 @@ class Build extends Command
 
         if ($npmInstall) {
             $this->runProcessInTwill(['npm', 'ci']);
-        } else {
-            sleep(1);
         }
 
         $this->info('');
@@ -70,7 +62,11 @@ class Build extends Command
         sleep(1);
 
         $this->info('');
-        $progressBar->setMessage("Copying custom components...\n\n");
+        if (!$this->option('customComponentsSource')) {
+            $progressBar->setMessage("Copying custom components...\n\n");
+        } else {
+            $progressBar->setMessage("Loading components from custom directory...\n\n");
+        }
         $progressBar->advance();
 
         $this->copyComponents();
@@ -83,19 +79,41 @@ class Build extends Command
         $progressBar->setMessage("Building assets...\n\n");
         $progressBar->advance();
 
+        $env = [];
+        if ($this->option('customComponentsSource')) {
+            $progressBar->setMessage("Using custom components from {$this->option('customComponentsSource')} ...\n\n");
+            if (str_contains($this->option('customComponentsSource'), '..')) {
+                $this->error('customComponentsSource must be an absolute path');
+                exit(1);
+            }
+            $env = ['VUE_APP_CUSTOM_COMPONENTS_PATH' => $this->option('customComponentsSource')];
+        }
+
         if ($this->option('hot')) {
             $this->startWatcher(resource_path('assets/js/**/*.vue'), 'php artisan twill:build --copyOnly');
-            $this->runProcessInTwill(['npm', 'run', 'serve', '--', "--port={$this->getDevPort()}"], true);
+            $this->runProcessInTwill(
+                command: ['npm', 'run', 'serve', '--', "--port={$this->getDevPort()}"],
+                disableTimeout: true,
+                env: $env
+            );
         } elseif ($this->option('watch')) {
             $this->startWatcher(resource_path('assets/js/**/*.vue'), 'php artisan twill:build --copyOnly');
-            $this->runProcessInTwill(['npm', 'run', 'watch'], true);
+            $this->runProcessInTwill(
+                command: ['npm', 'run', 'watch'],
+                disableTimeout: true,
+                env: $env
+            );
         } else {
-            $this->runProcessInTwill(['npm', 'run', 'build']);
+            $this->runProcessInTwill(
+                command: ['npm', 'run', 'build'],
+                env: $env
+            );
 
             $this->info('');
             $progressBar->setMessage("Publishing assets...\n\n");
             $progressBar->advance();
-            $this->call('twill:update', ['--fromBuild']);
+
+            $this->call('twill:update', ['--fromBuild' => true]);
 
             $this->info('');
             $progressBar->setMessage("Done.");
@@ -139,10 +157,12 @@ class Build extends Command
         }
     }
 
-    private function runProcessInTwill(array $command, bool $disableTimeout = false): void
+    private function runProcessInTwill(array $command, bool $disableTimeout = false, array $env = []): void
     {
         $process = new Process($command, base_path(config('twill.vendor_path')));
         $process->setTty(Process::isTtySupported());
+
+        $process->setEnv($env);
 
         if ($disableTimeout) {
             $process->setTimeout(null);

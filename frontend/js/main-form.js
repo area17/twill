@@ -137,8 +137,9 @@ importedTwillBlocks.keys().map(block => {
 })
 
 // Custom form components
-const importedComponents = require.context('@/components/customs/', true, /\.(js|vue)$/i)
+const importedComponents = require.context(process.env.VUE_APP_CUSTOM_COMPONENTS_PATH, true, /\.(js|vue)$/i)
 importedComponents.keys().map(block => {
+  // eslint-disable-next-line
   const componentName = extractComponentNameFromContextKey(block)
   return Vue.component(componentName, importedComponents(block).default)
 })
