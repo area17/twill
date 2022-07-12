@@ -4,7 +4,6 @@ namespace A17\Twill\Helpers;
 
 use A17\Twill\Facades\TwillRoutes;
 use A17\Twill\Http\Controllers\Admin\SingletonModuleController;
-use Aws\DirectConnect\Exception\DirectConnectException;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\Facades\App;
@@ -15,56 +14,18 @@ use Illuminate\Support\Str;
 
 class Capsule
 {
-    /**
-     * @var string
-     */
-    public $name;
+    public bool $loaded = false;
 
-    /**
-     * @var string
-     */
-    public $path;
-
-    /**
-     * @var bool
-     */
-    public $enabled;
-
-    /**
-     * @var bool
-     */
-    public $packageCapsule = false;
-
-    /**
-     * @var bool
-     */
-    public $loaded = false;
-
-    /**
-     * @var string|null
-     */
-    private $singular;
-
-    /**
-     * @var string
-     */
-    private $namespace;
+    protected ?string $cachedViewPrefix = null;
 
     public function __construct(
-        string $name,
-        string $namespace,
-        string $path,
-        string $singular = null,
-        bool $enabled = true,
-        bool $packageCapsule = false
+        public string $name,
+        public string $namespace,
+        public string $path,
+        public ?string $singular = null,
+        public bool $enabled = true,
+        public bool $packageCapsule = false
     ) {
-        $this->name = $name;
-        $this->path = $path;
-        $this->enabled = $enabled;
-        $this->namespace = $namespace;
-        $this->singular = $singular;
-        $this->packageCapsule = $packageCapsule;
-
         $this->boot();
     }
 
@@ -274,8 +235,17 @@ class Capsule
 
     public function getViewPrefix(): string
     {
-        $name = Str::studly($this->name);
-        return "{$name}.resources.views.admin";
+        if (!$this->cachedViewPrefix) {
+            $name = Str::studly($this->name);
+            // This is for backwards compatability.
+            if (File::exists($this->getViewsPath() . DIRECTORY_SEPARATOR . 'twill')) {
+                $this->cachedViewPrefix = "{$name}.resources.views.twill";
+            } else {
+                $this->cachedViewPrefix = "{$name}.resources.views.admin";
+            }
+        }
+
+        return $this->cachedViewPrefix;
     }
 
     public function getRoutesFile(): string
