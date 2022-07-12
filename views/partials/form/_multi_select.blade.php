@@ -10,6 +10,7 @@
         @if ($max ?? false) :max="{{ $max }}" @endif
         @if ($inModal) :in-modal="true" @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
+        @if ($disabled ?? false) :disabled="true" @endif
         in-store="currentValue"
     >
         @if($addNew)
@@ -29,6 +30,7 @@
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         @if ($searchable ?? $endpoint ?? false) :searchable="true" @endif
         @if ($endpoint ?? false) endpoint="{{ $endpoint }}" @endif
+        @if ($disabled ?? false) :disabled="true" @endif
         :multiple="true"
         in-store="inputValue"
     >

@@ -5,6 +5,7 @@ namespace A17\Twill;
 use Carbon\Carbon;
 use Carbon\Laravel\ServiceProvider;
 use Facebook\WebDriver\Chrome\ChromeDevToolsDriver;
+use Illuminate\Support\Str;
 use Laravel\Dusk\Browser;
 
 class DuskServiceProvider extends ServiceProvider
@@ -31,6 +32,73 @@ class DuskServiceProvider extends ServiceProvider
             $devTools->execute('Emulation.setTimezoneOverride', ['timezoneId' => $timezone]);
             $devTools->execute('Emulation.setGeolocationOverride', $location);
             $this->pause(100);
+        });
+
+        Browser::macro('visitTwill', function () {
+            if (
+                !Str::contains($this->driver->getCurrentURL(), '/twill') ||
+                Str::contains($this->driver->getCurrentURL(), '_dusk')
+            ) {
+                $this->visit('/twill');
+            }
+        });
+
+        Browser::macro('visitModuleEntryWithTitle', function (string $menuName, string $title) {
+            $this->visitTwill();
+
+            $this->clickLink($menuName);
+
+            $this->waitForText($title);
+            $this->clickLink($title);
+
+            $this->assertSee($title);
+        });
+
+        Browser::macro('createModuleEntryWithTitle', function (string $menuName, string $title) {
+            $this->visitTwill();
+
+            $this->clickLink($menuName);
+            $this->press('Add new');
+
+            $this->waitFor('.modal__header');
+
+            $this->type('title', $title);
+            $this->press('Create');
+
+            $this->waitForReload();
+        });
+
+        Browser::macro('assertVselectHasOptions', function (string $wrapperClass, array $optionLabels) {
+            $this->with($wrapperClass, function (Browser $element) use ($optionLabels) {
+                $element->click('.vs__search');
+                $element->waitFor('.vs__dropdown-menu');
+
+                foreach ($optionLabels as $optionLabel) {
+                    $element->assertSeeIn('.vs__dropdown-menu', $optionLabel);
+                }
+            });
+        });
+
+        Browser::macro('selectVselectOption', function (string $wrapperClass, string $optionLabel) {
+            $this->with($wrapperClass, function (Browser $element) use ($optionLabel, $wrapperClass) {
+                $element->click('.vs__search');
+                $element->waitFor('.vs__dropdown-menu');
+
+                $element->clickAtXPath('//li[contains(.,"' . $optionLabel . '")]');
+
+                $this->assertVselectHasOptionSelected($wrapperClass, $optionLabel);
+            });
+        });
+
+        Browser::macro('assertVselectHasOptionSelected', function (string $wrapperClass, string $optionLabel) {
+            $this->with($wrapperClass, function (Browser $element) use ($optionLabel) {
+                $element->assertSeeIn('.vs__selected-options', $optionLabel);
+            });
+        });
+
+        Browser::macro('pressSaveAndCheckSaved', function (string $saveButtonText = 'Update') {
+            $this->press($saveButtonText);
+            $this->waitForText('Content saved. All good!');
         });
 
         /**

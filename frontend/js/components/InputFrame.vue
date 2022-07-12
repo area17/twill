@@ -30,7 +30,8 @@
       textfieldClasses: function () {
         const classes = [
           this.size === 'small' ? 'input--small' : '',
-          this.error ? 'input--error' : ''
+          this.error ? 'input--error' : '',
+          'input-wrapper-' + (this.name || this.labelFor)
         ]
 
         if (this.variant) {
