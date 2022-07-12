@@ -271,7 +271,10 @@ class ModuleMake extends Command
             $this->sortable = true;
         }
 
-        if (($parent = $this->option('parentModel')) && !Str::startsWith($singularModuleName, lcfirst($parent))) {
+        if ($this->hasOption('parentModel') &&
+            ($parent = $this->option('parentModel')) &&
+            !Str::startsWith($singularModuleName, lcfirst($parent))
+        ) {
             $this->error($singularModuleName . 'must start with' . $parent);
             exit(1);
         }
@@ -310,7 +313,7 @@ class ModuleMake extends Command
             $this->addEntryToRoutesFile("\nRoute::singleton('{$singularModuleName}');");
         } else {
             $moduleNameForRoute = $singularModuleName;
-            if ($parent = $this->option('parentModel')) {
+            if ($this->hasOption('parentModel') && $parent = $this->option('parentModel')) {
                 $secondPart = Str::plural(lcfirst(str_replace(strtolower($parent), '', $singularModuleName)));
                 $firstPart = Str::plural(lcfirst($parent));
 
@@ -324,7 +327,7 @@ class ModuleMake extends Command
         $navType = $this->isSingleton ? 'singleton' : 'module';
 
         if (!$this->customDirs) {
-            if (!$this->option('parentModel')) {
+            if (!$this->hasOption('parentModel') || !$this->option('parentModel')) {
                 $this->addEntryToNavigationFile($navModuleName, [
                     'title' => $navTitle,
                     $navType => true,
@@ -344,7 +347,7 @@ class ModuleMake extends Command
             }
         }
 
-        if ($this->option('parentModel')) {
+        if ($this->hasOption('parentModel') && $this->option('parentModel')) {
             $this->warn(
                 'Please see: https://twill.io/docs/crud-modules/nested-modules.html#parent-child-modules for further instruction on nested modules.'
             );
