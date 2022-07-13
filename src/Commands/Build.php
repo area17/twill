@@ -2,17 +2,23 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\Commands\Traits\ExecutesInTwillDir;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
 class Build extends Command
 {
+    use ExecutesInTwillDir;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
+     *
+     * forTesting is only for when the test suite needs to run (on ci) as there are no build dependencies there.
+     * This will result in a git diff.
      */
-    protected $signature = 'twill:build {--noInstall} {--hot} {--watch} {--copyOnly} {--customComponentsSource=}';
+    protected $signature = 'twill:build {--noInstall} {--hot} {--watch} {--copyOnly} {--customComponentsSource=} {--forTesting}';
 
     /**
      * The console command description.
@@ -118,6 +124,10 @@ class Build extends Command
             $this->info('');
             $progressBar->setMessage("Done.");
             $progressBar->finish();
+        }
+
+        if ($this->option('forTesting')) {
+            $this->executeInTwillDir('rm -Rf twill-assets/assets && cp -Rf dist/assets twill-assets/assets');
         }
     }
 

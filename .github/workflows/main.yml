@@ -108,7 +108,7 @@ jobs:
           mkdir ./frontend/js/components/blocks/customs
 
       - name: Build twill.
-        run: ./vendor/bin/testbench twill:build --noInstall
+        run: ./vendor/bin/testbench twill:build --noInstall --forTesting
 
       - name: Upgrade Chrome Driver
         run: ./vendor/bin/testbench dusk:chrome-driver
