@@ -7,7 +7,7 @@ pageClass: twill-doc
 You can generate all the files needed in your application to create a new CRUD module using Twill's Artisan generator:
 
 ```bash
-php artisan twill:module moduleName
+php artisan twill:make:module moduleName
 ```
 
 The command accepts several options:
@@ -19,10 +19,11 @@ The command accepts several options:
 - `--hasPosition (-P)`, to allow manually reordering of records in the listing screen
 - `--hasRevisions(-R)`, to allow comparing and restoring past revisions of records
 - `--hasNesting(-N)`, to enable nested items in the module listing (see [Nested Module](/crud-modules/nested-modules.html))
+- `--parentModel=`, to generate the route for a nested module. See (see [Nested Module](/crud-modules/nested-modules.html))
 
-The `twill:module` command will generate a migration file, a model, a repository, a controller, a form request object and a form view.
+The `twill:make:module` command will generate a migration file, a model, a repository, a controller, a form request object and a form view.
 
-Add the route to your admin routes file(`routes/twill.php`).
+Once you ran the command a new entry will be added to `routes/twill.php`.
 
 ```php
 <?php
@@ -30,7 +31,7 @@ Add the route to your admin routes file(`routes/twill.php`).
 Route::module('moduleName');
 ```
 
-Setup a new CMS navigation item in `config/twill-navigation.php`.
+And a navigation entry will be added in `config/twill-navigation.php`.
 
 ```php
 return [
@@ -73,7 +74,7 @@ The functionalities are exactly the same as that of regular modules. But they ar
 
 After generating your singleton via the command mentioned above:
 
-Add the route to your admin routes file(`routes/twill.php`).
+Once you ran the command a new entry will be added to `routes/twill.php`.
 
 ```php
 <?php
@@ -81,7 +82,7 @@ Add the route to your admin routes file(`routes/twill.php`).
 Route::singleton('moduleName');
 ```
 
-Setup a new CMS navigation item in `config/twill-navigation.php`.
+And a navigation entry will be added in `config/twill-navigation.php`.
 
 ```php
 return [
@@ -94,7 +95,7 @@ return [
 ]
 ```
 
-If you receive an error when visiting the module, you might have forgotton to run the seeder that is mentioned when
+If you receive an error when visiting the module, you might have forgotten to run the seeder that is mentioned when
 generating the singleton. `php artisan db:seed ModuleNameSeeder`
 
 If the singleton is not yet seeded when you visit the admin panel, by default Twill will automatically take care

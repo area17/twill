@@ -49,7 +49,7 @@ class MakeCapsule extends ModuleMake
      */
     protected $isSingleton = false;
 
-    public function handle()
+    public function handle(): void
     {
         $this->isSingleton = $this->hasOption('singleton') ? $this->option('singleton') : $this->isSingleton;
 

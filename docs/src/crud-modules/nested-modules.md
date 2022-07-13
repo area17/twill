@@ -95,7 +95,7 @@ We'll use the `slug` and `position` features in this example but you can customi
 
 ```
 php artisan twill:make:module issues -SP
-php artisan twill:make:module issueArticles -SP
+php artisan twill:make:module issueArticles -SP --parentModel=Issue 
 ```
 
 Add the `issue_id` foreign key to the child module's migration:

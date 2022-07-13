@@ -2,6 +2,7 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Commands\Release;
 use Exception;
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
@@ -65,7 +66,7 @@ class TwillServiceProvider extends ServiceProvider
         TranslatableServiceProvider::class,
         TagsServiceProvider::class,
         ActivitylogServiceProvider::class,
-        CapsulesServiceProvider::class
+        CapsulesServiceProvider::class,
     ];
 
     /**
@@ -142,8 +143,8 @@ class TwillServiceProvider extends ServiceProvider
     {
         // select auth service provider implementation
         $this->providers[] = config('twill.custom_auth_service_provider') ?: (
-            config('twill.enabled.permissions-management') ?
-                PermissionAuthServiceProvider::class : AuthServiceProvider::class
+        config('twill.enabled.permissions-management') ?
+            PermissionAuthServiceProvider::class : AuthServiceProvider::class
         );
 
         foreach ($this->providers as $provider) {
@@ -189,33 +190,48 @@ class TwillServiceProvider extends ServiceProvider
     private function publishConfigs(): void
     {
         if (config('twill.enabled.users-management')) {
-            config(['auth.providers.twill_users' => [
-                'driver' => 'eloquent',
-                'model' => twillModel('user'),
-            ]]);
+            config([
+                'auth.providers.twill_users' => [
+                    'driver' => 'eloquent',
+                    'model' => twillModel('user'),
+                ],
+            ]);
 
-            config(['auth.guards.twill_users' => [
-                'driver' => 'session',
-                'provider' => 'twill_users',
-            ]]);
+            config([
+                'auth.guards.twill_users' => [
+                    'driver' => 'session',
+                    'provider' => 'twill_users',
+                ],
+            ]);
 
             if (blank(config('auth.passwords.twill_users'))) {
-                config(['auth.passwords.twill_users' => [
-                    'provider' => 'twill_users',
-                    'table' => config('twill.password_resets_table', 'twill_password_resets'),
-                    'expire' => 60,
-                    'throttle' => 60,
-                ]]);
+                config([
+                    'auth.passwords.twill_users' => [
+                        'provider' => 'twill_users',
+                        'table' => config('twill.password_resets_table', 'twill_password_resets'),
+                        'expire' => 60,
+                        'throttle' => 60,
+                    ],
+                ]);
             }
         }
 
-        config(['activitylog.enabled' => config('twill.enabled.dashboard') ? true : config('twill.enabled.activitylog')]);
+        config(['activitylog.enabled' => config('twill.enabled.dashboard') ? true : config('twill.enabled.activitylog')]
+        );
         config(['activitylog.subject_returns_soft_deleted_models' => true]);
 
-        config(['analytics.service_account_credentials_json' => config('twill.dashboard.analytics.service_account_credentials_json', storage_path('app/analytics/service-account-credentials.json'))]);
+        config(
+            [
+                'analytics.service_account_credentials_json' => config(
+                    'twill.dashboard.analytics.service_account_credentials_json',
+                    storage_path('app/analytics/service-account-credentials.json')
+                ),
+            ]
+        );
 
         $this->publishes([__DIR__ . '/../config/twill-publish.php' => config_path('twill.php')], 'config');
-        $this->publishes([__DIR__ . '/../config/twill-navigation.php' => config_path('twill-navigation.php')], 'config');
+        $this->publishes([__DIR__ . '/../config/twill-navigation.php' => config_path('twill-navigation.php')],
+            'config');
         $this->publishes([__DIR__ . '/../config/translatable.php' => config_path('translatable.php')], 'config');
     }
 
@@ -260,10 +276,10 @@ class TwillServiceProvider extends ServiceProvider
     {
         config([
             'filesystems.disks.twill_' . $type . '_library.url' => request()->getScheme()
-            . '://'
-            . str_replace(['http://', 'https://'], '', config('app.url'))
-            . '/storage/'
-            . trim(config('twill.' . $type . '_library.local_path'), '/ '),
+                . '://'
+                . str_replace(['http://', 'https://'], '', config('app.url'))
+                . '/storage/'
+                . trim(config('twill.' . $type . '_library.local_path'), '/ '),
         ]);
     }
 
@@ -296,7 +312,7 @@ class TwillServiceProvider extends ServiceProvider
     private function publishAssets(): void
     {
         $this->publishes([
-            __DIR__ . '/../dist' => public_path(),
+            __DIR__ . '/../twill-assets' => public_path(),
         ], 'assets');
     }
 
@@ -330,6 +346,7 @@ class TwillServiceProvider extends ServiceProvider
             CapsuleInstall::class,
             UpdateExampleCommand::class,
             SetupDevTools::class,
+            Release::class,
         ]);
     }
 
@@ -423,7 +440,7 @@ class TwillServiceProvider extends ServiceProvider
             $viewModuleTwill = "'twill::'.$moduleName.'.{$viewName}'";
             $view = $partialNamespace . '.' . $viewName;
 
-            if (! isset($moduleName) || is_null($moduleName)) {
+            if (!isset($moduleName) || is_null($moduleName)) {
                 $viewModule = $viewApplication;
             }
 
@@ -502,7 +519,7 @@ class TwillServiceProvider extends ServiceProvider
             'Component',
             'ValidationRules',
             'ValidationRulesForTranslatedFields',
-            'SelectTrigger'
+            'SelectTrigger',
         ];
 
         foreach ($keys as $key) {
@@ -568,7 +585,7 @@ class TwillServiceProvider extends ServiceProvider
      */
     public function check2FA(): void
     {
-        if (! $this->app->runningInConsole() || ! config('twill.enabled.users-2fa')) {
+        if (!$this->app->runningInConsole() || !config('twill.enabled.users-2fa')) {
             return;
         }
 

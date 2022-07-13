@@ -2,11 +2,13 @@
 
 namespace A17\Twill\Tests\Browser;
 
+use _PHPStan_c900ee2af\Nette\DI\Definitions\AccessorDefinition;
 use A17\Twill\Commands\Traits\HandlesPresets;
 use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Orchestra\Testbench\Dusk\TestCase;
@@ -36,11 +38,12 @@ class BrowserTestCase extends TestCase
         'config/twill.php',
         'config/twill-navigation.php',
         'public/assets',
+        'resources/assets',
     ];
 
     protected function getEnvironmentSetUp($app): void
     {
-        $this->freezeTime();
+        Carbon::setTestNow(Carbon::now());
 
         $this->configTwill($app);
     }
@@ -105,6 +108,7 @@ class BrowserTestCase extends TestCase
 
     protected function tearDown(): void
     {
+        $this->restoreAndCleanupDistBackup();
         self::deleteAllTwillPaths();
     }
 
@@ -137,13 +141,40 @@ class BrowserTestCase extends TestCase
         $dbPath = self::getBasePathStatic() . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR;
         copy($dbPath . 'database.sqlite.example', $dbPath . 'database.sqlite');
 
+        $this->backupDistFolder();
+
+        // Run the rest of the setup.
         parent::setUp();
 
-        $this->freezeTime();
+        Carbon::setTestNow(Carbon::now());
 
         $this->configTwill($this->app);
 
         $this->installTwill();
+    }
+
+    public function backupDistFolder(): void
+    {
+        $this->restoreAndCleanupDistBackup();
+
+        // Make a backup of the dist folder.
+        $dirToCopy = __DIR__ . '/../../dist';
+        $dirToCopyBackup = __DIR__ . '/../../dist-backup';
+
+        shell_exec("cp -r $dirToCopy $dirToCopyBackup");
+    }
+
+    public function restoreAndCleanupDistBackup(): void
+    {
+        $dirToCopyBackup = __DIR__ . '/../../dist-backup';
+        if (file_exists($dirToCopyBackup)) {
+            $dirToCopy = __DIR__ . '/../../dist';
+
+            shell_exec("rm -Rf $dirToCopy");
+            shell_exec("cp -r $dirToCopyBackup $dirToCopy");
+
+            shell_exec("rm -Rf $dirToCopyBackup");
+        }
     }
 
     public function installTwill(): void
@@ -153,13 +184,13 @@ class BrowserTestCase extends TestCase
         $superAdmin = $this->makeNewSuperAdmin();
 
         if ($this->example) {
-            $this->artisan('twill:install ' . $this->example . ' --no-interaction')
+            $this->artisan('twill:install ' . $this->example . ' --no-interaction --fromBuild')
                 ->expectsConfirmation(
                     'Are you sure to install this preset? This can overwrite your models, config and routes.',
                     'yes'
                 );
         } else {
-            $this->artisan('twill:install --no-interaction');
+            $this->artisan('twill:install --no-interaction --fromBuild');
         }
 
         $this->artisan('twill:superadmin ' . $superAdmin->email . ' ' . $superAdmin->password);

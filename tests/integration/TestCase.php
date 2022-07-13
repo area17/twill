@@ -334,7 +334,7 @@ abstract class TestCase extends OrchestraTestCase
      */
     protected function getEnvironmentSetUp($app)
     {
-        $this->freezeTime();
+        Carbon::setTestNow($this->now = Carbon::now());
 
         $this->configureStorage($app);
 
@@ -577,14 +577,6 @@ abstract class TestCase extends OrchestraTestCase
         $this->assertLogStatusCode($response);
 
         return $response;
-    }
-
-    /**
-     * Freeze time.
-     */
-    public function freezeTime($callback = null)
-    {
-        Carbon::setTestNow($this->now = Carbon::now());
     }
 
     /**

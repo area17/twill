@@ -56,7 +56,7 @@ class BlockCollection extends Collection
             ->filter(function ($block) use ($search, $sources) {
                 return $block->name == $search &&
                     (blank($sources) ||
-                    collect($sources)->contains($block->source));
+                        collect($sources)->contains($block->source));
             })
             ->sortBy(function ($block) {
                 return $block->source === 'app' ? 0 : 1;
@@ -102,7 +102,7 @@ class BlockCollection extends Collection
      */
     public function readBlocks($directory, $source, $type = null)
     {
-        if (! $this->fileSystem->exists($directory)) {
+        if (!$this->fileSystem->exists($directory)) {
             $this->addMissingDirectory($directory);
 
             return collect();
@@ -143,9 +143,9 @@ class BlockCollection extends Collection
     public function detectCustomSources(Block $block)
     {
         if ($block->source === Block::SOURCE_APP && $this->collect()
-        ->where('fileName', $block->getFileName())
-        ->where('source', Block::SOURCE_TWILL)
-        ->isNotEmpty()) {
+                ->where('fileName', $block->getFileName())
+                ->where('source', Block::SOURCE_TWILL)
+                ->isNotEmpty()) {
             return Block::SOURCE_CUSTOM;
         }
 
@@ -181,7 +181,7 @@ class BlockCollection extends Collection
         // remove duplicate Twill blocks
         $appBlocks = $this->collect()->whereIn('source', [Block::SOURCE_APP, Block::SOURCE_CUSTOM]);
         $this->items = $this->collect()->filter(function ($item) use ($appBlocks) {
-            return ! $appBlocks->contains(function ($block) use ($item) {
+            return !$appBlocks->contains(function ($block) use ($item) {
                 return $item->source === Block::SOURCE_TWILL && $item->name === $block->name;
             });
         })->values()->toArray();
@@ -208,12 +208,14 @@ class BlockCollection extends Collection
             ->each(function ($block, $blockName) use ($type) {
                 $file = $block['compiled'] ?? false ? null : $this->findFileByComponentName($block['component']);
 
-                $this->push($this->blockFromComponentName(
-                    $file,
-                    $blockName,
-                    $type,
-                    Block::SOURCE_APP
-                ));
+                $this->push(
+                    $this->blockFromComponentName(
+                        $file,
+                        $blockName,
+                        $type,
+                        Block::SOURCE_APP
+                    )
+                );
             });
 
         return $this;
