@@ -33,7 +33,6 @@ class CustomComponentTest extends BrowserTestCase
 
     public function testBeforeBuild(): void
     {
-        // We need to have a clean build.
         $this->artisan('twill:build', ['--noInstall' => true])
             ->doesntExpectOutputToContain('Build failed with errors')
             ->expectsOutputToContain('Compiled views cleared successfully.')
@@ -56,7 +55,7 @@ class CustomComponentTest extends BrowserTestCase
             'resources',
             'assets',
             'js',
-            'components'
+            'components',
         ]);
 
         $this->artisan('twill:build', ['--noInstall' => true, '--customComponentsSource' => $path])

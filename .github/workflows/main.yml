@@ -94,6 +94,25 @@ jobs:
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:^3.0" --no-interaction --no-update -vvv
           composer install --prefer-dist --no-interaction -vvv
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '16.x'
+
+      - name: Build npm dependencies.
+        run: |
+          npm install
+
+      - name: Create blocks dir
+        run: |
+          mkdir ./frontend/js/components/blocks/customs
+
+      - name: Build twill.
+        run: ./vendor/bin/testbench twill:build --noInstall
+
+      - name: Upgrade Chrome Driver
+        run: ./vendor/bin/testbench dusk:chrome-driver
+
       - name: Execute tests
         run: vendor/bin/testbench package:test
 

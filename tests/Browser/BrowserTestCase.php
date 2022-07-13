@@ -36,6 +36,7 @@ class BrowserTestCase extends TestCase
         'config/twill.php',
         'config/twill-navigation.php',
         'public/assets',
+        'resources/assets',
     ];
 
     protected function getEnvironmentSetUp($app): void
@@ -159,7 +160,7 @@ class BrowserTestCase extends TestCase
                     'yes'
                 );
         } else {
-            $this->artisan('twill:install --no-interaction');
+            $this->artisan('twill:install --no-interaction --fromBuild');
         }
 
         $this->artisan('twill:superadmin ' . $superAdmin->email . ' ' . $superAdmin->password);
