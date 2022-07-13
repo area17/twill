@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Tests\Browser;
 
+use _PHPStan_c900ee2af\Nette\DI\Definitions\AccessorDefinition;
 use A17\Twill\Commands\Traits\HandlesPresets;
 use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
@@ -107,6 +108,7 @@ class BrowserTestCase extends TestCase
 
     protected function tearDown(): void
     {
+        $this->restoreAndCleanupDistBackup();
         self::deleteAllTwillPaths();
     }
 
@@ -139,6 +141,9 @@ class BrowserTestCase extends TestCase
         $dbPath = self::getBasePathStatic() . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR;
         copy($dbPath . 'database.sqlite.example', $dbPath . 'database.sqlite');
 
+        $this->backupDistFolder();
+
+        // Run the rest of the setup.
         parent::setUp();
 
         Carbon::setTestNow(Carbon::now());
@@ -146,6 +151,30 @@ class BrowserTestCase extends TestCase
         $this->configTwill($this->app);
 
         $this->installTwill();
+    }
+
+    public function backupDistFolder(): void
+    {
+        $this->restoreAndCleanupDistBackup();
+
+        // Make a backup of the dist folder.
+        $dirToCopy = __DIR__ . '/../../dist';
+        $dirToCopyBackup = __DIR__ . '/../../dist-backup';
+
+        shell_exec("cp -r $dirToCopy $dirToCopyBackup");
+    }
+
+    public function restoreAndCleanupDistBackup(): void
+    {
+        $dirToCopyBackup = __DIR__ . '/../../dist-backup';
+        if (file_exists($dirToCopyBackup)) {
+            $dirToCopy = __DIR__ . '/../../dist';
+
+            shell_exec("rm -Rf $dirToCopy");
+            shell_exec("cp -r $dirToCopyBackup $dirToCopy");
+
+            shell_exec("rm -Rf $dirToCopyBackup");
+        }
     }
 
     public function installTwill(): void

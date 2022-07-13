@@ -33,10 +33,6 @@ class CustomComponentTest extends BrowserTestCase
 
     public function testBeforeBuild(): void
     {
-        $this->artisan('twill:build', ['--noInstall' => true])
-            ->expectsOutputToContain('Compiled views cleared successfully.')
-            ->assertSuccessful();
-
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->superAdmin, 'twill_users');
 
