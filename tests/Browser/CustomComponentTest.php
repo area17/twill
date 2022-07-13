@@ -53,9 +53,7 @@ class CustomComponentTest extends BrowserTestCase
             'components',
         ]);
 
-        $this->artisan('twill:build', ['--noInstall' => true, '--customComponentsSource' => $path])
-            ->expectsOutputToContain('Compiled views cleared successfully.')
-            ->assertSuccessful();
+        $this->artisan('twill:build', ['--noInstall' => true, '--customComponentsSource' => $path]);
 
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->superAdmin, 'twill_users');
