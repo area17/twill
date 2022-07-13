@@ -203,7 +203,7 @@
   // const HIGHLIGHT = '//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js'
 
   export default {
-    name: 'A17WysiwygAppoly',
+    name: 'A17Wysiwyg',
     mixins: [InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
     props: {
       editSource: {
