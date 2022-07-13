@@ -18,7 +18,7 @@
         <div class="wysiwyg__editor"
              ref="editor">
           <editor-menu-bar :editor="editor"
-                           v-slot="{ commands, isActive }">
+                           v-slot="{ commands, isActive, getMarkAttrs }">
             <div class="wysiwyg__menubar">
 
               <template v-if="toolbar.header">
@@ -49,13 +49,13 @@
                                     v-if="toolbar.underline"
                                     :isActive="isActive.underline()"
                                     @btn:click="commands.underline"/>
-              <!-- Disabling link option for now as Tiptap does
-                   not support it by default in the menu bar, only
-                   in the bubble mode. -->
-              <!-- <wysiwyg-menu-bar-btn icon="link"
-                                    v-if="toolbar.link"
-                                    :isActive="isActive.link()"
-                                    @btn:click="commands.link"/> -->
+
+              <a href="javascript://"
+                 @click="openLinkWindow(getMarkAttrs('link'))">
+                <wysiwyg-menu-bar-btn icon="link"
+                                      v-if="toolbar.link"
+                                      :isActive="isActive.link()"/>
+              </a>
 
               <wysiwyg-menu-bar-btn icon="ul"
                                     v-if="toolbar.bullet"
@@ -144,6 +144,25 @@
         </a17-button>
       </template>
     </div>
+    <div class="link-window" v-if="linkWindow">
+      <div class="link-window-inner">
+        <label>
+          Link:
+        </label>
+        <input type="text" v-model="linkWindow.href" @keyup:enter="saveLink">
+
+        <label>
+          <input type="checkbox" v-model="linkWindow.target" true-value="_blank" false-value="">
+          Open in a new window
+        </label>
+
+        <br>
+
+        <button @click="saveLink">
+          Save
+        </button>
+      </div>
+    </div>
   </a17-inputframe>
 </template>
 
@@ -186,7 +205,7 @@
   // const HIGHLIGHT = '//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js'
 
   export default {
-    name: 'A17Wysiwyg',
+    name: 'A17WysiwygAppoly',
     mixins: [InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
     props: {
       editSource: {
@@ -289,7 +308,8 @@
         focused: false,
         activeSource: false,
         counter: 0,
-        editor: null
+        editor: null,
+        linkWindow: null
       }
     },
     methods: {
@@ -332,6 +352,16 @@
       },
       getTextLength () {
         return this.editor.getHTML().replace(/<[^>]+>/g, '').length
+      },
+      openLinkWindow: function (markAttributes) {
+        this.linkWindow = {
+          href: markAttributes.href,
+          target: markAttributes.target
+        }
+      },
+      saveLink () {
+        this.editor.commands.link(this.linkWindow)
+        this.linkWindow = null
       }
     },
     beforeMount () {
@@ -382,7 +412,13 @@
             break
           }
           case 'link': {
-            extensions.push(new Link())
+            extensions.push(new Link({
+              HTMLAttributes: {
+                target: null,
+                rel: null
+              },
+              openOnClick: false
+            }))
             break
           }
           case 'blockquote': {
@@ -655,4 +691,48 @@
       }
     }
   }
+}
+
+.link-window {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, .5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.link-window-inner {
+  width: 100%;
+  max-width: 500px;
+  background-color: #fff;
+  border-radius: 3px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+}
+
+.link-window input[type=text] {
+  margin-bottom: 15px;
+  padding: 14px;
+  border: 1px solid #cbcbcb;
+  width: 100%;
+}
+
+.link-window label {
+  display: block;
+  padding: 8px 0;
+}
+
+.link-window button {
+  border: 0;
+  background: #4b4bd8;
+  color: white;
+  padding: 10px 30px;
+  cursor: pointer;
+}
+
 </style>
