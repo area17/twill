@@ -7,6 +7,7 @@ use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Orchestra\Testbench\Dusk\TestCase;
@@ -41,7 +42,7 @@ class BrowserTestCase extends TestCase
 
     protected function getEnvironmentSetUp($app): void
     {
-        $this->freezeTime();
+        Carbon::setTestNow(Carbon::now());
 
         $this->configTwill($app);
     }
@@ -140,7 +141,7 @@ class BrowserTestCase extends TestCase
 
         parent::setUp();
 
-        $this->freezeTime();
+        Carbon::setTestNow(Carbon::now());
 
         $this->configTwill($this->app);
 
