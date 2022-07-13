@@ -334,7 +334,7 @@ abstract class TestCase extends OrchestraTestCase
      */
     protected function getEnvironmentSetUp($app)
     {
-        Carbon::setTestNow(Carbon::now());
+        Carbon::setTestNow($this->now = Carbon::now());
 
         $this->configureStorage($app);
 
