@@ -2,13 +2,22 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Jobs\RegenerateMediaLqip;
 use A17\Twill\Models\Media;
+use A17\Twill\Models\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 trait HandleMedias
 {
+    /**
+     * The Laravel queue name to be used for the LQIP regeneration operation.
+     *
+     * @var string
+     */
+    protected $regenerateMediaLqipJobQueue = 'default';
+
     /**
      * @param \A17\Twill\Models\Model $object
      * @param array $fields
@@ -51,6 +60,8 @@ trait HandleMedias
         $this->getMedias($fields)->each(function ($media) use ($object) {
             $object->medias()->attach($media['id'], Arr::except($media, ['id']));
         });
+
+        $this->regenerateLqip($object);
     }
 
     /**
@@ -185,5 +196,11 @@ trait HandleMedias
     public function getCrops($role)
     {
         return $this->model->mediasParams[$role];
+    }
+
+    public function regenerateLqip(Model $object)
+    {
+        RegenerateMediaLqip::dispatch($object)
+            ->onQueue($this->regenerateMediaLqipJobQueue);
     }
 }
