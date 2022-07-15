@@ -3,7 +3,6 @@
 namespace A17\Twill\Jobs;
 
 use A17\Twill\Models\Media;
-use A17\Twill\Models\Model;
 use A17\Twill\Services\MediaLibrary\Glide;
 use A17\Twill\Services\MediaLibrary\ImageService;
 use Exception;
@@ -21,7 +20,7 @@ class RegenerateMediaLqip implements ShouldQueue
     protected $model;
 
     public function __construct(
-        Model $model
+        $model
     )
     {
         $this->model = $model;

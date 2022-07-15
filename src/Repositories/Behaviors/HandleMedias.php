@@ -198,7 +198,7 @@ trait HandleMedias
         return $this->model->mediasParams[$role];
     }
 
-    public function regenerateLqip(Model $object)
+    public function regenerateLqip($object)
     {
         RegenerateMediaLqip::dispatch($object)
             ->onQueue($this->regenerateMediaLqipJobQueue);
