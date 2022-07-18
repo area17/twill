@@ -65,7 +65,7 @@ class Browser extends TwillFormComponent
             })->toArray() : null;
         }
 
-        $this->endpoints = $this->endpoints ?? $endpointsFromModules ?? [];
+        $this->endpoints = $this->endpoints === [] ? $endpointsFromModules ?? [] : [];
 
         if (empty($this->endpoints)) {
             $this->endpoint = $this->endpoint ?? (empty($endpoints) ? moduleRoute(
