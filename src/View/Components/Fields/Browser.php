@@ -69,7 +69,8 @@ class Browser extends TwillFormComponent
 
         if (empty($this->endpoints)) {
             $this->endpoint = $this->endpoint ?? (empty($endpoints) ? moduleRoute(
-                    $this->moduleName,
+                    // Remove the route prefix from the moduleName.
+                    ltrim($this->moduleName, $this->routePrefix . '.'),
                     $this->routePrefix,
                     'browser',
                     $this->params,

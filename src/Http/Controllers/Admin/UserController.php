@@ -3,18 +3,23 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Facades\TwillPermissions;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Enums\UserRole;
 use A17\Twill\Models\Group;
 use A17\Twill\Models\Permission;
 use A17\Twill\Models\Role;
 use A17\Twill\Models\User;
+use A17\Twill\Services\Listings\Columns\Image;
+use A17\Twill\Services\Listings\Columns\Text;
 use A17\Twill\Services\Listings\Filters\QuickFilter;
 use A17\Twill\Services\Listings\Filters\QuickFilters;
+use A17\Twill\Services\Listings\TableColumns;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
 
 class UserController extends ModuleController
 {
@@ -61,32 +66,6 @@ class UserController extends ModuleController
     /**
      * @var array
      */
-    protected $indexColumns = [
-        'name' => [
-            'title' => 'Name',
-            'field' => 'name',
-            'sort' => true,
-        ],
-        'last_login' => [
-            'title' => 'Last Login',
-            'field' => 'last_login_column_value',
-            'sort' => true,
-        ],
-        'email' => [
-            'title' => 'Email',
-            'field' => 'email',
-            'sort' => true,
-        ],
-        'role_value' => [
-            'title' => 'Role',
-            'field' => 'role_value',
-            'sort' => true,
-        ],
-    ];
-
-    /**
-     * @var array
-     */
     protected $indexOptions = [
         'permalink' => false,
     ];
@@ -116,21 +95,6 @@ class UserController extends ModuleController
         $this->authFactory = $authFactory;
         $this->config = $config;
 
-        if ($this->config->get('twill.enabled.users-image')) {
-            $this->indexColumns = [
-                    'image' => [
-                        'title' => 'Image',
-                        'thumb' => true,
-                        'variation' => 'rounded',
-                        'variant' => [
-                            'role' => 'profile',
-                            'crop' => 'default',
-                            'shape' => 'rounded',
-                        ],
-                    ],
-                ] + $this->indexColumns;
-        }
-
         $this->primaryNavigation = [
                 'users' => [
                     'title' => twillTrans('twill::lang.user-management.users'),
@@ -152,7 +116,51 @@ class UserController extends ModuleController
             ] : []);
 
         $this->filters['role'] = User::getRoleColumnName();
-        $this->indexColumns['role_value']['sortKey'] = User::getRoleColumnName();
+    }
+
+    public function getIndexTableColumns(): TableColumns
+    {
+        $tableColumns = TableColumns::make();
+        if ($this->config->get('twill.enabled.users-image')) {
+            $tableColumns->add(
+                Image::make()
+                    ->field('image')
+                    ->title('Image')
+                    ->rounded()
+            );
+        }
+
+        $tableColumns->add(
+            Text::make()
+                ->field($this->titleColumnKey)
+                ->sortable(),
+        );
+        $tableColumns->add(
+            Text::make()
+                ->field('last_login_at')
+                ->title('Last Login')
+                ->customRender(function (TwillModelContract $user) {
+                    return $user->last_login_at->ago();
+                })
+                ->sortable()
+        );
+        $tableColumns->add(
+            Text::make()
+                ->field('email')
+                ->title('Email')
+                ->sortable()
+        );
+        $tableColumns->add(
+            Text::make()
+                ->field(User::getRoleColumnName())
+                ->title('Role')
+                ->customRender(function (TwillModelContract $user) {
+                    return Str::title($user->role);
+                })
+                ->sortable()
+        );
+
+        return $tableColumns;
     }
 
     public function setUpController(): void

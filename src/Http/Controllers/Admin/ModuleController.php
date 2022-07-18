@@ -667,24 +667,12 @@ abstract class ModuleController extends Controller
 
         if ($this->browserColumns !== []) {
             $this->handleLegacyColumns($columns, $this->browserColumns);
-        } else {
-            if ($this->moduleHas('medias')) {
-                $columns->add(
-                    Image::make()
-                        ->field('thumbnail')
-                        ->rounded()
-                        ->title(twillTrans('Image'))
-                );
-            }
-
+        } elseif ($this->moduleHas('medias')) {
             $columns->add(
-                Text::make()
-                    ->field($this->titleColumnKey)
-                    ->linkCell(function (TwillModelContract $model) {
-                        if ($this->getIndexOption('edit', $model)) {
-                            return $this->getModuleRoute($model->id, 'edit');
-                        }
-                    })
+                Image::make()
+                    ->field('thumbnail')
+                    ->rounded()
+                    ->title(twillTrans('Image'))
             );
         }
 
