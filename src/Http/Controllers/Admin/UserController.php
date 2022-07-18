@@ -140,7 +140,7 @@ class UserController extends ModuleController
                 ->field('last_login_at')
                 ->title('Last Login')
                 ->customRender(function (TwillModelContract $user) {
-                    return $user->last_login_at->ago();
+                    return $user->last_login_at ? $user->last_login_at->ago() : '-';
                 })
                 ->sortable()
         );
