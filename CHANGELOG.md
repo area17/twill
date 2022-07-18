@@ -2,7 +2,7 @@
 
 All notable changes to `twill` will be documented in this file.
 
-## Unreleased Twill 3.x
+## 3.0.0-alpha1
 
 ### Major features
 
