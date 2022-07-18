@@ -1,4 +1,4 @@
-# Upgrade to 2.x -> 3.x
+# Upgrading to 3.0 from 2.x
 
 With Twill 3.x some files and classes are moved.
 
