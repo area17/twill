@@ -32,7 +32,7 @@ if (! function_exists('moduleRoute')) {
             ($prefix !== $moduleName &&
                 ! Str::endsWith($prefix, '.' . $moduleName))
         ) {
-            $routeName .= Str::singular($moduleName);
+            $routeName .= $moduleName;
         }
 
         //  Add the action name

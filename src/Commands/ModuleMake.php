@@ -300,6 +300,8 @@ class ModuleMake extends Command
         $this->createRequest($modelName);
         $this->createViews($moduleName);
 
+        $navModuleName = $this->isSingleton ? $singularModuleName : $moduleName;
+
         if ($this->isCapsule) {
             if ($this->isSingleton) {
                 $this->createCapsuleSingletonSeeder();
@@ -312,7 +314,7 @@ class ModuleMake extends Command
             $this->createSingletonSeed($modelName);
             $this->addEntryToRoutesFile("\nRoute::singleton('{$singularModuleName}');");
         } else {
-            $moduleNameForRoute = $singularModuleName;
+            $moduleNameForRoute = $navModuleName;
             if ($this->hasOption('parentModel') && $parent = $this->option('parentModel')) {
                 $secondPart = Str::plural(lcfirst(str_replace(strtolower($parent), '', $singularModuleName)));
                 $firstPart = Str::plural(lcfirst($parent));
@@ -322,13 +324,12 @@ class ModuleMake extends Command
             $this->addEntryToRoutesFile("\nRoute::module('{$moduleNameForRoute}');");
         }
 
-        $navModuleName = $this->isSingleton ? $singularModuleName : $moduleName;
         $navTitle = $this->isSingleton ? $modelName : $moduleTitle;
         $navType = $this->isSingleton ? 'singleton' : 'module';
 
         if (!$this->customDirs) {
             if (!$this->hasOption('parentModel') || !$this->option('parentModel')) {
-                $this->addEntryToNavigationFile($singularModuleName, [
+                $this->addEntryToNavigationFile($navModuleName, [
                     'title' => $navTitle,
                     $navType => true,
                 ]);
