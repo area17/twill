@@ -381,6 +381,9 @@ class TwillServiceProvider extends ServiceProvider
 
             $expression = str_replace("'", "\\'", $expression);
 
+            // Fix dash variables that we know.
+            $expression = str_replace('toolbar-options', 'toolbarOptions', $expression);
+
             $php = '<?php' . PHP_EOL;
             $php .= "\$data = eval('return $expression;');";
             $php .= '$fieldAttributes = "";';

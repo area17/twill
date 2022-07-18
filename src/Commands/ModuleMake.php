@@ -328,7 +328,7 @@ class ModuleMake extends Command
 
         if (!$this->customDirs) {
             if (!$this->hasOption('parentModel') || !$this->option('parentModel')) {
-                $this->addEntryToNavigationFile($navModuleName, [
+                $this->addEntryToNavigationFile($singularModuleName, [
                     'title' => $navTitle,
                     $navType => true,
                 ]);

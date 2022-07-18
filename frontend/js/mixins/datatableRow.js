@@ -39,7 +39,10 @@ export default {
   },
   methods: {
     currentComponent (col) {
-      return TableCellPrefix + (col.specificType ?? col.name.toLowerCase())
+      if (typeof col === 'object') {
+        return TableCellPrefix + (col.specificType ?? col.name.toLowerCase())
+      }
+      return TableCellPrefix + col;
     },
     currentComponentProps (col) {
       const props = {
