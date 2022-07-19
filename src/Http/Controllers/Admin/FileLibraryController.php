@@ -6,6 +6,8 @@ use A17\Twill\Http\Requests\Admin\FileRequest;
 use A17\Twill\Services\Uploader\SignAzureUpload;
 use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignUploadListener;
+use A17\Twill\Events\FileStored;
+use A17\Twill\Events\FileUpdated;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
@@ -168,6 +170,8 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             $file = $this->storeReference($request);
         }
 
+        FileStored::dispatch($file);
+
         return $this->responseFactory->json(['media' => $this->buildFile($file), 'success' => true], 200);
     }
 
@@ -242,6 +246,8 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             $this->request->only('tags')
         );
 
+        FileUpdated::dispatch($this->repository, [$this->request->input('id')], $this->request->only('tags'));
+
         return $this->responseFactory->json([], 200);
     }
 
@@ -261,6 +267,8 @@ class FileLibraryController extends ModuleController implements SignUploadListen
 
         $scopes = $this->filterScope(['id' => $ids]);
         $items = $this->getIndexItems($scopes);
+
+        FileUpdated::dispatch($this->repository, $ids, $newTags, 'bulk');
 
         return $this->responseFactory->json([
             'items' => $items->map(function ($item) {

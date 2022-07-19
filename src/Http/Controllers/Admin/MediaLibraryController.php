@@ -7,6 +7,8 @@ use A17\Twill\Models\Media;
 use A17\Twill\Services\Uploader\SignAzureUpload;
 use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignUploadListener;
+use A17\Twill\Events\MediaStored;
+use A17\Twill\Events\MediaUpdated;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\JsonResponse;
@@ -149,6 +151,8 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             $media = $this->storeReference($request);
         }
 
+        MediaStored::dispatch($media);
+
         return $this->responseFactory->json(['media' => $media->toCmsArray(), 'success' => true], 200);
     }
 
@@ -225,14 +229,19 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
      */
     public function singleUpdate()
     {
+
+        $data = array_merge([
+            'alt_text' => $this->request->get('alt_text', null),
+            'caption' => $this->request->get('caption', null),
+            'tags' => $this->request->get('tags', null),
+        ], $this->getExtraMetadatas()->toArray());
+
         $this->repository->update(
             $this->request->input('id'),
-            array_merge([
-                'alt_text' => $this->request->get('alt_text', null),
-                'caption' => $this->request->get('caption', null),
-                'tags' => $this->request->get('tags', null),
-            ], $this->getExtraMetadatas()->toArray())
+            $data
         );
+
+        MediaUpdated::dispatch($this->repository, [$this->request->input('id')], $data);
 
         return $this->responseFactory->json([
             'tags' => $this->repository->getTagsList(),
@@ -268,6 +277,8 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
         $scopes = $this->filterScope(['id' => $ids]);
         $items = $this->getIndexItems($scopes);
+
+        MediaUpdated::dispatch($this->repository, $ids, $newTags, 'bulk');
 
         return $this->responseFactory->json([
             'items' => $items->map(function ($item) {
