@@ -49,7 +49,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const VERSION = '2.8.6';
+    public const VERSION = '2.8.8';
 
     /**
      * Service providers to be registered.
@@ -115,9 +115,6 @@ class TwillServiceProvider extends ServiceProvider
         $this->registerFacades();
 
         $this->app->bind(TwillCapsules::class);
-
-        // Laravel 7 compatability.
-        Collection::macro('doesntContain', [Collection::class, 'missing']);
 
         Relation::morphMap([
             'users' => User::class,
