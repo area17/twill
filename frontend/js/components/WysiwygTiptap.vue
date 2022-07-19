@@ -557,138 +557,137 @@
 </style>
 
 <style lang="scss">
-  .wysiwyg__content {
-    .ProseMirror {
-      color: $color__text;
+.wysiwyg__content {
+  .ProseMirror {
+    color: $color__text;
 
-      h1, h2, h3, h4, h5, h6 {
-        font-weight: 700;
+    h1, h2, h3, h4, h5, h6 {
+      font-weight: 700;
+    }
+
+    b, p b, p strong, strong {
+      font-weight:700;
+    }
+
+    p, ul, ol, h1, h2, h3, h4, h5 {
+      margin-bottom: 1em;
+    }
+
+    ol {
+      padding-left: 1em;
+
+      li {
+        list-style-type: decimal;
       }
+    }
 
-      b, p b, p strong, strong {
-        font-weight:700;
+    ul {
+      padding-left: 1em;
+
+      li {
+        list-style-type: disc;
       }
+    }
 
-      p, ul, ol, h1, h2, h3, h4, h5 {
-        margin-bottom: 1em;
-      }
+    h1 {
+      font-size: 2em;
+      line-height: 1.25em;
+    }
 
-      ol {
-        padding-left: 1em;
+    h2 {
+      font-size: 1.66em;
+      line-height: 1.25em;
+    }
 
-        li {
-          list-style-type: decimal;
-        }
-      }
+    h3 {
+      font-size: 1.33em;
+      line-height: 1.25em;
+    }
 
-      ul {
-        padding-left: 1em;
+    h4 {
+      font-size: 1.25em;
+      line-height: 1.25em;
+    }
 
-        li {
-          list-style-type: disc;
-        }
-      }
+    h5 {
+      font-size: 1em;
+      line-height: 1.25em;
+    }
 
-      h1 {
-        font-size: 2em;
-        line-height: 1.25em;
-      }
+    // default code syntax hightlighting is github
+    pre {
+      color: $color__wysiwyg-codeText;
+      padding: 15px;
+      overflow: auto;
+      background-color: $color__wysiwyg-codeBg;
+      border-radius: 3px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    }
 
-      h2 {
-        font-size: 1.66em;
-        line-height: 1.25em;
-      }
+    a {
+      color: $color__link;
+    }
 
-      h3 {
-        font-size: 1.33em;
-        line-height: 1.25em;
-      }
+    sup {
+      vertical-align: super;
+      font-size: smaller;
+    }
 
-      h4 {
-        font-size: 1.25em;
-        line-height: 1.25em;
-      }
+    sub {
+      vertical-align: sub;
+      font-size: smaller;
+    }
 
-      h5 {
-        font-size: 1em;
-        line-height: 1.25em;
-      }
+    .tableWrapper {
+      margin: 1em 0;
+      overflow-x: auto;
+    }
 
-      // default code syntax hightlighting is github
-      pre {
-        color: $color__wysiwyg-codeText;
-        padding: 15px;
-        overflow: auto;
-        background-color: $color__wysiwyg-codeBg;
-        border-radius: 3px;
-        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-      }
+    table {
+      border-collapse: collapse;
+      table-layout: fixed;
+      width: 100%;
+      margin: 0;
+      overflow: hidden;
 
-      a {
-        color: $color__link;
-      }
-
-      sup {
-        vertical-align: super;
-        font-size: smaller;
-      }
-
-      sub {
-        vertical-align: sub;
-        font-size: smaller;
-      }
-
-      .tableWrapper {
-        margin: 1em 0;
-        overflow-x: auto;
-      }
-
-      table {
-        border-collapse: collapse;
-        table-layout: fixed;
-        width: 100%;
-        margin: 0;
-        overflow: hidden;
-
-        .selectedCell:after {
-          content: "";
-          position: absolute;
-          left: 0;
-          right: 0;
-          top: 0;
-          bottom: 0;
-          background: rgba(234, 244, 250, .8);
-          pointer-events: none;
-          z-index: 2;
-        }
-      }
-
-      table td,
-      table th {
-        min-width: 1em;
-        border: 2px solid $color__border;
-        padding: 3px 5px;
-        vertical-align: top;
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        position: relative;
-        width: 80px;
-      }
-
-      blockquote {
-        border-left: 3px solid $color__border;
-        color: rgba(0, 0, 0, .8);
-        padding-left: .8rem;
-      }
-
-      p.is-empty:first-child:before {
-        content: attr(data-empty-text);
-        float: left;
-        color: $color__text--light;
+      .selectedCell:after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background: rgba(234, 244, 250, .8);
         pointer-events: none;
-        height: 0;
-        font-style: italic;
+        z-index: 2;
       }
+    }
+
+    table td,
+    table th {
+      min-width: 1em;
+      border: 2px solid $color__border;
+      padding: 3px 5px;
+      vertical-align: top;
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+      position: relative;
+      width: 80px;
+    }
+
+    blockquote {
+      border-left: 3px solid $color__border;
+      color: rgba(0, 0, 0, .8);
+      padding-left: .8rem;
+    }
+
+    p.is-empty:first-child:before {
+      content: attr(data-empty-text);
+      float: left;
+      color: $color__text--light;
+      pointer-events: none;
+      height: 0;
+      font-style: italic;
     }
   }
 }
