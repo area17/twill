@@ -2,9 +2,9 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use App\Http\Controllers\Admin\NodeController;
 use App\Models\Node;
 use App\Repositories\NodeRepository;
-use App\Http\Controllers\Admin\NodeController;
 
 class NestedModuleTest extends TestCase
 {
@@ -105,6 +105,7 @@ class NestedModuleTest extends TestCase
         $parents = $this->createNodes(['One', 'Two', 'Three']);
         $children = $this->createNodes(['A', 'B', 'C']);
         $data = $this->arrangeNodes($parents, $children);
+        dd($data);
         $this->httpRequestAssert('/twill/nodes/reorder', 'POST', ['ids' => $data]);
 
         // When queried through the `browser` endpoint
@@ -114,5 +115,57 @@ class NestedModuleTest extends TestCase
 
         // Then all items are returned
         $this->assertEquals(6, count($result['data']));
+    }
+
+    public function testAncestorsSlugCreationOrder()
+    {
+        $repository = app(NodeRepository::class);
+        $childlvl2 = $repository->create(
+            [
+                'title' => 'child level 2',
+                'published' => true,
+                'position' => 2,
+            ]
+        );
+
+        $childlvl1 = $repository->create(
+            [
+                'title' => 'child level 1',
+                'published' => true,
+                'position' => 3,
+            ]
+        );
+
+        $childlvl0 = $repository->create(
+            [
+                'title' => 'parent',
+                'published' => true,
+                'position' => 4,
+            ]
+        );
+
+        $data = [
+            [
+                'id' => $childlvl0->id,
+                'children' => [
+                    [
+                        'id' => $childlvl1->id,
+                        'children' => [
+                            [
+                                'id' => $childlvl2->id,
+                                'children' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->postJson('/twill/nodes/reorder', ['ids' => $data])->assertOk();
+
+        $this->assertEquals(
+            'parent/child-level-1/child-level-2',
+            $childlvl2->refresh()->ancestorsSlug . '/' . $childlvl2->getSlug()
+        );
     }
 }
