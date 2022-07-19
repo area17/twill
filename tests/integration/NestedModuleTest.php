@@ -105,7 +105,6 @@ class NestedModuleTest extends TestCase
         $parents = $this->createNodes(['One', 'Two', 'Three']);
         $children = $this->createNodes(['A', 'B', 'C']);
         $data = $this->arrangeNodes($parents, $children);
-        dd($data);
         $this->httpRequestAssert('/twill/nodes/reorder', 'POST', ['ids' => $data]);
 
         // When queried through the `browser` endpoint
