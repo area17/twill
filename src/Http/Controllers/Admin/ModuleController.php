@@ -252,6 +252,13 @@ abstract class ModuleController extends Controller
      */
     protected $fieldsPermissions = [];
 
+    /**
+     * Determines if draft revisions can be added on top of published content.
+     *
+     * @var bool
+     */
+    protected $enableDraftRevisions = false;
+
     public function __construct(Application $app, Request $request)
     {
         parent::__construct();
@@ -478,7 +485,17 @@ abstract class ModuleController extends Controller
             return View::exists($view);
         });
 
-        return View::make($view, $this->form($id));
+        $item = $this->repository->getById($id);
+
+        if ($this->moduleHas('revisions')) {
+            $latestRevision = $item->revisions->first();
+
+            if ($latestRevision && $latestRevision->isDraft()) {
+                Session::flash('status', twillTrans('twill::lang.publisher.draft-revisions-available'));
+            }
+        }
+
+        return View::make($view, $this->form($id, $item));
     }
 
     /**
@@ -538,13 +555,7 @@ abstract class ModuleController extends Controller
                 [Str::singular($this->moduleName) => $id]
             ));
         } else {
-            $formRequest = $this->validateFormRequest();
-
-            $this->repository->update($id, $formRequest->all());
-
-            activity()->performedOn($item)->log('updated');
-
-            $this->fireEvent();
+            $this->performUpdate($item);
 
             if (isset($input['cmsSaveType'])) {
                 if (Str::endsWith($input['cmsSaveType'], '-close')) {
@@ -580,11 +591,29 @@ abstract class ModuleController extends Controller
                 return Response::json([
                     'message' => twillTrans('twill::lang.publisher.save-success'),
                     'variant' => FlashLevel::SUCCESS,
-                    'revisions' => $item->revisionsArray(),
+                    'revisions' => $item->refresh()->revisionsArray(),
                 ]);
             }
 
             return $this->respondWithSuccess(twillTrans('twill::lang.publisher.save-success'));
+        }
+    }
+
+    protected function performUpdate($item)
+    {
+        $formRequest = $this->validateFormRequest();
+        $data = $formRequest->all();
+
+        if (Str::startsWith($data['cmsSaveType'] ?? '', 'draft-revision')) {
+            $data['published'] = false;
+
+            $this->repository->createRevisionIfNeeded($item, $data);
+        } else {
+            $this->repository->update($item->id, $data);
+
+            activity()->performedOn($item)->log('updated');
+
+            $this->fireEvent();
         }
     }
 
@@ -639,9 +668,13 @@ abstract class ModuleController extends Controller
         });
 
         $revision = $item->revisions()->where('id', $this->request->get('revisionId'))->first();
-        $date = $revision->created_at->toDayDateTimeString();
 
-        Session::flash('restoreMessage', twillTrans('twill::lang.publisher.restore-message', ['user' => $revision->byUser, 'date' => $date]));
+        if ($revision->isDraft()) {
+            Session::flash('restoreMessage', twillTrans('twill::lang.publisher.editing-draft-revision'));
+        } else {
+            $date = $revision->created_at->toDayDateTimeString();
+            Session::flash('restoreMessage', twillTrans('twill::lang.publisher.restore-message', ['user' => $revision->byUser, 'date' => $date]));
+        }
 
         return View::make($view, $this->form($id, $item));
     }

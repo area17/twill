@@ -39,6 +39,18 @@ trait HandleRevisions
      */
     public function beforeSaveHandleRevisions($object, $fields)
     {
+        $this->createRevisionIfNeeded($object, $fields);
+
+        return $fields;
+    }
+
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return void
+     */
+    public function createRevisionIfNeeded($object, $fields)
+    {
         $lastRevisionPayload = json_decode($object->revisions->first()->payload ?? "{}", true);
 
         if ($fields != $lastRevisionPayload) {
@@ -47,8 +59,6 @@ trait HandleRevisions
                 'user_id' => Auth::guard('twill_users')->user()->id ?? null,
             ]);
         }
-
-        return $fields;
     }
 
     /**
