@@ -13,6 +13,11 @@
     </div>
     <div class="editorPreview__header">
       <a17-buttonbar variant="visible">
+        <button type="button"
+                @click="cloneBlock">
+              <span v-svg
+                    symbol="add"></span>
+        </button>
         <a17-dropdown v-if="blocksLength > 1"
                       class="f--small"
                       position="bottom-left"

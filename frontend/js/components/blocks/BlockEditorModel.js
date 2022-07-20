@@ -1,5 +1,7 @@
-import { BLOCKS } from '@/store/mutations'
 import { mapGetters, mapState } from 'vuex'
+
+import ACTIONS from '@/store/actions'
+import { BLOCKS } from '@/store/mutations'
 
 export default {
   props: {
@@ -75,6 +77,14 @@ export default {
         index: this.blockIndex
       })
     },
+    cloneBlock () {
+      this.$store.dispatch(ACTIONS.DUPLICATE_BLOCK, {
+        editorName: this.editorName,
+        futureIndex: this.blockIndex + 1,
+        block: this.block,
+        id: Date.now() + Math.floor(Math.random() * 1000)
+      })
+    },
     setBlockID () {
       return Date.now()
     }
@@ -89,7 +99,8 @@ export default {
       isActive: this.isActive,
       remove: this.remove,
       move: this.move,
-      duplicate: this.duplicate
+      duplicate: this.duplicate,
+      cloneBlock: this.cloneBlock
     })
   }
 }
