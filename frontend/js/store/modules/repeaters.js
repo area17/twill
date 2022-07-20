@@ -88,12 +88,6 @@ const actions = {
     const duplicates = {}
     repeaterIds.forEach(repeaterId => (duplicates[repeaterId.replace(block.id, id)] = [...repeaters[repeaterId]]))
 
-    // Go over the nested repeaters.
-    repeaterIds.forEach(function (repeaterId) {
-      const nestedRepeaters = { ...getters.repeatersByBlockId(repeaterId) }
-      console.log(nestedRepeaters)
-    })
-
     // copy fields and give them a new id
     const fieldCopies = []
     Object.keys(duplicates).forEach(duplicateId => {
