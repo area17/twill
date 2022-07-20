@@ -26,6 +26,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class ModuleController extends Controller
 {
+    use Concerns\FormSubmitOptions;
+
     /**
      * @var Application
      */
@@ -1558,6 +1560,7 @@ abstract class ModuleController extends Controller
             'blockPreviewUrl' => Route::has('admin.blocks.preview') ? URL::route('admin.blocks.preview') : '#',
             'availableRepeaters' => $this->getRepeaterList()->toJson(),
             'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
+            'submitOptions' => $this->getSubmitOptions($item),
         ] + (Route::has($previewRouteName) && $itemId ? [
             'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', [$itemId]),
         ] : [])

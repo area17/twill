@@ -1,53 +1,11 @@
 <?php
 
-namespace A17\Twill\Http\Controllers\Admin;
+namespace A17\Twill\Http\Controllers\Admin\Concerns;
 
-use A17\Twill\Facades\TwillCapsules;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Session;
 
-abstract class SingletonModuleController extends ModuleController
+trait FormSubmitOptions
 {
-    protected $permalinkBase = '';
-
-    public function index($parentModuleId = null)
-    {
-        throw new \Exception("{$this->getModelName()} has no index");
-    }
-
-    public function editSingleton()
-    {
-        $model = "App\\Models\\{$this->getModelName()}";
-
-        if (!class_exists($model)) {
-            $model = TwillCapsules::getCapsuleForModel($this->modelName)->getModel();
-        }
-
-        $item = app($model)->first();
-
-        if (!$item) {
-            if (config('twill.auto_seed_singletons', false)) {
-                $this->seed();
-                return $this->editSingleton();
-            }
-            throw new \Exception("$model is not seeded");
-        }
-
-        Session::put('pages_back_link', url()->current());
-
-        return view($this->viewPrefix . ".form", $this->form($item->id));
-    }
-
-    private function seed(): void
-    {
-        $seederName = '\\Database\\Seeders\\' . $this->getModelName() . 'Seeder';
-        if (!class_exists($seederName)) {
-            throw new \Exception("$seederName is missing");
-        }
-        $seeder = new $seederName();
-        $seeder->run();
-    }
-
     public function getSubmitOptions(Model $item): ?array
     {
         if ($item->cmsRestoring ?? false) {
@@ -56,6 +14,14 @@ abstract class SingletonModuleController extends ModuleController
                     [
                         'name' => 'restore',
                         'text' => twillTrans('twill::lang.publisher.restore-draft'),
+                    ],
+                    [
+                        'name' => 'restore-close',
+                        'text' => twillTrans('twill::lang.publisher.restore-draft-close'),
+                    ],
+                    [
+                        'name' => 'restore-new',
+                        'text' => twillTrans('twill::lang.publisher.restore-draft-new'),
                     ],
                     [
                         'name' => 'cancel',
@@ -68,6 +34,14 @@ abstract class SingletonModuleController extends ModuleController
                         'text' => twillTrans('twill::lang.publisher.restore-live'),
                     ],
                     [
+                        'name' => 'restore-close',
+                        'text' => twillTrans('twill::lang.publisher.restore-live-close'),
+                    ],
+                    [
+                        'name' => 'restore-new',
+                        'text' => twillTrans('twill::lang.publisher.restore-live-new'),
+                    ],
+                    [
                         'name' => 'cancel',
                         'text' => twillTrans('twill::lang.publisher.cancel'),
                     ],
@@ -76,6 +50,14 @@ abstract class SingletonModuleController extends ModuleController
                     [
                         'name' => 'restore',
                         'text' => twillTrans('twill::lang.publisher.restore-live'),
+                    ],
+                    [
+                        'name' => 'restore-close',
+                        'text' => twillTrans('twill::lang.publisher.restore-live-close'),
+                    ],
+                    [
+                        'name' => 'restore-new',
+                        'text' => twillTrans('twill::lang.publisher.restore-live-new'),
                     ],
                     [
                         'name' => 'cancel',
@@ -92,6 +74,14 @@ abstract class SingletonModuleController extends ModuleController
                     'text' => twillTrans('twill::lang.publisher.save'),
                 ],
                 [
+                    'name' => 'save-close',
+                    'text' => twillTrans('twill::lang.publisher.save-close'),
+                ],
+                [
+                    'name' => 'save-new',
+                    'text' => twillTrans('twill::lang.publisher.save-new'),
+                ],
+                [
                     'name' => 'cancel',
                     'text' => twillTrans('twill::lang.publisher.cancel'),
                 ],
@@ -102,6 +92,14 @@ abstract class SingletonModuleController extends ModuleController
                     'text' => twillTrans('twill::lang.publisher.publish'),
                 ],
                 [
+                    'name' => 'publish-close',
+                    'text' => twillTrans('twill::lang.publisher.publish-close'),
+                ],
+                [
+                    'name' => 'publish-new',
+                    'text' => twillTrans('twill::lang.publisher.publish-new'),
+                ],
+                [
                     'name' => 'cancel',
                     'text' => twillTrans('twill::lang.publisher.cancel'),
                 ],
@@ -110,6 +108,14 @@ abstract class SingletonModuleController extends ModuleController
                 [
                     'name' => 'update',
                     'text' => twillTrans('twill::lang.publisher.update'),
+                ],
+                [
+                    'name' => 'update-close',
+                    'text' => twillTrans('twill::lang.publisher.update-close'),
+                ],
+                [
+                    'name' => 'update-new',
+                    'text' => twillTrans('twill::lang.publisher.update-new'),
                 ],
                 [
                     'name' => 'cancel',
