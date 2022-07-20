@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Twill;
 
-use Illuminate\Http\Request;
-use Illuminate\Contracts\Foundation\Application;
 use A17\Twill\Http\Controllers\Admin\ModuleController;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Request;
 
 class AuthorController extends ModuleController
 {

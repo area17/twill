@@ -2,32 +2,15 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use App\Models\Author;
 use App\Repositories\AuthorRepository;
 use Carbon\Carbon;
 
-class RevisionsTest extends TestCase
+class RevisionsTest extends ModulesTestBase
 {
-    protected $allFiles = [
-        '{$stubs}/modules/authors/Author.php' => '{$app}/Models/',
-        '{$stubs}/modules/authors/AuthorController.php' => '{$app}/Http/Controllers/Admin/',
-        '{$stubs}/modules/authors/AuthorRepository.php' => '{$app}/Repositories/',
-        '{$stubs}/modules/authors/AuthorRequest.php' => '{$app}/Http/Requests/Admin/',
-        '{$stubs}/modules/authors/AuthorRevision.php' => '{$app}/Models/Revisions/',
-        '{$stubs}/modules/authors/AuthorSlug.php' => '{$app}/Models/Slugs/',
-        '{$stubs}/modules/authors/AuthorTranslation.php' => '{$app}/Models/Translations/',
-        '{$stubs}/modules/authors/2019_10_18_193753_create_authors_tables.php' => '{$database}/migrations/',
-        '{$stubs}/modules/authors/admin.php' => '{$base}/routes/admin.php',
-    ];
-
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->copyFiles($this->allFiles);
-
-        $this->migrate();
-
-        $this->login();
     }
 
     public function addMinutes($minutes = 1)
@@ -39,7 +22,7 @@ class RevisionsTest extends TestCase
     {
         $this->addMinutes(1);
 
-        $author = $this->createAuthor();
+        $author = $this->createSingleAuthor();
 
         $this->addMinutes(1);
 
@@ -60,7 +43,7 @@ class RevisionsTest extends TestCase
         return $author;
     }
 
-    public function createAuthor($fields = [])
+    public function createSingleAuthor(array $fields = []): Author
     {
         $defaults = [
             'name' => ['en' => 'Bob', 'fr' => 'Bob'],
@@ -118,7 +101,7 @@ class RevisionsTest extends TestCase
 
     public function test_latest_revision_is_identified_as_current()
     {
-        $author = $this->createAuthor();
+        $author = $this->createSingleAuthor();
 
         $this->assertEquals(['Current'], $this->getRevisionLabels($author));
 

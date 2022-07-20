@@ -25,7 +25,7 @@ class Build extends Command
      *
      * @var string
      */
-    protected $description = "Build Twill assets with custom Vue components/blocks";
+    protected $description = 'Build Twill assets with custom Vue components/blocks';
 
     public function __construct(public Filesystem $filesystem)
     {
@@ -37,8 +37,9 @@ class Build extends Command
      */
     public function handle(): void
     {
-        if ($this->option("copyOnly")) {
+        if ($this->option('copyOnly')) {
             $this->copyCustoms();
+
             return;
         }
 
@@ -48,11 +49,11 @@ class Build extends Command
     private function fullBuild(): void
     {
         $progressBar = $this->output->createProgressBar(5);
-        $progressBar->setFormat("%current%/%max% [%bar%] %message%");
+        $progressBar->setFormat('%current%/%max% [%bar%] %message%');
 
-        $npmInstall = !$this->option('noInstall');
+        $npmInstall = ! $this->option('noInstall');
 
-        $progressBar->setMessage(($npmInstall ? "Installing" : "Reusing") . " npm dependencies...\n\n");
+        $progressBar->setMessage(($npmInstall ? 'Installing' : 'Reusing') . " npm dependencies...\n\n");
 
         $progressBar->start();
 
@@ -68,15 +69,16 @@ class Build extends Command
         sleep(1);
 
         $this->info('');
-        if (!$this->option('customComponentsSource')) {
+        if (! $this->option('customComponentsSource')) {
             $progressBar->setMessage("Copying custom components...\n\n");
         } else {
             $progressBar->setMessage("Loading components from custom directory...\n\n");
         }
         $progressBar->advance();
 
-        $this->copyIcons();
         $this->copyComponents();
+        $progressBar->setMessage("Copying icons...\n\n");
+        $this->copyIcons();
         sleep(1);
 
         $this->copyVendorComponents();
@@ -123,7 +125,7 @@ class Build extends Command
             $this->call('twill:update', ['--fromBuild' => true]);
 
             $this->info('');
-            $progressBar->setMessage("Done.");
+            $progressBar->setMessage('Done.');
             $progressBar->finish();
         }
 
@@ -146,7 +148,7 @@ class Build extends Command
         }
 
         $chokidarPath = base_path(config('twill.vendor_path')) . '/node_modules/.bin/chokidar';
-        $chokidarCommand = [$chokidarPath, $pattern, "-c", $command];
+        $chokidarCommand = [$chokidarPath, $pattern, '-c', $command];
 
         if ($this->filesystem->exists($chokidarPath)) {
             $process = new Process($chokidarCommand, base_path());
@@ -186,10 +188,10 @@ class Build extends Command
 
     private function copyCustoms(): void
     {
-        $this->info("Copying custom blocks & components...");
+        $this->info('Copying custom blocks & components...');
         $this->copyBlocks();
         $this->copyComponents();
-        $this->info("Done.");
+        $this->info('Done.');
     }
 
     private function copyBlocks(): void
@@ -199,7 +201,7 @@ class Build extends Command
         );
         $twillCustomBlocksPath = base_path(config('twill.vendor_path')) . '/frontend/js/components/blocks/customs';
 
-        if (!$this->filesystem->exists($twillCustomBlocksPath)) {
+        if (! $this->filesystem->exists($twillCustomBlocksPath)) {
             $this->filesystem->makeDirectory($twillCustomBlocksPath, 0755, true);
         }
 
@@ -217,7 +219,7 @@ class Build extends Command
         );
         $twillCustomComponentsPath = base_path(config('twill.vendor_path')) . '/frontend/js/components/customs';
 
-        if (!$this->filesystem->exists($twillCustomComponentsPath)) {
+        if (! $this->filesystem->exists($twillCustomComponentsPath)) {
             $this->filesystem->makeDirectory($twillCustomComponentsPath, 0755, true);
         }
 
@@ -234,7 +236,7 @@ class Build extends Command
         $targetDirectory = base_path('vendor/area17/twill/frontend/icons-custom');
         $originalIcons = base_path('vendor/area17/twill/frontend/icons');
 
-        if (!file_exists($targetDirectory)) {
+        if (! file_exists($targetDirectory)) {
             mkdir($targetDirectory);
         }
 
@@ -257,7 +259,7 @@ class Build extends Command
         );
         $twillVendorComponentsPath = base_path(config('twill.vendor_path')) . '/frontend/js/components/customs-vendor';
 
-        if (!$this->filesystem->exists($twillVendorComponentsPath)) {
+        if (! $this->filesystem->exists($twillVendorComponentsPath)) {
             $this->filesystem->makeDirectory($twillVendorComponentsPath, 0755, true);
         }
 
