@@ -90,12 +90,15 @@ const plugins = [
 ]
 
 function isDirEmpty(dirname) {
-  return fs.promises.readdir(dirname).then(files => {
-    return files.length === 0;
-  });
+  if (fs.existsSync(dirname)) {
+    return fs.promises.readdir(dirname).then(files => {
+      return files.length === 0;
+    });
+  }
+  return true
 }
 
-if (!isDirEmpty(`${srcDirectory}/icons-custom/`)) {
+if (!isDirEmpty(`${srcDirectory}/icons-custom/bar`)) {
   plugins.push(new SVGSpritemapPlugin(`${srcDirectory}/icons-custom/**/*.svg`, svgConfig('custom')));
 }
 
