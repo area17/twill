@@ -25,7 +25,7 @@ const getters = {
 }
 
 function setBlockID () {
-  return Date.now()
+  return Date.now() + Math.floor(Math.random() * 1000)
 }
 
 const mutations = {
@@ -133,11 +133,17 @@ const actions = {
     const duplicates = {}
     repeaterIds.forEach(repeaterId => (duplicates[repeaterId.replace(block.id, id)] = [...repeaters[repeaterId]]))
 
+    // Go over the nested repeaters.
+    repeaterIds.forEach(function (repeaterId) {
+      const nestedRepeaters = { ...getters.repeatersByBlockId(repeaterId) }
+      console.log(nestedRepeaters)
+    })
+
     // copy fields and give them a new id
     const fieldCopies = []
     Object.keys(duplicates).forEach(duplicateId => {
       duplicates[duplicateId].forEach((block, index) => {
-        const id = Date.now()
+        const id = Date.now() + Math.floor(Math.random() * 1000)
         const fields = [...getters.fieldsByBlockId(block.id)]
         duplicates[duplicateId][index] = { ...duplicates[duplicateId][index], id }
 

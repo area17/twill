@@ -180,79 +180,20 @@
     }
 
     window['{{ config('twill.js_namespace') }}'].STORE.publication = {
-    withPublicationToggle: {{ json_encode(($publish ?? true) && $item?->isFillable('published')) }},
-    published: {{ $item?->published ? 'true' : 'false' }},
-    createWithoutModal: {{ isset($createWithoutModal) && $createWithoutModal ? 'true' : 'false' }},
-    withPublicationTimeframe: {{ json_encode(($schedule ?? true) && $item?->isFillable('publish_start_date')) }},
-    publishedLabel: '{{ $publishedLabel ?? twillTrans('twill::lang.main.published') }}',
-    draftLabel: '{{ $draftLabel ?? twillTrans('twill::lang.main.draft') }}',
-    expiredLabel: '{{twillTrans('twill::lang.publisher.expired')}}',
-    scheduledLabel: '{{twillTrans('twill::lang.publisher.scheduled')}}',
-    submitDisableMessage: '{{ $submitDisableMessage ?? '' }}',
-    startDate: '{{ $item?->publish_start_date ?? '' }}',
-    endDate: '{{ $item?->publish_end_date ?? '' }}',
-    visibility: '{{ $item?->isFillable('public') ? ($item?->public ? 'public' : 'private') : false }}',
-    reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!},
-    submitOptions: @if($item?->cmsRestoring)
-        {
-        draft: [
-        {
-        name: 'restore',
-        text: '{{ twillTrans('twill::lang.publisher.restore-draft') }}'
-        },
-        {
-        name: 'restore-close',
-        text: '{{ twillTrans('twill::lang.publisher.restore-draft-close') }}'
-        },
-        {
-        name: 'restore-new',
-        text: '{{ twillTrans('twill::lang.publisher.restore-draft-new') }}'
-        },
-        {
-        name: 'cancel',
-        text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
-        }
-        ],
-        live: [
-        {
-        name: 'restore',
-        text: '{{ twillTrans('twill::lang.publisher.restore-live') }}'
-        },
-        {
-        name: 'restore-close',
-        text: '{{ twillTrans('twill::lang.publisher.restore-live-close') }}'
-        },
-        {
-        name: 'restore-new',
-        text: '{{ twillTrans('twill::lang.publisher.restore-live-new') }}'
-        },
-        {
-        name: 'cancel',
-        text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
-        }
-        ],
-        update: [
-        {
-        name: 'restore',
-        text: '{{ twillTrans('twill::lang.publisher.restore-live') }}'
-        },
-        {
-        name: 'restore-close',
-        text: '{{ twillTrans('twill::lang.publisher.restore-live-close') }}'
-        },
-        {
-        name: 'restore-new',
-        text: '{{ twillTrans('twill::lang.publisher.restore-live-new') }}'
-        },
-        {
-        name: 'cancel',
-        text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
-        }
-        ]
-        }
-    @else
-        null
-    @endif
+        withPublicationToggle: {{ json_encode(($publish ?? true) && $item?->isFillable('published')) }},
+        published: {{ $item?->published ? 'true' : 'false' }},
+        createWithoutModal: {{ isset($createWithoutModal) && $createWithoutModal ? 'true' : 'false' }},
+        withPublicationTimeframe: {{ json_encode(($schedule ?? true) && $item?->isFillable('publish_start_date')) }},
+        publishedLabel: '{{ $publishedLabel ?? twillTrans('twill::lang.main.published') }}',
+        draftLabel: '{{ $draftLabel ?? twillTrans('twill::lang.main.draft') }}',
+        expiredLabel: '{{twillTrans('twill::lang.publisher.expired')}}',
+        scheduledLabel: '{{twillTrans('twill::lang.publisher.scheduled')}}',
+        submitDisableMessage: '{{ $submitDisableMessage ?? '' }}',
+        startDate: '{{ $item?->publish_start_date ?? '' }}',
+        endDate: '{{ $item?->publish_end_date ?? '' }}',
+        visibility: '{{ $item?->isFillable('public') ? ($item?->public ? 'public' : 'private') : false }}',
+        reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!},
+        submitOptions: {!! isset($submitOptions) ? json_encode($submitOptions) : 'null' !!}
     }
 
     window['{{ config('twill.js_namespace') }}'].STORE.revisions = {!! json_encode($revisions ?? []) !!}

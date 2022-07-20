@@ -75,6 +75,7 @@ class Build extends Command
         }
         $progressBar->advance();
 
+        $this->copyIcons();
         $this->copyComponents();
         sleep(1);
 
@@ -225,6 +226,27 @@ class Build extends Command
 
         if ($this->filesystem->exists($localCustomComponentsPath)) {
             $this->filesystem->copyDirectory($localCustomComponentsPath, $twillCustomComponentsPath);
+        }
+    }
+
+    private function copyIcons(): void
+    {
+        $targetDirectory = base_path('vendor/area17/twill/frontend/icons-custom');
+        $originalIcons = base_path('vendor/area17/twill/frontend/icons');
+
+        if (!file_exists($targetDirectory)) {
+            mkdir($targetDirectory);
+        }
+
+        foreach (config('twill.block_editor.directories.source.icons') as $iconDirectory) {
+            // We do not want to process original icons.
+            if ($iconDirectory !== $originalIcons) {
+                foreach (glob($iconDirectory . DIRECTORY_SEPARATOR . '*.svg') as $svg) {
+                    $exploded = explode(DIRECTORY_SEPARATOR, $svg);
+                    $fileName = array_pop($exploded);
+                    copy($svg, $targetDirectory . DIRECTORY_SEPARATOR . $fileName);
+                }
+            }
         }
     }
 

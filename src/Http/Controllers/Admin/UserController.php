@@ -17,6 +17,7 @@ use A17\Twill\Services\Listings\TableColumns;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -395,5 +396,11 @@ class UserController extends ModuleController
         }
 
         return [];
+    }
+
+    public function getSubmitOptions(Model $item): ?array
+    {
+        // Use options from form template
+        return null;
     }
 }

@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Facades\TwillCapsules;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\View;
 
@@ -49,5 +50,76 @@ abstract class SingletonModuleController extends ModuleController
 
         $seeder = new $seederName();
         $seeder->run();
+    }
+
+    public function getSubmitOptions(Model $item): ?array
+    {
+        if ($item->cmsRestoring ?? false) {
+            return [
+                'draft' => [
+                    [
+                        'name' => 'restore',
+                        'text' => twillTrans('twill::lang.publisher.restore-draft'),
+                    ],
+                    [
+                        'name' => 'cancel',
+                        'text' => twillTrans('twill::lang.publisher.cancel'),
+                    ],
+                ],
+                'live' => [
+                    [
+                        'name' => 'restore',
+                        'text' => twillTrans('twill::lang.publisher.restore-live'),
+                    ],
+                    [
+                        'name' => 'cancel',
+                        'text' => twillTrans('twill::lang.publisher.cancel'),
+                    ],
+                ],
+                'update' => [
+                    [
+                        'name' => 'restore',
+                        'text' => twillTrans('twill::lang.publisher.restore-live'),
+                    ],
+                    [
+                        'name' => 'cancel',
+                        'text' => twillTrans('twill::lang.publisher.cancel'),
+                    ],
+                ],
+            ];
+        }
+
+        return [
+            'draft' => [
+                [
+                    'name' => 'save',
+                    'text' => twillTrans('twill::lang.publisher.save'),
+                ],
+                [
+                    'name' => 'cancel',
+                    'text' => twillTrans('twill::lang.publisher.cancel'),
+                ],
+            ],
+            'live' => [
+                [
+                    'name' => 'publish',
+                    'text' => twillTrans('twill::lang.publisher.publish'),
+                ],
+                [
+                    'name' => 'cancel',
+                    'text' => twillTrans('twill::lang.publisher.cancel'),
+                ],
+            ],
+            'update' => [
+                [
+                    'name' => 'update',
+                    'text' => twillTrans('twill::lang.publisher.update'),
+                ],
+                [
+                    'name' => 'cancel',
+                    'text' => twillTrans('twill::lang.publisher.cancel'),
+                ],
+            ],
+        ];
     }
 }

@@ -31,14 +31,22 @@ trait HasRevisions
      */
     public function revisionsArray(): array
     {
-        return $this->revisions()->get()->map(function ($revision, $index) {
-            return [
-                'id' => $revision->id,
-                'author' => $revision->user->name ?? 'Unknown',
-                'datetime' => $revision->created_at->toIso8601String(),
-                'label' => $index === 0 ? twillTrans('twill::lang.publisher.current') : '',
-            ];
-        })->toArray();
+        $currentRevision = null;
+
+        return $this->revisions
+            ->map(function ($revision, $index) use (&$currentRevision) {
+                if (!$currentRevision && !$revision->isDraft()) {
+                    $currentRevision = $revision;
+                }
+
+                return [
+                    'id' => $revision->id,
+                    'author' => $revision->user->name ?? 'Unknown',
+                    'datetime' => $revision->created_at->toIso8601String(),
+                    'label' => $currentRevision === $revision ? twillTrans('twill::lang.publisher.current') : '',
+                ];
+            })
+            ->toArray();
     }
 
     /**

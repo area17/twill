@@ -4,6 +4,7 @@ namespace A17\Twill\Tests\Integration;
 
 use App\Http\Controllers\Twill\NodeController;
 use App\Models\Node;
+use App\Repositories\NodeRepository;
 
 class NestedModuleTest extends NestedModuleTestBase
 {
@@ -61,5 +62,57 @@ class NestedModuleTest extends NestedModuleTestBase
 
         // Then all items are returned
         $this->assertEquals(6, count($result['data']));
+    }
+
+    public function testAncestorsSlugCreationOrder()
+    {
+        $repository = app(NodeRepository::class);
+        $childlvl2 = $repository->create(
+            [
+                'title' => 'child level 2',
+                'published' => true,
+                'position' => 2,
+            ]
+        );
+
+        $childlvl1 = $repository->create(
+            [
+                'title' => 'child level 1',
+                'published' => true,
+                'position' => 3,
+            ]
+        );
+
+        $childlvl0 = $repository->create(
+            [
+                'title' => 'parent',
+                'published' => true,
+                'position' => 4,
+            ]
+        );
+
+        $data = [
+            [
+                'id' => $childlvl0->id,
+                'children' => [
+                    [
+                        'id' => $childlvl1->id,
+                        'children' => [
+                            [
+                                'id' => $childlvl2->id,
+                                'children' => [],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $this->postJson('/twill/nodes/reorder', ['ids' => $data])->assertOk();
+
+        $this->assertEquals(
+            'parent/child-level-1/child-level-2',
+            $childlvl2->refresh()->ancestorsSlug . '/' . $childlvl2->getSlug()
+        );
     }
 }

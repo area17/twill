@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\SettingRepository;
 use Illuminate\Config\Repository as Config;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\UrlGenerator;
@@ -87,5 +88,11 @@ class SettingController extends Controller
         fireCmsEvent('cms-settings.saved');
 
         return $this->redirector->back();
+    }
+
+    public function getSubmitOptions(Model $item): ?array
+    {
+        // Use options from form template
+        return null;
     }
 }

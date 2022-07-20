@@ -50,6 +50,18 @@ trait HandleRevisions
      */
     public function beforeSaveHandleRevisions($object, $fields)
     {
+        $this->createRevisionIfNeeded($object, $fields);
+
+        return $fields;
+    }
+
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return array
+     */
+    public function createRevisionIfNeeded($object, $fields)
+    {
         $lastRevisionPayload = json_decode($object->revisions->first()->payload ?? "{}", true);
 
         if ($fields !== $lastRevisionPayload) {
