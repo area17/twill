@@ -1,10 +1,9 @@
 name: Tests
 
 on:
-#  Add this again when 3.x is no longer a branch.
-#  push:
-#    branches:
-#      - 3.x
+  push:
+    branches:
+      - 3.x
   pull_request:
 
 jobs:
