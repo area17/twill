@@ -153,62 +153,7 @@
         endDate: '{{ $item->publish_end_date ?? '' }}',
         visibility: '{{ isset($item) && $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}',
         reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!},
-        submitOptions: @if(isset($item) && $item->cmsRestoring) {
-            draft: [
-                {
-                    name: 'restore',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-draft') }}'
-                },
-                {
-                    name: 'restore-close',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-draft-close') }}'
-                },
-                {
-                    name: 'restore-new',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-draft-new') }}'
-                },
-                {
-                    name: 'cancel',
-                    text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
-                }
-            ],
-            live: [
-                {
-                    name: 'restore',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live') }}'
-                },
-                {
-                    name: 'restore-close',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live-close') }}'
-                },
-                {
-                    name: 'restore-new',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live-new') }}'
-                },
-                {
-                    name: 'cancel',
-                    text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
-                }
-            ],
-            update: [
-                {
-                    name: 'restore',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live') }}'
-                },
-                {
-                    name: 'restore-close',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live-close') }}'
-                },
-                {
-                    name: 'restore-new',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live-new') }}'
-                },
-                {
-                    name: 'cancel',
-                    text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
-                }
-            ]
-        } @else null @endif
+        submitOptions: {!! isset($submitOptions) ? json_encode($submitOptions) : 'null' !!}
     }
 
     window['{{ config('twill.js_namespace') }}'].STORE.revisions = {!! json_encode($revisions ?? []) !!}

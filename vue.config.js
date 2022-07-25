@@ -69,7 +69,7 @@ const svgConfig = (suffix = null) => {
   }
 }
 
-let plugins = [
+const plugins = [
   new CleanWebpackPlugin(),
   new SVGSpritemapPlugin(`${srcDirectory}/icons/**/*.svg`, svgConfig()),
   new SVGSpritemapPlugin(`${srcDirectory}/icons-files/**/*.svg`, svgConfig('files')),
@@ -85,6 +85,16 @@ let plugins = [
     }
   })
 ]
+
+function isDirEmpty(dirname) {
+  return fs.promises.readdir(dirname).then(files => {
+    return files.length === 0;
+  });
+}
+
+if (!isDirEmpty(`${srcDirectory}/icons-custom/`)) {
+  plugins.push(new SVGSpritemapPlugin(`${srcDirectory}/icons-custom/**/*.svg`, svgConfig('custom')));
+}
 
 if (!isProd) {
   plugins.push(new WebpackNotifierPlugin({

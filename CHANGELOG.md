@@ -2,6 +2,21 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## Unreleased (2.9.0)
+
+### Features
+
+- Submit options are now configurable using the getSubmitOptions [`#1719`](https://github.com/area17/twill/pull/1719)
+- Using enableDraftRevisions you can now have drafts on top of published versions [`#1725`](https://github.com/area17/twill/pull/1725)
+
+### Fixes
+
+- When having many blocks, the list is now srollable [`#1464`](https://github.com/area17/twill/pull/1464)
+- Improved support for custom icons [`#1732`](https://github.com/area17/twill/pull/1732)
+- Fixes a js error that occurred when cloning repeaters [`#1734`](https://github.com/area17/twill/pull/1734)
+- Resolved an issue where slug models could not be found if directories were nested [`#1738`](https://github.com/area17/twill/pull/1738)
+- Fixed slugs in nested modules to not rely on random sort anymore [`#1743`](https://github.com/area17/twill/pull/1743)
+
 ## 2.8.8 (2022-06-27)
 
 ###  Features

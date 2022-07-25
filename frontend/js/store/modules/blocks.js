@@ -57,7 +57,7 @@ const getters = {
   blockIndex: (state, getters) => (block, editorName) => getters.blocks(editorName).findIndex(b => b.id === block.id)
 }
 
-const setBlockID = () => Date.now()
+const setBlockID = () => Date.now() + Math.floor(Math.random() * 1000)
 
 const mutations = {
   [BLOCKS.ADD_BLOCK] (state, { block, index, editorName }) {

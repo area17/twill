@@ -25,7 +25,7 @@ const getters = {
 }
 
 function setBlockID () {
-  return Date.now()
+  return Date.now() + Math.floor(Math.random() * 1000)
 }
 
 const mutations = {
@@ -92,7 +92,7 @@ const actions = {
     const fieldCopies = []
     Object.keys(duplicates).forEach(duplicateId => {
       duplicates[duplicateId].forEach((block, index) => {
-        const id = Date.now()
+        const id = Date.now() + Math.floor(Math.random() * 1000)
         const fields = [...getters.fieldsByBlockId(block.id)]
         duplicates[duplicateId][index] = { ...duplicates[duplicateId][index], id }
 
