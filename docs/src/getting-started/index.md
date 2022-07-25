@@ -36,7 +36,7 @@ Twill's database migrations create `json` columns. Your database should support 
 |            | Supported versions | Recommended version |
 |:-----------|:------------------:|:-------------------:|
 | PHP        | >= 7.1             | 8.0                 |
-| Laravel    | >= 5.8             | 8.x                 |
+| Laravel    | >= 5.8             | 9.x                 |
 | npm        | >= 5.7             | 6.13                |
 | MySQL      | >= 5.7             | 5.7                 |
 | PostgreSQL | >= 9.3             | 10                  |
