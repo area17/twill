@@ -147,20 +147,19 @@
     <div class="link-window" v-if="linkWindow">
       <div class="link-window-inner">
         <label>
-          Link:
+          {{ $trans('wysiwyg.link_window.link', 'Link') }}:
+          <input type="text" v-model="linkWindow.href" @keyup:enter="saveLink" tabindex="1" ref="link_window__link">
         </label>
-        <input type="text" v-model="linkWindow.href" @keyup:enter="saveLink">
 
         <label>
-          <input type="checkbox" v-model="linkWindow.target" true-value="_blank" false-value="">
-          Open in a new window
+          <input type="checkbox" v-model="linkWindow.target" true-value="_blank" false-value="" tabindex="2">
+          {{ $trans('wysiwyg.link_window.open_in_new_window', 'Open in a new window') }}
         </label>
 
         <br>
-
-        <button @click="saveLink">
-          Save
-        </button>
+        <a17-button variant="validate" class="dialog-confirm" @click="saveLink" tabindex="3">
+          {{ $trans('wysiwyg.link_window.save', 'Save') }}
+        </a17-button>
       </div>
     </div>
   </a17-inputframe>
@@ -356,6 +355,9 @@
           href: markAttributes.href,
           target: markAttributes.target
         }
+        this.$nextTick(() => {
+          this.$refs.link_window__link.focus()
+        })
       },
       saveLink () {
         this.editor.commands.link(this.linkWindow)
