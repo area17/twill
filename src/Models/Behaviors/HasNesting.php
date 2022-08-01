@@ -81,12 +81,12 @@ trait HasNesting
 
         foreach ($nodeTree as $node) {
             $nodeArrays[] = [
-                'id' => $node['id'],
+                'id' => is_array($node) ? $node['id'] : $node,
                 'position' => $position++,
                 'parent_id' => $parentId,
             ];
 
-            if (count($node['children']) > 0) {
+            if (is_array($node) && count($node['children']) > 0) {
                 $childArrays = self::flattenTree($node['children'], $node['id']);
                 $nodeArrays = array_merge($nodeArrays, $childArrays);
             }
