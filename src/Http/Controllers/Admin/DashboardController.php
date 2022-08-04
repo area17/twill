@@ -148,9 +148,25 @@ class DashboardController extends Controller
     /**
      * @return array
      */
+    private function getEnabledActivities()
+    {
+        $modules = $this->config->get('twill.dashboard.modules');
+        $listActivities = [];
+
+        foreach ($modules as $moduleClass => $moduleConfiguration) {
+            if (!empty($moduleConfiguration['activity'])) {
+                $listActivities[] = $moduleClass;
+            }
+        }
+        return $listActivities;
+    }
+    
+    /**
+     * @return array
+     */
     private function getAllActivities()
     {
-        return Activity::take(20)->latest()->get()->map(function ($activity) {
+        return Activity::whereIn('subject_type', $this->getEnabledActivities())->take(20)->latest()->get()->map(function ($activity) {
             return $this->formatActivity($activity);
         })->filter()->values();
     }
@@ -160,7 +176,7 @@ class DashboardController extends Controller
      */
     private function getLoggedInUserActivities()
     {
-        return Activity::where('causer_id', $this->authFactory->guard('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity) {
+        return Activity::whereIn('subject_type', $this->getEnabledActivities())->where('causer_id', $this->authFactory->guard('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity) {
             return $this->formatActivity($activity);
         })->filter()->values();
     }
