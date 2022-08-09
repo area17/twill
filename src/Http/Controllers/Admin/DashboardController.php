@@ -154,6 +154,9 @@ class DashboardController extends Controller
 
         foreach ($modules as $moduleClass => $moduleConfiguration) {
             if (!empty($moduleConfiguration['activity'])) {
+                if (!class_exists($moduleClass)) {
+                    throw new Exception("Class $moduleClass specified in twill.dashboard configuration does not exists.");
+                }
                 $listActivities[] = $moduleClass;
             }
         }
