@@ -50,7 +50,11 @@ class Block extends BaseModel implements TwillModelContract
 
     public function children()
     {
-        return $this->hasMany(twillModel('block'), 'parent_id');
+        return $this->hasMany(twillModel('block'), 'parent_id')
+            ->orderBy(
+                $this->getTable() . '.position',
+                'asc'
+            );
     }
 
     public function input($name)
@@ -63,9 +67,9 @@ class Block extends BaseModel implements TwillModelContract
         $value = $this->content[$name] ?? null;
 
         $locale = $forceLocale ?? (
-        config('translatable.use_property_fallback', false) && (!array_key_exists(app()->getLocale(), $value ?? []))
-            ? config('translatable.fallback_locale')
-            : app()->getLocale()
+            config('translatable.use_property_fallback', false) && (! array_key_exists(app()->getLocale(), $value ?? []))
+                ? config('translatable.fallback_locale')
+                : app()->getLocale()
         );
 
         return $value[$locale] ?? null;
