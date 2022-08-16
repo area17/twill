@@ -91,7 +91,22 @@
       }
     },
     methods: {
+      addListeners () {
+        this.$nextTick(() => {
+          this.fields.forEach((field) => {
+            field.removeEventListener('input', this.disable)
+          })
+          this.fields = [...this.$parent.$el.querySelectorAll('input, textarea, select')]
+          this.fields.forEach((field) => {
+            console.log(field)
+            field.addEventListener('input', () => {
+              this.disable()
+            })
+          })
+        })
+      },
       disable: function () {
+        console.log('here')
         if (!this.fields) {
           this.isDisabled = true
           this.$emit('disable', true)
@@ -134,9 +149,7 @@
 
       if (!this.fields.length) return
 
-      this.fields.forEach(function (field) {
-        field.addEventListener('input', self.disable)
-      })
+      this.addListeners()
     },
     beforeDestroy: function () {
       const self = this
