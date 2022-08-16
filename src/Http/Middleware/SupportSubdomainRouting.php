@@ -17,7 +17,7 @@ class SupportSubdomainRouting
         if (config('twill.active_subdomain') !== $subdomain) {
             config(['twill.active_subdomain' => $subdomain]);
         }
-        
+
         // Set subdomain as default URL parameter to not have
         // to add it manually when using route helpers
         URL::defaults([$parameter => $subdomain]);
@@ -26,8 +26,8 @@ class SupportSubdomainRouting
 
         config([
             'app.name' => config('twill.app_names')[$subdomain] ?? config('app.name'),
-            'twill-navigation' => config('twill-navigation')[$subdomain] ?? key(config('twill-navigation')),
-            'twill.dashboard.modules' => config('twill.dashboard.modules')[$subdomain] ?? key(config('twill.dashboard.modules')),
+            'twill-navigation' => config('twill-navigation')[$subdomain] ?? config('twill-navigation'),
+            'twill.dashboard.modules' => config('twill.dashboard.modules')[$subdomain] ?? config('twill.dashboard.modules'),
             'twill.block_editor.block_single_layout' => $blockLayout,
         ]);
 
