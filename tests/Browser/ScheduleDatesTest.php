@@ -14,6 +14,7 @@ class ScheduleDatesTest extends BrowserTestCase
     {
         $class = null;
         $this->tweakApplication(function () use (&$class, $time24h) {
+            config()->set('translatable.locales', ['en']);
             config()->set('twill.publish_date_24h', $time24h);
             $class = \A17\Twill\Tests\Integration\Anonymous\AnonymousModule::make('servers', app())
                 ->withFields([
