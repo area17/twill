@@ -31,7 +31,8 @@ class FeaturedColumnTest extends TestCase
                     FeaturedStatus::make(),
                 ])
             )
-            ->boot();
+            ->boot()
+            ->getModelClassName();
 
         $this->actingAs($this->superAdmin(), 'twill_users');
 

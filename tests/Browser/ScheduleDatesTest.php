@@ -27,7 +27,8 @@ class ScheduleDatesTest extends BrowserTestCase
                         'type' => 'dateTime',
                     ],
                 ])
-                ->boot();
+                ->boot()
+                ->getModelClassName();
         });
 
         $this->assertEquals('UTC', config('app.timezone'));

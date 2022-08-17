@@ -25,6 +25,9 @@ class AnonymousModule
     private ?Form $formFields = null;
     private array $setupMethods = [];
     public array $fields = ['title' => []];
+    private array $additionalProps = [];
+    private ?string $modelClass = null;
+    private ?string $controllerClass = null;
 
     protected function __construct(public string $namePlural, public Application $app)
     {
@@ -53,6 +56,11 @@ class AnonymousModule
         return $this;
     }
 
+    public function withAdditionalProp(string $prop, mixed $value): self {
+        $this->additionalProps[$prop] = $value;
+        return $this;
+    }
+
     /**
      * $fields  is an array that needs the field name as key, and an array as value.
      *
@@ -70,7 +78,7 @@ class AnonymousModule
     /**
      * Boots the anonymous module and returns the model class.
      */
-    public function boot(): string
+    public function boot(): self
     {
         $createClass = false;
         // The module class is the one thing we really need.
@@ -141,7 +149,7 @@ class AnonymousModule
                 }
             };
 
-            $modelClass = $modelClass::class;
+            $this->modelClass = $modelClass::class;
         }
 
         // Create the migration class.
@@ -215,10 +223,11 @@ class AnonymousModule
             $this->app,
             new Request(),
             $this->namePlural,
-            $modelClass,
+            $this->modelClass,
             $this->tableColumns,
             $this->formFields,
-            $this->setupMethods
+            $this->setupMethods,
+            $this->additionalProps
         ) extends ModuleController {
             public static array $setProps;
             public string $modelClass = '';
@@ -230,7 +239,8 @@ class AnonymousModule
                 ?string $modelClass = null,
                 ?TableColumns $tableColumns = null,
                 ?Form $formFields = null,
-                ?array $setupMethods = null
+                ?array $setupMethods = null,
+                array $additionalProps = []
             ) {
                 if ($modelClass) {
                     self::$setProps['setTableColumns'] = $tableColumns;
@@ -238,6 +248,9 @@ class AnonymousModule
                     self::$setProps['setSetupMethods'] = $setupMethods ?? [];
                     self::$setProps['moduleName'] = $this->moduleName;
                     self::$setProps['moduleClass'] = $modelClass;
+                    foreach ($additionalProps as $name => $value) {
+                        self::$setProps[$name] = $value;
+                    }
                     $this->modelClass = $modelClass;
                 } else {
                     foreach (self::$setProps as $prop => $value) {
@@ -312,10 +325,10 @@ class AnonymousModule
             }
         };
 
-        $controllerClass = $controller::class;
+        $this->controllerClass = $controller::class;
 
         // Generate twill module routes.
-        $this->buildAnonymousRoutes($this->namePlural, $controllerClass);
+        $this->buildAnonymousRoutes($this->namePlural, $this->controllerClass);
 
         /** @var \Illuminate\Routing\Router $router */
         $router = app()->make('router');
@@ -326,8 +339,7 @@ class AnonymousModule
             'module' => true,
         ];
 
-        // return the model class.
-        return $modelClass;
+        return $this;
     }
 
     protected function buildAnonymousRoutes(string $slug, string $className): void
@@ -532,6 +544,13 @@ class AnonymousModule
                 }
             }
         );
+    }
+
+    public function getModelClassName(): string {
+        return $this->modelClass;
+    }
+    public function getModelController(): ModuleController {
+        return app()->make($this->controllerClass);
     }
 
 }

@@ -6,7 +6,6 @@ use A17\Twill\Tests\Integration\Anonymous\AnonymousModule;
 
 class AnonymousModulesTest extends TestCase
 {
-
     public function testCreateAndList(): void
     {
         AnonymousModule::make('servers', $this->app)->boot();
