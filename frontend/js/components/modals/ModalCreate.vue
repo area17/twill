@@ -2,7 +2,6 @@
   <a17-modal ref="modal" class="modal--form" :title="modalTitle" :forceClose="true">
     <form :action="actionForm" @submit.prevent="submit">
       <slot></slot>
-      {{language}}
       <a17-modal-validation
         :mode="mode"
         ref="validation"
@@ -84,7 +83,6 @@
     },
     methods: {
       open: function () {
-        console.log(this.language)
         if (this.createMode) {
           this.$store.commit(LANGUAGE.RESET_LANGUAGES)
         }

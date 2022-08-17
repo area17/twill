@@ -98,7 +98,6 @@
           })
           this.fields = [...this.$parent.$el.querySelectorAll('input, textarea, select')]
           this.fields.forEach((field) => {
-            console.log(field)
             field.addEventListener('input', () => {
               this.disable()
             })
@@ -106,7 +105,6 @@
         })
       },
       disable: function () {
-        console.log('here')
         if (!this.fields) {
           this.isDisabled = true
           this.$emit('disable', true)
