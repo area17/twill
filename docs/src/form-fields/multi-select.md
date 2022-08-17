@@ -108,7 +108,7 @@ In this case that it can be implemented as follows:
 - Create a Sectors [module](/crud-modules/cli-generator.html)
 
 ```
-php artisan twill:module sectors
+php artisan twill:make:module sectors
 ```
 
 - Create a migration for a pivot table.
