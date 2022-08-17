@@ -58,6 +58,15 @@ class TableBuilderBackwardsCompatibleTest extends ModulesTestBase
                 'html' => false,
                 'specificType' => null,
             ],
+            [
+                'name' => 'languages',
+                'label' => 'Languages',
+                'visible' => false,
+                'optional' => true,
+                'sortable' => false,
+                'html' => false,
+                'specificType' => null,
+            ],
         ], $indexData['tableColumns']);
     }
 }
