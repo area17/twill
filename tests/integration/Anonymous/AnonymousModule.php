@@ -3,8 +3,10 @@
 namespace A17\Twill\Tests\Integration\Anonymous;
 
 use A17\Twill\Http\Controllers\Admin\ModuleController;
+use A17\Twill\Models\Behaviors\HasTranslation;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Model;
+use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use A17\Twill\Services\Forms\Form;
 use A17\Twill\Services\Listings\TableColumns;
 use Illuminate\Contracts\Foundation\Application;
@@ -28,6 +30,7 @@ class AnonymousModule
     private array $additionalProps = [];
     private ?string $modelClass = null;
     private ?string $controllerClass = null;
+    private ?string $modelTranslationClass = null;
 
     protected function __construct(public string $namePlural, public Application $app)
     {
@@ -56,7 +59,8 @@ class AnonymousModule
         return $this;
     }
 
-    public function withAdditionalProp(string $prop, mixed $value): self {
+    public function withAdditionalProp(string $prop, mixed $value): self
+    {
         $this->additionalProps[$prop] = $value;
         return $this;
     }
@@ -116,22 +120,72 @@ class AnonymousModule
             }
             include_once($targetFile);
         } else {
+            // Translation class.
+            $translationClass = new class(
+                [],
+                Str::singular($this->namePlural),
+                $this->fields,
+            ) extends Model {
+                public static array $setProps = [];
+
+                protected $fillable = ['active'];
+
+                public function __construct(
+                    array $attributes = [],
+                    string $nameSingular = '',
+                    array $fields = [],
+                ) {
+                    if ($nameSingular !== '') {
+                        self::$setProps['fillable'] = collect($fields)
+                            ->where('translatable', true)
+                            ->keys()
+                            ->all();
+
+                        self::$setProps['table'] = $nameSingular . '_translations';
+                    } else {
+                        foreach (self::$setProps as $prop => $value) {
+                            if ($prop === 'fillable') {
+                                $value[] = 'active';
+                            }
+                            $this->{$prop} = $value;
+                        }
+                    }
+                    parent::__construct($attributes);
+                }
+
+                protected function isTranslationModel(): bool
+                {
+                    return true;
+                }
+            };
+
+            $this->modelTranslationClass = $translationClass::class;
+
             // For simpler modules we can just keep the anonymous classes.
             $modelClass = new class(
                 [],
                 $this->fields,
-                $this->namePlural
+                $this->namePlural,
+                $this->modelTranslationClass,
             ) extends Model {
+                use HasTranslation;
+
                 public static array $setProps = [];
+                public $translationForeignKey;
+                public $translationModel;
+                public $table;
 
                 public function __construct(
                     array $attributes = [],
                     array $fields = [],
                     string $namePlural = '',
+                    string $translationModel = '',
                 ) {
                     if ($namePlural !== '') {
                         self::$setProps['fillable'] = array_keys($fields);
                         self::$setProps['table'] = $namePlural;
+                        self::$setProps['translationForeignKey'] = Str::singular($namePlural) . '_id';
+                        self::$setProps['translationModel'] = $translationModel;
                         self::$setProps['dates'] = collect($fields)
                             ->where('type', 'dateTime')
                             ->keys()
@@ -142,6 +196,9 @@ class AnonymousModule
                             ->all();
                     } else {
                         foreach (self::$setProps as $prop => $value) {
+                            if ($prop === 'translatedAttributes') {
+                                $value[] = 'active';
+                            }
                             $this->{$prop} = $value;
                         }
                     }
@@ -305,6 +362,8 @@ class AnonymousModule
             public function getRepositoryClass($model)
             {
                 $repository = new class(null, $this->modelClass) extends ModuleRepository {
+                    use HandleTranslations;
+
                     public static $setProps = [];
 
                     public function __construct($model = null, $modelType = null)
@@ -546,10 +605,13 @@ class AnonymousModule
         );
     }
 
-    public function getModelClassName(): string {
+    public function getModelClassName(): string
+    {
         return $this->modelClass;
     }
-    public function getModelController(): ModuleController {
+
+    public function getModelController(): ModuleController
+    {
         return app()->make($this->controllerClass);
     }
 

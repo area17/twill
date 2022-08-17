@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Cache;
 
 class Twill
 {
+    public static $cache = [];
+
     function asset($file)
     {
         return $this->devAsset($file) ?? $this->twillAsset($file);
@@ -49,8 +51,8 @@ class Twill
         try {
             $manifest = $this->readJson(
                 $devServerUrl .
-                    '/' .
-                    config('twill.manifest_file', 'twill-manifest.json')
+                '/' .
+                config('twill.manifest_file', 'twill-manifest.json')
             );
         } catch (\Exception $exception) {
             throw new \Exception('Twill dev assets manifest is missing. Make sure you are running the npm run serve command inside Twill.', $exception->getCode(), $exception);
@@ -82,7 +84,16 @@ class Twill
             ],
         ];
 
-        return json_decode(file_get_contents($fileName, false, stream_context_create($requestOptionsIgnoreSsl)), true);
+        if (self::$cache === []) {
+            self::$cache = json_decode(
+                file_get_contents($fileName, false, stream_context_create($requestOptionsIgnoreSsl)),
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
+        }
+
+        return self::$cache;
     }
 
     private function devMode()
