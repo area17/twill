@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Tests\Browser;
 
-use _PHPStan_c900ee2af\Nette\DI\Definitions\AccessorDefinition;
 use A17\Twill\Commands\Traits\HandlesPresets;
 use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
