@@ -28,7 +28,8 @@ class SelectFieldTest extends BrowserTestCase
                             ->addOption(new Option('option2', 'option2')),
                     ])
                 )
-                ->boot();
+                ->boot()
+                ->getModelClassName();
         });
 
         $this->browse(function (Browser $browser) {

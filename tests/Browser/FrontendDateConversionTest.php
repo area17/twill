@@ -32,7 +32,8 @@ class FrontendDateConversionTest extends BrowserTestCase
                             ->time24h($use24h),
                     ])
                 )
-                ->boot();
+                ->boot()
+                ->getModelClassName();
         });
 
         $this->assertEquals('UTC', config('app.timezone'));

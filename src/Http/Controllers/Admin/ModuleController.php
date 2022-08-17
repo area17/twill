@@ -776,6 +776,16 @@ abstract class ModuleController extends Controller
                             );
                         })
                 );
+            } elseif ($indexColumn['thumb'] ?? false) {
+                $columns->add(
+                    Image::make()
+                        ->title($indexColumn['title'] ?? $key)
+                        ->role($indexColumn['variant']['role'] ?? null)
+                        ->crop($indexColumn['variant']['crop'] ?? null)
+                        ->field($indexColumn['field'] ?? $key)
+                        ->sortKey($indexColumn['sortKey'] ?? null)
+                        ->optional($indexColumn['optional'] ?? false)
+                );
             } elseif ($indexColumn['relatedBrowser'] ?? false) {
                 $columns->add(
                     Browser::make()
