@@ -181,11 +181,12 @@ class TwillRoutes
                 };
 
                 if ($supportSubdomainRouting) {
+                    $url = parse_url(config('app.url'));
                     $router->group(
                         $groupOptions + [
                             'domain' => config('twill.admin_app_subdomain', 'admin') .
                                 '.{subdomain}.' .
-                                config('app.url'),
+                                $url['host'] ?? config('app.url'),
                         ],
                         $hostRoutes
                     );

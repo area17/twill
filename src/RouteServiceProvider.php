@@ -115,11 +115,12 @@ class RouteServiceProvider extends ServiceProvider
             ],
             function ($router) use ($internalRoutes, $supportSubdomainRouting) {
                 if ($supportSubdomainRouting) {
+                    $url = parse_url(config('app.url'));
                     $router->group(
                         [
                             'domain' => config('twill.admin_app_subdomain', 'admin') .
                                 '.{subdomain}.' .
-                                config('app.url'),
+                                $url['host'] ?? config('app.url'),
                         ],
                         $internalRoutes
                     );

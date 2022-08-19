@@ -29,7 +29,7 @@
     <php>
         <env name="APP_KEY" value="base64:DV8kQN5a+4MwAIQ5uk1WNafxO+/Efab0K20uVMDJ2UE="/>
         <env name="APP_ENV" value="testing"/>
-        <env name="APP_URL" value="twill.test"/>
+        <env name="APP_URL" value="http://twill.test/"/>
         <env name="APP_DEBUG" value="true"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
