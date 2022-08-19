@@ -33,7 +33,6 @@ class BlockChildrenTest extends TestCase
                                 'blocks' => [],
                                 'type' => 'a17-block-quote',
                                 'is_repeater' => false,
-                                'position' => 2,
                                 'content' => [
                                     'quote' => 'This is the nested quote at position 2.',
                                     'author' => 'This is the nested author at position 2.',
@@ -46,7 +45,6 @@ class BlockChildrenTest extends TestCase
                                 'blocks' => [],
                                 'type' => 'a17-block-quote',
                                 'is_repeater' => false,
-                                'position' => 2,
                                 'content' => [
                                     'quote' => 'This is the nested quote at position 1.',
                                     'author' => 'This is the nested author at position 1.',
@@ -67,8 +65,38 @@ class BlockChildrenTest extends TestCase
 
         $update = $repository->update($server->id, $blocks);
 
+        // Check the nested child order.
+        $this->assertEquals(
+            'This is the nested quote at position 2.',
+            $update->blocks[0]->children[0]->content['quote']
+        );
+        $this->assertEquals(
+            'This is the nested quote at position 1.',
+            $update->blocks[0]->children[1]->content['quote']
+        );
+
+        // Now we update it a second time, but we update the order.
+        $blocksUpdate = $blocks;
+        $blocksUpdate['blocks'][0]['blocks'][0][0]['id'] = $update->blocks[1]->id;
+        $blocksUpdate['blocks'][0]['blocks'][0][1]['id'] = $update->blocks[2]->id;
+
+        // We now swap them so their actual position is correct.
+        $backup = $blocksUpdate['blocks'][0]['blocks'][0][0];
+
+        $blocksUpdate['blocks'][0]['blocks'][0][0] = $blocksUpdate['blocks'][0]['blocks'][0][1];
+        $blocksUpdate['blocks'][0]['blocks'][0][1] = $backup;
+
+        $update = $repository->update($server->id, $blocksUpdate);
+
+        // Check the nested child order.
         $this->assertEquals('This is the quote.', $update->blocks[0]->content['quote']);
-        $this->assertEquals('This is the nested quote at position 1.', $update->blocks[1]->content['quote']);
-        $this->assertEquals('This is the nested quote at position 2.', $update->blocks[2]->content['quote']);
+        $this->assertEquals(
+            'This is the nested quote at position 1.',
+            $update->blocks[0]->children[0]->content['quote']
+        );
+        $this->assertEquals(
+            'This is the nested quote at position 2.',
+            $update->blocks[0]->children[1]->content['quote']
+        );
     }
 }
