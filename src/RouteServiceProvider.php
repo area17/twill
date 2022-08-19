@@ -13,7 +13,6 @@ use A17\Twill\Http\Middleware\ValidateBackHistory;
 use A17\Twill\Services\MediaLibrary\Glide;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
@@ -115,19 +114,19 @@ class RouteServiceProvider extends ServiceProvider
                 'namespace' => $this->namespace . '\Admin',
             ],
             function ($router) use ($internalRoutes, $supportSubdomainRouting) {
-                $router->group(
-                    [
-                        'domain' => config('twill.admin_app_url'),
-                    ],
-                    $internalRoutes
-                );
-
                 if ($supportSubdomainRouting) {
                     $router->group(
                         [
                             'domain' => config('twill.admin_app_subdomain', 'admin') .
                                 '.{subdomain}.' .
                                 config('app.url'),
+                        ],
+                        $internalRoutes
+                    );
+                } else {
+                    $router->group(
+                        [
+                            'domain' => config('twill.admin_app_url'),
                         ],
                         $internalRoutes
                     );
@@ -271,9 +270,9 @@ class RouteServiceProvider extends ServiceProvider
 
     public static function shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)
     {
-        return !empty($groupPrefix) && (blank($lastRouteGroupName) ||
+        return ! empty($groupPrefix) && (blank($lastRouteGroupName) ||
                 config('twill.allow_duplicates_on_route_names', true) ||
-                (!Str::endsWith($lastRouteGroupName, ".{$groupPrefix}.")));
+                (! Str::endsWith($lastRouteGroupName, ".{$groupPrefix}.")));
     }
 
     public static function getLastRouteGroupName()
@@ -292,7 +291,7 @@ class RouteServiceProvider extends ServiceProvider
             '.'
         );
 
-        if (!empty(config('twill.admin_app_path'))) {
+        if (! empty(config('twill.admin_app_path'))) {
             $groupPrefix = ltrim(
                 str_replace(
                     config('twill.admin_app_path'),

@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\View;
 
 class SupportSubdomainRouting
 {
+    public static array $routingOriginal = [];
+
     public function handle(Request $request, Closure $next)
     {
         $parameter = 'subdomain';
@@ -18,6 +20,15 @@ class SupportSubdomainRouting
             config(['twill.active_subdomain' => $subdomain]);
         }
 
+        if (self::$routingOriginal === []) {
+            // We store the original routing here so that every request we can start from the base config set.
+            self::$routingOriginal = [
+                'app.name' => config('twill.app_names'),
+                'twill-navigation' => config('twill-navigation'),
+                'twill.dashboard.modules' => config('twill.dashboard.modules'),
+            ];
+        }
+
         // Set subdomain as default URL parameter to not have
         // to add it manually when using route helpers
         URL::defaults([$parameter => $subdomain]);
@@ -25,9 +36,9 @@ class SupportSubdomainRouting
         $blockLayout = View::exists($subdomain . '.layouts.block') ? ($subdomain . '.layouts.block') : 'site.layouts.blocks';
 
         config([
-            'app.name' => config('twill.app_names')[$subdomain] ?? config('app.name'),
-            'twill-navigation' => config('twill-navigation')[$subdomain] ?? key(config('twill-navigation')),
-            'twill.dashboard.modules' => config('twill.dashboard.modules')[$subdomain] ?? key(config('twill.dashboard.modules')),
+            'app.name' => self::$routingOriginal['app.name'][$subdomain] ?? config('app.name'),
+            'twill-navigation' => self::$routingOriginal['twill-navigation'][$subdomain] ?? key(config('twill-navigation')),
+            'twill.dashboard.modules' => self::$routingOriginal['twill.dashboard.modules'][$subdomain] ?? key(config('twill.dashboard.modules')),
             'twill.block_editor.block_single_layout' => $blockLayout,
         ]);
 
