@@ -74,7 +74,7 @@ trait HandleBlocks
 
             $fakeBlockId++;
             $newChildBlock->id = $fakeBlockId;
-            if (!empty($childBlock['blocks'])) {
+            if (! empty($childBlock['blocks'])) {
                 $childBlockHydrated = $this->hydrateHandleBlocks(
                     $newChildBlock,
                     $childBlock,
@@ -143,7 +143,7 @@ trait HandleBlocks
     ): void {
         // Find an existing block id based on the frontend id.
         if (
-            !in_array($blockData['id'] ?? null, $existingBlockIds, false) &&
+            ! in_array($blockData['id'] ?? null, $existingBlockIds, false) &&
             $id = TwillUtil::hasBlockIdFor($blockData['id'])
         ) {
             $originalBlockId = $blockData['id'];
@@ -298,7 +298,7 @@ trait HandleBlocks
         bool $handleTranslations
     ): void {
         $this->validate(
-            (array)$block['content'] + $block['medias'] + $block['browsers'] + $block['blocks'],
+            (array) $block['content'] + $block['medias'] + $block['browsers'] + $block['blocks'],
             $block['id'],
             $blockInstance->getRules(),
             $handleTranslations ? $blockInstance->getRulesForTranslatedFields() : []
@@ -453,7 +453,7 @@ trait HandleBlocks
                     ->isNotEmpty()) {
                 $items = $this->getFormFieldsForRelatedBrowser($block, $relation);
                 foreach ($items as &$item) {
-                    if (!isset($item['edit'])) {
+                    if (! isset($item['edit'])) {
                         try {
                             $item['edit'] = moduleRoute(
                                 $relation,

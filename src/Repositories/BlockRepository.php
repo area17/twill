@@ -22,7 +22,7 @@ class BlockRepository extends ModuleRepository
     public function __construct(Config $config)
     {
         $blockModel = twillModel('block');
-        $this->model = new $blockModel;
+        $this->model = new $blockModel();
         $this->config = $config;
     }
 
@@ -42,7 +42,7 @@ class BlockRepository extends ModuleRepository
                         // @todo: Repository could be null.
                         $repository = $this->getModelRepository($item['endpointType'] ?? $browserName);
                         $relatedItems->push(
-                            (object)[
+                            (object) [
                                 'related' => $repository->getById($item['id']),
                                 'browser_name' => $browserName,
                             ]
@@ -92,7 +92,7 @@ class BlockRepository extends ModuleRepository
 
         $block['instance'] = $blockInstance;
 
-        $block['content'] = empty($block['content']) ? new \stdClass() : (object)$block['content'];
+        $block['content'] = empty($block['content']) ? new \stdClass() : (object) $block['content'];
 
         if ($block['browsers']) {
             $browsers = Collection::make($block['browsers'])->map(function ($items) {

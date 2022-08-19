@@ -38,14 +38,14 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
 
     public function scopeAccessible($query): Builder
     {
-        if (!TwillPermissions::enabled()) {
+        if (! TwillPermissions::enabled()) {
             return $query;
         }
 
         $model = get_class($query->getModel());
         $moduleName = TwillPermissions::getPermissionModule(getModuleNameByModel($model));
 
-        if ($moduleName && !Auth::user()->isSuperAdmin()) {
+        if ($moduleName && ! Auth::user()->isSuperAdmin()) {
             // Get all permissions the logged in user has regards to the model.
             $allPermissions = Auth::user()->allPermissions();
             $allModelPermissions = (clone $allPermissions)->ofModel($model);
@@ -140,11 +140,11 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
         ) {
             $fillable = (new $this->baseModuleModel())->getTranslatedAttributes();
 
-            if (!collect($fillable)->contains('locale')) {
+            if (! collect($fillable)->contains('locale')) {
                 $fillable[] = 'locale';
             }
 
-            if (!collect($fillable)->contains('active')) {
+            if (! collect($fillable)->contains('active')) {
                 $fillable[] = 'active';
             }
         }
