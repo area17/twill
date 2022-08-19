@@ -25,7 +25,7 @@ class SupportSubdomainRouting
             self::$routingOriginal = [
                 'app.name' => config('twill.app_names'),
                 'twill-navigation' => config('twill-navigation'),
-                'twill.dashboard.modules' => config('twill.dashboard.modules'),
+                'twill.dashboard.modules' => config('twill.dashboard.modules', []),
             ];
         }
 
@@ -38,7 +38,7 @@ class SupportSubdomainRouting
         config([
             'app.name' => self::$routingOriginal['app.name'][$subdomain] ?? config('app.name'),
             'twill-navigation' => self::$routingOriginal['twill-navigation'][$subdomain] ?? key(config('twill-navigation')),
-            'twill.dashboard.modules' => self::$routingOriginal['twill.dashboard.modules'][$subdomain] ?? key(config('twill.dashboard.modules')),
+            'twill.dashboard.modules' => self::$routingOriginal['twill.dashboard.modules'][$subdomain] ?? key(config('twill.dashboard.modules')) ?? [],
             'twill.block_editor.block_single_layout' => $blockLayout,
         ]);
 
