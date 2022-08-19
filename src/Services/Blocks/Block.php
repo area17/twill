@@ -45,7 +45,7 @@ class Block
     public $trigger;
 
     /**
-     * For repeaters only: The select existing button text
+     * For repeaters only: The select existing button text.
      */
     public ?string $selectTrigger;
 
@@ -143,9 +143,9 @@ class Block
     public static function make($file, $type, $source, $name = null, string $renderNamespace = null): self
     {
         $name = $name ?? Str::before(
-                $file->getFilename(),
-                '.blade.php'
-            );
+            $file->getFilename(),
+            '.blade.php'
+        );
 
         $transformed = Str::studly($name) . 'Block';
         // @todo: Package block classes?
@@ -215,9 +215,9 @@ class Block
         $this->renderNamespace = $renderNamespace;
 
         $this->name = $name ?? Str::before(
-                $this->file->getFilename(),
-                '.blade.php'
-            );
+            $this->file->getFilename(),
+            '.blade.php'
+        );
 
         // @todo: This may not be needed.
         if ($type === self::TYPE_BLOCK && config('twill.block_editor.repeaters.' . $this->name) !== null) {
@@ -311,7 +311,7 @@ class Block
      */
     public function parse()
     {
-        $contents = $this->file ? file_get_contents((string)$this->file->getPathName()) : '';
+        $contents = $this->file ? file_get_contents((string) $this->file->getPathName()) : '';
 
         $this->title = $this->parseProperty('title', $contents, $this->name);
         $this->trigger = $this->parseProperty(
@@ -321,10 +321,10 @@ class Block
             $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.add-item') : null
         );
         $this->selectTrigger = $this->parseProperty('SelectTrigger', $contents, $this->name, $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.select-existing') : null);
-        $this->max = (int)$this->parseProperty('max', $contents, $this->name, 999);
+        $this->max = (int) $this->parseProperty('max', $contents, $this->name, 999);
         $this->group = $this->parseProperty('group', $contents, $this->name, 'app');
         $this->icon = $this->parseProperty('icon', $contents, $this->name, 'text');
-        $this->compiled = (bool)$this->parseProperty('compiled', $contents, $this->name, false);
+        $this->compiled = (bool) $this->parseProperty('compiled', $contents, $this->name, false);
         $this->component = $this->parseProperty('component', $contents, $this->name, "a17-block-{$this->name}");
         $this->isNewFormat = $this->isNewFormat($contents);
         $this->contents = $contents;
@@ -339,7 +339,7 @@ class Block
 
         $this->parseMixedProperty('titleField', $contents, $this->name, function ($value, $options) {
             $this->titleField = $value;
-            $this->hideTitlePrefix = (bool)($options['hidePrefix'] ?? false);
+            $this->hideTitlePrefix = (bool) ($options['hidePrefix'] ?? false);
         });
 
         return $this;
@@ -564,6 +564,7 @@ class Block
             ] + $this->getFormData()
         );
         View::share('TwillUntilConsumed', []);
+
         return $block;
     }
 
@@ -592,7 +593,7 @@ class Block
         array $data,
         bool $inEditor = false
     ): string {
-        if (!$this->renderData) {
+        if (! $this->renderData) {
             throw new \Exception('Cannot render without renderData');
         }
 

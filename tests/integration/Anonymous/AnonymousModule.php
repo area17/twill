@@ -3,10 +3,13 @@
 namespace A17\Twill\Tests\Integration\Anonymous;
 
 use A17\Twill\Http\Controllers\Admin\ModuleController;
+use A17\Twill\Models\Behaviors\HasBlocks;
 use A17\Twill\Models\Behaviors\HasTranslation;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Model;
+use A17\Twill\Repositories\Behaviors\HandleBlocks;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
+use A17\Twill\Repositories\ModuleRepository;
 use A17\Twill\Services\Forms\Form;
 use A17\Twill\Services\Listings\TableColumns;
 use Illuminate\Contracts\Foundation\Application;
@@ -18,18 +21,24 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use A17\Twill\Repositories\ModuleRepository;
 use Nette\PhpGenerator\PhpFile;
 
 class AnonymousModule
 {
     private ?TableColumns $tableColumns = null;
+
     private ?Form $formFields = null;
+
     private array $setupMethods = [];
+
     public array $fields = ['title' => []];
+
     private array $additionalProps = [];
+
     private ?string $modelClass = null;
+
     private ?string $controllerClass = null;
+
     private ?string $modelTranslationClass = null;
 
     protected function __construct(public string $namePlural, public Application $app)
@@ -44,24 +53,28 @@ class AnonymousModule
     public function withTableColumns(TableColumns $tableColumns)
     {
         $this->tableColumns = $tableColumns;
+
         return $this;
     }
 
     public function withFormFields(Form $formFields)
     {
         $this->formFields = $formFields;
+
         return $this;
     }
 
     public function withSetupMethods(array $setupMethods)
     {
         $this->setupMethods = $setupMethods;
+
         return $this;
     }
 
     public function withAdditionalProp(string $prop, mixed $value): self
     {
         $this->additionalProps[$prop] = $value;
+
         return $this;
     }
 
@@ -76,6 +89,7 @@ class AnonymousModule
     public function withFields(array $fields): self
     {
         $this->fields = $fields;
+
         return $this;
     }
 
@@ -110,22 +124,18 @@ class AnonymousModule
 
             $bp = base_path();
             $classTargetDir = $bp . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Models';
-            if (!file_exists($classTargetDir)) {
+            if (! file_exists($classTargetDir)) {
                 mkdir($classTargetDir, 0777, true);
             }
 
             $targetFile = $classTargetDir . DIRECTORY_SEPARATOR . $modelName . '.php';
-            if (!file_exists($targetFile)) {
-                file_put_contents($targetFile, (string)$file);
+            if (! file_exists($targetFile)) {
+                file_put_contents($targetFile, (string) $file);
             }
-            include_once($targetFile);
+            include_once $targetFile;
         } else {
             // Translation class.
-            $translationClass = new class(
-                [],
-                Str::singular($this->namePlural),
-                $this->fields,
-            ) extends Model {
+            $translationClass = new class([], Str::singular($this->namePlural), $this->fields, ) extends Model {
                 public static array $setProps = [];
 
                 protected $fillable = ['active'];
@@ -162,17 +172,16 @@ class AnonymousModule
             $this->modelTranslationClass = $translationClass::class;
 
             // For simpler modules we can just keep the anonymous classes.
-            $modelClass = new class(
-                [],
-                $this->fields,
-                $this->namePlural,
-                $this->modelTranslationClass,
-            ) extends Model {
+            $modelClass = new class([], $this->fields, $this->namePlural, $this->modelTranslationClass, ) extends Model {
                 use HasTranslation;
+                use HasBlocks;
 
                 public static array $setProps = [];
+
                 public $translationForeignKey;
+
                 public $translationModel;
+
                 public $table;
 
                 public function __construct(
@@ -229,7 +238,7 @@ class AnonymousModule
                     createDefaultTableFields($table);
 
                     foreach (collect($this->fields)->where('translatable', false) as $fieldName => $data) {
-                        if (!isset($data['type']) || $data['type'] === 'string') {
+                        if (! isset($data['type']) || $data['type'] === 'string') {
                             $table->string($fieldName)
                                 ->default($data['default'] ?? null)
                                 ->nullable($data['nullable'] ?? true);
@@ -276,17 +285,9 @@ class AnonymousModule
         $migration->up();
 
         // Build the controller class.
-        $controller = new class(
-            $this->app,
-            new Request(),
-            $this->namePlural,
-            $this->modelClass,
-            $this->tableColumns,
-            $this->formFields,
-            $this->setupMethods,
-            $this->additionalProps
-        ) extends ModuleController {
+        $controller = new class($this->app, new Request(), $this->namePlural, $this->modelClass, $this->tableColumns, $this->formFields, $this->setupMethods, $this->additionalProps) extends ModuleController {
             public static array $setProps;
+
             public string $modelClass = '';
 
             public function __construct(
@@ -311,7 +312,7 @@ class AnonymousModule
                     $this->modelClass = $modelClass;
                 } else {
                     foreach (self::$setProps as $prop => $value) {
-                        if (!str_starts_with('set', $prop)) {
+                        if (! str_starts_with('set', $prop)) {
                             // For regular props, we can write them to the model instantly.
                             $this->{$prop} = $value;
                         }
@@ -320,10 +321,10 @@ class AnonymousModule
 
                 parent::__construct($app, $request);
 
-                if (!isset($this->user) && $request->user()) {
+                if (! isset($this->user) && $request->user()) {
                     $this->user = $request->user();
                 }
-                if (!isset($this->user)) {
+                if (! isset($this->user)) {
                     $this->user = Auth::guard('twill_users')->user();
                 }
             }
@@ -340,6 +341,7 @@ class AnonymousModule
                 if (self::$setProps['setFormFields'] !== null) {
                     return self::$setProps['setFormFields'];
                 }
+
                 return parent::getForm($model);
             }
 
@@ -348,6 +350,7 @@ class AnonymousModule
                 if (self::$setProps['setTableColumns'] !== null) {
                     return self::$setProps['setTableColumns'];
                 }
+
                 return parent::getIndexTableColumns();
             }
 
@@ -363,6 +366,7 @@ class AnonymousModule
             {
                 $repository = new class(null, $this->modelClass) extends ModuleRepository {
                     use HandleTranslations;
+                    use HandleBlocks;
 
                     public static $setProps = [];
 
@@ -445,12 +449,12 @@ class AnonymousModule
         if (isset($options['only'])) {
             $customRoutes = array_intersect(
                 $defaults,
-                (array)$options['only']
+                (array) $options['only']
             );
         } elseif (isset($options['except'])) {
             $customRoutes = array_diff(
                 $defaults,
-                (array)$options['except']
+                (array) $options['except']
             );
         }
 
@@ -614,5 +618,4 @@ class AnonymousModule
     {
         return app()->make($this->controllerClass);
     }
-
 }
