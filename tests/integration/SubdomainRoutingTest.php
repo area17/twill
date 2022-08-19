@@ -6,6 +6,11 @@ class SubdomainRoutingTest extends TestCase
 {
     public $example = 'tests-subdomain-routing';
 
+    public function testDummy(): void
+    {
+        $this->assertTrue(true);
+    }
+
     public function testSubdomainRouting(): void
     {
         $this->assertEquals(
@@ -42,5 +47,15 @@ class SubdomainRoutingTest extends TestCase
             ->get(route('twill.dashboard', ['subdomain' => 'subdomain2']))
             ->assertSee('App 2 name')
             ->assertStatus(200);
+    }
+
+    public function testExceptionIsThrownWhenSubdomainIsNotFoundInNavigation(): void
+    {
+        $this->actingAs($this->superAdmin(), 'twill_users')
+            //  We use json here to easily assert. In browsers this would display depending on the exception handler.
+            ->getJson(route('twill.dashboard', ['subdomain' => 'nonExistingDomain']))
+            ->assertJsonPath('message', 'Subdomain: nonexistingdomain')
+            ->assertJsonPath('exception', 'A17\Twill\Exceptions\NoNavigationForSubdomainException')
+            ->assertStatus(500);
     }
 }
