@@ -11,17 +11,23 @@ use A17\Twill\Repositories\Behaviors\HandleBlocks;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use A17\Twill\Repositories\ModuleRepository;
 use A17\Twill\Services\Forms\Form;
+use A17\Twill\Services\Listings\TableColumn;
 use A17\Twill\Services\Listings\TableColumns;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Application as FoundationApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpFile;
+use Nette\PhpGenerator\PhpNamespace;
+use Nette\PhpGenerator\PsrPrinter;
+use PHP_CodeSniffer\Tokenizers\PHP;
 
 class AnonymousModule
 {
@@ -41,8 +47,13 @@ class AnonymousModule
 
     private ?string $modelTranslationClass = null;
 
+    private ?string $repositoryClass = null;
+
+    private PsrPrinter $classPrinter;
+
     protected function __construct(public string $namePlural, public Application $app)
     {
+        $this->classPrinter = new PsrPrinter();
     }
 
     public static function make(string $namePlural, Application $app): self
@@ -98,297 +109,58 @@ class AnonymousModule
      */
     public function boot(): self
     {
-        $createClass = false;
-        // The module class is the one thing we really need.
-        if ($createClass) {
-            // When createclass is set to true we create an actual module file. This is usefull when you need to test
-            // relational content.
-            // This is not used as it is not 100% done.
-            $file = new PhpFile();
+        // Shared data.
+        $modelName = Str::singular(Str::studly($this->namePlural));
 
-            $modelName = Str::singular(Str::studly($this->namePlural));
-            $modelClassName = 'App\Models\\' . $modelName;
-            $modelClass = "\\$modelClassName";
+        /**
+         * The translation model.
+         */
+        $translationModelClassName = '\App\Models\Translations\\' . $modelName . 'Translation';
 
-            $class = $file->addClass('App\Models\\' . $modelName);
+        $namespacedTranslationClass = $this->getTranslationModelClass($translationModelClassName);
 
-            $class->addProperty('fillable', array_keys($this->fields));
-            $class->addProperty(
-                'translatedAttributes',
-                collect($this->fields)
-                    ->where('translatable', true)
-                    ->keys()
-                    ->all()
-            );
-            $class->setExtends(Model::class);
+        eval($this->classPrinter->printNamespace($namespacedTranslationClass));
 
-            $bp = base_path();
-            $classTargetDir = $bp . DIRECTORY_SEPARATOR . 'app' . DIRECTORY_SEPARATOR . 'Models';
-            if (! file_exists($classTargetDir)) {
-                mkdir($classTargetDir, 0777, true);
-            }
+        $this->modelTranslationClass = $translationModelClassName;
 
-            $targetFile = $classTargetDir . DIRECTORY_SEPARATOR . $modelName . '.php';
-            if (! file_exists($targetFile)) {
-                file_put_contents($targetFile, (string) $file);
-            }
-            include_once $targetFile;
-        } else {
-            // Translation class.
-            $translationClass = new class([], Str::singular($this->namePlural), $this->fields, ) extends Model {
-                public static array $setProps = [];
+        /*
+         * The regular model.
+         */
+        $modelClassName = '\App\Models\\' . $modelName;
 
-                protected $fillable = ['active'];
+        $namespacedClass = $this->getModelClass($modelClassName);
 
-                public function __construct(
-                    array $attributes = [],
-                    string $nameSingular = '',
-                    array $fields = [],
-                ) {
-                    if ($nameSingular !== '') {
-                        self::$setProps['fillable'] = collect($fields)
-                            ->where('translatable', true)
-                            ->keys()
-                            ->all();
+        eval($this->classPrinter->printNamespace($namespacedClass));
 
-                        self::$setProps['table'] = $nameSingular . '_translations';
-                    } else {
-                        foreach (self::$setProps as $prop => $value) {
-                            if ($prop === 'fillable') {
-                                $value[] = 'active';
-                            }
-                            $this->{$prop} = $value;
-                        }
-                    }
-                    parent::__construct($attributes);
-                }
+        $this->modelClass = $modelClassName;
 
-                protected function isTranslationModel(): bool
-                {
-                    return true;
-                }
-            };
+        /*
+         * The controller class.
+         */
+        $controllerClassName = '\App\Http\Controllers\Twill\\' . $modelName . 'Controller';
 
-            $this->modelTranslationClass = $translationClass::class;
+        $namespacedControllerClass = $this->getControllerClass($controllerClassName);
 
-            // For simpler modules we can just keep the anonymous classes.
-            $modelClass = new class([], $this->fields, $this->namePlural, $this->modelTranslationClass, ) extends Model {
-                use HasTranslation;
-                use HasBlocks;
+        eval($this->classPrinter->printNamespace($namespacedControllerClass));
 
-                public static array $setProps = [];
+        $this->controllerClass = $controllerClassName;
 
-                public $translationForeignKey;
+        /*
+         * The repository.
+         */
+        $repositoryClassName = '\App\Repositories\\' . $modelName . 'Repository';
 
-                public $translationModel;
+        $namespacedRepositoryClass = $this->getRepositoryClass($repositoryClassName);
 
-                public $table;
+        eval($this->classPrinter->printNamespace($namespacedRepositoryClass));
 
-                public function __construct(
-                    array $attributes = [],
-                    array $fields = [],
-                    string $namePlural = '',
-                    string $translationModel = '',
-                ) {
-                    if ($namePlural !== '') {
-                        self::$setProps['fillable'] = array_keys($fields);
-                        self::$setProps['table'] = $namePlural;
-                        self::$setProps['translationForeignKey'] = Str::singular($namePlural) . '_id';
-                        self::$setProps['translationModel'] = $translationModel;
-                        self::$setProps['dates'] = collect($fields)
-                            ->where('type', 'dateTime')
-                            ->keys()
-                            ->all();
-                        self::$setProps['translatedAttributes'] = collect($fields)
-                            ->where('translatable', true)
-                            ->keys()
-                            ->all();
-                    } else {
-                        foreach (self::$setProps as $prop => $value) {
-                            if ($prop === 'translatedAttributes') {
-                                $value[] = 'active';
-                            }
-                            $this->{$prop} = $value;
-                        }
-                    }
-                    parent::__construct($attributes);
-                }
-            };
+        $this->repositoryClass = $repositoryClassName;
 
-            $this->modelClass = $modelClass::class;
-        }
-
-        // Create the migration class.
-        $migration = new class($this->namePlural, $this->fields) extends Migration {
-            public string $nameSingular;
-
-            public function __construct(public string $namePlural, public array $fields)
-            {
-                $this->nameSingular = Str::singular($this->namePlural);
-            }
-
-            public function up(): void
-            {
-                // Only create the schema if it does not exist yet.
-                if (Schema::hasTable($this->namePlural)) {
-                    return;
-                }
-
-                Schema::create($this->namePlural, function (Blueprint $table) {
-                    createDefaultTableFields($table);
-
-                    foreach (collect($this->fields)->where('translatable', false) as $fieldName => $data) {
-                        if (! isset($data['type']) || $data['type'] === 'string') {
-                            $table->string($fieldName)
-                                ->default($data['default'] ?? null)
-                                ->nullable($data['nullable'] ?? true);
-                        } elseif ($data['type'] === 'boolean') {
-                            $table->boolean($fieldName)
-                                ->default($data['default'] ?? false)
-                                ->nullable($data['nullable'] ?? true);
-                        } elseif ($data['type'] === 'dateTime') {
-                            $table->dateTime($fieldName)
-                                ->default($data['default'] ?? null)
-                                ->nullable($data['nullable'] ?? true);
-                        }
-                    }
-                });
-
-                Schema::create($this->nameSingular . '_translations', function (Blueprint $table) {
-                    createDefaultTranslationsTableFields($table, $this->nameSingular);
-
-                    foreach (collect($this->fields)->where('translatable', true) as $fieldName => $data) {
-                        $table->string($fieldName);
-                    }
-                });
-
-                Schema::create($this->nameSingular . '_slugs', function (Blueprint $table) {
-                    createDefaultSlugsTableFields($table, $this->nameSingular);
-                });
-
-                Schema::create($this->nameSingular . '_revisions', function (Blueprint $table) {
-                    createDefaultRevisionsTableFields($table, $this->nameSingular);
-                });
-            }
-
-            public function down(): void
-            {
-                Schema::dropIfExists($this->nameSingular . '_revisions');
-                Schema::dropIfExists($this->nameSingular . '_translations');
-                Schema::dropIfExists($this->nameSingular . '_slugs');
-                Schema::dropIfExists($this->namePlural);
-            }
-        };
-
-        // Cleanup only when requested.
-        //        $migration->down();
-        $migration->up();
-
-        // Build the controller class.
-        $controller = new class($this->app, new Request(), $this->namePlural, $this->modelClass, $this->tableColumns, $this->formFields, $this->setupMethods, $this->additionalProps) extends ModuleController {
-            public static array $setProps;
-
-            public string $modelClass = '';
-
-            public function __construct(
-                Application $app,
-                Request $request,
-                public $moduleName = null,
-                ?string $modelClass = null,
-                ?TableColumns $tableColumns = null,
-                ?Form $formFields = null,
-                ?array $setupMethods = null,
-                array $additionalProps = []
-            ) {
-                if ($modelClass) {
-                    self::$setProps['setTableColumns'] = $tableColumns;
-                    self::$setProps['setFormFields'] = $formFields;
-                    self::$setProps['setSetupMethods'] = $setupMethods ?? [];
-                    self::$setProps['moduleName'] = $this->moduleName;
-                    self::$setProps['moduleClass'] = $modelClass;
-                    foreach ($additionalProps as $name => $value) {
-                        self::$setProps[$name] = $value;
-                    }
-                    $this->modelClass = $modelClass;
-                } else {
-                    foreach (self::$setProps as $prop => $value) {
-                        if (! str_starts_with('set', $prop)) {
-                            // For regular props, we can write them to the model instantly.
-                            $this->{$prop} = $value;
-                        }
-                    }
-                }
-
-                parent::__construct($app, $request);
-
-                if (! isset($this->user) && $request->user()) {
-                    $this->user = $request->user();
-                }
-                if (! isset($this->user)) {
-                    $this->user = Auth::guard('twill_users')->user();
-                }
-            }
-
-            public function setUpController(): void
-            {
-                foreach (self::$setProps['setSetupMethods'] as $method) {
-                    $this->{$method}();
-                }
-            }
-
-            public function getForm(TwillModelContract $model): Form
-            {
-                if (self::$setProps['setFormFields'] !== null) {
-                    return self::$setProps['setFormFields'];
-                }
-
-                return parent::getForm($model);
-            }
-
-            public function getIndexTableColumns(): TableColumns
-            {
-                if (self::$setProps['setTableColumns'] !== null) {
-                    return self::$setProps['setTableColumns'];
-                }
-
-                return parent::getIndexTableColumns();
-            }
-
-            public function getFormRequestClass()
-            {
-                $request = new class() extends \A17\Twill\Http\Requests\Admin\Request {
-                };
-
-                return $request::class;
-            }
-
-            public function getRepositoryClass($model)
-            {
-                $repository = new class(null, $this->modelClass) extends ModuleRepository {
-                    use HandleTranslations;
-                    use HandleBlocks;
-
-                    public static $setProps = [];
-
-                    public function __construct($model = null, $modelType = null)
-                    {
-                        if ($modelType) {
-                            self::$setProps['modelType'] = $modelType;
-                        }
-
-                        if ($model) {
-                            $this->model = $model;
-                        } else {
-                            $this->model = new self::$setProps['modelType']();
-                        }
-                    }
-                };
-
-                return $repository::class;
-            }
-        };
-
-        $this->controllerClass = $controller::class;
+        /*
+         * Other tasks.
+         */
+        // Migrate the database.
+        $this->migrate();
 
         // Generate twill module routes.
         $this->buildAnonymousRoutes($this->namePlural, $this->controllerClass);
@@ -403,6 +175,21 @@ class AnonymousModule
         ];
 
         return $this;
+    }
+
+    public function getModelClassName(): string
+    {
+        return $this->modelClass;
+    }
+
+    public function getRepositoryClassName(): string
+    {
+        return $this->repositoryClass;
+    }
+
+    public function getModelController(): ModuleController
+    {
+        return app()->make($this->controllerClass);
     }
 
     protected function buildAnonymousRoutes(string $slug, string $className): void
@@ -609,13 +396,220 @@ class AnonymousModule
         );
     }
 
-    public function getModelClassName(): string
+    private function getTranslationModelClass(string $classNameWithNamespace): PhpNamespace
     {
-        return $this->modelClass;
+        $namespace = Str::beforeLast($classNameWithNamespace, '\\');
+        $className = Str::afterLast($classNameWithNamespace, '\\');
+
+        $namespace = new PhpNamespace(ltrim($namespace, '\\'));
+
+        $class = $namespace->addClass($className);
+
+        $fillable = collect($this->fields)
+                ->where('translatable', true)
+                ->keys()
+                ->all();
+
+        $class->addProperty(
+            'fillable',
+            $fillable + ['active']
+        );
+        $class->addProperty('table', Str::singular($this->namePlural) . '_translations');
+
+        $class->addMethod('isTranslationModel')
+            ->setBody('return true;')
+            ->setReturnType('bool');
+
+        $class->setExtends(Model::class);
+
+        return $namespace;
     }
 
-    public function getModelController(): ModuleController
+    private function getModelClass(string $classNameWithNamespace): PhpNamespace
     {
-        return app()->make($this->controllerClass);
+        $namespace = Str::beforeLast($classNameWithNamespace, '\\');
+        $className = Str::afterLast($classNameWithNamespace, '\\');
+
+        $namespace = new PhpNamespace(ltrim($namespace, '\\'));
+
+        $class = $namespace->addClass($className);
+
+        $class->addProperty('fillable', array_keys($this->fields));
+        $class->addProperty('table', $this->namePlural);
+        $class->addProperty('translationForeignKey', Str::singular($this->namePlural) . '_id');
+        $class->addProperty('translationModel', $this->modelTranslationClass);
+        $class->addProperty(
+            'dates',
+            collect($this->fields)
+                ->where('type', 'dateTime')
+                ->keys()
+                ->all()
+        );
+        $class->addProperty(
+            'translatedAttributes',
+            collect($this->fields)
+                ->where('translatable', true)
+                ->keys()
+                ->all()
+        );
+        $class->setExtends(Model::class);
+        $class->addTrait(HasBlocks::class);
+        $class->addTrait(HasTranslation::class);
+
+        return $namespace;
+    }
+
+    private function getRepositoryClass(string $classNameWithNamespace): PhpNamespace
+    {
+        $namespace = Str::beforeLast($classNameWithNamespace, '\\');
+        $className = Str::afterLast($classNameWithNamespace, '\\');
+
+        $modelClass = '\App\Models\\' . str_replace('Repository', '', $className);
+
+        $namespace = new PhpNamespace(ltrim($namespace, '\\'));
+
+        $class = $namespace->addClass($className);
+        $class->setExtends(ModuleRepository::class);
+        $class->addTrait(HandleTranslations::class);
+        $class->addTrait(HandleBlocks::class);
+
+        $constructor = $class->addMethod('__construct');
+        $constructor->addParameter('model')->setType($modelClass);
+        $constructor->setBody('$this->model = $model;');
+
+        return $namespace;
+    }
+
+    private function getControllerClass(string $classNameWithNamespace): PhpNamespace
+    {
+        $namespace = Str::beforeLast($classNameWithNamespace, '\\');
+        $className = Str::afterLast($classNameWithNamespace, '\\');
+
+        $namespace = new PhpNamespace(ltrim($namespace, '\\'));
+
+        $class = $namespace->addClass($className);
+        $class->setExtends(ModuleController::class);
+
+        $class->addProperty('moduleName', Str::plural(Str::lower(str_replace('Controller', '', $className))));
+        $class->addProperty('setterProps', [
+            'setSetupMethods' => $this->setupMethods,
+            'setFormFields' => $this->formFields,
+        ]);
+
+        foreach ($this->additionalProps as $key => $value) {
+            $class->addProperty($key, $value);
+        }
+
+        $constructor = $class->addMethod('__construct')
+            ->setBody('parent::__construct($app, $request);')
+            ->addBody('if (! isset($this->user) && $request->user()) {')
+            ->addBody('  $this->user = $request->user();')
+            ->addBody('}')
+            ->addBody('if (! isset($this->user)) {')
+            ->addBody("  \$this->user = Auth::guard('twill_users')->user();")
+            ->addBody('}');
+
+        $constructor->addParameter('app')
+            ->setType(FoundationApplication::class);
+
+        $constructor->addParameter('request')
+            ->setType(Request::class);
+
+        $class->addMethod('setUpController')
+            ->setReturnType('void')
+            ->setBody("foreach (\$this->setterProps['setSetupMethods'] as \$method) {")
+            ->addBody('  $this->{$method}();')
+            ->addBody('}');
+
+        $getFormMethod = $class->addMethod('getForm')
+            ->setReturnType(Form::class)
+            ->setBody("if (self::\$setProps['setFormFields'] !== null) {")
+            ->addBody("  return self::\$setProps['setFormFields'];")
+            ->addBody('}')
+            ->addBody('return parent::getForm($model);');
+
+        $getFormMethod
+            ->addParameter('form')
+            ->setType(TwillModelContract::class);
+
+        $class->addMethod('getIndexTableColumns')
+            ->setReturnType(TableColumns::class)
+            ->setBody("if (self::\$setProps['setTableColumns'] !== null) {")
+            ->addBody("  return self::\$setProps['setTableColumns'];")
+            ->addBody('}')
+            ->addBody('return parent::getIndexTableColumns();');
+
+        $class->addMethod('getFormRequestClass')
+            ->setBody("\$request = new class() extends \A17\Twill\Http\Requests\Admin\Request {};")
+            ->addBody('return $request::class;');
+
+        return $namespace;
+    }
+
+    private function migrate(): void
+    {
+        // Create the migration class.
+        $migration = new class($this->namePlural, $this->fields) extends Migration {
+            public string $nameSingular;
+
+            public function __construct(public string $namePlural, public array $fields)
+            {
+                $this->nameSingular = Str::singular($this->namePlural);
+            }
+
+            public function up(): void
+            {
+                // Only create the schema if it does not exist yet.
+                if (Schema::hasTable($this->namePlural)) {
+                    return;
+                }
+
+                Schema::create($this->namePlural, function (Blueprint $table) {
+                    createDefaultTableFields($table);
+
+                    foreach (collect($this->fields)->where('translatable', false) as $fieldName => $data) {
+                        if (! isset($data['type']) || $data['type'] === 'string') {
+                            $table->string($fieldName)
+                                ->default($data['default'] ?? null)
+                                ->nullable($data['nullable'] ?? true);
+                        } elseif ($data['type'] === 'boolean') {
+                            $table->boolean($fieldName)
+                                ->default($data['default'] ?? false)
+                                ->nullable($data['nullable'] ?? true);
+                        } elseif ($data['type'] === 'dateTime') {
+                            $table->dateTime($fieldName)
+                                ->default($data['default'] ?? null)
+                                ->nullable($data['nullable'] ?? true);
+                        }
+                    }
+                });
+
+                Schema::create($this->nameSingular . '_translations', function (Blueprint $table) {
+                    createDefaultTranslationsTableFields($table, $this->nameSingular);
+
+                    foreach (collect($this->fields)->where('translatable', true) as $fieldName => $data) {
+                        $table->string($fieldName);
+                    }
+                });
+
+                Schema::create($this->nameSingular . '_slugs', function (Blueprint $table) {
+                    createDefaultSlugsTableFields($table, $this->nameSingular);
+                });
+
+                Schema::create($this->nameSingular . '_revisions', function (Blueprint $table) {
+                    createDefaultRevisionsTableFields($table, $this->nameSingular);
+                });
+            }
+
+            public function down(): void
+            {
+                Schema::dropIfExists($this->nameSingular . '_revisions');
+                Schema::dropIfExists($this->nameSingular . '_translations');
+                Schema::dropIfExists($this->nameSingular . '_slugs');
+                Schema::dropIfExists($this->namePlural);
+            }
+        };
+
+        $migration->up();
     }
 }
