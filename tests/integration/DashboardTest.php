@@ -3,6 +3,7 @@
 namespace A17\Twill\Tests\Integration;
 
 use A17\Twill\Tests\Integration\Anonymous\AnonymousModule;
+use Spatie\Activitylog\Models\Activity;
 
 class DashboardTest extends TestCase
 {
@@ -27,5 +28,13 @@ class DashboardTest extends TestCase
 
         $this->post(route('twill.licences.store'), ['title' => 'Test title'])
             ->assertJsonPath('redirect', 'http://twill.test/twill/licences/1/edit');
+
+        $this->assertCount(2, $activity = Activity::all());
+
+        $this->assertEquals('created', $activity[0]->description);
+        $this->assertEquals('App\Models\Server', $activity[0]->subject_type);
+
+        $this->assertEquals('created', $activity[1]->description);
+        $this->assertEquals('App\Models\Licence', $activity[1]->subject_type);
     }
 }
