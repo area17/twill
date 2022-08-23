@@ -496,14 +496,16 @@ trait HandleBlocks
     /**
      * @param \A17\Twill\Models\Model|\A17\Twill\Models\Block $object
      * @param \A17\Twill\Models\Model|\A17\Twill\Models\Block $newObject
-     * @param string $relation
      * @return void
      */
-    protected function duplicateBlocks($object, $newObject, $relation = 'blocks')
+    protected function duplicateBlocks($object, $newObject)
     {
-        foreach ($object->$relation as $block) {
+        $objectIsBlock = $object instanceof Block;
+        $blocks = $objectIsBlock ? $object->children : $object->blocks()->whereNull('parent_id')->get();
+        foreach ($blocks as $block) {
             $newBlock = $block->replicate();
-            if ($relation == 'children') {
+            if ($objectIsBlock) {
+                $newBlock->blockable_id = $newObject->blockable_id;
                 $newBlock->parent_id = $newObject->id;
             } else {
                 $newBlock->blockable_id = $newObject->id;
@@ -513,7 +515,7 @@ trait HandleBlocks
             $repository = App::make('\A17\Twill\Repositories\BlockRepository');
             $repository->duplicateMedias($block, $newBlock);
             $repository->duplicateFiles($block, $newBlock);
-            $this->duplicateBlocks($block, $newBlock, 'children');
+            $this->duplicateBlocks($block, $newBlock);
         }
     }
 
