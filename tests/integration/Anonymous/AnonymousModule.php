@@ -402,11 +402,13 @@ class AnonymousModule
                 ->where('translatable', true)
                 ->keys()
                 ->all();
+        $fillable[] = 'active';
 
         $class->addProperty(
             'fillable',
-            $fillable + ['active']
+            $fillable
         );
+
         $class->addProperty('table', Str::singular($this->namePlural) . '_translations');
 
         $class->addMethod('isTranslationModel')
@@ -526,7 +528,7 @@ class AnonymousModule
             ->addBody('return parent::getForm($model);');
 
         $getFormMethod
-            ->addParameter('form')
+            ->addParameter('model')
             ->setType(TwillModelContract::class);
 
         $class->addMethod('getIndexTableColumns')
