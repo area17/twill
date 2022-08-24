@@ -45,7 +45,11 @@ class Block extends BaseModel
 
     public function children()
     {
-        return $this->hasMany('A17\Twill\Models\Block', 'parent_id');
+        return $this->hasMany('A17\Twill\Models\Block', 'parent_id')
+            ->orderBy(
+                $this->getTable() . '.position',
+                'asc'
+            );
     }
 
     public function input($name)
