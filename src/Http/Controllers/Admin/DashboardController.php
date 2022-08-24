@@ -15,6 +15,7 @@ use Psr\Log\LoggerInterface as Logger;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Analytics\Period;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class DashboardController extends Controller
 {
@@ -162,15 +163,45 @@ class DashboardController extends Controller
         }
         return $listActivities;
     }
-    
+
+    /**
+     * @return array
+     */
+    private function getEnabledActivities()
+    {
+        $modules = $this->config->get('twill.dashboard.modules');
+        $listActivities = [];
+
+        foreach ($modules as $moduleClass => $moduleConfiguration) {
+            $moduleClassToCheck = Relation::getMorphedModel($moduleClass) ?? $moduleClass;
+            if (! empty($moduleConfiguration['activity'])) {
+                if (! class_exists($moduleClassToCheck)) {
+                    //  Try to load it from the morph map.
+                    throw new \Exception(
+                        "Class $moduleClassToCheck specified in twill.dashboard configuration does not exists."
+                    );
+                }
+                $listActivities[] = $moduleClass;
+            }
+        }
+
+        return $listActivities;
+    }
+
     /**
      * @return array
      */
     private function getAllActivities()
     {
-        return Activity::whereIn('subject_type', $this->getEnabledActivities())->take(20)->latest()->get()->map(function ($activity) {
-            return $this->formatActivity($activity);
-        })->filter()->values();
+        return Activity::whereIn('subject_type', $this->getEnabledActivities())
+            ->take(20)
+            ->latest()
+            ->get()
+            ->map(function ($activity) {
+                return $this->formatActivity($activity);
+            })
+            ->filter()
+            ->values();
     }
 
     /**
@@ -178,9 +209,16 @@ class DashboardController extends Controller
      */
     private function getLoggedInUserActivities()
     {
-        return Activity::whereIn('subject_type', $this->getEnabledActivities())->where('causer_id', $this->authFactory->guard('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity) {
-            return $this->formatActivity($activity);
-        })->filter()->values();
+        return Activity::whereIn('subject_type', $this->getEnabledActivities())
+            ->where('causer_id', $this->authFactory->guard('twill_users')->user()->id)
+            ->take(20)
+            ->latest()
+            ->get()
+            ->map(function ($activity) {
+                return $this->formatActivity($activity);
+            })
+            ->filter()
+            ->values();
     }
 
     /**
@@ -269,7 +307,6 @@ class DashboardController extends Controller
             'week',
             'month',
         ])->mapWithKeys(function ($period) use ($statsByDate, $dummyData) {
-
             if ($dummyData) {
                 return [$period => $dummyData];
             }
