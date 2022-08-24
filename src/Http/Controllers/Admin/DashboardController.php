@@ -154,25 +154,6 @@ class DashboardController extends Controller
         $listActivities = [];
 
         foreach ($modules as $moduleClass => $moduleConfiguration) {
-            if (!empty($moduleConfiguration['activity'])) {
-                if (!class_exists($moduleClass)) {
-                    throw new Exception("Class $moduleClass specified in twill.dashboard configuration does not exists.");
-                }
-                $listActivities[] = $moduleClass;
-            }
-        }
-        return $listActivities;
-    }
-
-    /**
-     * @return array
-     */
-    private function getEnabledActivities()
-    {
-        $modules = $this->config->get('twill.dashboard.modules');
-        $listActivities = [];
-
-        foreach ($modules as $moduleClass => $moduleConfiguration) {
             $moduleClassToCheck = Relation::getMorphedModel($moduleClass) ?? $moduleClass;
             if (! empty($moduleConfiguration['activity'])) {
                 if (! class_exists($moduleClassToCheck)) {
