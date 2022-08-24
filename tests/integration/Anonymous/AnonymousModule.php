@@ -27,8 +27,8 @@ use Nette\PhpGenerator\PsrPrinter;
 /**
  * NOTES: You cannot have multiple of the same class loaded. So this might be a bit difficult when writing tests.
  *
- * When a class already exists we cannot unload it. So we simply check if an instance exists and then we use the
- * existing instance.
+ * When a class already exists we cannot unload it. So we simply check if an instance exists then we increment the
+ * className. So when you are using anonymousModules always rely on $modelClass, $controllerClass etc.
  */
 class AnonymousModule
 {
@@ -438,6 +438,7 @@ class AnonymousModule
                 ->keys()
                 ->all()
         );
+
         $class->addProperty(
             'translatedAttributes',
             collect($this->fields)
@@ -463,8 +464,8 @@ class AnonymousModule
 
         $class = $namespace->addClass($className);
         $class->setExtends(ModuleRepository::class);
-        $class->addTrait(HandleTranslations::class);
-        $class->addTrait(HandleBlocks::class);
+        $class->addTrait(\A17\Twill\Repositories\Behaviors\HandleTranslations::class);
+        $class->addTrait(\A17\Twill\Repositories\Behaviors\HandleBlocks::class);
 
         $constructor = $class->addMethod('__construct');
         $constructor->addParameter('model')->setType($modelClass);
@@ -485,8 +486,9 @@ class AnonymousModule
 
         $class->addProperty('moduleName', Str::plural(Str::lower(str_replace('Controller', '', $className))));
         $class->addProperty('setterProps', [
-            'setSetupMethods' => $this->setupMethods,
-            'setFormFields' => $this->formFields,
+            'setSetupMethods' => serialize($this->setupMethods),
+            'setFormFields' => serialize($this->formFields),
+            'setTableColumns' => serialize($this->tableColumns),
         ]);
 
         foreach ($this->additionalProps as $key => $value) {
@@ -499,7 +501,7 @@ class AnonymousModule
             ->addBody('  $this->user = $request->user();')
             ->addBody('}')
             ->addBody('if (! isset($this->user)) {')
-            ->addBody("  \$this->user = Auth::guard('twill_users')->user();")
+            ->addBody("  \$this->user = \Illuminate\Support\Facades\Auth::guard('twill_users')->user();")
             ->addBody('}');
 
         $constructor->addParameter('app')
@@ -510,14 +512,16 @@ class AnonymousModule
 
         $class->addMethod('setUpController')
             ->setReturnType('void')
-            ->setBody("foreach (\$this->setterProps['setSetupMethods'] as \$method) {")
+            ->setBody("\$data = unserialize(\$this->setterProps['setSetupMethods']);")
+            ->addBody('foreach ($data as $method) {')
             ->addBody('  $this->{$method}();')
             ->addBody('}');
 
         $getFormMethod = $class->addMethod('getForm')
             ->setReturnType(Form::class)
-            ->setBody("if (self::\$setProps['setFormFields'] !== null) {")
-            ->addBody("  return self::\$setProps['setFormFields'];")
+            ->setBody("\$data = unserialize(\$this->setterProps['setFormFields']);")
+            ->addBody('if ($data !== null) {')
+            ->addBody('  return $data;')
             ->addBody('}')
             ->addBody('return parent::getForm($model);');
 
@@ -527,8 +531,9 @@ class AnonymousModule
 
         $class->addMethod('getIndexTableColumns')
             ->setReturnType(TableColumns::class)
-            ->setBody("if (self::\$setProps['setTableColumns'] !== null) {")
-            ->addBody("  return self::\$setProps['setTableColumns'];")
+            ->setBody("\$data = unserialize(\$this->setterProps['setTableColumns']);")
+            ->addBody('if ($data !== null) {')
+            ->addBody('  return $data;')
             ->addBody('}')
             ->addBody('return parent::getIndexTableColumns();');
 

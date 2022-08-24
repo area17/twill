@@ -15,7 +15,7 @@ class AnonymousModulesTest extends TestCase
         $this->getJson(route('twill.servers.index'))
             ->assertJsonPath('tableData', []);
 
-        $this->post(route('twill.servers.store'), ['title' => 'Test title',])
+        $this->post(route('twill.servers.store'), ['title' => 'Test title'])
             ->assertJsonPath('redirect', 'http://twill.test/twill/servers/1/edit');
 
         $this->getJson(route('twill.servers.index'))

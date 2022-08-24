@@ -13,7 +13,7 @@ class BlockChildrenTest extends TestCase
             ->boot();
 
         /** @var ModuleRepository $repository */
-        $repository = app()->make($module->getModelController()->getRepositoryClass($module->getModelClassName()));
+        $repository = app()->make($module->getRepositoryClassName());
 
         $server = $repository->create([
             'title' => 'Hello world',
