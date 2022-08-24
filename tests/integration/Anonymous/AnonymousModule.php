@@ -11,7 +11,6 @@ use A17\Twill\Repositories\Behaviors\HandleBlocks;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use A17\Twill\Repositories\ModuleRepository;
 use A17\Twill\Services\Forms\Form;
-use A17\Twill\Services\Listings\TableColumn;
 use A17\Twill\Services\Listings\TableColumns;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Migrations\Migration;
@@ -19,16 +18,18 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application as FoundationApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use Nette\PhpGenerator\Method;
-use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\PsrPrinter;
-use PHP_CodeSniffer\Tokenizers\PHP;
 
+/**
+ * NOTES: You cannot have multiple of the same class loaded. So this might be a bit difficult when writing tests.
+ *
+ * When a class already exists we cannot unload it. So we simply check if an instance exists and then we use the
+ * existing instance.
+ */
 class AnonymousModule
 {
     private ?TableColumns $tableColumns = null;
@@ -112,49 +113,41 @@ class AnonymousModule
         // Shared data.
         $modelName = Str::singular(Str::studly($this->namePlural));
 
-        /**
+        /*
          * The translation model.
          */
-        $translationModelClassName = '\App\Models\Translations\\' . $modelName . 'Translation';
+        $this->modelTranslationClass = '\App\Models\Translations\\' . $modelName . 'Translation';
 
-        $namespacedTranslationClass = $this->getTranslationModelClass($translationModelClassName);
-
-        eval($this->classPrinter->printNamespace($namespacedTranslationClass));
-
-        $this->modelTranslationClass = $translationModelClassName;
+        if (! class_exists($this->modelTranslationClass)) {
+            eval($this->classPrinter->printNamespace($this->getTranslationModelClass($this->modelTranslationClass)));
+        }
 
         /*
          * The regular model.
          */
-        $modelClassName = '\App\Models\\' . $modelName;
+        $this->modelClass = '\App\Models\\' . $modelName;
 
-        $namespacedClass = $this->getModelClass($modelClassName);
-
-        eval($this->classPrinter->printNamespace($namespacedClass));
-
-        $this->modelClass = $modelClassName;
+        if (! class_exists($this->modelClass)) {
+            eval($this->classPrinter->printNamespace($this->getModelClass($this->modelClass)));
+        }
 
         /*
          * The controller class.
          */
-        $controllerClassName = '\App\Http\Controllers\Twill\\' . $modelName . 'Controller';
+        $this->controllerClass = '\App\Http\Controllers\Twill\\' . $modelName . 'Controller';
 
-        $namespacedControllerClass = $this->getControllerClass($controllerClassName);
-
-        eval($this->classPrinter->printNamespace($namespacedControllerClass));
-
-        $this->controllerClass = $controllerClassName;
+        if (! class_exists($this->controllerClass)) {
+            eval($this->classPrinter->printNamespace($this->getControllerClass($this->controllerClass)));
+        }
 
         /*
          * The repository.
          */
-        $repositoryClassName = '\App\Repositories\\' . $modelName . 'Repository';
+        $this->repositoryClass = '\App\Repositories\\' . $modelName . 'Repository';
 
-        $namespacedRepositoryClass = $this->getRepositoryClass($repositoryClassName);
-
-        eval($this->classPrinter->printNamespace($namespacedRepositoryClass));
-
-        $this->repositoryClass = $repositoryClassName;
+        if (! class_exists($this->repositoryClass)) {
+            eval($this->classPrinter->printNamespace($this->getRepositoryClass($this->repositoryClass)));
+        }
 
         /*
          * Other tasks.

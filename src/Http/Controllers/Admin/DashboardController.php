@@ -7,6 +7,7 @@ use A17\Twill\Repositories\ModuleRepository;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -145,43 +146,52 @@ class DashboardController extends Controller
         })->collapse()->values();
     }
 
-    /**
-     * @return array
-     */
-    private function getEnabledActivities()
+    private function getEnabledActivities(): array
     {
         $modules = $this->config->get('twill.dashboard.modules');
         $listActivities = [];
 
         foreach ($modules as $moduleClass => $moduleConfiguration) {
-            if (!empty($moduleConfiguration['activity'])) {
-                if (!class_exists($moduleClass)) {
-                    throw new Exception("Class $moduleClass specified in twill.dashboard configuration does not exists.");
+            $moduleClassToCheck = Relation::getMorphedModel($moduleClass) ?? $moduleClass;
+            if (! empty($moduleConfiguration['activity'])) {
+                if (! class_exists($moduleClassToCheck)) {
+                    //  Try to load it from the morph map.
+                    throw new \Exception(
+                        "Class $moduleClassToCheck specified in twill.dashboard configuration does not exists."
+                    );
                 }
                 $listActivities[] = $moduleClass;
             }
         }
+
         return $listActivities;
     }
-    
-    /**
-     * @return array
-     */
-    private function getAllActivities()
+
+    private function getAllActivities(): Collection
     {
-        return Activity::whereIn('subject_type', $this->getEnabledActivities())->take(20)->latest()->get()->map(function ($activity) {
-            return $this->formatActivity($activity);
-        })->filter()->values();
+        return Activity::whereIn('subject_type', $this->getEnabledActivities())
+            ->take(20)
+            ->latest()
+            ->get()
+            ->map(function ($activity) {
+                return $this->formatActivity($activity);
+            })
+            ->filter()
+            ->values();
     }
 
-    /**
-     * @return array
-     */
-    private function getLoggedInUserActivities()
+    private function getLoggedInUserActivities(): Collection
     {
-        return Activity::whereIn('subject_type', $this->getEnabledActivities())->where('causer_id', $this->authFactory->guard('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity) {
-            return $this->formatActivity($activity);
-        })->filter()->values();
+        return Activity::whereIn('subject_type', $this->getEnabledActivities())
+            ->where('causer_id', $this->authFactory->guard('twill_users')->user()->id)
+            ->take(20)
+            ->latest()
+            ->get()
+            ->map(function ($activity) {
+                return $this->formatActivity($activity);
+            })
+            ->filter()
+            ->values();
     }
 
     /**
