@@ -10,7 +10,7 @@ use Spatie\Activitylog\Models\Activity;
 
 class DashboardTest extends TestCase
 {
-    public AnonymousModule $servers;
+    public AnonymousModule $computer;
 
     public AnonymousModule $licences;
 
@@ -18,7 +18,7 @@ class DashboardTest extends TestCase
     {
         parent::setUp();
 
-        $this->servers = AnonymousModule::make('servers', $this->app)->boot();
+        $this->computer = AnonymousModule::make('computers', $this->app)->boot();
         $this->licences = AnonymousModule::make('licences', $this->app)->boot();
 
         $this->actingAs($this->superAdmin(), 'twill_users');
@@ -26,8 +26,8 @@ class DashboardTest extends TestCase
 
     public function testLogsActivity(): void
     {
-        $this->post(route('twill.servers.store'), ['title' => 'Test title'])
-            ->assertJsonPath('redirect', 'http://twill.test/twill/servers/1/edit');
+        $this->post(route('twill.computers.store'), ['title' => 'Test title'])
+            ->assertJsonPath('redirect', 'http://twill.test/twill/computers/1/edit');
 
         $this->post(route('twill.licences.store'), ['title' => 'Test title'])
             ->assertJsonPath('redirect', 'http://twill.test/twill/licences/1/edit');
@@ -35,7 +35,7 @@ class DashboardTest extends TestCase
         $this->assertCount(2, $activity = Activity::all());
 
         $this->assertEquals('created', $activity[0]->description);
-        $this->assertEquals('App\Models\Server', $activity[0]->subject_type);
+        $this->assertEquals('App\Models\Computer', $activity[0]->subject_type);
 
         $this->assertEquals('created', $activity[1]->description);
         $this->assertEquals('App\Models\Licence', $activity[1]->subject_type);
@@ -50,8 +50,8 @@ class DashboardTest extends TestCase
     {
         Config::set('twill.dashboard', [
             'modules' => [
-                \App\Models\Server::class => [
-                    'name' => 'servers',
+                \App\Models\Computer::class => [
+                    'name' => 'computers',
                     'count' => true,
                     'create' => true,
                     'activity' => true,
@@ -60,8 +60,8 @@ class DashboardTest extends TestCase
                 ],
             ],
         ]);
-        $this->post(route('twill.servers.store'), ['title' => 'Test title'])
-            ->assertJsonPath('redirect', 'http://twill.test/twill/servers/1/edit');
+        $this->post(route('twill.computers.store'), ['title' => 'Test title'])
+            ->assertJsonPath('redirect', 'http://twill.test/twill/computers/1/edit');
 
         $this->post(route('twill.licences.store'), ['title' => 'Test title'])
             ->assertJsonPath('redirect', 'http://twill.test/twill/licences/1/edit');
@@ -69,7 +69,7 @@ class DashboardTest extends TestCase
         $allActivities = $this->getInvadedDashboardController()->getAllActivities();
 
         $this->assertCount(1, $allActivities);
-        $this->assertEquals('Server', $allActivities[0]['type']);
+        $this->assertEquals('Computer', $allActivities[0]['type']);
 
         // Switch the config and reassert.
         Config::set('twill.dashboard', [
@@ -98,7 +98,7 @@ class DashboardTest extends TestCase
 
         // Create 20 of each content.
         for ($i = 0; $i < 20; $i++) {
-            $this->post(route('twill.servers.store'), ['title' => 'Test title' . $i])
+            $this->post(route('twill.computers.store'), ['title' => 'Test title' . $i])
                 ->assertOk();
 
             $this->post(route('twill.licences.store'), ['title' => 'Test title' . $i])
@@ -110,8 +110,8 @@ class DashboardTest extends TestCase
         // Check that we have 20 entries.
         Config::set('twill.dashboard', [
             'modules' => [
-                \App\Models\Server::class => [
-                    'name' => 'servers',
+                \App\Models\Computer::class => [
+                    'name' => 'computers',
                     'count' => true,
                     'create' => true,
                     'activity' => true,
@@ -129,12 +129,12 @@ class DashboardTest extends TestCase
     public function testDashboardActivitiesWithMorphMap(): void
     {
         Relation::morphMap([
-            'server' => \App\Models\Server::class,
+            'computer' => \App\Models\Computer::class,
         ]);
 
         // Create 20 of each content.
         for ($i = 0; $i < 20; $i++) {
-            $this->post(route('twill.servers.store'), ['title' => 'Test title' . $i])
+            $this->post(route('twill.computers.store'), ['title' => 'Test title' . $i])
                 ->assertOk();
 
             $this->post(route('twill.licences.store'), ['title' => 'Test title' . $i])
@@ -146,8 +146,8 @@ class DashboardTest extends TestCase
         // Check that we have 20 entries.
         Config::set('twill.dashboard', [
             'modules' => [
-                'server' => [
-                    'name' => 'servers',
+                'computer' => [
+                    'name' => 'computers',
                     'count' => true,
                     'create' => true,
                     'activity' => true,

@@ -16,7 +16,7 @@ class ScheduleDatesTest extends BrowserTestCase
         $this->tweakApplication(function () use (&$class, $time24h) {
             config()->set('translatable.locales', ['en']);
             config()->set('twill.publish_date_24h', $time24h);
-            $class = \A17\Twill\Tests\Integration\Anonymous\AnonymousModule::make('servers', app())
+            $class = \A17\Twill\Tests\Integration\Anonymous\AnonymousModule::make('scheduleservers', app())
                 ->withFields([
                     'title' => [],
                     'publish_start_date' => [
@@ -39,7 +39,7 @@ class ScheduleDatesTest extends BrowserTestCase
             $newYork->setBrowserLocationToNewYork();
 
             $paris->loginAs($this->superAdmin, 'twill_users');
-            $paris->createModuleEntryWithTitle('Servers', 'Digitalocean');
+            $paris->createModuleEntryWithTitle('Scheduleservers', 'Digitalocean');
 
             // Expand the publisher.
             $paris->click('.accordion__trigger');
@@ -80,11 +80,11 @@ class ScheduleDatesTest extends BrowserTestCase
             $newYork->setBrowserLocationToNewYork();
 
             $newYork->loginAs($this->superAdmin, 'twill_users');
-            $newYork->visitModuleEntryWithTitle('Servers', 'Digitalocean');
+            $newYork->visitModuleEntryWithTitle('Scheduleservers', 'Digitalocean');
 
             // Check that the date is exactly that what we expected.
             $newYork->assertSeeIn('.accordion__value div', $from->setTime(04, 30)->format($shouldSeeDateFormat));
-            if (!$time24h) {
+            if (! $time24h) {
                 $newYork->assertSeeIn('.accordion__value div', 'AM');
             } else {
                 $newYork->assertDontSeeIn('.accordion__value div', 'AM');
@@ -146,5 +146,4 @@ class ScheduleDatesTest extends BrowserTestCase
             ],
         ];
     }
-
 }

@@ -8,17 +8,17 @@ class AnonymousModulesTest extends TestCase
 {
     public function testCreateAndList(): void
     {
-        AnonymousModule::make('servers', $this->app)->boot();
+        AnonymousModule::make('anonymousmodules', $this->app)->boot();
 
         $this->actingAs($this->superAdmin(), 'twill_users');
 
-        $this->getJson(route('twill.servers.index'))
+        $this->getJson(route('twill.anonymousmodules.index'))
             ->assertJsonPath('tableData', []);
 
-        $this->post(route('twill.servers.store'), ['title' => 'Test title'])
-            ->assertJsonPath('redirect', 'http://twill.test/twill/servers/1/edit');
+        $this->post(route('twill.anonymousmodules.store'), ['title' => 'Test title'])
+            ->assertJsonPath('redirect', 'http://twill.test/twill/anonymousmodules/1/edit');
 
-        $this->getJson(route('twill.servers.index'))
-            ->assertJsonPath('tableData.0.title', '<a href="http://twill.test/twill/servers/1/edit">Test title</a>');
+        $this->getJson(route('twill.anonymousmodules.index'))
+            ->assertJsonPath('tableData.0.title', '<a href="http://twill.test/twill/anonymousmodules/1/edit">Test title</a>');
     }
 }

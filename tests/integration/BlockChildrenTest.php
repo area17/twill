@@ -9,7 +9,7 @@ class BlockChildrenTest extends TestCase
 {
     public function testSorting(): void
     {
-        $module = AnonymousModule::make('servers', $this->app)
+        $module = AnonymousModule::make('childrenservers', $this->app)
             ->boot();
 
         /** @var ModuleRepository $repository */
