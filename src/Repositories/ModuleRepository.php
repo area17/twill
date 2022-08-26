@@ -363,7 +363,6 @@ abstract class ModuleRepository
      */
     public function duplicate($id, $titleColumnKey = 'title')
     {
-
         if (($object = $this->model->find($id)) === null) {
             return false;
         }
@@ -673,6 +672,34 @@ abstract class ModuleRepository
     }
 
     /**
+     * This methods search the first record that matches given value in the translations table.
+     * @param string $value
+     * @param string $field
+     * @return \A17\Twill\Models\Model $object
+    */
+    public function firstByField(string $value, string $field)
+    {
+        $query = $this->model->orWhereHas('translations', function ($q) use ($value, $field) {
+            $q->where($field, $this->getLikeOperator(), "%{$value}%");
+        });
+
+        return $query->first();
+    }
+
+    /**
+     * This methods search the first record that matches given value in the translations table.
+     * It returns the object if found or creates a new object with the provided attributes.
+     * @param string $value
+     * @param string $field
+     * @param array $attributes
+     * @return \A17\Twill\Models\Model $object
+    */
+    public function firstByFieldOrCreate(string $value, string $field, array $attributes)
+    {
+        return $this->firstByField($value, $field) ?? $this->create($attributes);
+    }
+
+    /**
      * @param \Illuminate\Database\Query\Builder $query
      * @param array $scopes
      * @return \Illuminate\Database\Query\Builder
@@ -805,7 +832,6 @@ abstract class ModuleRepository
      */
     public function searchIn($query, &$scopes, $scopeField, $orFields = [])
     {
-
         if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
             $query->where(function ($query) use (&$scopes, $scopeField, $orFields) {
                 foreach ($orFields as $field) {
