@@ -7,6 +7,7 @@ use A17\Twill\Repositories\ModuleRepository;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -145,24 +146,52 @@ class DashboardController extends Controller
         })->collapse()->values();
     }
 
-    /**
-     * @return array
-     */
-    private function getAllActivities()
+    private function getEnabledActivities(): array
     {
-        return Activity::take(20)->latest()->get()->map(function ($activity) {
-            return $this->formatActivity($activity);
-        })->filter()->values();
+        $modules = $this->config->get('twill.dashboard.modules');
+        $listActivities = [];
+
+        foreach ($modules as $moduleClass => $moduleConfiguration) {
+            $moduleClassToCheck = Relation::getMorphedModel($moduleClass) ?? $moduleClass;
+            if (! empty($moduleConfiguration['activity'])) {
+                if (! class_exists($moduleClassToCheck)) {
+                    //  Try to load it from the morph map.
+                    throw new \Exception(
+                        "Class $moduleClassToCheck specified in twill.dashboard configuration does not exists."
+                    );
+                }
+                $listActivities[] = $moduleClass;
+            }
+        }
+
+        return $listActivities;
     }
 
-    /**
-     * @return array
-     */
-    private function getLoggedInUserActivities()
+    private function getAllActivities(): Collection
     {
-        return Activity::where('causer_id', $this->authFactory->guard('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity) {
-            return $this->formatActivity($activity);
-        })->filter()->values();
+        return Activity::whereIn('subject_type', $this->getEnabledActivities())
+            ->take(20)
+            ->latest()
+            ->get()
+            ->map(function ($activity) {
+                return $this->formatActivity($activity);
+            })
+            ->filter()
+            ->values();
+    }
+
+    private function getLoggedInUserActivities(): Collection
+    {
+        return Activity::whereIn('subject_type', $this->getEnabledActivities())
+            ->where('causer_id', $this->authFactory->guard('twill_users')->user()->id)
+            ->take(20)
+            ->latest()
+            ->get()
+            ->map(function ($activity) {
+                return $this->formatActivity($activity);
+            })
+            ->filter()
+            ->values();
     }
 
     /**
@@ -194,14 +223,14 @@ class DashboardController extends Controller
             'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description),
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
-        ] : []) + (!$activity->subject->trashed() ? [
+        ] : []) + (! $activity->subject->trashed() ? [
             'edit' => $parent && $parentRelationship ? moduleRoute(
                 $dashboardModule['name'],
                 $dashboardModule['routePrefix'] ?? null,
                 'edit',
                 array_merge($parentRelationship ? [$parent->id] : [], [$activity->subject_id])
             ) : '',
-        ] : []) + (!is_null($activity->subject->published) ? [
+        ] : []) + (! is_null($activity->subject->published) ? [
             'published' => $activity->description === 'published' ? true : ($activity->description === 'unpublished' ? false : $activity->subject->published),
         ] : []);
     }

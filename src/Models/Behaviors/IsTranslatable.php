@@ -12,10 +12,9 @@ trait IsTranslatable
     /**
      * Checks if this model is translatable.
      *
-     * @param array|string|null $columns Optionally limit the check to a set of columns.
-     * @return bool
+     * If no columns/column is provided it will return true if the model itself is translatable.
      */
-    public function isTranslatable($columns = null)
+    public function isTranslatable(null|array|string $columns = null): bool
     {
         // Model must have the trait
         if (! classHasTrait($this, \A17\Twill\Models\Behaviors\HasTranslation::class)) {

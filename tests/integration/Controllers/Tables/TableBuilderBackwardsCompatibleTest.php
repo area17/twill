@@ -15,7 +15,10 @@ class TableBuilderBackwardsCompatibleTest extends ModulesTestBase
     public function setUp(): void
     {
         parent::setUp();
-        $this->serverModule = AnonymousModule::make('servers', $this->app)
+        $this->serverModule = AnonymousModule::make('desks', $this->app)
+            ->withFields([
+                'title' => ['translatable' => true],
+            ])
             ->withAdditionalProp('indexColumns', [
                 'cover' => ['thumb' => true],
                 'title' => [],

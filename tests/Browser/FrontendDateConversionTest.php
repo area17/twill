@@ -16,7 +16,7 @@ class FrontendDateConversionTest extends BrowserTestCase
     {
         $class = null;
         $this->tweakApplication(function () use (&$class, $use24h) {
-            $class = \A17\Twill\Tests\Integration\Anonymous\AnonymousModule::make('servers', app())
+            $class = \A17\Twill\Tests\Integration\Anonymous\AnonymousModule::make('gateways', app())
                 ->withFields([
                     'title' => [],
                     'last_booted' => [
@@ -43,7 +43,7 @@ class FrontendDateConversionTest extends BrowserTestCase
             $newYork->setBrowserLocationToNewYork();
 
             $paris->loginAs($this->superAdmin, 'twill_users');
-            $paris->createModuleEntryWithTitle('Servers', 'Digitalocean');
+            $paris->createModuleEntryWithTitle('Gateways', 'Digitalocean');
 
             $paris->setDateTimeInDatePicker(
                 fieldSelector: '.datePicker__field .form-control',
@@ -69,7 +69,7 @@ class FrontendDateConversionTest extends BrowserTestCase
             $newYork->setBrowserLocationToNewYork();
 
             $newYork->loginAs($this->superAdmin, 'twill_users');
-            $newYork->visitModuleEntryWithTitle('Servers', 'Digitalocean');
+            $newYork->visitModuleEntryWithTitle('Gateways', 'Digitalocean');
 
             // Check that the date is exactly that what we expected.
             $newYork->waitForText('Last Booted');

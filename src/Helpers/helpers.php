@@ -57,6 +57,7 @@ if (! function_exists('classHasTrait')) {
     function classHasTrait($class, $trait)
     {
         $traits = classUsesDeep($class);
+
         return array_key_exists($trait, $traits);
     }
 }
@@ -189,7 +190,7 @@ if (! function_exists('fix_directory_separator')) {
     }
 }
 
-if (!function_exists('twillModel')) {
+if (! function_exists('twillModel')) {
     function twillModel($model): string
     {
         return config("twill.models.$model")
@@ -197,7 +198,7 @@ if (!function_exists('twillModel')) {
     }
 }
 
-if (!function_exists('generate_list_of_available_blocks')) {
+if (! function_exists('generate_list_of_available_blocks')) {
     /**
      * @param array $blocks
      * @param array $groups

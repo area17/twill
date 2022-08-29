@@ -9,11 +9,11 @@ class BlockChildrenTest extends TestCase
 {
     public function testSorting(): void
     {
-        $module = AnonymousModule::make('servers', $this->app)
+        $module = AnonymousModule::make('childrenservers', $this->app)
             ->boot();
 
         /** @var ModuleRepository $repository */
-        $repository = app()->make($module->getModelController()->getRepositoryClass($module->getModelClassName()));
+        $repository = app()->make($module->getRepositoryClassName());
 
         $server = $repository->create([
             'title' => 'Hello world',
