@@ -39,20 +39,42 @@ class CustomModelQueriesTest extends TestCase
             'published' => true,
         ]);
 
-        $content = \App\Models\Screen::firstByTranslatedField(value: 'demo', field: 'title');
+        $result = \App\Models\Screen::orderByTranslation('title')
+            ->whereTranslationLike('title', '%title%')
+            ->get();
+
+        $this->assertEquals('a-title-1-en', $result[0]->title);
+        $this->assertEquals('b-title-1-en', $result[1]->title);
+
+        $result = \App\Models\Screen::orderByTranslation('title', 'desc')
+            ->whereTranslationLike('title', '%title%')
+            ->get();
+
+        $this->assertEquals('b-title-1-en', $result[0]->title);
+        $this->assertEquals('a-title-1-en', $result[1]->title);
+
+        // Now query just the first entry.
+        $result = \App\Models\Screen::orderByTranslation('title')
+            ->whereTranslationLike('title', '%title%')
+            ->first();
+
+        $this->assertEquals('a-title-1-en', $result->title);
+
+        $result = \App\Models\Screen::orderByTranslation('title', 'desc')
+            ->whereTranslationLike('title', '%title%')
+            ->first();
+
+        $this->assertEquals('b-title-1-en', $result->title);
     }
 
     public function testFirstByTranslatedFieldOrCreate(): void
     {
-        $content = \App\Models\Screen::firstByTranslatedFieldOrCreate(
-            value: 'demo',
-            field: 'title',
-            attributes: [
-                'title' => [
-                    'en' => 'english title',
-                    'fr' => 'french title',
-                ],
-            ]
-        );
+        // We could add this, but it would be a just a helper around the query above and
+        // a create call.
+        // $result = \App\Models\Screen::orderByTranslation('title', 'desc')
+        //     ->where('title', 'LIKE', '%title%')
+        //     ->firstOrCreate(['title' => ['en' => 'Some english title', 'fr' => 'Some french title']]);
+        //
+        // dd($result);
     }
 }
