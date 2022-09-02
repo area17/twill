@@ -16,7 +16,7 @@ class TwillNavigation
 
     public function addLink(NavigationLink $link): void
     {
-        if (config('twill-navigation') !== []) {
+        if (config('twill-navigation', []) !== []) {
             throw new \Exception('You cannot combine twill-navigation and TwillNavigation');
         }
 
