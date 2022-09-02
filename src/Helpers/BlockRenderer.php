@@ -4,10 +4,13 @@ namespace A17\Twill\Helpers;
 
 use A17\Twill\Models\Behaviors\HasBlocks;
 use A17\Twill\Models\Block as A17Block;
+use A17\Twill\Models\Media;
 use A17\Twill\Models\Model;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\RenderData;
 use Exception;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 
 /**
@@ -87,13 +90,21 @@ class BlockRenderer
             }
         }
 
+        // Load the original block if it exists or make a new one then fill it with the data from the request.
+        $block = A17Block::findOrNew($data['id'] ?? null);
+        $block->fill(
+            [
+                'type' => $type,
+                'content' => $data['content'],
+                'editor_name' => $editorName,
+            ]
+        );
+
+        $block->medias = self::getMedias($data);
+
         $class->setRenderData(
             new RenderData(
-                block: (new A17Block())->fill([
-                    'type' => $type,
-                    'content' => $data['content'],
-                    'editor_name' => $editorName,
-                ]),
+                block: $block,
                 editorName: $editorName,
                 children: $children,
                 parentEditorName: $parentEditorName,
@@ -102,6 +113,83 @@ class BlockRenderer
         );
 
         return $class;
+    }
+
+    /**
+     * Generates a simple pivot object that tricks laravel into believing
+     * it is actual pivot data further along the rendering pipeline.
+     */
+    private static function getPivotDummy(array $data): object {
+        return new class($data) implements Arrayable {
+            public function __construct(public array $data)
+            {
+            }
+
+            public function __get(string $name): mixed
+            {
+                return $this->data[$name] ?? null;
+            }
+
+            public function toArray(): array
+            {
+                return $this->data;
+            }
+        };
+    }
+
+    /**
+     * Heavily modified version of that in HandleMedias.
+     *
+     * This basically generates a dummy relation that can be injected into an existing or new Block model.
+     *
+     * This helps to render blocks on the fly without the need of having a saved crop config in the mediables table.
+     */
+    private static function getMedias(array $fields): Collection
+    {
+        $medias = Collection::make();
+
+        if (isset($fields['medias'])) {
+            foreach ($fields['medias'] as $role => $mediasForRole) {
+                if (config('twill.media_library.translated_form_fields', false) && Str::contains($role, ['[', ']'])) {
+                    $start = strpos($role, '[') + 1;
+                    $finish = strpos($role, ']', $start);
+                    $locale = substr($role, $start, $finish - $start);
+                    $role = strtok($role, '[');
+                }
+
+                $locale = $locale ?? config('app.locale');
+
+                $crops = config('twill.block_editor.crops');
+
+                if (array_key_exists($role, $crops)) {
+                    Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale, $crops) {
+                        $customMetadatas = $media['metadatas']['custom'] ?? [];
+                        if (isset($media['crops']) && !empty($media['crops'])) {
+                            foreach ($media['crops'] as $cropName => $cropData) {
+                                $media = Media::make()->forceFill($data = [
+                                    'id' => $media['id'],
+                                    'uuid' => Media::find($media['id'])->uuid ?? null,
+                                    'crop' => $cropName,
+                                    'role' => $role,
+                                    'locale' => $locale,
+                                    'ratio' => $cropData['name'],
+                                    'crop_w' => $cropData['width'],
+                                    'crop_h' => $cropData['height'],
+                                    'crop_x' => $cropData['x'],
+                                    'crop_y' => $cropData['y'],
+                                    'metadatas' => json_encode($customMetadatas),
+                                ]);
+                                $media->setRelation('pivot', self::getPivotDummy($data));
+
+                                $medias->push($media);
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+        return $medias;
     }
 
     public static function fromEditor(
