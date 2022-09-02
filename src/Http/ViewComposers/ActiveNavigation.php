@@ -6,6 +6,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
+// @prtodo: Remove this.
 class ActiveNavigation
 {
     /**

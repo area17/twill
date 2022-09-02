@@ -12,7 +12,7 @@
         <span class="block__counter f--tiny" v-else>{{ index + 1 }}</span>
         <span class="block__title">{{ blockTitle }}</span>
       </div>
-      <div class="block__actions">
+      <div class="block__actions" v-if="withActions">
         <slot name="block-actions"/>
         <a17-dropdown :ref="addDropdown" position="bottom-right" :maxHeight="430" @open="hover = true" @close="hover = false" v-if="withAddDropdown">
           <a17-button variant="icon" data-action @click="$refs[addDropdown].toggle()"><span v-svg symbol="add"></span>
@@ -68,6 +68,10 @@
         default: () => {}
       },
       withHandle: {
+        type: Boolean,
+        default: true
+      },
+      withActions: {
         type: Boolean,
         default: true
       }

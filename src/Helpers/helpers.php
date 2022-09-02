@@ -204,9 +204,13 @@ if (! function_exists('generate_list_of_available_blocks')) {
      * @param array $groups
      * @return array
      */
-    function generate_list_of_available_blocks($blocks, $groups): array
+    function generate_list_of_available_blocks($blocks, $groups, bool $settingsOnly = false): array
     {
-        $blockList = TwillBlocks::getBlocks();
+        if ($settingsOnly) {
+            $blockList = TwillBlocks::getSettingsBlocks();
+        } else {
+            $blockList = TwillBlocks::getBlocks();
+        }
 
         $appBlocksList = $blockList->filter(function (Block $block) {
             return $block->source !== A17\Twill\Services\Blocks\Block::SOURCE_TWILL;
