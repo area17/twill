@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Settings;
 
+use A17\Twill\Models\AppSetting;
 use Illuminate\Support\Str;
 
 /**
@@ -9,6 +10,8 @@ use Illuminate\Support\Str;
  */
 class SettingsGroup
 {
+    private bool $booted = false;
+
     private string $name;
 
     private string $label;
@@ -24,7 +27,7 @@ class SettingsGroup
 
     public function name(string $name): self
     {
-        if (! isset($this->label)) {
+        if (!isset($this->label)) {
             $this->label = Str::title($name);
         }
 
@@ -42,7 +45,7 @@ class SettingsGroup
 
     public function getName(): string
     {
-        return $this->name;
+        return Str::slug($this->name);
     }
 
     public function label(string $label): self
@@ -70,6 +73,56 @@ class SettingsGroup
     public function getDescription(): ?string
     {
         return $this->description;
+    }
+
+    public function hasSection(string $sectionName): bool
+    {
+        return collect($this->getSettingsModel()->getFormBlocks())->first(function (string $name) use ($sectionName) {
+                return $name === $sectionName;
+            }) !== null;
+    }
+
+    public function getSettingsModel(): AppSetting
+    {
+        $settingsModel = AppSetting::where(['name' => $this->getName()])->first();
+        if (!$settingsModel) {
+            $settingsModel = AppSetting::create(['name' => $this->getName()]);
+        }
+
+        return $settingsModel;
+    }
+
+    /**
+     * There is no need to manually call this method.
+     */
+    public function boot(): void
+    {
+        if (!$this->booted) {
+            $this->booted = true;
+
+            $this->ensureModelExists();
+        }
+    }
+
+    protected function ensureModelExists(): void
+    {
+        $settingsModel = $this->getSettingsModel();
+        // Ensure all the base blocks are there.
+        foreach ($settingsModel->getFormBlocks() as $name) {
+            $this->createBlockIfNotExisting($name, $settingsModel);
+        }
+    }
+
+    protected function createBlockIfNotExisting(string $name, AppSetting $model): void
+    {
+        if (!$model->blocks()->where('editor_name', '=', $name)->exists()) {
+            $model->blocks()->create([
+                'editor_name' => $name,
+                'type' => 'appSettings.' . $this->getName() . '.' . $name,
+                'content' => [],
+                'position' => 1,
+            ]);
+        }
     }
 
     /**

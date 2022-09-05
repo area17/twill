@@ -2,9 +2,7 @@
 
 namespace A17\Twill\Exceptions;
 
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;

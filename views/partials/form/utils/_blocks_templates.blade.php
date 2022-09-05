@@ -16,7 +16,9 @@ $names = $blocks
 </script>
 
 @foreach ($blocks as $block)
-    <script type="text/x-template" id="{{ $block->component }}"><div class="block__body">
-                        {!! $block->renderForm() !!}
-                    </div></script>
+    <script type="text/x-template" id="{{ $block->component }}">
+        <div class="block__body">
+            {!! $block->renderForm() !!}
+        </div>
+    </script>
 @endforeach

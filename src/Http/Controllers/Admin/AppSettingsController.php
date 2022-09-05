@@ -9,6 +9,7 @@ use A17\Twill\Repositories\AppSettingsRepository;
 use A17\Twill\Services\Forms\Fields\BlockEditor;
 use A17\Twill\Services\Forms\Form;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Session;
 
 /**
  * The name is a bit stupid here, but we do have the legacy settings (deprecate in 4.x?).
@@ -25,7 +26,9 @@ class AppSettingsController extends ModuleController
         $this->disablePublish();
         $this->setTitleColumnKey('name');
 
-        $this->seedModelsAndRegisterBlocks();
+        foreach (TwillAppSettings::getAllGroups() as $group) {
+            $group->boot();
+        }
     }
 
     public function update($id, $submoduleId = null)
@@ -46,25 +49,6 @@ class AppSettingsController extends ModuleController
         return parent::edit($model);
     }
 
-    /**
-     * This makes sure that the base models exist for our settings to work. This is based on the directories inside
-     * the settings folder.
-     */
-    protected function seedModelsAndRegisterBlocks(): void
-    {
-        foreach (TwillAppSettings::getAllGroups() as $group) {
-            $settingsModel = AppSetting::where(['name' => $group->getName()])->first();
-            if (! $settingsModel) {
-                $settingsModel = AppSetting::create(['name' => $group->getName()]);
-            }
-
-            // Ensure all the base blocks are there.
-            foreach ($settingsModel->getFormBlocks() as $name) {
-                $this->createBlockIfNotExisting($name, $settingsModel);
-            }
-        }
-    }
-
     public function getForm(TwillModelContract|AppSetting $model): Form
     {
         // 1. Get our settings sections (for now blocks).
@@ -76,7 +60,7 @@ class AppSettingsController extends ModuleController
                     ->name($name)
                     ->withoutSeparator()
                     ->isSettings()
-                    ->blocks(['appSettings' . '.' . $model->getDirName() . '.' . $name])
+                    ->blocks(['appSettings' . '.' . $model->getSettingGroup()->getName() . '.' . $name])
             );
         }
 
@@ -92,16 +76,14 @@ class AppSettingsController extends ModuleController
         return null;
     }
 
-    private function createBlockIfNotExisting(string $name, AppSetting|TwillModelContract $model): void
+    protected function setBackLink($back_link = null, $params = [])
     {
-        if (! $model->blocks()->where('editor_name', '=', $name)->exists()) {
-            $model->blocks()->create([
-                'editor_name' => $name,
-                'type' => $this->moduleName . '.' . $model->getDirName() . '.' . $name,
-                'content' => [],
-                'position' => 1,
-            ]);
-        }
+        Session::put($this->moduleName . '_retain', $this->getBackLink());
+    }
+
+    protected function getBackLink($fallback = null, $params = [])
+    {
+        return route('twill.app.settings');
     }
 
     public function dashboard(): View

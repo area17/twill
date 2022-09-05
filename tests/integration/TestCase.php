@@ -167,6 +167,12 @@ abstract class TestCase extends OrchestraTestCase
         foreach (File::allFiles(base_path("/database/seeders")) as $file) {
             include_once $file->getPathname();
         }
+
+        $this->reloadRoutes();
+    }
+
+    public function reloadRoutes(): void {
+        $this->app->make('router')->getRoutes()->refreshNameLookups();
     }
 
     /**
