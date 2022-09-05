@@ -159,7 +159,9 @@ class Build extends Command
      */
     private function runProcessInTwill(array $command, $disableTimeout = false)
     {
-        $process = new Process($command, base_path(config('twill.vendor_path')));
+        $process = new Process($command, base_path(config('twill.vendor_path')), [
+            'TWILL_ASSETS_DIR' => config('twill.public_directory'),
+        ]);
         $process->setTty(Process::isTtySupported());
 
         if ($disableTimeout) {
