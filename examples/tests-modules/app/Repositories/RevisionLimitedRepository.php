@@ -6,7 +6,7 @@ use A17\Twill\Repositories\Behaviors\HandleRevisions;
 use A17\Twill\Repositories\ModuleRepository;
 use App\Models\RevisionLimitedContent;
 
-class RevisionLimitedContentRepository extends ModuleRepository
+class RevisionLimitedRepository extends ModuleRepository
 {
     use HandleRevisions;
 

@@ -4,7 +4,6 @@ namespace A17\Twill\View\Components\Navigation;
 
 use Closure;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
 
@@ -88,13 +87,13 @@ class NavigationLink extends Component
         return $this;
     }
 
-    public function forModule(string $module, ?string $prefix = null, ?string $action = null): self
+    public function forModule(string $module, ?string $action = null): self
     {
-        if (! isset($this->title)) {
+        if (!isset($this->title)) {
             $this->title(Str::title($module));
         }
 
-        $this->route = $this->getModuleRoute($module, $prefix, $action ?? 'index');
+        $this->route = $this->getModuleRoute($module, $action ?? 'index');
 
         return $this;
     }
@@ -140,35 +139,12 @@ class NavigationLink extends Component
 
         $fullList = array_merge($fullList, $this->children);
 
-        return array_filter($fullList, fn (NavigationLink $link) => $link->shouldShow());
+        return array_filter($fullList, fn(NavigationLink $link) => $link->shouldShow());
     }
 
-    protected function getModuleRoute(string $moduleName, ?string $prefix, ?string $action = null): string
+    protected function getModuleRoute(string $moduleName, ?string $action = null): string
     {
-        // Fix module name case
-        $moduleName = Str::camel($moduleName);
-
-        // Nested module, pass in current parameters for deeply nested modules
-        if (Str::contains($moduleName, '.')) {
-            $parameters = array_merge(Route::current()->parameters(), $parameters);
-        }
-
-        // Create base route name
-        $routeName = 'twill.' . ($prefix ? $prefix . '.' : '');
-
-        // Prefix it with module name only if prefix doesn't contains it already
-        if (
-            config('twill.allow_duplicates_on_route_names', true) ||
-            ($prefix !== $moduleName &&
-                ! Str::endsWith($prefix, '.' . $moduleName))
-        ) {
-            $routeName .= $moduleName;
-        }
-
-        //  Add the action name
-        $routeName .= $action ? ".{$action}" : '';
-
-        return $routeName;
+        return 'twill.' . \A17\Twill\TwillRoutes::$registry[Str::camel($moduleName)] . '.' . ($action ?? 'index');
     }
 
     protected function getHref(): string

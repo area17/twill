@@ -37,9 +37,11 @@ class TwillNavigation
     public function getActivePrimaryNavigationLink(): ?NavigationLink
     {
         foreach ($this->buildNavigationTree() as $section) {
-            $activeLink = Arr::first(array_filter($section, function (NavigationLink $entry) {
-                return $entry->isActive() ?? false;
-            }));
+            $activeLink = Arr::first(
+                array_filter($section, function (NavigationLink $entry) {
+                    return $entry->isActive() ?? false;
+                })
+            );
 
             if ($activeLink !== null) {
                 return $activeLink;
@@ -61,11 +63,43 @@ class TwillNavigation
         $links = [];
 
         // Convert the original twill-navigation.
-        foreach (config('twill-navigation', []) as $primaryItem) {
-            // Todo.
+        foreach (config('twill-navigation', []) as $key => $primaryItem) {
+            $link = $this->transformLegacyToNew($key, $primaryItem);
+
+            $children = [];
+            foreach ($primaryItem['primary_navigation'] ?? [] as $childKey => $nestedItem) {
+                $children[] = $secondary = $this->transformLegacyToNew($childKey, $nestedItem);
+
+                $secondaryChildren = [];
+                foreach ($nestedItem['secondary_navigation'] ?? [] as $tertiaryKey => $tertiaryItem) {
+                    $secondaryChildren[] = $this->transformLegacyToNew($tertiaryKey, $tertiaryItem);
+                }
+                
+
+                $secondary->setChildren($secondaryChildren);
+            }
+
+            $link->setChildren($children);
+
+            $links[] = $link;
         }
 
         return $links;
+    }
+
+    private function transformLegacyToNew(string $key, array $legacy): NavigationLink
+    {
+        if ($legacy['route'] ?? false) {
+            $link = NavigationLink::make()->forRoute($legacy['route']);
+        } else {
+            $link = NavigationLink::make()->forModule($key);
+        }
+
+        if ($link && ($legacy['title'] ?? false)) {
+            $link->title($legacy['title']);
+        }
+
+        return $link;
     }
 
     private function getSettingsTree(): ?NavigationLink
@@ -110,7 +144,7 @@ class TwillNavigation
             });
         $tree['right'][] = NavigationLink::make()
             ->title(twillTrans('twill::lang.nav.open-live-site'))
-            ->onlyWhen(fn () => config('twill.enable.site-link', false))
+            ->onlyWhen(fn() => config('twill.enable.site-link', false))
             ->toExternalUrl(config('app.url'));
 
         return $tree;
