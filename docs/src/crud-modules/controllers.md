@@ -226,13 +226,11 @@ For example, to disable the user's ability to permanently delete an article, you
 
 File: `app/Http/Controllers/Admin/ArticleController`
 ```php
-	...
-	
+
 	protected $indexOptions = [
 		'forceDelete' => false // This is the opposite of the default
 		];
 
-	...
 ```
 
 With this, all index options apart from `Destroy` and the synonymous bulk action will be available on the listing view for articles.
