@@ -91,6 +91,8 @@ class TwillNavigation
     {
         if ($legacy['route'] ?? false) {
             $link = NavigationLink::make()->forRoute($legacy['route']);
+        } elseif ($legacy['singleton'] ?? false) {
+            $link = NavigationLink::make()->forSingleton($key);
         } else {
             $link = NavigationLink::make()->forModule($key);
         }

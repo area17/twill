@@ -2,6 +2,7 @@
 
 namespace A17\Twill\View\Components\Navigation;
 
+use A17\Twill\Facades\TwillRoutes;
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
@@ -98,6 +99,17 @@ class NavigationLink extends Component
         return $this;
     }
 
+    public function forSingleton(string $module): self
+    {
+        if (!isset($this->title)) {
+            $this->title(Str::title($module));
+        }
+
+        $this->route = 'twill.' . $module;
+
+        return $this;
+    }
+
     public function toExternalUrl(string $href): self
     {
         $this->href = $href;
@@ -144,7 +156,10 @@ class NavigationLink extends Component
 
     protected function getModuleRoute(string $moduleName, ?string $action = null): string
     {
-        return 'twill.' . \A17\Twill\TwillRoutes::$registry[Str::camel($moduleName)] . '.' . ($action ?? 'index');
+        // @todo: We have to add singular here.
+        return 'twill.' . TwillRoutes::getModuleRouteFromRegistry(
+                Str::plural(Str::camel($moduleName))
+            ) . '.' . ($action ?? 'index');
     }
 
     protected function getHref(): string

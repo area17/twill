@@ -142,6 +142,32 @@ abstract class TestCase extends OrchestraTestCase
         return $app;
     }
 
+    public function tearDown(): void
+    {
+        $toDelete = [
+            app_path('Http/Controllers/Twill'),
+            app_path('Http/Requests/Twill'),
+            app_path('Models'),
+            app_path('Repositories'),
+            resource_path('views/twill'),
+            resource_path('views/site'),
+            database_path('migrations'),
+            app_path('../routes/twill.php'),
+            config_path('twill.php'),
+            config_path('twill-navigation.php'),
+        ];
+
+        foreach ($toDelete as $path) {
+            if (is_dir($path)) {
+                File::deleteDirectory($path);
+            } elseif (file_exists($path)) {
+                unlink($path);
+            }
+        }
+
+        parent::tearDown();
+    }
+
     /**
      * Setup tests.
      */
@@ -167,12 +193,6 @@ abstract class TestCase extends OrchestraTestCase
         foreach (File::allFiles(base_path("/database/seeders")) as $file) {
             include_once $file->getPathname();
         }
-
-        $this->reloadRoutes();
-    }
-
-    public function reloadRoutes(): void {
-        $this->app->make('router')->getRoutes()->refreshNameLookups();
     }
 
     /**

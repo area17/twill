@@ -13,7 +13,12 @@ class TwillRoutes
     /**
      * The registry is a key/value store that we can use to easily figure out routes/modules connection later on.
      */
-    public static array $registry = [];
+    private array $registry = [];
+
+    public function getModuleRouteFromRegistry(string $module): string
+    {
+        return $this->registry[$module];
+    }
 
     public function buildModuleRoutes(
         string $slug,
@@ -92,9 +97,9 @@ class TwillRoutes
             // Prevent Laravel from generating route names with duplication
             $resourceCustomGroupPrefix = '';
         }
-        
-        self::$registry[$slug] = $customRoutePrefix;
-        
+
+        $this->registry[$slug] = $customRoutePrefix;
+
         foreach ($customRoutes as $route) {
             $routeSlug = "$prefixSlug/$route";
             $mapping = [
