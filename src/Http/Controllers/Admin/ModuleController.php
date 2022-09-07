@@ -495,8 +495,6 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @prtodo: Document this.
-     *
      * Disables the editor button.
      */
     protected function disableEditor(): void

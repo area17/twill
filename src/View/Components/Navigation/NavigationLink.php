@@ -138,7 +138,6 @@ class NavigationLink extends Component
             $fullList[] = $cloneOfSelf;
         }
 
-        // @prtodo: cache this.
         $fullList = array_merge($fullList, $this->children);
 
         return array_filter($fullList, fn (NavigationLink $link) => $link->shouldShow());

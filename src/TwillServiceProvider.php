@@ -22,7 +22,6 @@ use A17\Twill\Commands\SyncLang;
 use A17\Twill\Commands\Update;
 use A17\Twill\Commands\UpdateExampleCommand;
 use A17\Twill\Commands\UpgradeCommand;
-use A17\Twill\Http\ViewComposers\ActiveNavigation;
 use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
 use A17\Twill\Http\ViewComposers\Localization;
@@ -556,8 +555,6 @@ class TwillServiceProvider extends ServiceProvider
         if (config('twill.enabled.file-library')) {
             View::composer('twill::layouts.main', FilesUploaderConfig::class);
         }
-
-        //View::composer('twill::partials.navigation.*', ActiveNavigation::class);
 
         View::composer(['twill.*', 'templates.*', 'twill::*'], function ($view) {
             $with = array_merge([
