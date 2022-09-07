@@ -94,7 +94,7 @@ class BlockRepository extends ModuleRepository
 
         $block['content'] = empty($block['content']) ? new \stdClass() : (object) $block['content'];
 
-        if ($block['browsers']) {
+        if ($block['browsers'] ?? null) {
             $browsers = Collection::make($block['browsers'])->map(function ($items) {
                 return Collection::make($items)->pluck('id');
             })->toArray();

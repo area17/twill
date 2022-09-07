@@ -4,6 +4,7 @@ namespace A17\Twill;
 
 use A17\Twill\Exceptions\Settings\SettingsGroupDoesNotExistException;
 use A17\Twill\Exceptions\Settings\SettingsSectionDoesNotExistException;
+use A17\Twill\Models\Block;
 use A17\Twill\Services\Settings\SettingsGroup;
 
 class TwillAppSettings
@@ -42,15 +43,34 @@ class TwillAppSettings
         return config('twill.enabled.settings');
     }
 
-    /**
-     * The set function will override the full section's settings.
-     *
-     * The group is the one defined in your TwillAppSettings::registerSettingsGroup call.
-     * The section is the name of the file in your settings folder.
-     */
-    public function set(string $group, string $section): void
+    public function getTranslated(string $identifier): mixed
     {
-        $group = $this->getGroupForGroupAndSectionName($group, $section);
+        [$group, $section, $key] = $this->getGroupSectionAndKeyFromIdentifier($identifier);
+
+        $block = $this->getGroupDataForSectionAndName($group, $section);
+
+        return $block->translatedInput($key);
+    }
+
+    public function get(string $identifier): mixed
+    {
+        [$group, $section, $key] = $this->getGroupSectionAndKeyFromIdentifier($identifier);
+
+        $block = $this->getGroupDataForSectionAndName($group, $section);
+
+        return $block->input($key);
+    }
+
+    private function getGroupSectionAndKeyFromIdentifier(string $identifier): array
+    {
+        $sections = explode('.', $identifier);
+
+        if (count($sections) !== 3) {
+            // At some point we can improve on this.
+            throw new \Exception('Currently only 3 levels are supported for getting settings.');
+        }
+
+        return $sections;
     }
 
     public function getGroupForName(string $groupName): SettingsGroup
@@ -62,6 +82,12 @@ class TwillAppSettings
         }
 
         return $group;
+    }
+
+    public function getGroupDataForSectionAndName(string $group, string $section): Block
+    {
+        $groupObject = $this->getGroupForGroupAndSectionName($group, $section);
+        return $groupObject->getSettingsModel()->blocks()->where('editor_name', $section)->firstOrFail();
     }
 
     /**

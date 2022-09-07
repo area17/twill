@@ -58,7 +58,7 @@ class SettingsModelTest extends TestCase
         $this->assertTrue(AppSetting::where('name', 'test')->doesntExist());
 
         TwillAppSettings::getGroupForName('test')->boot();
-        
+
         $this->assertTrue(AppSetting::where('name', 'test')->exists());
     }
 
@@ -74,5 +74,45 @@ class SettingsModelTest extends TestCase
         $this->actingAs($this->superAdmin(), 'twill_users')
             ->getJson(route('twill.app.settings.page', ['group' => 'test']))
             ->assertSee('title field label');
+    }
+
+    public function testSettingsUpdate(): void
+    {
+        TwillAppSettings::registerSettingsGroup(
+            $group = SettingsGroup::make()
+                ->name('test')
+                ->label('Test label')
+                ->description('Test description')
+        );
+
+        // Manually boot it just for the test.
+        $group->boot();
+        $model = $group->getSettingsModel();
+
+        // Make a post.
+        $this->actingAs($this->superAdmin(), 'twill_users')
+            ->putJson(
+                route('twill.app.settings.update', [$model]),
+                [
+                    'blocks' => [
+                        [
+                            'id' => $model->blocks[0]->id,
+                            'editor_name' => 'test',
+                            'type' => 'a17-block-appSettings-test-test',
+                            'content' => [
+                                'title' => [
+                                    'en' => 'English title!',
+                                ],
+                            ],
+
+                        ],
+                    ],
+                ]
+            )
+            ->assertStatus(200);
+
+        $model->refresh();
+
+        $this->assertEquals('English title!', $model->blocks[0]->content['title']['en']);
     }
 }
