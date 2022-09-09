@@ -9,6 +9,7 @@ use A17\Twill\Repositories\AppSettingsRepository;
 use A17\Twill\Services\Forms\Fields\BlockEditor;
 use A17\Twill\Services\Forms\Form;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Session;
 
 /**
@@ -102,5 +103,28 @@ class AppSettingsController extends ModuleController
     protected function getRepositoryClass($model): string
     {
         return AppSettingsRepository::class;
+    }
+
+    protected function form(?int $id, ?TwillModelContract $item = null): array
+    {
+        $base = parent::form($id, $item);
+
+        $base['publish'] = false;
+        $base['editableTitle'] = false;
+
+        return $base;
+    }
+
+    public function getSubmitOptions(Model $item): ?array
+    {
+
+        return [
+            'update' => [
+                [
+                    'name' => 'update',
+                    'text' => twillTrans('twill::lang.publisher.update'),
+                ]
+            ],
+        ];
     }
 }
