@@ -1,8 +1,8 @@
 <?php
 
 return [
-    // 'contactPage' => [
-    //     'title' => 'Contact Page',
-    //     'singleton' => true,
-    // ],
+    'contactPage' => [
+        'title' => 'Contact Page',
+        'singleton' => true,
+    ],
 ];

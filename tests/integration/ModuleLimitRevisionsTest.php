@@ -3,8 +3,8 @@
 namespace A17\Twill\Tests\Integration;
 
 use A17\Twill\Facades\TwillConfig;
-use App\Models\RevisionLimitedContent;
-use App\Repositories\RevisionLimitedContentRepository;
+use App\Models\RevisionLimited;
+use App\Repositories\RevisionLimitedRepository;
 
 class ModuleLimitRevisionsTest extends ModulesTestBase
 {
@@ -51,10 +51,10 @@ class ModuleLimitRevisionsTest extends ModulesTestBase
     {
         TwillConfig::maxRevisions(10);
 
-        $model = RevisionLimitedContent::create(['title' => 'test']);
+        $model = RevisionLimited::create(['title' => 'test']);
 
-        /** @var RevisionLimitedContentRepository $repo */
-        $repo = app(RevisionLimitedContentRepository::class);
+        /** @var RevisionLimitedRepository $repo */
+        $repo = app(RevisionLimitedRepository::class);
 
         for ($i = 0; $i < 15; $i++) {
             $repo->update($model->id, ['title' => 'title' . $i]);
@@ -69,10 +69,10 @@ class ModuleLimitRevisionsTest extends ModulesTestBase
         $this->assertNull(TwillConfig::getRevisionLimit());
 
         // Our model is revision limited to 5.
-        $model = RevisionLimitedContent::create(['title' => 'test']);
+        $model = RevisionLimited::create(['title' => 'test']);
 
-        /** @var RevisionLimitedContentRepository $repo */
-        $repo = app(RevisionLimitedContentRepository::class);
+        /** @var RevisionLimitedRepository $repo */
+        $repo = app(RevisionLimitedRepository::class);
 
         for ($i = 0; $i < 15; $i++) {
             $repo->update($model->id, ['title' => 'title' . $i]);

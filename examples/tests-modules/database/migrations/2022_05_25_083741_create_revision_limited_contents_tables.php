@@ -24,7 +24,7 @@ class CreateRevisionLimitedContentsTables extends Migration
         });
 
         Schema::create('revision_limited_revisions', function (Blueprint $table) {
-            createDefaultRevisionsTableFields($table, 'revision_limiteds');
+            createDefaultRevisionsTableFields($table, 'revision_limited');
         });
     }
 

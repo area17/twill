@@ -90,7 +90,7 @@ class TwillNavigation
     private function transformLegacyToNew(string $key, array $legacy): NavigationLink
     {
         if ($legacy['route'] ?? false) {
-            $link = NavigationLink::make()->forRoute($legacy['route']);
+            $link = NavigationLink::make()->forRoute($legacy['route'], $legacy['params'] ?? []);
         } elseif ($legacy['singleton'] ?? false) {
             $link = NavigationLink::make()->forSingleton($key);
         } else {
