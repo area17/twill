@@ -20,6 +20,14 @@ class TwillRoutes
         return $this->registry[$module];
     }
 
+    /**
+     * Only usefull for testing purposes.
+     */
+    public function addToRouteRegistry(string $slug, string $prefix): void
+    {
+        $this->registry[$slug] = $prefix;
+    }
+
     public function buildModuleRoutes(
         string $slug,
         array $options = [],
@@ -98,7 +106,7 @@ class TwillRoutes
             $resourceCustomGroupPrefix = '';
         }
 
-        $this->registry[$slug] = $customRoutePrefix;
+        $this->addToRouteRegistry($slug, $customRoutePrefix);
 
         foreach ($customRoutes as $route) {
             $routeSlug = "$prefixSlug/$route";
