@@ -2,7 +2,7 @@
 
 namespace A17\Twill;
 
-use A17\Twill\Facades\TwillAppSettings;
+use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -72,9 +72,9 @@ class AuthServiceProvider extends ServiceProvider
         $this->define('list', function ($user, $item = null) {
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole($user, [
-                    TwillAppSettings::roles()::VIEWONLY,
-                    TwillAppSettings::roles()::PUBLISHER,
-                    TwillAppSettings::roles()::ADMIN,
+                    TwillPermissions::roles()::VIEWONLY,
+                    TwillPermissions::roles()::PUBLISHER,
+                    TwillPermissions::roles()::ADMIN,
                 ]);
             });
         });
@@ -83,7 +83,7 @@ class AuthServiceProvider extends ServiceProvider
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole(
                     $user,
-                    [TwillAppSettings::roles()::PUBLISHER, TwillAppSettings::roles()::ADMIN]
+                    [TwillPermissions::roles()::PUBLISHER, TwillPermissions::roles()::ADMIN]
                 );
             });
         });
@@ -92,7 +92,7 @@ class AuthServiceProvider extends ServiceProvider
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole(
                     $user,
-                    [TwillAppSettings::roles()::PUBLISHER, TwillAppSettings::roles()::ADMIN]
+                    [TwillPermissions::roles()::PUBLISHER, TwillPermissions::roles()::ADMIN]
                 );
             });
         });
@@ -101,7 +101,7 @@ class AuthServiceProvider extends ServiceProvider
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole(
                     $user,
-                    [TwillAppSettings::roles()::PUBLISHER, TwillAppSettings::roles()::ADMIN]
+                    [TwillPermissions::roles()::PUBLISHER, TwillPermissions::roles()::ADMIN]
                 );
             });
         });
@@ -110,7 +110,7 @@ class AuthServiceProvider extends ServiceProvider
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole(
                     $user,
-                    [TwillAppSettings::roles()::PUBLISHER, TwillAppSettings::roles()::ADMIN]
+                    [TwillPermissions::roles()::PUBLISHER, TwillPermissions::roles()::ADMIN]
                 );
             });
         });
@@ -119,7 +119,7 @@ class AuthServiceProvider extends ServiceProvider
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole(
                     $user,
-                    [TwillAppSettings::roles()::PUBLISHER, TwillAppSettings::roles()::ADMIN]
+                    [TwillPermissions::roles()::PUBLISHER, TwillPermissions::roles()::ADMIN]
                 );
             });
         });
@@ -128,7 +128,7 @@ class AuthServiceProvider extends ServiceProvider
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole(
                     $user,
-                    [TwillAppSettings::roles()::PUBLISHER, TwillAppSettings::roles()::ADMIN]
+                    [TwillPermissions::roles()::PUBLISHER, TwillPermissions::roles()::ADMIN]
                 );
             });
         });
@@ -137,14 +137,14 @@ class AuthServiceProvider extends ServiceProvider
             return $this->authorize($user, function ($user) {
                 return $this->userHasRole(
                     $user,
-                    [TwillAppSettings::roles()::PUBLISHER, TwillAppSettings::roles()::ADMIN]
+                    [TwillPermissions::roles()::PUBLISHER, TwillPermissions::roles()::ADMIN]
                 );
             });
         });
 
         $this->define('manage-users', function ($user) {
             return $this->authorize($user, function ($user) {
-                return $this->userHasRole($user, [TwillAppSettings::roles()::ADMIN]);
+                return $this->userHasRole($user, [TwillPermissions::roles()::ADMIN]);
             });
         });
 
@@ -152,7 +152,7 @@ class AuthServiceProvider extends ServiceProvider
         // As a non-admin, I can edit myself only
         $this->define('edit-user', function ($user, $editedUser = null) {
             return $this->authorize($user, function ($user) use ($editedUser) {
-                return ($this->userHasRole($user, [TwillAppSettings::roles()::ADMIN]) || $user->id == $editedUser->id)
+                return ($this->userHasRole($user, [TwillPermissions::roles()::ADMIN]) || $user->id == $editedUser->id)
                     && ($editedUser ? $editedUser->role !== self::SUPERADMIN : true);
             });
         });
@@ -162,7 +162,7 @@ class AuthServiceProvider extends ServiceProvider
                 $editedUserObject = User::find(request('id'));
                 return $this->userHasRole(
                         $user,
-                        [TwillAppSettings::roles()::ADMIN]
+                        [TwillPermissions::roles()::ADMIN]
                     ) && (
                         $editedUserObject && $user->id !== $editedUserObject->id &&
                         $editedUserObject->role !== self::SUPERADMIN

@@ -119,7 +119,7 @@ class AuthServiceProvider extends ServiceProvider
 If you need a more dynamic aproach you can also get the current permission enum using the facade:
 
 ```php
-TwillAppSettings::roles()::PUBLISHER (or any role)
+TwillPermissons::roles()::PUBLISHER (or any role)
 ```
 
 
