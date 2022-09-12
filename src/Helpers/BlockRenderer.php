@@ -162,11 +162,11 @@ class BlockRenderer
                 $crops = config('twill.block_editor.crops');
 
                 if (array_key_exists($role, $crops)) {
-                    Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale, $crops) {
+                    Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
                         if (isset($media['crops']) && !empty($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
-                                $media = Media::make()->forceFill($data = [
+                                $media = (new Media())->forceFill($data = [
                                     'id' => $media['id'],
                                     'uuid' => Media::find($media['id'])->uuid ?? null,
                                     'crop' => $cropName,
