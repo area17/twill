@@ -2,6 +2,7 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Exceptions\Navigation\CannotCombineNavigationBuilderWithLegacyConfig;
 use A17\Twill\Facades\TwillAppSettings;
 use A17\Twill\View\Components\Navigation\NavigationLink;
 use Illuminate\Support\Arr;
@@ -17,7 +18,7 @@ class TwillNavigation
     public function addLink(NavigationLink $link): void
     {
         if (config('twill-navigation', []) !== []) {
-            throw new \Exception('You cannot combine twill-navigation and TwillNavigation');
+            throw new CannotCombineNavigationBuilderWithLegacyConfig('You cannot combine twill-navigation and TwillNavigation');
         }
 
         $this->links[] = $link;
