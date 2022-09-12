@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Exceptions\Settings\SettingsDirectoryMissingException;
 use A17\Twill\Facades\TwillAppSettings;
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Models\Behaviors\HasBlocks;
@@ -31,7 +32,7 @@ class AppSetting extends Model
         $directory = resource_path('views/twill/settings/' . $this->getSettingGroup()->getName());
 
         if (! is_dir($directory)) {
-            throw new \Exception($directory . ' directory is expected to exist but could not be found.');
+            throw new SettingsDirectoryMissingException($directory);
         }
 
         $finalList = [];

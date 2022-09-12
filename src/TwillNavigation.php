@@ -124,6 +124,9 @@ class TwillNavigation
         return null;
     }
 
+    /**
+     * @return array<string, array<int, NavigationLink>>
+     */
     public function buildNavigationTree(): array
     {
         $tree = [];
@@ -138,7 +141,7 @@ class TwillNavigation
         $tree['right'][] = NavigationLink::make()
             ->withAttributes(['data-medialib-btn'])
             ->title(twillTrans('twill::lang.nav.media-library'))
-            ->onlyWhen(fn() => Auth::user()->can('access-media-library'));
+            ->onlyWhen(fn() => Auth::user()?->can('access-media-library') ?? false);
         $tree['right'][] = NavigationLink::make()
             ->title(twillTrans('twill::lang.nav.open-live-site'))
             ->onlyWhen(fn() => config('twill.enable.site-link', false))

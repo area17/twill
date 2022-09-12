@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Tests\Integration\Settings;
 
+use A17\Twill\Exceptions\Settings\SettingsDirectoryMissingException;
 use A17\Twill\Facades\TwillAppSettings;
 use A17\Twill\Models\AppSetting;
 use A17\Twill\Services\Settings\SettingsGroup;
@@ -114,5 +115,17 @@ class SettingsModelTest extends TestCase
         $model->refresh();
 
         $this->assertEquals('English title!', $model->blocks[0]->content['title']['en']);
+    }
+
+    public function testExceptionWhenDirectoryIsMissing(): void {
+        TwillAppSettings::registerSettingsGroup(
+            $group = SettingsGroup::make()
+                ->name('test_not_existing')
+                ->label('Test label')
+                ->description('Test description')
+        );
+
+        $this->expectException(SettingsDirectoryMissingException::class);
+        $group->boot();
     }
 }

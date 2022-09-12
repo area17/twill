@@ -78,7 +78,7 @@ class TwillAppSettings
         $group = self::$settingsGroups[$groupName] ?? null;
 
         if (!$group) {
-            throw new SettingsGroupDoesNotExistException($group);
+            throw new SettingsGroupDoesNotExistException($groupName);
         }
 
         return $group;
@@ -87,6 +87,7 @@ class TwillAppSettings
     public function getGroupDataForSectionAndName(string $group, string $section): Block
     {
         $groupObject = $this->getGroupForGroupAndSectionName($group, $section);
+
         return $groupObject->getSettingsModel()->blocks()->where('editor_name', $section)->firstOrFail();
     }
 

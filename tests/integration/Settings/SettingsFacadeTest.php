@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Tests\Integration\Settings;
 
+use A17\Twill\Exceptions\Settings\SettingsGroupDoesNotExistException;
+use A17\Twill\Exceptions\Settings\SettingsSectionDoesNotExistException;
 use A17\Twill\Facades\TwillAppSettings;
 use A17\Twill\Services\Settings\SettingsGroup;
 use A17\Twill\Tests\Integration\TestCase;
@@ -59,5 +61,15 @@ class SettingsFacadeTest extends TestCase
     public function testSettingsGetter(): void
     {
         $this->assertEquals('Non translated.', TwillAppSettings::get('test.test.label'));
+    }
+
+    public function testGetInvalidGroup(): void {
+        $this->expectException(SettingsGroupDoesNotExistException::class);
+        TwillAppSettings::getGroupForName('someRandomName');
+    }
+    
+    public function testGetInvalidSection(): void {
+        $this->expectException(SettingsSectionDoesNotExistException::class);
+        TwillAppSettings::getGroupDataForSectionAndName('test', 'someRandomSection');
     }
 }
