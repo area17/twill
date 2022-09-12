@@ -180,6 +180,11 @@ class NavigationLink extends Component
         return $this->hasActiveChild();
     }
 
+    public function getTitle(): string
+    {
+        return $this->title;
+    }
+
     protected function hasActiveChild(): bool
     {
         foreach ($this->children as $navigationLink) {
@@ -201,7 +206,7 @@ class NavigationLink extends Component
         return view('twill::partials.navigation.navigation_link', [
             'class' => $class,
             'is_active' => $this->isActive(),
-            'title' => $this->title,
+            'title' => $this->getTitle(),
             'href' => $this->getHref(),
             'target_blank' => $this->isTargetBlank(),
             'attributes' => $this->customAttributes,

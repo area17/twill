@@ -7,12 +7,7 @@
 
 <body class="env env--{{ app()->environment() }} @yield('appTypeClass')">
     @include('twill::partials.icons.svg-sprite')
-    {{-- @prtodo: Fix when done --}}
-    {{-- @if (config('twill.enabled.search', false)) --}}
-    {{-- @partialView($moduleName ?? null, 'navigation._overlay_navigation', ['search' => true]) --}}
-    {{-- @else --}}
-    {{-- @partialView($moduleName ?? null, 'navigation._overlay_navigation') --}}
-    {{-- @endif --}}
+    <x-twill.partials::navigation.overlay />
     <div class="a17">
         <header class="header">
             <div class="container">

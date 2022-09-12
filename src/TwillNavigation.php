@@ -124,9 +124,6 @@ class TwillNavigation
         return null;
     }
 
-    /**
-     * A work in progress to simplify the navigation tree.
-     */
     public function buildNavigationTree(): array
     {
         $tree = [];
@@ -141,13 +138,18 @@ class TwillNavigation
         $tree['right'][] = NavigationLink::make()
             ->withAttributes(['data-medialib-btn'])
             ->title(twillTrans('twill::lang.nav.media-library'))
-            ->onlyWhen(function () {
-                return Auth::user()->can('access-media-library');
-            });
+            ->onlyWhen(fn() => Auth::user()->can('access-media-library'));
         $tree['right'][] = NavigationLink::make()
             ->title(twillTrans('twill::lang.nav.open-live-site'))
             ->onlyWhen(fn() => config('twill.enable.site-link', false))
             ->toExternalUrl(config('app.url'));
+
+        // Filter the final tree before handing it off.
+        foreach ($tree as $groupKey => $group) {
+            $tree[$groupKey] = Arr::where($group, function(NavigationLink $link): bool {
+                return $link->shouldShow();
+            });
+        }
 
         return $tree;
     }
