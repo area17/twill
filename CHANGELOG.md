@@ -16,6 +16,13 @@ All notable changes to `twill` will be documented in this file.
 - Fixes a js error that occurred when cloning repeaters [`#1734`](https://github.com/area17/twill/pull/1734)
 - Resolved an issue where slug models could not be found if directories were nested [`#1738`](https://github.com/area17/twill/pull/1738)
 - Fixed slugs in nested modules to not rely on random sort anymore [`#1743`](https://github.com/area17/twill/pull/1743)
+- Fixed an issue where the activities dashboard could show less entries [`#1764`](https://github.com/area17/twill/pull/1764)
+- Fixed an issue that could cause undefined errors when using subdomain routing [`#1779`](https://github.com/area17/twill/pull/1779)
+- Optimized a query in HasRelated [`#1789`](https://github.com/area17/twill/pull/1789)
+
+### Docs
+
+Various small documentation updates.
 
 ## 2.8.8 (2022-06-27)
 
