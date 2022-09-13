@@ -3,19 +3,19 @@
 @section('appTypeClass', 'body--form')
 
 @push('extra_css')
-@if(app()->isProduction())
-<link href="{{ twillAsset('main-form.css') }}" rel="preload" as="style" crossorigin />
-@endif
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-form.css') }}" rel="preload" as="style" crossorigin />
+    @endif
 
-@unless(config('twill.dev_mode', false))
-<link href="{{ twillAsset('main-form.css') }}" rel="stylesheet" crossorigin />
-@endunless
+    @unless(config('twill.dev_mode', false))
+        <link href="{{ twillAsset('main-form.css') }}" rel="stylesheet" crossorigin />
+    @endunless
 @endpush
 
 @push('extra_js_head')
-@if(app()->isProduction())
-<link href="{{ twillAsset('main-form.js') }}" rel="preload" as="script" crossorigin />
-@endif
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-form.js') }}" rel="preload" as="script" crossorigin />
+    @endif
 @endpush
 
 @php
@@ -30,14 +30,14 @@ $editModalTitle = ($createWithoutModal ?? false) ? twillTrans('twill::lang.modal
 $item = isset($item) ? $item : null;
 
 if (config('twill.enabled.permissions-management')) {
-$users = app()->make('A17\Twill\Repositories\UserRepository')->published()->notSuperAdmin()->get();
-$groups = app()->make('A17\Twill\Repositories\GroupRepository')->get()->map(function ($group) {
-return [
-'name' => $group->id . '_group_authorized',
-'value' => $group->id,
-'label' => $group->name
-];
-});
+    $users = app()->make('A17\Twill\Repositories\UserRepository')->published()->notSuperAdmin()->get();
+    $groups = app()->make('A17\Twill\Repositories\GroupRepository')->get()->map(function ($group) {
+        return [
+            'name' => $group->id . '_group_authorized',
+            'value' => $group->id,
+            'label' => $group->name
+        ];
+    });
 }
 @endphp
 
@@ -47,10 +47,10 @@ return [
         @php
         $additionalFieldsets = $additionalFieldsets ?? [];
         if(!$disableContentFieldset) {
-        array_unshift($additionalFieldsets, [
-        'fieldset' => 'content',
-        'label' => $contentFieldsetLabel ?? twillTrans('twill::lang.form.content')
-        ]);
+            array_unshift($additionalFieldsets, [
+                'fieldset' => 'content',
+                'label' => $contentFieldsetLabel ?? twillTrans('twill::lang.form.content')
+            ]);
         }
         @endphp
         <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($additionalFieldsets) }}">
@@ -89,23 +89,23 @@ return [
                     @unless($disableContentFieldset)
                     <a17-fieldset title="{{ $contentFieldsetLabel ?? twillTrans('twill::lang.form.content') }}" id="content">
                         @if (isset($renderFields) && $renderFields->isNotEmpty())
-                        @foreach($renderFields as $field)
-                        {!! $field->render() !!}
-                        @endforeach
+                            @foreach($renderFields as $field)
+                                {!! $field->render() !!}
+                            @endforeach
                         @else
-                        @yield('contentFields')
+                            @yield('contentFields')
                         @endif
                     </a17-fieldset>
                     @endunless
 
                     @if(\A17\Twill\Facades\TwillPermissions::levelIs(\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM))
-                    @if($showPermissionFieldset ?? null)
-                    @can('manage-item', isset($item) ? $item : null)
-                    <a17-fieldset title="User Permissions" id="permissions">
-                        <x-twill::select-permissions :items-in-selects-tables="$users" label-key="name" name-pattern="user_%id%_permission" :list-user="true" />
-                    </a17-fieldset>
-                    @endcan
-                    @endif
+                        @if($showPermissionFieldset ?? null)
+                            @can('manage-item', isset($item) ? $item : null)
+                                <a17-fieldset title="User Permissions" id="permissions">
+                                    <x-twill::select-permissions :items-in-selects-tables="$users" label-key="name" name-pattern="user_%id%_permission" :list-user="true" />
+                                </a17-fieldset>
+                            @endcan
+                        @endif
                     @endif
 
                     @yield('fieldsets')
