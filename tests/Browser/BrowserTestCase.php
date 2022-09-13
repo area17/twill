@@ -8,9 +8,14 @@ use A17\Twill\RouteServiceProvider;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
 use Carbon\Carbon;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\WebDriverDimension;
 use Illuminate\Support\Facades\DB;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Orchestra\Testbench\Dusk\TestCase;
+use Orchestra\Testbench\Dusk\Options as DuskOptions;
+use Facebook\WebDriver\Chrome\ChromeOptions;
+use Facebook\WebDriver\Remote\DesiredCapabilities;
 
 class BrowserTestCase extends TestCase
 {
@@ -243,5 +248,31 @@ class BrowserTestCase extends TestCase
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
         }
+    }
+    
+    /**
+     * @inheritDoc
+     *
+     * Override the default driver so that we can fix our resolution.
+     */
+    protected function driver(): RemoteWebDriver
+    {
+        if (DuskOptions::shouldUsesWithoutUI()) {
+            DuskOptions::withoutUI();
+        } elseif ($this->hasHeadlessDisabled()) {
+            DuskOptions::withUI();
+        }
+
+        $driver = RemoteWebDriver::create(
+            'http://localhost:9515',
+            DesiredCapabilities::chrome()->setCapability(
+                ChromeOptions::CAPABILITY,
+                DuskOptions::getChromeOptions()
+            )
+        );
+
+        $driver->manage()->window()->setSize(new WebDriverDimension(1440,900));
+
+        return $driver;
     }
 }
