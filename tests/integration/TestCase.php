@@ -111,7 +111,7 @@ abstract class TestCase extends OrchestraTestCase
     protected function makeAllTwillPaths(): void
     {
         collect($this->paths)->each(function ($directory) {
-            if (!file_exists($directory = twill_path($directory))) {
+            if (! file_exists($directory = twill_path($directory))) {
                 $this->files->makeDirectory($directory, 0755, true);
             }
         });
@@ -164,7 +164,7 @@ abstract class TestCase extends OrchestraTestCase
         $this->installTwill();
 
         // Add database seeders to autoload as it is not in the orchestra base composer.
-        foreach (File::allFiles(base_path("/database/seeders")) as $file) {
+        foreach (File::allFiles(base_path('/database/seeders')) as $file) {
             include_once $file->getPathname();
         }
     }
@@ -370,7 +370,7 @@ abstract class TestCase extends OrchestraTestCase
     public function superAdmin($force = false)
     {
         return $this->superAdmin =
-            !$this->superAdmin || $force
+            ! $this->superAdmin || $force
                 ? $this->makeNewSuperAdmin()
                 : $this->superAdmin;
     }
@@ -592,7 +592,7 @@ abstract class TestCase extends OrchestraTestCase
 
                 $destination = $this->makeFileName($destination, $source);
 
-                if (!$this->files->exists($directory = dirname($destination))) {
+                if (! $this->files->exists($directory = dirname($destination))) {
                     $this->files->makeDirectory($directory, 0755, true);
                 }
 
@@ -614,11 +614,11 @@ abstract class TestCase extends OrchestraTestCase
                 File::deleteDirectory($file);
             }
 
-            if (!is_dir($file) && file_exists($file)) {
+            if (! is_dir($file) && file_exists($file)) {
                 unlink($file);
             }
 
-            if (!Str::endsWith($file, '.php')) {
+            if (! Str::endsWith($file, '.php')) {
                 File::makeDirectory($file, 0755, true);
             }
         });
@@ -661,7 +661,7 @@ abstract class TestCase extends OrchestraTestCase
 
         $extension = pathinfo($file, PATHINFO_EXTENSION);
 
-        if (filled($source) && !Str::endsWith($file, ".{$extension}")) {
+        if (filled($source) && ! Str::endsWith($file, ".{$extension}")) {
             $file = $file . basename($source);
         }
 
@@ -709,7 +709,7 @@ abstract class TestCase extends OrchestraTestCase
      */
     public function skipOnTravis()
     {
-        if (!is_null(env('TRAVIS_PHP_VERSION'))) {
+        if (! is_null(env('TRAVIS_PHP_VERSION'))) {
             $this->markTestSkipped('This test cannot be executed on Travis');
         }
     }
