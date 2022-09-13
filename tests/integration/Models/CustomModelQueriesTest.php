@@ -66,15 +66,4 @@ class CustomModelQueriesTest extends TestCase
 
         $this->assertEquals('b-title-1-en', $result->title);
     }
-
-    public function testFirstByTranslatedFieldOrCreate(): void
-    {
-        // We could add this, but it would be a just a helper around the query above and
-        // a create call.
-        // $result = \App\Models\Screen::orderByTranslation('title', 'desc')
-        //     ->where('title', 'LIKE', '%title%')
-        //     ->firstOrCreate(['title' => ['en' => 'Some english title', 'fr' => 'Some french title']]);
-        //
-        // dd($result);
-    }
 }
