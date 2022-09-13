@@ -5,7 +5,7 @@ pageClass: twill-doc
 # Navigation
 
 Since Twill 3.x there are 2 ways to manage navigation. You can only use one of them at the time. In general we suggest
-to use the newer approach by registering the navgiation in your `AppServiceProvider`.
+to use the newer approach by registering the navigation in your `AppServiceProvider`.
 
 There are 3 levels of navigation.
 
@@ -27,6 +27,7 @@ public function boot(): void
     );
     TwillNavigation::addLink(
         NavigationLink::make()->forModule('projects')
+          ->addAsFirstChild()
           ->setChildren([
             NavigationLink::make()->forModule('projects')
               ->addAsFirstChild()

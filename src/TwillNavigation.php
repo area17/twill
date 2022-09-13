@@ -116,10 +116,12 @@ class TwillNavigation
                     ->forRoute($group->getRoute(), ['group' => $group->getName()]);
             }
 
-            return NavigationLink::make()
-                ->title('Settings')
-                ->forRoute('twill.app.settings')
-                ->setChildren($links);
+            if ($links !== []) {
+                return NavigationLink::make()
+                    ->title('Settings')
+                    ->forRoute('twill.app.settings')
+                    ->setChildren($links);
+            }
         }
 
         return null;

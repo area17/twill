@@ -34,13 +34,14 @@ public function boot(): void
             ->name('site-settings')
             ->label('Site settings')
             ->description('Setup general site settings')
+            ->availableWhen(fn() => \Auth::user()->can('manage.settings')) // Example access control.
     );
 }
 ```
 
 In the example above, we call the `TwillAppSettings` facade in which we register a new `SettingsGroup`
 
-Noticable methods for the settingsGroup are:
+Notable methods for the settingsGroup are:
 
 - `name(string)`: this is the machine name, and also the name of the folder and database that will be used later.
 - `label(string)`: the label to use for this settings group, this will be used in menu entries.
@@ -48,6 +49,8 @@ Noticable methods for the settingsGroup are:
 overview page.
 - `doNotAutoRegisterMenu()`: this can be used if you want to manually register the menu link. If not provided it will
 automatically be added under a top level **settings** menu entry in the primary navigation. 
+- `availableWhen(\Closure)`: A function that gives or removes access to the settings group. The closure should return
+true if the current user should be able to access it.
 
 ### Setting sections and fields
 

@@ -117,7 +117,8 @@ class SettingsModelTest extends TestCase
         $this->assertEquals('English title!', $model->blocks[0]->content['title']['en']);
     }
 
-    public function testExceptionWhenDirectoryIsMissing(): void {
+    public function testExceptionWhenDirectoryIsMissing(): void
+    {
         TwillAppSettings::registerSettingsGroup(
             $group = SettingsGroup::make()
                 ->name('test_not_existing')
@@ -127,5 +128,18 @@ class SettingsModelTest extends TestCase
 
         $this->expectException(SettingsDirectoryMissingException::class);
         $group->boot();
+    }
+
+    public function testAccessDeniedForUnavailableSetting(): void
+    {
+        TwillAppSettings::registerSettingsGroup(
+            SettingsGroup::make()
+                ->name('demo')
+                ->availableWhen(fn() => false)
+        );
+
+        $this->actingAs($this->superAdmin(), 'twill_users')
+            ->get(route('twill.app.settings.page', ['group' => 'demo']))
+            ->assertStatus(403);
     }
 }

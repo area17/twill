@@ -34,7 +34,7 @@ class TwillAppSettings
     {
         return array_filter(
             self::$settingsGroups,
-            fn(SettingsGroup $group) => !$group->shouldNotAutoRegisterInMenu()
+            fn(SettingsGroup $group) => !$group->shouldNotAutoRegisterInMenu() && $group->isAvailable()
         );
     }
 

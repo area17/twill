@@ -43,6 +43,12 @@ class AppSettingsController extends ModuleController
 
     public function editSettings(string $group)
     {
+        $settingsGroup = TwillAppSettings::getGroupForName($group);
+
+        if (!$settingsGroup->isAvailable()) {
+            abort(403);
+        }
+
         $model = AppSetting::where('name', '=', $group)->firstOrFail();
 
         $model->registerSettingBlocks();

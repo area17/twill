@@ -3,6 +3,7 @@
 namespace A17\Twill\Services\Settings;
 
 use A17\Twill\Models\AppSetting;
+use Closure;
 use Illuminate\Support\Str;
 
 /**
@@ -19,6 +20,8 @@ class SettingsGroup
     private ?string $description = null;
 
     private bool $doNotAutoRegisterMenu = false;
+
+    private ?Closure $availableWhen = null;
 
     public static function make(): self
     {
@@ -102,6 +105,22 @@ class SettingsGroup
 
             $this->ensureModelExists();
         }
+    }
+
+    public function availableWhen(Closure $closure): self
+    {
+        $this->availableWhen = $closure;
+
+        return $this;
+    }
+
+    public function isAvailable(): bool
+    {
+        if ($closure = $this->availableWhen) {
+            return $closure();
+        }
+
+        return true;
     }
 
     protected function ensureModelExists(): void
