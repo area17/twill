@@ -218,6 +218,23 @@ File: `app/Models/Play.php`
     }
 ```
 
+#### Index Options
+
+You can change the available actions within the listing view for any particular module by altering the `$indexOptions` array in the module's controller. The full list at the start of this chapter demonstrates the available options with their default settings. Should you wish to change one, include it in the controller's array with the desired overriding value.
+
+For example, to disable the user's ability to permanently delete an article, you include the following:
+
+File: `app/Http/Controllers/Admin/ArticleController`
+```php
+
+	protected $indexOptions = [
+		'forceDelete' => false // This is the opposite of the default
+		];
+
+```
+
+With this, all index options apart from `Destroy` and the synonymous bulk action will be available on the listing view for articles.
+
 #### Additional table actions
 
 You can override the `additionalTableActions()` method to add custom actions in your module's listing view:

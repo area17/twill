@@ -43,7 +43,7 @@ trait HasRelated
      */
     public function loadRelated($browser_name)
     {
-        if (!isset($this->relatedItems)) {
+        if (!$this->relationLoaded('relatedItems')) {
             $this->load('relatedItems');
         }
 
