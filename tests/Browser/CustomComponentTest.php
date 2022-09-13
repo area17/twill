@@ -52,7 +52,6 @@ class CustomComponentTest extends BrowserTestCase
 
             $browser->visit('/twill');
             $browser->clickLink('Contact Page');
-            ray()->pause();
             $browser->assertSee('This is the ContactPage form');
             $browser->assertSee('Content from custom helloWorld vue component');
         });
