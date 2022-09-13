@@ -118,3 +118,10 @@ jobs:
       - uses: codecov/codecov-action@v2
         with:
           files: .github/clover.xml
+
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: screenshots
+          path: tests/Browser/screenshots/
+
