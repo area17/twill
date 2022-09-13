@@ -28,7 +28,7 @@ trait HasRelated
      */
     public function getRelated($browser_name)
     {
-        if (!isset($this->relatedCache[$browser_name]) || $this->relatedCache[$browser_name] === null) {
+        if (! isset($this->relatedCache[$browser_name]) || $this->relatedCache[$browser_name] === null) {
             $this->loadRelated($browser_name);
         }
 
@@ -43,7 +43,7 @@ trait HasRelated
      */
     public function loadRelated($browser_name)
     {
-        if (!isset($this->relatedItems)) {
+        if (! isset($this->relatedItems)) {
             $this->load('relatedItems');
         }
 
@@ -53,6 +53,7 @@ trait HasRelated
                 /** @var \A17\Twill\Models\Model $model */
                 if ($model = $item->related) {
                     $model->setRelation('pivot', $item);
+
                     return $model;
                 }
 
@@ -84,7 +85,7 @@ trait HasRelated
                 'browser_name' => $browser_name,
                 'position' => $position,
             ]);
-            ++$position;
+            $position++;
         });
     }
 
