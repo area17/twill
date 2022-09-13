@@ -38,6 +38,9 @@ class BrowserTestCase extends TestCase
         'config/twill-navigation.php',
         'public/assets',
         'resources/assets',
+        'storage/app/public/file-library',
+        'storage/app/public/media-library',
+        'storage/app/public/uploads',
     ];
 
     protected function getEnvironmentSetUp($app): void
@@ -233,5 +236,12 @@ class BrowserTestCase extends TestCase
     protected function getBasePath(): string
     {
         return __DIR__ . '/../../vendor/orchestra/testbench-core/laravel';
+    }
+
+    protected function ensureDirectoryExists(string $path): void
+    {
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
     }
 }
