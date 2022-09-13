@@ -3,13 +3,34 @@
 namespace A17\Twill;
 
 use A17\Twill\Enums\PermissionLevel;
+use A17\Twill\Models\Enums\UserRole;
 use A17\Twill\Models\Permission;
+use MyCLabs\Enum\Enum;
 
 class TwillPermissions
 {
+    public string $roleEnum = UserRole::class;
+
     public function enabled(): bool
     {
         return config('twill.enabled.permissions-management');
+    }
+
+    /**
+     * @return Enum
+     */
+    public function roles(): string
+    {
+        return $this->roleEnum;
+    }
+
+    /**
+     * The role enumeration class. Must extend MyCLabs\Enum\Enum.
+     * See A17\Twill\Models\Enums\UserRole for an example.
+     */
+    public function setRoleEnum(string $roleEnum): void
+    {
+        $this->roleEnum = $roleEnum;
     }
 
     /**

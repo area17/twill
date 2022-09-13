@@ -35,85 +35,94 @@ Publishers have the same permissions as view only users plus:
 Admin users have the same permissions as publisher users plus:
 - full permissions on users
 
-There is also a super admin user that can impersonate other users at `/users/impersonate/{id}`. The super admin can be a useful tool for testing features with different user roles without having to logout/login manually, as well as for debugging issues reported by specific users. You can stop impersonating by going to `/users/impersonate/stop`.
+There is also a super admin user that can impersonate other users at `/users/impersonate/{id}`.
+The super admin can be a useful tool for testing features with different user roles without having to logout/login manually,
+as well as for debugging issues reported by specific users. You can stop impersonating by going to `/users/impersonate/stop`.
 
 ## Extending user roles and permissions
 
-You can create or modify new permissions for existing roles by using the Gate façade in your `AuthServiceProvider`. The `can` middleware, provided by default in Laravel, is very easy to use, either through route definition or controller constructor.
+You can create or modify new permissions for existing roles by using the Gate facade in your `AuthServiceProvider`.
+The `can` middleware, provided by default in Laravel, is very easy to use, either through route definition or controller constructor.
 
-To create new user roles, you could extend the default enum UserRole by overriding it using Composer autoloading. In `composer.json`:
 
-```json
-    "autoload": {
-        "classmap": [
-            "database/seeds",
-            "database/factories"
-        ],
-        "psr-4": {
-            "App\\": "app/"
-        },
-        "files": ["app/Models/Enums/UserRole.php"],
-        "exclude-from-classmap": ["vendor/area17/twill/src/Models/Enums/UserRole.php"]
-    }
-```
-
-In `app/Models/Enums/UserRole.php` (or anywhere else you'd like actually, only the namespace needs to be the same):
+In `app/Models/Enums/UserRole.php` (or another file) define your roles:
 
 ```php
-    <?php
+<?php
 
-    namespace A17\Twill\Models\Enums;
+namespace App\Models\Enums;
 
-    use MyCLabs\Enum\Enum;
+use MyCLabs\Enum\Enum;
 
-    class UserRole extends Enum
+class UserRole extends Enum
+{
+    const CUSTOM1 = 'Custom role 1';
+    const CUSTOM2 = 'Custom role 2';
+    const CUSTOM3 = 'Custom role 3';
+    const ADMIN = 'Admin';
+}
+```
+
+Then in your app service provider you can register it:
+
+```php
+<?php
+class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
     {
-        const CUSTOM1 = 'Custom role 1';
-        const CUSTOM2 = 'Custom role 2';
-        const CUSTOM3 = 'Custom role 3';
-        const ADMIN = 'Admin';
+        \A17\Twill\Facades\TwillPermissions::setRoleEnum(\App\Models\Enums\UserRole::class);
     }
+}
 ```
 
 Finally, in your `AuthServiceProvider` class, redefine [Twill's default permissions](https://github.com/area17/twill/blob/e8866e40b7df4a6919e0ddb368990d04caeb705a/src/AuthServiceProvider.php#L26-L48) if you need to, or add your own, for example:
 
 ```php
-    <?php
+<?php
 
-    namespace App\Providers;
+namespace App\Providers;
 
-    use A17\Twill\Models\Enums\UserRole;
-    use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-    use Illuminate\Support\Facades\Gate;
+use App\Models\Enums\UserRole;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
-    class AuthServiceProvider extends ServiceProvider
+class AuthServiceProvider extends ServiceProvider
+{
+    public function boot()
     {
-        public function boot()
-        {
-            Gate::define('list', function ($user) {
-                return in_array($user->role_value, [
-                    UserRole::CUSTOM1,
-                    UserRole::CUSTOM2,
-                    UserRole::ADMIN,
-                ]);
-            });
+        Gate::define('list', function ($user) {
+            return in_array($user->role_value, [
+                UserRole::CUSTOM1,
+                UserRole::CUSTOM2,
+                UserRole::ADMIN,
+            ]);
+        });
 
-            Gate::define('edit', function ($user) {
-                return in_array($user->role_value, [
-                    UserRole::CUSTOM3,
-                    UserRole::ADMIN,
-                ]);
-            });
+        Gate::define('edit', function ($user) {
+            return in_array($user->role_value, [
+                UserRole::CUSTOM3,
+                UserRole::ADMIN,
+            ]);
+        });
 
-            Gate::define('custom-permission', function ($user) {
-                return in_array($user->role_value, [
-                    UserRole::CUSTOM2,
-                    UserRole::ADMIN,
-                ]);
-            });
-        }
+        Gate::define('custom-permission', function ($user) {
+            return in_array($user->role_value, [
+                UserRole::CUSTOM2,
+                UserRole::ADMIN,
+            ]);
+        });
     }
+}
 ```
+
+If you need a more dynamic aproach you can also get the current permission enum using the facade:
+
+```php
+TwillPermissons::roles()::PUBLISHER (or any role)
+```
+
+
 
 You can use your new permission and existing ones in many places like the `twill-navigation` configuration using `can`:
 

@@ -2,13 +2,13 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasOauth;
 use A17\Twill\Models\Behaviors\HasPermissions;
 use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\IsTranslatable;
 use A17\Twill\Models\Contracts\TwillModelContract;
-use A17\Twill\Models\Enums\UserRole;
 use A17\Twill\Notifications\PasswordResetByAdmin as PasswordResetByAdminNotification;
 use A17\Twill\Notifications\Reset as ResetNotification;
 use A17\Twill\Notifications\TemporaryPassword as TemporaryPasswordNotification;
@@ -16,7 +16,6 @@ use A17\Twill\Notifications\Welcome as WelcomeNotification;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as AuthenticatableContract;
 use Illuminate\Notifications\Notifiable;
@@ -120,16 +119,16 @@ class User extends AuthenticatableContract implements TwillModelContract
 
     public function getRoleValueAttribute()
     {
-        if ($this->is_superadmin || $this->role == 'SUPERADMIN') {
+        if ($this->is_superadmin || $this->role === 'SUPERADMIN') {
             return 'SUPERADMIN';
         }
 
         if (config('twill.enabled.permissions-management')) {
-            return $this->role ? $this->role->name : null;
+            return $this->role->name ?? null;
         }
 
         if (! empty($this->role)) {
-            return UserRole::{$this->role}()->getValue();
+            return TwillPermissions::roles()::{$this->role}()->getValue();
         }
 
         return null;
