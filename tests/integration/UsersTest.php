@@ -6,6 +6,11 @@ use A17\Twill\Models\User;
 
 class UsersTest extends TestCase
 {
+    public function testDummy(): void
+    {
+        $this->assertTrue(true);
+    }
+
     protected function impersonateUser()
     {
         $this->httpRequestAssert('/twill');

@@ -4,7 +4,6 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Contracts\TwillModelContract;
-use A17\Twill\Models\Enums\UserRole;
 use A17\Twill\Models\Group;
 use A17\Twill\Models\Permission;
 use A17\Twill\Models\Role;
@@ -384,7 +383,7 @@ class UserController extends ModuleController
             })->toArray();
         }
 
-        return collect(UserRole::toArray())->map(function ($item, $key) {
+        return collect(TwillPermissions::roles()::toArray())->map(function ($item, $key) {
             return ['value' => $key, 'label' => $item];
         })->values()->toArray();
     }
