@@ -2,6 +2,29 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.0.0-alpha2
+
+### Features
+
+- Added new setting implementation [DOCS](https://github.com/area17/twill/blob/3.x/docs/src/settings-sections/index.md) [PR](https://github.com/area17/twill/pull/1796)
+- Role enum can now be swapped without changing composer.json [DOCS](https://github.com/area17/twill/blob/3.x/docs/src/user-management/index.md#extending-user-roles-and-permissions) [PR](https://github.com/area17/twill/pull/1807)
+- Submit options are now configurable using the getSubmitOptions [`#1719`](https://github.com/area17/twill/pull/1719)
+- Using enableDraftRevisions you can now have drafts on top of published versions [`#1725`](https://github.com/area17/twill/pull/1725)
+
+### Bugfixes
+
+- When having many blocks, the list is now srollable [`#1464`](https://github.com/area17/twill/pull/1464)
+- Improved support for custom icons [`#1732`](https://github.com/area17/twill/pull/1732)
+- Fixes a js error that occurred when cloning repeaters [`#1734`](https://github.com/area17/twill/pull/1734)
+- Resolved an issue where slug models could not be found if directories were nested [`#1738`](https://github.com/area17/twill/pull/1738)
+- Fixed slugs in nested modules to not rely on random sort anymore [`#1743`](https://github.com/area17/twill/pull/1743)
+- Fixed an issue where the activities dashboard could show less entries [`#1764`](https://github.com/area17/twill/pull/1764)
+- Fixed an issue that could cause undefined errors when using subdomain routing [`#1779`](https://github.com/area17/twill/pull/1779)
+- Optimized a query in HasRelated [`#1789`](https://github.com/area17/twill/pull/1789)
+- Fixed thumbnail backwards compatability for the form builder.
+- Fixed custom components in build process. [`#1809`](https://github.com/area17/twill/pull/1809)
+- Fixed an issue that would not render images in the block preview. [`#1797`](https://github.com/area17/twill/pull/1797)
+
 ## 3.0.0-alpha1
 
 ### Major features
