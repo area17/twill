@@ -43,20 +43,6 @@ class CustomComponentTest extends BrowserTestCase
         });
     }
 
-    public function testCustomComponentInDefaultLocation(): void 
-    {
-        $this->artisan('twill:build', ['--noInstall' => true]);
-        
-        $this->browse(function (Browser $browser) {
-            $browser->loginAs($this->superAdmin, 'twill_users');
-
-            $browser->visit('/twill');
-            $browser->clickLink('Contact Page');
-            $browser->assertSee('This is the ContactPage form');
-            $browser->assertSee('Content from custom helloWorld vue component');
-        });
-    }
-
     public function testWithBuildingCustomComponent(): void
     {
         $path = implode(DIRECTORY_SEPARATOR, [
