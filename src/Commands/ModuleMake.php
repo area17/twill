@@ -390,11 +390,36 @@ class ModuleMake extends Command
     private function addEntryToNavigationFile(string $key, array $value): void
     {
         $navigationFile = base_path('config/twill-navigation.php');
-        if (!File::exists($navigationFile)) {
-            File::put($navigationFile, '<?php ' . PHP_EOL . PHP_EOL . 'return [];');
-        }
 
-        $navigation = require($navigationFile);
+        // If the file does not exist, or it is empty, we explain how to use the navigation builder.
+        $navigationFileExists = File::exists($navigationFile); 
+
+        if ($navigationFileExists) {
+            // Che file is empty.
+            $navigation = require($navigationFile);
+            if (empty($navigation)) {
+                // Instructions here.
+                $this->warn('To add a navigation entry add the following to your AppServiceProvider BOOT method.');
+
+                if ($value['module'] ?? false) {
+                    $message = <<<PHP
+TwillNavigation::addLink(
+    NavigationLink::make()->forModule('$key')
+);
+PHP;
+                } elseif ($value['singleton'] ?? false) {
+                    $message = <<<PHP
+TwillNavigation::addLink(
+    NavigationLink::make()->forSingleton('$key')
+);
+PHP;
+                } 
+                $this->line('**************************');
+                $this->info($message);
+                $this->line('**************************');
+                return;
+            }
+        }
 
         $navigation[$key] = $value;
 
