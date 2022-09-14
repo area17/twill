@@ -45,6 +45,7 @@ jobs:
         run: vendor/bin/phpstan
 
   test:
+    timeout-minutes: 10
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
