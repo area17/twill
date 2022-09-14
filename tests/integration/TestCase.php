@@ -136,7 +136,7 @@ abstract class TestCase extends OrchestraTestCase
         $this->installTwill();
 
         // Add database seeders to autoload as it is not in the orchestra base composer.
-        foreach (File::allFiles(base_path("/database/seeders")) as $file) {
+        foreach (File::allFiles(base_path('/database/seeders')) as $file) {
             include_once $file->getPathname();
         }
     }
@@ -328,7 +328,7 @@ abstract class TestCase extends OrchestraTestCase
     public function superAdmin($force = false)
     {
         return $this->superAdmin =
-            !$this->superAdmin || $force
+            ! $this->superAdmin || $force
                 ? $this->makeNewSuperAdmin()
                 : $this->superAdmin;
     }
@@ -539,7 +539,7 @@ abstract class TestCase extends OrchestraTestCase
 
         $extension = pathinfo($file, PATHINFO_EXTENSION);
 
-        if (filled($source) && !Str::endsWith($file, ".{$extension}")) {
+        if (filled($source) && ! Str::endsWith($file, ".{$extension}")) {
             $file = $file . basename($source);
         }
 
@@ -587,7 +587,7 @@ abstract class TestCase extends OrchestraTestCase
      */
     public function skipOnTravis()
     {
-        if (!is_null(env('TRAVIS_PHP_VERSION'))) {
+        if (! is_null(env('TRAVIS_PHP_VERSION'))) {
             $this->markTestSkipped('This test cannot be executed on Travis');
         }
     }

@@ -5,7 +5,7 @@ const isProd = process.env.NODE_ENV === 'production'
 // Define global vue variables
 process.env.VUE_APP_NAME = process.env.VUE_APP_NAME || 'TWILL'
 
-process.env.VUE_APP_CUSTOM_COMPONENTS_PATH = process.env.VUE_APP_CUSTOM_COMPONENTS_PATH ?? '@/components/blocks/customs/'
+process.env.VUE_APP_CUSTOM_COMPONENTS_PATH = process.env.VUE_APP_CUSTOM_COMPONENTS_PATH ?? '@/components/customs/'
 
 if (isProd) {
   // eslint-disable-next-line no-console
