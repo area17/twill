@@ -32,12 +32,12 @@ HTML;
         // Copy the block to the installation.
         $this->putContentToFilePath(
             $block,
-            resource_path('views/twill/blocks/test-image.blade.php')
+            resource_path('views/twill/blocks/image.blade.php')
         );
 
         $this->putContentToFilePath(
             '{{ $block->image("image", "desktop") }}',
-            resource_path('views/site/blocks/test-image.blade.php')
+            resource_path('views/site/blocks/image.blade.php')
         );
     }
 
