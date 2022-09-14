@@ -42,8 +42,6 @@ There are two artisan commands to help you and we recommend using them instead o
 
  - `php artisan twill:dev`, which will start a local server that watches for changes in Twill's frontend directory. You need to set `'dev_mode' => true` in your `config/twill.php` file when using this command. This is especially helpful for Twill's contributors, but can also be useful if you use a lot of custom components in your application.
 
-Both commands take a `--noInstall` option to avoid running `npm ci` before every build.
-
 #### Naming convention of custom Vue components
 
 The naming convention for custom blocks Vue component is deferred from the block's component name. For example, if your block's component name is `a17-block-quote`, the custom blocks should be `assets/js/blocks/BlockQuote.vue`. For component name with underscores, for example `a17-amazing_quote`, it would be `assets/js/blocks/BlockAmazing_quote.vue`.

@@ -166,7 +166,7 @@ class Build extends Command
                 "The `chokidar-cli` package was not found. It is required to watch custom blocks & components in development. You can install it by running:\n"
             );
             $this->warn("    php artisan twill:dev\n");
-            $this->warn("without the `--noInstall` option.\n");
+            $this->warn("with the `--install` option.\n");
             sleep(2);
         }
     }
