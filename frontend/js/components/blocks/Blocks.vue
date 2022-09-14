@@ -19,6 +19,9 @@
                               :block="block"
                               :index="blockIndex"
                               :opened="opened"
+                              :with-handle="!isSettings"
+                              :with-actions="!isSettings"
+                              :with-move-dropdown="isSettings"
                               @expand="setOpened"
                               v-if="availableBlocks.length">
                 <template v-for="availableBlock in availableBlocks">
@@ -78,7 +81,7 @@
         </transition-group>
       </draggable>
 
-      <div class="blocks__actions">
+      <div class="blocks__actions" v-if="!isSettings">
         <a17-dropdown ref="blocksDropdown"
                       position="top-center"
                       v-if="availableBlocks.length"
@@ -148,6 +151,10 @@
       trigger: {
         type: String,
         default: ''
+      },
+      isSettings: {
+        type: Boolean,
+        required: true
       },
       title: {
         type: String,

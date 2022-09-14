@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Builder;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
+ * @mixin \A17\Twill\Models\Model
+ *
  * @property-read int $id
+ *
+ * @todo: Check if we can make it mixin some eloquent methods as well?
  */
 interface TwillModelContract
 {

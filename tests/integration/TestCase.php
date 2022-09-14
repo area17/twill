@@ -12,7 +12,6 @@ use Carbon\Carbon;
 use Exception;
 use Faker\Factory as Faker;
 use Illuminate\Contracts\Console\Kernel;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
@@ -45,14 +44,9 @@ abstract class TestCase extends OrchestraTestCase
     public $example;
 
     /**
-     * @var \A17\Twill\Tests\Integration\UserClass
+     * @var \A17\Twill\Models\User
      */
     public $superAdmin;
-
-    /**
-     * @var \Illuminate\Filesystem\Filesystem
-     */
-    public $files;
 
     /**
      * @var \Carbon\Carbon
@@ -65,57 +59,9 @@ abstract class TestCase extends OrchestraTestCase
     public $recursiveCounter = 0;
 
     /**
-     * @var \Illuminate\Foundation\Testing\TestResponse
+     * @var TestResponse
      */
     public $crawler;
-
-    public $paths = [
-        '/../resources/views',
-        '/../resources/views/admin',
-        '/../resources/views/site',
-        'Http/Controllers/Twill',
-        'Http/Requests/Twill',
-        'Models/Revisions',
-        'Models/Slugs',
-        'Models/Translations',
-        'Repositories',
-        '/../resources/views/twill/authors',
-        '/../resources/views/twill/categories',
-        '/../resources/views/site/blocks',
-        '/../resources/views/site/layouts',
-    ];
-
-    public $toDelete = [
-        '{$database}/migrations/',
-        '{$base}/routes/twill.php',
-        '{$app}/Models',
-        '{$app}/Http',
-        '{$app}/Repositories/',
-        '{$resources}/views',
-        '{$database}/migrations',
-        '{$app}/Twill',
-        '{$routes}',
-        '{$config}/twill-navigation.php',
-        '{$config}/twill.php',
-    ];
-
-    protected function deleteAllTwillPaths(): void
-    {
-        collect($this->paths)->each(function ($directory) {
-            if (file_exists($directory = twill_path($directory))) {
-                $this->files->deleteDirectory($directory);
-            }
-        });
-    }
-
-    protected function makeAllTwillPaths(): void
-    {
-        collect($this->paths)->each(function ($directory) {
-            if (! file_exists($directory = twill_path($directory))) {
-                $this->files->makeDirectory($directory, 0755, true);
-            }
-        });
-    }
 
     /**
      * After a long debugging session I found that this flow is the most stable.
@@ -132,14 +78,36 @@ abstract class TestCase extends OrchestraTestCase
         $this->resolveApplicationConfiguration($app);
         $this->resolveApplicationHttpKernel($app);
         $this->resolveApplicationConsoleKernel($app);
-
-        if ($this->example) {
-            $this->installPresetFiles($this->example, true);
-        }
-
         $this->resolveApplicationBootstrappers($app);
 
         return $app;
+    }
+
+    public function tearDown(): void
+    {
+        $toDelete = [
+            app_path('Http/Controllers/Twill'),
+            app_path('Http/Requests/Twill'),
+            app_path('Models'),
+            app_path('Repositories'),
+            app_path('Twill'),
+            resource_path('views/twill'),
+            resource_path('views/site'),
+            database_path('migrations'),
+            app_path('../routes/twill.php'),
+            config_path('twill.php'),
+            config_path('twill-navigation.php'),
+        ];
+
+        foreach ($toDelete as $path) {
+            if (is_dir($path)) {
+                File::deleteDirectory($path);
+            } elseif (file_exists($path)) {
+                unlink($path);
+            }
+        }
+
+        parent::tearDown();
     }
 
     /**
@@ -147,6 +115,14 @@ abstract class TestCase extends OrchestraTestCase
      */
     public function setUp(): void
     {
+        if ($this->example) {
+            $this->installPresetFiles(
+                $this->example,
+                true,
+                $this->getBasePath()
+            );
+        }
+
         // Enforce the url for testing to be 'http://twill.test' for certain assertions.
         // This is different from the one in phpunit.xml because that one is used for laravel dusk.
         $_ENV['APP_URL'] = 'http://twill.test';
@@ -171,13 +147,9 @@ abstract class TestCase extends OrchestraTestCase
 
         $this->freshDatabase();
 
-        $this->cleanDirectories();
-
         $this->instantiateFaker();
 
         $this->copyBlocks();
-
-        $this->copyTestFiles();
 
         $this->installTwill();
 
@@ -289,18 +261,6 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * Boot the TestCase.
-     *
-     * @param \Illuminate\Foundation\Application $app
-     */
-    protected function boot($app)
-    {
-        $this->files = $app->make(Filesystem::class);
-
-        $this->prepareLaravelDirectory();
-    }
-
-    /**
      * Fake a super admin.
      */
     public function makeNewSuperAdmin()
@@ -360,8 +320,6 @@ abstract class TestCase extends OrchestraTestCase
 
         $this->configureDatabase($app);
 
-        $this->boot($app);
-
         $this->setUpDatabase($app);
     }
 
@@ -394,55 +352,20 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * Clear and make needed directories in the Laravel directory.
-     */
-    protected function prepareLaravelDirectory()
-    {
-        array_map(
-            'unlink',
-            glob($this->getBasePath() . '/database/migrations/*')
-        );
-
-        $this->deleteAllTwillPaths();
-
-        $this->makeAllTwillPaths();
-    }
-
-    public function copyTestFiles(): void
-    {
-        if (isset($this->allFiles)) {
-            $this->copyFiles($this->allFiles);
-        }
-    }
-
-    /**
      * Install Twill.
      */
     public function installTwill(): void
     {
         $this->truncateTwillUsers();
 
-        if ($this->example) {
-            $this->artisan('twill:install ' . $this->example)
-                ->expectsConfirmation(
-                    'Are you sure to install this preset? This can overwrite your models, config and routes.',
-                    'yes'
-                )
-                ->expectsQuestion('Enter an email', $this->superAdmin()->email)
-                ->expectsQuestion('Enter a password', $this->superAdmin()->password)
-                ->expectsQuestion(
-                    'Confirm the password',
-                    $this->superAdmin()->password
-                );
-        } else {
-            $this->artisan('twill:install')
-                ->expectsQuestion('Enter an email', $this->superAdmin()->email)
-                ->expectsQuestion('Enter a password', $this->superAdmin()->password)
-                ->expectsQuestion(
-                    'Confirm the password',
-                    $this->superAdmin()->password
-                );
-        }
+        $this->artisan('twill:install')
+            ->expectsQuestion('Enter an email', $this->superAdmin()->email)
+            ->expectsQuestion('Enter a password', $this->superAdmin()->password)
+            ->expectsQuestion(
+                'Confirm the password',
+                $this->superAdmin()->password
+            );
+        // }
 
         $user = User::where('email', $this->superAdmin()->email)->first();
 
@@ -595,51 +518,6 @@ abstract class TestCase extends OrchestraTestCase
         $this->assertLogStatusCode($response);
 
         return $response;
-    }
-
-    /**
-     * Copy all sources to destinations.
-     *
-     * @param array $files
-     */
-    public function copyFiles($files)
-    {
-        collect($files)->each(function ($destination, $source) {
-            collect($destination)->each(function ($destination) use ($source) {
-                $source = $this->makeFileName($source);
-
-                $destination = $this->makeFileName($destination, $source);
-
-                if (! $this->files->exists($directory = dirname($destination))) {
-                    $this->files->makeDirectory($directory, 0755, true);
-                }
-
-                if ($this->files->exists($destination)) {
-                    $this->files->delete($destination);
-                }
-
-                $this->files->copy($source, $destination);
-            });
-        });
-    }
-
-    public function cleanDirectories()
-    {
-        collect($this->toDelete ?? [])->each(function ($directory) {
-            $file = $this->makeFileName($directory);
-
-            if (is_dir($file)) {
-                File::deleteDirectory($file);
-            }
-
-            if (! is_dir($file) && file_exists($file)) {
-                unlink($file);
-            }
-
-            if (! Str::endsWith($file, '.php')) {
-                File::makeDirectory($file, 0755, true);
-            }
-        });
     }
 
     /**

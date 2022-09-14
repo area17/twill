@@ -52,6 +52,7 @@ Below is a list of the methods and their purpose:
 - **disableDelete**: Removes the "delete" option from the content lists.
 - **disableBulkDelete**: Removes the "delete" option from the bulk operations.
 - **disablePermalink**: Removes the permalink from the create/edit screens.
+- **disableEditor**: Removes the editor button from the edit page.
 - **disableBulkEdit**: Disables bulk operations.
 - **disableIncludeScheduledInList**: Hides publish scheduling information from the content list.
 

@@ -20,6 +20,8 @@ class Block
 
     public const TYPE_BLOCK = 'block';
 
+    public const TYPE_SETTINGS = 'settings';
+
     public const TYPE_REPEATER = 'repeater';
 
     public const PREG_REPLACE_INNER = '(\(((?>[^()]+)|(?-2))*\))';
@@ -170,7 +172,8 @@ class Block
         if ($repeater) {
             $blocksList = TwillBlocks::getRepeaters();
         } else {
-            $blocksList = TwillBlocks::getBlocks();
+            // Here we include the settings blocks as well.
+            $blocksList = TwillBlocks::getBlocks(true);
         }
 
         return $blocksList->first(function (self $blockConfig) use ($type) {
@@ -183,7 +186,8 @@ class Block
         if ($repeater) {
             $blocksList = TwillBlocks::getRepeaters();
         } else {
-            $blocksList = TwillBlocks::getBlocks();
+            // Here we include the settings blocks as well.
+            $blocksList = TwillBlocks::getBlocks(true);
         }
 
         return $blocksList->first(function (self $blockConfig) use ($type) {

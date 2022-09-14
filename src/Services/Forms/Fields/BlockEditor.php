@@ -6,6 +6,10 @@ class BlockEditor extends BaseFormField
 {
     protected array $blocks = [];
 
+    protected bool $isSettings = false;
+
+    protected bool $withoutSeparator = false;
+
     public static function make(): static
     {
         $field = new self(\A17\Twill\View\Components\Fields\BlockEditor::class);
@@ -14,13 +18,27 @@ class BlockEditor extends BaseFormField
         return $field;
     }
 
-    public function name(string $name): BaseFormField
+    public function name(string $name): static
     {
         if ($this->label === 'Default') {
             $this->label = null;
         }
 
         return parent::name($name);
+    }
+
+    public function withoutSeparator(bool $withoutSeparator = true): self
+    {
+        $this->withoutSeparator = $withoutSeparator;
+
+        return $this;
+    }
+
+    public function isSettings(bool $isSettings = true): self
+    {
+        $this->isSettings = $isSettings;
+
+        return $this;
     }
 
     /**
@@ -32,5 +50,4 @@ class BlockEditor extends BaseFormField
 
         return $this;
     }
-
 }

@@ -7,9 +7,11 @@ process.env.VUE_APP_NAME = process.env.VUE_APP_NAME || 'TWILL'
 
 process.env.VUE_APP_CUSTOM_COMPONENTS_PATH = process.env.VUE_APP_CUSTOM_COMPONENTS_PATH ?? '@/components/customs/'
 
-// eslint-disable-next-line no-console
-console.log('\x1b[32m', `\n🔥 Building Twill assets in ${isProd ? 'production' : 'dev'} mode.`)
-console.log('\nLoading components from: ' + process.env.VUE_APP_CUSTOM_COMPONENTS_PATH)
+if (isProd) {
+  // eslint-disable-next-line no-console
+  console.log('\x1b[32m', `\n🔥 Building Twill assets in ${isProd ? 'production' : 'dev'} mode.`)
+  console.log('\nLoading components from: ' + process.env.VUE_APP_CUSTOM_COMPONENTS_PATH)
+}
 
 /**
  * For configuration

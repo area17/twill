@@ -18,7 +18,7 @@ class Build extends Command
      * forTesting is only for when the test suite needs to run (on ci) as there are no build dependencies there.
      * This will result in a git diff.
      */
-    protected $signature = 'twill:build {--noInstall} {--hot} {--watch} {--copyOnly} {--customComponentsSource=} {--forTesting}';
+    protected $signature = 'twill:build {--install} {--hot} {--watch} {--copyOnly} {--customComponentsSource=} {--forTesting}';
 
     /**
      * The console command description.
@@ -51,7 +51,8 @@ class Build extends Command
         $progressBar = $this->output->createProgressBar(5);
         $progressBar->setFormat('%current%/%max% [%bar%] %message%');
 
-        $npmInstall = ! $this->option('noInstall');
+        // Check if the node_modules folder is missing, if it is not there we enforce the installation.
+        $npmInstall = !file_exists(__DIR__ . '/../../node_modules') || $this->option('install');
 
         $progressBar->setMessage(($npmInstall ? 'Installing' : 'Reusing') . " npm dependencies...\n\n");
 
@@ -165,7 +166,7 @@ class Build extends Command
                 "The `chokidar-cli` package was not found. It is required to watch custom blocks & components in development. You can install it by running:\n"
             );
             $this->warn("    php artisan twill:dev\n");
-            $this->warn("without the `--noInstall` option.\n");
+            $this->warn("with the `--install` option.\n");
             sleep(2);
         }
     }

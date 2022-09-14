@@ -11,18 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
-/**
- * Group model.
- *
- * @property-read string $titleInBrowser Title
- * @property-read string $createdAt Date of creation
- * @property-read bool $canEdit Check if the group is editable (ie. not the Everyone group)
- * @property-read bool $canPublish Check if the group is publishable (ie. not the Everyone group)
- * @property-read string $usersCount Formatted number of users in this group (ie. '123 users')
- * @method static Builder published() Get published groups
- * @method static Builder draft() Get draft groups
- * @method static Builder onlyTrashed() Get trashed groups
- */
 class Group extends BaseModel implements TwillModelContract
 {
     use HasPermissions;

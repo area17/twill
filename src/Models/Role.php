@@ -14,15 +14,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
-/**
- * Role model
- *
- * @property-read string $createdAt Date of creation
- * @property-read string $usersCount Formatted number of users in this role (ie. '123 users')
- * @method static Builder published() Get published roles
- * @method static Builder draft() Get draft roles
- * @method static Builder onlyTrashed() Get trashed roles
- */
 class Role extends BaseModel implements Sortable, TwillModelContract
 {
     use HasMedias, SoftDeletes, HasPermissions, IsTranslatable, HasPosition;

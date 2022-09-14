@@ -5,7 +5,7 @@ namespace App\Models;
 use A17\Twill\Models\Behaviors\HasRevisions;
 use A17\Twill\Models\Model;
 
-class RevisionLimitedContent extends Model
+class RevisionLimited extends Model
 {
     use HasRevisions;
 

@@ -8,7 +8,7 @@ class CreateRevisionLimitedContentsTables extends Migration
 {
     public function up()
     {
-        Schema::create('revision_limited_contents', function (Blueprint $table) {
+        Schema::create('revision_limiteds', function (Blueprint $table) {
             // this will create an id, a "published" column, and soft delete and timestamps columns
             createDefaultTableFields($table);
             
@@ -23,14 +23,14 @@ class CreateRevisionLimitedContentsTables extends Migration
             // $table->timestamp('publish_end_date')->nullable();
         });
 
-        Schema::create('revision_limited_content_revisions', function (Blueprint $table) {
-            createDefaultRevisionsTableFields($table, 'revision_limited_content');
+        Schema::create('revision_limited_revisions', function (Blueprint $table) {
+            createDefaultRevisionsTableFields($table, 'revision_limited');
         });
     }
 
     public function down()
     {
-        Schema::dropIfExists('revision_limited_content_revisions');
-        Schema::dropIfExists('revision_limited_contents');
+        Schema::dropIfExists('revision_limited_revisions');
+        Schema::dropIfExists('revision_limited');
     }
 }

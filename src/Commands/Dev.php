@@ -9,7 +9,7 @@ class Dev extends Command
      *
      * @var string
      */
-    protected $signature = 'twill:dev {--noInstall} {--customComponentsSource=}';
+    protected $signature = 'twill:dev {--install} {--customComponentsSource=}';
 
     /**
      * The console command description.
@@ -27,7 +27,7 @@ class Dev extends Command
     {
         $options = [
             '--hot' => true,
-            '--noInstall' => $this->option('noInstall'),
+            '--install' => $this->option('install'),
         ];
 
         if ($this->option('customComponentsSource')) {

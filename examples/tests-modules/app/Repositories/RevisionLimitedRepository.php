@@ -4,13 +4,13 @@ namespace App\Repositories;
 
 use A17\Twill\Repositories\Behaviors\HandleRevisions;
 use A17\Twill\Repositories\ModuleRepository;
-use App\Models\RevisionLimitedContent;
+use App\Models\RevisionLimited;
 
-class RevisionLimitedContentRepository extends ModuleRepository
+class RevisionLimitedRepository extends ModuleRepository
 {
     use HandleRevisions;
 
-    public function __construct(RevisionLimitedContent $model)
+    public function __construct(RevisionLimited $model)
     {
         $this->model = $model;
     }

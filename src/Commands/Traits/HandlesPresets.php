@@ -12,7 +12,7 @@ trait HandlesPresets
         return file_exists($this->getExamplesStoragePath($preset)) && is_dir($this->getExamplesStoragePath($preset));
     }
 
-    protected function installPresetFiles(string $preset, bool $fromTests = false): void
+    protected function installPresetFiles(string $preset, bool $fromTests = false, ?string $basePath = null): void
     {
         $this->checkMeetsRequirementsForPreset($preset);
 
@@ -36,7 +36,7 @@ trait HandlesPresets
                 'from' => $file->getPathname(),
                 'to' => str_replace(
                     $this->getExamplesStoragePath($preset),
-                    $this->getAppRootPath(),
+                    $basePath ?? $this->getAppRootPath(),
                     $file->getPathname()
                 ),
             ];

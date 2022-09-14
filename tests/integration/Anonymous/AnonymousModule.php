@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Tests\Integration\Anonymous;
 
+use A17\Twill\Facades\TwillRoutes;
 use A17\Twill\Http\Controllers\Admin\ModuleController;
 use A17\Twill\Models\Behaviors\HasBlocks;
 use A17\Twill\Models\Behaviors\HasTranslation;
@@ -242,6 +243,8 @@ class AnonymousModule
         $customRoutePrefix = $slug;
 
         $adminAppPath = config('twill.admin_app_path');
+
+        TwillRoutes::addToRouteRegistry($slug, $customRoutePrefix);
 
         foreach ($customRoutes as $route) {
             $routeSlug = "$adminAppPath/{$prefixSlug}/{$route}";
