@@ -84,18 +84,18 @@ HTML;
             //
             // This is only required in a local environment when the browser is being displayed.
             $browser->drag('.editorSidebar__button', '.editorPreview__content');
-            $browser->waitForText('Attach image');
+            $browser->waitForText('Attach image', 3);
             $browser->press('Attach image');
 
-            $browser->waitFor('.mediagrid__button');
+            $browser->waitFor('.mediagrid__button', 3);
             $browser->click('.mediagrid__button');
-            $browser->waitForText('Insert image');
+            $browser->waitForText('Insert image', 3);
             $browser->press('Insert image');
 
-            $browser->waitFor('.editorPreview__frame iframe');
+            $browser->waitFor('.editorPreview__frame iframe', 3);
 
             $browser->withinFrame('.editorPreview__frame iframe', function (Browser $browser) {
-                $browser->waitForText('http://127.0.0.1:8001/img/uuid/area17.png');
+                $browser->waitForText('http://127.0.0.1:8001/img/uuid/area17.png', 3);
                 $browser->assertSee('http://127.0.0.1:8001/img/uuid/area17.png');
             });
         });
