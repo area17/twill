@@ -30,15 +30,9 @@ class SingletonModuleTest extends TestCase
         ]);
     }
 
-    // FIXME — this is needed for the new admin routes to take effect in the next test,
-    // because files are copied in `setUp()` after the app is initialized.
-    public function testDummy()
+    public function testSingletonNavigationItem(): void
     {
-        $this->assertTrue(true);
-    }
-
-    public function testSingletonNavigationItem()
-    {
+        ray(config('twill-navigation'));
         $this->createContactPage();
 
         $this->httpRequestAssert('/twill', 'GET');
@@ -48,7 +42,7 @@ class SingletonModuleTest extends TestCase
         $this->assertSee('http://twill.test/twill/contactPage');
     }
 
-    public function testSingletonRouteIsDefined()
+    public function testSingletonRouteIsDefined(): void
     {
         $this->createContactPage();
 
@@ -57,13 +51,13 @@ class SingletonModuleTest extends TestCase
         $this->assertSee('This is the ContactPage form');
     }
 
-    public function testSingletonRouteAutoSeeds()
+    public function testSingletonRouteAutoSeeds(): void
     {
         $this->httpRequestAssert('/twill/contactPage', 'GET', [], 200);
         $this->assertDontSee("ContactPage is not seeded");
     }
 
-    public function testSingletonRouteRequiresOneRecordIfNotAutoSeeded()
+    public function testSingletonRouteRequiresOneRecordIfNotAutoSeeded(): void
     {
         $this->app->get('config')->set('twill.auto_seed_singletons', false);
         $this->httpRequestAssert('/twill/contactPage', 'GET', [], 500);
@@ -71,7 +65,7 @@ class SingletonModuleTest extends TestCase
         $this->assertSee('ContactPage is not seeded');
     }
 
-    public function testSingletonModuleHasNoIndex()
+    public function testSingletonModuleHasNoIndex(): void
     {
         $this->createContactPage();
 
@@ -80,7 +74,7 @@ class SingletonModuleTest extends TestCase
         $this->assertSee('ContactPage has no index');
     }
 
-    public function testSingletonModuleHasStandardRoutes()
+    public function testSingletonModuleHasStandardRoutes(): void
     {
         $this->createContactPage();
 

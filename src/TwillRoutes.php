@@ -10,6 +10,24 @@ use Illuminate\Support\Str;
 
 class TwillRoutes
 {
+    /**
+     * The registry is a key/value store that we can use to easily figure out routes/modules connection later on.
+     */
+    private array $registry = [];
+
+    public function getModuleRouteFromRegistry(string $module): string
+    {
+        return $this->registry[$module];
+    }
+
+    /**
+     * Only usefull for testing purposes.
+     */
+    public function addToRouteRegistry(string $slug, string $prefix): void
+    {
+        $this->registry[$slug] = $prefix;
+    }
+
     public function buildModuleRoutes(
         string $slug,
         array $options = [],
@@ -21,7 +39,7 @@ class TwillRoutes
         Arr::last($slugs);
         $className = implode(
             '',
-            array_map(function ($s) {
+            array_map(function ($s): string {
                 return ucfirst(Str::singular($s));
             }, $slugs)
         );
@@ -79,8 +97,8 @@ class TwillRoutes
 
         // Check if name will be a duplicate, and prevent if needed/allowed
         if (RouteServiceProvider::shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)) {
-            $customRoutePrefix = "{$groupPrefix}.{$slug}";
-            $resourceCustomGroupPrefix = "{$groupPrefix}.";
+            $customRoutePrefix = "$groupPrefix.$slug";
+            $resourceCustomGroupPrefix = "$groupPrefix.";
         } else {
             $customRoutePrefix = $slug;
 
@@ -88,11 +106,13 @@ class TwillRoutes
             $resourceCustomGroupPrefix = '';
         }
 
+        $this->addToRouteRegistry($slug, $customRoutePrefix);
+
         foreach ($customRoutes as $route) {
-            $routeSlug = "{$prefixSlug}/{$route}";
+            $routeSlug = "$prefixSlug/$route";
             $mapping = [
-                'as' => $customRoutePrefix . ".{$route}",
-                'uses' => "{$className}Controller@{$route}",
+                'as' => $customRoutePrefix . ".$route",
+                'uses' => "{$className}Controller@$route",
             ];
 
             if (in_array($route, ['browser', 'tags'])) {
@@ -213,7 +233,7 @@ class TwillRoutes
 
     public function registerRoutePatterns(): void
     {
-        if (($patterns = config('twill.admin_route_patterns')) != null && is_array($patterns)) {
+        if (($patterns = config('twill.admin_route_patterns')) !== null && is_array($patterns)) {
             foreach ($patterns as $label => $pattern) {
                 Route::pattern($label, $pattern);
             }

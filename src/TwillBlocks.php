@@ -126,15 +126,26 @@ class TwillBlocks
      */
     public function getAll(): Collection
     {
-        return $this->getBlocks()->merge($this->getRepeaters());
+        return $this->getBlocks()->merge($this->getRepeaters())->merge($this->getSettingsBlocks());
     }
 
     /**
      * @return Collection|Block[]
      */
-    public function getBlocks(): Collection
+    public function getBlocks(bool $withSettingsBlocks = false): Collection
     {
-        return $this->getBlockCollection()->getBlockList();
+        $blocks = $this->getBlockCollection()->getBlockList();
+
+        if ($withSettingsBlocks) {
+            return $blocks->merge($this->getSettingsBlocks());
+        }
+
+        return $blocks;
+    }
+
+    public function getSettingsBlocks(): Collection
+    {
+        return $this->getBlockCollection()->getSettingsList();
     }
 
     /**

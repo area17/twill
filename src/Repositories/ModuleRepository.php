@@ -83,11 +83,12 @@ abstract class ModuleRepository
     {
         $query = $this->model->where($scope);
 
-        if (TwillPermissions::enabled() &&
-            (
-                TwillPermissions::getPermissionModule(getModuleNameByModel($this->model))
-                || method_exists($this->model, 'scopeAccessible')
-            )
+        if (
+            TwillPermissions::enabled() &&
+                (
+                    TwillPermissions::getPermissionModule(getModuleNameByModel($this->model)) ||
+                    method_exists($this->model, 'scopeAccessible')
+                )
         ) {
             $query = $query->accessible();
         }

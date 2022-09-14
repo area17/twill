@@ -1,5 +1,6 @@
 <?php
 
+use A17\Twill\Http\Controllers\Admin\AppSettingsController;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 
@@ -47,17 +48,20 @@ if (config('twill.enabled.buckets')) {
     })->toArray();
 
     foreach ($bucketsRoutes as $bucketSectionKey => $routePrefix) {
-        Route::group(['prefix' => str_replace(".", "/", $routePrefix), 'as' => $routePrefix . '.'], function () use ($bucketSectionKey) {
+        Route::group(['prefix' => str_replace('.', '/', $routePrefix), 'as' => $routePrefix . '.'], function () use ($bucketSectionKey) {
             Route::get($bucketSectionKey, ['as' => $bucketSectionKey, 'uses' => 'FeaturedController@index']);
             Route::group(['prefix' => $bucketSectionKey, 'as' => $bucketSectionKey . '.'], function () {
                 Route::post('save', ['as' => 'save', 'uses' => 'FeaturedController@save']);
             });
-
         });
     }
 }
 
-if (config('twill.enabled.settings')) {
+if (\A17\Twill\Facades\TwillAppSettings::settingsAreEnabled()) {
+    Route::name('app.settings')->get('/settings/list', [AppSettingsController::class, 'dashboard']);
+    Route::name('app.settings.page')->get('/settings/list/{group}', [AppSettingsController::class, 'editSettings']);
+    Route::name('app.settings.update')->put('/settings/update/{appSetting}', [AppSettingsController::class, 'update']);
+
     Route::name('settings')->get('/settings/{section}', 'SettingController@index');
     Route::name('settings.update')->post('/settings/{section}', 'SettingController@update');
 }

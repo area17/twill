@@ -2,8 +2,10 @@
 
 namespace A17\Twill\View\Components\Fields;
 
-use Illuminate\Support\Str;
+use A17\Twill\Models\SettingsModel;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\View as ViewFacade;
+use Illuminate\Support\Str;
 
 class BlockEditor extends TwillFormComponent
 {
@@ -18,6 +20,7 @@ class BlockEditor extends TwillFormComponent
         public bool $withoutSeparator = false,
         public ?string $group = null,
         public ?string $trigger = null,
+        public bool $isSettings = false,
     ) {
         parent::__construct(
             name: $name,
@@ -25,6 +28,7 @@ class BlockEditor extends TwillFormComponent
             renderForBlocks: $renderForBlocks,
             renderForModal: $renderForModal,
         );
+
         $this->trigger = $trigger ?? $label ?? twillTrans('twill::lang.fields.block-editor.add-content');
     }
 
@@ -42,12 +46,13 @@ class BlockEditor extends TwillFormComponent
             array_merge($this->data(), [
                 'allowedBlocks' => generate_list_of_available_blocks(
                     $this->blocks ?? null,
-                    $groups
+                    $groups,
+                    $this->isSettings
                 ),
                 'editorName' => [
                     'label' => $this->label,
                     'value' => $this->name,
-                    'nested' => $this->renderForBlocks
+                    'nested' => $this->renderForBlocks,
                 ],
             ])
         );

@@ -59,10 +59,11 @@ Run:
 php artisan twill:build
 ```
 
-This will start by installing Twill's NPM dependencies in `vendor/area17/twill/node_modules`. This is only required for the first run, you can skip the install step for your next builds with the `--noInstall` option:
+This will start by installing Twill's NPM dependencies in `vendor/area17/twill/node_modules`. Twill will check if the
+node_modules folder exist and if needed will run npm install. If you want to force npm install you can use:
 
 ```
-php artisan twill:build --noInstall
+php artisan twill:build --install
 ```
 
 This is only for Twill's own dependencies, you don't need to modify what is being installed in there. For your own dependencies in your custom components, you can run `npm install` directly into your project.
@@ -94,7 +95,7 @@ When developing components, you can take advantage of `twill:dev` for fast rebui
 hot reloading and auto refresh in the browser:
 
 ```
-php artisan twill:dev --noInstall
+php artisan twill:dev
 ```
 
 This will watch for changes in your `resources/assets/js` directory and rebuild accordingly.
@@ -108,7 +109,7 @@ Error: $SHELL environment variable is not set.
 In this case, you can prefix the `twill:dev` command like this:
 
 ```
-export SHELL=/usr/bin/bash && php artisan twill:dev --noInstall
+export SHELL=/usr/bin/bash && php artisan twill:dev
 ```
 
 ### Twill dev mode
@@ -539,7 +540,7 @@ From this point, you can customize the new Vue.js component in any way you want.
 When you are done, run:
 
 ```
-php artisan twill:build --noInstall
+php artisan twill:build
 ```
 
 Then the custom block is usable in the block editor:

@@ -9,7 +9,7 @@ use ReflectionClass;
 abstract class BaseFormField
 {
     /**
-     * @var \A17\Twill\View\Components\Fields\TwillFormComponent $component
+     * @var \A17\Twill\View\Components\Fields\TwillFormComponent
      */
     protected function __construct(
         protected string $component,
@@ -31,11 +31,11 @@ abstract class BaseFormField
     /**
      * Set the name of the field, if no label is set yet, this method will also update that.
      */
-    public function name(string $name): self
+    public function name(string $name): static
     {
         $this->name = $name;
 
-        if (!$this->label) {
+        if (! $this->label) {
             $this->label(Str::headline($name));
         }
 
@@ -96,7 +96,7 @@ abstract class BaseFormField
             $args = [];
 
             foreach ($this->mandatoryProperties as $property) {
-                if (!$this->{$property}) {
+                if (! $this->{$property}) {
                     throw new \InvalidArgumentException(
                         "Missing required field property '$property' on " . $this::class
                     );

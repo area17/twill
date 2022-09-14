@@ -393,7 +393,16 @@ module.exports = [
       {
         "title": "Settings Sections",
         "path": "/settings-sections/",
-        "children": [],
+        "children": [
+          {
+            "title": "Settings",
+            "path": "/settings-sections/index.html"
+          },
+          {
+            "title": "Legacy settings",
+            "path": "/settings-sections/legacy.html"
+          }
+        ],
       },
       {
         "title": "Custom CMS Pages",

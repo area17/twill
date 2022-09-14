@@ -169,7 +169,7 @@ class ModulesAuthorsTest extends ModulesTestBase
     public function testErrorWhenPreviewIsMissing()
     {
         $author = $this->createAuthor();
-        $this->assertTrue($this->files->delete(base_path() . '/resources/views/site/author.blade.php'));
+        $this->assertTrue(unlink(base_path() . '/resources/views/site/author.blade.php'));
 
         $this->httpRequestAssert(
             "/twill/personnel/authors/preview/{$author->id}",

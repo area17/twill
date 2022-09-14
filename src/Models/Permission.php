@@ -11,17 +11,6 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-/**
- * Permission model
- *
- * @property-read string $permissionableModule
- * @method static Builder global() Get global scope permissions.
- * @method static Builder module() Get module scope permissions.
- * @method static Builder moduleItem() Get module item scope permissions.
- * @method static Builder ofItem(BaseModel $item) Get permissions related to an item.
- * @method static Builder ofModuleName(string $moduleName) Get permissions related to a Twill module.
- * @method static Builder ofModel(BaseModel $model) Get permissions related to a model.
- */
 class Permission extends BaseModel
 {
     /**
