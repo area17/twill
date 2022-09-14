@@ -415,7 +415,7 @@ TwillNavigation::addLink(
 PHP;
                 } 
                 $this->line('**************************');
-                $this->info($message);
+                $this->info($message ?? '');
                 $this->line('**************************');
                 return;
             }
