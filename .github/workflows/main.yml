@@ -45,6 +45,7 @@ jobs:
         run: vendor/bin/phpstan
 
   test:
+    timeout-minutes: 15
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -123,4 +124,6 @@ jobs:
         if: always()
         with:
           name: screenshots
-          path: tests/Browser/screenshots/
+          path: |
+            tests/Browser/screenshots/
+            tests/Browser/console/
