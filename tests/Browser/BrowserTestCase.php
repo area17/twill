@@ -243,13 +243,6 @@ class BrowserTestCase extends TestCase
         return __DIR__ . '/../../vendor/orchestra/testbench-core/laravel';
     }
 
-    protected function ensureDirectoryExists(string $path): void
-    {
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
-    }
-    
     /**
      * @inheritDoc
      *

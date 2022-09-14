@@ -6,21 +6,38 @@ use A17\Twill\Models\Media;
 use A17\Twill\Services\Forms\Fields\BlockEditor;
 use A17\Twill\Services\Forms\Form;
 use A17\Twill\Tests\Integration\Behaviors\CreatesMedia;
+use A17\Twill\Tests\Integration\Behaviors\FileTools;
 use Laravel\Dusk\Browser;
 
 class BlockEditorMediaTest extends BrowserTestCase
 {
     use CreatesMedia;
+    use FileTools;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->ensureDirectoryExists(resource_path('views/site/blocks'));
+        $block = <<<HTML
+@twillBlockTitle('Image')
+@twillBlockIcon('image')
+@twillBlockGroup('app')
 
-        file_put_contents(
-            resource_path('views/site/blocks/image.blade.php'),
-            '{{ $block->image("image", "desktop") }}'
+<x-twill::medias
+    name="image"
+    label="Image"
+/>
+HTML;
+
+        // Copy the block to the installation.
+        $this->putContentToFilePath(
+            $block,
+            resource_path('views/twill/blocks/test-image.blade.php')
+        );
+
+        $this->putContentToFilePath(
+            '{{ $block->image("image", "desktop") }}',
+            resource_path('views/site/blocks/test-image.blade.php')
         );
     }
 
