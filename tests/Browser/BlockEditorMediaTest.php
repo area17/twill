@@ -87,6 +87,7 @@ HTML;
             //
             // This is only required in a local environment when the browser is being displayed.
             $browser->drag('.editorSidebar__button', '.editorPreview__content');
+            $browser->pause(4000);
             $browser->screenshot('4');
             $browser->waitForText('Attach image', 3);
             $browser->screenshot('5');
