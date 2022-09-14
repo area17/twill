@@ -29,7 +29,7 @@
     <php>
         <env name="APP_KEY" value="base64:DV8kQN5a+4MwAIQ5uk1WNafxO+/Efab0K20uVMDJ2UE="/>
         <env name="APP_ENV" value="testing"/>
-        <env name="APP_URL" value="http://twill.test/"/>
+        <env name="APP_URL" value="127.0.0.1:8001"/>
         <env name="APP_DEBUG" value="true"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
@@ -40,19 +40,5 @@
         <env name="DB_CONNECTION" value="sqlite"/>
         <env name="DB_DATABASE" value=":memory:"/>
         <env name="LOG_CHANNEL" value="single"/>
-        <env name="MEDIA_LIBRARY_LOCAL_PATH" value="media-library"/>
-        <env name="FILE_LIBRARY_LOCAL_PATH" value="file-library"/>
-        <env name="FILE_LIBRARY_ENDPOINT_TYPE" value="local"/>
-        <env name="IMGIX_SOURCE_HOST" value=""/>
-        <env name="IMGIX_USE_HTTPS" value=""/>
-        <env name="IMGIX_USE_SIGNED_URLS" value=""/>
-        <env name="IMGIX_SIGN_KEY" value=""/>
-        <env name="GLIDE_SOURCE" value="storage/app/public/media-library"/>
-        <env name="GLIDE_CACHE" value="storage/app/twill/cache"/>
-        <env name="GLIDE_CACHE_PATH_PREFIX" value="glide_cache"/>
-        <env name="GLIDE_BASE_URL" value="http://twill.test"/>
-        <env name="GLIDE_BASE_PATH" value="storage/media-library"/>
-        <env name="GLIDE_USE_SIGNED_URLS" value="false"/>
-        <env name="GLIDE_SIGN_KEY" value=""/>
     </php>
 </phpunit>
