@@ -48,6 +48,11 @@ class TwillUtil
         return $this;
     }
 
+    public function clearTempStore(): void
+    {
+        Session::remove(self::SESSION_FIELD);
+    }
+
     private function getFromTempStore(string $key, int $frontendId): ?int
     {
         $data = Session::get(self::SESSION_FIELD, []);

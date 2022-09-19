@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Tests\Integration\Repositories;
 
-use A17\Twill\Facades\TwillBlocks;
+use A17\Twill\Facades\TwillUtil;
 use A17\Twill\Models\Block;
 use A17\Twill\Tests\Integration\Anonymous\AnonymousModule;
 use A17\Twill\Tests\Integration\Behaviors\FileTools;
@@ -41,33 +41,33 @@ class DuplicateTest extends TestCase
 
     public function testDuplicateWithRevisionsAndBrowser(): void
     {
-        $browserModule = AnonymousModule::make('trees', $this->app)
+        $browserModule = AnonymousModule::make('apps', $this->app)
             ->withFields(['title'])
             ->boot();
 
         $module = AnonymousModule::make('aleaves', $this->app)
             ->withRevisions()
             ->withFields(['title' => ['translatable' => true]])
-            ->withBelongsToMany(['trees' => $browserModule->getModelClassName()])
+            ->withBelongsToMany(['apps' => $browserModule->getModelClassName()])
             ->boot();
 
         $model = $module->getRepository()->create([
             'title' => ['en' => 'English title'],
             'active' => ['en' => true],
             'browsers' => [
-                'trees' => [
+                'apps' => [
                     ['id' => $treeId = $browserModule->getModelClassName()::create(['title' => 'demo'])->id],
                 ],
             ],
         ]);
 
-        $this->assertCount(1, $model->trees);
-        $this->assertEquals($treeId, $model->trees->first()->id);
+        $this->assertCount(1, $model->apps);
+        $this->assertEquals($treeId, $model->apps->first()->id);
 
         $duplicate = $module->getRepository()->duplicate($model->id);
 
-        $this->assertCount(1, $duplicate->trees);
-        $this->assertEquals($treeId, $duplicate->trees->first()->id);
+        $this->assertCount(1, $duplicate->apps);
+        $this->assertEquals($treeId, $duplicate->apps->first()->id);
     }
 
     public function testDuplicateWithRevisionsAndBlocksAndJsonRepeaters(): void
@@ -147,6 +147,9 @@ class DuplicateTest extends TestCase
 
         $preDuplicateTreeId = $model->trees->first()->id;
 
+        // We have to clear the temp store as this would also happen on a real environment.
+        TwillUtil::clearTempStore();
+
         $duplicate = $module->getRepository()->duplicate($model->id);
 
         $this->assertCount(1, $duplicate->trees);
@@ -155,7 +158,7 @@ class DuplicateTest extends TestCase
 
     public function testSimpleDuplicateContentWithoutRevisions(): void
     {
-        $module = AnonymousModule::make('leaves', $this->app)
+        $module = AnonymousModule::make('hearts', $this->app)
             ->withFields(['title' => ['translatable' => true]])
             ->boot();
 
@@ -168,7 +171,7 @@ class DuplicateTest extends TestCase
 
         $duplicate = $module->getRepository()->duplicate($model->id);
 
-        $this->assertEquals('English title', $model->title);
+        $this->assertEquals('English title', $duplicate->title);
 
         $this->assertCount(2, $module->getModelClassName()::get());
     }
