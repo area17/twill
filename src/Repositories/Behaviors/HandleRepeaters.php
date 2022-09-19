@@ -73,13 +73,13 @@ trait HandleRepeaters
     }
 
     /**
-     * @deprecated use updateRepeaterWithPivot
      * @param \A17\Twill\Models\Model $object
      * @param array $fields
      * @param string $relation
      * @param bool $keepExisting
      * @param \A17\Twill\Models\Model|null $model
      * @return void
+     * @deprecated use updateRepeaterWithPivot
      */
     public function updateRepeaterMany($object, $fields, $relation, $keepExisting = true, $model = null)
     {

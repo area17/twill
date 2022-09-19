@@ -24,7 +24,8 @@ class TwillUtil
      */
     private const BLOCK_ID_INDEX = 'block_ids';
 
-    public function hasRepeaterIdFor(int $frontEndId): ?int {
+    public function hasRepeaterIdFor(int $frontEndId): ?int
+    {
         return $this->getFromTempStore(self::REPEATER_ID_INDEX, $frontEndId);
     }
 
@@ -35,7 +36,8 @@ class TwillUtil
         return $this;
     }
 
-    public function hasBlockIdFor(int $frontEndId): ?int {
+    public function hasBlockIdFor(int $frontEndId): ?int
+    {
         return $this->getFromTempStore(self::BLOCK_ID_INDEX, $frontEndId);
     }
 
@@ -46,7 +48,8 @@ class TwillUtil
         return $this;
     }
 
-    private function getFromTempStore(string $key, int $frontendId): ?int {
+    private function getFromTempStore(string $key, int $frontendId): ?int
+    {
         $data = Session::get(self::SESSION_FIELD, []);
 
         return $data[$key][$frontendId] ?? null;

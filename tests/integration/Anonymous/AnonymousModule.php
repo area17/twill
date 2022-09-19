@@ -5,15 +5,20 @@ namespace A17\Twill\Tests\Integration\Anonymous;
 use A17\Twill\Facades\TwillRoutes;
 use A17\Twill\Http\Controllers\Admin\ModuleController;
 use A17\Twill\Models\Behaviors\HasBlocks;
+use A17\Twill\Models\Behaviors\HasRevisions;
 use A17\Twill\Models\Behaviors\HasTranslation;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Model;
+use A17\Twill\Models\Revision;
 use A17\Twill\Repositories\Behaviors\HandleBlocks;
+use A17\Twill\Repositories\Behaviors\HandleJsonRepeaters;
+use A17\Twill\Repositories\Behaviors\HandleRevisions;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use A17\Twill\Repositories\ModuleRepository;
 use A17\Twill\Services\Forms\Form;
 use A17\Twill\Services\Listings\TableColumns;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Application as FoundationApplication;
@@ -43,7 +48,26 @@ class AnonymousModule
 
     private array $additionalProps = [];
 
+    /**
+     * A array of key (method) and value (class) to add as belongsToMany on the model
+     */
+    private array $belongsToMany = [];
+
+    /**
+     * Repeaters that should be handled (class name).
+     */
+    private array $repeaters = [];
+
+    /**
+     * A array of key (method) and value (class) to add as belongsTo on the model
+     */
+    private array $belongsTo = [];
+
+    private bool $withRevisions = false;
+
     private ?string $modelClass = null;
+
+    private ?string $revisionClass = null;
 
     private ?string $controllerClass = null;
 
@@ -61,6 +85,34 @@ class AnonymousModule
     public static function make(string $namePlural, Application $app): self
     {
         return new self($namePlural, $app);
+    }
+
+    public function withRevisions(): self
+    {
+        $this->withRevisions = true;
+
+        return $this;
+    }
+
+    public function withBelongsToMany(array $items): self
+    {
+        $this->belongsToMany = $items;
+
+        return $this;
+    }
+
+    public function withRepeaters(array $classes): self
+    {
+        $this->repeaters = $classes;
+
+        return $this;
+    }
+
+    public function withBelongsTo(array $items): self
+    {
+        $this->belongsTo = $items;
+
+        return $this;
     }
 
     public function withTableColumns(TableColumns $tableColumns)
@@ -119,7 +171,7 @@ class AnonymousModule
          */
         $this->modelTranslationClass = '\App\Models\Translations\\' . $modelName . 'Translation';
 
-        if (! class_exists($this->modelTranslationClass)) {
+        if (!class_exists($this->modelTranslationClass)) {
             eval($this->classPrinter->printNamespace($this->getTranslationModelClass($this->modelTranslationClass)));
         }
 
@@ -128,8 +180,17 @@ class AnonymousModule
          */
         $this->modelClass = '\App\Models\\' . $modelName;
 
-        if (! class_exists($this->modelClass)) {
+        if (!class_exists($this->modelClass)) {
             eval($this->classPrinter->printNamespace($this->getModelClass($this->modelClass)));
+        }
+
+        /*
+         * The revision model.
+         */
+        $this->revisionClass = '\App\Models\Revisions\\' . $modelName . 'Revision';
+
+        if (!class_exists($this->revisionClass)) {
+            eval($this->classPrinter->printNamespace($this->getRevisionClass($this->revisionClass)));
         }
 
         /*
@@ -137,7 +198,7 @@ class AnonymousModule
          */
         $this->controllerClass = '\App\Http\Controllers\Twill\\' . $modelName . 'Controller';
 
-        if (! class_exists($this->controllerClass)) {
+        if (!class_exists($this->controllerClass)) {
             eval($this->classPrinter->printNamespace($this->getControllerClass($this->controllerClass)));
         }
 
@@ -146,7 +207,7 @@ class AnonymousModule
          */
         $this->repositoryClass = '\App\Repositories\\' . $modelName . 'Repository';
 
-        if (! class_exists($this->repositoryClass)) {
+        if (!class_exists($this->repositoryClass)) {
             eval($this->classPrinter->printNamespace($this->getRepositoryClass($this->repositoryClass)));
         }
 
@@ -179,6 +240,11 @@ class AnonymousModule
     public function getRepositoryClassName(): string
     {
         return $this->repositoryClass;
+    }
+
+    public function getRepository(): ModuleRepository
+    {
+        return app()->make($this->getRepositoryClassName());
     }
 
     public function getModelController(): ModuleController
@@ -230,12 +296,12 @@ class AnonymousModule
         if (isset($options['only'])) {
             $customRoutes = array_intersect(
                 $defaults,
-                (array) $options['only']
+                (array)$options['only']
             );
         } elseif (isset($options['except'])) {
             $customRoutes = array_diff(
                 $defaults,
-                (array) $options['except']
+                (array)$options['except']
             );
         }
 
@@ -402,9 +468,9 @@ class AnonymousModule
         $class = $namespace->addClass($className);
 
         $fillable = collect($this->fields)
-                ->where('translatable', true)
-                ->keys()
-                ->all();
+            ->where('translatable', true)
+            ->keys()
+            ->all();
         $fillable[] = 'active';
 
         $class->addProperty(
@@ -423,6 +489,22 @@ class AnonymousModule
         return $namespace;
     }
 
+    private function getRevisionClass(string $classNameWithNamespace): PhpNamespace
+    {
+        $namespace = Str::beforeLast($classNameWithNamespace, '\\');
+        $className = Str::afterLast($classNameWithNamespace, '\\');
+
+        $namespace = new PhpNamespace(ltrim($namespace, '\\'));
+
+        $class = $namespace->addClass($className);
+
+        $class->addProperty('table', Str::singular($this->namePlural) . '_revisions');
+
+        $class->setExtends(Revision::class);
+
+        return $namespace;
+    }
+
     private function getModelClass(string $classNameWithNamespace): PhpNamespace
     {
         $namespace = Str::beforeLast($classNameWithNamespace, '\\');
@@ -432,7 +514,19 @@ class AnonymousModule
 
         $class = $namespace->addClass($className);
 
-        $class->addProperty('fillable', array_keys($this->fields));
+        $casts = [];
+        foreach (collect($this->fields)->where('type', 'json')->keys() as $field) {
+            $casts[$field] = 'array';
+        }
+
+        $fillable = array_keys($this->fields);
+
+        foreach (array_keys($this->belongsTo) as $base) {
+            $fillable[] = $base . '_id';
+        }
+
+        $class->addProperty('fillable', $fillable);
+        $class->addProperty('casts', $casts);
         $class->addProperty('table', $this->namePlural);
         $class->addProperty('translationForeignKey', Str::singular($this->namePlural) . '_id');
         $class->addProperty('translationModel', $this->modelTranslationClass);
@@ -451,9 +545,32 @@ class AnonymousModule
                 ->keys()
                 ->all()
         );
+
+        foreach ($this->belongsToMany as $name => $target) {
+            $method = $class->addMethod($name);
+            $method->setBody(
+                <<<PHP
+return \$this->belongsToMany($target::class);
+PHP
+            );
+        }
+
+        foreach ($this->repeaters as $repeaterClassName) {
+            $className = Str::afterLast($repeaterClassName, '\\');
+            $namePlural = Str::lower(Str::plural($className));
+
+            $class->addMethod($namePlural)
+                ->setReturnType(HasMany::class)
+                ->setBody('return $this->hasMany(' . $repeaterClassName . '::class);');
+        }
+
         $class->setExtends(Model::class);
         $class->addTrait(HasBlocks::class);
         $class->addTrait(HasTranslation::class);
+
+        if ($this->withRevisions) {
+            $class->addTrait(HasRevisions::class);
+        }
 
         return $namespace;
     }
@@ -469,8 +586,41 @@ class AnonymousModule
 
         $class = $namespace->addClass($className);
         $class->setExtends(ModuleRepository::class);
-        $class->addTrait(\A17\Twill\Repositories\Behaviors\HandleTranslations::class);
-        $class->addTrait(\A17\Twill\Repositories\Behaviors\HandleBlocks::class);
+        $class->addTrait(HandleTranslations::class);
+        $class->addTrait(HandleBlocks::class);
+
+        if (collect($this->fields)->where('type', 'json')->isNotEmpty()) {
+            $class->addTrait(HandleJsonRepeaters::class);
+            $class->addProperty('jsonRepeaters', collect($this->fields)->where('type', 'json')->keys()->toArray());
+        }
+
+        if ($this->withRevisions) {
+            $class->addTrait(HandleRevisions::class);
+        }
+
+        // Add the afterSave method.
+        $method = $class->addMethod('afterSave');
+        $method->setReturnType('void');
+        $method->addParameter('model')
+            ->setType(TwillModelContract::class);
+        $method->addParameter('fields')
+            ->setType('array');
+
+        foreach (array_keys($this->belongsToMany) as $target) {
+            $method->addBody('$this->updateBrowser($model, $fields, "' . $target . '");');
+        }
+
+        foreach ($this->repeaters as $repeaterClassName) {
+            $base = '$this->updateRepeater($model, $fields, \'##PLURAL##\', \'##CLASSNAME##\', \'##PLURAL##\');';
+
+            $className = Str::afterLast($repeaterClassName, '\\');
+            $namePlural = Str::lower(Str::plural($className));
+
+
+            $method->addBody(str_replace(['##PLURAL##', '##CLASSNAME##'], [$namePlural, $className], $base));
+        }
+        $method->addBody('parent::afterSave($model, $fields);');
+        // End after save method.
 
         $constructor = $class->addMethod('__construct');
         $constructor->addParameter('model')->setType($modelClass);
@@ -552,11 +702,20 @@ class AnonymousModule
     private function migrate(): void
     {
         // Create the migration class.
-        $migration = new class($this->namePlural, $this->fields) extends Migration {
+        $migration = new class(
+            $this->namePlural,
+            $this->fields,
+            $this->belongsToMany,
+            $this->belongsTo
+        ) extends Migration {
             public string $nameSingular;
 
-            public function __construct(public string $namePlural, public array $fields)
-            {
+            public function __construct(
+                public string $namePlural,
+                public array $fields,
+                public array $belongsToMany,
+                public array $belongsTo,
+            ) {
                 $this->nameSingular = Str::singular($this->namePlural);
             }
 
@@ -567,11 +726,28 @@ class AnonymousModule
                     return;
                 }
 
+                foreach ($this->belongsToMany as $target => $model) {
+                    $targetSingular = Str::singular($target);
+                    Schema::create(
+                        $this->nameSingular . '_' . $targetSingular,
+                        function (Blueprint $table) use ($targetSingular) {
+                            $table->bigIncrements('id');
+                            $table->timestamps();
+                            $table->integer('position')->unsigned();
+                            createDefaultRelationshipTableFields($table, $this->nameSingular, $targetSingular);
+                        }
+                    );
+                }
+
                 Schema::create($this->namePlural, function (Blueprint $table) {
                     createDefaultTableFields($table);
 
+                    foreach ($this->belongsTo as $target) {
+                        $table->foreignIdFor($target)->nullable();
+                    }
+
                     foreach (collect($this->fields)->where('translatable', false) as $fieldName => $data) {
-                        if (! isset($data['type']) || $data['type'] === 'string') {
+                        if (!isset($data['type']) || $data['type'] === 'string') {
                             $table->string($fieldName)
                                 ->default($data['default'] ?? null)
                                 ->nullable($data['nullable'] ?? true);
@@ -579,6 +755,9 @@ class AnonymousModule
                             $table->boolean($fieldName)
                                 ->default($data['default'] ?? false)
                                 ->nullable($data['nullable'] ?? true);
+                        } elseif ($data['type'] === 'json') {
+                            $table->json($fieldName)
+                                ->nullable();
                         } elseif ($data['type'] === 'dateTime') {
                             $table->dateTime($fieldName)
                                 ->default($data['default'] ?? null)
