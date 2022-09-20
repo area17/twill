@@ -31,11 +31,44 @@ class DuplicateWithoutRevisionsTest extends TestCase
 
         $this->assertEquals('English title', $model->title);
 
-        $duplicate = $module->getRepository()->duplicate($model->id);
+        $module->getRepository()->duplicate($model->id);
 
         $this->assertEquals('English title', $model->title);
 
         $this->assertCount(2, $module->getModelClassName()::get());
+    }
+
+    public function testDuplicateWithRelated(): void
+    {
+        $browserModule = AnonymousModule::make('x_apps', $this->app)
+            ->withFields(['title'])
+            ->boot();
+
+        $module = AnonymousModule::make('x_leaves', $this->app)
+            ->withFields(['title' => ['translatable' => true]])
+            ->withRelated(['x_leaves'])
+            ->boot();
+
+        $model = $module->getRepository()->create([
+            'title' => ['en' => 'English title'],
+            'active' => ['en' => true],
+            'browsers' => [
+                'x_leaves' => [
+                    [
+                        'id' => $treeId = $browserModule->getModelClassName()::create(['title' => 'demo'])->id,
+                        'endpointType' => $browserModule->getModelClassName(),
+                    ],
+                ],
+            ],
+        ]);
+
+        $this->assertCount(1, $model->loadRelated('x_leaves'));
+        $this->assertEquals($treeId, $model->loadRelated('x_leaves')->first()->id);
+
+        $duplicate = $module->getRepository()->duplicate($model->id);
+
+        $this->assertCount(1, $duplicate->loadRelated('x_leaves'));
+        $this->assertEquals($treeId, $duplicate->loadRelated('x_leaves')->first()->id);
     }
 
     public function testDuplicateWithBrowser(): void
@@ -121,7 +154,7 @@ class DuplicateWithoutRevisionsTest extends TestCase
             ->withRepeaters(["\App\Models\Tree"])
             ->boot();
 
-        $repeaterModule = AnonymousModule::make('trees', $this->app)
+        AnonymousModule::make('trees', $this->app)
             ->withBelongsTo(['code' => $module->getModelClassName()])
             ->withFields(['title'])
             ->boot();

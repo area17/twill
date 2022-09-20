@@ -5,6 +5,7 @@ namespace A17\Twill\Tests\Integration\Anonymous;
 use A17\Twill\Facades\TwillRoutes;
 use A17\Twill\Http\Controllers\Admin\ModuleController;
 use A17\Twill\Models\Behaviors\HasBlocks;
+use A17\Twill\Models\Behaviors\HasRelated;
 use A17\Twill\Models\Behaviors\HasRevisions;
 use A17\Twill\Models\Behaviors\HasTranslation;
 use A17\Twill\Models\Contracts\TwillModelContract;
@@ -48,8 +49,12 @@ class AnonymousModule
 
     private array $additionalProps = [];
 
+    private array $related = [];
+
     /**
      * A array of key (method) and value (class) to add as belongsToMany on the model
+     *
+     * This adds updateBrowser to the repository.
      */
     private array $belongsToMany = [];
 
@@ -108,6 +113,13 @@ class AnonymousModule
         return $this;
     }
 
+    public function withRelated(array $related): self
+    {
+        $this->related = $related;
+
+        return $this;
+    }
+
     public function withBelongsTo(array $items): self
     {
         $this->belongsTo = $items;
@@ -115,21 +127,21 @@ class AnonymousModule
         return $this;
     }
 
-    public function withTableColumns(TableColumns $tableColumns)
+    public function withTableColumns(TableColumns $tableColumns): self
     {
         $this->tableColumns = $tableColumns;
 
         return $this;
     }
 
-    public function withFormFields(Form $formFields)
+    public function withFormFields(Form $formFields): self
     {
         $this->formFields = $formFields;
 
         return $this;
     }
 
-    public function withSetupMethods(array $setupMethods)
+    public function withSetupMethods(array $setupMethods): self
     {
         $this->setupMethods = $setupMethods;
 
@@ -568,6 +580,10 @@ PHP
         $class->addTrait(HasBlocks::class);
         $class->addTrait(HasTranslation::class);
 
+        if ($this->related !== []) {
+            $class->addTrait(HasRelated::class);
+        }
+
         if ($this->withRevisions) {
             $class->addTrait(HasRevisions::class);
         }
@@ -598,6 +614,12 @@ PHP
             $class->addTrait(HandleRevisions::class);
         }
 
+        if ($this->related !== []) {
+            $class->addProperty('relatedBrowsers')
+                ->setProtected()
+                ->setValue($this->related);
+        }
+
         // Add the afterSave method.
         $method = $class->addMethod('afterSave');
         $method->setReturnType('void');
@@ -615,7 +637,6 @@ PHP
 
             $className = Str::afterLast($repeaterClassName, '\\');
             $namePlural = Str::lower(Str::plural($className));
-
 
             $method->addBody(str_replace(['##PLURAL##', '##CLASSNAME##'], [$namePlural, $className], $base));
         }

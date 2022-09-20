@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\Block;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Media;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -25,7 +27,12 @@ trait HandleMedias
 
         $mediasFromFields->each(function ($media) use ($object, $mediasCollection) {
             $newMedia = Media::withTrashed()->find(is_array($media['id']) ? Arr::first($media['id']) : $media['id']);
-            $pivot = $newMedia->newPivot($object, Arr::except($media, ['id']), config('twill.mediables_table', 'twill_mediables'), true);
+            $pivot = $newMedia->newPivot(
+                $object,
+                Arr::except($media, ['id']),
+                config('twill.mediables_table', 'twill_mediables'),
+                true
+            );
             $newMedia->setRelation('pivot', $pivot);
             $mediasCollection->push($newMedia);
         });
@@ -77,7 +84,7 @@ trait HandleMedias
                     || array_key_exists($role, config('twill.settings.crops', []))) {
                     Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
-                        if (isset($media['crops']) && ! empty($media['crops'])) {
+                        if (isset($media['crops']) && !empty($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
                                 $medias->push([
                                     'id' => $media['id'],
@@ -183,5 +190,20 @@ trait HandleMedias
     public function getCrops($role)
     {
         return $this->model->getMediasParams()[$role];
+    }
+
+    public function afterReplicateHandleMedias(TwillModelContract|Block $object, TwillModelContract|Block $newObject): void
+    {
+        $newObject->medias()->sync(
+            $object->medias->mapWithKeys(function ($media) use ($object) {
+                return [
+                    $media->id => Collection::make($object->medias()->getPivotColumns())->mapWithKeys(
+                        function ($attribute) use ($media) {
+                            return [$attribute => $media->pivot->$attribute];
+                        }
+                    )->toArray(),
+                ];
+            })
+        );
     }
 }

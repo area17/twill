@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use A17\Twill\Models\Block;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\RelatedItem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -28,7 +30,7 @@ trait HasRelated
      */
     public function getRelated($browser_name)
     {
-        if (! isset($this->relatedCache[$browser_name]) || $this->relatedCache[$browser_name] === null) {
+        if (!isset($this->relatedCache[$browser_name]) || $this->relatedCache[$browser_name] === null) {
             $this->loadRelated($browser_name);
         }
 
@@ -43,7 +45,7 @@ trait HasRelated
      */
     public function loadRelated($browser_name)
     {
-        if (! isset($this->relatedItems)) {
+        if (!isset($this->relatedItems)) {
             $this->load('relatedItems');
         }
 

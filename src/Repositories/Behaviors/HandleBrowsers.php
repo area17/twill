@@ -3,6 +3,8 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Behaviors\HasMedias;
+use A17\Twill\Models\Contracts\TwillModelContract;
+use A17\Twill\Services\Blocks\Block;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -42,7 +44,13 @@ trait HandleBrowsers
     public function afterSaveHandleBrowsers($object, $fields)
     {
         foreach ($this->getBrowsers() as $browser) {
-            $this->updateBrowser($object, $fields, $browser['relation'], $browser['positionAttribute'], $browser['browserName']);
+            $this->updateBrowser(
+                $object,
+                $fields,
+                $browser['relation'],
+                $browser['positionAttribute'],
+                $browser['browserName']
+            );
         }
     }
 
@@ -56,7 +64,13 @@ trait HandleBrowsers
         foreach ($this->getBrowsers() as $browser) {
             $relation = $browser['relation'];
             if (collect($object->$relation)->isNotEmpty()) {
-                $fields['browsers'][$browser['browserName']] = $this->getFormFieldsForBrowser($object, $relation, $browser['routePrefix'], $browser['titleKey'], $browser['moduleName']);
+                $fields['browsers'][$browser['browserName']] = $this->getFormFieldsForBrowser(
+                    $object,
+                    $relation,
+                    $browser['routePrefix'],
+                    $browser['titleKey'],
+                    $browser['moduleName']
+                );
             }
         }
 
@@ -72,10 +86,16 @@ trait HandleBrowsers
      * @param array $pivotAttributes
      * @return void
      */
-    public function updateBrowser($object, $fields, $relationship, $positionAttribute = 'position', $browserName = null, $pivotAttributes = [])
-    {
+    public function updateBrowser(
+        $object,
+        $fields,
+        $relationship,
+        $positionAttribute = 'position',
+        $browserName = null,
+        $pivotAttributes = []
+    ) {
         $browserName = $browserName ?? $relationship;
-        $fieldsHasElements = isset($fields['browsers'][$browserName]) && ! empty($fields['browsers'][$browserName]);
+        $fieldsHasElements = isset($fields['browsers'][$browserName]) && !empty($fields['browsers'][$browserName]);
         $relatedElements = $fieldsHasElements ? $fields['browsers'][$browserName] : [];
 
         $relatedElementsWithPosition = [];
@@ -102,7 +122,7 @@ trait HandleBrowsers
 
             $object->save();
         } elseif ($object->$relationship() instanceof HasOne ||
-                  $object->$relationship() instanceof HasMany
+            $object->$relationship() instanceof HasMany
         ) {
             $this->updateBelongsToInverseBrowser($object, $relationship, $relatedElements);
         } else {
@@ -160,28 +180,40 @@ trait HandleBrowsers
      * @param string|null $moduleName
      * @return array
      */
-    public function getFormFieldsForBrowser($object, $relation, $routePrefix = null, $titleKey = 'title', $moduleName = null)
-    {
+    public function getFormFieldsForBrowser(
+        $object,
+        $relation,
+        $routePrefix = null,
+        $titleKey = 'title',
+        $moduleName = null
+    ) {
         $fields = $this->getRelatedElementsAsCollection($object, $relation);
 
         $isMorphTo = method_exists($object, $relation) && $object->$relation() instanceof MorphTo;
 
         if ($fields->isNotEmpty()) {
-            return $fields->map(function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName, $isMorphTo) {
-                if ($isMorphTo && ! $moduleName) {
-                    // @todo: Maybe there is an existing helper for this?
-                    $moduleName = Str::plural(Arr::last(explode('\\', get_class($relatedElement))));
-                }
+            return $fields->map(
+                function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName, $isMorphTo) {
+                    if ($isMorphTo && !$moduleName) {
+                        // @todo: Maybe there is an existing helper for this?
+                        $moduleName = Str::plural(Arr::last(explode('\\', get_class($relatedElement))));
+                    }
 
-                return [
-                    'id' => $relatedElement->id,
-                    'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
-                    'edit' => moduleRoute($moduleName ?? $relation, $routePrefix ?? '', 'edit', $relatedElement->id),
-                    'endpointType' => $relatedElement->getMorphClass(),
-                ] + (classHasTrait($relatedElement, HasMedias::class) ? [
-                    'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
-                ] : []);
-            })->toArray();
+                    return [
+                            'id' => $relatedElement->id,
+                            'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
+                            'edit' => moduleRoute(
+                                $moduleName ?? $relation,
+                                $routePrefix ?? '',
+                                'edit',
+                                $relatedElement->id
+                            ),
+                            'endpointType' => $relatedElement->getMorphClass(),
+                        ] + (classHasTrait($relatedElement, HasMedias::class) ? [
+                            'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
+                        ] : []);
+                }
+            )->toArray();
         }
 
         return [];
@@ -196,14 +228,14 @@ trait HandleBrowsers
     {
         return $object->getRelated($relation)->map(function ($relatedElement) use ($titleKey) {
             return ($relatedElement != null) ? [
-                'id' => $relatedElement->id,
-                'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
-                'endpointType' => $relatedElement->getMorphClass(),
-            ] + (empty($relatedElement->adminEditUrl) ? [] : [
-                'edit' => $relatedElement->adminEditUrl,
-            ]) + (classHasTrait($relatedElement, HasMedias::class) ? [
-                'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
-            ] : []) : [];
+                    'id' => $relatedElement->id,
+                    'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
+                    'endpointType' => $relatedElement->getMorphClass(),
+                ] + (empty($relatedElement->adminEditUrl) ? [] : [
+                    'edit' => $relatedElement->adminEditUrl,
+                ]) + (classHasTrait($relatedElement, HasMedias::class) ? [
+                    'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
+                ] : []) : [];
         })->reject(function ($item) {
             return empty($item);
         })->values()->toArray();
@@ -219,10 +251,14 @@ trait HandleBrowsers
     {
         return collect($this->browsers)->map(function ($browser, $key) {
             $browserName = is_string($browser) ? $browser : $key;
-            $moduleName = empty($browser['moduleName']) ? $this->inferModuleNameFromBrowserName($browserName) : $browser['moduleName'];
+            $moduleName = empty($browser['moduleName']) ? $this->inferModuleNameFromBrowserName(
+                $browserName
+            ) : $browser['moduleName'];
 
             return [
-                'relation' => empty($browser['relation']) ? $this->inferRelationFromBrowserName($browserName) : $browser['relation'],
+                'relation' => empty($browser['relation']) ? $this->inferRelationFromBrowserName(
+                    $browserName
+                ) : $browser['relation'],
                 'routePrefix' => isset($browser['routePrefix']) ? $browser['routePrefix'] : null,
                 'titleKey' => empty($browser['titleKey']) ? 'title' : $browser['titleKey'],
                 'moduleName' => $moduleName,
@@ -262,5 +298,9 @@ trait HandleBrowsers
         return collect(
             $object->$relation instanceof EloquentModel ? [$object->$relation] : $object->$relation
         );
+    }
+
+    public function afterReplicateHandleBrowsers(TwillModelContract|Block $old, TwillModelContract|Block $new): void
+    {
     }
 }

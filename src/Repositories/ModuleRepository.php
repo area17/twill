@@ -5,7 +5,9 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Facades\TwillPermissions;
+use A17\Twill\Models\Behaviors\HasRelated;
 use A17\Twill\Models\Behaviors\Sortable;
+use A17\Twill\Models\Block;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Model;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
@@ -47,6 +49,8 @@ abstract class ModuleRepository
 
     protected array $fieldsGroups = [];
 
+    protected array $duplicatedRelations = [];
+
     public bool $fieldsGroupsFormFieldNamesAutoPrefix = false;
 
     public string $fieldsGroupsFormFieldNameSeparator = '_';
@@ -68,7 +72,7 @@ abstract class ModuleRepository
             $query = $filter->applyFilter($query);
         }
 
-        if (! $forcePagination && $this->model instanceof Sortable) {
+        if (!$forcePagination && $this->model instanceof Sortable) {
             return $query->ordered()->get();
         }
 
@@ -85,10 +89,10 @@ abstract class ModuleRepository
 
         if (
             TwillPermissions::enabled() &&
-                (
-                    TwillPermissions::getPermissionModule(getModuleNameByModel($this->model)) ||
-                    method_exists($this->model, 'scopeAccessible')
-                )
+            (
+                TwillPermissions::getPermissionModule(getModuleNameByModel($this->model)) ||
+                method_exists($this->model, 'scopeAccessible')
+            )
         ) {
             $query = $query->accessible();
         }
@@ -198,7 +202,7 @@ abstract class ModuleRepository
     {
         $model = $this->model->where($attributes)->first();
 
-        if (! $model) {
+        if (!$model) {
             return $this->create($fields);
         }
 
@@ -279,33 +283,82 @@ abstract class ModuleRepository
 
     public function duplicate(int|string $id, string $titleColumnKey = 'title'): ?TwillModelContract
     {
+        $newObject = null;
+
         if ($object = $this->model->find($id)) {
-            if ($revision = $object->revisions()->orderBy('created_at', 'desc')->first()) {
-                $revisionInput = json_decode($revision->payload, true);
-                $baseInput = collect($revisionInput)->only([
-                    $titleColumnKey,
-                    'slug',
-                    'languages',
-                ])->filter()->toArray();
-
-                $newObject = $this->create($baseInput);
-
-                $this->update($newObject->id, $revisionInput);
-
-                return $newObject;
+            $newObject = $object->replicate();
+            $newObject->save();
+            if ($object->isTranslatable()) {
+                foreach ($object->translations as $translation) {
+                    $relationKey = $newObject->getRelationKey();
+                    $newTranslation = $translation->replicate();
+                    $newTranslation->{$relationKey} = $newObject->id;
+                    $newTranslation->save();
+                }
             }
 
-            return null;
+            $this->afterReplicate($object, $newObject);
+
+//            if ($this->hasBehavior('medias')) {
+//                $this->duplicateMedias($object, $newObject);
+//            }
+//            if ($this->hasBehavior('files')) {
+//                $this->duplicateFiles($object, $newObject);
+//            }
+//            if ($this->hasBehavior('blocks')) {
+//                $this->duplicateBlocks($object, $newObject);
+//            }
+//            if (classHasTrait($object, HasRelated::class)) {
+//                $object->duplicateRelated($newObject);
+//            }
+            foreach ($this->duplicatedRelations as $key => $relation) {
+                $relationName = is_array($relation) ? ($relation['name'] ?? $key) : $relation;
+                $moduleName = is_array(
+                    $relation
+                ) ? ($relation['moduleName'] ?? ($relation['name'] ?? $key)) : $relation;
+                $relationClass = str_after_last(get_class($object->$relationName()), '\\');
+                if (in_array($relationClass, ['HasOne', 'HasMany', 'MorphOne', 'MorphMany'])) {
+                    $repository = $this->getModelRepository($moduleName);
+                    $foreignKeyName = $object->$relationName()->getForeignKeyName();
+                    if (($relationClass === 'HasOne' || $relationClass === 'MorphOne') && $object->{$relationName} instanceof Model) {
+                        if ($newRelated = $repository->duplicate($object->{$relationName}->id)) {
+                            $newRelated->{$foreignKeyName} = $newObject->id;
+                            $newRelated->save();
+                        }
+                    } elseif ($relationClass === 'HasMany' || $relationClass === 'MorphMany') {
+                        foreach ($object->{$relationName} as $related) {
+                            if ($related instanceof Model) {
+                                if ($newRelated = $repository->duplicate($related->id)) {
+                                    $newRelated->{$foreignKeyName} = $newObject->id;
+                                    $newRelated->save();
+                                }
+                            }
+                        }
+                    }
+                } elseif ($relationClass === 'BelongsToMany' || $relationClass === 'MorphToMany') {
+                    $newObject->$relationName()->sync(
+                        $object->{$relationName}->mapWithKeys(function ($item) use ($object, $relationName) {
+                            return [
+                                $item->id => Collection::make($object->$relationName()->getPivotColumns())
+                                    ->mapWithKeys(function ($attribute) use ($item) {
+                                        return [$attribute => $item->pivot->{$attribute}];
+                                    })
+                                    ->toArray(),
+                            ];
+                        })
+                    );
+                }
+            }
         }
 
-        return null;
+        return $newObject;
     }
 
     public function delete(int|string $id): bool
     {
         return DB::transaction(function () use ($id) {
             if ($object = $this->model->find($id)) {
-                if (! method_exists($object, 'canDeleteSafely') || $object->canDeleteSafely()) {
+                if (!method_exists($object, 'canDeleteSafely') || $object->canDeleteSafely()) {
                     $object->delete();
                     $this->afterDelete($object);
 
@@ -413,22 +466,22 @@ abstract class ModuleRepository
     {
         if (property_exists($this->model, 'checkboxes')) {
             foreach ($this->model->checkboxes as $field) {
-                if (! $this->shouldIgnoreFieldBeforeSave($field)) {
-                    $fields[$field] = isset($fields[$field]) && ! empty($fields[$field]);
+                if (!$this->shouldIgnoreFieldBeforeSave($field)) {
+                    $fields[$field] = isset($fields[$field]) && !empty($fields[$field]);
                 }
             }
         }
 
         if (property_exists($this->model, 'nullable')) {
             foreach ($this->model->nullable as $field) {
-                if (! isset($fields[$field]) && ! $this->shouldIgnoreFieldBeforeSave($field)) {
+                if (!isset($fields[$field]) && !$this->shouldIgnoreFieldBeforeSave($field)) {
                     $fields[$field] = null;
                 }
             }
         }
 
         foreach ($fields as $key => $value) {
-            if (! $this->shouldIgnoreFieldBeforeSave($key)) {
+            if (!$this->shouldIgnoreFieldBeforeSave($key)) {
                 if ($value === []) {
                     $fields[$key] = null;
                 }
@@ -489,6 +542,13 @@ abstract class ModuleRepository
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object);
+        }
+    }
+
+    public function afterReplicate(TwillModelContract|Block $old, TwillModelContract|Block $new): void
+    {
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
+            $this->$method($old, $new);
         }
     }
 
@@ -586,7 +646,7 @@ abstract class ModuleRepository
             }
 
             foreach ($object->$relationship as $relationshipObject) {
-                if (! in_array($relationshipObject->$attribute, $fields[$formField])) {
+                if (!in_array($relationshipObject->$attribute, $fields[$formField])) {
                     $relationshipObject->delete();
                 }
             }
@@ -657,7 +717,7 @@ abstract class ModuleRepository
         string $relation,
         string|ModuleRepository|null $modelOrRepository = null
     ): ModuleRepository {
-        if (! $modelOrRepository) {
+        if (!$modelOrRepository) {
             if (class_exists($relation) && (new $relation()) instanceof Model) {
                 $modelOrRepository = Str::afterLast($relation, '\\');
             } else {
