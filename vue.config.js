@@ -86,13 +86,7 @@ const plugins = [
   })
 ]
 
-function isDirEmpty(dirname) {
-  return fs.promises.readdir(dirname).then(files => {
-    return files.length === 0;
-  });
-}
-
-if (!isDirEmpty(`${srcDirectory}/icons-custom/`)) {
+if (fs.existsSync(`${srcDirectory}/icons-custom`) && fs.readdirSync(`${srcDirectory}/icons-custom`).length !== 0) {
   plugins.push(new SVGSpritemapPlugin(`${srcDirectory}/icons-custom/**/*.svg`, svgConfig('custom')));
 }
 
