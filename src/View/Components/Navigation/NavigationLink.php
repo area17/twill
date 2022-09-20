@@ -7,6 +7,7 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
+use Stringable;
 
 class NavigationLink extends Component
 {
@@ -23,7 +24,7 @@ class NavigationLink extends Component
 
     private ?string $href = null;
 
-    private string $title;
+    private Stringable|string $title;
 
     private array $customAttributes = [];
 
@@ -50,7 +51,7 @@ class NavigationLink extends Component
         return $this;
     }
 
-    public function title(string $title): self
+    public function title(Stringable|string $title): self
     {
         $this->title = $title;
 
