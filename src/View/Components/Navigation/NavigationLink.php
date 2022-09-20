@@ -13,7 +13,7 @@ class NavigationLink extends Component
 {
     private ?string $route = null;
 
-    private bool $selfAsFirstChild = false;
+    private bool $selfAsFirstChild = true;
 
     private bool $targetBlank = false;
 
@@ -82,9 +82,9 @@ class NavigationLink extends Component
         return true;
     }
 
-    public function addAsFirstChild(bool $selfAsFirstChild = true): self
+    public function doNotAddSelfAsFirstChild(bool $doNotAddSelfAsFirstChild = true): self
     {
-        $this->selfAsFirstChild = $selfAsFirstChild;
+        $this->selfAsFirstChild = !$doNotAddSelfAsFirstChild;
 
         return $this;
     }
@@ -141,12 +141,12 @@ class NavigationLink extends Component
     public function getChildren(): array
     {
         $fullList = [];
-        $cloneOfSelf = clone $this;
 
-        if ($this->selfAsFirstChild) {
+        if ($this->selfAsFirstChild && $this->children !== []) {
+            $cloneOfSelf = clone $this;
             // The clone we modify so we do not get unintended behaviors (such as infinite depth).
             $cloneOfSelf->setChildren([]);
-            $cloneOfSelf->addAsFirstChild(false);
+            $cloneOfSelf->doNotAddSelfAsFirstChild();
             $fullList[] = $cloneOfSelf;
         }
 

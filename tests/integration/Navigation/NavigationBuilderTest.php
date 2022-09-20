@@ -49,8 +49,8 @@ class NavigationBuilderTest extends TestCase
 
     public function testCanAddSelfAsFirstChild(): void {
         $this->login();
-        
-        TwillNavigation::addLink(NavigationLink::make()->forRoute('twill.users')->title('USERS')->addAsFirstChild());
+
+        TwillNavigation::addLink(NavigationLink::make()->forRoute('twill.users')->title('USERS'));
 
         $tree = TwillNavigation::buildNavigationTree();
 
@@ -63,16 +63,16 @@ class NavigationBuilderTest extends TestCase
         $link = NavigationLink::make()->forRoute('twill.users.index')->title('USERS');
 
         $this->assertStringNotContainsString('target="_blank"', $link->render());
-        
+
         // Second time we say it should open in a new window.
         $link = NavigationLink::make()->forRoute('twill.users.index')->title('USERS')->shouldOpenInNewWindow();
 
         $this->assertStringContainsString('target="_blank"', $link->render());
     }
-    
+
     public function testCannotCombineLegacyWithNavigationBuilder(): void {
         config()->set('twill-navigation', ['some-data']);
-        
+
         $this->expectException(CannotCombineNavigationBuilderWithLegacyConfig::class);
         TwillNavigation::addLink(NavigationLink::make()->forRoute('twill.users')->title('USERS'));
     }
