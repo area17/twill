@@ -46,7 +46,6 @@ class TwillNavigation
                 })
             );
 
-
             if ($activeLink !== null) {
                 return $activeLink;
             }

@@ -6,9 +6,6 @@ use A17\Twill\Models\AppSetting;
 use Closure;
 use Illuminate\Support\Str;
 
-/**
- * @todo: Add permissions.
- */
 class SettingsGroup
 {
     private bool $booted = false;
@@ -16,8 +13,6 @@ class SettingsGroup
     private string $name;
 
     private string $label;
-
-    private ?string $description = null;
 
     private bool $doNotAutoRegisterMenu = false;
 
@@ -64,11 +59,6 @@ class SettingsGroup
     public function getHref(): string
     {
         return route($this->getRoute(), ['group' => $this->name]);
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
     }
 
     public function hasSection(string $sectionName): bool
