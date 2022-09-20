@@ -39,13 +39,6 @@ class SettingsGroup
         return $this;
     }
 
-    public function description(string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
     public function getName(): string
     {
         return Str::slug($this->name);

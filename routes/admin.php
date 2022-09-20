@@ -58,7 +58,6 @@ if (config('twill.enabled.buckets')) {
 }
 
 if (\A17\Twill\Facades\TwillAppSettings::settingsAreEnabled()) {
-    Route::name('app.settings')->get('/settings/list', [AppSettingsController::class, 'dashboard']);
     Route::name('app.settings.page')->get('/settings/list/{group}', [AppSettingsController::class, 'editSettings']);
     Route::name('app.settings.update')->put('/settings/update/{appSetting}', [AppSettingsController::class, 'update']);
 

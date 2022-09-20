@@ -25,24 +25,21 @@ class SettingsModelTest extends TestCase
             SettingsGroup::make()
                 ->name('test')
                 ->label('Test label')
-                ->description('Test description')
         );
 
         TwillAppSettings::registerSettingsGroup(
             SettingsGroup::make()
                 ->name('demo')
                 ->label('Test 2 label')
-                ->description('Test 2 description')
         );
 
         // When we open up the controller it should auto register it and settings should be in the menu.
-        $this->actingAs($this->superAdmin(), 'twill_users')->getJson(route('twill.app.settings'))
+        // The secondary nav should show both the first and second label.
+        $this->actingAs($this->superAdmin(), 'twill_users')->getJson(route('twill.app.settings.page', ['group' => 'test']))
             ->assertSee('Settings')
             ->assertSee('Test label')
-            ->assertSee('Test description')
             // Second.
-            ->assertSee('Test 2 label')
-            ->assertSee('Test 2 description');
+            ->assertSee('Test 2 label');
     }
 
     public function testBooting(): void
@@ -53,7 +50,6 @@ class SettingsModelTest extends TestCase
             SettingsGroup::make()
                 ->name('test')
                 ->label('Test label')
-                ->description('Test description')
         );
 
         $this->assertTrue(AppSetting::where('name', 'test')->doesntExist());
@@ -69,7 +65,6 @@ class SettingsModelTest extends TestCase
             SettingsGroup::make()
                 ->name('test')
                 ->label('Test label')
-                ->description('Test description')
         );
 
         $this->actingAs($this->superAdmin(), 'twill_users')
@@ -83,7 +78,6 @@ class SettingsModelTest extends TestCase
             $group = SettingsGroup::make()
                 ->name('test')
                 ->label('Test label')
-                ->description('Test description')
         );
 
         // Manually boot it just for the test.
@@ -123,7 +117,6 @@ class SettingsModelTest extends TestCase
             $group = SettingsGroup::make()
                 ->name('test_not_existing')
                 ->label('Test label')
-                ->description('Test description')
         );
 
         $this->expectException(SettingsDirectoryMissingException::class);

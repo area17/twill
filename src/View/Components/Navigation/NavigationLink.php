@@ -173,11 +173,15 @@ class NavigationLink extends Component
 
     public function isActive(): bool
     {
+        if ($this->hasActiveChild()) {
+            return true;
+        }
+
         if (request()->route()->getName() === $this->route) {
             return request()->route()->parameters() === $this->routeArguments;
         }
 
-        return $this->hasActiveChild();
+        return false;
     }
 
     public function getTitle(): string
