@@ -32,6 +32,8 @@ class NavigationLink extends Component
 
     private ?Closure $onlyWhenFunction = null;
 
+    private bool $isModuleRoute = false;
+
     public static function make(): self
     {
         return new self();
@@ -94,6 +96,8 @@ class NavigationLink extends Component
         if (!isset($this->title)) {
             $this->title(Str::title($module));
         }
+
+        $this->isModuleRoute = true;
 
         $this->route = $this->getModuleRoute($module, $action ?? 'index');
 
@@ -178,8 +182,18 @@ class NavigationLink extends Component
             return true;
         }
 
-        if (request()->route()->getName() === $this->route) {
-            return request()->route()->parameters() === $this->routeArguments;
+        $currentRoute = request()?->route();
+
+        if ($currentRoute->getName() === $this->route) {
+            return $currentRoute->parameters() === $this->routeArguments;
+        }
+
+        // Check if it maybe is a edit route of a model.
+        if ($this->isModuleRoute) {
+            $baseRoute = Str::beforeLast($currentRoute->getName(), '.');
+            $linkRoute = Str::beforeLast($this->route, '.');
+
+            return $baseRoute === $linkRoute;
         }
 
         return false;
