@@ -7,7 +7,7 @@ use PragmaRX\Google2FA\Google2FA;
 
 class LoginTest extends TestCase
 {
-    public function testCanRedirectToLogin()
+    public function testCanRedirectToLogin(): void
     {
         $this->httpRequestAssert('/twill');
 
@@ -16,9 +16,11 @@ class LoginTest extends TestCase
         $this->assertSee('Forgot password');
     }
 
-    public function testCanLogin()
+    public function testCanLogin(): void
     {
         $this->login();
+
+        $this->assertAuthenticated();
 
         $this->assertSee('Media Library');
 
@@ -27,7 +29,17 @@ class LoginTest extends TestCase
         $this->assertSee('Logout');
     }
 
-    public function testCanLogout()
+    public function testCannotLoginWhenUserDisabled(): void
+    {
+        unset($this->superAdmin->unencrypted_password);
+        $this->superAdmin->published = false;
+        $this->superAdmin->save();
+
+        $this->login();
+        $this->assertGuest();
+    }
+
+    public function testCanLogout(): void
     {
         $this->login();
 
@@ -36,7 +48,7 @@ class LoginTest extends TestCase
         $this->assertSee('Forgot password');
     }
 
-    public function testGoogle2FA()
+    public function testGoogle2FA(): void
     {
         $user = User::where('email', $this->superAdmin()->email)->first();
 
