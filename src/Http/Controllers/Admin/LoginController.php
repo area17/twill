@@ -282,4 +282,16 @@ class LoginController extends Controller
             return $this->sendFailedLoginResponse($request);
         }
     }
+
+    /**
+     * Get the needed authorization credentials from the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+        // Only active user can login
+        return array_merge($request->only($this->username(), 'password'), ['published' => 1]);
+    }
 }
