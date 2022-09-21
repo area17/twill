@@ -53,7 +53,7 @@ class SettingsNavigationTest extends TestCase
 
         $this->assertSettingsIsNotInNavgationTree(TwillNavigation::buildNavigationTree());
     }
-    
+
     public function testAvailableSettingsShowInTree(): void
     {
         $this->login();

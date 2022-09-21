@@ -47,16 +47,6 @@ class NavigationBuilderTest extends TestCase
         $this->assertStringContainsString('/twill/users/' . $this->superAdmin()->id, $link->render());
     }
 
-    public function testCanAddSelfAsFirstChild(): void {
-        $this->login();
-
-        TwillNavigation::addLink(NavigationLink::make()->forRoute('twill.users')->title('USERS'));
-
-        $tree = TwillNavigation::buildNavigationTree();
-
-        $this->assertEquals('USERS', $tree['left'][0]->getChildren()[0]->getTitle());
-    }
-
     public function testTargetBlank(): void {
         $this->login();
 

@@ -118,7 +118,8 @@ class TwillNavigation
             foreach ($settingsNavigationGroups as $group) {
                 if ($links === []) {
                     // Set the first item to the main settings link.
-                    $mainSettingsGroup->forRoute($group->getRoute(), ['group' => $group->getName()]);
+                    $mainSettingsGroup->forRoute($group->getRoute(), ['group' => $group->getName()])
+                        ->doNotAddSelfAsFirstChild(true);
                 }
                 $links[] = NavigationLink::make()
                     ->title($group->getLabel())
