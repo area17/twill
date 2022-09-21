@@ -1,12 +1,12 @@
 <?php
 
+use A17\Twill\Helpers\TwillTransString;
 use Illuminate\Support\Collection;
 
 if (! function_exists('twillTrans')) {
-    function twillTrans($key, $replace = [])
+    function twillTrans($key, $replace = []): TwillTransString
     {
-        $locale = config('twill.locale', config('twill.fallback_locale', 'en'));
-        return trans($key, $replace, $locale);
+        return new TwillTransString($key, $replace);
     }
 }
 

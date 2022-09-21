@@ -90,12 +90,7 @@ class AppSettingsController extends ModuleController
 
     protected function getBackLink($fallback = null, $params = [])
     {
-        return route('twill.app.settings');
-    }
-
-    public function dashboard(): View
-    {
-        return view('twill::settings.dashboard', ['groups' => TwillAppSettings::getGroupsForNavigation()]);
+        return null;
     }
 
     public function getFormRequestClass()

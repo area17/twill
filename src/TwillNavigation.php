@@ -18,7 +18,9 @@ class TwillNavigation
     public function addLink(NavigationLink $link): void
     {
         if (config('twill-navigation', []) !== []) {
-            throw new CannotCombineNavigationBuilderWithLegacyConfig('You cannot combine twill-navigation and TwillNavigation');
+            throw new CannotCombineNavigationBuilderWithLegacyConfig(
+                'You cannot combine twill-navigation and TwillNavigation'
+            );
         }
 
         $this->links[] = $link;
@@ -75,7 +77,6 @@ class TwillNavigation
                 foreach ($nestedItem['secondary_navigation'] ?? [] as $tertiaryKey => $tertiaryItem) {
                     $secondaryChildren[] = $this->transformLegacyToNew($tertiaryKey, $tertiaryItem);
                 }
-                
 
                 $secondary->setChildren($secondaryChildren);
             }
@@ -109,18 +110,24 @@ class TwillNavigation
     {
         $settingsNavigationGroups = TwillAppSettings::getGroupsForNavigation();
         if ($settingsNavigationGroups !== []) {
+            $mainSettingsGroup = NavigationLink::make()
+                ->title(twillTrans('twill::lang.nav.settings'));
+
             $links = [];
+
             foreach ($settingsNavigationGroups as $group) {
+                if ($links === []) {
+                    // Set the first item to the main settings link.
+                    $mainSettingsGroup->forRoute($group->getRoute(), ['group' => $group->getName()])
+                        ->doNotAddSelfAsFirstChild(true);
+                }
                 $links[] = NavigationLink::make()
                     ->title($group->getLabel())
                     ->forRoute($group->getRoute(), ['group' => $group->getName()]);
             }
 
             if ($links !== []) {
-                return NavigationLink::make()
-                    ->title('Settings')
-                    ->forRoute('twill.app.settings')
-                    ->setChildren($links);
+                return $mainSettingsGroup->setChildren($links);
             }
         }
 
@@ -152,7 +159,7 @@ class TwillNavigation
 
         // Filter the final tree before handing it off.
         foreach ($tree as $groupKey => $group) {
-            $tree[$groupKey] = Arr::where($group, function(NavigationLink $link): bool {
+            $tree[$groupKey] = Arr::where($group, function (NavigationLink $link): bool {
                 return $link->shouldShow();
             });
         }

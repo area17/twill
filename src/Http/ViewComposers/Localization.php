@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Http\ViewComposers;
 
-use App;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Contracts\View\View;
 
@@ -24,7 +23,7 @@ class Localization
             'fallback_locale' => config('twill.fallback_locale', 'en'),
             'lang' => $lang
         ];
-        
+
         $view->with(['twillLocalization' => $twillLocalization]);
     }
 }

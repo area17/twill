@@ -33,7 +33,6 @@ public function boot(): void
         SettingsGroup::make()
             ->name('site-settings')
             ->label('Site settings')
-            ->description('Setup general site settings')
             ->availableWhen(fn() => \Auth::user()->can('manage.settings')) // Example access control.
     );
 }
@@ -45,7 +44,6 @@ Notable methods for the settingsGroup are:
 
 - `name(string)`: this is the machine name, and also the name of the folder and database that will be used later.
 - `label(string)`: the label to use for this settings group, this will be used in menu entries.
-- `description(string)`: an optional description of the settings group that will be used on the default settings
 overview page.
 - `doNotAutoRegisterMenu()`: this can be used if you want to manually register the menu link. If not provided it will
 automatically be added under a top level **settings** menu entry in the primary navigation. 

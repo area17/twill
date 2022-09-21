@@ -7,12 +7,13 @@ use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
+use Stringable;
 
 class NavigationLink extends Component
 {
     private ?string $route = null;
 
-    private bool $selfAsFirstChild = false;
+    private bool $selfAsFirstChild = true;
 
     private bool $targetBlank = false;
 
@@ -23,13 +24,15 @@ class NavigationLink extends Component
 
     private ?string $href = null;
 
-    private string $title;
+    private Stringable|string $title;
 
     private array $customAttributes = [];
 
     private array $routeArguments = [];
 
     private ?Closure $onlyWhenFunction = null;
+
+    private bool $isModuleRoute = false;
 
     public static function make(): self
     {
@@ -50,7 +53,7 @@ class NavigationLink extends Component
         return $this;
     }
 
-    public function title(string $title): self
+    public function title(Stringable|string $title): self
     {
         $this->title = $title;
 
@@ -81,9 +84,9 @@ class NavigationLink extends Component
         return true;
     }
 
-    public function addAsFirstChild(bool $selfAsFirstChild = true): self
+    public function doNotAddSelfAsFirstChild(bool $doNotAddSelfAsFirstChild = true): self
     {
-        $this->selfAsFirstChild = $selfAsFirstChild;
+        $this->selfAsFirstChild = !$doNotAddSelfAsFirstChild;
 
         return $this;
     }
@@ -93,6 +96,8 @@ class NavigationLink extends Component
         if (!isset($this->title)) {
             $this->title(Str::title($module));
         }
+
+        $this->isModuleRoute = true;
 
         $this->route = $this->getModuleRoute($module, $action ?? 'index');
 
@@ -140,12 +145,12 @@ class NavigationLink extends Component
     public function getChildren(): array
     {
         $fullList = [];
-        $cloneOfSelf = clone $this;
 
-        if ($this->selfAsFirstChild) {
+        if ($this->selfAsFirstChild && $this->children !== []) {
+            $cloneOfSelf = clone $this;
             // The clone we modify so we do not get unintended behaviors (such as infinite depth).
             $cloneOfSelf->setChildren([]);
-            $cloneOfSelf->addAsFirstChild(false);
+            $cloneOfSelf->doNotAddSelfAsFirstChild();
             $fullList[] = $cloneOfSelf;
         }
 
@@ -173,11 +178,25 @@ class NavigationLink extends Component
 
     public function isActive(): bool
     {
-        if (request()->route()->getName() === $this->route) {
-            return request()->route()->parameters() === $this->routeArguments;
+        if ($this->hasActiveChild()) {
+            return true;
         }
 
-        return $this->hasActiveChild();
+        $currentRoute = request()?->route();
+
+        if ($currentRoute->getName() === $this->route) {
+            return $currentRoute->parameters() === $this->routeArguments;
+        }
+
+        // Check if it maybe is a edit route of a model.
+        if ($this->isModuleRoute) {
+            $baseRoute = Str::beforeLast($currentRoute->getName(), '.');
+            $linkRoute = Str::beforeLast($this->route, '.');
+
+            return $baseRoute === $linkRoute;
+        }
+
+        return false;
     }
 
     public function getTitle(): string
