@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <title>Demo page</title>
-    <link rel="stylesheet" href="{{ mix('css/app.css') }}">
 </head>
 <body>
 <div>
@@ -12,6 +11,5 @@
     <br />
     {{ $item->description }}
 </div>
-<script src="{{ mix('js/app.js') }}"></script>
 </body>
 </html>
