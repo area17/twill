@@ -24,7 +24,7 @@ class Authenticate extends Middleware
             (
                 !$request->user() ||
                 !$request->user()->published
-            ) && $request->route()->getName() !== 'twill.login.form'
+            ) && $request->route()->getName() !== 'admin.login.form'
         ) {
             Auth::logout();
             return $request->expectsJson()
