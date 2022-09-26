@@ -2,9 +2,11 @@
 
 namespace A17\Twill\Tests\Integration\Controllers\Tables;
 
+use A17\Twill\Http\Controllers\Admin\ModuleController;
 use A17\Twill\Services\Listings\Columns\Text;
 use A17\Twill\Services\Listings\TableColumns;
 use A17\Twill\Services\Listings\TableDataContext;
+use A17\Twill\Tests\Integration\Anonymous\AnonymousModule;
 use A17\Twill\Tests\Integration\ModulesTestBase;
 
 class TableBuilderTest extends ModulesTestBase
@@ -61,4 +63,18 @@ class TableBuilderTest extends ModulesTestBase
         );
     }
 
+    public function testAdditionalIndexTableColumns(): void
+    {
+        $module = AnonymousModule::make('TableBuilderAuthors', $this->app)
+            ->withAdditionalTableColumns(
+                TableColumns::make([
+                    Text::make()->field('description')->title('Description')->linkToEdit(),
+                ])
+            )
+            ->boot();
+
+        $columns = invade($module->getModelController())->getTableColumns('index');
+
+        $this->assertEquals('description', $columns[2]->getKey());
+    }
 }

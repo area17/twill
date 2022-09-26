@@ -703,6 +703,8 @@ abstract class ModuleController extends Controller
             );
         }
 
+        $columns = $columns->merge($this->additionalBrowserTableColumns());
+
         return $columns;
     }
 
@@ -753,6 +755,8 @@ abstract class ModuleController extends Controller
             );
         }
 
+        $columns = $columns->merge($this->additionalIndexTableColumns());
+
         if ($this->getIndexOption('includeScheduledInList') && $this->repository->isFillable('publish_start_date')) {
             $columns->add(
                 ScheduledStatus::make()
@@ -770,6 +774,22 @@ abstract class ModuleController extends Controller
         }
 
         return $columns;
+    }
+
+    /**
+     * Similar to @see getBrowserTableColumns but these will be added on top of the default columns.
+     */
+    protected function additionalBrowserTableColumns(): TableColumns
+    {
+        return new TableColumns();
+    }
+
+    /**
+     * Similar to @see getIndexTableColumns but these will be added on top of the default columns.
+     */
+    protected function additionalIndexTableColumns(): TableColumns
+    {
+        return new TableColumns();
     }
 
     private function handleLegacyColumns(TableColumns $columns, array $items): void
