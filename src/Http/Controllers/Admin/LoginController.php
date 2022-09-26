@@ -12,21 +12,20 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\View\Factory as ViewFactory;
 use Laravel\Socialite\Facades\Socialite;
 use PragmaRX\Google2FA\Google2FA;
 
 /**
- |--------------------------------------------------------------------------
- | Login Controller
- |--------------------------------------------------------------------------
- |
- | This controller handles authenticating users for the application and
- | redirecting them to your home screen. The controller uses a trait
- | to conveniently provide its functionality to your applications.
- |
+ * |--------------------------------------------------------------------------
+ * | Login Controller
+ * |--------------------------------------------------------------------------
+ * |
+ * | This controller handles authenticating users for the application and
+ * | redirecting them to your home screen. The controller uses a trait
+ * | to conveniently provide its functionality to your applications.
+ * |
  */
 class LoginController extends Controller
 {
@@ -281,5 +280,13 @@ class LoginController extends Controller
         } else {
             return $this->sendFailedLoginResponse($request);
         }
+    }
+
+    /**
+     * This method checks to make sure the user is published.
+     */
+    protected function credentials(Request $request): array
+    {
+        return array_merge($request->only($this->username(), 'password'), ['published' => 1]);
     }
 }
