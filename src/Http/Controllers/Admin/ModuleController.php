@@ -672,10 +672,20 @@ abstract class ModuleController extends Controller
     private function getTableColumns(string $type): TableColumns
     {
         if ($type === 'index') {
-            return $this->getIndexTableColumns();
+            $tableColumns = $this->getIndexTableColumns();
+        } else {
+            $tableColumns = $this->getBrowserTableColumns();
         }
 
-        return $this->getBrowserTableColumns();
+        return $tableColumns->each(function (TableColumn $column) {
+            if ($column->shouldLinkToEdit()) {
+                $column->linkCell(function (TwillModelContract $model) {
+                    if ($this->getIndexOption('edit', $model)) {
+                        return $this->getModuleRoute($model->id, 'edit');
+                    }
+                });
+            }
+        });
     }
 
     protected function getBrowserTableColumns(): TableColumns
@@ -1024,7 +1034,7 @@ abstract class ModuleController extends Controller
      * @param int|null $submoduleId
      * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function edit(TwillModelContract | int $id, $submoduleId = null)
+    public function edit(TwillModelContract|int $id, $submoduleId = null)
     {
         $params = $this->request->route()->parameters();
 
@@ -1140,12 +1150,14 @@ abstract class ModuleController extends Controller
         $input = $this->request->all();
 
         if (isset($input['cmsSaveType']) && $input['cmsSaveType'] === 'cancel') {
-            return $this->respondWithRedirect(moduleRoute(
-                $this->moduleName,
-                $this->routePrefix,
-                'edit',
-                [Str::singular($this->moduleName) => $id]
-            ));
+            return $this->respondWithRedirect(
+                moduleRoute(
+                    $this->moduleName,
+                    $this->routePrefix,
+                    'edit',
+                    [Str::singular($this->moduleName) => $id]
+                )
+            );
         }
 
         $this->performUpdate($item);
@@ -1237,8 +1249,8 @@ abstract class ModuleController extends Controller
         }
 
         $previewView = $this->previewView ?? (Config::get('twill.frontend.views_path', 'site') . '.' . Str::singular(
-            $this->moduleName
-        ));
+                $this->moduleName
+            ));
 
         return View::exists($previewView) ? View::make(
             $previewView,
@@ -1280,7 +1292,10 @@ abstract class ModuleController extends Controller
             Session::flash('restoreMessage', twillTrans('twill::lang.publisher.editing-draft-revision'));
         } else {
             $date = $revision->created_at->toDayDateTimeString();
-            Session::flash('restoreMessage', twillTrans('twill::lang.publisher.restore-message', ['user' => $revision->byUser, 'date' => $date]));
+            Session::flash(
+                'restoreMessage',
+                twillTrans('twill::lang.publisher.restore-message', ['user' => $revision->byUser, 'date' => $date])
+            );
         }
 
         View::share('form', $this->form($id, $item));
@@ -1619,21 +1634,21 @@ abstract class ModuleController extends Controller
         $items = $this->getIndexItems($prependScope);
 
         $data = [
-            'tableData' => $this->getIndexTableData($items),
-            'tableColumns' => $this->getTableColumns('index')->toCmsArray(
-                request(),
-                $this->getIndexOption('sortable')
-            ),
-            'tableMainFilters' => $this->quickFilters()->toFrontendArray(),
-            'filters' => json_decode($this->request->get('filter'), true) ?? [],
-            // HiddenFilters are called "hidden" because they only show when the filters button is clicked.
-            'hiddenFilters' => $this->filters(),
-            'filterLinks' => $this->filterLinks ?? [],
-            'maxPage' => method_exists($items, 'lastPage') ? $items->lastPage() : 1,
-            'defaultMaxPage' => method_exists($items, 'total') ? ceil($items->total() / $this->perPage) : 1,
-            'offset' => method_exists($items, 'perPage') ? $items->perPage() : count($items),
-            'defaultOffset' => $this->perPage,
-        ] + $this->getIndexUrls($this->moduleName, $this->routePrefix);
+                'tableData' => $this->getIndexTableData($items),
+                'tableColumns' => $this->getTableColumns('index')->toCmsArray(
+                    request(),
+                    $this->getIndexOption('sortable')
+                ),
+                'tableMainFilters' => $this->quickFilters()->toFrontendArray(),
+                'filters' => json_decode($this->request->get('filter'), true) ?? [],
+                // HiddenFilters are called "hidden" because they only show when the filters button is clicked.
+                'hiddenFilters' => $this->filters(),
+                'filterLinks' => $this->filterLinks ?? [],
+                'maxPage' => method_exists($items, 'lastPage') ? $items->lastPage() : 1,
+                'defaultMaxPage' => method_exists($items, 'total') ? ceil($items->total() / $this->perPage) : 1,
+                'offset' => method_exists($items, 'perPage') ? $items->perPage() : count($items),
+                'defaultOffset' => $this->perPage,
+            ] + $this->getIndexUrls($this->moduleName, $this->routePrefix);
 
         $baseUrl = $this->getPermalinkBaseUrl();
 
@@ -1690,7 +1705,7 @@ abstract class ModuleController extends Controller
         // Get the applied quick filter..
         if (array_key_exists('status', $requestFilters)) {
             $filter = $this->quickFilters()->filter(
-                fn (QuickFilter $filter) => $filter->getQueryString() === $requestFilters['status']
+                fn(QuickFilter $filter) => $filter->getQueryString() === $requestFilters['status']
             )->first();
 
             if ($filter !== null) {
@@ -1703,7 +1718,7 @@ abstract class ModuleController extends Controller
         // Get other filters that need to applied.
         foreach ($requestFilters as $filterKey => $filterValue) {
             $filter = $this->filters()->filter(
-                fn (BasicFilter $filter) => $filter->getQueryString() === $filterKey
+                fn(BasicFilter $filter) => $filter->getQueryString() === $filterKey
             )->first();
 
             if ($filter !== null) {
@@ -1836,31 +1851,31 @@ abstract class ModuleController extends Controller
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.listing.filter.all-items'))
                 ->queryString('all')
-                ->amount(fn () => $this->repository->getCountByStatusSlug('all', $scope)),
+                ->amount(fn() => $this->repository->getCountByStatusSlug('all', $scope)),
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.listing.filter.mine'))
                 ->queryString('mine')
                 ->scope('mine')
                 ->onlyEnableWhen($this->moduleHas('revisions') && $this->getIndexOption('create'))
-                ->amount(fn () => $this->repository->getCountByStatusSlug('mine', $scope)),
+                ->amount(fn() => $this->repository->getCountByStatusSlug('mine', $scope)),
             QuickFilter::make()
                 ->label($this->getTransLabel('listing.filter.published'))
                 ->queryString('published')
                 ->scope('published')
                 ->onlyEnableWhen($this->getIndexOption('publish'))
-                ->amount(fn () => $this->repository->getCountByStatusSlug('published', $scope)),
+                ->amount(fn() => $this->repository->getCountByStatusSlug('published', $scope)),
             QuickFilter::make()
                 ->label($this->getTransLabel('listing.filter.draft'))
                 ->queryString('draft')
                 ->scope('draft')
                 ->onlyEnableWhen($this->getIndexOption('publish'))
-                ->amount(fn () => $this->repository->getCountByStatusSlug('draft', $scope)),
+                ->amount(fn() => $this->repository->getCountByStatusSlug('draft', $scope)),
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.listing.filter.trash'))
                 ->queryString('trash')
                 ->scope('onlyTrashed')
                 ->onlyEnableWhen($this->getIndexOption('restore'))
-                ->amount(fn () => $this->repository->getCountByStatusSlug('trash', $scope)),
+                ->amount(fn() => $this->repository->getCountByStatusSlug('trash', $scope)),
         ]);
     }
 
@@ -1955,7 +1970,7 @@ abstract class ModuleController extends Controller
                     } else {
                         // @todo: In php 8.1 this is an int by itself. In php8.1 it is not.
                         if ($field === 'published') {
-                            $repeaterFields[$field] = (int) $item->{$field};
+                            $repeaterFields[$field] = (int)$item->{$field};
                             continue;
                         }
                         $repeaterFields[$field] = $item->{$field};
@@ -2117,42 +2132,42 @@ abstract class ModuleController extends Controller
         $itemId = $this->getItemIdentifier($item);
 
         $data = [
-            'item' => $item,
-            'moduleName' => $this->moduleName,
-            'routePrefix' => $this->routePrefix,
-            'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
-            'publish' => $item->canPublish ?? true,
-            'publishDate24Hr' => Config::get('twill.publish_date_24h') ?? false,
-            'publishDateFormat' => Config::get('twill.publish_date_format') ?? null,
-            'publishDateDisplayFormat' => Config::get('twill.publish_date_display_format') ?? null,
-            'publishedLabel' => $this->getTransLabel('published'),
-            'draftLabel' => $this->getTransLabel('draft'),
-            'translate' => $this->moduleHas('translations'),
-            'translateTitle' => $this->titleIsTranslatable(),
-            'permalink' => $this->getIndexOption('permalink', $item),
-            'createWithoutModal' => !$itemId && $this->getIndexOption('skipCreateModal'),
-            'form_fields' => $this->repository->getFormFields($item),
-            'baseUrl' => $baseUrl,
-            'localizedPermalinkBase' => $localizedPermalinkBase,
-            'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
-            'saveUrl' => $itemId ? $this->getModuleRoute($itemId, 'update') : moduleRoute(
-                $this->moduleName,
-                $this->routePrefix,
-                'store',
-                [$this->submoduleParentId]
-            ),
-            'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas(
-                'blocks'
-            ) && !$this->disableEditor,
-            'blockPreviewUrl' => Route::has('twill.blocks.preview') ? URL::route('twill.blocks.preview') : '#',
-            'availableRepeaters' => $this->getRepeaterList()->toJson(),
-            'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
-            'submitOptions' => $this->getSubmitOptions($item),
-            'groupUserMapping' => $this->getGroupUserMapping(),
-            'showPermissionFieldset' => $this->getShowPermissionFieldset($item),
-        ] + (Route::has($previewRouteName) && $itemId ? [
-            'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', [$itemId]),
-        ] : [])
+                'item' => $item,
+                'moduleName' => $this->moduleName,
+                'routePrefix' => $this->routePrefix,
+                'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
+                'publish' => $item->canPublish ?? true,
+                'publishDate24Hr' => Config::get('twill.publish_date_24h') ?? false,
+                'publishDateFormat' => Config::get('twill.publish_date_format') ?? null,
+                'publishDateDisplayFormat' => Config::get('twill.publish_date_display_format') ?? null,
+                'publishedLabel' => $this->getTransLabel('published'),
+                'draftLabel' => $this->getTransLabel('draft'),
+                'translate' => $this->moduleHas('translations'),
+                'translateTitle' => $this->titleIsTranslatable(),
+                'permalink' => $this->getIndexOption('permalink', $item),
+                'createWithoutModal' => !$itemId && $this->getIndexOption('skipCreateModal'),
+                'form_fields' => $this->repository->getFormFields($item),
+                'baseUrl' => $baseUrl,
+                'localizedPermalinkBase' => $localizedPermalinkBase,
+                'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
+                'saveUrl' => $itemId ? $this->getModuleRoute($itemId, 'update') : moduleRoute(
+                    $this->moduleName,
+                    $this->routePrefix,
+                    'store',
+                    [$this->submoduleParentId]
+                ),
+                'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas(
+                        'blocks'
+                    ) && !$this->disableEditor,
+                'blockPreviewUrl' => Route::has('twill.blocks.preview') ? URL::route('twill.blocks.preview') : '#',
+                'availableRepeaters' => $this->getRepeaterList()->toJson(),
+                'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
+                'submitOptions' => $this->getSubmitOptions($item),
+                'groupUserMapping' => $this->getGroupUserMapping(),
+                'showPermissionFieldset' => $this->getShowPermissionFieldset($item),
+            ] + (Route::has($previewRouteName) && $itemId ? [
+                'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', [$itemId]),
+            ] : [])
             + (Route::has($restoreRouteName) && $itemId ? [
                 'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', [$itemId]),
             ] : []);
@@ -2360,8 +2375,11 @@ abstract class ModuleController extends Controller
         return $appUrl . '/'
             . ($this->moduleHas('translations') ? '{language}/' : '')
             . ($this->moduleHas('revisions') ? '{preview}/' : '')
-            . (empty($this->getLocalizedPermalinkBase()) ? ($this->permalinkBase ?? $this->getModulePermalinkBase()) : '')
-            . (((isset($this->permalinkBase) && empty($this->permalinkBase)) || !empty($this->getLocalizedPermalinkBase())) ? '' : '/');
+            . (empty($this->getLocalizedPermalinkBase()) ? ($this->permalinkBase ?? $this->getModulePermalinkBase(
+            )) : '')
+            . (((isset($this->permalinkBase) && empty($this->permalinkBase)) || !empty(
+                $this->getLocalizedPermalinkBase()
+                )) ? '' : '/');
     }
 
     /**

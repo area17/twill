@@ -64,6 +64,7 @@ All columns are placed under the `src/Services/Listings/Columns` directory.
 - `sortable(bool $sortable = true)`: Makes a column sortable.
 - `optional(bool $optional = true)`: Makes a column optional.
 - `hide(bool $hide = true)`: Hide the field by default. Only usable with optional.
+- `linkToEdit(bool $linkToEdit = true)`: Link the filed to the edit form.
 
 ##### Other methods
 

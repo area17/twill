@@ -1,0 +1,21 @@
+{
+  "$schema": "https://laravel-ide.com/schema/laravel-ide-v2.json",
+  "completions": [
+    {
+      "complete": "routeName",
+      "condition": [
+        {
+          "methodNames": [
+            "forRoute"
+          ],
+          "classFqn": [
+            "\\A17\\Twill\\View\\Components\\Navigation\\NavigationLink"
+          ],
+          "parameters": [
+            1
+          ]
+        }
+      ]
+    }
+  ]
+}
