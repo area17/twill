@@ -40,7 +40,7 @@ class TwillAppSettings
 
     public function settingsAreEnabled(): bool
     {
-        return config('twill.enabled.settings');
+        return config('twill.enabled.settings', false);
     }
 
     public function getTranslated(string $identifier): mixed
