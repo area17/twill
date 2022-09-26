@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
-use A17\Twill\Models\Block;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Media;
 use Illuminate\Support\Arr;
@@ -192,10 +191,7 @@ trait HandleMedias
         return $this->model->getMediasParams()[$role];
     }
 
-    public function afterDuplicateHandleMedias(
-        TwillModelContract|Block $original,
-        TwillModelContract|Block $newObject
-    ): void {
+    public function afterDuplicateHandleMedias(TwillModelContract $original, TwillModelContract $newObject): void {
         foreach ($original->medias as $media) {
             $newPushData = [
                 'crop' => $media->pivot->crop,

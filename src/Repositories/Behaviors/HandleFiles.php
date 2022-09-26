@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
-use A17\Twill\Models\Block;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\File;
 use Illuminate\Support\Arr;
@@ -110,7 +109,7 @@ trait HandleFiles
         return $fields;
     }
 
-    public function afterDuplicateHandleFiles(TwillModelContract|Block $object, TwillModelContract|Block $newObject): void
+    public function afterDuplicateHandleFiles(TwillModelContract $object, TwillModelContract $newObject): void
     {
         $newObject->files()->sync(
             $object->files->mapWithKeys(function ($file) use ($object) {

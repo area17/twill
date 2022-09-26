@@ -491,7 +491,7 @@ abstract class ModuleRepository
         }
     }
 
-    public function afterDuplicate(TwillModelContract|Block $old, TwillModelContract|Block $new): void
+    public function afterDuplicate(TwillModelContract $old, TwillModelContract $new): void
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($old, $new);

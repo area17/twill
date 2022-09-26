@@ -509,7 +509,7 @@ trait HandleBlocks
         })->filter()->toArray();
     }
 
-    public function afterDuplicateHandleBlocks(TwillModelContract|Block $object, TwillModelContract|Block $newObject): void
+    public function afterDuplicateHandleBlocks(TwillModelContract $object, TwillModelContract $newObject): void
     {
         $objectIsBlock = $object instanceof Block;
         $blocks = $objectIsBlock ? $object->children : $object->blocks()->whereNull('parent_id')->get();
