@@ -2,15 +2,17 @@
 
 namespace A17\Twill\Tests\Integration\Repositories;
 
-use A17\Twill\Facades\TwillUtil;
 use A17\Twill\Models\Block;
 use A17\Twill\Tests\Integration\Anonymous\AnonymousModule;
+use A17\Twill\Tests\Integration\Behaviors\CreatesMedia;
 use A17\Twill\Tests\Integration\Behaviors\FileTools;
 use A17\Twill\Tests\Integration\TestCase;
+use Illuminate\Support\Facades\DB;
 
-class DuplicateWithoutRevisionsTest extends TestCase
+class DuplicateTest extends TestCase
 {
     use FileTools;
+    use CreatesMedia;
 
     public function setUp(): void
     {
@@ -20,7 +22,8 @@ class DuplicateWithoutRevisionsTest extends TestCase
 
     public function testSimpleDuplicateContent(): void
     {
-        $module = AnonymousModule::make('leaves', $this->app)
+        $module = AnonymousModule::make('d_leaves', $this->app)
+            ->withRevisions()
             ->withFields(['title' => ['translatable' => true]])
             ->boot();
 
@@ -45,6 +48,7 @@ class DuplicateWithoutRevisionsTest extends TestCase
             ->boot();
 
         $module = AnonymousModule::make('x_leaves', $this->app)
+            ->withRevisions()
             ->withFields(['title' => ['translatable' => true]])
             ->withRelated(['x_leaves'])
             ->boot();
@@ -71,39 +75,10 @@ class DuplicateWithoutRevisionsTest extends TestCase
         $this->assertEquals($treeId, $duplicate->loadRelated('x_leaves')->first()->id);
     }
 
-    public function testDuplicateWithBrowser(): void
-    {
-        $browserModule = AnonymousModule::make('apps', $this->app)
-            ->withFields(['title'])
-            ->boot();
-
-        $module = AnonymousModule::make('aleaves', $this->app)
-            ->withFields(['title' => ['translatable' => true]])
-            ->withBelongsToMany(['apps' => $browserModule->getModelClassName()])
-            ->boot();
-
-        $model = $module->getRepository()->create([
-            'title' => ['en' => 'English title'],
-            'active' => ['en' => true],
-            'browsers' => [
-                'apps' => [
-                    ['id' => $treeId = $browserModule->getModelClassName()::create(['title' => 'demo'])->id],
-                ],
-            ],
-        ]);
-
-        $this->assertCount(1, $model->apps);
-        $this->assertEquals($treeId, $model->apps->first()->id);
-
-        $duplicate = $module->getRepository()->duplicate($model->id);
-
-        $this->assertCount(1, $duplicate->apps);
-        $this->assertEquals($treeId, $duplicate->apps->first()->id);
-    }
-
     public function testDuplicateWithBlocksAndJsonRepeaters(): void
     {
-        $module = AnonymousModule::make('bleaves', $this->app)
+        $module = AnonymousModule::make('y_bleaves', $this->app)
+            ->withRevisions()
             ->withFields(['title' => ['translatable' => true], 'repeaterdata' => ['type' => 'json']])
             ->boot();
 
@@ -147,40 +122,42 @@ class DuplicateWithoutRevisionsTest extends TestCase
         $this->assertNotEquals($duplicate->blocks->first()->id, $model->blocks->first()->id);
     }
 
-    public function testDuplicateWithRepeaters(): void
+    public function testDuplicateWithMedias(): void
     {
-        $module = AnonymousModule::make('codes', $this->app)
+        $module = AnonymousModule::make('x_bleaves', $this->app)
+            ->withRevisions()
+            ->withMedias()
             ->withFields(['title' => ['translatable' => true]])
-            ->withRepeaters(["\App\Models\Tree"])
             ->boot();
 
-        AnonymousModule::make('trees', $this->app)
-            ->withBelongsTo(['code' => $module->getModelClassName()])
-            ->withFields(['title'])
-            ->boot();
+        $this->login();
+        $media = $this->createMedia();
 
         $model = $module->getRepository()->create([
             'title' => ['en' => 'English title'],
             'active' => ['en' => true],
-            'repeaters' => [
-                'trees' => [
+            'medias' => [
+                'cover' => [
                     [
-                        'id' => time(),
-                        'title' => 'Hello repeater!'
+                        'id' => $media->id,
                     ],
                 ],
             ],
         ]);
 
-        $this->assertCount(1, $model->trees);
+        $model->refresh();
 
-        // We have to clear the temp store as this would also happen on a real environment.
-        // @todo: This is not ideal behaviour as this might regress in real environments as well.
-        TwillUtil::clearTempStore();
+        // There should be 3, 1 for each crop. If this test fails in the future, it might be because the default crops
+        // have been changed.
+        $this->assertCount(3, $model->medias);
+        $this->assertCount(1, $model->images('cover'));
+
+        $this->assertEquals(3, DB::select('select count(*) from mediables')[0]->{'count(*)'});
 
         $duplicate = $module->getRepository()->duplicate($model->id);
 
-        $this->assertCount(1, $duplicate->trees);
-        $this->assertNotEquals($model->trees->first()->id, $duplicate->trees->first()->id);
+        $this->assertCount(3, $duplicate->medias);
+        $this->assertCount(1, $duplicate->images('cover'));
+        $this->assertEquals(6, DB::select('select count(*) from mediables')[0]->{'count(*)'});
     }
 }

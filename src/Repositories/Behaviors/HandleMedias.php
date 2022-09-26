@@ -192,18 +192,23 @@ trait HandleMedias
         return $this->model->getMediasParams()[$role];
     }
 
-    public function afterReplicateHandleMedias(TwillModelContract|Block $object, TwillModelContract|Block $newObject): void
-    {
-        $newObject->medias()->sync(
-            $object->medias->mapWithKeys(function ($media) use ($object) {
-                return [
-                    $media->id => Collection::make($object->medias()->getPivotColumns())->mapWithKeys(
-                        function ($attribute) use ($media) {
-                            return [$attribute => $media->pivot->$attribute];
-                        }
-                    )->toArray(),
-                ];
-            })
-        );
+    public function afterDuplicateHandleMedias(
+        TwillModelContract|Block $original,
+        TwillModelContract|Block $newObject
+    ): void {
+        foreach ($original->medias as $media) {
+            $newPushData = [
+                'crop' => $media->pivot->crop,
+                'role' => $media->pivot->role,
+                'ratio' => $media->pivot->ratio,
+                'crop_w' => $media->pivot->crop_w,
+                'crop_h' => $media->pivot->crop_h,
+                'crop_x' => $media->pivot->crop_x,
+                'crop_y' => $media->pivot->crop_y,
+                'metadatas' => $media->pivot->metadatas,
+            ];
+
+            $newObject->medias()->attach($media->id, $newPushData);
+        }
     }
 }

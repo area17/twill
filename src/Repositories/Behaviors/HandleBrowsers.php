@@ -3,8 +3,6 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Behaviors\HasMedias;
-use A17\Twill\Models\Contracts\TwillModelContract;
-use A17\Twill\Services\Blocks\Block;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -298,9 +296,5 @@ trait HandleBrowsers
         return collect(
             $object->$relation instanceof EloquentModel ? [$object->$relation] : $object->$relation
         );
-    }
-
-    public function afterReplicateHandleBrowsers(TwillModelContract|Block $old, TwillModelContract|Block $new): void
-    {
     }
 }

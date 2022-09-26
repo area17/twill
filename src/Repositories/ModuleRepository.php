@@ -5,7 +5,6 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Facades\TwillPermissions;
-use A17\Twill\Models\Behaviors\HasRelated;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Block;
 use A17\Twill\Models\Contracts\TwillModelContract;
@@ -48,8 +47,6 @@ abstract class ModuleRepository
     protected array $countScope = [];
 
     protected array $fieldsGroups = [];
-
-    protected array $duplicatedRelations = [];
 
     public bool $fieldsGroupsFormFieldNamesAutoPrefix = false;
 
@@ -297,58 +294,7 @@ abstract class ModuleRepository
                 }
             }
 
-            $this->afterReplicate($object, $newObject);
-
-//            if ($this->hasBehavior('medias')) {
-//                $this->duplicateMedias($object, $newObject);
-//            }
-//            if ($this->hasBehavior('files')) {
-//                $this->duplicateFiles($object, $newObject);
-//            }
-//            if ($this->hasBehavior('blocks')) {
-//                $this->duplicateBlocks($object, $newObject);
-//            }
-//            if (classHasTrait($object, HasRelated::class)) {
-//                $object->duplicateRelated($newObject);
-//            }
-            foreach ($this->duplicatedRelations as $key => $relation) {
-                $relationName = is_array($relation) ? ($relation['name'] ?? $key) : $relation;
-                $moduleName = is_array(
-                    $relation
-                ) ? ($relation['moduleName'] ?? ($relation['name'] ?? $key)) : $relation;
-                $relationClass = str_after_last(get_class($object->$relationName()), '\\');
-                if (in_array($relationClass, ['HasOne', 'HasMany', 'MorphOne', 'MorphMany'])) {
-                    $repository = $this->getModelRepository($moduleName);
-                    $foreignKeyName = $object->$relationName()->getForeignKeyName();
-                    if (($relationClass === 'HasOne' || $relationClass === 'MorphOne') && $object->{$relationName} instanceof Model) {
-                        if ($newRelated = $repository->duplicate($object->{$relationName}->id)) {
-                            $newRelated->{$foreignKeyName} = $newObject->id;
-                            $newRelated->save();
-                        }
-                    } elseif ($relationClass === 'HasMany' || $relationClass === 'MorphMany') {
-                        foreach ($object->{$relationName} as $related) {
-                            if ($related instanceof Model) {
-                                if ($newRelated = $repository->duplicate($related->id)) {
-                                    $newRelated->{$foreignKeyName} = $newObject->id;
-                                    $newRelated->save();
-                                }
-                            }
-                        }
-                    }
-                } elseif ($relationClass === 'BelongsToMany' || $relationClass === 'MorphToMany') {
-                    $newObject->$relationName()->sync(
-                        $object->{$relationName}->mapWithKeys(function ($item) use ($object, $relationName) {
-                            return [
-                                $item->id => Collection::make($object->$relationName()->getPivotColumns())
-                                    ->mapWithKeys(function ($attribute) use ($item) {
-                                        return [$attribute => $item->pivot->{$attribute}];
-                                    })
-                                    ->toArray(),
-                            ];
-                        })
-                    );
-                }
-            }
+            $this->afterDuplicate($object, $newObject);
         }
 
         return $newObject;
@@ -545,7 +491,7 @@ abstract class ModuleRepository
         }
     }
 
-    public function afterReplicate(TwillModelContract|Block $old, TwillModelContract|Block $new): void
+    public function afterDuplicate(TwillModelContract|Block $old, TwillModelContract|Block $new): void
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($old, $new);

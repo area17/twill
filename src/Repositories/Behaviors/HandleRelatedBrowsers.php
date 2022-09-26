@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
-use A17\Twill\Models\Behaviors\HasRelated;
 use A17\Twill\Models\Block;
 use A17\Twill\Models\Contracts\TwillModelContract;
 
@@ -95,7 +94,7 @@ trait HandleRelatedBrowsers
     /**
      * Called from afterReplicate in ModuleRepository.
      */
-    public function afterReplicateHandleRelatedBrowsers(
+    public function afterDuplicateHandleRelatedBrowsers(
         TwillModelContract|Block $old,
         TwillModelContract|Block $new
     ): void {

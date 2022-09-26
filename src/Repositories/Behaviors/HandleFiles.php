@@ -110,7 +110,7 @@ trait HandleFiles
         return $fields;
     }
 
-    public function afterReplicateHandleFiles(TwillModelContract|Block $object, TwillModelContract|Block $newObject): void
+    public function afterDuplicateHandleFiles(TwillModelContract|Block $object, TwillModelContract|Block $newObject): void
     {
         $newObject->files()->sync(
             $object->files->mapWithKeys(function ($file) use ($object) {

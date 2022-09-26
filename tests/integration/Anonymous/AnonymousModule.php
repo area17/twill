@@ -5,6 +5,7 @@ namespace A17\Twill\Tests\Integration\Anonymous;
 use A17\Twill\Facades\TwillRoutes;
 use A17\Twill\Http\Controllers\Admin\ModuleController;
 use A17\Twill\Models\Behaviors\HasBlocks;
+use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasRelated;
 use A17\Twill\Models\Behaviors\HasRevisions;
 use A17\Twill\Models\Behaviors\HasTranslation;
@@ -13,6 +14,7 @@ use A17\Twill\Models\Model;
 use A17\Twill\Models\Revision;
 use A17\Twill\Repositories\Behaviors\HandleBlocks;
 use A17\Twill\Repositories\Behaviors\HandleJsonRepeaters;
+use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleRevisions;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use A17\Twill\Repositories\ModuleRepository;
@@ -70,6 +72,8 @@ class AnonymousModule
 
     private bool $withRevisions = false;
 
+    private bool $withMedia = false;
+
     private ?string $modelClass = null;
 
     private ?string $revisionClass = null;
@@ -123,6 +127,13 @@ class AnonymousModule
     public function withBelongsTo(array $items): self
     {
         $this->belongsTo = $items;
+
+        return $this;
+    }
+
+    public function withMedias(): self
+    {
+        $this->withMedia = true;
 
         return $this;
     }
@@ -584,6 +595,10 @@ PHP
             $class->addTrait(HasRelated::class);
         }
 
+        if ($this->withMedia) {
+            $class->addTrait(HasMedias::class);
+        }
+
         if ($this->withRevisions) {
             $class->addTrait(HasRevisions::class);
         }
@@ -612,6 +627,10 @@ PHP
 
         if ($this->withRevisions) {
             $class->addTrait(HandleRevisions::class);
+        }
+
+        if ($this->withMedia) {
+            $class->addTrait(HandleMedias::class);
         }
 
         if ($this->related !== []) {
