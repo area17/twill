@@ -49,6 +49,33 @@ protected function getIndexTableColumns(): TableColumns
 }
 ```
 
+### Extending base tables
+
+In some cases you might want to just add some columns to your table. For this you can override the
+following methods:
+
+```php
+/**
+ * Similar to @see getBrowserTableColumns but these will be added on top of the default columns.
+ */
+protected function additionalBrowserTableColumns(): TableColumns
+{
+    return new TableColumns();
+}
+
+/**
+ * Similar to @see getIndexTableColumns but these will be added on top of the default columns.
+ */
+protected function additionalIndexTableColumns(): TableColumns
+{
+    return new TableColumns();
+}
+```
+
+For `additionalIndexTableColumns` these items will be added after the title.
+
+In `additionalBrowserTableColumns` these will be added at the end.
+
 ### Column methods
 
 There are currently 10 different columns. Most column share a set of setters that you can use. Because these columns
