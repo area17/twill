@@ -6,13 +6,14 @@ use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillUtil;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Block;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Model;
 use A17\Twill\Repositories\BlockRepository;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use Log;
-use Schema;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 trait HandleBlocks
@@ -506,5 +507,24 @@ trait HandleBlocks
                 "blocks[$block->id][$relation]" => $items,
             ];
         })->filter()->toArray();
+    }
+
+    public function afterDuplicateHandleBlocks(TwillModelContract $object, TwillModelContract $newObject): void
+    {
+        $objectIsBlock = $object instanceof Block;
+        $blocks = $objectIsBlock ? $object->children : $object->blocks()->whereNull('parent_id')->get();
+        foreach ($blocks as $block) {
+            $newBlock = $block->replicate();
+            if ($objectIsBlock) {
+                $newBlock->blockable_id = $newObject->blockable_id;
+                $newBlock->parent_id = $newObject->id;
+            } else {
+                $newBlock->blockable_id = $newObject->id;
+            }
+            $newBlock->save();
+
+            $repository = app()->make(BlockRepository::class);
+            $repository->afterDuplicate($block, $newBlock);
+        }
     }
 }

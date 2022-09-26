@@ -147,3 +147,43 @@ public function hydrate($object, $fields)
     return parent::hydrate($object, $fields);
 }
 ```
+
+## Duplicating content
+
+When enabling the duplicate feature on your [controller](./controllers.md) the ui will expose a button and
+row action to duplicate the entry.
+
+By default the duplicate function will take care of duplicating the following:
+
+- Base content and translations
+- Blocks and json repeaters
+- Related browsers
+- Media's
+- Files'
+
+It does not duplicate related content such as regular browsers, repeaters and other relations.
+
+This is because we cannot know how to handle these specifically for your project. But we do provide a 
+method you can use to trigger these duplications, if required, after the initial duplications are complete.
+
+To do this, you can override the `afterDuplicate` method, which receives 2 arguments. One for the old and 
+one fore the new model.
+
+Do not forget to include a call to the parent if you want to have the default behaviour.
+
+Example:
+
+```php
+use A17\Twill\Models\Contracts\TwillModelContract;
+
+class BlogRepository extends ModuleRepository
+{
+    public function afterDuplicate(TwillModelContract $old, TwillModelContract $new): void
+    {
+        parent::afterDuplicate($old, $new);
+
+        $new->publish_start_date = Carbon::tomorrow();
+        $new->save();
+    }
+}
+```

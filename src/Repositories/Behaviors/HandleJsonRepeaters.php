@@ -23,6 +23,21 @@ use Illuminate\Support\Arr;
 trait HandleJsonRepeaters
 {
     /**
+     * @param array $fields
+     * @return array
+     */
+    public function prepareFieldsBeforeCreateHandleJsonRepeaters($fields)
+    {
+        foreach ($this->jsonRepeaters as $repeater) {
+            if (isset($fields['repeaters'][$repeater])) {
+                $fields[$repeater] = $fields['repeaters'][$repeater];
+            }
+        }
+
+        return $fields;
+    }
+
+    /**
      * @param \A17\Twill\Models\Model|null $object
      * @param array $fields
      * @return array
