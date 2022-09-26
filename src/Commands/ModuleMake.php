@@ -392,7 +392,7 @@ class ModuleMake extends Command
         $navigationFile = base_path('config/twill-navigation.php');
 
         // If the file does not exist, or it is empty, we explain how to use the navigation builder.
-        $navigationFileExists = File::exists($navigationFile); 
+        $navigationFileExists = File::exists($navigationFile);
 
         if ($navigationFileExists) {
             // Che file is empty.
@@ -403,17 +403,23 @@ class ModuleMake extends Command
 
                 if ($value['module'] ?? false) {
                     $message = <<<PHP
+use A17\Twill\Facades\TwillNavigation;
+use A17\Twill\View\Components\Navigation\NavigationLink;
+
 TwillNavigation::addLink(
     NavigationLink::make()->forModule('$key')
 );
 PHP;
                 } elseif ($value['singleton'] ?? false) {
                     $message = <<<PHP
+use A17\Twill\Facades\TwillNavigation;
+use A17\Twill\View\Components\Navigation\NavigationLink;
+
 TwillNavigation::addLink(
     NavigationLink::make()->forSingleton('$key')
 );
 PHP;
-                } 
+                }
                 $this->line('**************************');
                 $this->info($message ?? '');
                 $this->line('**************************');
