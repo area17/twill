@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 
 abstract class TableColumn
 {
+
     final protected function __construct(
         protected ?string $key = null,
         protected ?string $field = null,
@@ -18,6 +19,7 @@ abstract class TableColumn
         protected bool $defaultSort = false,
         protected string $defaultSortDirection = 'ASC',
         protected bool $optional = false,
+        protected bool $linkToEdit = false,
         protected bool $visible = true,
         protected bool $html = false,
         protected Closure|string|null $link = null,
@@ -137,6 +139,18 @@ abstract class TableColumn
         return $this;
     }
 
+    public function linkToEdit(bool $linkToEdit = true): self
+    {
+        $this->linkToEdit = $linkToEdit;
+
+        return $this;
+    }
+
+    public function shouldLinkToEdit(): bool
+    {
+        return $this->linkToEdit;
+    }
+
     /**
      * A separate sortKey if different from the field name.
      */
@@ -211,10 +225,12 @@ abstract class TableColumn
 
             // Link via the closure can be null so we recheck it and only then use it.
             if ($link) {
-                return trim(view('twill::listings.columns.linked-cell', [
-                    'slot' => $this->getRenderValue($model),
-                    'link' => $link,
-                ]));
+                return trim(
+                    view('twill::listings.columns.linked-cell', [
+                        'slot' => $this->getRenderValue($model),
+                        'link' => $link,
+                    ])
+                );
             }
         }
 

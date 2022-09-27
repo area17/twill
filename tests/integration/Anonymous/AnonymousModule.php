@@ -42,6 +42,7 @@ use Nette\PhpGenerator\PsrPrinter;
 class AnonymousModule
 {
     private ?TableColumns $tableColumns = null;
+    private ?TableColumns $additionalTableColumns = null;
 
     private ?Form $formFields = null;
 
@@ -141,6 +142,13 @@ class AnonymousModule
     public function withTableColumns(TableColumns $tableColumns): self
     {
         $this->tableColumns = $tableColumns;
+
+        return $this;
+    }
+
+    public function withAdditionalTableColumns(TableColumns $tableColumns): self
+    {
+        $this->additionalTableColumns = $tableColumns;
 
         return $this;
     }
@@ -684,6 +692,7 @@ PHP
             'setSetupMethods' => serialize($this->setupMethods),
             'setFormFields' => serialize($this->formFields),
             'setTableColumns' => serialize($this->tableColumns),
+            'setAdditionalIndexTableColumns' => serialize($this->additionalTableColumns),
         ]);
 
         foreach ($this->additionalProps as $key => $value) {
@@ -731,6 +740,14 @@ PHP
             ->addBody('  return $data;')
             ->addBody('}')
             ->addBody('return parent::getIndexTableColumns();');
+
+        $class->addMethod('additionalIndexTableColumns')
+            ->setReturnType(TableColumns::class)
+            ->setBody("\$data = unserialize(\$this->setterProps['setAdditionalIndexTableColumns']);")
+            ->addBody('if ($data !== null) {')
+            ->addBody('  return $data;')
+            ->addBody('}')
+            ->addBody('return parent::additionalIndexTableColumns();');
 
         $class->addMethod('getFormRequestClass')
             ->setBody("\$request = new class() extends \A17\Twill\Http\Requests\Admin\Request {};")
