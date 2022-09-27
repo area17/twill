@@ -181,7 +181,7 @@ class Block
         });
     }
 
-    public static function getForComponent(string $type, bool $repeater = false): self
+    public static function getForComponent(string $type, bool $repeater = false): ?self
     {
         if ($repeater) {
             $blocksList = TwillBlocks::getRepeaters();

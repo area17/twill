@@ -74,9 +74,14 @@ class BlockRenderer
         string $editorName,
         string $parentEditorName = null
     ): Block {
-        $type = Str::replace('a17-block-', '', $data['type']);
-        // It is important to always clone this as it would otherwise overwrite the renderData inside.
-        $class = clone Block::getForType($type, $data['is_repeater']);
+        $class = clone Block::getForComponent($data['type'], $data['is_repeater']);
+        $type = $class->type;
+
+        if (!$class) {
+            $type = Str::replace('a17-block-', '', $data['type']);
+            // It is important to always clone this as it would otherwise overwrite the renderData inside.
+            $class = clone Block::getForType($type, $data['is_repeater']);
+        }
 
         $children = [];
 
@@ -119,7 +124,8 @@ class BlockRenderer
      * Generates a simple pivot object that tricks laravel into believing
      * it is actual pivot data further along the rendering pipeline.
      */
-    private static function getPivotDummy(array $data): object {
+    private static function getPivotDummy(array $data): object
+    {
         return new class($data) implements Arrayable {
             public function __construct(public array $data)
             {
@@ -166,19 +172,21 @@ class BlockRenderer
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
                         if (isset($media['crops']) && !empty($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
-                                $media = (new Media())->forceFill($data = [
-                                    'id' => $media['id'],
-                                    'uuid' => Media::find($media['id'])->uuid ?? null,
-                                    'crop' => $cropName,
-                                    'role' => $role,
-                                    'locale' => $locale,
-                                    'ratio' => $cropData['name'],
-                                    'crop_w' => $cropData['width'],
-                                    'crop_h' => $cropData['height'],
-                                    'crop_x' => $cropData['x'],
-                                    'crop_y' => $cropData['y'],
-                                    'metadatas' => json_encode($customMetadatas),
-                                ]);
+                                $media = (new Media())->forceFill(
+                                    $data = [
+                                        'id' => $media['id'],
+                                        'uuid' => Media::find($media['id'])->uuid ?? null,
+                                        'crop' => $cropName,
+                                        'role' => $role,
+                                        'locale' => $locale,
+                                        'ratio' => $cropData['name'],
+                                        'crop_w' => $cropData['width'],
+                                        'crop_h' => $cropData['height'],
+                                        'crop_x' => $cropData['x'],
+                                        'crop_y' => $cropData['y'],
+                                        'metadatas' => json_encode($customMetadatas),
+                                    ]
+                                );
                                 $media->setRelation('pivot', self::getPivotDummy($data));
 
                                 $medias->push($media);
