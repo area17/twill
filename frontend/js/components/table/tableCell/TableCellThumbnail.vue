@@ -53,6 +53,7 @@
   }
 
   .tablecell__thumb {
+    float: left;
     display: block;
     background: $color__border--light;
 
