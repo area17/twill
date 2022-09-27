@@ -31,6 +31,7 @@ class ModuleMake extends Command
         {--P|hasPosition}
         {--R|hasRevisions}
         {--N|hasNesting}
+        {--bladeForm}
         {--E|generatePreview}
         {--parentModel=}
         {--all}';
@@ -783,26 +784,31 @@ PHP;
 
         $this->makeTwillDirectory($dir);
 
+        $stubFile = $this->option('bladeForm') ?
+            $this->files->get(__DIR__ . '/stubs/controller.stub') :
+            $this->files->get(__DIR__ . '/stubs/controller-builder.stub');
+
         $stub = str_replace(
-            ['{{moduleName}}', '{{controllerClassName}}', '{{namespace}}', '{{baseController}}'],
+            ['{{moduleName}}', '{{controllerClassName}}', '{{namespace}}', '{{baseController}}', '{{translatable}}'],
             [
                 $moduleName,
                 $controllerClassName,
                 $this->namespace('controllers', 'Http\Controllers\Twill'),
                 $baseController,
+                $this->translatable ? '->translatable()' : ''
             ],
-            $this->files->get(__DIR__ . '/stubs/controller.stub')
+            $stubFile
         );
 
         $permalinkOption = '';
         $reorderOption = '';
 
         if (!$this->sluggable) {
-            $permalinkOption = "'permalink' => false,";
+            $permalinkOption = "\$this->disablePermalink();";
         }
 
         if ($this->nestable) {
-            $reorderOption = "'reorder' => true,";
+            $reorderOption = "\$this->enableReorder();";
 
             $stub = str_replace(['{{hasNesting}}', '{{/hasNesting}}'], '', $stub);
         } else {
@@ -856,18 +862,20 @@ PHP;
      */
     private function createViews(string $moduleName = 'items'): void
     {
-        $viewsPath = $this->viewPath($moduleName);
+        if ($this->option('bladeForm')) {
+            $viewsPath = $this->viewPath($moduleName);
 
-        $this->makeTwillDirectory($viewsPath);
+            $this->makeTwillDirectory($viewsPath);
 
-        $formView = $this->translatable ? 'form_translatable' : 'form';
+            $formView = $this->translatable ? 'form_translatable' : 'form';
 
-        $this->putTwillStub(
-            $viewsPath . '/form.blade.php',
-            $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub')
-        );
+            $this->putTwillStub(
+                $viewsPath . '/form.blade.php',
+                $this->files->get(__DIR__ . '/stubs/' . $formView . '.blade.stub')
+            );
 
-        $this->info('Form view created successfully! You can now include your form fields.');
+            $this->info('Form view created successfully! You can now include your form fields.');
+        }
 
         if ($this->checkOption('generatePreview') === true) {
             $previewViewsPath = $this->previewViewPath();
