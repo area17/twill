@@ -3,7 +3,9 @@
         <div class="container">
             <ul class="nav__list">
                 @foreach (\A17\Twill\Facades\TwillNavigation::getSecondaryRequestLinks() as $navItem)
-                    {!! $navItem->render(class: 'nav__item') !!}
+                    @if ($navItem->shouldShow())
+                        {!! $navItem->render(class: 'nav__item') !!}
+                    @endif
                 @endforeach
                 @foreach ($links as $navItem)
                     {!! $navItem->render(class: 'nav__item') !!}

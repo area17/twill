@@ -19,6 +19,7 @@ class MakeCapsule extends ModuleMake
         {--R|hasRevisions}
         {--N|hasNesting}
         {--E|generatePreview}
+        {--bladeForm}
         {--all}
         {--force}';
 
