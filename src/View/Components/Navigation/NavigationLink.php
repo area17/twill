@@ -177,7 +177,7 @@ class NavigationLink extends Component
         }
 
         if ($this->isModuleRoute) {
-            return $this->getModuleRoute($this->module, $this->moduleAction ?? 'index');
+            return route($this->getModuleRoute($this->module, $this->moduleAction ?? 'index'), $this->routeArguments);
         }
         // Could also return the route.
         return $this->href ?? '#';
