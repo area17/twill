@@ -5,6 +5,8 @@ namespace A17\Twill;
 use A17\Twill\Enums\PermissionLevel;
 use A17\Twill\Models\Enums\UserRole;
 use A17\Twill\Models\Permission;
+use A17\Twill\View\Components\Navigation\NavigationLink;
+use Illuminate\Support\Facades\Auth;
 use MyCLabs\Enum\Enum;
 
 class TwillPermissions
@@ -70,5 +72,30 @@ class TwillPermissions
             }
         }
         return $this->enabled() && in_array(config('twill.permissions.level'), $levels, true);
+    }
+
+    public function showUserSecondaryNavigation(): void
+    {
+        \A17\Twill\Facades\TwillNavigation::addSecondaryNavigationForCurrentRequest(
+            NavigationLink::make()->title(twillTrans('twill::lang.user-management.users'))
+                ->forModule('users')
+                ->onlyWhen(fn() => Auth::user()->can('edit-users'))
+        );
+
+        \A17\Twill\Facades\TwillNavigation::addSecondaryNavigationForCurrentRequest(
+            NavigationLink::make()->title(twillTrans('twill::lang.permissions.roles.title'))
+                ->forModule('roles')
+                ->onlyWhen(
+                    fn() => config('twill.enabled.permissions-management') && Auth::user()->can('edit-user-roles')
+                )
+        );
+
+        \A17\Twill\Facades\TwillNavigation::addSecondaryNavigationForCurrentRequest(
+            NavigationLink::make()->title(twillTrans('twill::lang.permissions.groups.title'))
+                ->forModule('groups')
+                ->onlyWhen(
+                    fn() => config('twill.enabled.permissions-management') && Auth::user()->can('edit-user-groups')
+                )
+        );
     }
 }

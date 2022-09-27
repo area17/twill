@@ -101,8 +101,6 @@ abstract class ModuleController extends Controller
      */
     protected $user;
 
-    protected array $primaryNavigation = [];
-
     /**
      * Options of the index view.
      *

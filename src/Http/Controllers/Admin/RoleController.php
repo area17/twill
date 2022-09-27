@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Permission;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
@@ -38,24 +39,7 @@ class RoleController extends ModuleController
         parent::__construct($app, $request);
         $this->middleware('can:edit-user-roles');
 
-        $this->primaryNavigation = [
-            'users' => [
-                'title' => twillTrans('twill::lang.user-management.users'),
-                'module' => true,
-                'can' => 'edit-users',
-            ],
-            'roles' => [
-                'title' => twillTrans('twill::lang.permissions.roles.title'),
-                'module' => true,
-                'active' => true,
-                'can' => 'edit-user-roles',
-            ],
-            'groups' => [
-                'title' => twillTrans('twill::lang.permissions.groups.title'),
-                'module' => true,
-                'can' => 'edit-user-groups',
-            ],
-        ];
+        TwillPermissions::showUserSecondaryNavigation();
     }
 
     protected $indexColumns = [
@@ -76,13 +60,6 @@ class RoleController extends ModuleController
         ]
     ];
 
-    protected function indexData($request)
-    {
-        return [
-            'primary_navigation' => $this->primaryNavigation,
-        ];
-    }
-
     protected function getIndexItems($scopes = [], $forcePagination = false)
     {
         $scopes += ['accessible' => true];
@@ -102,7 +79,6 @@ class RoleController extends ModuleController
     protected function formData($request)
     {
         return [
-            'primary_navigation' => $this->primaryNavigation,
             'permission_modules' => Permission::permissionableParentModuleItems(),
         ];
     }

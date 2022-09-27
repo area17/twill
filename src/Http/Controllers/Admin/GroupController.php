@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Facades\TwillPermissions;
 use Illuminate\Http\Request;
 use A17\Twill\Models\Permission;
 use Illuminate\Contracts\Foundation\Application;
@@ -36,24 +37,7 @@ class GroupController extends ModuleController
         parent::__construct($app, $request);
         $this->middleware('can:edit-user-groups');
 
-        $this->primaryNavigation = [
-            'users' => [
-                'title' => twillTrans('twill::lang.user-management.users'),
-                'module' => true,
-                'can' => 'edit-users',
-            ],
-            'roles' => [
-                'title' => twillTrans('twill::lang.permissions.roles.title'),
-                'module' => true,
-                'can' => 'edit-user-roles',
-            ],
-            'groups' => [
-                'title' => twillTrans('twill::lang.permissions.groups.title'),
-                'module' => true,
-                'active' => true,
-                'can' => 'edit-user-groups',
-            ],
-        ];
+        TwillPermissions::showUserSecondaryNavigation();
     }
 
     protected $indexColumns = [
@@ -65,21 +49,14 @@ class GroupController extends ModuleController
         'created_at' => [
             'title' => 'Date created',
             'field' => 'created_at',
-            'sort' => true
+            'sort' => true,
         ],
         'users' => [
             'title' => 'Users',
             'field' => 'users_count',
-            'html' => true
-        ]
+            'html' => true,
+        ],
     ];
-
-    protected function indexData($request)
-    {
-        return [
-            'primary_navigation' => $this->primaryNavigation,
-        ];
-    }
 
     protected function getIndexOption($option, $item = null)
     {
@@ -93,7 +70,6 @@ class GroupController extends ModuleController
     protected function formData($request)
     {
         return [
-            'primary_navigation' => $this->primaryNavigation,
             'permissionModules' => Permission::permissionableParentModuleItems(),
         ];
     }
