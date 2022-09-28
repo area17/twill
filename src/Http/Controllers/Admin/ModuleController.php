@@ -678,6 +678,10 @@ abstract class ModuleController extends Controller
         return $tableColumns->each(function (TableColumn $column) {
             if ($column->shouldLinkToEdit()) {
                 $column->linkCell(function (TwillModelContract $model) {
+                    if ($model->trashed()) {
+                        return null;
+                    }
+
                     if ($this->getIndexOption('edit', $model)) {
                         return $this->getModuleRoute($model->id, 'edit');
                     }
