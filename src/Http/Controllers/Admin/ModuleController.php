@@ -745,11 +745,7 @@ abstract class ModuleController extends Controller
                 Text::make()
                     ->field($this->titleColumnKey)
                     ->sortable()
-                    ->linkCell(function (TwillModelContract $model) {
-                        if ($this->getIndexOption('edit', $model)) {
-                            return $this->getModuleRoute($model->id, 'edit');
-                        }
-                    })
+                    ->linkToEdit()
             );
         }
 

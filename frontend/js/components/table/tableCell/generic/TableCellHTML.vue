@@ -1,5 +1,5 @@
 <template>
-  <span class="tablecell__raw" v-html="row[colName]"></span>
+  <span class="tablecell__raw" ref="cell" v-html="row[colName]"></span>
 </template>
 
 <script>
@@ -7,7 +7,15 @@
 
   export default {
     name: 'A1TableCellHtml',
-    mixins: [TableCellMixin]
+    mixins: [TableCellMixin],
+    mounted () {
+      const editlink = this.$refs.cell
+        .querySelector('a[data-edit="true"]')
+
+      if (editlink) {
+        editlink.addEventListener('click', this.preventEditInPlace)
+      }
+    }
   }
 </script>
 

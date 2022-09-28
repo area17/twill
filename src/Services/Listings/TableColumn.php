@@ -228,6 +228,7 @@ abstract class TableColumn
                 return trim(
                     view('twill::listings.columns.linked-cell', [
                         'slot' => $this->getRenderValue($model),
+                        'isEditLink' => $this->linkToEdit,
                         'link' => $link,
                     ])
                 );
