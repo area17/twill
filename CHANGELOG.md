@@ -2,6 +2,13 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.9.1 (2022-09-30)
+
+### Fixes
+
+- Fixes an issue that would allow unpublished users to continue to login [`#1833`](https://github.com/area17/twill/pull/1833)
+- Fixes an issue that where custom icons were not picked up by the build process [`#1825`](https://github.com/area17/twill/pull/1825)
+
 ## 2.9.0 (2022-09-13)
 
 ### Features
