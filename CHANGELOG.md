@@ -2,6 +2,19 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.0.0-alpha3
+
+### Features
+
+- New duplicate feature. Duplicating content from the ui now is limited to basic content, browsers, blocks, files and
+  media. This no longer depends on revisions being available and can be hooked into to duplicate other relations.
+- The table builder now has a method ->linkToEdit() to link a cell to the modal or edit form.
+
+### Bugfixes
+
+- Many small regressions are fixed.
+- Fixes an issue where custom icons would not compile correctly.
+
 ## 3.0.0-alpha2
 
 ### Features
