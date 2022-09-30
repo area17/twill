@@ -95,25 +95,7 @@ class UserController extends ModuleController
         $this->authFactory = $authFactory;
         $this->config = $config;
 
-        $this->primaryNavigation = [
-                'users' => [
-                    'title' => twillTrans('twill::lang.user-management.users'),
-                    'module' => true,
-                    'active' => true,
-                    'can' => 'edit-users',
-                ],
-            ] + (config('twill.enabled.permissions-management') ? [
-                'roles' => [
-                    'title' => twillTrans('twill::lang.permissions.roles.title'),
-                    'module' => true,
-                    'can' => 'edit-user-roles',
-                ],
-                'groups' => [
-                    'title' => twillTrans('twill::lang.permissions.groups.title'),
-                    'module' => true,
-                    'can' => 'edit-user-groups',
-                ],
-            ] : []);
+        TwillPermissions::showUserSecondaryNavigation();
 
         $this->filters['role'] = User::getRoleColumnName();
     }
@@ -155,6 +137,9 @@ class UserController extends ModuleController
                 ->field(User::getRoleColumnName())
                 ->title('Role')
                 ->customRender(function (TwillModelContract $user) {
+                    if (TwillPermissions::enabled()) {
+                        return Str::title($user->role->name);
+                    }
                     return Str::title($user->role);
                 })
                 ->sortable()
@@ -178,7 +163,6 @@ class UserController extends ModuleController
             'defaultFilterSlug' => 'activated',
             'create' => $this->getIndexOption('create') && $this->user->can('edit-users'),
             'roleList' => $this->getRoleList(),
-            'primary_navigation' => $this->primaryNavigation,
         ];
     }
 
@@ -221,7 +205,6 @@ class UserController extends ModuleController
 
         return [
             'roleList' => $this->getRoleList(),
-            'primary_navigation' => $this->primaryNavigation,
             'titleThumbnail' => $titleThumbnail ?? null,
             'permissionModules' => $this->getPermissionModules(),
             'groupPermissionMapping' => $this->getGroupPermissionMapping(),

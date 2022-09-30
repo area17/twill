@@ -34,6 +34,9 @@ class NavigationLink extends Component
 
     private bool $isModuleRoute = false;
 
+    private ?string $module = null;
+    private ?string $moduleAction = null;
+
     public static function make(): self
     {
         return new self();
@@ -97,9 +100,10 @@ class NavigationLink extends Component
             $this->title(Str::title($module));
         }
 
-        $this->isModuleRoute = true;
+        $this->module = $module;
+        $this->moduleAction = $action;
 
-        $this->route = $this->getModuleRoute($module, $action ?? 'index');
+        $this->isModuleRoute = true;
 
         return $this;
     }
@@ -161,7 +165,6 @@ class NavigationLink extends Component
 
     protected function getModuleRoute(string $moduleName, ?string $action = null): string
     {
-        // @todo: We have to add singular here.
         return 'twill.' . TwillRoutes::getModuleRouteFromRegistry(
                 Str::plural(Str::camel($moduleName))
             ) . '.' . ($action ?? 'index');
@@ -171,6 +174,10 @@ class NavigationLink extends Component
     {
         if ($this->route) {
             return route($this->route, $this->routeArguments);
+        }
+
+        if ($this->isModuleRoute) {
+            return route($this->getModuleRoute($this->module, $this->moduleAction ?? 'index'), $this->routeArguments);
         }
         // Could also return the route.
         return $this->href ?? '#';

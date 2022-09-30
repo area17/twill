@@ -103,8 +103,7 @@ export default {
         [prefix + '--draggable']: col.name === 'draggable',
         [prefix + '--languages']: col.name === 'languages',
         [prefix + '--nested']: col.name === 'nested',
-        [prefix + '--nested--parent']: col.name === 'nested' && this.nestedDepth === 0,
-        [prefix + '--name']: col.name === 'name'
+        [prefix + '--nested--parent']: col.name === 'nested' && this.nestedDepth === 0
       }
     },
     isSpecificColumn: function (col) {

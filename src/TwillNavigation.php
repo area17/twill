@@ -15,6 +15,11 @@ class TwillNavigation
      */
     private array $links = [];
 
+    /**
+     * @var array<int, NavigationLink>
+     */
+    private array $secondaryRequestLinks = [];
+
     public function addLink(NavigationLink $link): void
     {
         if (config('twill-navigation', []) !== []) {
@@ -24,6 +29,15 @@ class TwillNavigation
         }
 
         $this->links[] = $link;
+    }
+
+    public function addSecondaryNavigationForCurrentRequest(NavigationLink $link): void
+    {
+        $this->secondaryRequestLinks[] = $link;
+    }
+
+    public function getSecondaryRequestLinks(): array {
+        return $this->secondaryRequestLinks;
     }
 
     public function getActiveSecondaryNavigationLink(): ?NavigationLink

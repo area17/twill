@@ -19,6 +19,6 @@ class AnonymousModulesTest extends TestCase
             ->assertJsonPath('redirect', 'http://twill.test/twill/anonymousmodules/1/edit');
 
         $this->getJson(route('twill.anonymousmodules.index'))
-            ->assertJsonPath('tableData.0.title', '<a href="http://twill.test/twill/anonymousmodules/1/edit">Test title</a>');
+            ->assertJsonPath('tableData.0.title', '<a href="http://twill.test/twill/anonymousmodules/1/edit" data-edit="true">Test title</a>');
     }
 }

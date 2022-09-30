@@ -17,6 +17,7 @@ class MakeSingleton extends ModuleMake
         {--F|hasFiles}
         {--R|hasRevisions}
         {--E|generatePreview}
+        {--bladeForm}
         {--all}';
 
     /**

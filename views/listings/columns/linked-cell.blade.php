@@ -1,1 +1,1 @@
-<a href="{{$link}}">{{$slot}}</a>
+<a href="{{$link}}" data-edit="{{$isEditLink ? 'true' : 'false'}}">{{$slot}}</a>

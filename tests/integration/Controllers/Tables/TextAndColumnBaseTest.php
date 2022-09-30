@@ -47,7 +47,7 @@ class TextAndColumnBaseTest extends ModulesTestBase
         $html = $column->renderCell($this->author);
 
         $this->assertEquals(
-            '<a href="https://twill.io">' . $this->author->name . '</a>',
+            '<a href="https://twill.io" data-edit="false">' . $this->author->name . '</a>',
             str_replace([PHP_EOL, '    '], null, $html)
         );
     }
@@ -61,7 +61,7 @@ class TextAndColumnBaseTest extends ModulesTestBase
         $html = $column->renderCell($this->author);
 
         $this->assertEquals(
-            '<a href="https://twill.io">' . $this->author->name . '</a>',
+            '<a href="https://twill.io" data-edit="false">' . $this->author->name . '</a>',
             str_replace([PHP_EOL, '    '], null, $html)
         );
     }

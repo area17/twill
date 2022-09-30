@@ -6,7 +6,7 @@ use A17\Twill\Tests\Integration\TestCase;
 
 class MakeSingletonTest extends TestCase
 {
-    public function testCanExecuteCommand()
+    public function testCanExecuteCommand(): void
     {
         $this->assertExitCodeIsGood(
             $this->artisan('twill:make:singleton', [
@@ -18,8 +18,7 @@ class MakeSingletonTest extends TestCase
                 '--hasFiles' => true,
                 '--hasRevisions' => true,
                 '--generatePreview' => true,
-            ])
-            ->run()
+            ])->run()
         );
 
         $this->assertFileExists(
