@@ -6,6 +6,8 @@ use A17\Twill\Rector\RenameRoutes;
 use A17\Twill\Rector\RenameViews;
 use Rector\Core\Configuration\Option;
 use Rector\Renaming\Rector\Namespace_\RenameNamespaceRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\AddMethodCallBasedStrictParamTypeRector;
+use Rector\TypeDeclaration\Rector\ClassMethod\AddReturnTypeDeclarationBasedOnParentClassMethodRector;
 
 /**
  * This rector file is the one used by the UpgradeCommand for upgrading users code bases.
@@ -27,4 +29,16 @@ return static function (\Rector\Config\RectorConfig $config): void {
         'App\Http\Controllers\Admin' => 'App\Http\Controllers\Twill',
         'App\Http\Requests\Admin' => 'App\Http\Requests\Twill',
     ]);
+
+    // I hope this split work.
+    // Update compatibility.
+    $config->paths([
+        getcwd() . '/app/Twill',
+        getcwd() . '/app/Http/Controllers/Twill',
+        getcwd() . '/app/Http/Requests/Twill',
+        getcwd() . '/app/Repositories',
+    ]);
+
+    $config->rule(AddReturnTypeDeclarationBasedOnParentClassMethodRector::class);
+    $config->rule(AddMethodCallBasedStrictParamTypeRector::class);
 };

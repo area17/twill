@@ -165,8 +165,18 @@ class NavigationLink extends Component
 
     protected function getModuleRoute(string $moduleName, ?string $action = null): string
     {
+        // There are some exceptions which not convert properly to plural if already in plural mode. If it is one of
+        // these, we skip.
+        $exceptions = ['menus'];
+
+        if (in_array($moduleName, $exceptions)) {
+            $routeMatcher = $moduleName;
+        } else {
+            $routeMatcher = Str::plural($moduleName);
+        }
+
         return 'twill.' . TwillRoutes::getModuleRouteFromRegistry(
-                Str::plural(Str::camel($moduleName))
+                Str::camel($routeMatcher)
             ) . '.' . ($action ?? 'index');
     }
 
