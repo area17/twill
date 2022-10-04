@@ -97,10 +97,17 @@
         const suffix = this.titleFieldValue || ''
         const separator = title && suffix ? ' — ' : ''
 
+        let fullTitle
+
         if (this.block.hideTitlePrefix) {
-          return `${suffix}`
+          fullTitle = `${suffix}`
+        } else {
+          fullTitle = `${title}${separator}${suffix}`
         }
-        return `${title}${separator}${suffix}`
+
+        const cleanup = document.createElement('div')
+        cleanup.innerHTML = fullTitle
+        return cleanup.innerText
       },
       blockClasses () {
         return [
