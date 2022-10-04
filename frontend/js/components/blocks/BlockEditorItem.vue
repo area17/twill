@@ -169,7 +169,6 @@
 </script>
 
 <style lang="scss" scoped>
-
   .block__content {
     display: none;
     padding: 35px 15px;
@@ -240,12 +239,17 @@
 
   .block__title {
     font-weight: 600;
+    max-width: 45%;
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
     height: 50px;
     line-height: 50px;
     user-select: none;
   }
 
   .block__toggle {
+    overflow: hidden;
     flex-grow: 1;
 
     .dropdown {
