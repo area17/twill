@@ -1,13 +1,13 @@
 <template>
   <div class="slideshow">
     <div class="slideshow__trigger" v-if="buttonOnTop && remainingSlides > 0">
-      <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingSlides)">{{ addLabel }}</a17-button>
+      <a17-button :disabled="disabled" type="button" variant="ghost" @click="openMediaLibrary(remainingSlides)">{{ addLabel }}</a17-button>
       <span class="slideshow__note f--small"><slot></slot></span>
     </div>
     <draggable class="slideshow__content" v-model="slides" :options="dragOptions" v-if="slides.length">
       <transition-group name="draggable_list" tag='div'>
         <div class="slide" v-for="(slide, index) in slides" :key="`${slide.id}_${index}`">
-            <div class="slide__handle">
+            <div class="slide__handle" v-if="!disabled">
               <div class="slide__handle--drag"></div>
             </div>
             <a17-mediafield class="slide__content"
@@ -22,13 +22,14 @@
                             :withVideoUrl="withVideoUrl"
                             :altTextMaxLength="altTextMaxLength"
                             :captionMaxLength="captionMaxLength"
-                            :extraMetadatas="extraMetadatas">
+                            :extraMetadatas="extraMetadatas"
+                            :disabled="disabled">
             </a17-mediafield>
         </div>
       </transition-group>
     </draggable>
     <div class="slideshow__trigger" v-if="!buttonOnTop && remainingSlides > 0">
-      <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingSlides)">{{ addLabel }}</a17-button>
+      <a17-button :disabled="disabled" type="button" variant="ghost" @click="openMediaLibrary(remainingSlides)">{{ addLabel }}</a17-button>
       <span class="slideshow__note f--small"><slot></slot></span>
     </div>
   </div>
@@ -64,6 +65,10 @@
         default: 10
       },
       buttonOnTop: {
+        type: Boolean,
+        default: false
+      },
+      disabled: {
         type: Boolean,
         default: false
       }

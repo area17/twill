@@ -17,7 +17,8 @@
                    :withCaption="withCaption"
                    :altTextMaxLength="altTextMaxLength"
                    :captionMaxLength="captionMaxLength"
-                   :extraMetadatas="extraMetadatas">
+                   :extraMetadatas="extraMetadatas"
+                   :disabled="disabled">
       <slot />
     </a17-slideshow>
     <a17-mediafield v-else
@@ -29,7 +30,8 @@
                     :withCaption="withCaption"
                     :altTextMaxLength="altTextMaxLength"
                     :captionMaxLength="captionMaxLength"
-                    :extraMetadatas="extraMetadatas">
+                    :extraMetadatas="extraMetadatas"
+                    :disabled="disabled">
       <slot />
     </a17-mediafield>
   </a17-inputframe>
