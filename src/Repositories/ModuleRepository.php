@@ -343,6 +343,15 @@ abstract class ModuleRepository
     }
 
     /**
+     * @return array
+     */
+    protected function duplicateItemData()
+    {
+        return [];
+    }
+
+
+    /**
      * @param mixed $id
      * @return mixed
      */
@@ -364,7 +373,7 @@ abstract class ModuleRepository
             'languages'
         ])->filter()->toArray();
 
-        $newObject = $this->create($baseInput);
+        $newObject = $this->create($baseInput + $this->duplicateItemData());
 
         $this->update($newObject->id, $revisionInput);
 

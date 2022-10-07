@@ -661,6 +661,14 @@ abstract class ModuleController extends Controller
     }
 
     /**
+     * @return array
+    */
+    protected function duplicateItemData()
+    {
+        return [];
+    }
+
+    /**
      * @param int $id
      * @param int|null $submoduleId
      * @return \Illuminate\Http\JsonResponse
@@ -668,6 +676,7 @@ abstract class ModuleController extends Controller
     public function duplicate($id, $submoduleId = null)
     {
 
+        $submoduleId = $submoduleId ?? key($this->request->input());
         $item = $this->repository->getById($submoduleId ?? $id);
         if ($newItem = $this->repository->duplicate($submoduleId ?? $id, $this->titleColumnKey)) {
             $this->fireEvent();
@@ -680,7 +689,7 @@ abstract class ModuleController extends Controller
                     $this->moduleName,
                     $this->routePrefix,
                     'edit',
-                    array_filter([Str::singular($this->moduleName) => $newItem->id])
+                    array_filter([Str::singular($this->moduleName) => $newItem->id] + $this->duplicateItemData())
                 ),
             ]);
         }
@@ -953,7 +962,7 @@ abstract class ModuleController extends Controller
             $itemIsTrashed = method_exists($item, 'trashed') && $item->trashed();
             $itemCanDelete = $this->getIndexOption('delete') && ($item->canDelete ?? true);
             $canEdit = $this->getIndexOption('edit');
-            $canDuplicate = $this->getIndexOption('duplicate');
+            $canDuplicate = $this->getIndexOption('duplicate', $item);
 
             return array_replace([
                 'id' => $item->id,
