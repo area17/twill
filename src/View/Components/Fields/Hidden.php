@@ -4,11 +4,11 @@ namespace A17\Twill\View\Components\Fields;
 
 use Illuminate\Contracts\View\View;
 
-class Medias extends TwillFormComponent
+class Hidden extends TwillFormComponent
 {
     public function __construct(
         string $name,
-        string $label,
+        ?string $label = null,
         bool $renderForBlocks = false,
         bool $renderForModal = false,
         bool $translated = false,
@@ -19,22 +19,23 @@ class Medias extends TwillFormComponent
         bool $readOnly = false,
         bool $inModal = false,
         // Component specific
-        public int $max = 1,
-        public ?string $fieldNote = null,
-        public bool $withAddInfo = true,
-        public bool $withVideoUrl = true,
-        public bool $withCaption = true,
-        public ?int $altTextMaxLength = null,
-        public ?int $captionMaxLength = null,
-        public array $extraMetadatas = [],
-        public int $widthMin = 0,
-        public int $heightMin = 0,
-        public bool $buttonOnTop = false,
-        public bool $activeCrop = true
+        public mixed $value = null,
+        public string $type = 'text',
+        public ?string $placeholder = '',
+        public ?int $maxlength = null,
+        public ?int $rows = null,
+        public ?string $ref = null,
+        public ?string $onChange = null,
+        public ?string $onChangeAttribute = null,
+        public ?string $prefix = null,
+        public ?int $min = null,
+        public ?int $max = null,
+        public ?int $step = null,
+        public ?string $mask = null,
     ) {
         parent::__construct(
             name: $name,
-            label: $label,
+            label: $label ?? $name,
             note: $note,
             inModal: $inModal,
             readOnly: $readOnly,
@@ -50,13 +51,10 @@ class Medias extends TwillFormComponent
     public function render(): View
     {
         return view(
-            'twill::partials.form._medias',
-            array_merge(
-                $this->data(),
-                [
-                    'multiple' => $this->max > 1 || $this->max === 0,
-                ]
-            )
+            'twill::partials.form._hidden',
+            array_merge($this->data(), [
+                'onChangeFullAttribute' => $this->onChangeAttribute ? "('" . $this->onChangeAttribute . "', ...arguments)" : "",
+            ])
         );
     }
 }

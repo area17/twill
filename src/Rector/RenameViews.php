@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Rector;
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use PhpParser\BuilderHelpers;
 use PhpParser\Node;
@@ -45,10 +44,10 @@ class RenameViews extends LaravelAwareRectorRule
             }
         }
 
-        if ($isViewCall && $node->getArgs()[0] ?? false) {
+        if ($isViewCall && isset($node->getArgs()[0]) && $node->getArgs()[0] ?? false) {
             /** @var \PhpParser\Node\Arg $arg */
             $arg = $node->getArgs()[0];
-            if (Str::startsWith($arg->value->value, 'admin.')) {
+            if (isset($arg->value->value) && Str::startsWith($arg->value->value, 'admin.')) {
                 $node->args[0] = new Node\Arg(
                     BuilderHelpers::normalizeValue(Str::replaceFirst('admin.', 'twill.', $arg->value->value))
                 );

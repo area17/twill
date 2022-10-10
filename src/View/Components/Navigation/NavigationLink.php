@@ -18,7 +18,7 @@ class NavigationLink extends Component
     private bool $targetBlank = false;
 
     /**
-     * @var array<int, NavigationLink>
+     * @var NavigationLink[]
      */
     private array $children = [];
 
@@ -127,7 +127,7 @@ class NavigationLink extends Component
     }
 
     /**
-     * @param array<int, NavigationLink> $links
+     * @param \A17\Twill\View\Components\Navigation\NavigationLink[] $links
      */
     public function setChildren(array $links): self
     {
@@ -144,7 +144,7 @@ class NavigationLink extends Component
     }
 
     /**
-     * @return array<int, NavigationLink>
+     * @return NavigationLink[]
      */
     public function getChildren(): array
     {
@@ -180,14 +180,23 @@ class NavigationLink extends Component
             ) . '.' . ($action ?? 'index');
     }
 
-    protected function getHref(): string
+    protected function getRoute(): ?string
     {
         if ($this->route) {
-            return route($this->route, $this->routeArguments);
+            return $this->route;
         }
 
         if ($this->isModuleRoute) {
-            return route($this->getModuleRoute($this->module, $this->moduleAction ?? 'index'), $this->routeArguments);
+            return $this->getModuleRoute($this->module, $this->moduleAction ?? 'index');
+        }
+
+        return null;
+    }
+
+    protected function getHref(): string
+    {
+        if ($this->getRoute() && ($this->isModuleRoute || $this->route)) {
+            return route($this->getRoute(), $this->routeArguments);
         }
         // Could also return the route.
         return $this->href ?? '#';
@@ -201,14 +210,14 @@ class NavigationLink extends Component
 
         $currentRoute = request()?->route();
 
-        if ($currentRoute->getName() === $this->route) {
+        if ($currentRoute->getName() === $this->getRoute()) {
             return $currentRoute->parameters() === $this->routeArguments;
         }
 
         // Check if it maybe is a edit route of a model.
         if ($this->isModuleRoute) {
             $baseRoute = Str::beforeLast($currentRoute->getName(), '.');
-            $linkRoute = Str::beforeLast($this->route, '.');
+            $linkRoute = Str::beforeLast($this->getRoute(), '.');
 
             return $baseRoute === $linkRoute;
         }

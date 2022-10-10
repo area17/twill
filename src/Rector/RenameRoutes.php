@@ -47,9 +47,8 @@ class RenameRoutes extends LaravelAwareRectorRule
             $routes = $this->loadRoutes();
 
             if ($node->getArgs()[0] ?? false) {
-                /** @var \PhpParser\Node\Arg $arg */
                 $arg = $node->getArgs()[0];
-                if (array_key_exists($arg->value->value, $routes)) {
+                if (isset($arg->value->value) && array_key_exists($arg->value->value, $routes)) {
                     $node->args[0] = new Node\Arg(BuilderHelpers::normalizeValue($routes[$arg->value->value]));
                     return $node;
                 }

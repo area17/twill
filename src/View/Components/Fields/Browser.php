@@ -13,7 +13,7 @@ class Browser extends TwillFormComponent
         bool $renderForModal = false,
         bool $translated = false,
         bool $required = false,
-        string $note = '',
+        ?string $note = '',
         mixed $default = null,
         bool $disabled = false,
         bool $readOnly = false,
@@ -75,9 +75,9 @@ class Browser extends TwillFormComponent
             $this->endpoint = $this->endpoint ?? (empty($endpoints) ? moduleRoute(
             // Remove the route prefix from the moduleName.
                 $routeEndpoint,
-                $this->routePrefix,
+                $routePrefix,
                 'browser',
-                $this->params,
+                $params,
                 false
             ) : null);
         }

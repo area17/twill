@@ -13,7 +13,7 @@ class DatePicker extends TwillFormComponent
         bool $renderForModal = false,
         bool $translated = false,
         bool $required = false,
-        string $note = '',
+        ?string $note = '',
         mixed $default = null,
         bool $disabled = false,
         bool $readOnly = false,

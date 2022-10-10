@@ -11,7 +11,7 @@ class Map extends TwillFormComponent
         string $label,
         bool $renderForBlocks = false,
         bool $renderForModal = false,
-        string $note = '',
+        ?string $note = '',
         bool $inModal = false,
         // Component specific
         public bool $showMap = true,

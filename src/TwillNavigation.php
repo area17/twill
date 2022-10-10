@@ -69,7 +69,7 @@ class TwillNavigation
     }
 
     /**
-     * @return array<int, NavigationLink>
+     * @return NavigationLink[]
      */
     private function getLeftNavigation(): array
     {
@@ -93,9 +93,11 @@ class TwillNavigation
                 }
 
                 $secondary->setChildren($secondaryChildren);
+                $secondary->doNotAddSelfAsFirstChild();
             }
 
             $link->setChildren($children);
+            $link->doNotAddSelfAsFirstChild();
 
             $links[] = $link;
         }
