@@ -36,6 +36,10 @@
         type: Boolean,
         default: false
       },
+      arrayContains: {
+        type: Boolean,
+        default: true
+      },
       isValueEqual: { // requiredFieldValues must be equal (or different) to the stored value to show
         type: Boolean,
         default: true
@@ -90,6 +94,7 @@
 
         const newValue = clone(value)
         const newFieldValues = clone(this.requiredFieldValues)
+        const newFieldValuesArray = Array.isArray(newFieldValues) ? newFieldValues : [newFieldValues]
 
         // sort requiredFieldValues and value if is array, so the order of values is the same
         if (Array.isArray(newFieldValues)) newFieldValues.sort()
@@ -97,9 +102,21 @@
 
         // update visiblity
         if (this.isValueEqual) {
-          this.open = (Array.isArray(newFieldValues)) ? newFieldValues.indexOf(newValue) !== -1 : isEqual(newValue, newFieldValues)
+          if (Array.isArray(newValue)) {
+            this.open = this.arrayContains ? newFieldValuesArray.some((value) => {
+              return newValue.includes(value)
+            }) : this.open = JSON.stringify(newFieldValuesArray) === JSON.stringify(newValue)
+          } else {
+            this.open = (Array.isArray(newFieldValues)) ? newFieldValues.indexOf(newValue) !== -1 : isEqual(newValue, newFieldValues)
+          }
         } else {
-          this.open = (Array.isArray(newFieldValues)) ? newFieldValues.indexOf(newValue) === -1 : !isEqual(newValue, newFieldValues)
+          if (Array.isArray(newValue)) {
+            this.open = this.arrayContains ? newFieldValuesArray.every((value) => {
+              return !newValue.includes(value)
+            }) : this.open = JSON.stringify(newFieldValuesArray) !== JSON.stringify(newValue)
+          } else {
+            this.open = (Array.isArray(newFieldValues)) ? newFieldValues.indexOf(newValue) === -1 : !isEqual(newValue, newFieldValues)
+          }
         }
       }
     },
