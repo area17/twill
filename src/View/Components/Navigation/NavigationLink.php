@@ -18,7 +18,7 @@ class NavigationLink extends Component
     private bool $targetBlank = false;
 
     /**
-     * @var array<int, NavigationLink>
+     * @var NavigationLink[]
      */
     private array $children = [];
 
@@ -127,7 +127,7 @@ class NavigationLink extends Component
     }
 
     /**
-     * @param array<int, NavigationLink> $links
+     * @param \A17\Twill\View\Components\Navigation\NavigationLink[] $links
      */
     public function setChildren(array $links): self
     {
@@ -144,7 +144,7 @@ class NavigationLink extends Component
     }
 
     /**
-     * @return array<int, NavigationLink>
+     * @return NavigationLink[]
      */
     public function getChildren(): array
     {
@@ -165,19 +165,38 @@ class NavigationLink extends Component
 
     protected function getModuleRoute(string $moduleName, ?string $action = null): string
     {
+        // There are some exceptions which not convert properly to plural if already in plural mode. If it is one of
+        // these, we skip.
+        $exceptions = ['menus'];
+
+        if (in_array($moduleName, $exceptions)) {
+            $routeMatcher = $moduleName;
+        } else {
+            $routeMatcher = Str::plural($moduleName);
+        }
+
         return 'twill.' . TwillRoutes::getModuleRouteFromRegistry(
-                Str::plural(Str::camel($moduleName))
+                Str::camel($routeMatcher)
             ) . '.' . ($action ?? 'index');
+    }
+
+    protected function getRoute(): ?string
+    {
+        if ($this->route) {
+            return $this->route;
+        }
+
+        if ($this->isModuleRoute) {
+            return $this->getModuleRoute($this->module, $this->moduleAction ?? 'index');
+        }
+
+        return null;
     }
 
     protected function getHref(): string
     {
-        if ($this->route) {
-            return route($this->route, $this->routeArguments);
-        }
-
-        if ($this->isModuleRoute) {
-            return route($this->getModuleRoute($this->module, $this->moduleAction ?? 'index'), $this->routeArguments);
+        if ($this->getRoute() && ($this->isModuleRoute || $this->route)) {
+            return route($this->getRoute(), $this->routeArguments);
         }
         // Could also return the route.
         return $this->href ?? '#';
@@ -191,14 +210,14 @@ class NavigationLink extends Component
 
         $currentRoute = request()?->route();
 
-        if ($currentRoute->getName() === $this->route) {
+        if ($currentRoute->getName() === $this->getRoute()) {
             return $currentRoute->parameters() === $this->routeArguments;
         }
 
         // Check if it maybe is a edit route of a model.
         if ($this->isModuleRoute) {
             $baseRoute = Str::beforeLast($currentRoute->getName(), '.');
-            $linkRoute = Str::beforeLast($this->route, '.');
+            $linkRoute = Str::beforeLast($this->getRoute(), '.');
 
             return $baseRoute === $linkRoute;
         }

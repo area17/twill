@@ -1103,8 +1103,6 @@ abstract class ModuleController extends Controller
             }
         }
 
-        View::share('form', $this->form($id));
-
         return View::make($view, $this->form($id))->with(
             'renderFields',
             $this->getForm($this->repository->getById($id))
@@ -2190,7 +2188,11 @@ abstract class ModuleController extends Controller
                 'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', [$itemId]),
             ] : []);
 
-        return array_replace_recursive($data, $this->formData($this->request));
+        $form = array_replace_recursive($data, $this->formData($this->request));
+
+        View::share('form', $form);
+
+        return $form;
     }
 
     /**

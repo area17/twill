@@ -74,13 +74,13 @@ class BlockRenderer
         string $editorName,
         string $parentEditorName = null
     ): Block {
-        $class = clone Block::getForComponent($data['type'], $data['is_repeater']);
+        $class = clone Block::getForComponent($data['type'], $data['is_repeater'] ?? false);
         $type = $class->type;
 
         if (!$class) {
             $type = Str::replace('a17-block-', '', $data['type']);
             // It is important to always clone this as it would otherwise overwrite the renderData inside.
-            $class = clone Block::getForType($type, $data['is_repeater']);
+            $class = clone Block::getForType($type, $data['is_repeater'] ?? false);
         }
 
         $children = [];

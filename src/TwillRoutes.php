@@ -4,6 +4,7 @@ namespace A17\Twill;
 
 use A17\Twill\Facades\TwillRoutes as FacadesTwillRoutes;
 use A17\Twill\Helpers\Capsule;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -167,7 +168,7 @@ class TwillRoutes
     }
 
     public function registerRoutes(
-        $router,
+        Router $router,
         $groupOptions,
         $middlewares,
         $supportSubdomainRouting,
@@ -184,7 +185,7 @@ class TwillRoutes
             $routesFile
         ) {
             if (file_exists($routesFile)) {
-                $hostRoutes = function ($router) use (
+                $hostRoutes = function (Router $router) use (
                     $middlewares,
                     $namespace,
                     $routesFile

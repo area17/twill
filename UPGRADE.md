@@ -13,12 +13,32 @@ app/Http/Controllers/Admin -> app/Http/Controllers/Twill
 app/Http/Requests/Admin -> app/Http/Requests/Twill
 ```
 
-We provide an automated upgrade path using `php artisan twill:upgrade`. This will take care of:
+We provide an automated upgrade path using the commands explaned below. This will take care of:
 - Namespace changes in your project
 - Moving the twill views to the new namespace
 - Moving the twill routes to the new location
+- Fixing (most) compatibility issues.
+
+### Run the upgrade:
 
 > ### Always make sure your git state is clean before attempting an update so you can roll back.
+
+Prepare the directories.
+```
+php ./vendor/area17/twill/upgrade.php
+```
+
+
+Clear rector cache (just to be sure, do this before every attempt if multiple)
+```
+./vendor/bin/rector --clear-cache
+```
+
+Then run the migrations (in order!):
+```
+./vendor/bin/rector process --config=vendor/area17/twill/rector-upgrade-compatibility.php
+./vendor/bin/rector process --config=vendor/area17/twill/rector-upgrade-routes-views.php
+```
 
 ## Other changes
 

@@ -16,7 +16,7 @@ class Select extends FieldWithOptions
         bool $renderForModal = false,
         bool $translated = false,
         bool $required = false,
-        string $note = '',
+        ?string $note = '',
         mixed $default = null,
         bool $disabled = false,
         bool $readOnly = false,

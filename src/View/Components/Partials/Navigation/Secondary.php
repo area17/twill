@@ -9,7 +9,7 @@ use Illuminate\View\Component;
 class Secondary extends Component
 {
     /**
-     * @return array<int, \A17\Twill\View\Components\Navigation\NavigationLink>
+     * @return \A17\Twill\View\Components\Navigation\NavigationLink[]
      */
     public function getLinks(): array
     {
@@ -18,8 +18,6 @@ class Secondary extends Component
 
     public function render(): View
     {
-        // ray(TwillNavigation::getActivePrimaryNavigationLink());
-
         return view('twill::partials.navigation._secondary_navigation', [
             'links' => $this->getLinks(),
         ]);

@@ -8,7 +8,7 @@ class Tags extends TwillFormComponent
 {
     public function __construct(
         string $label = 'Tags',
-        string $note = '',
+        ?string $note = '',
     ) {
         parent::__construct(
             name: 'tags',
