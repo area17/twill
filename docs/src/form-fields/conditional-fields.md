@@ -54,6 +54,43 @@ Here's an example based on a checkbox field where the value is either true or fa
     ])
 @endformConnectedFields
 ```
+Here's an example based on a checkboxes field where the values are stored in a json field:
+
+```php
+@formField('checkboxes', [
+    'name' => 'article_target',
+    'label' => 'Target',
+    'min' => 1,
+    'max' => 3,
+    'inline' => true,
+    'options' => [
+        [
+            'value' => 'students',
+            'label' => 'Students'
+        ],
+        [
+            'value' => 'teachers',
+            'label' => 'Teachers'
+        ],
+        [
+            'value' => 'administration',
+            'label' => 'Administration'
+        ],
+    ]
+])
+
+@formConnectedFields([
+    'fieldName' => 'article_target',
+    'fieldValues' => 'administration',
+    'arrayContains' => false,
+    'renderForBlocks' => true/false # (depending on regular form vs block form)
+])
+    @formField('files', [
+        'name' => 'attachment',
+        'label' => 'Attachment'
+    ])
+@endformConnectedFields
+```
 
 Here's an example based on a browser field where the fields are displayed only when the browser field is not empty:
 
@@ -89,6 +126,7 @@ Here's an example based on a browser field where the fields are displayed only w
 | fieldValues       | Value or values of the connected field that will reveal the fields in this component's slot      | string&vert;array |               |
 | isEqual           | Controls how `fieldValues` are evaluated against the connected field                             | boolean           | true          |
 | isBrowser         | Indicates that the connected field is a `browser` field                                          | boolean           | false         |
+| arrayContains     | Controls how `fieldValues` are evaluated when connected field is an array                        | boolean           | true          | 
 | matchEmptyBrowser | When set to true, the fields in this component's slot will be revealed when the browser is empty | boolean           | false         |
 | keepAlive         | When set to true, the state of the hidden fields is preserved                                    | boolean           | false         |
 | renderForBlocks   | When used inside a block, this needs to be set to true                                           | string            | false         |
