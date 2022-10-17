@@ -62,7 +62,7 @@ class Block extends BaseModel
         $value = $this->content[$name] ?? null;
 
         $locale = $forceLocale ?? (
-            config('translatable.use_property_fallback', false) && (!array_key_exists(app()->getLocale(), $value ?? []))
+            config('translatable.use_property_fallback', false) && (!array_key_exists(app()->getLocale(), array_filter($value??[]) ?? []))
             ? config('translatable.fallback_locale')
             : app()->getLocale()
         );
