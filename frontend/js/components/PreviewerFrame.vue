@@ -34,19 +34,22 @@
       loadPreview: function (event) {
         const self = this
 
-        // disable button and link in preview
+        // disable links in preview (but enable button)
         const iframe = event.target
         const links = Array.from(iframe.contentDocument.querySelectorAll('a:not(.sf-dump-toggle)') || [])
 
         links.forEach((link) => {
-          // disable links behavior only for href different from current page
-          if (link.href.split('#')[0] !== window.location.href) {
-            link.setAttribute('disabled', 'disabled')
-            link.style.pointerEvents = 'none'
-            link.onclick = function () {
-              return false
+            // desactivate all link that are not anchor links
+            if(!link.getAttribute('href').startsWith('#') || link.getAttribute('href') === '#' ) {
+                link.setAttribute('disabled', 'disabled')
+                link.style.pointerEvents = 'none'
             }
-          }
+            // make sure links with anchors can have some JS enabled
+            link.onclick = function (event) {
+                if (!event.defaultPrevented) {
+                    return false
+                }
+            }
         })
 
         const forms = Array.from(iframe.contentDocument.querySelectorAll('form') || [])
