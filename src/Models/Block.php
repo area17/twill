@@ -67,9 +67,12 @@ class Block extends BaseModel implements TwillModelContract
         $value = $this->content[$name] ?? null;
 
         $locale = $forceLocale ?? (
-            config('translatable.use_property_fallback', false) && (! array_key_exists(app()->getLocale(), $value ?? []))
-                ? config('translatable.fallback_locale')
-                : app()->getLocale()
+        config('translatable.use_property_fallback', false) && (!array_key_exists(
+            app()->getLocale(),
+            array_filter($value ?? []) ?? []
+        ))
+            ? config('translatable.fallback_locale')
+            : app()->getLocale()
         );
 
         return $value[$locale] ?? null;
