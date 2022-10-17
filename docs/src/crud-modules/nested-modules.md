@@ -107,8 +107,7 @@ class CreateIssueArticlesTables extends Migration
     {
         Schema::create('issue_articles', function (Blueprint $table) {
             // ...
-            $table->unsignedBigInteger('issue_id')->nullable();
-            $table->foreign('issue_id')->references('id')->on('issues');
+            $table->foreignIdFor(Issue::class);
         });
         
         // ...
