@@ -2,8 +2,6 @@
 
 namespace A17\Twill\Models\Behaviors;
 
-use A17\Twill\Models\Block;
-use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\RelatedItem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
