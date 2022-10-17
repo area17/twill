@@ -158,36 +158,50 @@ class Issue extends Model implements Sortable
 Update the child controller. Set the `$moduleName` and `$modelName` properties, then override the `getParentModuleForeignKey()` method:
 
 ```php
+use A17\Twill\Services\Breadcrumbs\NestedBreadcrumbs;
+
 class IssueArticleController extends BaseModuleController
 {
-    protected $moduleName = 'issues.articles';
+    protected $modelName = 'BrandProduct';
 
-    protected $modelName = 'IssueArticle';
-
-    protected function getParentModuleForeignKey()
+    protected function setUpController(): void
     {
-        return 'issue_id';
+        $this->setBreadcrumbs(
+            NestedBreadcrumbs::make()
+                ->forParent(
+                    parentModule: 'issues',
+                    activeParentId: request('issue'),
+                    repository: IssueRepository::class
+                )
+                ->label('Article')
+        );
+        $this->setModuleName('issues.articles');
     }
 }
+
 ```
 
 Update the parent controller. Set the `$indexColumns` property to include a new `Articles` column. This will be a link to the child module items, for each parent.
 
 ```php
+
+use A17\Twill\Services\Listings\Columns\NestedData;
+use A17\Twill\Services\Listings\TableColumns;
+
 class IssueController extends BaseModuleController
 {
     protected $moduleName = 'issues';
 
-    protected $indexColumns = [
-        'title' => [
-            'title' => 'Title',
-            'field' => 'title',
-        ],
-        'articles' => [
-            'title' => 'Articles',
-            'nested' => 'articles',
-        ],
-    ];
+    protected function additionalIndexTableColumns(): TableColumns
+    {
+        $table = parent::additionalIndexTableColumns();
+
+        $table->add(
+            NestedData::make()->field('articles')
+        );
+
+        return $table;
+    }
 }
 ```
 
@@ -198,18 +212,31 @@ Route::module('issues');
 Route::module('issues.articles');
 ```
 
-Add the parent module to `config/twill-navigation.php`:
+Add the parent module to `AppServiceProvider.php`:
 
 ```php
-return [
-    'issues' => [
-        'title' => 'Issues',
-        'module' => true,
-    ],
-];
+<?php
+
+namespace App\Providers;
+
+use A17\Twill\Facades\TwillNavigation;
+use A17\Twill\View\Components\Navigation\NavigationLink;
+use Illuminate\Support\ServiceProvider;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function boot(): void
+    {
+        TwillNavigation::addLink(
+            NavigationLink::make()->forModule('brands')
+        );
+    }
+}
 ```
 
-Then, rename and move the `articles/` views folder inside of the parent `issues/` folder:
+**Only when using blade forms**:
+
+Rename and move the `articles/` views folder inside of the parent `issues/` folder:
 ```
 resources/views/twill/
 └── issues
@@ -219,69 +246,9 @@ resources/views/twill/
 ...
 ```
 
-### Using breadcrumbs for easier navigation
+### Breadcrumbs
 
-In the child module controller, override the `indexData()` method to add the breadcrumbs to the index view:
-
-```php
-class IssueArticleController extends BaseModuleController
-{
-    // ...
-
-    protected function indexData($request)
-    {
-        $issue = app(IssueRepository::class)->getById(request('issue'));
-
-        return [
-            'breadcrumb' => [
-                [
-                    'label' => 'Issues',
-                    'url' => moduleRoute('issues', '', 'index'),
-                ],
-                [
-                    'label' => $issue->title,
-                    'url' => moduleRoute('issues', '', 'edit', $issue->id),
-                ],
-                [
-                    'label' => 'Articles',
-                ],
-            ],
-        ];
-    }
-}
-```
+Breadcrumbs are added via the `$this->setBreadcrumbs` method, you can remove that line if you wish to not include the breadcrumbs.
 
 ![child module index](../.vuepress/public/_media/nested-child-index.png)
-
-<br>
-
-Then, override the `formData()` method to do the same in the form view:
-
-```php
-    protected function formData($request)
-    {
-        $issue = app(IssueRepository::class)->getById(request('issue'));
-
-        return [
-            'breadcrumb' => [
-                [
-                    'label' => 'Issues',
-                    'url' => moduleRoute('issues', '', 'index'),
-                ],
-                [
-                    'label' => $issue->title,
-                    'url' => moduleRoute('issues', '', 'edit', $issue->id),
-                ],
-                [
-                    'label' => 'Articles',
-                    'url' => moduleRoute('issues.articles', '', 'index'),
-                ],
-                [
-                    'label' => 'Edit',
-                ],
-            ],
-        ];
-    }
-```
-
 ![nested child form](../.vuepress/public/_media/nested-child-form.png)

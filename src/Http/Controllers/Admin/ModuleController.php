@@ -13,6 +13,7 @@ use A17\Twill\Models\Contracts\TwillSchedulableModel;
 use A17\Twill\Models\Group;
 use A17\Twill\Repositories\ModuleRepository;
 use A17\Twill\Services\Blocks\Block;
+use A17\Twill\Services\Breadcrumbs\Breadcrumbs;
 use A17\Twill\Services\Forms\Form;
 use A17\Twill\Services\Listings\Columns\Browser;
 use A17\Twill\Services\Listings\Columns\FeaturedStatus;
@@ -365,6 +366,8 @@ abstract class ModuleController extends Controller
         ],
     ];
 
+    private ?Breadcrumbs $breadcrumbs = null;
+
     public function __construct(Application $app, Request $request)
     {
         parent::__construct();
@@ -665,6 +668,14 @@ abstract class ModuleController extends Controller
     }
 
     /**
+     * Set the breadcrumbs.
+     */
+    protected function setBreadcrumbs(Breadcrumbs $breadcrumbs): void
+    {
+        $this->breadcrumbs = $breadcrumbs;
+    }
+
+    /**
      * $type can be index or browser.
      */
     private function getTableColumns(string $type): TableColumns
@@ -687,8 +698,7 @@ abstract class ModuleController extends Controller
                         [$module => $this->getItemIdentifier($model)]
                     );
                 });
-            }
-            elseif ($column->shouldLinkToEdit()) {
+            } elseif ($column->shouldLinkToEdit()) {
                 $column->linkCell(function (TwillModelContract $model) {
                     if ($model->trashed()) {
                         return null;
@@ -1703,6 +1713,13 @@ abstract class ModuleController extends Controller
                 unset($indexDataWithoutFilters[$key]);
             }
         }
+
+        if ($this->breadcrumbs && !isset($indexDataWithoutFilters['breadcrumb'])) {
+            foreach ($this->breadcrumbs->getListingBreadcrumbs() as $breadcrumb) {
+                $indexDataWithoutFilters['breadcrumb'][] = $breadcrumb->toArray();
+            }
+        }
+
         $filters = $this->filters()->toFrontendArray($this->repository);
 
         return array_replace_recursive($data + $options, $indexDataWithoutFilters + $filters);
@@ -2201,6 +2218,12 @@ abstract class ModuleController extends Controller
             ] : []);
 
         $form = array_replace_recursive($data, $this->formData($this->request));
+
+        if ($this->breadcrumbs && !isset($form['breadcrumb'])) {
+            foreach ($this->breadcrumbs->getFormBreadcrumbs() as $breadcrumb) {
+                $form['breadcrumb'][] = $breadcrumb->toArray();
+            }
+        }
 
         View::share('form', $form);
 
