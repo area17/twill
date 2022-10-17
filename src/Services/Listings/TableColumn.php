@@ -62,6 +62,11 @@ abstract class TableColumn
         return $this;
     }
 
+    public function getField(): string
+    {
+        return $this->field;
+    }
+
     /**
      * Sets the title of the column.
      */
@@ -220,7 +225,7 @@ abstract class TableColumn
     {
         if ($link = $this->link) {
             if ($link instanceof Closure) {
-                $link = $link($model);
+                $link = $link($model, $this);
             }
 
             // Link via the closure can be null so we recheck it and only then use it.

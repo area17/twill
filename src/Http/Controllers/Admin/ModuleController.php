@@ -676,7 +676,19 @@ abstract class ModuleController extends Controller
         }
 
         return $tableColumns->each(function (TableColumn $column) {
-            if ($column->shouldLinkToEdit()) {
+            if ($column instanceof NestedData) {
+                $column->linkCell(function (TwillModelContract $model, NestedData $column) {
+                    $module = Str::singular(last(explode('.', $this->moduleName)));
+
+                    return moduleRoute(
+                        "$this->moduleName." . $column->getField(),
+                        $this->routePrefix,
+                        'index',
+                        [$module => $this->getItemIdentifier($model)]
+                    );
+                });
+            }
+            elseif ($column->shouldLinkToEdit()) {
                 $column->linkCell(function (TwillModelContract $model) {
                     if ($model->trashed()) {
                         return null;
