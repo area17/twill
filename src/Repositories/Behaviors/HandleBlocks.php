@@ -18,6 +18,8 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 trait HandleBlocks
 {
+    protected static $hasRelatedTableCache;
+
     private ?\Illuminate\Validation\Validator $blockValidator = null;
 
     /**
@@ -450,8 +452,7 @@ trait HandleBlocks
     protected function getBlockBrowsers($block)
     {
         return Collection::make($block['content']['browsers'])->mapWithKeys(function ($ids, $relation) use ($block) {
-            if (Schema::hasTable(config('twill.related_table', 'twill_related')) && $block->getRelated($relation)
-                    ->isNotEmpty()) {
+            if ($this->hasRelatedTable() && $block->getRelated($relation)->isNotEmpty()) {
                 $items = $this->getFormFieldsForRelatedBrowser($block, $relation);
                 foreach ($items as &$item) {
                     if (!isset($item['edit'])) {
@@ -526,5 +527,13 @@ trait HandleBlocks
             $repository = app()->make(BlockRepository::class);
             $repository->afterDuplicate($block, $newBlock);
         }
+    }
+
+    protected function hasRelatedTable(): bool
+    {
+        if (is_null(static::$hasRelatedTableCache)) {
+            static::$hasRelatedTableCache = Schema::hasTable(config('twill.related_table', 'twill_related'));
+        }
+        return static::$hasRelatedTableCache;
     }
 }
