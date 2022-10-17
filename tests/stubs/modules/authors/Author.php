@@ -12,7 +12,6 @@ use A17\Twill\Models\Behaviors\HasRevisions;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Model;
 use App\Models\Slugs\AuthorSlug;
-use App\Models\Revisions\AuthorRevision;
 
 class Author extends Model implements Sortable
 {
@@ -75,11 +74,6 @@ class Author extends Model implements Sortable
     public function slugs()
     {
         return $this->hasMany(AuthorSlug::class);
-    }
-
-    public function revisions()
-    {
-        return $this->hasMany(AuthorRevision::class);
     }
 
     public function categories()

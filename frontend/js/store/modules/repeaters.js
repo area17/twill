@@ -25,7 +25,7 @@ const getters = {
 }
 
 function setBlockID () {
-  return Date.now()
+  return Date.now() + Math.floor(Math.random() * 1000)
 }
 
 const mutations = {
@@ -41,6 +41,10 @@ const mutations = {
     block.id = setBlockID()
     block.type = blockModel.component
     block.title = blockModel.title
+
+    // Metadata for rendering
+    block.twillUi = {}
+    block.twillUi.isNew = true
 
     // create new repeater object if required
     if (isNew) {
@@ -59,6 +63,11 @@ const mutations = {
   [FORM.DUPLICATE_FORM_BLOCK] (state, blockInfos) {
     const clone = Object.assign({}, state.repeaters[blockInfos.name][blockInfos.index])
     clone.id = setBlockID()
+
+    // Metadata for rendering
+    clone.twillUi = {}
+    clone.twillUi.isNew = true
+
     state.repeaters[blockInfos.name].splice(blockInfos.index + 1, 0, clone)
   },
   [FORM.REORDER_FORM_BLOCKS] (state, newValues) {
@@ -83,7 +92,7 @@ const actions = {
     const fieldCopies = []
     Object.keys(duplicates).forEach(duplicateId => {
       duplicates[duplicateId].forEach((block, index) => {
-        const id = Date.now()
+        const id = Date.now() + Math.floor(Math.random() * 1000)
         const fields = [...getters.fieldsByBlockId(block.id)]
         duplicates[duplicateId][index] = { ...duplicates[duplicateId][index], id }
 

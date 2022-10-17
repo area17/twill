@@ -261,7 +261,7 @@ abstract class ModuleRepository
     /**
      * @param array $attributes
      * @param array $fields
-     * @return \A17\Twill\Models\Model|void
+     * @return \A17\Twill\Models\Model
      */
     public function updateOrCreate($attributes, $fields)
     {
@@ -271,17 +271,17 @@ abstract class ModuleRepository
             return $this->create($fields);
         }
 
-        $this->update($object->id, $fields);
+        return $this->update($object->id, $fields);
     }
 
     /**
      * @param mixed $id
      * @param array $fields
-     * @return void
+     * @return \A17\Twill\Models\Model
      */
     public function update($id, $fields)
     {
-        DB::transaction(function () use ($id, $fields) {
+        return DB::transaction(function () use ($id, $fields) {
             $object = $this->model->findOrFail($id);
 
             $this->beforeSave($object, $fields);
@@ -293,6 +293,8 @@ abstract class ModuleRepository
             $object->save();
 
             $this->afterSave($object, $fields);
+
+            return $object->fresh();
         }, 3);
     }
 
@@ -864,7 +866,7 @@ abstract class ModuleRepository
     {
         if (!$modelOrRepository) {
             if (class_exists($relation) && (new $relation) instanceof Model) {
-                $modelOrRepository = Str::afterLast($relation, '\\');
+                $modelOrRepository = str_after_last($relation, '\\');
             } else {
                 $morphedModel = Relation::getMorphedModel($relation);
                 if (class_exists($morphedModel) && (new $morphedModel) instanceof Model) {
@@ -881,9 +883,9 @@ abstract class ModuleRepository
 
         if ($repository instanceof ModuleRepository) {
             return $repository;
-        } else {
-            $class = Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($modelOrRepository) . "Repository";
         }
+
+        $class = Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($modelOrRepository) . "Repository";
 
         if (class_exists($class)) {
             return App::make($class);
@@ -895,7 +897,7 @@ abstract class ModuleRepository
             throw new Exception("Repository class not found for model '{$modelOrRepository}'");
         }
 
-        return App::make($capsule['repository']);
+        return App::make($capsule->getRepositoryClass());
     }
 
     /**

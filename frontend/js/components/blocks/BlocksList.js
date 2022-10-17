@@ -62,7 +62,7 @@ export default {
         editorName,
         index,
         futureIndex,
-        id: Date.now()
+        id: Date.now() + Math.floor(Math.random() * 1000)
       })
     },
     cloneBlock ({ block, index }) {
@@ -70,7 +70,7 @@ export default {
         editorName: this.editorName,
         futureIndex: index,
         block,
-        id: Date.now()
+        id: Date.now() + Math.floor(Math.random() * 1000)
       })
     }
   },

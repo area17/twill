@@ -76,7 +76,7 @@ export default {
       })
     },
     setBlockID () {
-      return Date.now()
+      return Date.now() + Math.floor(Math.random() * 1000)
     }
   },
   render () {

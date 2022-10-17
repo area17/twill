@@ -2,6 +2,144 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.9.1 (2022-09-30)
+
+### Fixes
+
+- Fixes an issue that would allow unpublished users to continue to login [`#1833`](https://github.com/area17/twill/pull/1833)
+- Fixes an issue that where custom icons were not picked up by the build process [`#1825`](https://github.com/area17/twill/pull/1825)
+
+## 2.9.0 (2022-09-13)
+
+### Features
+
+- Submit options are now configurable using the getSubmitOptions [`#1719`](https://github.com/area17/twill/pull/1719)
+- Using enableDraftRevisions you can now have drafts on top of published versions [`#1725`](https://github.com/area17/twill/pull/1725)
+
+### Fixes
+
+- When having many blocks, the list is now srollable [`#1464`](https://github.com/area17/twill/pull/1464)
+- Improved support for custom icons [`#1732`](https://github.com/area17/twill/pull/1732)
+- Fixes a js error that occurred when cloning repeaters [`#1734`](https://github.com/area17/twill/pull/1734)
+- Resolved an issue where slug models could not be found if directories were nested [`#1738`](https://github.com/area17/twill/pull/1738)
+- Fixed slugs in nested modules to not rely on random sort anymore [`#1743`](https://github.com/area17/twill/pull/1743)
+- Fixed an issue where the activities dashboard could show less entries [`#1764`](https://github.com/area17/twill/pull/1764)
+- Fixed an issue that could cause undefined errors when using subdomain routing [`#1779`](https://github.com/area17/twill/pull/1779)
+- Optimized a query in HasRelated [`#1789`](https://github.com/area17/twill/pull/1789)
+
+### Docs
+
+Various small documentation updates.
+
+## 2.8.8 (2022-06-27)
+
+###  Features
+
+- `->pivot` is now available when using getRelated (to get the position) [`#1687`](https://github.com/area17/twill/pull/1687)
+- When updating a model via the repository, the updated model is now returned [`#1706`](https://github.com/area17/twill/pull/1706)
+
+### Fixes
+
+- Fixed no-cache header  [`#1695`](https://github.com/area17/twill/pull/1695)
+- Fixed divider icon not showing [`#1699`](https://github.com/area17/twill/pull/1699)
+- Fixed Path separators for windows in capsules [`#1702`](https://github.com/area17/twill/pull/1702)
+
+## 2.8.7 (2022-06-10)
+
+### Features
+
+- Added `divider` (<hr>) support to the Quill toolbar [`#1679`](https://github.com/area17/twill/pull/1679)
+
+### Fixes
+
+- Fixed issue that would cause Twill ui to crash when using Quill [`#1680`](https://github.com/area17/twill/pull/1680)
+- Fixed some backwards compatability issues with older Laravel versions [`#1684`](https://github.com/area17/twill/pull/1684)
+- Fixed issue with browsers in the block editor [`#1689`](https://github.com/area17/twill/pull/1689)
+
+
+## 2.8.6 (2022-06-03)
+
+### Fixes
+
+- Fixed an issue that would not cleanup removed browser items in blocks [`#1675`](https://github.com/area17/twill/pull/1675)
+- Fixed an issue that would not display fields translatable in the edit modal window [`#1676`](https://github.com/area17/twill/pull/1676)
+
+## 2.8.5 (2022-05-27)
+
+### Fixes
+
+- Reverts change in build folder location
+
+## 2.8.4 (2022-05-25)
+
+### Fixes
+
+- Fixed console error when editing block with media in the block editor [`#1659`](https://github.com/area17/twill/pull/1659)
+
+## 2.8.3 (2022-05-19)
+
+### Fixes
+
+- Media fields can now be validated in blocks [`#1648`](https://github.com/area17/twill/pull/1648)
+- Internal links in quill are no longer set to target \_blank [`#1649`](https://github.com/area17/twill/pull/1649)
+- Improved restoring support for nested modules [`#1590`](https://github.com/area17/twill/pull/1590)
+
+## 2.8.2 (2022-05-06)
+
+### Fixes
+
+- Make site link translatable [`#1617`](https://github.com/area17/twill/pull/1617)
+- Fix SQL error on twill:refresh-crops command [`#1618`](https://github.com/area17/twill/pull/1618)
+- Fix locale if intl extension is missing. [`#1620`](https://github.com/area17/twill/pull/1620)
+- Fix usage of quotes in placeholder [`#1621`](https://github.com/area17/twill/pull/1621)
+- Fix visual issue with long notes on media [`#1612`](https://github.com/area17/twill/pull/1612)
+- Change search to allow less then 3 characters [`#1613`](https://github.com/area17/twill/pull/1613)
+- Add polyfill for doesntContain to ensure Laravel 7 compatability [`#1635`](https://github.com/area17/twill/pull/1635)
+
+## 2.8.1 (2022-04-26)
+
+### Fixes
+
+- Fixes an error when using translated validation rules in Laravel 9 [`#1611`](https://github.com/area17/twill/pull/1611)
+- Avoids a 500 error if glide base url is set to an empty string [`#1603`](https://github.com/area17/twill/pull/1603)
+- Fixes an issue where repeaters and blocks would not expand on create/duplicate [`#1608`](https://github.com/area17/twill/pull/1608)
+
+## 2.8.0 (2022-04-19)
+
+### Added
+
+No new features were added in the final release. Please check rc and beta tags to see a full
+list of new features and fixes.
+
+### Fixed
+
+- Improved language label display [`#1592`](https://github.com/area17/twill/pull/1592)
+- Fixed regression in translatable settings [`#1598`](https://github.com/area17/twill/pull/1598)
+- Fixed capsule database path [`#1583`](https://github.com/area17/twill/pull/1583)
+- Fixed activity log morph size [`#1565`](https://github.com/area17/twill/pull/1565)
+
+### Docs
+
+- Added repeater guide [`#1576`](https://github.com/area17/twill/pull/1576)
+
+## 2.8.0-rc.2 (2022-04-08)
+
+### Added
+
+- Added option to disable repeater sorting [`#1541`](https://github.com/area17/twill/pull/1541)
+- Added support for connectedBrowserField when using browsers [`#1400`](https://github.com/area17/twill/pull/1400)
+
+### Fixed
+
+- Changed activity log morph size to bigInt [`#1565`](https://github.com/area17/twill/pull/1565)
+- Fixed leftover array accessor on capsule object [`#1574`](https://github.com/area17/twill/pull/1574)
+- Fixed small visual issue with long labels [`#1566`](https://github.com/area17/twill/pull/1566)
+- Fixed MorphMany saving [`#1460`](https://github.com/area17/twill/pull/1460)
+
+### Docs
+
+- Small improvement to the install documentations [`#1569`](https://github.com/area17/twill/pull/1569)
+
 ## 2.8.0-rc.1 (2022-04-01)
 
 ### Added

@@ -4,6 +4,7 @@ namespace A17\Twill\Helpers;
 
 use A17\Twill\Facades\TwillRoutes;
 use A17\Twill\Http\Controllers\Admin\SingletonModuleController;
+use Aws\DirectConnect\Exception\DirectConnectException;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\Facades\App;
@@ -88,7 +89,7 @@ class Capsule
     {
         $serviceProviderName = $this->name . 'CapsuleServiceProvider';
 
-        if (File::exists($this->path . '/' . $serviceProviderName . '.php')) {
+        if (File::exists($this->path . DIRECTORY_SEPARATOR . $serviceProviderName . '.php')) {
             App::register($this->namespace . '\\' . $serviceProviderName);
         }
     }
@@ -110,7 +111,7 @@ class Capsule
 
     public function registerViews(): void
     {
-        View::addLocation(Str::replaceLast('/' . $this->name, '', $this->path));
+        View::addLocation(Str::replaceLast(DIRECTORY_SEPARATOR . $this->name, '', $this->path));
     }
 
     public function loadMigrations(): void
@@ -146,9 +147,9 @@ class Capsule
 
     public function getBasePath(string $path): string
     {
-        $exploded = explode('/', $path);
+        $exploded = explode(DIRECTORY_SEPARATOR, $path);
 
-        return implode('/', array_pop($exploded));
+        return implode(DIRECTORY_SEPARATOR, array_pop($exploded));
     }
 
     public function getModule(): string
@@ -185,7 +186,10 @@ class Capsule
 
     public function getDatabasePsr4Path(): string
     {
-        return $this->path . '/Database';
+        if (File::exists($this->path . DIRECTORY_SEPARATOR . 'Database')) {
+            return $this->path . DIRECTORY_SEPARATOR . 'Database';
+        }
+        return $this->path . DIRECTORY_SEPARATOR . 'database';
     }
 
     public function getSeedsNamespace(): string
@@ -195,27 +199,27 @@ class Capsule
 
     public function getSeedsPsr4Path(): string
     {
-        return $this->getDatabasePsr4Path() . '/Seeds';
+        return $this->getDatabasePsr4Path() . DIRECTORY_SEPARATOR . 'Seeds';
     }
 
     public function getMigrationsPath(): string
     {
-        return $this->getDatabasePsr4Path() . '/migrations';
+        return $this->getDatabasePsr4Path() . DIRECTORY_SEPARATOR . 'migrations';
     }
 
     public function getResourcesPath(): string
     {
-        return $this->getPsr4Path() . '/resources';
+        return $this->getPsr4Path() . DIRECTORY_SEPARATOR . 'resources';
     }
 
     public function getLanguagesPath(): string
     {
-        return $this->getResourcesPath() . '/lang';
+        return $this->getResourcesPath() . DIRECTORY_SEPARATOR . 'lang';
     }
 
     public function getViewsPath(): string
     {
-        return $this->getResourcesPath() . '/views';
+        return $this->getResourcesPath() . DIRECTORY_SEPARATOR . 'views';
     }
 
     public function getModelNamespace(): string
@@ -226,7 +230,7 @@ class Capsule
 
     public function getModelsDir(): string
     {
-        return $this->getPsr4Path() . '/Models';
+        return $this->getPsr4Path() . DIRECTORY_SEPARATOR . 'Models';
     }
 
     public function getRepositoriesNamespace(): string
@@ -237,7 +241,7 @@ class Capsule
 
     public function getRepositoriesDir(): string
     {
-        return $this->getPsr4Path() . '/Repositories';
+        return $this->getPsr4Path() . DIRECTORY_SEPARATOR . 'Repositories';
     }
 
     public function getControllersNamespace(): string
@@ -248,7 +252,7 @@ class Capsule
 
     public function getControllersDir(): string
     {
-        return $this->getPsr4Path() . '/Http/Controllers';
+        return $this->getPsr4Path() . DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Controllers';
     }
 
     public function getRequestsNamespace(): string
@@ -259,7 +263,7 @@ class Capsule
 
     public function getRequestsDir(): string
     {
-        return $this->getPsr4Path() . '/Http/Requests';
+        return $this->getPsr4Path() . DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Requests';
     }
 
     public function getPsr4Path(): string
@@ -276,7 +280,7 @@ class Capsule
 
     public function getRoutesFile(): string
     {
-        return $this->getPsr4Path() . '/routes/admin.php';
+        return $this->getPsr4Path() . DIRECTORY_SEPARATOR . 'routes' . DIRECTORY_SEPARATOR . 'admin.php';
     }
 
     public function routesFileExists(): bool
@@ -321,7 +325,7 @@ class Capsule
 
     public function getConfigFile(): string
     {
-        return $this->path . '/config.php';
+        return $this->path . DIRECTORY_SEPARATOR . 'config.php';
     }
 
     public function getConfig(): array

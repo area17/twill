@@ -17,6 +17,8 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 trait HandleBlocks
 {
+    protected static $hasRelatedTableCache;
+
     /**
      * @param \A17\Twill\Models\Model $object
      * @param array $fields
@@ -112,7 +114,7 @@ trait HandleBlocks
 
             try {
                 $this->validate(
-                    $block['content'],
+                    $block['content'] + $block['medias'] + $block['browsers'] + $block['blocks'],
                     $block['id'],
                     $blockInstance->getRules(),
                     $handleTranslations ? $blockInstance->getRulesForTranslatedFields() : []
@@ -433,8 +435,7 @@ trait HandleBlocks
     protected function getBlockBrowsers($block)
     {
         return Collection::make($block['content']['browsers'])->mapWithKeys(function ($ids, $relation) use ($block) {
-            if (Schema::hasTable(config('twill.related_table', 'twill_related')) && $block->getRelated($relation)
-                    ->isNotEmpty()) {
+            if ($this->hasRelatedTable() && $block->getRelated($relation)->isNotEmpty()) {
                 $items = $this->getFormFieldsForRelatedBrowser($block, $relation);
                 foreach ($items as &$item) {
                     if (! isset($item['edit'])) {
@@ -490,5 +491,13 @@ trait HandleBlocks
                 "blocks[$block->id][$relation]" => $items,
             ];
         })->filter()->toArray();
+    }
+
+    protected function hasRelatedTable(): bool
+    {
+        if (is_null(static::$hasRelatedTableCache)) {
+            static::$hasRelatedTableCache = Schema::hasTable(config('twill.related_table', 'twill_related'));
+        }
+        return static::$hasRelatedTableCache;
     }
 }

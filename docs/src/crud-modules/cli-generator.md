@@ -7,7 +7,7 @@ pageClass: twill-doc
 You can generate all the files needed in your application to create a new CRUD module using Twill's Artisan generator:
 
 ```bash
-php artisan twill:module moduleName
+php artisan twill:make:module moduleName
 ```
 
 The command accepts several options:
@@ -20,7 +20,7 @@ The command accepts several options:
 - `--hasRevisions(-R)`, to allow comparing and restoring past revisions of records
 - `--hasNesting(-N)`, to enable nested items in the module listing (see [Nested Module](/crud-modules/nested-modules.html))
 
-The `twill:module` command will generate a migration file, a model, a repository, a controller, a form request object and a form view.
+The `twill:make:module` command will generate a migration file, a model, a repository, a controller, a form request object and a form view.
 
 Add the route to your admin routes file(`routes/admin.php`).
 

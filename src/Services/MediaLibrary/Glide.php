@@ -67,7 +67,7 @@ class Glide implements ImageServiceInterface
             ltrim($this->config->get('twill.glide.base_path'), '/'),
         ]);
 
-        if (!Str::startsWith($baseUrl, ['http://', 'https://'])) {
+        if (!empty($baseUrlHost) && !Str::startsWith($baseUrl, ['http://', 'https://'])) {
             $baseUrl = $this->request->getScheme() . '://' . $baseUrl;
         }
 

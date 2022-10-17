@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use A17\Twill\Models\NestedsetCollection;
 use Kalnoy\Nestedset\NodeTrait;
 
 trait HasNesting
@@ -37,7 +38,7 @@ trait HasNesting
      */
     public function getAncestorsSlug($locale = null)
     {
-        return collect($this->ancestors ?? [])
+        return collect($this->ancestors->sortByDesc('position') ?? [])
             ->map(function ($i) use ($locale) { return $i->getSlug($locale); })
             ->implode('/');
     }
@@ -92,5 +93,13 @@ trait HasNesting
         }
 
         return $nodeArrays;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function newCollection(array $models = [])
+    {
+        return new NestedsetCollection($models);
     }
 }

@@ -140,13 +140,20 @@
     methods: {
       addBlock: function () {
         this.$store.commit(FORM.ADD_FORM_BLOCK, { type: this.type, name: this.name })
+
+        this.$nextTick(() => {
+          this.checkExpandBlocks()
+        })
       },
       duplicateBlock: function (index) {
-        this.opened = true
         this.$store.commit(FORM.DUPLICATE_FORM_BLOCK, {
           type: this.type,
           name: this.name,
           index: index
+        })
+
+        this.$nextTick(() => {
+          this.checkExpandBlocks()
         })
       },
       deleteBlock: function (index) {
@@ -161,12 +168,16 @@
       },
       expandAllBlocks: function () {
         this.opened = true
+      },
+      checkExpandBlocks () {
+        if (this.$refs.blockList[this.$refs.blockList.length - 1] !== undefined) {
+          this.$refs.blockList[this.$refs.blockList.length - 1].toggleExpand()
+        }
       }
     },
     mounted: function () {
-      const self = this
-      this.$nextTick(function () {
-        self.collapseAllBlocks()
+      this.$nextTick(() => {
+        this.collapseAllBlocks()
       })
     }
   }

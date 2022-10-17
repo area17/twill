@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Browser
 
-![screenshot](/docs/_media/browser.png)
+![screenshot](../.vuepress/public/_media/browser.png)
 
 ```php
 @formField('browser', [

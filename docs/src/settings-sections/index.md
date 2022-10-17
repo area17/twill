@@ -6,7 +6,7 @@ pageClass: twill-doc
 
 Settings sections are standalone forms that you can add to your Twill's navigation to give publishers the ability to manage simple key/value records for you to then use anywhere in your application codebase.
 
-Start by enabling the `settings` feature in your `config/twill.php` configuration file `enabled` array. See [Twill's configuration documentation](/enabled-features/) for more information.
+Start by enabling the `settings` feature in your `config/twill.php` configuration file `enabled` array. See [Twill's configuration documentation](/getting-started/configuration.html#enabled-features) for more information.
 
 If you did not enable this feature before running the `twill:install` command, you need to copy the migration in `vendor/area17/twill/migrations/create_settings_table.php` to your own `database/migrations` directory and migrate your database before continuing.
 

@@ -190,7 +190,9 @@
         this.opened = true
       },
       checkExpandBlocks () {
-        this.$refs.blockList[this.$refs.blockList.length - 1].toggleExpand()
+        if (this.$refs.blockList[this.$refs.blockList.length - 1] !== undefined) {
+          this.$refs.blockList[this.$refs.blockList.length - 1].toggleExpand()
+        }
       },
       handleOnMove (e) {
         const { draggedContext, relatedContext } = e
@@ -222,6 +224,9 @@
       },
       handleClone (cloneFn, blockIndex, block) {
         cloneFn && cloneFn({ block, index: blockIndex + 1 })
+        this.$nextTick(() => {
+          this.checkExpandBlocks()
+        })
       },
       handleBlockAdd (fn, block, index = -1) {
         fn(block, index)
@@ -265,9 +270,11 @@
     mounted () {
       // if there are blocks, these should be all collapse by default
       this.$nextTick(function () {
-        if (this.blocks(this.editorName) && this.blocks(this.editorName).length < 4) {
+        if (this.blocks(this.editorName) && this.blocks(this.editorName).length < 4 && this.$refs.blockList) {
           this.$refs.blockList.forEach((block) => block.toggleExpand())
         }
+
+        this.setOpened()
       })
     }
   }

@@ -276,4 +276,15 @@ class LoginController extends Controller
             return $this->sendFailedLoginResponse($request);
         }
     }
+
+    /**
+     * @param Request $request
+     * @return array
+     *
+     * This method checks to make sure the user is published.
+     */
+    protected function credentials($request)
+    {
+        return array_merge($request->only($this->username(), 'password'), ['published' => 1]);
+    }
 }

@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Files
 
-![screenshot](/docs/_media/files.png)
+![screenshot](../.vuepress/public/_media/files.png)
 
 ```php
 @formField('files', [
