@@ -1105,7 +1105,7 @@ abstract class ModuleController extends Controller
 
         return View::make($view, $this->form($id))->with(
             'renderFields',
-            $this->getForm($this->repository->getById($id))
+            $this->getForm($controllerForm)
         );
     }
 

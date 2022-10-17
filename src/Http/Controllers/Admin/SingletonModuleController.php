@@ -49,7 +49,7 @@ abstract class SingletonModuleController extends ModuleController
         return view($view, $this->form($item->id))
             ->with(
                 'renderFields',
-                $this->getForm($item)
+                $controllerForm
             );
     }
 
