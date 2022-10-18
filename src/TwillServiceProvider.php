@@ -8,6 +8,8 @@ use A17\Twill\Commands\CapsuleInstall;
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\Dev;
 use A17\Twill\Commands\GenerateBlocks;
+use A17\Twill\Commands\TwillFlushManifest;
+use A17\Twill\Commands\GeneratePackageCommand;
 use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ListBlocks;
 use A17\Twill\Commands\ListIcons;
@@ -354,6 +356,8 @@ class TwillServiceProvider extends ServiceProvider
             UpdateExampleCommand::class,
             SetupDevTools::class,
             Release::class,
+            GeneratePackageCommand::class,
+            TwillFlushManifest::class,
         ]);
     }
 
