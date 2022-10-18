@@ -9,6 +9,10 @@ class Breadcrumbs
      */
     public array $items = [];
 
+    final public function __construct()
+    {
+    }
+
     /**
      * @param \A17\Twill\Services\Breadcrumbs\BreadcrumbItem[] $items
      */
