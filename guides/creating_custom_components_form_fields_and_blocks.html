@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Vue.js Workflow - Creating custom components, form fields and blocks in Twill – Twill</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="shortcut icon" href="/twill/twill/favicon.ico">
+    <link rel="apple-touch-icon" href="/twill/twill/favicon-192.png">
+    <meta name="description" content="Twill — An open source CMS toolkit for Laravel">
+    <meta name="theme-color" content="#000000">
+    <meta property="og:url" content="https://twill.io/">
+    <meta name="twitter:url" content="https://twill.io/">
+    <meta property="og:image" content="/twill/social_share.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:image" content="/twill/social_share.png">
+    <meta itemprop="image" content="/twill/social_share.png">
+    <meta property="og:site_name" content="Twill">
+    <meta property="og:author" content="https://www.facebook.com/twillcms/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@twillcms">
+    <meta name="twitter:domain" content="twill.io">
+    <meta name="twitter:creator" content="@twillcms">
+    
+    <link rel="preload" href="/twill/assets/css/0.styles.f9abf095.css" as="style"><link rel="preload" href="/twill/assets/js/app.46323506.js" as="script"><link rel="preload" href="/twill/assets/js/3.0144cc68.js" as="script"><link rel="preload" href="/twill/assets/js/4.e65a3eb7.js" as="script"><link rel="prefetch" href="/twill/assets/js/10.c29614a7.js"><link rel="prefetch" href="/twill/assets/js/11.7718663c.js"><link rel="prefetch" href="/twill/assets/js/12.28db8228.js"><link rel="prefetch" href="/twill/assets/js/13.abacf2d7.js"><link rel="prefetch" href="/twill/assets/js/14.9f6c643a.js"><link rel="prefetch" href="/twill/assets/js/15.8e103287.js"><link rel="prefetch" href="/twill/assets/js/16.dad09cdf.js"><link rel="prefetch" href="/twill/assets/js/17.a5e55424.js"><link rel="prefetch" href="/twill/assets/js/18.ce14d9e6.js"><link rel="prefetch" href="/twill/assets/js/19.ee266a25.js"><link rel="prefetch" href="/twill/assets/js/20.a4162e5f.js"><link rel="prefetch" href="/twill/assets/js/21.36e7da8f.js"><link rel="prefetch" href="/twill/assets/js/22.e61bce16.js"><link rel="prefetch" href="/twill/assets/js/23.f55b3af4.js"><link rel="prefetch" href="/twill/assets/js/24.4f5edd19.js"><link rel="prefetch" href="/twill/assets/js/25.8976f918.js"><link rel="prefetch" href="/twill/assets/js/26.a8cfba08.js"><link rel="prefetch" href="/twill/assets/js/27.11179d1f.js"><link rel="prefetch" href="/twill/assets/js/28.50790164.js"><link rel="prefetch" href="/twill/assets/js/29.5c4e0c8a.js"><link rel="prefetch" href="/twill/assets/js/30.88a194bf.js"><link rel="prefetch" href="/twill/assets/js/31.e3b52548.js"><link rel="prefetch" href="/twill/assets/js/32.239904f2.js"><link rel="prefetch" href="/twill/assets/js/33.a06db2e7.js"><link rel="prefetch" href="/twill/assets/js/34.60cb056e.js"><link rel="prefetch" href="/twill/assets/js/35.000b20a1.js"><link rel="prefetch" href="/twill/assets/js/36.33d3068b.js"><link rel="prefetch" href="/twill/assets/js/37.e139f94e.js"><link rel="prefetch" href="/twill/assets/js/38.e2e761e6.js"><link rel="prefetch" href="/twill/assets/js/39.a9e89a45.js"><link rel="prefetch" href="/twill/assets/js/40.8bb74971.js"><link rel="prefetch" href="/twill/assets/js/41.be3c64de.js"><link rel="prefetch" href="/twill/assets/js/42.d4c0d477.js"><link rel="prefetch" href="/twill/assets/js/43.31806d78.js"><link rel="prefetch" href="/twill/assets/js/44.8166095b.js"><link rel="prefetch" href="/twill/assets/js/45.37770475.js"><link rel="prefetch" href="/twill/assets/js/46.a8148a26.js"><link rel="prefetch" href="/twill/assets/js/47.6113bd04.js"><link rel="prefetch" href="/twill/assets/js/48.19ae18bc.js"><link rel="prefetch" href="/twill/assets/js/49.183b644a.js"><link rel="prefetch" href="/twill/assets/js/5.8a1763a1.js"><link rel="prefetch" href="/twill/assets/js/50.397185bc.js"><link rel="prefetch" href="/twill/assets/js/51.940d0788.js"><link rel="prefetch" href="/twill/assets/js/52.27b4cc7c.js"><link rel="prefetch" href="/twill/assets/js/53.5de90e88.js"><link rel="prefetch" href="/twill/assets/js/54.b57f8aaa.js"><link rel="prefetch" href="/twill/assets/js/55.5e66dd2b.js"><link rel="prefetch" href="/twill/assets/js/56.d7ecc683.js"><link rel="prefetch" href="/twill/assets/js/57.5261c48f.js"><link rel="prefetch" href="/twill/assets/js/58.df9bbf62.js"><link rel="prefetch" href="/twill/assets/js/59.5f71f02a.js"><link rel="prefetch" href="/twill/assets/js/6.4b2a5b0b.js"><link rel="prefetch" href="/twill/assets/js/60.9f0b5def.js"><link rel="prefetch" href="/twill/assets/js/61.fe553585.js"><link rel="prefetch" href="/twill/assets/js/62.c051d0e0.js"><link rel="prefetch" href="/twill/assets/js/63.d057b357.js"><link rel="prefetch" href="/twill/assets/js/64.7e997a13.js"><link rel="prefetch" href="/twill/assets/js/65.d89a03a3.js"><link rel="prefetch" href="/twill/assets/js/66.16268a42.js"><link rel="prefetch" href="/twill/assets/js/67.937e324c.js"><link rel="prefetch" href="/twill/assets/js/68.d8211056.js"><link rel="prefetch" href="/twill/assets/js/69.6142bb96.js"><link rel="prefetch" href="/twill/assets/js/7.25cc5079.js"><link rel="prefetch" href="/twill/assets/js/70.7bb708a3.js"><link rel="prefetch" href="/twill/assets/js/71.ff3c0594.js"><link rel="prefetch" href="/twill/assets/js/72.4f3ad89e.js"><link rel="prefetch" href="/twill/assets/js/73.80421ebd.js"><link rel="prefetch" href="/twill/assets/js/74.04a5ce52.js"><link rel="prefetch" href="/twill/assets/js/75.269b52f4.js"><link rel="prefetch" href="/twill/assets/js/76.1bbd0757.js"><link rel="prefetch" href="/twill/assets/js/77.1b42dd6e.js"><link rel="prefetch" href="/twill/assets/js/78.e9657820.js"><link rel="prefetch" href="/twill/assets/js/79.e793b76d.js"><link rel="prefetch" href="/twill/assets/js/8.ed42283c.js"><link rel="prefetch" href="/twill/assets/js/80.20d345c1.js"><link rel="prefetch" href="/twill/assets/js/81.332d0949.js"><link rel="prefetch" href="/twill/assets/js/82.78366de5.js"><link rel="prefetch" href="/twill/assets/js/83.ea98f011.js"><link rel="prefetch" href="/twill/assets/js/84.28e58c91.js"><link rel="prefetch" href="/twill/assets/js/85.4fbd1f5d.js"><link rel="prefetch" href="/twill/assets/js/86.3d32057b.js"><link rel="prefetch" href="/twill/assets/js/87.61f32b52.js"><link rel="prefetch" href="/twill/assets/js/88.956c219c.js"><link rel="prefetch" href="/twill/assets/js/89.c0a79383.js"><link rel="prefetch" href="/twill/assets/js/9.92b9e8d5.js"><link rel="prefetch" href="/twill/assets/js/90.aebb6893.js"><link rel="prefetch" href="/twill/assets/js/vendors~docsearch.893906f2.js">
+    <link rel="stylesheet" href="/twill/assets/css/0.styles.f9abf095.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container twill-doc"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/twill/" class="home-link router-link-active"><!----> <span class="site-name">Twill</span></a> <div class="links"><form id="search-form" role="search" class="algolia-search-wrapper search-box"><input id="algolia-search-input" class="search-query"></form> <nav class="nav-links can-hide"><div class="nav-item"><a href="https://github.com/area17/twill" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="https://github.com/area17/twill" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Documentation</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/preface/" class="sidebar-heading clickable"><span>Preface</span> <span class="arrow right"></span></a> <!----></section></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/getting-started/" class="sidebar-heading clickable"><span>Getting Started</span> <span class="arrow right"></span></a> <!----></section></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/crud-modules/" class="sidebar-heading clickable"><span>Modules</span> <span class="arrow right"></span></a> <!----></section></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/form-fields/" class="sidebar-heading clickable"><span>Form Fields</span> <span class="arrow right"></span></a> <!----></section></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/block-editor/" class="sidebar-heading clickable"><span>Block Editor</span> <span class="arrow right"></span></a> <!----></section></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/media-library/" class="sidebar-heading clickable"><span>Media Library</span> <span class="arrow right"></span></a> <!----></section></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/guides/" class="sidebar-heading clickable router-link-active open"><span>Guides</span> <span class="arrow down"></span></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/twill/guides/adding-fields-to-the-create-modal.html" class="sidebar-link">Adding fields to the create modal</a></li><li><a href="/twill/guides/prefill-block-editor-from-template.html" class="sidebar-link">Prefill block editor from template</a></li><li><a href="/twill/guides/building_a_multilingual_site_with_twill_and_laravel_localization.html" class="sidebar-link">Building a multilingual site with Twill and Laravel Localization</a></li><li><a href="/twill/guides/adding-custom-roles-and-permissions.html" class="sidebar-link">Adding custom user roles and permissions on Twill</a></li><li><a href="/twill/guides/manage_frontend_user_profiles_from_twill.html" class="sidebar-link">Manage frontend user profiles from Twill</a></li><li><a href="/twill/guides/creating_custom_components_form_fields_and_blocks.html" aria-current="page" class="active sidebar-link">Vue.js Workflow - Creating custom components, form fields and blocks in Twill</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/twill/guides/creating_custom_components_form_fields_and_blocks.html#part-1-setup-twill-for-development" class="sidebar-link">Part 1 - Setup Twill for development</a></li><li class="sidebar-sub-header"><a href="/twill/guides/creating_custom_components_form_fields_and_blocks.html#part-2-custom-component-practical-example" class="sidebar-link">Part 2 - Custom component practical example</a></li><li class="sidebar-sub-header"><a href="/twill/guides/creating_custom_components_form_fields_and_blocks.html#part-3-custom-form-field-example" class="sidebar-link">Part 3 - Custom form field example</a></li><li class="sidebar-sub-header"><a href="/twill/guides/creating_custom_components_form_fields_and_blocks.html#part-4-custom-block-example" class="sidebar-link">Part 4 - Custom block example</a></li></ul></li><li><a href="/twill/guides/json_repeaters.html" class="sidebar-link">Json repeaters</a></li></ul></section></li><li><a href="/twill/artisan-commands/" class="sidebar-link">Artisan Commands</a></li><li><a href="/twill/dashboard/" class="sidebar-link">Dashboard</a></li><li><a href="/twill/global-search/" class="sidebar-link">Global Search</a></li><li><a href="/twill/featuring-content/" class="sidebar-link">Featuring Content</a></li><li><a href="/twill/settings-sections/" class="sidebar-link">Settings Sections</a></li><li><a href="/twill/custom-cms-pages/" class="sidebar-link">Custom CMS Pages</a></li><li><a href="/twill/user-management/" class="sidebar-link">User Management</a></li><li><a href="/twill/oauth-login/" class="sidebar-link">OAuth Login</a></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/packages/" class="sidebar-heading clickable"><span>Packages</span> <span class="arrow right"></span></a> <!----></section></li><li><a href="/twill/resources/" class="sidebar-link">Resources</a></li><li><a href="/twill/api-documentation/" class="sidebar-link">API Documentation</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="vue-js-workflow-creating-custom-components-form-fields-and-blocks-in-twill"><a href="#vue-js-workflow-creating-custom-components-form-fields-and-blocks-in-twill" class="header-anchor">#</a> Vue.js Workflow - Creating custom components, form fields and blocks in Twill</h1> <p>Objectives:</p> <ul><li>Get an overview of Twill's Artisan commands for development</li> <li>Create a custom Vue.js component</li> <li>Create a custom Twill form field</li> <li>Create a custom Twill block</li></ul> <h2 id="part-1-setup-twill-for-development"><a href="#part-1-setup-twill-for-development" class="header-anchor">#</a> Part 1 - Setup Twill for development</h2> <p>If you have been working with Twill for some time, you may already be familiar with the <code>php artisan twill:update</code> command. This command takes Twill's precompiled assets (JS, CSS, etc.) and copies them to your project's <code>public/assets/admin</code> folder.</p> <p>To develop custom Vue.js components for Twill, we can forget about <code>twill:update</code> and take control of the build step with the following commands:</p> <ul><li><code>twill:build</code> -&gt; Build Twill assets with custom Vue components/blocks</li> <li><code>twill:dev</code> -&gt; Hot reload Twill assets with custom Vue components/blocks</li></ul> <p>We'll start by creating a simple <code>HelloWorld</code> component and building it with <code>twill:build</code>.</p> <p>You will need a module in your project to follow along. We'll use <code>pages</code> as an example in this text.</p> <h3 id="create-a-custom-component"><a href="#create-a-custom-component" class="header-anchor">#</a> Create a custom component</h3> <p>Create the following file in your project:</p> <p><code>resources/assets/js/components/HelloWorld.vue</code></p> <div class="language-vue extra-class"><pre class="language-vue"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">&gt;</span></span>
+    <span class="token comment">&lt;!-- eslint-disable --&gt;</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span><span class="token punctuation">&gt;</span></span>
+        Hello {{ name }}
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">&gt;</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script"><span class="token language-javascript">
+<span class="token comment">/* eslint-disable */</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">props</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'name'</span><span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+</code></pre></div><p>Why <code>eslint-disable</code>? Twill's own build tools come with a pretty strict ESLint configuration out of the box. This ensures a good internal consistency in the code of Twill's own components, but will give you an error if your components don't follow Twill's formatting rules.</p> <p>The <code>eslint-disable</code> comments allow you to bypass the formatting rules for your own components. Try it for yourself, turn it on/off and see what you like!</p> <h3 id="build-the-new-component"><a href="#build-the-new-component" class="header-anchor">#</a> Build the new component</h3> <p>Run:</p> <div class="language- extra-class"><pre class="language-text"><code>php artisan twill:build
+</code></pre></div><p>This will start by installing Twill's NPM dependencies in <code>vendor/area17/twill/node_modules</code>. This is only required for the first run, you can skip the install step for your next builds with the <code>--noInstall</code> option:</p> <div class="language- extra-class"><pre class="language-text"><code>php artisan twill:build --noInstall
+</code></pre></div><p>This is only for Twill's own dependencies, you don't need to modify what is being installed in there. For your own dependencies in your custom components, you can run <code>npm install</code> directly into your project.</p> <h3 id="use-the-new-component"><a href="#use-the-new-component" class="header-anchor">#</a> Use the new component</h3> <p>When the build is done, you can use the new component in your forms:</p> <div class="language-blade extra-class"><pre class="language-text"><code>// file: resources/views/admin/pages/form.blade.php
+
+
+@extends('twill::layouts.form')
+
+@section('contentFields')
+    &lt;a17-hello-world name=&quot;World&quot;&gt;&lt;/a17-hello-world&gt;
+@stop
+</code></pre></div><p>In your markup, all custom components must have the <code>a17-</code> prefix. In my personal opinion, it's also best to use an additional prefix for your components, such as <code>a17-custom-</code>. This will avoid all possible conflicts with Twill's built-in components, which also share the <code>a17-</code> prefix.</p> <p>The component in action:</p> <p><img src="/twill/assets/img/vue-hello-world.ed92bed0.png" alt="01-hello-world"></p> <h3 id="introducing-twill-dev"><a href="#introducing-twill-dev" class="header-anchor">#</a> Introducing <code>twill:dev</code></h3> <p>When developing components, you can take advantage of <code>twill:dev</code> for fast rebuilds,
+hot reloading and auto refresh in the browser:</p> <div class="language- extra-class"><pre class="language-text"><code>php artisan twill:dev --noInstall
+</code></pre></div><p>This will watch for changes in your <code>resources/assets/js</code> directory and rebuild accordingly.</p> <p><strong>Note for Sail/Docker users</strong> you may get the following error when running <code>twill:dev</code>:</p> <div class="language- extra-class"><pre class="language-text"><code>Error: $SHELL environment variable is not set.
+</code></pre></div><p>In this case, you can prefix the <code>twill:dev</code> command like this:</p> <div class="language- extra-class"><pre class="language-text"><code>export SHELL=/usr/bin/bash &amp;&amp; php artisan twill:dev --noInstall
+</code></pre></div><h3 id="twill-dev-mode"><a href="#twill-dev-mode" class="header-anchor">#</a> Twill dev mode</h3> <p>After running <code>twill:dev</code>, you need to inform Twill that you are in development
+mode by setting the following variables in your <code>.env</code> file:</p> <div class="language- extra-class"><pre class="language-text"><code>TWILL_DEV_MODE=true
+TWILL_DEV_MODE_URL=&quot;http://localhost:8080&quot;
+</code></pre></div><p><code>TWILL_DEV_MODE_URL</code> is used by Twill to access the development assets through the hot reloading server. You don't need to access this address in your browser, simply access your development site as before (e.g. http://my-app.test)</p> <p><strong>For Valet users</strong> the above configuration should work out of the box.</p> <p><strong>For Homestead/Vagrant users</strong> if you are running <code>twill:dev</code> inside of the VM, make sure to set <code>TWILL_DEV_MODE_URL</code> to your actual development URL (e.g. <code>TWILL_DEV_MODE_URL=&quot;http://my-app.test:8080&quot;</code>)</p> <p><strong>For Sail/Docker users</strong> if you are running <code>twill:dev</code> inside of the container, make sure to expose the <code>8080</code> port in your <code>docker-compose.yml</code> or <code>Dockerfile</code> configuration.</p> <h2 id="part-2-custom-component-practical-example"><a href="#part-2-custom-component-practical-example" class="header-anchor">#</a> Part 2 - Custom component practical example</h2> <p>The <code>HelloWorld</code> component is obviously not very useful. Custom components can be used to add interactivity to your Twill admin forms. Here's a more complete example of a <code>CustomTabs</code> component to organize your form fields in tabs:</p> <p><img src="/twill/assets/img/custom-tabs.f0f58a9f.png" alt="02-custom-tabs"></p> <p>This reuses a bit of CSS from other parts of Twill (ie. <code>.box__filter</code>).</p> <h3 id="vue-js-component"><a href="#vue-js-component" class="header-anchor">#</a> Vue.js component</h3> <p><code>resources/assets/js/components/CustomTabs.vue</code></p> <div class="language-vue extra-class"><pre class="language-vue"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">&gt;</span></span>
+    <span class="token comment">&lt;!-- eslint-disable --&gt;</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>custom-tabs<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>box__filter<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">v-for</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>tab of tabs<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span>
+                    <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>#<span class="token punctuation">&quot;</span></span>
+                    <span class="token attr-name">:class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>{ <span class="token punctuation">'</span>s--on<span class="token punctuation">'</span>: activeTab === tab.name }<span class="token punctuation">&quot;</span></span>
+                    <span class="token attr-name">@click.prevent</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>activateTab(tab.name)<span class="token punctuation">&quot;</span></span>
+                <span class="token punctuation">&gt;</span></span>
+                    {{ tab.label }}
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>slot</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>slot</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">&gt;</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script"><span class="token language-javascript">
+<span class="token comment">/* eslint-disable */</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">props</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">tabs</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token literal-property property">type</span><span class="token operator">:</span> Array <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+    <span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">{</span>
+            <span class="token literal-property property">activeTab</span><span class="token operator">:</span> <span class="token keyword">null</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+    <span class="token function">mounted</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>tabs<span class="token punctuation">.</span>length <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">activateTab</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>tabs<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>name<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+    <span class="token literal-property property">methods</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token function">activateTab</span><span class="token punctuation">(</span><span class="token parameter">name</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">this</span><span class="token punctuation">.</span>$el<span class="token punctuation">.</span><span class="token function">querySelectorAll</span><span class="token punctuation">(</span><span class="token string">'.custom-tab'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token parameter">tab</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+                tab<span class="token punctuation">.</span>classList<span class="token punctuation">.</span><span class="token function">remove</span><span class="token punctuation">(</span><span class="token string">'is-active'</span><span class="token punctuation">)</span>
+            <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token keyword">const</span> newActiveTab <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>$el<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">.custom-tab--</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>name<span class="token interpolation-punctuation punctuation">}</span></span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>newActiveTab<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                newActiveTab<span class="token punctuation">.</span>classList<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">'is-active'</span><span class="token punctuation">)</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>activeTab <span class="token operator">=</span> name
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span> <span class="token attr-name">scoped</span><span class="token punctuation">&gt;</span></span><span class="token style"><span class="token language-css">
+<span class="token selector">.custom-tabs</span> <span class="token punctuation">{</span>
+    <span class="token property">margin-top</span><span class="token punctuation">:</span> 7px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.custom-tab</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token selector">.custom-tab.is-active</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> initial<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">&gt;</span></span>
+</code></pre></div><h3 id="usage-in-a-form"><a href="#usage-in-a-form" class="header-anchor">#</a> Usage in a form</h3> <p><code>resources/views/admin/pages/form.blade.php</code></p> <div class="language-blade extra-class"><pre class="language-text"><code>@extends('twill::layouts.form')
+
+@section('contentFields')
+    &lt;a17-custom-tabs :tabs=&quot;[
+        { name: 'header', label: 'Header' },
+        { name: 'body', label: 'Body' },
+        { name: 'footer', label: 'Footer' },
+    ]&quot;&gt;
+        &lt;div class=&quot;custom-tab custom-tab--header&quot;&gt;
+            @formField('input', [
+                'name' =&gt; 'header_title',
+                'label' =&gt; 'Header Title',
+                'translated' =&gt; true,
+            ])
+
+            @formField('input', [
+                'name' =&gt; 'header_subtitle',
+                'label' =&gt; 'Header Subtitle',
+                'translated' =&gt; true,
+            ])
+        &lt;/div&gt;
+
+        &lt;div class=&quot;custom-tab custom-tab--body&quot;&gt;
+            &lt;p&gt;** Add body form fields here **&lt;/p&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;custom-tab custom-tab--footer&quot;&gt;
+            &lt;p&gt;** Add footer form fields here **&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/a17-custom-tabs&gt;
+@stop
+</code></pre></div><h2 id="part-3-custom-form-field-example"><a href="#part-3-custom-form-field-example" class="header-anchor">#</a> Part 3 - Custom form field example</h2> <p>Form fields are at the core of the content management experience in any CMS. In Twill, form fields are usually made of 2 parts: a Vue.js component that hooks into Twill's Vuex store, and a Blade view that acts as an interface to this component.</p> <p>Here's a complete example of a <code>custom_number</code> form field, based on the <a href="https://www.npmjs.com/package/vue-numeric" target="_blank" rel="noopener noreferrer">vue-numeric<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> package:</p> <p><img src="/twill/assets/img/custom-number.0fdc9e70.png" alt="03-1-custom-number"></p> <h3 id="install-the-dependency"><a href="#install-the-dependency" class="header-anchor">#</a> Install the dependency</h3> <div class="language- extra-class"><pre class="language-text"><code>npm install vue-numeric --save
+</code></pre></div><h3 id="vue-js-component-2"><a href="#vue-js-component-2" class="header-anchor">#</a> Vue.js component</h3> <p><code>resources/assets/js/components/CustomNumber.vue</code></p> <div class="language-vue extra-class"><pre class="language-vue"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">&gt;</span></span>
+    <span class="token comment">&lt;!-- eslint-disable --&gt;</span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a17-inputframe</span>
+        <span class="token attr-name">:error</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>error<span class="token punctuation">&quot;</span></span>
+        <span class="token attr-name">:note</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>note<span class="token punctuation">&quot;</span></span>
+        <span class="token attr-name">:label</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>label<span class="token punctuation">&quot;</span></span>
+        <span class="token attr-name">:name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>name<span class="token punctuation">&quot;</span></span>
+        <span class="token attr-name">:required</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>required<span class="token punctuation">&quot;</span></span>
+    <span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>form__field<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>vue-numeric</span>
+                <span class="token attr-name">:precision</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>precision<span class="token punctuation">&quot;</span></span>
+                <span class="token attr-name">:currency</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>currency<span class="token punctuation">&quot;</span></span>
+                <span class="token attr-name">:decimal-separator</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>decimalSeparator<span class="token punctuation">&quot;</span></span>
+                <span class="token attr-name">:thousand-separator</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>thousandSeparator<span class="token punctuation">&quot;</span></span>
+                <span class="token attr-name">:name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>name<span class="token punctuation">&quot;</span></span>
+                <span class="token attr-name">v-model</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>value<span class="token punctuation">&quot;</span></span>
+                <span class="token attr-name">@blur</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>onBlur<span class="token punctuation">&quot;</span></span>
+            <span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>vue-numeric</span><span class="token punctuation">&gt;</span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a17-inputframe</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">&gt;</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script"><span class="token language-javascript">
+<span class="token comment">/* eslint-disable */</span>
+
+<span class="token keyword">import</span> InputMixin <span class="token keyword">from</span> <span class="token string">'@/mixins/input'</span>
+<span class="token keyword">import</span> FormStoreMixin <span class="token keyword">from</span> <span class="token string">'@/mixins/formStore'</span>
+<span class="token keyword">import</span> InputframeMixin <span class="token keyword">from</span> <span class="token string">'@/mixins/inputFrame'</span>
+
+<span class="token keyword">import</span> VueNumeric <span class="token keyword">from</span> <span class="token string">'vue-numeric'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">mixins</span><span class="token operator">:</span> <span class="token punctuation">[</span>InputMixin<span class="token punctuation">,</span> InputframeMixin<span class="token punctuation">,</span> FormStoreMixin<span class="token punctuation">]</span><span class="token punctuation">,</span>
+
+    <span class="token literal-property property">components</span><span class="token operator">:</span> <span class="token punctuation">{</span> VueNumeric <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+    <span class="token literal-property property">props</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">name</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token literal-property property">type</span><span class="token operator">:</span> String<span class="token punctuation">,</span>
+            <span class="token literal-property property">required</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">initialValue</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token literal-property property">type</span><span class="token operator">:</span> Number<span class="token punctuation">,</span>
+            <span class="token keyword">default</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">precision</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token literal-property property">type</span><span class="token operator">:</span> Number<span class="token punctuation">,</span>
+            <span class="token keyword">default</span><span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">currency</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token literal-property property">type</span><span class="token operator">:</span> String<span class="token punctuation">,</span>
+            <span class="token keyword">default</span><span class="token operator">:</span> <span class="token string">'$'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">decimalSeparator</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token literal-property property">type</span><span class="token operator">:</span> String<span class="token punctuation">,</span>
+            <span class="token keyword">default</span><span class="token operator">:</span> <span class="token string">'.'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token literal-property property">thousandSeparator</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token literal-property property">type</span><span class="token operator">:</span> String<span class="token punctuation">,</span>
+            <span class="token keyword">default</span><span class="token operator">:</span> <span class="token string">''</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+    <span class="token function">data</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">{</span>
+            <span class="token literal-property property">value</span><span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>initialValue<span class="token punctuation">,</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+
+    <span class="token literal-property property">methods</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token function">updateFromStore</span><span class="token punctuation">(</span><span class="token parameter">newValue</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> newValue <span class="token operator">===</span> <span class="token string">'undefined'</span><span class="token punctuation">)</span> newValue <span class="token operator">=</span> <span class="token string">''</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>value <span class="token operator">!==</span> newValue<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>value <span class="token operator">=</span> newValue
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token function">updateValue</span><span class="token punctuation">(</span><span class="token parameter">newValue</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>value <span class="token operator">!==</span> newValue<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>value <span class="token operator">=</span> newValue
+
+                <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">saveIntoStore</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token function">onBlur</span><span class="token punctuation">(</span><span class="token parameter">event</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">const</span> newValue <span class="token operator">=</span> event<span class="token punctuation">.</span>target<span class="token punctuation">.</span>value
+            <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">updateValue</span><span class="token punctuation">(</span>newValue<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>style</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>scss<span class="token punctuation">&quot;</span></span> <span class="token attr-name">scoped</span><span class="token punctuation">&gt;</span></span><span class="token style"><span class="token language-css">
+<span class="token selector">.form__field</span> <span class="token punctuation">{</span>
+    <span class="token property">display</span><span class="token punctuation">:</span> flex<span class="token punctuation">;</span>
+    <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
+    <span class="token property">padding</span><span class="token punctuation">:</span> 0 15px<span class="token punctuation">;</span>
+    <span class="token property">overflow</span><span class="token punctuation">:</span> visible<span class="token punctuation">;</span>
+
+    <span class="token selector">input</span> <span class="token punctuation">{</span>
+        <span class="token atrule"><span class="token rule">@include</span> resetfield<span class="token punctuation">;</span></span>
+        <span class="token property">width</span><span class="token punctuation">:</span> 100%<span class="token punctuation">;</span>
+        <span class="token property">height</span><span class="token punctuation">:</span> 43px<span class="token punctuation">;</span>
+        <span class="token property">line-height</span><span class="token punctuation">:</span> 43px<span class="token punctuation">;</span>
+        <span class="token property">color</span><span class="token punctuation">:</span> inherit<span class="token punctuation">;</span>
+        <span class="token property">padding</span><span class="token punctuation">:</span> 0<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>style</span><span class="token punctuation">&gt;</span></span>
+</code></pre></div><h3 id="blade-view"><a href="#blade-view" class="header-anchor">#</a> Blade view</h3> <p><code>resources/views/admin/partials/form/_custom_number.blade.php</code></p> <div class="language-blade extra-class"><pre class="language-text"><code>@php
+    $precision = $precision ?? '2';
+    $currency = $currency ?? '$';
+    $decimalSeparator = $decimalSeparator ?? '.';
+    $thousandSeparator = $thousandSeparator ?? '';
+@endphp
+
+&lt;a17-custom-number
+    label=&quot;{{ $label }}&quot;
+    :precision=&quot;{{ $precision }}&quot;
+    currency=&quot;{{ $currency }}&quot;
+    decimal-separator=&quot;{{ $decimalSeparator }}&quot;
+    thousand-separator=&quot;{{ $thousandSeparator }}&quot;
+    @include('twill::partials.form.utils._field_name')
+    in-store=&quot;value&quot;
+&gt;&lt;/a17-custom-number&gt;
+
+@unless($renderForBlocks || $renderForModal || (!isset($item-&gt;$name) &amp;&amp; null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
+@push('vuexStore')
+    window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
+        name: '{{ $name }}',
+        value: {!! json_encode($item-&gt;$name ?? $formFieldsValue) !!}
+    })
+@endpush
+@endunless
+</code></pre></div><h3 id="usage-in-a-form-2"><a href="#usage-in-a-form-2" class="header-anchor">#</a> Usage in a form</h3> <p><code>resources/views/admin/pages/form.blade.php</code></p> <div class="language-blade extra-class"><pre class="language-text"><code>@extends('twill::layouts.form')
+
+@section('contentFields')
+    @formField('custom_number', [
+        'name' =&gt; 'magic_number',
+        'label' =&gt; 'Magic Number',
+        'thousandSeparator' =&gt; ',',
+    ])
+@stop
+</code></pre></div><h3 id="digging-deeper"><a href="#digging-deeper" class="header-anchor">#</a> Digging deeper</h3> <p>This form field is functional but very limited, on purpose. For example, it is not translatable. At this time, the best way to explore what's possible with form fields is to dig into Twill's built-in form components.</p> <p>Here are a few good places to start exploring:</p> <ul><li><a href="https://github.com/area17/twill/blob/2.x/frontend/js/components/HiddenField.vue" target="_blank" rel="noopener noreferrer">HiddenField.vue<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a>  Possibly the simplest form field in Twill.</li> <li><a href="https://github.com/area17/twill/blob/2.x/frontend/js/components/DatePicker.vue" target="_blank" rel="noopener noreferrer">DatePicker.vue<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> A good example of form field that integrates with an external JS library.</li> <li><a href="https://github.com/area17/twill/blob/2.x/frontend/js/components/Textfield.vue" target="_blank" rel="noopener noreferrer">TextField.vue<span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a> A complex form field with translations and type variations.</li></ul> <h2 id="part-4-custom-block-example"><a href="#part-4-custom-block-example" class="header-anchor">#</a> Part 4 - Custom block example</h2> <p>The first thing to say about custom Vue.js blocks is that you probably don't need them! Since Twill 2.0, custom blocks can be created entirely with Blade views. The <code>twill:make:block</code> command can scaffold a Blade block for you:</p> <div class="language- extra-class"><pre class="language-text"><code>php artisan twill:make:block banner
+</code></pre></div><p>This will create the following file in your project:</p> <p><code>resources/views/admin/blocks/banner.blade.php</code></p> <div class="language-blade extra-class"><pre class="language-text"><code>@twillBlockTitle('Banner')
+@twillBlockIcon('text')
+@twillBlockGroup('app')
+
+@formField('input', [
+    'name' =&gt; 'title',
+    'label' =&gt; 'Title',
+])
+
+// ...
+</code></pre></div><p>You can add all of Twill's built-in form fields in your blocks, as well as any custom components and form fields that you create. This is the reason why creating custom Vue.js blocks may not be necessary.</p> <p>Here's an example of our <code>custom_number</code> field inside of a custom Blade block:</p> <p><img src="/twill/assets/img/price-block.a8a9d16b.png" alt="03-2-price-block"></p> <p><code>resources/views/admin/blocks/price.blade.php</code></p> <div class="language-blade extra-class"><pre class="language-text"><code>@twillBlockTitle('Price')
+@twillBlockIcon('text')
+@twillBlockGroup('app')
+
+@formField('custom_number', [
+    'name' =&gt; 'magic_number',
+    'label' =&gt; 'Magic Number',
+    'thousandSeparator' =&gt; ',',
+])
+</code></pre></div><p>Nevertheless, if you wish to explore custom Vue.js blocks, you can use the <code>twill:blocks</code> command to get going.</p> <h3 id="prepare-your-custom-block"><a href="#prepare-your-custom-block" class="header-anchor">#</a> Prepare your custom block</h3> <p>Add the <code>@twillBlockCompiled</code> directive to your Blade view:</p> <p><code>resources/views/admin/blocks/banner.blade.php</code></p> <div class="language-blade extra-class"><pre class="language-text"><code>@twillBlockTitle('Banner')
+@twillBlockIcon('text')
+@twillBlockGroup('app')
+@twillBlockCompiled('true')
+
+// ...
+</code></pre></div><p>Then run :</p> <div class="language- extra-class"><pre class="language-text"><code>php artisan twill:blocks
+</code></pre></div><p>This will create the following file in your project:</p> <p><code>resources/assets/js/blocks/BlockBanner.vue</code></p> <div class="language-vue extra-class"><pre class="language-vue"><code><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">&gt;</span></span>
+  <span class="token comment">&lt;!-- eslint-disable --&gt;</span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>block__body<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a17-locale</span> <span class="token attr-name">type</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>a17-textfield<span class="token punctuation">&quot;</span></span> <span class="token attr-name">:attributes</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>{ label: <span class="token punctuation">'</span>Title<span class="token punctuation">'</span>, name: fieldName(<span class="token punctuation">'</span>title<span class="token punctuation">'</span>), type: <span class="token punctuation">'</span>text<span class="token punctuation">'</span>, inStore: <span class="token punctuation">'</span>value<span class="token punctuation">'</span> }<span class="token punctuation">&quot;</span></span> <span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a17-locale</span><span class="token punctuation">&gt;</span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">&gt;</span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script"><span class="token language-javascript">
+<span class="token keyword">import</span> BlockMixin <span class="token keyword">from</span> <span class="token string">'@/mixins/block'</span>
+
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+  <span class="token literal-property property">mixins</span><span class="token operator">:</span> <span class="token punctuation">[</span>BlockMixin<span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span>
+</code></pre></div><p>This file is effectively your Blade template, rendered into a Vue.js component shell. How cool is that?</p> <h3 id="customize-and-build"><a href="#customize-and-build" class="header-anchor">#</a> Customize and build</h3> <p>From this point, you can customize the new Vue.js component in any way you want. Keep in mind that your custom block is limited to the following area in the Block Editor (shown in blue):</p> <p><img src="/twill/assets/img/custom-block.29310685.png" alt="04-custom-block"></p> <p>When you are done, run:</p> <div class="language- extra-class"><pre class="language-text"><code>php artisan twill:build --noInstall
+</code></pre></div><p>Then the custom block is usable in the block editor:</p> <p><code>resources/views/admin/pages/form.blade.php</code></p> <div class="language-blade extra-class"><pre class="language-text"><code>@extends('twill::layouts.form')
+
+@section('contentFields')
+	// ...
+
+    @formField('block_editor', [
+        'blocks' =&gt; ['banner'],
+    ])
+@stop
+</code></pre></div></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/area17/twill/edit/2.x/docs/src/guides/creating_custom_components_form_fields_and_blocks.md" target="_blank" rel="noopener noreferrer">Edit this page on GitHub</a> <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></div> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/twill/guides/manage_frontend_user_profiles_from_twill.html" class="prev">
+        Manage frontend user profiles from Twill
+      </a></span> <span class="next"><a href="/twill/guides/json_repeaters.html">
+        Json repeaters
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/twill/assets/js/app.46323506.js" defer></script><script src="/twill/assets/js/3.0144cc68.js" defer></script><script src="/twill/assets/js/4.e65a3eb7.js" defer></script>
+  </body>
+</html>

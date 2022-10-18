@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Controllers – Twill</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    <link rel="shortcut icon" href="/twill/twill/favicon.ico">
+    <link rel="apple-touch-icon" href="/twill/twill/favicon-192.png">
+    <meta name="description" content="Twill — An open source CMS toolkit for Laravel">
+    <meta name="theme-color" content="#000000">
+    <meta property="og:url" content="https://twill.io/">
+    <meta name="twitter:url" content="https://twill.io/">
+    <meta property="og:image" content="/twill/social_share.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:image" content="/twill/social_share.png">
+    <meta itemprop="image" content="/twill/social_share.png">
+    <meta property="og:site_name" content="Twill">
+    <meta property="og:author" content="https://www.facebook.com/twillcms/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@twillcms">
+    <meta name="twitter:domain" content="twill.io">
+    <meta name="twitter:creator" content="@twillcms">
+    
+    <link rel="preload" href="/twill/assets/css/0.styles.f9abf095.css" as="style"><link rel="preload" href="/twill/assets/js/app.46323506.js" as="script"><link rel="preload" href="/twill/assets/js/3.0144cc68.js" as="script"><link rel="preload" href="/twill/assets/js/9.92b9e8d5.js" as="script"><link rel="prefetch" href="/twill/assets/js/10.c29614a7.js"><link rel="prefetch" href="/twill/assets/js/11.7718663c.js"><link rel="prefetch" href="/twill/assets/js/12.28db8228.js"><link rel="prefetch" href="/twill/assets/js/13.abacf2d7.js"><link rel="prefetch" href="/twill/assets/js/14.9f6c643a.js"><link rel="prefetch" href="/twill/assets/js/15.8e103287.js"><link rel="prefetch" href="/twill/assets/js/16.dad09cdf.js"><link rel="prefetch" href="/twill/assets/js/17.a5e55424.js"><link rel="prefetch" href="/twill/assets/js/18.ce14d9e6.js"><link rel="prefetch" href="/twill/assets/js/19.ee266a25.js"><link rel="prefetch" href="/twill/assets/js/20.a4162e5f.js"><link rel="prefetch" href="/twill/assets/js/21.36e7da8f.js"><link rel="prefetch" href="/twill/assets/js/22.e61bce16.js"><link rel="prefetch" href="/twill/assets/js/23.f55b3af4.js"><link rel="prefetch" href="/twill/assets/js/24.4f5edd19.js"><link rel="prefetch" href="/twill/assets/js/25.8976f918.js"><link rel="prefetch" href="/twill/assets/js/26.a8cfba08.js"><link rel="prefetch" href="/twill/assets/js/27.11179d1f.js"><link rel="prefetch" href="/twill/assets/js/28.50790164.js"><link rel="prefetch" href="/twill/assets/js/29.5c4e0c8a.js"><link rel="prefetch" href="/twill/assets/js/30.88a194bf.js"><link rel="prefetch" href="/twill/assets/js/31.e3b52548.js"><link rel="prefetch" href="/twill/assets/js/32.239904f2.js"><link rel="prefetch" href="/twill/assets/js/33.a06db2e7.js"><link rel="prefetch" href="/twill/assets/js/34.60cb056e.js"><link rel="prefetch" href="/twill/assets/js/35.000b20a1.js"><link rel="prefetch" href="/twill/assets/js/36.33d3068b.js"><link rel="prefetch" href="/twill/assets/js/37.e139f94e.js"><link rel="prefetch" href="/twill/assets/js/38.e2e761e6.js"><link rel="prefetch" href="/twill/assets/js/39.a9e89a45.js"><link rel="prefetch" href="/twill/assets/js/4.e65a3eb7.js"><link rel="prefetch" href="/twill/assets/js/40.8bb74971.js"><link rel="prefetch" href="/twill/assets/js/41.be3c64de.js"><link rel="prefetch" href="/twill/assets/js/42.d4c0d477.js"><link rel="prefetch" href="/twill/assets/js/43.31806d78.js"><link rel="prefetch" href="/twill/assets/js/44.8166095b.js"><link rel="prefetch" href="/twill/assets/js/45.37770475.js"><link rel="prefetch" href="/twill/assets/js/46.a8148a26.js"><link rel="prefetch" href="/twill/assets/js/47.6113bd04.js"><link rel="prefetch" href="/twill/assets/js/48.19ae18bc.js"><link rel="prefetch" href="/twill/assets/js/49.183b644a.js"><link rel="prefetch" href="/twill/assets/js/5.8a1763a1.js"><link rel="prefetch" href="/twill/assets/js/50.397185bc.js"><link rel="prefetch" href="/twill/assets/js/51.940d0788.js"><link rel="prefetch" href="/twill/assets/js/52.27b4cc7c.js"><link rel="prefetch" href="/twill/assets/js/53.5de90e88.js"><link rel="prefetch" href="/twill/assets/js/54.b57f8aaa.js"><link rel="prefetch" href="/twill/assets/js/55.5e66dd2b.js"><link rel="prefetch" href="/twill/assets/js/56.d7ecc683.js"><link rel="prefetch" href="/twill/assets/js/57.5261c48f.js"><link rel="prefetch" href="/twill/assets/js/58.df9bbf62.js"><link rel="prefetch" href="/twill/assets/js/59.5f71f02a.js"><link rel="prefetch" href="/twill/assets/js/6.4b2a5b0b.js"><link rel="prefetch" href="/twill/assets/js/60.9f0b5def.js"><link rel="prefetch" href="/twill/assets/js/61.fe553585.js"><link rel="prefetch" href="/twill/assets/js/62.c051d0e0.js"><link rel="prefetch" href="/twill/assets/js/63.d057b357.js"><link rel="prefetch" href="/twill/assets/js/64.7e997a13.js"><link rel="prefetch" href="/twill/assets/js/65.d89a03a3.js"><link rel="prefetch" href="/twill/assets/js/66.16268a42.js"><link rel="prefetch" href="/twill/assets/js/67.937e324c.js"><link rel="prefetch" href="/twill/assets/js/68.d8211056.js"><link rel="prefetch" href="/twill/assets/js/69.6142bb96.js"><link rel="prefetch" href="/twill/assets/js/7.25cc5079.js"><link rel="prefetch" href="/twill/assets/js/70.7bb708a3.js"><link rel="prefetch" href="/twill/assets/js/71.ff3c0594.js"><link rel="prefetch" href="/twill/assets/js/72.4f3ad89e.js"><link rel="prefetch" href="/twill/assets/js/73.80421ebd.js"><link rel="prefetch" href="/twill/assets/js/74.04a5ce52.js"><link rel="prefetch" href="/twill/assets/js/75.269b52f4.js"><link rel="prefetch" href="/twill/assets/js/76.1bbd0757.js"><link rel="prefetch" href="/twill/assets/js/77.1b42dd6e.js"><link rel="prefetch" href="/twill/assets/js/78.e9657820.js"><link rel="prefetch" href="/twill/assets/js/79.e793b76d.js"><link rel="prefetch" href="/twill/assets/js/8.ed42283c.js"><link rel="prefetch" href="/twill/assets/js/80.20d345c1.js"><link rel="prefetch" href="/twill/assets/js/81.332d0949.js"><link rel="prefetch" href="/twill/assets/js/82.78366de5.js"><link rel="prefetch" href="/twill/assets/js/83.ea98f011.js"><link rel="prefetch" href="/twill/assets/js/84.28e58c91.js"><link rel="prefetch" href="/twill/assets/js/85.4fbd1f5d.js"><link rel="prefetch" href="/twill/assets/js/86.3d32057b.js"><link rel="prefetch" href="/twill/assets/js/87.61f32b52.js"><link rel="prefetch" href="/twill/assets/js/88.956c219c.js"><link rel="prefetch" href="/twill/assets/js/89.c0a79383.js"><link rel="prefetch" href="/twill/assets/js/90.aebb6893.js"><link rel="prefetch" href="/twill/assets/js/vendors~docsearch.893906f2.js">
+    <link rel="stylesheet" href="/twill/assets/css/0.styles.f9abf095.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container twill-doc"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/twill/" class="home-link router-link-active"><!----> <span class="site-name">Twill</span></a> <div class="links"><form id="search-form" role="search" class="algolia-search-wrapper search-box"><input id="algolia-search-input" class="search-query"></form> <nav class="nav-links can-hide"><div class="nav-item"><a href="https://github.com/area17/twill" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="https://github.com/area17/twill" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  GitHub
+  <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>Documentation</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/preface/" class="sidebar-heading clickable"><span>Preface</span> <span class="arrow right"></span></a> <!----></section></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/getting-started/" class="sidebar-heading clickable"><span>Getting Started</span> <span class="arrow right"></span></a> <!----></section></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/crud-modules/" class="sidebar-heading clickable router-link-active open"><span>Modules</span> <span class="arrow down"></span></a> <ul class="sidebar-links sidebar-group-items"><li><a href="/twill/crud-modules/" aria-current="page" class="sidebar-link">CRUD Modules</a></li><li><a href="/twill/crud-modules/cli-generator.html" class="sidebar-link">CLI Generator</a></li><li><a href="/twill/crud-modules/migrations.html" class="sidebar-link">Migrations</a></li><li><a href="/twill/crud-modules/models.html" class="sidebar-link">Models</a></li><li><a href="/twill/crud-modules/repositories.html" class="sidebar-link">Repositories</a></li><li><a href="/twill/crud-modules/controllers.html" aria-current="page" class="active sidebar-link">Controllers</a></li><li><a href="/twill/crud-modules/form-requests.html" class="sidebar-link">Form Requests</a></li><li><a href="/twill/crud-modules/routes.html" class="sidebar-link">Routes</a></li><li><a href="/twill/crud-modules/revisions-and-previewing.html" class="sidebar-link">Revisions and Previewing</a></li><li><a href="/twill/crud-modules/nested-modules.html" class="sidebar-link">Nested Modules</a></li></ul></section></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/form-fields/" class="sidebar-heading clickable"><span>Form Fields</span> <span class="arrow right"></span></a> <!----></section></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/block-editor/" class="sidebar-heading clickable"><span>Block Editor</span> <span class="arrow right"></span></a> <!----></section></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/media-library/" class="sidebar-heading clickable"><span>Media Library</span> <span class="arrow right"></span></a> <!----></section></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/guides/" class="sidebar-heading clickable"><span>Guides</span> <span class="arrow right"></span></a> <!----></section></li><li><a href="/twill/artisan-commands/" class="sidebar-link">Artisan Commands</a></li><li><a href="/twill/dashboard/" class="sidebar-link">Dashboard</a></li><li><a href="/twill/global-search/" class="sidebar-link">Global Search</a></li><li><a href="/twill/featuring-content/" class="sidebar-link">Featuring Content</a></li><li><a href="/twill/settings-sections/" class="sidebar-link">Settings Sections</a></li><li><a href="/twill/custom-cms-pages/" class="sidebar-link">Custom CMS Pages</a></li><li><a href="/twill/user-management/" class="sidebar-link">User Management</a></li><li><a href="/twill/oauth-login/" class="sidebar-link">OAuth Login</a></li><li><section class="sidebar-group collapsable is-sub-group depth-1"><a href="/twill/packages/" class="sidebar-heading clickable"><span>Packages</span> <span class="arrow right"></span></a> <!----></section></li><li><a href="/twill/resources/" class="sidebar-link">Resources</a></li><li><a href="/twill/api-documentation/" class="sidebar-link">API Documentation</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="controllers"><a href="#controllers" class="header-anchor">#</a> Controllers</h1> <div class="language-php extra-class"><pre class="language-php"><code><span class="token php language-php"><span class="token delimiter important">&lt;?php</span>
+
+    <span class="token keyword">protected</span> <span class="token variable">$moduleName</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'yourModuleName'</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/*
+     * The static permalink base to your module. Defaults to /yourModuleName
+     * Set to '' if your module's permalinks are directly off the root, like in a Pages module, for example 
+     */</span>
+    <span class="token keyword">protected</span> <span class="token variable">$permalinkBase</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'yourModuleName'</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/*
+     * Options of the index view
+     */</span>
+    <span class="token keyword">protected</span> <span class="token variable">$indexOptions</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token string single-quoted-string">'create'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'edit'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'publish'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'bulkPublish'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'feature'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">false</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'bulkFeature'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">false</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'restore'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'bulkRestore'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'forceDelete'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'bulkForceDelete'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'delete'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'duplicate'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">false</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'bulkDelete'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'reorder'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">false</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'permalink'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'bulkEdit'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'editInModal'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">false</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'skipCreateModal'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">false</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/*
+     * Key of the index column to use as title/name/anythingelse column
+     * This will be the first column in the listing and will have a link to the form
+     */</span>
+    <span class="token keyword">protected</span> <span class="token variable">$titleColumnKey</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'title'</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/*
+     * Available columns of the index view
+     */</span>
+    <span class="token keyword">protected</span> <span class="token variable">$indexColumns</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token string single-quoted-string">'image'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span>
+            <span class="token string single-quoted-string">'thumb'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span> <span class="token comment">// image column</span>
+            <span class="token string single-quoted-string">'variant'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span>
+                <span class="token string single-quoted-string">'role'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'cover'</span><span class="token punctuation">,</span>
+                <span class="token string single-quoted-string">'crop'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'default'</span><span class="token punctuation">,</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'title'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span> <span class="token comment">// field column</span>
+            <span class="token string single-quoted-string">'title'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'Title'</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'field'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'title'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'subtitle'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span>
+            <span class="token string single-quoted-string">'title'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'Subtitle'</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'field'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'subtitle'</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'sort'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span> <span class="token comment">// column is sortable</span>
+            <span class="token string single-quoted-string">'visible'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">false</span><span class="token punctuation">,</span> <span class="token comment">// will be available from the columns settings dropdown</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'relationName'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span> <span class="token comment">// relation column</span>
+            <span class="token comment">// Take a look at the example in the next section fot the implementation of the sort</span>
+            <span class="token string single-quoted-string">'title'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'Relation name'</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'sort'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'relationship'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'relationName'</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'field'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'relationFieldToDisplay'</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'presenterMethodField'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span> <span class="token comment">// presenter column</span>
+            <span class="token string single-quoted-string">'title'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'Field title'</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'field'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'presenterMethod'</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'present'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'relatedBrowserFieldName'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span> <span class="token comment">// related browser column</span>
+            <span class="token string single-quoted-string">'title'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'Field title'</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'field'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'relatedFieldToDisplay'</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'relatedBrowser'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'browserName'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span>
+    <span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/*
+     * Columns of the browser view for this module when browsed from another module
+     * using a browser form field
+     */</span>
+    <span class="token keyword">protected</span> <span class="token variable">$browserColumns</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token string single-quoted-string">'title'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span>
+            <span class="token string single-quoted-string">'title'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'Title'</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'field'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'title'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/*
+     * Relations to eager load for the index view
+     */</span>
+    <span class="token keyword">protected</span> <span class="token variable">$indexWith</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/*
+     * Relations to eager load for the form view
+     * Add relationship used in multiselect and resource form fields
+     */</span>
+    <span class="token keyword">protected</span> <span class="token variable">$formWith</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/*
+     * Relation count to eager load for the form view
+     */</span>
+    <span class="token keyword">protected</span> <span class="token variable">$formWithCount</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/*
+     * Filters mapping ('filterName' =&gt; 'filterColumn')
+     * You can associate items list to filters by having a filterNameList key in the indexData array
+     * For example, 'category' =&gt; 'category_id' and 'categoryList' =&gt; app(CategoryRepository::class)-&gt;listAll()
+     */</span>
+    <span class="token keyword">protected</span> <span class="token variable">$filters</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token comment">/*
+     * Add anything you would like to have available in your module's index view
+     */</span>
+    <span class="token keyword">protected</span> <span class="token keyword">function</span> <span class="token function-definition function">indexData</span><span class="token punctuation">(</span><span class="token variable">$request</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">/*
+     * Add anything you would like to have available in your module's form view
+     * For example, relationship lists for multiselect form fields
+     */</span>
+    <span class="token keyword">protected</span> <span class="token keyword">function</span> <span class="token function-definition function">formData</span><span class="token punctuation">(</span><span class="token variable">$request</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token comment">// Optional, if the automatic way is not working for you (default is ucfirst(str_singular($moduleName)))</span>
+    <span class="token keyword">protected</span> <span class="token variable">$modelName</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'model'</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// Optional, to specify a different feature field name than the default 'featured'</span>
+    <span class="token keyword">protected</span> <span class="token variable">$featureField</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'featured'</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// Optional, specify number of items per page in the listing view (-1 to disable pagination)</span>
+    <span class="token comment">// If you are implementing Sortable, this parameter is ignored given reordering is not implemented</span>
+    <span class="token comment">// along with pagination.</span>
+    <span class="token keyword">protected</span> <span class="token variable">$perPage</span> <span class="token operator">=</span> <span class="token number">20</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// Optional, specify the default listing order</span>
+    <span class="token keyword">protected</span> <span class="token variable">$defaultOrders</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string single-quoted-string">'title'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'asc'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+    <span class="token comment">// Optional, specify the default listing filters</span>
+    <span class="token keyword">protected</span> <span class="token variable">$defaultFilters</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string single-quoted-string">'search'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'title|search'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+</span></code></pre></div><p>You can also override all actions and internal functions, checkout the ModuleController source
+in <code>A17\Twill\Http\Controllers\Admin\ModuleController</code>.</p> <h4 id="example-sorting-by-a-relationship-field"><a href="#example-sorting-by-a-relationship-field" class="header-anchor">#</a> Example: sorting by a relationship field</h4> <p>Let's say we have a controller with certain fields displayed:</p> <p>File: <code>app/Http/Controllers/Admin/PlayController.php</code></p> <div class="language-php extra-class"><pre class="language-php"><code>    <span class="token keyword">protected</span> <span class="token variable">$indexColumns</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+        <span class="token string single-quoted-string">'image'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span>
+            <span class="token string single-quoted-string">'thumb'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span> <span class="token comment">// image column</span>
+            <span class="token string single-quoted-string">'variant'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span>
+                <span class="token string single-quoted-string">'role'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'featured'</span><span class="token punctuation">,</span>
+                <span class="token string single-quoted-string">'crop'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'default'</span><span class="token punctuation">,</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'title'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span> <span class="token comment">// field column</span>
+            <span class="token string single-quoted-string">'title'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'Title'</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'field'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'title'</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'festivals'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span> <span class="token comment">// relation column</span>
+            <span class="token string single-quoted-string">'title'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'Festival'</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'sort'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">true</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'relationship'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'festivals'</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'field'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'title'</span>
+        <span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">;</span>
+</code></pre></div><p>To order by the relationship we need to overwrite the order method in the module's repository.</p> <p>File: <code>app/Repositories/PlayRepository.php</code></p> <div class="language-php extra-class"><pre class="language-php"><code>  <span class="token operator">...</span>
+  <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">order</span><span class="token punctuation">(</span><span class="token variable">$query</span><span class="token punctuation">,</span> <span class="token keyword type-hint">array</span> <span class="token variable">$orders</span> <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">array_key_exists</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'festivalsTitle'</span><span class="token punctuation">,</span> <span class="token variable">$orders</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+          <span class="token variable">$sort_method</span> <span class="token operator">=</span> <span class="token variable">$orders</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'festivalsTitle'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+          <span class="token comment">// remove the unexisting column from the orders array</span>
+          <span class="token keyword">unset</span><span class="token punctuation">(</span><span class="token variable">$orders</span><span class="token punctuation">[</span><span class="token string single-quoted-string">'festivalsTitle'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+          <span class="token variable">$query</span> <span class="token operator">=</span> <span class="token variable">$query</span><span class="token operator">-&gt;</span><span class="token function">orderByFestival</span><span class="token punctuation">(</span><span class="token variable">$sort_method</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token comment">// don't forget to call the parent order function</span>
+      <span class="token keyword">return</span> <span class="token keyword static-context">parent</span><span class="token operator">::</span><span class="token function">order</span><span class="token punctuation">(</span><span class="token variable">$query</span><span class="token punctuation">,</span> <span class="token variable">$orders</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token operator">...</span>
+</code></pre></div><p>Then, add a custom <code>sort</code> scope to your model, it could be something like this:</p> <p>File: <code>app/Models/Play.php</code></p> <div class="language-php extra-class"><pre class="language-php"><code>    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">scopeOrderByFestival</span><span class="token punctuation">(</span><span class="token variable">$query</span><span class="token punctuation">,</span> <span class="token variable">$sort_method</span> <span class="token operator">=</span> <span class="token string single-quoted-string">'ASC'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token variable">$query</span>
+            <span class="token operator">-&gt;</span><span class="token function">leftJoin</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'festivals'</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'plays.section_id'</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'='</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'festivals.id'</span><span class="token punctuation">)</span>
+            <span class="token operator">-&gt;</span><span class="token function">select</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'plays.*'</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'festivals.id'</span><span class="token punctuation">,</span> <span class="token string single-quoted-string">'festivals.title'</span><span class="token punctuation">)</span>
+            <span class="token operator">-&gt;</span><span class="token function">orderBy</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'festivals.title'</span><span class="token punctuation">,</span> <span class="token variable">$sort_method</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+</code></pre></div><h4 id="index-options"><a href="#index-options" class="header-anchor">#</a> Index Options</h4> <p>You can change the available actions within the listing view for any particular module by altering the <code>$indexOptions</code> array in the module's controller. The full list at the start of this chapter demonstrates the available options with their default settings. Should you wish to change one, include it in the controller's array with the desired overriding value.</p> <p>For example, to disable the user's ability to permanently delete an article, you include the following:</p> <p>File: <code>app/Http/Controllers/Admin/ArticleController</code></p> <div class="language-php extra-class"><pre class="language-php"><code>
+	<span class="token keyword">protected</span> <span class="token variable">$indexOptions</span> <span class="token operator">=</span> <span class="token punctuation">[</span>
+		<span class="token string single-quoted-string">'forceDelete'</span> <span class="token operator">=&gt;</span> <span class="token constant boolean">false</span> <span class="token comment">// This is the opposite of the default</span>
+		<span class="token punctuation">]</span><span class="token punctuation">;</span>
+
+</code></pre></div><p>With this, all index options apart from <code>Destroy</code> and the synonymous bulk action will be available on the listing view for articles.</p> <h4 id="additional-table-actions"><a href="#additional-table-actions" class="header-anchor">#</a> Additional table actions</h4> <p>You can override the <code>additionalTableActions()</code> method to add custom actions in your module's listing view:</p> <p>File: <code>app/Http/Controllers/Admin/NewsletterController.php</code></p> <div class="language-php extra-class"><pre class="language-php"><code>    <span class="token keyword">public</span> <span class="token keyword">function</span> <span class="token function-definition function">additionalTableActions</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">[</span>
+            <span class="token string single-quoted-string">'exportAction'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span> <span class="token comment">// Action name.</span>
+                <span class="token string single-quoted-string">'name'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'Export Newsletter List'</span><span class="token punctuation">,</span> <span class="token comment">// Button action title.</span>
+                <span class="token string single-quoted-string">'variant'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'primary'</span><span class="token punctuation">,</span> <span class="token comment">// Button style variant. Available variants; primary, secondary, action, editor, validate, aslink, aslink-grey, warning, ghost, outline, tertiary</span>
+                <span class="token string single-quoted-string">'size'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'small'</span><span class="token punctuation">,</span> <span class="token comment">// Button size. Available sizes; small</span>
+                <span class="token string single-quoted-string">'link'</span> <span class="token operator">=&gt;</span> <span class="token function">route</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'newsletter.export'</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token comment">// Button action link.</span>
+                <span class="token string single-quoted-string">'target'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">''</span><span class="token punctuation">,</span> <span class="token comment">// Leave it blank for self.</span>
+                <span class="token string single-quoted-string">'type'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'a'</span><span class="token punctuation">,</span> <span class="token comment">// Leave it blank for &quot;button&quot;.</span>
+            <span class="token punctuation">]</span>
+        <span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+</code></pre></div><h4 id="localizing-the-permalink"><a href="#localizing-the-permalink" class="header-anchor">#</a> Localizing the permalink</h4> <p>In a multilingual setup it might be interesting to define a localized permalink base.</p> <p>We saw before that we can customize the permalink using <code>$permalinkBase</code> but if we want to localize this we can use the
+controller method <code>getLocalizedPermalinkBase</code>.</p> <div class="language-php extra-class"><pre class="language-php"><code><span class="token keyword">protected</span> <span class="token keyword">function</span> <span class="token function-definition function">getLocalizedPermalinkBase</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">[</span>
+        <span class="token string single-quoted-string">'en'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'page'</span><span class="token punctuation">,</span>
+        <span class="token string single-quoted-string">'nl'</span> <span class="token operator">=&gt;</span> <span class="token string single-quoted-string">'pagina'</span><span class="token punctuation">,</span>
+    <span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p>If you need more control or want to change the full permalink you can use the <code>formData</code> method instead.</p> <p>The example below is a simple one and could be done as well with <a href="#customizing-the-permalink">customizing the permalink</a></p> <div class="language-php extra-class"><pre class="language-php"><code><span class="token keyword">protected</span> <span class="token keyword">function</span> <span class="token function-definition function">formData</span><span class="token punctuation">(</span><span class="token variable">$request</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token punctuation">[</span>
+        <span class="token string single-quoted-string">'localizedCustomPermalink'</span> <span class="token operator">=&gt;</span> <span class="token punctuation">[</span>
+            <span class="token string single-quoted-string">'en'</span> <span class="token operator">=&gt;</span> <span class="token function">route</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'page'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string single-quoted-string">'id'</span> <span class="token operator">=&gt;</span> <span class="token variable">$request</span><span class="token operator">-&gt;</span><span class="token function">route</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'page'</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+            <span class="token string single-quoted-string">'nl'</span> <span class="token operator">=&gt;</span> <span class="token function">route</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'page'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string single-quoted-string">'id'</span> <span class="token operator">=&gt;</span> <span class="token variable">$request</span><span class="token operator">-&gt;</span><span class="token function">route</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'page'</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+        <span class="token punctuation">]</span>
+    <span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h4 id="customizing-the-permalink"><a href="#customizing-the-permalink" class="header-anchor">#</a> Customizing the permalink</h4> <p>If needed you can customize the permalink displayed in the admin interface when editing a model. This is especially
+useful if you are using Laravel for displaying your front-end as you do not need to keep your permalink and routes in
+sync.</p> <p><img src="/twill/assets/img/custom-permalink.0a7224d0.png" alt="screenshot"></p> <p>This can be done by setting the <code>customPermalink</code> via the <code>formData</code> method in the model controller.</p> <p>The example below will result in: <code>/page-route/3</code> for page with id 3.</p> <div class="language-php extra-class"><pre class="language-php"><code><span class="token comment"># Route definition</span>
+<span class="token class-name static-context">Route</span><span class="token operator">::</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'page-route/{id}'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token operator">-&gt;</span><span class="token function">name</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'page.detail'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment"># Method implementation</span>
+<span class="token keyword">protected</span> <span class="token keyword">function</span> <span class="token function-definition function">formData</span><span class="token punctuation">(</span><span class="token variable">$request</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token variable">$request</span><span class="token operator">-&gt;</span><span class="token function">route</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'page'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">[</span>
+            <span class="token string single-quoted-string">'customPermalink'</span> <span class="token operator">=&gt;</span> <span class="token function">route</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'page.detail'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string single-quoted-string">'id'</span> <span class="token operator">=&gt;</span> <span class="token variable">$request</span><span class="token operator">-&gt;</span><span class="token function">route</span><span class="token punctuation">(</span><span class="token string single-quoted-string">'page'</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre></div></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/area17/twill/edit/2.x/docs/src/crud-modules/controllers.md" target="_blank" rel="noopener noreferrer">Edit this page on GitHub</a> <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></div> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/twill/crud-modules/repositories.html" class="prev">
+        Repositories
+      </a></span> <span class="next"><a href="/twill/crud-modules/form-requests.html">
+        Form Requests
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/twill/assets/js/app.46323506.js" defer></script><script src="/twill/assets/js/3.0144cc68.js" defer></script><script src="/twill/assets/js/9.92b9e8d5.js" defer></script>
+  </body>
+</html>
