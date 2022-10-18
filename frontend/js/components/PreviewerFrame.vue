@@ -35,17 +35,17 @@
       loadPreview: function (event) {
         const self = this
 
-        // disable links in preview (but enable button)
+        // Disable links in preview (but enable button).
         const iframe = event.target
         const links = Array.from(iframe.contentDocument.querySelectorAll('a:not(.sf-dump-toggle)') || [])
 
         links.forEach((link) => {
-          // desactivate all link that are not anchor links
+          // Deactivate all link that are not anchor links.
           if (!link.getAttribute('href').startsWith('#') || link.getAttribute('href') === '#') {
             link.setAttribute('disabled', 'disabled')
             link.style.pointerEvents = 'none'
           }
-          // make sure links with anchors can have some JS enabled
+          // Make sure links with anchors can have some JS enabled.
           link.onclick = function (event) {
             if (!event.defaultPrevented) {
               return false
@@ -70,7 +70,7 @@
           }
         })
 
-        // move the iframe after load
+        // Move the iframe after load.
         this.$el.contentWindow.scrollTo(0, this.currentScroll)
       }
     }
@@ -85,7 +85,6 @@
     margin: 0 auto;
     max-width: calc(100% - 20px);
     display: block;
-    // box-shadow:0 0px 10px rgba(0,0,0,0.8);
     transform: translateX(-50%);
     transition: width .3s ease;
     position: absolute;
