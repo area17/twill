@@ -8,7 +8,13 @@ All notable changes to `twill` will be documented in this file.
 
 - Add command to allow developers to flush only the twill-manifest.json from cache [`#1859`](https://github.com/area17/twill/pull/1859)
 - Adds a ArrayContains support to connected fields [`#1848`](https://github.com/area17/twill/pull/1848)
+- The preview function now allows more interaction [`#1561`](https://github.com/area17/twill/pull/1561)
 - Adds disabled support to translated media and slideshow [`#1845`](https://github.com/area17/twill/pull/1845)
+
+### Bugfixes
+
+- Avoids additional queries when getting blocks [`#1790`](https://github.com/area17/twill/pull/1790)
+- Fixed an issue where translation fallback would not work for blocks [`#1754`](https://github.com/area17/twill/pull/1754)
 
 ## 2.9.1 (2022-09-30)
 
