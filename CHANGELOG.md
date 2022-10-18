@@ -2,6 +2,14 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.10.0 (2022-10-18)
+
+### Features
+
+- Add command to allow developers to flush only the twill-manifest.json from cache [`#1859`](https://github.com/area17/twill/pull/1859)
+- Adds a ArrayContains support to connected fields [`#1848`](https://github.com/area17/twill/pull/1848)
+- Adds disabled support to translated media and slideshow [`#1845`](https://github.com/area17/twill/pull/1845)
+
 ## 2.9.1 (2022-09-30)
 
 ### Fixes
