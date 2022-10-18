@@ -11,8 +11,8 @@
   "Inter-MediumItalic.woff2": "/assets/twill/fonts/Inter-MediumItalic.7a7fd735.woff2",
   "Inter-Regular.woff": "/assets/twill/fonts/Inter-Regular.aebfbb3c.woff",
   "Inter-Regular.woff2": "/assets/twill/fonts/Inter-Regular.bffaed79.woff2",
-  "chunk-common.css": "/assets/twill/css/chunk-common.46d30dd7.css",
-  "chunk-common.js": "/assets/twill/js/chunk-common.58cd4f3c.js",
+  "chunk-common.css": "/assets/twill/css/chunk-common.e7f1f61d.css",
+  "chunk-common.js": "/assets/twill/js/chunk-common.d1b26e4e.js",
   "chunk-vendors.css": "/assets/twill/css/chunk-vendors.9644c4ee.css",
   "chunk-vendors.js": "/assets/twill/js/chunk-vendors.f90db409.js",
   "icons-custom.js": "/assets/twill/js/icons-custom.dbe862dd.js",
@@ -21,12 +21,12 @@
   "icons-wysiwyg.php": "/views/partials/icons/icons-wysiwyg-svg.blade.php",
   "icons.php": "/views/partials/icons/icons-svg.blade.php",
   "main-buckets.css": "/assets/twill/css/main-buckets.62993e06.css",
-  "main-buckets.js": "/assets/twill/js/main-buckets.b56eae8f.js",
+  "main-buckets.js": "/assets/twill/js/main-buckets.e691049d.js",
   "main-dashboard.css": "/assets/twill/css/main-dashboard.be258448.css",
-  "main-dashboard.js": "/assets/twill/js/main-dashboard.8a0681e7.js",
-  "main-form.css": "/assets/twill/css/main-form.7165061a.css",
-  "main-form.js": "/assets/twill/js/main-form.282174ce.js",
+  "main-dashboard.js": "/assets/twill/js/main-dashboard.c12f26f2.js",
+  "main-form.css": "/assets/twill/css/main-form.d5a24e71.css",
+  "main-form.js": "/assets/twill/js/main-form.44861311.js",
   "main-free.js": "/assets/twill/js/main-free.94ff6746.js",
   "main-listing.css": "/assets/twill/css/main-listing.2e38433e.css",
-  "main-listing.js": "/assets/twill/js/main-listing.323c632f.js"
+  "main-listing.js": "/assets/twill/js/main-listing.e5882316.js"
 }
