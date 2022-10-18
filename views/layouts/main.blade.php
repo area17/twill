@@ -38,8 +38,7 @@
     @else
         <x-twill.partials::navigation.secondary/>
         <x-twill.partials::navigation.tertiary/>
-        {{-- @todo: The breadcrumbs to a component --}}
-        {{-- @partialView($moduleName ?? null, 'navigation._breadcrumb') --}}
+        <x-twill.partials::navigation.breadcrumbs :breadcrumb="$breadcrumb ?? []"/>
     @endif
     <section class="main">
         <div class="app" id="app" v-cloak>

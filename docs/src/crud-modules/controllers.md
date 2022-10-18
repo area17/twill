@@ -76,6 +76,7 @@ Below is a list of the methods and their purpose:
 - **setModelName**('`Project`'): Usually not required, but in case customization is needed you can use this method to set
   the name of the model this controller acts on.
 - **setResultsPerPAge**(`20`): Sets the amount of results to show per page, defaults to 20.
+- **setBreadcrumbs**(`Breadcrumbs $breadcrumbs`): Breadcrumbs to display.
 - **eagerLoadListingRelations**(`['comments', 'author']`): Relations to eager load for the index view.
 - **eagerLoadFormRelations**(`['comments', 'author']`): Relations to eager load for the form view.
 - **eagerLoadFormRelationCounts**(`['comments', 'author']`): Relation count to eager load for the form view.
