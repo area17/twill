@@ -165,7 +165,7 @@ class TwillNavigation
         }
 
         $tree['right'][] = NavigationLink::make()
-            ->withAttributes(['data-medialib-btn'])
+            ->withAttributes(['data-medialib-btn', 'data-closenav-btn'])
             ->title(twillTrans('twill::lang.nav.media-library'))
             ->onlyWhen(fn() => Auth::user()?->can('access-media-library') ?? false);
         $tree['right'][] = NavigationLink::make()
