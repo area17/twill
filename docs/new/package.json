@@ -1,0 +1,17 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "mix",
+        "watch": "mix watch",
+        "staging": "NODE_ENV=staging mix",
+        "prod": "mix --production"
+    },
+    "devDependencies": {
+        "@tailwindcss/typography": "^0.5.7",
+        "laravel-mix": "^6.0.39",
+        "laravel-mix-jigsaw": "^2.0.0",
+        "postcss": "^8.4.14",
+        "postcss-import": "^14.0.0",
+        "tailwindcss": "^3.2"
+    }
+}
