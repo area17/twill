@@ -96,7 +96,7 @@ class Author extends Model implements Sortable
 ```
 
 You can also set a global revisions limit using by
-setting [TwillConfig::maxRevisions](../getting-started/configuration.md#twillconfig-facade)
+setting [TwillConfig::maxRevisions](../2_getting-started/configuration.md#twillconfig-facade)
 
 #### Scheduling
 

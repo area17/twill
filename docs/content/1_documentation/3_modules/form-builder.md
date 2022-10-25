@@ -51,7 +51,7 @@ $form->add(Input::make()->name('description'));
 ## Field methods
 
 All form fields extend the `BaseFormField` class and have the same property options as explained in
-the [form field docs](../form-fields/index.md). 
+the [form field docs](../4_form-fields/index.md). 
 
 However, their names in some cases might be slightly different.
 

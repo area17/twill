@@ -52,7 +52,10 @@ class GenerateDocsCommand extends Command
         $environment->addExtension(new AutolinkExtension());
         $environment->addExtension(new TableExtension());
         $environment->addExtension(new GithubFlavoredMarkdownExtension());
-        $environment->addBlockStartParser(new BladeComponentStart())->addRenderer(BladeComponentElement::class, new BladeComponentRenderer());
+        $environment->addBlockStartParser(new BladeComponentStart())->addRenderer(
+            BladeComponentElement::class,
+            new BladeComponentRenderer()
+        );
         $environment->addRenderer(Link::class, new RelativeLinksExtension());
 
         $this->converter = new MarkdownConverter($environment);
@@ -82,8 +85,27 @@ class GenerateDocsCommand extends Command
 
         $hasChange = false;
 
+        $unsorted = $disk->allFiles('content');
+
+        // This sort needs to be reworked.
+        $sorted = Arr::sort($unsorted, function (string $item) {
+            $parts = explode('/', Str::after($item, '/'));
+
+            $index = '';
+
+            foreach ($parts as $part) {
+                if (Str::contains($part, '_')) {
+                    $index .= (int)Str::before($part, '_');
+                } else {
+                    $index .= 99;
+                }
+            }
+
+            return $index;
+        });
+
         // Process docs.
-        foreach ($disk->allFiles('content') as $relativePath) {
+        foreach ($sorted as $relativePath) {
             $url = $this->withoutNumbers(Str::replace(['content/', '.md'], ['/', '.html'], $relativePath));
 
             if (isset($navTree['last_updated']) && $disk->lastModified($relativePath) <= $navTree['last_updated']) {

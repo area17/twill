@@ -3,7 +3,7 @@
 ## Using controller method
 
 Since Twill 3.0 there is also a possibility to define your forms from the module controller,
-for details about this approach see [Form builder documentation](../crud-modules/form-builder.md).
+for details about this approach see [Form builder documentation](../3_modules/form-builder.md).
 
 This method will still continue to receive improvements as it does not yet support all the features
 that the form views method has such as fieldset, sidebars and conditional fields.

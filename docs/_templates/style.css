@@ -2,21 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-[x-cloak] { display: none !important; }
-
-.torchlight.has-focus-lines .line:not(.line-focus) {
-    transition: filter 0.35s, opacity 0.35s;
-    filter: blur(.095rem);
-    opacity: .65;
-}
-
-.torchlight.has-focus-lines:hover .line:not(.line-focus) {
-    filter: blur(0px);
-    opacity: 1;
-}
-
-.torchlight summary:focus {
-    outline: none;
+[x-cloak] {
+    display: none !important;
 }
 
 /* Hide the default markers, as we provide our own */
@@ -54,4 +41,36 @@
 /* Show the [...] indicator when closed. */
 .torchlight details:not([open]) .summary-hide-when-open {
     display: initial;
+}
+
+pre {
+    @apply my-4 rounded overflow-x-auto;
+}
+
+pre code.torchlight {
+    @apply block py-4 min-w-max;
+}
+
+pre code.torchlight .line {
+    @apply px-4;
+}
+
+pre code.torchlight .line-number,
+pre code.torchlight .summary-caret {
+    @apply mr-4;
+}
+
+.torchlight.has-focus-lines .line:not(.line-focus) {
+    transition: filter 0.35s, opacity 0.35s;
+    filter: blur(.095rem);
+    opacity: .65;
+}
+
+.torchlight.has-focus-lines:hover .line:not(.line-focus) {
+    filter: blur(0px);
+    opacity: 1;
+}
+
+.torchlight summary:focus {
+    outline: none;
 }

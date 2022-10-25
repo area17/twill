@@ -1,7 +1,7 @@
 # Twill Capsules
 
 Twill capsules are modules that are packaged with other functionality. They can be used to improve your projects code
-organization, they can be part of [packages](../packages) or your own code base.
+organization, they can be part of [packages](../15_packages) or your own code base.
 
 You can even distribute capsules using Github.
 
@@ -81,7 +81,7 @@ Before you dive into creating a capsule for your project, it is important to fir
 redistribute
 it or if it is a project local way of organizing the code.
 
-If you plan on redistributing, please head to the [packages](../packages) documentation as that is the new and preferred
+If you plan on redistributing, please head to the [packages](../15_packages) documentation as that is the new and preferred
 way to distribute Twill "plugins".
 
 If you do not need to distribute, read along!

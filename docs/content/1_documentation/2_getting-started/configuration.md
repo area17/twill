@@ -146,7 +146,7 @@ class AppServiceProvider extends ServiceProvider
 Possible options are:
 
 **TwillConfig::maxRevisions(int)**: Limits the max amount of revision for all revisionable content. This can be
-overwritten on a model level, see [setting model revisions](../crud-modules/models.md#hasrevisions)
+overwritten on a model level, see [setting model revisions](../3_modules/models.md#hasrevisions)
 
 #### Migrations configuration
 
