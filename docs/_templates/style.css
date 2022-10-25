@@ -44,6 +44,7 @@
 }
 
 pre {
+    background-color: #2e3440!important;
     @apply my-4 rounded overflow-x-auto;
 }
 

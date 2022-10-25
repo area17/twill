@@ -40,6 +40,7 @@ class GenerateDocsCommand extends Command
     public function handle()
     {
         config()->set('torchlight.token', env('TORCHLIGHT_API_TOKEN'));
+        config()->set('torchlight.theme', 'nord');
 
         $environment = new Environment([
             'heading_permalink' => [
