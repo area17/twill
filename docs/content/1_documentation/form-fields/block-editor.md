@@ -2,8 +2,23 @@
 
 ![screenshot](/assets/blockeditor.png)
 
-Form views:
-```html
+
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+
+:::tab=name.FormBuilder:::
+
+```php
+BlockEditor::make()
+
+BlockEditor::make()
+    ->blocks(['title', 'quote', 'text'])
+```
+
+:::#tab:::
+
+:::tab=name.FormView:::
+
+```blade
 <x-twill::block-editor />
 
 @php
@@ -19,23 +34,21 @@ Form views:
 />
 ```
 
-From builder:
-```php
-BlockEditor::make()
+:::#tab:::
 
-BlockEditor::make()
-    ->blocks(['title', 'quote', 'text'])
-```
+:::tab=name.Directive:::
 
-::: details Old method
-```php
+```blade
 @formField('block_editor', [
     'blocks' => ['title', 'quote', 'text', 'image', 'grid', 'test', 'publications', 'news']
 ])
 ```
-:::
 
-See [Block editor](/block-editor/)
+:::#tab:::
+
+:::#tabs:::
+
+See [Block editor](/1_documentation/block-editor/index.md)
 
 | Option           | Description                                                                 | Type/values    | Default value |
 |:-----------------|:----------------------------------------------------------------------------|:---------------|:--------------|

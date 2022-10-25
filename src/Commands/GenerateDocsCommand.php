@@ -2,12 +2,16 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Docs\BladeComponentElement;
 use A17\Docs\PhpTorchExtension;
 use A17\Docs\RelativeLinksExtension;
+use A17\Docs\BladeComponentRenderer;
+use A17\Docs\BladeComponentStart;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\Autolink\AutolinkExtension;
@@ -48,9 +52,14 @@ class GenerateDocsCommand extends Command
         $environment->addExtension(new AutolinkExtension());
         $environment->addExtension(new TableExtension());
         $environment->addExtension(new GithubFlavoredMarkdownExtension());
+        $environment->addBlockStartParser(new BladeComponentStart())->addRenderer(BladeComponentElement::class, new BladeComponentRenderer());
         $environment->addRenderer(Link::class, new RelativeLinksExtension());
 
         $this->converter = new MarkdownConverter($environment);
+
+        // Register blade.
+        View::addNamespace('twilldocs', __DIR__ . '/../../docs/_templates');
+        Blade::componentNamespace('twilldocs.components', 'twilldocs');
 
         $dir = __DIR__ . '/../../docs/';
 
@@ -138,7 +147,11 @@ class GenerateDocsCommand extends Command
                 } else {
                     Arr::set(
                         $navTree,
-                        implode('.items.', $structure) . '.items.' . Str::replace('.md', '', $this->withoutNumbers($relativePath)),
+                        implode('.items.', $structure) . '.items.' . Str::replace(
+                            '.md',
+                            '',
+                            $this->withoutNumbers($relativePath)
+                        ),
                         $treeData
                     );
                 }

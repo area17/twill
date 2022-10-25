@@ -10,13 +10,10 @@
     <script src="//unpkg.com/alpinejs" defer></script>
 </head>
 <body>
-
 @php
     $currentSegment = \Illuminate\Support\Str::before(ltrim($url, '/'), '/');
 @endphp
-
 <div class="flex flex-col h-screen overflow-hidden" x-data="{open: false}">
-
     <nav class="bg-white shadow">
         <div class="mx-auto px-2 sm:px-6 lg:px-4">
             <div class="relative flex h-16 justify-between">
@@ -72,7 +69,7 @@
 
     <div class="flex flex-1 overflow-hidden">
         @if (isset($tree[$currentSegment]))
-            <div class="xl:w-72 overflow-x-hidden overflow-y-scroll p-4 pt-8 md:block"
+            <div class="xl:w-72 overflow-x-hidden overflow-y-auto p-4 pt-8 md:block"
                  x-transition
                  x-bind:class="{hidden: !open}"
             >
@@ -86,12 +83,39 @@
                             @if (!empty($tree[$currentSegment]['items'] ??[]))
                                 <ul class="mt-2 space-y-1 border-l-2 border-slate-100 lg:mt-2 lg:space-y-2 lg:border-slate-200">
                                     @foreach($tree[$currentSegment]['items'] ?? [] as $item)
-                                        <li class="relative">
-                                            <a
-                                                class="block w-full pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block"
-                                                href="{{$item['url'] ??'#' }}">{{$item['title'] ?? ''}}</a>
+                                        @php
+                                            $open = \Illuminate\Support\Str::betweenFirst(ltrim($item['url'], '/'), '/', '/') ===  \Illuminate\Support\Str::betweenFirst(ltrim($url, '/'), '/', '/');
+                                        @endphp
+                                        <li class="relative" x-data="{open: {{$open ? 'true' : 'false'}}}">
+                                            <div class="flex">
+                                                <a
+                                                    class="inline pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block"
+                                                    href="{{$item['url'] ??'#' }}">{{$item['title'] ?? ''}}</a>
+                                                @if (!empty($item['items'] ??[]))
+                                                    <div class="flex-1 cursor-pointer px-5 items-center flex"
+                                                         x-on:click="open = !open"
+                                                         x-cloak>
+
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                             viewBox="0 0 24 24" stroke-width="1.5"
+                                                             stroke="currentColor" class="w-3 h-3" x-show="!open">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                  d="M12 4.5v15m7.5-7.5h-15"/>
+                                                        </svg>
+
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                             viewBox="0 0 24 24" stroke-width="1.5"
+                                                             stroke="currentColor" class="w-3 h-3" x-show="open">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                  d="M19.5 12h-15"/>
+                                                        </svg>
+                                                    </div>
+                                                @endif
+                                            </div>
                                             @if (!empty($item['items'] ??[]))
-                                                <ul class="mt-2 ml-4 space-y-1 border-l-2 border-slate-100 lg:mt-4 lg:space-y-2 lg:border-slate-200">
+                                                <ul class="mt-2 ml-4 space-y-1 border-l-2 border-slate-100 lg:mt-4 lg:space-y-2 lg:border-slate-200"
+                                                    x-cloak
+                                                    x-show="open">
                                                     @foreach($item['items'] ?? [] as $item)
                                                         <li class="relative">
                                                             <a
@@ -110,7 +134,7 @@
                 </nav>
             </div>
         @endif
-        <div class="flex-1 overflow-x-hidden overflow-y-scroll p-8">
+        <div class="flex-1 overflow-x-hidden overflow-y-auto p-8">
             <div class="prose max-w-6xl">
                 <div class="lg:hidden">{!! $toc !!}</div>
                 <div class="flex">
