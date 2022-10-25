@@ -55,7 +55,10 @@
     "phpunit/phpunit": "~9.0",
     "rector/rector": "^0.12.15",
     "spatie/invade": "^1.1",
-    "squizlabs/php_codesniffer": "*"
+    "squizlabs/php_codesniffer": "*",
+    "torchlight/torchlight-commonmark": "^0.5",
+    "area17/phptorch": "dev-main",
+    "cweagans/composer-patches": "dev-master"
   },
   "autoload": {
     "psr-4": {
@@ -67,6 +70,7 @@
       "A17\\Twill\\Tests\\Unit\\": "tests/unit",
       "A17\\Twill\\Tests\\Integration\\": "tests/integration",
       "A17\\Twill\\Tests\\Browser\\": "tests/Browser",
+      "A17\\Docs\\": "docs/generator",
       "App\\": "vendor/orchestra/testbench-core/laravel/app"
     }
   },
@@ -83,6 +87,11 @@
     ]
   },
   "extra": {
+    "patches": {
+      "nette/php-generator": {
+        "more comments": "https://patch-diff.githubusercontent.com/raw/nette/php-generator/pull/121.patch"
+      }
+    },
     "laravel": {
       "providers": [
         "A17\\Twill\\TwillServiceProvider"
@@ -101,6 +110,9 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "cweagans/composer-patches": true
+    }
   }
 }

@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.torchlight.has-focus-lines .line:not(.line-focus) {
+    transition: filter 0.35s, opacity 0.35s;
+    filter: blur(.095rem);
+    opacity: .65;
+}
+
+.torchlight.has-focus-lines:hover .line:not(.line-focus) {
+    filter: blur(0px);
+    opacity: 1;
+}
+
+.torchlight summary:focus {
+    outline: none;
+}
+
+/* Hide the default markers, as we provide our own */
+.torchlight details > summary::marker,
+.torchlight details > summary::-webkit-details-marker {
+    display: none;
+}
+
+.torchlight details .summary-caret::after {
+    pointer-events: none;
+}
+
+/* Add spaces to keep everything aligned */
+.torchlight .summary-caret-empty::after,
+.torchlight details .summary-caret-middle::after,
+.torchlight details .summary-caret-end::after {
+    content: " ";
+}
+
+/* Show a minus sign when the block is open. */
+.torchlight details[open] .summary-caret-start::after {
+    content: "-";
+}
+
+/* And a plus sign when the block is closed. */
+.torchlight details:not([open]) .summary-caret-start::after {
+    content: "+";
+}
+
+/* Hide the [...] indicator when open. */
+.torchlight details[open] .summary-hide-when-open {
+    display: none;
+}
+
+/* Show the [...] indicator when closed. */
+.torchlight details:not([open]) .summary-hide-when-open {
+    display: initial;
+}
