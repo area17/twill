@@ -2,8 +2,25 @@
 
 ![screenshot](/assets/select.png)
 
-Form view:
-```html
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
+
+```php
+Select::make()
+    ->name('sectors')
+    ->options(
+        Options::make([
+            Option::make('key', 'value'),
+            Option::make('key', 'value', selectable: false),
+            ...
+        ])
+    );
+```
+
+:::#tab:::
+:::tab=name.FormView:::
+
+```blade
 @php
     $selectOptions = [
         [
@@ -29,21 +46,10 @@ Form view:
 />
 ```
 
-Form builder:
-```php
-Select::make()
-    ->name('sectors')
-    ->options(
-        Options::make([
-            Option::make('key', 'value'),
-            Option::make('key', 'value', selectable: false),
-            ...
-        ])
-    );
-```
+:::#tab:::
+:::tab=name.Directive:::
 
-::: details Old method
-```php
+```blade
 @formField('select', [
     'name' => 'office',
     'label' => 'Office',
@@ -64,7 +70,9 @@ Select::make()
     ]
 ])
 ```
-:::
+
+:::#tab:::
+:::#tabs:::
 
 | Option      | Description                                                  | Type/values     | Default value |
 | :---------- | :----------------------------------------------------------- | :-------------- | :------------ |
@@ -80,13 +88,13 @@ Select::make()
 | default     |	Sets a default value if empty	      	                       | string          |               |
 | disabled            | Disables the field                                      | boolean         | false         | 
 
-
 Select item option
-| Option      | Description                                                  | Type/values     | Default value |
+| Option | Description | Type/values | Default value |
 | :---------- | :----------------------------------------------------------- | :-------------- | :------------ |
-| selectable  | Defines if select item should be selectable in the select or not | boolean     | true          |
+| selectable | Defines if select item should be selectable in the select or not | boolean | true |
 
 Example of `selectable` prop usage:
+
 ```php
 @php
     $selectOptions = [

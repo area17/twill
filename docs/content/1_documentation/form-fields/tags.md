@@ -4,16 +4,20 @@ Tags can be used to organize content and is by default available if you have ena
 
 To enable tags, add the `HandleTags` trait to your module's repository.
 
-Form view:
-```html
-<x-twill::tags />
-```
-
-Form builder:
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
 ```php
 Tags::make()
 ```
-
-::: details Old method
+:::#tab:::
+:::tab=name.FormView:::
+```blade
+<x-twill::tags />
+```
+:::#tab:::
+:::tab=name.Directive:::
+```blade
 @formField('tags')
-:::
+```
+:::#tab:::
+:::#tabs:::

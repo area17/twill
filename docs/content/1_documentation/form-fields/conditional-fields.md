@@ -2,7 +2,7 @@
 
 You can conditionally display fields based on the values of other fields in your form. For example, if you wanted to display a video embed text field only if the type of article, a radio field, is "video" you'd do something like the following:
 
-```php
+```blade
 <x-twill::radios
     name="type"
     label="Article type"
@@ -33,7 +33,7 @@ You can conditionally display fields based on the values of other fields in your
 ```
 Here's an example based on a checkbox field where the value is either true or false:
 
-```php
+```blade
 <x-twill::checkbox
     name="vertical_article"
     label="Vertical story"
@@ -52,7 +52,7 @@ Here's an example based on a checkbox field where the value is either true or fa
 ```
 Here's an example based on a checkboxes field where the values are stored in a json field:
 
-```php
+```blade
 @formField('checkboxes', [
     'name' => 'article_target',
     'label' => 'Target',
@@ -90,7 +90,7 @@ Here's an example based on a checkboxes field where the values are stored in a j
 
 Here's an example based on a browser field where the fields are displayed only when the browser field is not empty:
 
-```php
+```blade
 <x-twill::browser
     module-name="publication"
     name="related_publications"

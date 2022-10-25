@@ -2,8 +2,19 @@
 
 ![screenshot](/assets/map.png)
 
-Form view:
-```html
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
+
+```php
+Map::make()
+    ->name('location')
+    ->openMap()
+```
+
+:::#tab:::
+:::tab=name.FormView:::
+
+```blade
 <x-twill::map
     name="location"
     label="Location"
@@ -11,22 +22,19 @@ Form view:
 />
 ```
 
-Form builder:
-```php
-Map::make()
-    ->name('location')
-    ->openMap()
-```
+:::#tab:::
+:::tab=name.Directive:::
 
-::: details Old method
-```php
+```blade
 @formField('map', [
     'name' => 'location',
     'label' => 'Location',
     'showMap' => true,
 ])
 ```
-:::
+
+:::#tab:::
+:::#tabs:::
 
 | Option           | Description                                                 | Type/values     | Default value |
 |:-----------------|:------------------------------------------------------------|:----------------|:--------------|
@@ -64,8 +72,12 @@ Default data:
 
 ```javascript
 {
-    "latlng": "48.85661400000001|2.3522219",
-    "address": "Paris, France"
+    "latlng"
+:
+    "48.85661400000001|2.3522219",
+        "address"
+:
+    "Paris, France"
 }
 ```
 
@@ -73,14 +85,30 @@ Extended data:
 
 ```javascript
 {
-    "latlng": "51.1808302|-2.256022799999999",
-    "address": "Warminster BA12 7LG, United Kingdom",
-    "types": ["point_of_interest", "establishment"],
-    "boundingBox": {
-        "east": -2.25289275,
-        "west": -2.257066149999999,
-        "north": 51.18158853029149,
-        "south": 51.17889056970849
+    "latlng"
+:
+    "51.1808302|-2.256022799999999",
+        "address"
+:
+    "Warminster BA12 7LG, United Kingdom",
+        "types"
+:
+    ["point_of_interest", "establishment"],
+        "boundingBox"
+:
+    {
+        "east"
+    :
+        -2.25289275,
+            "west"
+    :
+        -2.257066149999999,
+            "north"
+    :
+        51.18158853029149,
+            "south"
+    :
+        51.17889056970849
     }
 }
 ```

@@ -12,7 +12,7 @@ that the form views method has such as fieldset, sidebars and conditional fields
 
 Your module `form` view should look something like this (`resources/views/twill/moduleName/form.blade.php`):
 
-```php
+```blade
 @extends('twill::layouts.form')
 @section('contentFields')
     <x-twill::input ... />
@@ -27,7 +27,7 @@ If you have other fields, like attributes, relationships, extra images, file att
 add a `fieldsets` section after the `contentFields` section and use the `@formFieldset` directive to create new ones
 like in the following example:
 
-```php
+```blade
 @extends('twill::layouts.form', [
     'additionalFieldsets' => [
         ['fieldset' => 'attributes', 'label' => 'Attributes'],
@@ -69,7 +69,7 @@ This can be useful for small metadata, options or seo fields.
 
 If you use the `sideFieldset` it will automatically be embedded into a collapsible fieldset called options
 
-```php
+```blade
 @section('sideFieldset')
     <x-twill::input
         name="description"
@@ -82,7 +82,7 @@ If you use the `sideFieldset` it will automatically be embedded into a collapsib
 
 alternatively, or if you need more control, you can use the `sideFieldsets` section:
 
-```php
+```blade
 @section('sideFieldsets')
     <a17-fieldset title="SEO" id="seo">
         <x-twill::input

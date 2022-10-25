@@ -18,11 +18,11 @@ Run the `twill:install` Artisan command:
 php artisan twill:install
 ```
 
-:::danger
+:::alert=type.danger:::
 This command will migrate your database.
 
 Make sure to setup your .env file with your database credentials and to run it where your database is accessible (ie. inside Vagrant if you are using Laravel Homestead).
-:::
+:::#alert:::
 
 Twill's `install` command consists of:
 - creating an `twill.php` routes files in your application's `routes` directory. This is where you will declare your own admin console routes.

@@ -2,8 +2,25 @@
 
 ![screenshot](/assets/selectunpacked.png)
 
-Form view:
-```html
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
+
+```php
+Select::make()
+    ->name('sectors')
+    ->unpack()
+    ->options(
+        Options::make([
+            Option::make('key', 'value'),
+            ...
+        ])
+    );
+```
+
+:::#tab:::
+:::tab=name.FormView:::
+
+```blade
 @php
     $selectOptions = [
         [
@@ -30,22 +47,10 @@ Form view:
 />
 ```
 
-Form builder:
-```php
-Select::make()
-    ->name('sectors')
-    ->unpack()
-    ->options(
-        Options::make([
-            Option::make('key', 'value'),
-            ...
-        ])
-    );
-```
+:::#tab:::
+:::tab=name.Directive:::
 
-
-::: details Old method
-```php
+```blade
 @formField('select', [
     'name' => 'office',
     'label' => 'Office',
@@ -67,7 +72,9 @@ Select::make()
     ]
 ])
 ```
-:::
+
+:::#tab:::
+:::#tabs:::
 
 A migration to save the above `select` field would be:
 

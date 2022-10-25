@@ -2,8 +2,23 @@
 
 ![screenshot](/assets/browser.png)
 
-Form views:
-```html
+
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+
+:::tab=name.FormBuilder:::
+
+```php
+Browser::make()
+    ->modules([Publications::class])
+    ->name('publications')
+    ->max(4);
+```
+
+:::#tab:::
+
+:::tab=name.FormView:::
+
+```blade
 <x-twill::browser
     module-name="publications"
     name="publications"
@@ -12,16 +27,11 @@ Form views:
 />
 ```
 
-From builder:
-```php
-Browser::make()
-    ->modules([Publications::class])
-    ->name('publications')
-    ->max(4);
-```
+:::#tab:::
 
-::: details Old method
-```php
+:::tab=name.Directive:::
+
+```blade
 @formField('browser', [
     'moduleName' => 'publications',
     'name' => 'publications',
@@ -29,7 +39,10 @@ Browser::make()
     'max' => 4,
 ])
 ```
-:::
+
+:::#tab:::
+
+:::#tabs:::
 
 | Option                | Description                                                                     | Type    | Default value |
 |:----------------------|:--------------------------------------------------------------------------------|:--------|:--------------|

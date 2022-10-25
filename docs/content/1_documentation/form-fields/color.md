@@ -2,28 +2,31 @@
 
 ![screenshot](/assets/color.png)
 
-Form view:
-```html
+
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
+```php
+Color::make()
+    ->name('featured')
+```
+:::#tab:::
+:::tab=name.FormView:::
+```blade
 <x-twill::color
     name="main_color"
     label="Main color"
 />
 ```
-
-Form builder:
-```php
-Color::make()
-    ->name('featured')
-```
-
-::: details Old method
-```php
+:::#tab:::
+:::tab=name.Directive:::
+```blade
 @formField('color', [
     'name' => 'main_color',
     'label' => 'Main color'
 ])
 ```
-:::
+:::#tab:::
+:::#tabs:::
 
 | Option  | Description        | Type   | Default value |
 |:--------|:-------------------|:-------|:--------------|

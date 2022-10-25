@@ -365,9 +365,9 @@ If you do not want or cannot use a third party service, or have very limited ima
 Twill also provides a (default) local image rendering service powered by [Glide](https://glide.thephpleague.com/).
 The following .env variables should get you up and running:
 
-::: warning
+:::alert=type.warning:::
 If the media cropper is not working, it is adviced to add `img/*` to the `cors.php` exceptions.
-:::
+:::#alert:::
 
 ```bash
 MEDIA_LIBRARY_ENDPOINT_TYPE=local
@@ -403,13 +403,13 @@ IMGIX_USE_SIGNED_URLS=true
 IMGIX_SIGN_KEY=xxxxxxxxxxxxxxxx
 ```
 
-:::danger
+:::alert=type.danger:::
 You should never store any sort of credentials in source control (eg. Git).
 
 That's exactly why in the case of the Imgix signature key, we do not say that you could provide it to Twill using the sign_key configuration option of the Imgix configuration array.
 
 Always use environment variables for credentials.
-:::
+:::#alert:::
 
 Finally, Twill's default Imgix configuration includes 4 different image transformation parameter sets that are used by
 helpers you will find in the [media library's documentation](/media-library/):

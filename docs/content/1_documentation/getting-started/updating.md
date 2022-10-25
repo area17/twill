@@ -13,10 +13,10 @@ time you `composer update` ([docs](https://getcomposer.org/doc/articles/scripts.
 ],
 ```
 
-::: tip
+:::alert=type.info:::
 Updating Twill between minor version (ex 3.0 to 3.1) should rarely require manual intervention as we do our best to keep
 backwards compatability.
-:::
+:::#alert:::
 
 # Major updates
 

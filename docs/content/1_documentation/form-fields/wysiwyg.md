@@ -2,8 +2,21 @@
 
 ![screenshot](/assets/wysiwyg.png)
 
-Form view:
-```html
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
+
+```php
+Wysiwyg::make()
+    ->name('case_study')
+    ->toolbarOptions(['list-ordered', 'list-unordered'])
+    ->maxLength(200)
+    ->note('Some note')
+```
+
+:::#tab:::
+:::tab=name.FormView:::
+
+```blade
 <x-twill::wysiwyg 
     name="case_study" 
     :label="twillTrans('Case study text')"
@@ -25,17 +38,10 @@ Form view:
 />
 ```
 
-Form builder:
-```php
-Wysiwyg::make()
-    ->name('case_study')
-    ->toolbarOptions(['list-ordered', 'list-unordered'])
-    ->maxLength(200)
-    ->note('Some note')
-```
+:::#tab:::
+:::tab=name.Directive:::
 
-::: details Old method
-```php
+```blade
 @formField('wysiwyg', [
     'name' => 'case_study',
     'label' => 'Case study text',
@@ -55,7 +61,9 @@ Wysiwyg::make()
     'note' => 'Hint message',
 ])
 ```
-:::
+
+:::#tab:::
+:::#tabs:::
 
 By default, the WYSIWYG field is based on [Quill](https://quilljs.com/).
 
@@ -63,7 +71,7 @@ You can add all [toolbar options](https://quilljs.com/docs/modules/toolbar/) fro
 
 For example, this configuration will render a `wysiwyg` field with almost all features from Quill and Snow theme.
 
-```php
+```blade
 @php
 $wysiwygOptions = [
   ['header' => [2, 3, 4, 5, 6, false]],
@@ -97,39 +105,10 @@ $wysiwygOptions = [
 />
 ```
 
-::: details Old method
-```php
- @formField('wysiwyg', [
-    'name' => 'case_study',
-    'label' => 'Case study text',
-    'toolbarOptions' => [
-      ['header' => [2, 3, 4, 5, 6, false]],
-      'bold',
-      'italic',
-      'underline',
-      'strike',
-      ["script" => "super"],
-      ["script" => "sub"],
-      "blockquote",
-      "code-block",
-      ['list' => 'ordered'],
-      ['list' => 'bullet'],
-      ['indent' => '-1'],
-      ['indent' => '+1'],
-      ["align" => []],
-      ["direction" => "rtl"],
-      'link',
-      "clean",
-    ],
-    'placeholder' => 'Case study text',
-    'maxlength' => 200,
-    'editSource' => true,
-    'note' => 'Hint message`',
- ])
-```
-:::
-
-Note that Quill outputs CSS classes in the HTML for certain toolbar modules (indent, font, align, etc.), and that the image module is not integrated with Twill's media library. It outputs the base64 representation of the uploaded image. It is not a recommended way of using and storing images, prefer using one or multiple `medias` form fields or blocks fields for flexible content. This will give you greater control over your frontend output.
+Note that Quill outputs CSS classes in the HTML for certain toolbar modules (indent, font, align, etc.), and that the
+image module is not integrated with Twill's media library. It outputs the base64 representation of the uploaded image.
+It is not a recommended way of using and storing images, prefer using one or multiple `medias` form fields or blocks
+fields for flexible content. This will give you greater control over your frontend output.
 
 | Option         | Description                                                                                                              | Type/values                                                | Default value                           |
 |:---------------|:-------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------|:----------------------------------------|
@@ -145,7 +124,6 @@ Note that Quill outputs CSS classes in the HTML for certain toolbar modules (ind
 | note           | Hint message displayed above the field                                                                                   | string                                                     |                                         |
 | placeholder    | Text displayed as a placeholder in the field                                                                             | string                                                     |                                         |
 | required       | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false                                             | false                                   |
-
 
 A migration to save a `wysiwyg` field would be:
 
@@ -163,4 +141,5 @@ Schema::table('article_translations', function (Blueprint $table) {
     ...
 });
 ```
+
 When used in a [block](/block-editor/creating-a-block-editor.html), no migration is needed.

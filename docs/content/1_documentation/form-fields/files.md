@@ -2,8 +2,20 @@
 
 ![screenshot](/assets/files.png)
 
-Form view:
-```html
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
+
+```php
+Files::make()
+    ->name('single_file')
+    ->label(twillTrans('Single file'))
+    ->note('Add one file (per language)');
+```
+
+:::#tab:::
+:::tab=name.FormView:::
+
+```blade
 <x-twill::files 
     name="single_file" 
     label="Single file"
@@ -17,16 +29,10 @@ Form view:
 />
 ```
 
-Form builder:
-```php
-Files::make()
-    ->name('single_file')
-    ->label(twillTrans('Single file'))
-    ->note('Add one file (per language)');
-```
+:::#tab:::
+:::tab=name.Directive:::
 
-::: details Old method
-```php
+```blade
 @formField('files', [
     'name' => 'single_file',
     'label' => 'Single file',
@@ -39,7 +45,9 @@ Files::make()
     'max' => 4,
 ])
 ```
-:::
+
+:::#tab:::
+:::#tabs:::
 
 | Option      | Description                               | Type/values    | Default value |
 |:------------|:------------------------------------------|:---------------|:--------------|
@@ -51,15 +59,20 @@ Files::make()
 | note        | Hint message displayed in the field       | string         |               |
 | buttonOnTop | Displays the `Add` button above the files | true<br/>false | false         |
 
+Similar to the media formField, to make the file field work, you have to include the `HasFiles` trait in your
+module's [Model](/crud-modules/models.html), and include `HandleFiles` trait in your
+module's [Repository](/crud-modules/repositories.html). At last, add the `filesParams` configuration array in your
+model.
 
-Similar to the media formField, to make the file field work, you have to include the `HasFiles` trait in your module's [Model](/crud-modules/models.html), and include `HandleFiles` trait in your module's [Repository](/crud-modules/repositories.html). At last, add the `filesParams` configuration array in your model.
 ```php
 public $filesParams = ['file_role', ...]; // a list of file roles
 ```
 
 Learn more at [Model](/crud-modules/models.html), [Repository](/crud-modules/repositories.html).
 
-If you are using the file formField in a block, you have to define the `files` key in `config/twill.php`. Add it under `block_editor` key and at the same level as `crops` key:
+If you are using the file formField in a block, you have to define the `files` key in `config/twill.php`. Add it
+under `block_editor` key and at the same level as `crops` key:
+
 ```php
 return [
     'block_editor' => [

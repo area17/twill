@@ -2,8 +2,24 @@
 
 ![screenshot](/assets/checkboxes.png)
 
-Form view:
-```html
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
+
+```php
+Checkboxes::make()
+    ->name('sectors')
+    ->options(
+        Options::make([
+            Option::make('key', 'value'),
+            ...
+        ])
+    );
+```
+
+:::#tab:::
+:::tab=name.FormView:::
+
+```blade
 @php
     $options = [
         [
@@ -32,20 +48,10 @@ Form view:
 />
 ```
 
-Form builder:
-```php
-Checkboxes::make()
-    ->name('sectors')
-    ->options(
-        Options::make([
-            Option::make('key', 'value'),
-            ...
-        ])
-    );
-```
+:::#tab:::
+:::tab=name.Directive:::
 
-::: details Old method
-```php
+```blade
 @formField('checkboxes', [
     'name' => 'sectors',
     'label' => 'Sectors',
@@ -69,7 +75,9 @@ Checkboxes::make()
     ]
 ])
 ```
-:::
+
+:::#tab:::
+:::#tabs:::
 
 | Option  | Description                                                         | Type    | Default value |
 |:--------|:--------------------------------------------------------------------|:--------|:--------------|

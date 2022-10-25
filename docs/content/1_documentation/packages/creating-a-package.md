@@ -1,6 +1,6 @@
-::: warning
+:::alert=type.warning:::
 Twill packages are new. If you found any issue please let us know by creating an issue.
-:::
+:::#alert:::
 
 # Creating a package
 

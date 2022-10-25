@@ -2,9 +2,24 @@
 
 ![screenshot](/assets/input.png)
 
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
 
-Form views:
-```html
+```php
+Input::make()
+    ->name('subtitle')
+    ->label(twillTrans('Subtitle'))
+    ->maxLength(100)
+    ->required()
+    ->note(twillTrans('Field note'))
+    ->translatable()
+    ->placeholder(twillTrans('Placeholder'))
+```
+
+:::#tab:::
+:::tab=name.FormView:::
+
+```blade
 <x-twill::input 
     name="subtitle"
     label="Subtitle"
@@ -25,20 +40,10 @@ Form views:
 />
 ```
 
-Form builder:
-```php
-Input::make()
-    ->name('subtitle')
-    ->label(twillTrans('Subtitle'))
-    ->maxLength(100)
-    ->required()
-    ->note(twillTrans('Field note'))
-    ->translatable()
-    ->placeholder(twillTrans('Placeholder'))
-```
+:::#tab:::
+:::tab=name.Directive:::
 
-::: details Old method
-```php
+```blade
 @formField('input', [
     'name' => 'subtitle',
     'label' => 'Subtitle',
@@ -60,7 +65,9 @@ Input::make()
     'rows' => 3
 ])
 ```
-:::
+
+:::#tab:::
+:::#tabs:::
 
 | Option      | Description                                                                                                              | Type/values                                                 | Default value |
 |:------------|:-------------------------------------------------------------------------------------------------------------------------|:------------------------------------------------------------|:--------------|

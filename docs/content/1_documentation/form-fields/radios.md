@@ -2,8 +2,26 @@
 
 ![screenshot](/assets/radios.png)
 
-Form view:
-```html
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
+
+```php
+Radios::make()
+    ->name('sectors')
+    ->inline()
+    ->border()
+    ->options(
+        Options::make([
+            Option::make('key', 'value'),
+            ...
+        ])
+    );
+```
+
+:::#tab:::
+:::tab=name.FormView:::
+
+```blade
 @php
     $options = [
         [
@@ -30,22 +48,10 @@ Form view:
 />
 ```
 
-Form builder:
-```php
-Radios::make()
-    ->name('sectors')
-    ->inline()
-    ->border()
-    ->options(
-        Options::make([
-            Option::make('key', 'value'),
-            ...
-        ])
-    );
-```
+:::#tab:::
+:::tab=name.Directive:::
 
-::: details Old method
-```php
+```blade
 @formField('radios', [
     'name' => 'discipline',
     'label' => 'Discipline',
@@ -67,6 +73,9 @@ Radios::make()
     ]
 ])
 ```
+
+:::#tab:::
+:::#tabs:::
 
 | Option              | Description                                                                                                              | Type    | Default value                                   |
 |:--------------------|:-------------------------------------------------------------------------------------------------------------------------|:--------|:------------------------------------------------|

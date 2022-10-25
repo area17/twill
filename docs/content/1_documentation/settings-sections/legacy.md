@@ -1,8 +1,8 @@
-::: warning
+:::alert=type.warning:::
 These settings are marked as deprecated and will no longer be available in Twill 3.x
 
 We recommend you to use the new settings instead.
-:::
+:::#alert:::
 
 # (legacy) Settings Sections
 

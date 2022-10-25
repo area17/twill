@@ -1,20 +1,34 @@
 # Timepicker
 
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
+
 ```php
+tbd
+```
+
+:::#tab:::
+:::tab=name.FormView:::
+
+```blade
 <x-twill::time-picker 
     name="event_time" 
     label="Event time"
 />
 ```
 
-::: details Old method
-```php
+:::#tab:::
+:::tab=name.Directive:::
+
+```blade
 @formField('time_picker', [
     'name' => 'event_time',
     'label' => 'Event time',
 ])
 ```
-:::
+
+:::#tab:::
+:::#tabs:::
 
 | Option          | Description                                                                                                              | Type/values    | Default value |
 |:----------------|:-------------------------------------------------------------------------------------------------------------------------|:---------------|:--------------|

@@ -2,26 +2,32 @@
 
 ![screenshot](/assets/repeater.png)
 
-Form view:
-```html
-<x-twill::repeater
-    type="video"
-/>
-```
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
 
-Form builder:
 ```php
 Repeater::make()
     ->type('video')
 ```
 
-::: detail Old method
+:::#tab:::
+:::tab=name.FormView:::
 
-```php
+```blade
+<x-twill::repeater
+    type="video"
+/>
+```
+
+:::#tab:::
+:::tab=name.Directive:::
+
+```blade
 @formField('repeater', ['type' => 'video'])
 ```
 
-:::
+:::#tab:::
+:::#tabs:::
 
 | Option       | Description                                  | Type    | Default value    |
 |:-------------|:---------------------------------------------|:--------|:-----------------|

@@ -82,21 +82,32 @@ php artisan twill:make:block article-references
 php artisan twill:make:block linked-article
 ```
 
-::: details blocks/article-header.blade.php
-<<< @/src/guides/prefill-block-editor-from-template/blocks_article-header.blade.php
-:::
+[//]: # (::: details blocks/article-header.blade.php)
 
-::: details blocks/article-paragraph.blade.php
-<<< @/src/guides/prefill-block-editor-from-template/blocks_article-paragraph.blade.php
-:::
+[//]: # (<<< @/src/guides/prefill-block-editor-from-template/blocks_article-header.blade.php)
 
-::: details blocks/article-references.blade.php
-<<< @/src/guides/prefill-block-editor-from-template/blocks_article-references.blade.php
-:::
+[//]: # (:::)
 
-::: details blocks/linked-post.blade.php
-<<< @/src/guides/prefill-block-editor-from-template/blocks_linked-post.blade.php
-:::
+[//]: # ()
+[//]: # (::: details blocks/article-paragraph.blade.php)
+
+[//]: # (<<< @/src/guides/prefill-block-editor-from-template/blocks_article-paragraph.blade.php)
+
+[//]: # (:::)
+
+[//]: # ()
+[//]: # (::: details blocks/article-references.blade.php)
+
+[//]: # (<<< @/src/guides/prefill-block-editor-from-template/blocks_article-references.blade.php)
+
+[//]: # (:::)
+
+[//]: # ()
+[//]: # (::: details blocks/linked-post.blade.php)
+
+[//]: # (<<< @/src/guides/prefill-block-editor-from-template/blocks_linked-post.blade.php)
+
+[//]: # (:::)
 
 ## Add the editor to our form
 

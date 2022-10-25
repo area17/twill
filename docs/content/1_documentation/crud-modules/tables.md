@@ -186,10 +186,10 @@ For this column type both the browser and field should be provided. If one is mi
 
 Renders a field using its presenter.
 
-::: warning
+:::alert=type.warning:::
 Presenters are currently undocumented and are here for backward compatability. If you want to customize the output of
 a column you can use the `customRender` method.
-:::
+:::#alert:::
 
 ### Custom columns
 

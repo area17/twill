@@ -2,28 +2,41 @@
 
 ![screenshot](/assets/checkbox.png)
 
-Form view:
-```html
+
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+
+:::tab=name.FormBuilder:::
+
+```php
+Checkbox::make()
+    ->name('featured')
+```
+
+:::#tab:::
+
+:::tab=name.FormView:::
+
+```blade
 <x-twill::checkbox
     name="featured"
     label="Featured"
 />
 ```
 
-Form builder:
-```php
-Checkbox::make()
-    ->name('featured')
-```
+:::#tab:::
 
-::: details Old method
-```php
+:::tab=name.Directive:::
+
+```blade
 @formField('checkbox', [
     'name' => 'featured',
     'label' => 'Featured'
 ])
 ```
-:::
+
+:::#tab:::
+
+:::#tabs:::
 
 | Option              | Description                                             | Type    | Default value                                   |
 |:--------------------|:--------------------------------------------------------|:--------|:------------------------------------------------|

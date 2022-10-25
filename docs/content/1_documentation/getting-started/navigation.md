@@ -54,7 +54,7 @@ Route::group(['prefix' => 'work'], function () {
 });
 ```
 
-::: details Old method
+## Legacy method
 
 The `config/twill-navigation.php` file manages the navigation of your custom admin console. Using Twill's UI, 
 the package provides 3 levels of navigation: global, primary and secondary. 
@@ -113,5 +113,3 @@ return [
 ```
 
 To make it work properly and to get active states automatically in Twill's UI, you should structure your routes in the same way like the example here:
-
-:::

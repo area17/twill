@@ -78,7 +78,7 @@ public $fieldsGroupsFormFieldNameSeparator = '_';
 
 Finally in our model form we can add the fields:
 
-```php
+```blade
 <x-twill::input
     name="link_target"
     label="Link target"
@@ -109,7 +109,7 @@ public $fieldsGroupsFormFieldNameSeparator = '.'; // Default is _
 
 This will automatically group/ungroup these fields based on the separator:
 
-```php
+```blade
 <x-twill::input
     name="external_link.link_target"
     label="Link target"

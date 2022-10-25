@@ -2,9 +2,9 @@
 
 When needed you can expose additional data to block forms using a [Block class](/block-editor/block-classes.md).
 
-::: warning
+:::alert=type.warning:::
 The `getFormData` is only called once per module form and is not context aware.
-:::
+:::#alert:::
 
 ```php
 <?php
@@ -24,12 +24,12 @@ class TextBlock extends Block
 
 Now in your form you can use it as:
 
-```html
+```blade
 @twillBlockTitle('Text')
 @twillBlockIcon('text')
 @twillBlockGroup('app')
 
 @if ($bar === 'foo')
-  ... Conditional form fields
+... Conditional form fields
 @endif
 ```

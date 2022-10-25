@@ -1,8 +1,8 @@
 # Packages
 
-::: warning
+:::alert=type.warning:::
 Twill packages are still pretty new, if you have suggestions please let us know by submitting an issue or pull request!
-:::
+:::#alert:::
 
 Packages are a great way to add or create reusable functionality to your twill project.
 

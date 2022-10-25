@@ -2,8 +2,20 @@
 
 ![screenshot](/assets/medias.png)
 
-Form view:
-```html 
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
+
+```php
+Medias::make()
+    ->name('cover')
+    ->label(twillTrans('Cover image'))
+    ->max(5)
+```
+
+:::#tab:::
+:::tab=name.FormView:::
+
+```blade
 <x-twill::medias 
     name="cover" 
     label="Cover image"
@@ -20,16 +32,10 @@ Form view:
 />
 ```
 
-Form builder:
-```php
-Medias::make()
-    ->name('cover')
-    ->label(twillTrans('Cover image'))
-    ->max(5)
-```
+:::#tab:::
+:::tab=name.Directive:::
 
-::: details Old method
-```php
+```blade
 @formField('medias', [
     'name' => 'cover',
     'label' => 'Cover image',
@@ -44,7 +50,9 @@ Medias::make()
     'fieldNote' => 'Minimum image width: 1500px'
 ])
 ```
-:::
+
+:::#tab:::
+:::#tabs:::
 
 | Option         | Description                                          | Type/values    | Default value |
 |:---------------|:-----------------------------------------------------|:---------------|:--------------|
@@ -58,18 +66,27 @@ Medias::make()
 | extraMetadatas | An array of additional metadatas, explained below    | array          | []            |
 | disabled       | Disables the field                                   | boolean        | false         |
 
+Right after declaring the `medias` formField in the blade template file, you still need to do a few things to make it
+work properly.
 
-Right after declaring the `medias` formField in the blade template file, you still need to do a few things to make it work properly.
+If the formField is in a static content form, you have to include the `HasMedias` Trait in your
+module's [Model](/crud-modules/models.html) and inlcude `HandleMedias` in your
+module's [Repository](/crud-modules/repositories.html). In addition, you have to uncomment the `$mediasParams` section
+in your Model file to let the model know about fields you'd like to save from the form.
 
-If the formField is in a static content form, you have to include the `HasMedias` Trait in your module's [Model](/crud-modules/models.html) and inlcude `HandleMedias` in your module's [Repository](/crud-modules/repositories.html). In addition, you have to uncomment the `$mediasParams` section in your Model file to let the model know about fields you'd like to save from the form.
+Learn more about how Twill's media configurations work at [Model](/crud-modules/models.html)
+, [Repository](/crud-modules/repositories.html)
+, [Media Library Role & Crop Params](/media-library/image-rendering-service.html)
 
-Learn more about how Twill's media configurations work at [Model](/crud-modules/models.html), [Repository](/crud-modules/repositories.html), [Media Library Role & Crop Params](/media-library/image-rendering-service.html)
+If the formField is used inside a block, you need to define the `mediasParams` at `config/twill.php` under `crops` key,
+and you are good to go. You could checkout [Twill Default Configuration](/block-editor/default-configuration.html)
+and [Rendering Blocks](/block-editor/rendering-blocks.html) for references.
 
-If the formField is used inside a block, you need to define the `mediasParams` at `config/twill.php` under `crops` key, and you are good to go. You could checkout [Twill Default Configuration](/block-editor/default-configuration.html) and [Rendering Blocks](/block-editor/rendering-blocks.html) for references.
+If the formField is used inside a repeater, you need to define the `mediasParams` at `config/twill.php`
+under `block_editor.crops`.
 
-If the formField is used inside a repeater, you need to define the `mediasParams` at `config/twill.php` under `block_editor.crops`.
-
-If you need medias fields to be translatable (ie. publishers can select different images for each locale), set the `twill.media_library.translated_form_fields` configuration value to `true`.
+If you need medias fields to be translatable (ie. publishers can select different images for each locale), set
+the `twill.media_library.translated_form_fields` configuration value to `true`.
 
 ##### Example
 
@@ -167,4 +184,5 @@ When defining your media field you can pass the extraMetadatas:
 
 The parameters `name`, `label` and `type` are mandatory, `wysiwyg` and `wysiwygOptions` are optional.
 
-If no `wysiwygOptions` are provided it will fall back to the ones defined in the [media config](/getting-started/configuration.html#media-library/)
+If no `wysiwygOptions` are provided it will fall back to the ones defined in
+the [media config](/getting-started/configuration.html#media-library/)

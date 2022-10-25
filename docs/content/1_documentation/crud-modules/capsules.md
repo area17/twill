@@ -32,10 +32,10 @@ So the full command to install the cities capsule and copy it would be:
 php artisan twill:capsule:install area17/twill-capsule-redirections --copy --branch=main
 ```
 
-::: tip
+:::alert=type.info:::
 We add `--main` because at the time of writing the is not yet a release made for this capsule. Usually this is not
 needed.
-:::
+:::#alert:::
 
 Once you have done that, we still need to add the capsule to our `config/twill-navigation.php` and enable it from our
 `config/twill.php` files.

@@ -2,8 +2,24 @@
 
 ![screenshot](/assets/multiselectinline.png)
 
-Form view:
-```html
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
+
+```php
+MultiSelect::make()
+    ->inline()
+    ->options(
+        Options::make([
+            Option::make('key', 'value'),
+            ...
+        ])
+    );
+```
+
+:::#tab:::
+:::tab=name.FormView:::
+
+```blade
 @php
     $options = [
         [
@@ -37,21 +53,10 @@ Form view:
 />
 ```
 
-Form builder:
-```php
-MultiSelect::make()
-    ->inline()
-    ->options(
-        Options::make([
-            Option::make('key', 'value'),
-            ...
-        ])
-    );
-```
+:::#tab:::
+:::tab=name.Directive:::
 
-
-::: details Old method
-```php
+```blade
 @formField('multi_select', [
     'name' => 'sectors',
     'label' => 'Sectors',
@@ -80,6 +85,9 @@ MultiSelect::make()
     ]
 ])
 ```
-:::
 
-See [Multi select](/form-fields/multi-select.html) for more information on how to implement the field with static and dynamic values.
+:::#tab:::
+:::#tabs:::
+
+See [Multi select](/form-fields/multi-select.html) for more information on how to implement the field with static and
+dynamic values.

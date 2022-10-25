@@ -4,11 +4,13 @@
 to many others.
 
 Examples could be:
+
 - An order containing multiple products
 - An artwork having multiple artists
 - A project having multiple contributors
 
-In addition to that we could use [pivot](https://laravel.com/docs/9.x/eloquent-relationships#retrieving-intermediate-table-columns)
+In addition to that we could
+use [pivot](https://laravel.com/docs/9.x/eloquent-relationships#retrieving-intermediate-table-columns)
 data to further extend this relation, to complete the examples above:
 
 - Each product in the order can have an order specific price
@@ -18,14 +20,14 @@ data to further extend this relation, to complete the examples above:
 In Twill we can set this up using a [repeater](/form-fields/repeaters.md) and below we will go thorough all the steps to
 make this work, using the **project/contributor** example.
 
-::: tip
+:::alert=type.info:::
 The pivot can be left out in this example as well if you just want to have a BelongsToMany relation.
-:::
+:::#alert:::
 
 If you want to quickly test this in a new project, you can install twill using the portfolio example:
 `php artisan twill:install portfolio`
 
-Lets get started: 
+Lets get started:
 [[toc]]
 
 ## Database setup
@@ -43,7 +45,8 @@ In the **Partner** migration we add a relational table that we will use for our 
 As you can see we added `$table->json('role')->nullable();` and `$table->integer('position')->default(999);`. While only
 the position one is mandatory, we will use the role pivot to store how the partner collaborated on the project.
 
-In this case we chose `json` as our column type as we will make it multilingual, in other cases you can use any other type
+In this case we chose `json` as our column type as we will make it multilingual, in other cases you can use any other
+type
 as per your requirements.
 
 ## Define the relation
@@ -56,7 +59,7 @@ Now with the migration setup we can setup our relation in the `Project` model:
 
 ## Setup the repeater and form
 
-To expose the relation in the ui, we will use a repeater. We will name this repeater a bit more specific as we want to 
+To expose the relation in the ui, we will use a repeater. We will name this repeater a bit more specific as we want to
 make clear it is for the pivot table. But you can name it however you like.
 
 `resources/views/twill/repeaters/project_partner.blade.php`
@@ -75,10 +78,11 @@ As a final step we have to update the repository to map the repeater field to th
 
 <<< @/src/../../examples/portfolio/app/Repositories/ProjectRepository.php{39-46,70-77}
 
-Take note of the methods as they are different from other repeater methods: `updateRepeaterWithPivot`, 
+Take note of the methods as they are different from other repeater methods: `updateRepeaterWithPivot`,
 `getFormFieldForRepeaterWithPivot`
 
-In the 4th parameter you can pass all the fields that should be written into the pivot table, the position is automatically
+In the 4th parameter you can pass all the fields that should be written into the pivot table, the position is
+automatically
 taken care of.
 
 ## Result

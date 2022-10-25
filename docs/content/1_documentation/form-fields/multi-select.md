@@ -2,8 +2,25 @@
 
 ![screenshot](/assets/multiselectunpacked.png)
 
-Form view:
-```html
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
+
+```php
+MultiSelect::make()
+    ->min(1)
+    ->max(1)
+    ->options(
+        Options::make([
+            Option::make('key', 'value'),
+            ...
+        ])
+    );
+```
+
+:::#tab:::
+:::tab=name.FormView:::
+
+```blade
 @php
     $options = [
         [
@@ -38,21 +55,10 @@ Form view:
 />
 ```
 
-Form builder:
-```php
-MultiSelect::make()
-    ->min(1)
-    ->max(1)
-    ->options(
-        Options::make([
-            Option::make('key', 'value'),
-            ...
-        ])
-    );
-```
+:::#tab:::
+:::tab=name.Directive:::
 
-::: details Old method
-```php
+```blade
 @formField('multi_select', [
     'name' => 'sectors',
     'label' => 'Sectors',
@@ -82,7 +88,9 @@ MultiSelect::make()
     ]
 ])
 ```
-:::
+
+:::#tab:::
+:::#tabs:::
 
 | Option      | Description                                                                                                              | Type/values     | Default value |
 |:------------|:-------------------------------------------------------------------------------------------------------------------------|:----------------|:--------------|
@@ -99,7 +107,6 @@ MultiSelect::make()
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
 | disabled    | Disables the field                                                                                                       | true<br />false | false         |
 
-
 There are several ways to implement a `multi_select` form field.
 
 ## Multi select with static values
@@ -109,6 +116,7 @@ Sometimes you just have a set of values that are static.
 In this case that it can be implemented as follows:
 
 - Create the database migration to store a JSON or LONGTEXT:
+
 ```php
 Schema::table('posts', function (Blueprint $table) {
     ...
@@ -125,6 +133,7 @@ Schema::table('posts', function (Blueprint $table) {
 ```
 
 - In your model add an accessor and a mutator:
+
 ```php
 public function getSectorsAttribute($value)
 {
@@ -140,6 +149,7 @@ public function setSectorsAttribute($value)
 ```
 
 - Cast the field to `array`:
+
 ```php
 protected $casts = [
     'sectors' => 'array'
@@ -196,6 +206,7 @@ public function afterSave($object, $fields)
 ```
 
 - In your controller, add to the formData the collection of options:
+
 ```php
 protected function formData($request)
 {
@@ -206,6 +217,7 @@ protected function formData($request)
 ```
 
 - In the form, we can now add the field:
+
 ```php
 <x-twill::multi-select
     name="sectors"

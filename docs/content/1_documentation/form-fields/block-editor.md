@@ -2,7 +2,6 @@
 
 ![screenshot](/assets/blockeditor.png)
 
-
 :::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
 
 :::tab=name.FormBuilder:::

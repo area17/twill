@@ -2,8 +2,18 @@
 
 ![screenshot](/assets/datepicker.png)
 
-Form view:
-```html
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
+:::tab=name.FormBuilder:::
+
+```php
+DatePicker::make()
+    ->name('event_date')
+```
+
+:::#tab:::
+:::tab=name.FormView:::
+
+```blade
 <x-twill::date-picker 
     name="event_date" 
     label="Event date"
@@ -12,14 +22,10 @@ Form view:
 />
 ```
 
-Form builder:
-```php
-DatePicker::make()
-    ->name('event_date')
-```
+:::#tab:::
+:::tab=name.Directive:::
 
-::: details Old method
-```php
+```blade
 @formField('date_picker', [
     'name' => 'event_date',
     'label' => 'Event date',
@@ -27,7 +33,9 @@ DatePicker::make()
     'maxDate' => '2017-12-10 12:00'
 ])
 ```
-:::
+
+:::#tab:::
+:::#tabs:::
 
 | Option          | Description                                                                                                              | Type/values    | Default value |
 |:----------------|:-------------------------------------------------------------------------------------------------------------------------|:---------------|:--------------|
@@ -45,7 +53,6 @@ DatePicker::make()
 | note            | Hint message displayed above the field                                                                                   | string         |               |
 | required        | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false | false         |
 | disabled        | Disables the field                                                                                                       | boolean        | false         | 
-
 
 A migration to save a `date_picker` field would be:
 
