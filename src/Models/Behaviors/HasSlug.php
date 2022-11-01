@@ -139,8 +139,19 @@ trait HasSlug
             $slugParams['slug'] = Str::slug($slugParams['slug']);
         }
 
-        //active old slug if already existing or create a new one
+        // Active old slug if already existing or create a new one.
+        // The first attempt is to find one without a suffix, a second attempt is done with the suffix.
+        // If both matches none, we will go to the regular creation flow.
         if (
+            (($oldSlug = $this->getExistingSlug($slugParams, true)) != null)
+            && ($restoring ? $slugParams['slug'] === $this->suffixSlugIfExisting($slugParams) : true)
+        ) {
+            if (!$oldSlug->active && ($slugParams['active'] ?? false)) {
+                $this->getSlugModelClass()::where('id', $oldSlug->id)->update(['active' => 1]);
+                $this->disableLocaleSlugs($oldSlug->locale, $oldSlug->id);
+            }
+        } elseif (
+            $this->slugNeedsSuffix($slugParams) &&
             (($oldSlug = $this->getExistingSlug($slugParams)) != null)
             && ($restoring ? $slugParams['slug'] === $this->suffixSlugIfExisting($slugParams) : true)
         ) {
@@ -154,10 +165,12 @@ trait HasSlug
     }
 
     /**
+     * If it is for a recreate, we ignore the suffixed slugs.
+     *
      * @param array $slugParams
      * @return object|null
      */
-    public function getExistingSlug($slugParams)
+    public function getExistingSlug($slugParams, $forRecreate = false)
     {
         unset($slugParams['active']);
 
@@ -166,11 +179,14 @@ trait HasSlug
         foreach ($slugParams as $key => $value) {
             //check variations of the slug
             if ($key == 'slug') {
-                $query->where(function ($query) use ($value) {
+                $query->where(function ($query) use ($value, $forRecreate) {
                     $query->orWhere('slug', $value);
-                    $query->orWhere('slug', $value . '-' . $this->getSuffixSlug());
-                    for ($i = 2; $i <= $this->nb_variation_slug; ++$i) {
-                        $query->orWhere('slug', $value . '-' . $i);
+
+                    if (!$forRecreate) {
+                        $query->orWhere('slug', $value . '-' . $this->getSuffixSlug());
+                        for ($i = 2; $i <= $this->nb_variation_slug; ++$i) {
+                            $query->orWhere('slug', $value . '-' . $i);
+                        }
                     }
                 });
             } else {
@@ -233,6 +249,34 @@ trait HasSlug
         }
 
         return $slugParams['slug'];
+    }
+
+    /**
+     * Checks if a slug needs a suffix due to a conflict with another model.
+     *
+     * @param array $slugParams
+     * @return bool
+     */
+    private function slugNeedsSuffix($slugParams) {
+        unset($slugParams['active']);
+
+        $hasExisting = false;
+
+        for ($i = 2; $i <= $this->nb_variation_slug + 1; $i++) {
+            $qCheck = $this->getSlugModelClass()::query();
+            $qCheck->whereNull($this->getDeletedAtColumn());
+            foreach ($slugParams as $key => $value) {
+                $qCheck->where($key, '=', $value);
+            }
+
+            if ($qCheck->first() == null) {
+                break;
+            }
+
+            $hasExisting = true;
+        }
+
+        return $hasExisting;
     }
 
     /**
