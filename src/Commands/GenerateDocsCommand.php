@@ -178,14 +178,21 @@ class GenerateDocsCommand extends Command
                         $treeData
                     );
                 }
-            } else {
-                $disk->copy(
-                    $relativePath,
-                    '_build/' . $this->withoutNumbers(Str::replaceFirst('content/', '', $relativePath))
-                );
             }
 
             $hasChange = true;
+        }
+
+        // Copy the files if any markdown changed.
+        if ($hasChange) {
+            foreach ($sorted as $relativePath) {
+                if (!Str::endsWith($relativePath, '.md')) {
+                    $disk->copy(
+                        $relativePath,
+                        '_build/' . $this->withoutNumbers(Str::replaceFirst('content/', '', $relativePath))
+                    );
+                }
+            }
         }
 
         // Check for changes in the _templates folder.

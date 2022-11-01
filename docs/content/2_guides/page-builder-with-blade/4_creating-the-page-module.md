@@ -269,30 +269,10 @@ Great, we looked at all the files and did our migration. Let's create some conte
 Head back over to the browser and visit your CMS. If you followed the steps correctly, the navigation bar should now
 show our Pages link!
 
-<!-- <div class="max-w-lg mx-auto"></div> -->
-![Twill navigation link](./assets/pages-link-menu.png){.max-w-lg.mx-auto}
+![Twill navigation link](./assets/pages-link-menu.png)
 
 Open it up, and you will be presented with an empty page list, almost there!
 
 On the top right press the button "Add new", enter a title and press "Create". You now have your first page!
 
-
 **Awesome, in the next steps we will improve a bit the default controller so that our page fit's our needs.**
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

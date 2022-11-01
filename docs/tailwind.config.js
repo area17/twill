@@ -4,7 +4,7 @@ module.exports = {
         "./_build/**/*.html",
     ],
     theme: {
-        extend: {},
+        extend: {}
     },
     plugins: [
         require('/opt/homebrew/lib/node_modules/@tailwindcss/typography'),

@@ -3,8 +3,7 @@
 You may already have noticed that when you are on the edit page, on the right side in the publishers panel there is a
 link to preview the changes.
 
-<!-- <div class="max-w-lg mx-auto"></div> -->
-![Twill publisher panel](./assets/publisher-panel.png){.max-w-lg.mx-auto}
+![Twill publisher panel](./assets/publisher-panel.png)
 
 If you click on it now, you will see the default preview file that Twill generates for you when you made the module.
 
@@ -94,8 +93,7 @@ need to make some changes here!
 
 Great. Once more click on the preview button, that should look a lot better!
 
-<!-- <div class="max-w-lg mx-auto"></div> -->
-![Twill page module preview](./assets/preview-example.png){.max-w-lg.mx-auto}
+![Twill page module preview](./assets/preview-example.png)
 
 That's it for this section. Our CMS part should now be fully functional.
 

@@ -13,7 +13,7 @@
 @php
     $currentSegment = \Illuminate\Support\Str::before(ltrim($url, '/'), '/');
 @endphp
-<div class="flex flex-col h-screen overflow-hidden" x-data="{open: false}">
+<div class="flex flex-col h-screen overflow-hidden print:h-full" x-data="{open: false}">
     <nav class="bg-white shadow">
         <div class="mx-auto px-2 sm:px-6 lg:px-4">
             <div class="relative flex h-16 justify-between">
@@ -45,7 +45,7 @@
                             <img class="hidden h-8 w-auto lg:block" src="/assets/twill_logo.svg" alt="Twill">
                         </a>
                     </div>
-                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                    <div class="hidden md:ml-6 md:flex md:space-x-8 print:!hidden">
                         @foreach($tree as $key => $item)
                             @unless($key === '')
                                 <a href="{{$item['url']}}"
@@ -53,7 +53,7 @@
                             @endunless
                         @endforeach
                     </div>
-                    <div class="hidden md:ml-6 md:flex md:space-x-8">
+                    <div class="hidden md:ml-6 md:flex md:space-x-8 print:!hidden">
                         <div class="flex items-center">
                             <a href="https://github.com/area17/twill" target="_blank"
                                class="bg-black text-white rounded-lg text-white m-4 px-2 py-2 text-baseline"
@@ -69,7 +69,7 @@
 
     <div class="flex flex-1 overflow-hidden">
         @if (isset($tree[$currentSegment]))
-            <div class="xl:w-72 overflow-x-hidden overflow-y-auto p-4 pt-8 md:block"
+            <div class="xl:w-72 overflow-x-hidden overflow-y-auto p-4 pt-8 md:block print:!hidden"
                  x-transition
                  x-bind:class="{hidden: !open}"
             >
@@ -78,7 +78,7 @@
                         @foreach($tree as $key => $item)
                             @unless($key === '')
                                 <li class="md:hidden"><a href="{{$item['url']}}"
-                                       class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">{{$item['title']}}</a>
+                                                         class="inline-flex items-center border-b-2 border-transparent px-1 pt-1 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700">{{$item['title']}}</a>
                                 </li>
                             @endunless
                         @endforeach
@@ -149,7 +149,7 @@
                 <div class="max-w-4xl w-full prose prose-gray">
                     {!! $content !!}
                 </div>
-                <div class="min-w-64 prose order-first xl:order-last"
+                <div class="min-w-64 prose order-first xl:order-last print:hidden"
                 >
                     {!! $toc !!}
                 </div>

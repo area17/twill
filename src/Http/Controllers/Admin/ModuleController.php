@@ -344,6 +344,11 @@ abstract class ModuleController extends Controller
     protected $labels = [];
 
     /**
+     * When set to true and the model is translatable, the language prefix will not be shown in the permalink.
+     */
+    private bool $withoutLanguageInPermalink = false;
+
+    /**
      * The columns to search for when using the search field.
      *
      * Do not modify this directly but use the method setSearchColumns().
@@ -614,6 +619,11 @@ abstract class ModuleController extends Controller
     protected function setPermalinkBase(string $permalinkBase): void
     {
         $this->permalinkBase = $permalinkBase;
+    }
+
+    protected function withoutLanguageInPermalink(bool $without = true): void
+    {
+        $this->withoutLanguageInPermalink = $without;
     }
 
     /**
@@ -2428,7 +2438,7 @@ abstract class ModuleController extends Controller
         }
 
         return $appUrl . '/'
-            . ($this->moduleHas('translations') ? '{language}/' : '')
+            . ((!$this->withoutLanguageInPermalink && $this->moduleHas('translations')) ? '{language}/' : '')
             . ($this->moduleHas('revisions') ? '{preview}/' : '')
             . (empty($this->getLocalizedPermalinkBase()) ? ($this->permalinkBase ?? $this->getModulePermalinkBase(
             )) : '')
@@ -2440,7 +2450,7 @@ abstract class ModuleController extends Controller
     /**
      * @return array
      */
-    protected function getLocalizedPermalinkBase()
+    protected function getLocalizedPermalinkBase(): array
     {
         return [];
     }

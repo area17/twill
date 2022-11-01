@@ -8,7 +8,6 @@ use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Repositories\AppSettingsRepository;
 use A17\Twill\Services\Forms\Fields\BlockEditor;
 use A17\Twill\Services\Forms\Form;
-use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Session;
 

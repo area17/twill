@@ -2,9 +2,7 @@
 
 namespace A17\Twill\View\Components\Fields;
 
-use A17\Twill\Models\SettingsModel;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\View as ViewFacade;
 use Illuminate\Support\Str;
 
 class BlockEditor extends TwillFormComponent

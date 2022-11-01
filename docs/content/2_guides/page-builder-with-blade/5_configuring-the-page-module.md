@@ -3,10 +3,63 @@
 In the last section of this guide we created the pages module. We created some content, but besides that, there is not
 yet much to see.
 
-We will add 2 things to our page module:
+We will make one small change to how our slug is generated. Besides that we will add 2 things to our page module:
 
 - A cover image
 - And a block editor
+
+## Changing the slug
+
+If you look at the page in edit mode, you will notice that under the title there is a generated slug:
+
+![Twill title and slug](./assets/slug.png)
+
+While in some cases this would be correct, for this one, we will need to change it. All our pages will be directly under
+the root of our website. We will also remove the language parameter as we will not implement it in this guide.
+
+Open up the page controller `app/Http/Controllers/Twill/PageController.php` and setup the controller:
+
+```phptorch
+{
+  "diffMethods": "setUpController"
+}
+##CODE##
+<?php
+
+namespace App\Http\Controllers\Twill;
+
+use A17\Twill\Http\Controllers\Admin\ModuleController as BaseModuleController;
+
+class PageController extends BaseModuleController
+{
+    protected $moduleName = 'pages';
+
+    /**
+     * This method can be used to enable/disable defaults. See setUpController in the docs for available options.
+     */
+    protected function setUpController(): void
+    {
+        $this->setPermalinkBase('');
+        $this->withoutLanguageInPermalink();
+    }
+}
+```
+
+We set our `permalinkBase` to nothing, this defaults to the name of our model which is `pages`
+
+Then we add `withoutLanguageInPermalink` to tell the controller to not use the language permalink.
+
+Refresh the page and you now see that the slug is cleaned up.
+
+:::alert=type.warning:::
+These changes do not affect how the model's slug is stored in the database, it just changes the visual representation of
+it.
+
+Model slugs are always saved purely based on the content you enter. If you enter 'example' in the url field when 
+creating or editing the model, that is what will be saved. 
+
+The front-end is always responsible for handling the slugs.
+:::#alert:::
 
 ## About Twill images
 
