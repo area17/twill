@@ -25,7 +25,7 @@ class Select extends FieldWithOptions
         bool $unpack = false,
         int $columns = 0,
         bool $searchable = false,
-        string $placeholder = '',
+        ?string $placeholder = '',
         bool $addNew = false,
         ?string $moduleName = null,
         ?string $storeUrl = null,
