@@ -4,8 +4,6 @@ Controllers take care of the main interaction between backend and the Twill fron
 
 There are many things that can be set and changed.
 
-[[toc]]
-
 ## Controller setup
 
 The main method you will use in a module controller is `setupController`.

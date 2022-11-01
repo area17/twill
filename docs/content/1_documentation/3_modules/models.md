@@ -10,8 +10,6 @@ For fields that should default to false in the database when not sent by the for
 Depending upon the Twill features you need on your model, include the related traits and configure their respective
 options:
 
-[[toc]]
-
 #### HasPosition
 
 Implement the `A17\Twill\Models\Behaviors\Sortable` interface and add a position field to your fillables.

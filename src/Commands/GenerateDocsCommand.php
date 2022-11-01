@@ -37,6 +37,11 @@ class GenerateDocsCommand extends Command
 
     private MarkdownConverter $converter;
 
+    /**
+     * "superglobal" so we can figure out the current file.
+     */
+    public static ?string $currentFile = null;
+
     public function handle()
     {
         config()->set('torchlight.token', env('TORCHLIGHT_API_TOKEN'));
@@ -107,6 +112,8 @@ class GenerateDocsCommand extends Command
 
         // Process docs.
         foreach ($sorted as $relativePath) {
+            self::$currentFile = null;
+
             $url = $this->withoutNumbers(Str::replace(['content/', '.md'], ['/', '.html'], $relativePath));
 
             if (isset($navTree['last_updated']) && $disk->lastModified($relativePath) <= $navTree['last_updated']) {
@@ -121,6 +128,8 @@ class GenerateDocsCommand extends Command
                 $title = Str::title(
                     Str::replace('-', ' ', Str::before(Str::after(Str::afterLast($relativePath, '/'), '_'), '.md'))
                 );
+
+                self::$currentFile = realpath($dir . '/' . $relativePath);
 
                 $document = $this->converter->convert($disk->get($relativePath));
 

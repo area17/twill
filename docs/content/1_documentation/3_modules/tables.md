@@ -1,7 +1,5 @@
 # Tables
 
-[[toc]]
-
 ## Columns
 
 In Twill you can customize the module tables and browser tables to your own need.

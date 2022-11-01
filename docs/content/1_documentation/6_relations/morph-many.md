@@ -10,8 +10,6 @@ We will use a similar setup to the example above to set this up,
 we will not go in depth on the other modules but you can
 view the full code used in this example at: `vendor/twill/examples/portfolio`
 
-[[toc]]
-
 ## Database setup
 
 On our database not much needs to happen. In our comments migration we have to add

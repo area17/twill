@@ -3,6 +3,7 @@
 namespace A17\Docs;
 
 use A17\PhpTorch\Highlight;
+use A17\Twill\Commands\GenerateDocsCommand;
 use Illuminate\Support\Str;
 use Torchlight\Block;
 use Torchlight\Commonmark\V2\TorchlightExtension;
@@ -40,7 +41,11 @@ class PhpTorchExtension extends TorchlightExtension
             if ($data->language ?? false) {
                 $language = $data->language;
             } elseif ($data->file ?? false) {
-                $language = Str::afterLast($data->file, '.');
+                if (Str::endsWith($data->file, '.blade.php')) {
+                    $language = 'blade';
+                } else {
+                    $language = Str::afterLast($data->file, '.');
+                }
             } else {
                 $language = 'php';
             }
@@ -70,7 +75,19 @@ class PhpTorchExtension extends TorchlightExtension
                 if (Str::startsWith($data->file, '/')) {
                     $path = $data->file;
                 } else {
-                    $path = getcwd() . '/' . $data->file;
+                    if (Str::startsWith($data->file, '../') && $currentFile = GenerateDocsCommand::$currentFile) {
+                        $path = Str::beforeLast($currentFile, '/');
+                        $path = $path . '/' . $data->file;
+                    } elseif (Str::startsWith($data->file, './') && $currentFile = GenerateDocsCommand::$currentFile) {
+                        $path = Str::beforeLast($currentFile, '/');
+                        $path = $path . '/' . $data->file;
+                    } else {
+                        $path = $_SERVER['PWD'] . '/' . $data->file;
+                    }
+                }
+
+                if ($data->simple ?? false) {
+                    return file_get_contents($path);
                 }
 
                 $highlighter = Highlight::new($path);

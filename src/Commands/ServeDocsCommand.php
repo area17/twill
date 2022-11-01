@@ -19,7 +19,14 @@ class ServeDocsCommand extends ServeCommand
         $process = $this->startProcess(false);
 
         while ($process->isRunning()) {
-            Artisan::call('twill:staticdocs:generate', ['--updatesOnly' => ''], $this->output);
+            try{
+                Artisan::call('twill:staticdocs:generate', ['--updatesOnly' => ''], $this->output);
+            }
+            catch (\Exception $e) {
+                $this->error($e->getMessage());
+                $this->error('sleeping 5 seconds');
+                usleep(5000 * 1000);
+            }
             usleep(1000 * 1000);
         }
 

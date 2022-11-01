@@ -11,8 +11,6 @@ An example could be:
 
 One to Many is one of the simpler relations to setup so let's get started:
 
-[[toc]]
-
 ## Database setup
 
 As with any relation we need to setup a database. In this example we are using our portfolio example where we will have

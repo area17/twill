@@ -8,8 +8,6 @@ Often you might want to add some mandatory fields to the create modal of your mo
 
 Below are some examples:
 
-[[toc]]
-
 ## Basic customization
 
 To customize the contents of the create modal we can add a `create.blade.php` next to the `form.blade.php` file.

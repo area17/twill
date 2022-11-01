@@ -27,9 +27,6 @@ The pivot can be left out in this example as well if you just want to have a Bel
 If you want to quickly test this in a new project, you can install twill using the portfolio example:
 `php artisan twill:install portfolio`
 
-Lets get started:
-[[toc]]
-
 ## Database setup
 
 We will set up 2 models, one is a Project model, you can do this using `php artisan twill:module Project`
