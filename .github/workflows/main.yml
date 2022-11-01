@@ -114,7 +114,7 @@ jobs:
         uses: browser-actions/setup-chrome@latest
 
       - name: Upgrade Chrome Driver
-        run: ./vendor/bin/testbench dusk:chrome-driver
+        run: ./vendor/bin/testbench dusk:chrome-driver --detect
 
       - name: Execute tests
         run: vendor/bin/testbench package:test
