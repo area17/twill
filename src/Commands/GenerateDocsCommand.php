@@ -107,6 +107,10 @@ class GenerateDocsCommand extends Command
                 }
             }
 
+            for ($i = 0; $i < (5 - count($parts)); $i++) {
+                $index .= 99;
+            }
+
             return $index;
         });
 
