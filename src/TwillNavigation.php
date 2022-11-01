@@ -115,11 +115,11 @@ class TwillNavigation
             $link = NavigationLink::make()->forModule($key);
         }
 
-        if ($link && ($legacy['title'] ?? false)) {
+        if ($legacy['title'] ?? false) {
             $link->title($legacy['title']);
         }
 
-        if ($link && ($legacy['can'] ?? false)) {
+        if ($legacy['can'] ?? false) {
             $link->onlyWhen(fn () => (bool) Auth::user()?->can($legacy['can']));
         }
 
