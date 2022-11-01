@@ -119,6 +119,10 @@ class TwillNavigation
             $link->title($legacy['title']);
         }
 
+        if ($link && ($legacy['can'] ?? false)) {
+            $link->onlyWhen(fn () => (bool) Auth::user()?->can($legacy['can']));
+        }
+
         return $link;
     }
 
