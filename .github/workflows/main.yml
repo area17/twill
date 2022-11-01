@@ -111,6 +111,7 @@ jobs:
         run: ./vendor/bin/testbench twill:build --forTesting
 
       - name: Upgrade Chrome Driver
+        uses: browser-actions/setup-chrome@latest
         run: ./vendor/bin/testbench dusk:chrome-driver
 
       - name: Execute tests
