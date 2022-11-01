@@ -145,9 +145,14 @@
             </div>
         @endif
         <div class="flex-1 flex flex-col overflow-x-hidden overflow-y-auto p-8">
-            <div class="flex-1 flex flex-wrap">
-                <div class="max-w-4xl w-full prose prose-gray">
-                    {!! $content !!}
+            <div class="flex-1 flex flex-wrap h-full">
+                <div class="flex flex-col h-full">
+                    <div class="max-w-4xl w-full prose prose-gray flex-1">
+                        {!! $content !!}
+                    </div>
+                    <div class="text-gray-400 text-xs pt-4">
+                        © 2020 Twill — Crafted by AREA 17 | Syntax highlighting by <a href="https://torchlight.dev">torchlight.dev</a>
+                    </div>
                 </div>
                 <div class="min-w-64 prose order-first xl:order-last print:hidden"
                 >
