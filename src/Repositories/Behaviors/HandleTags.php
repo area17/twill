@@ -11,6 +11,12 @@ trait HandleTags
      */
     public function afterSaveHandleTags($object, $fields)
     {
+        if(preg_match("/\p{Han}+/u", $fields['tags'] ?? '')){
+            $object->setSlugGenerator(function($name) {
+                return str_replace(' ', '_', strtolower($name));
+            });
+        }
+
         if (!isset($fields['bulk_tags']) && !isset($fields['previous_common_tags'])) {
             if (!$this->shouldIgnoreFieldBeforeSave('tags')) {
                 $object->setTags($fields['tags'] ?? []);
@@ -63,5 +69,4 @@ trait HandleTags
             ];
         });
     }
-
 }
