@@ -23,34 +23,90 @@ to add it to the routes or navigation files, so you can ignore that suggestion.
 
 In the **Link** migration we add a column to hold the `project_id` that we are creating it from.
 
+:::filename:::
 `database/migrations/2022_05_30_074255_create_links_tables.php`
+:::#filename:::
 
-<<< @/src/../../examples/portfolio/database/migrations/2022_05_30_074255_create_links_tables.php{15}
+```phptorch
+{
+  "file": "../../../../examples/portfolio/database/migrations/2022_05_30_074255_create_links_tables.php",
+  "focusMethods": "up",
+  "diffInMethod": {
+    "method": "up",
+    "start": 5,
+    "end": 5
+  }
+}
+```
 
 ## Define the relation
 
 Now with the migration setup we can setup our relation in the `Project` model:
 
+:::filename:::
 `app/Models/Project.php`
+:::#filename:::
 
-<<< @/src/../../examples/portfolio/app/Models/Project.php{35-38}
+```phptorch
+{
+  "file": "../../../../examples/portfolio/app/Models/Project.php",
+  "collapseAll": "",
+  "focusMethods": "links"
+}
+```
 
 ## Setup the repeater and form
 
 To expose the relation in the ui, we will use a repeater.
 
+:::filename:::
 `resources/views/twill/repeaters/link.blade.php`
+:::#filename:::
 
-<<< @/src/../../examples/portfolio/resources/views/twill/repeaters/link.blade.php
+```phptorch
+{
+  "file": "../../../../examples/portfolio/resources/views/twill/repeaters/link.blade.php",
+  "simple": true
+}
+```
 
 In our project form we can now refer to the repeater and allow editors to select.
 
-<<< @/src/../../examples/portfolio/resources/views/twill/projects/form.blade.php{31-32}
+:::filename:::
+`resources/views/twill/projects/form.blade.php`
+:::#filename:::
+
+```phptorch
+{
+  "file": "../../../../examples/portfolio/resources/views/twill/projects/form.blade.php",
+  "simple": true
+}
+```
 
 ## Update the repository
 
 As a final step we have to update the repository to map the repeater field to the relation.
 
+:::filename:::
 `app/Repositories/ProjectRepository.php`
+:::#filename:::
 
-<<< @/src/../../examples/portfolio/app/Repositories/ProjectRepository.php{33-37,62-68}
+```phptorch
+{
+  "file": "../../../../examples/portfolio/app/Repositories/ProjectRepository.php",
+  "collapseAll": "",
+  "focusMethods": ["afterSave", "getFormFields"],
+  "diffInMethod": [
+      {
+        "method": "afterSave",
+        "start": 10,
+        "end": 14
+      },
+      {
+        "method": "getFormFields",
+        "start": 11,
+        "end": 17
+      }
+  ]
+}
+```

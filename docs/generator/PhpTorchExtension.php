@@ -102,7 +102,13 @@ class PhpTorchExtension extends TorchlightExtension
                     if (is_object($value)) {
                         $highlighter->{$key}(...(array)$value);
                     } elseif (is_array($value) && is_object($value[0])) {
-                        $highlighter->{$key}(...(array)$value[0]);
+                        if ($key === 'diffInMethod') {
+                            foreach ($value as $item) {
+                                $highlighter->{$key}(...(array)$item);
+                            }
+                        } else {
+                            $highlighter->{$key}(...(array)$value[0]);
+                        }
                     } else {
                         $highlighter->{$key}($value);
                     }

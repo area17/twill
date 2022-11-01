@@ -35,9 +35,24 @@ And afterwards a Partner model: `php artisan twill:module Partner`.
 
 In the **Partner** migration we add a relational table that we will use for our `BelongsToMany` relation.
 
+:::filename:::
 `database/migrations/2022_04_01_071748_create_partners_tables.php`
+:::#filename:::
 
-<<< @/src/../../examples/portfolio/database/migrations/2022_04_01_071748_create_partners_tables.php{31-37,42}
+```phptorch
+{
+  "file": "../../../../examples/portfolio/database/migrations/2022_04_01_071748_create_partners_tables.php",
+  "collapseAll": "",
+  "focusMethods": "up",
+  "focusImports": ["App\\Models\\Partner", "App\\Models\\Project"],
+  "diffImports": ["App\\Models\\Partner", "App\\Models\\Project"],
+  "diffInMethod": {
+    "method": "up",
+    "start": 19,
+    "end": 25
+  }
+}
+```
 
 As you can see we added `$table->json('role')->nullable();` and `$table->integer('position')->default(999);`. While only
 the position one is mandatory, we will use the role pivot to store how the partner collaborated on the project.
@@ -50,30 +65,74 @@ as per your requirements.
 
 Now with the migration setup we can setup our relation in the `Project` model:
 
+:::filename:::
 `app/Models/Project.php`
+:::#filename:::
 
-<<< @/src/../../examples/portfolio/app/Models/Project.php{40-43}
+```phptorch
+{
+  "file": "../../../../examples/portfolio/app/Models/Project.php",
+  "collapseAll": "",
+  "focusMethods": "partners"
+}
+```
 
 ## Setup the repeater and form
 
 To expose the relation in the ui, we will use a repeater. We will name this repeater a bit more specific as we want to
 make clear it is for the pivot table. But you can name it however you like.
 
+:::filename:::
 `resources/views/twill/repeaters/project_partner.blade.php`
+:::#filename:::
 
-<<< @/src/../../examples/portfolio/resources/views/twill/repeaters/project_partner.blade.php
+```phptorch
+{
+  "file": "../../../../examples/portfolio/resources/views/twill/repeaters/project_partner.blade.php",
+  "simple": true
+}
+```
 
 In our project form we can now refer to the repeater and allow editors to select.
 
-<<< @/src/../../examples/portfolio/resources/views/twill/projects/form.blade.php{11-26}
+:::filename:::
+`resources/views/twill/projects/form.blade.php`
+:::#filename:::
+
+```phptorch
+{
+  "file": "../../../../examples/portfolio/resources/views/twill/projects/form.blade.php",
+  "simple": true
+}
+```
 
 ## Update the repository
 
 As a final step we have to update the repository to map the repeater field to the relation.
 
+:::filename:::
 `app/Repositories/ProjectRepository.php`
+:::#filename:::
 
-<<< @/src/../../examples/portfolio/app/Repositories/ProjectRepository.php{39-46,70-77}
+```phptorch
+{
+  "file": "../../../../examples/portfolio/app/Repositories/ProjectRepository.php",
+  "collapseAll": "",
+  "focusMethods": ["afterSave", "getFormFields"],
+  "diffInMethod": [
+      {
+        "method": "afterSave",
+        "start": 16,
+        "end": 23
+      },
+      {
+        "method": "getFormFields",
+        "start": 19,
+        "end": 26
+      }
+  ]
+}
+```
 
 Take note of the methods as they are different from other repeater methods: `updateRepeaterWithPivot`,
 `getFormFieldForRepeaterWithPivot`
