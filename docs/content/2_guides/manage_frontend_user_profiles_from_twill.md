@@ -6,13 +6,13 @@ to implement a user approval workflow and content access restrictions.
 
 Objectives:
 
-*   Add a `Profiles` section to the CMS for site administrators
-*   Automatically create and assign `Profile` records to users upon
-    registration
+* Add a `Profiles` section to the CMS for site administrators
+* Automatically create and assign `Profile` records to users upon
+  registration
 
 Requirements:
 
-*   [Laravel Breeze for user authentication](https://laravel.com/docs/8.x/starter-kits#laravel-breeze)
+* [Laravel Breeze for user authentication](https://laravel.com/docs/8.x/starter-kits#laravel-breeze)
 
 ## Create the profiles module
 
@@ -26,7 +26,16 @@ php artisan twill:make:module Profiles
 
 Update the generated migration to add the required fields:
 
-<<< @/src/guides/manage_frontend_user_profiles_from_twill/2021_08_01_204153_create_profiles_tables.php{10-23}
+:::filename:::
+`database/migrations/2021_08_01_204153_create_profiles_tables.php`
+:::#filename:::
+
+```phptorch
+{
+  "file": "./manage_frontend_user_profiles_from_twill/2021_08_01_204153_create_profiles_tables.php",
+  "focusMethods": "up"
+}
+```
 
 Then, run the migration:
 
@@ -38,7 +47,17 @@ php artisan migrate
 
 Edit the fillable fields to match the new schema and add the `Profile > User` relationship:
 
-<<< @/src/guides/manage_frontend_user_profiles_from_twill/Profile.php{10-13,16-19}
+:::filename:::
+`resources/views/admin/repeaters/tasks.blade.php`
+:::#filename:::
+
+```phptorch
+{
+  "file": "./manage_frontend_user_profiles_from_twill/Profile.php",
+  "focusMethods": "user",
+  "focusProperties": "fillable"
+}
+```
 
 ## Edit the User model
 
@@ -49,22 +68,72 @@ user registration form, automatically create and assign a `Profile` record.
 Finally, define the `name` attribute accessor. This will allow existing
 Laravel Breeze code to access the user name from the attached profile:
 
-<<< @/src/guides/manage_frontend_user_profiles_from_twill/User.php{29-32,34-45,47-50}
+:::filename:::
+`app/Models/User.php`
+:::#filename:::
+
+```phptorch
+{
+  "file": "./manage_frontend_user_profiles_from_twill/User.php",
+  "collapseAll": "",
+  "focusMethods": ["profile", "booted", "getNameAttribute"]
+}
+```
 
 ## Edit ProfileController
 
 Define our custom `name` column to be used instead of the default `title` and
 prevent administrators from creating and deleting profiles in the CMS
 
-<<< @/src/guides/manage_frontend_user_profiles_from_twill/ProfileController.php{11,13-16}
+:::filename:::
+`app/Http/Controllers/Twill/ProfileController.php`
+:::#filename:::
+
+```phptorch
+{
+  "file": "./manage_frontend_user_profiles_from_twill/ProfileController.php",
+  "collapseAll": "",
+  "focusProperties": ["titleColumnKey", "indexOptions"]
+}
+```
 
 ## Edit the profile form
 
-<<< @/src/guides/manage_frontend_user_profiles_from_twill/profile-form.blade.php{3-15}
+:::filename:::
+`resources/views/twill/profiles/form.blade.php`
+:::#filename:::
+
+```blade
+@extends('twill::layouts.form')
+
+@section('contentFields')
+    <x-twill::input
+        type="textarea"
+        name="description"
+        label="Description"
+        :maxlength="1000"
+    />
+
+    <x-twill::checkbox {{-- [tl! ++] --}}
+        name="is_vip"{{-- [tl! ++] --}}
+        label="Can access all VIP content"{{-- [tl! ++] --}}
+    />
+@stop
+```
 
 ## Edit ProfileRequest
 
-<<< @/src/guides/manage_frontend_user_profiles_from_twill/ProfileRequest.php{14-19}
+:::filename:::
+`app/Http/Requests/Twill/ProfileRequest.php`
+:::#filename:::
+
+```phptorch
+{
+  "file": "./manage_frontend_user_profiles_from_twill/ProfileRequest.php",
+  "collapseAll": "",
+  "focusMethods": ["rulesForUpdate"]
+}
+```
 
 ## Finishing touches
 
@@ -84,12 +153,12 @@ information for the current user via `Auth::user()->profile`.
 Upon registration, a user profile is created with a `draft` status (ie.
 not published). This can be used to implement a user approval workflow:
 
-```html
-    @if (Auth::user()->profile->published)
-        {{-- Account has been approved, show the dashboard --}}
-    @else
-        {{-- Account has not yet been approved, show "pending approval" message --}}
-    @endif
+```blade
+@if (Auth::user()->profile->published)
+{{-- Account has been approved, show the dashboard --}}
+@else
+{{-- Account has not yet been approved, show "pending approval" message --}}
+@endif
 ```
 
 The same technique also applies for granular access control (e.g. a VIP
@@ -109,7 +178,7 @@ creating and deleting users from the CMS.
 A few methods from `ModuleRepository` can be extended in
 `ProfileRepository` to implement the feature:
 
-*   [`afterSave()`](https://twill.io/docs/api/2.x/A17/Twill/Repositories/ModuleRepository.html#method_afterSave),
-    for user creation
-*   [`afterDelete()`](https://twill.io/docs/api/2.x/A17/Twill/Repositories/ModuleRepository.html#method_afterDelete),
-    for user deletion
+* [`afterSave()`](https://twill.io/docs/api/2.x/A17/Twill/Repositories/ModuleRepository.html#method_afterSave),
+  for user creation
+* [`afterDelete()`](https://twill.io/docs/api/2.x/A17/Twill/Repositories/ModuleRepository.html#method_afterDelete),
+  for user deletion

@@ -266,6 +266,6 @@ class GenerateDocsCommand extends Command
 
     private function withoutNumbers(string $string): string
     {
-        return preg_replace('/(\d*_)/', '', $string);
+        return preg_replace('/(\d+_)/', '', $string);
     }
 }

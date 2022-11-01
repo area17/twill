@@ -21,7 +21,9 @@ routes and navigation file, but do not run the migration yet!
 
 In our migration we will add a json field `tasks` that will hold our task data.
 
+:::filename:::
 `database/migrations/2022_04_11_064051_create_projects_tables.php`
+:::#filename:::
 
 ```phptorch
 {
@@ -42,6 +44,10 @@ Now we will make the repeater, this is the form that will be used to store data 
 
 Create a new file: `resources/views/admin/repeaters/tasks.blade.php`
 
+:::filename:::
+`resources/views/admin/repeaters/tasks.blade.php`
+:::#filename:::
+
 ```phptorch
 {
   "file": "./json_repeaters/tasks.blade.php",
@@ -51,7 +57,9 @@ Create a new file: `resources/views/admin/repeaters/tasks.blade.php`
 
 And in your form we will add the repeater field:
 
+:::filename:::
 `resources/views/admin/projects/form.blade.php`
+:::#filename:::
 
 ```phptorch
 {
@@ -71,7 +79,9 @@ To make our data save we have to update our model and repository.
 In our model we will add a [cast](https://laravel.com/docs/9.x/eloquent-mutators#attribute-casting),
 and while we are there we can also make the `tasks` fillable.
 
+:::filename:::
 `app/Models/Project.php`
+:::#filename:::
 
 ```phptorch
 {
@@ -83,7 +93,9 @@ and while we are there we can also make the `tasks` fillable.
 In our repository we have to set `tasks` to be a json repeater, this way Twill knows how to handle
 the data. In addition to that we need to add the `HandleJsonRepeaters` trait.
 
+:::filename:::
 `app/Repositories/ProjectRepository.php`
+:::#filename:::
 
 ```phptorch
 {

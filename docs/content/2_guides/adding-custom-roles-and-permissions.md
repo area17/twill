@@ -14,7 +14,8 @@ Out of the box, Twill has 4 possible roles:
 - Publisher
 - View Only
 
-In this example, we'll create a new `Author` role, as well as 2 new modules: `Pages` and `Posts`. Then, we'll limit the access of the `Author` role to the `Posts` module only.
+In this example, we'll create a new `Author` role, as well as 2 new modules: `Pages` and `Posts`. Then, we'll limit the
+access of the `Author` role to the `Posts` module only.
 
 ## Create the modules
 
@@ -24,14 +25,18 @@ php artisan twill:make:module pages
 ```
 
 Run the migrations:
+
 ```
 php artisan migrate
 ```
 
 Add the modules to our admin routes:
-```php
-// update file: routes/admin.php
 
+:::filename:::
+`routes/admin.hpp`
+:::#filename:::
+
+```php
 Route::module('pages');
 
 Route::module('posts');
@@ -39,7 +44,9 @@ Route::module('posts');
 
 ... and to our navigation:
 
+:::filename:::
 `config/twill-navigation.php`
+:::#filename:::
 
 ```php
 return [
@@ -56,9 +63,12 @@ return [
 
 ## Override Twill built-in roles
 
-To define a new role, we need to override a file from within the Twill package. This can be done in a few steps, via composer configuration. Let's start by defining the new role in the context of Twill default roles:
+To define a new role, we need to override a file from within the Twill package. This can be done in a few steps, via
+composer configuration. Let's start by defining the new role in the context of Twill default roles:
 
+:::filename:::
 `app/Models/Enums/UserRole.php`
+:::#filename:::
 
 ```php
 <?php
@@ -76,11 +86,14 @@ class UserRole extends Enum
 }
 ```
 
-Conceptually, Authors are just below Publishers in terms of access-level. Publishers are able to create and update all types of modules, but Authors are restricted to Posts only.
+Conceptually, Authors are just below Publishers in terms of access-level. Publishers are able to create and update all
+types of modules, but Authors are restricted to Posts only.
 
 Then, let's update our composer autoload configuration:
 
+:::filename:::
 `composer.json`
+:::#filename:::
 
 ```
     "autoload": {
@@ -94,6 +107,7 @@ Then, let's update our composer autoload configuration:
 This tells composer to effectively replace Twill's file by the one we added in our project.
 
 To enable the override, run:
+
 ```
 composer dump-autoload
 ```
@@ -105,14 +119,17 @@ Next, we'll log into Twill as SuperAdmin and create 2 new users:
 - Alice, with a role of Publisher
 - Bob, with a role of Author
 
-After activating each user account, you'll notice that Alice has access to everything and that Bob has access to... pretty much nothing, exept his own user profile. Let's keep going!
-
+After activating each user account, you'll notice that Alice has access to everything and that Bob has access to...
+pretty much nothing, exept his own user profile. Let's keep going!
 
 ## Define the permissions for the Posts module
 
-Like a standard Laravel application, Twill defines its permissions through gates in an `AuthServiceProvider` class. In the same way, let's define 2 new permissions in our project:
+Like a standard Laravel application, Twill defines its permissions through gates in an `AuthServiceProvider` class. In
+the same way, let's define 2 new permissions in our project:
 
+:::filename:::
 `app/Providers/AuthServiceProvider.php`
+:::#filename:::
 
 ```php
 use A17\Twill\Models\Enums\UserRole;
@@ -157,7 +174,9 @@ class AuthServiceProvider extends ServiceProvider
 
 Then, we'll apply the `list-posts` permission to the `Posts` navigation item:
 
+:::filename:::
 `config/twill-navigation.php`
+:::#filename:::
 
 ```php
 
@@ -168,13 +187,17 @@ Then, we'll apply the `list-posts` permission to the `Posts` navigation item:
     ],
 ```
 
-With this, Bob can now see the `Posts` item in the Twill navigation. However, Bob is getting a `Forbidden!` error message when trying to access it. Almost there!
+With this, Bob can now see the `Posts` item in the Twill navigation. However, Bob is getting a `Forbidden!` error
+message when trying to access it. Almost there!
 
 ## Update the controller
 
-We have applied the `list-posts` permission to the navigation, but what about the `edit-posts` permission? We'll need to override 2 methods from the base `ModuleController` class to finish:
+We have applied the `list-posts` permission to the navigation, but what about the `edit-posts` permission? We'll need to
+override 2 methods from the base `ModuleController` class to finish:
 
+:::filename:::
 `app/Http/Controllers/Admin/PostController.php`
+:::#filename:::
 
 ```php
 class PostController extends ModuleController
@@ -214,11 +237,14 @@ And there we have it, a new role is now available in our system!
 
 ## Using route groups
 
-If your modules don't need to differentiate between `list` and `edit` permissions, you can move the middleware settings to your admin routes instead of the controllers.
+If your modules don't need to differentiate between `list` and `edit` permissions, you can move the middleware settings
+to your admin routes instead of the controllers.
 
 First, disable Twill's built-in gates on the module's controller:
 
+:::filename:::
 `app/Http/Controllers/Admin/PostController.php`
+:::#filename:::
 
 ```php
 class PostController extends ModuleController
@@ -238,7 +264,9 @@ class PostController extends ModuleController
 
 Then, add the route groups and middleware in the admin routes configuration:
 
+:::filename:::
 `routes/admin.php`
+:::#filename:::
 
 ```php
 Route::group(['middleware' => 'can:edit-pages'], function () {
@@ -252,15 +280,20 @@ Route::group(['middleware' => 'can:edit-posts'], function () {
 // ...
 ```
 
-Route groups are especially useful if you want to define global permission groups for multiple modules (e.g. `can:edit-blog`, `can:edit-site-content`, etc.)
+Route groups are especially useful if you want to define global permission groups for multiple modules (
+e.g. `can:edit-blog`, `can:edit-site-content`, etc.)
 
 ## Cleanup AuthServiceProvider
 
-Our `AuthServiceProvider` is functional but as we keep adding permissions, we can see that we'll end up with a quite a bit of duplication.
+Our `AuthServiceProvider` is functional but as we keep adding permissions, we can see that we'll end up with a quite a
+bit of duplication.
 
-To clean things up, we can use class constants to group common roles. We can also extend Twill's own `AuthServiceProvider` class, which has two utility methods: `authorize()` and `userHasrole()`:
+To clean things up, we can use class constants to group common roles. We can also extend Twill's
+own `AuthServiceProvider` class, which has two utility methods: `authorize()` and `userHasrole()`:
 
+:::filename:::
 `app/Providers/AuthServiceProvider.php`
+:::#filename:::
 
 ```php
 use A17\Twill\AuthServiceProvider as TwillAuthServiceProvider;
@@ -301,17 +334,24 @@ class AuthServiceProvider extends TwillAuthServiceProvider
 
 ## Enabling the Media Library
 
-At this point, if you have experimented a bit with posts and pages in your project, you may have noticed that authors don't have access to the Media Library. Also in forms, authors can see the `medias` fields but can't add or change the selected images in them.
+At this point, if you have experimented a bit with posts and pages in your project, you may have noticed that authors
+don't have access to the Media Library. Also in forms, authors can see the `medias` fields but can't add or change the
+selected images in them.
 
 Just like listing and editing modules, Twill has a few built-in gates to handle the Media Library permissions:
 
-- the `list` permission is needed to browse the Media Library ([see _global_navigation.blade.php](https://github.com/area17/twill/blob/2.x/views/partials/navigation/_global_navigation.blade.php#L20))
-- the `upload` permission is needed to display the `Add new` button ([see layouts/main.blade.php](https://github.com/area17/twill/blob/2.x/views/layouts/main.blade.php#L48-L50))
-- the `edit` permission is also needed to process and save the uploaded images ([see MediaLibraryController.php](https://github.com/area17/twill/blob/2.x/src/Http/Controllers/Admin/MediaLibraryController.php#L83))
+- the `list` permission is needed to browse the Media
+  Library ([see _global_navigation.blade.php](https://github.com/area17/twill/blob/2.x/views/partials/navigation/_global_navigation.blade.php#L20))
+- the `upload` permission is needed to display the `Add new`
+  button ([see layouts/main.blade.php](https://github.com/area17/twill/blob/2.x/views/layouts/main.blade.php#L48-L50))
+- the `edit` permission is also needed to process and save the uploaded
+  images ([see MediaLibraryController.php](https://github.com/area17/twill/blob/2.x/src/Http/Controllers/Admin/MediaLibraryController.php#L83))
 
 Here's our revised `AuthServiceProvider` to give authors full access to the Media Library:
 
+:::filename:::
 `app/Providers/AuthServiceProvider.php`
+:::#filename:::
 
 ```php
 class AuthServiceProvider extends TwillAuthServiceProvider
@@ -367,26 +407,32 @@ class AuthServiceProvider extends TwillAuthServiceProvider
 }
 ```
 
-**Important** Because `list` and `edit` are global permissions in Twill, when giving access to the Media Library, you may need to add or adjust custom permissions on other modules to preserve the correct access levels.
-
+**Important** Because `list` and `edit` are global permissions in Twill, when giving access to the Media Library, you
+may need to add or adjust custom permissions on other modules to preserve the correct access levels.
 
 ## Where to go from here?
 
 #### Explore Laravel documentation
 
-We barely scratched the surface in terms of what is possible with gates within a Laravel project. You can learn more in [Laravel's Autorization documentation](https://laravel.com/docs/8.x/authorization)
-
+We barely scratched the surface in terms of what is possible with gates within a Laravel project. You can learn more
+in [Laravel's Autorization documentation](https://laravel.com/docs/8.x/authorization)
 
 #### Explore Twill internals
 
-With this, you have a good understanding of how permissions work within Twill. You can explore all the default gates that are defined in Twill's [AuthServiceProvider](https://github.com/area17/twill/blob/2.x/src/AuthServiceProvider.php). You can use this as a base to extend or change Twill's built-in permissions.
+With this, you have a good understanding of how permissions work within Twill. You can explore all the default gates
+that are defined in Twill's [AuthServiceProvider](https://github.com/area17/twill/blob/2.x/src/AuthServiceProvider.php).
+You can use this as a base to extend or change Twill's built-in permissions.
 
-The base [ModuleController](https://github.com/area17/twill/blob/2.x/src/Http/Controllers/Admin/ModuleController.php) class is also a great place to look for more fine-grained control over specific controller actions. (e.g. Allow certain users to create and edit, but not to delete).
-
+The base [ModuleController](https://github.com/area17/twill/blob/2.x/src/Http/Controllers/Admin/ModuleController.php)
+class is also a great place to look for more fine-grained control over specific controller actions. (e.g. Allow certain
+users to create and edit, but not to delete).
 
 #### Try out the new permissions management feature
 
-A complete overhaul of Twill's permissions system is being finalized for Twill 3.0. It adds user roles, groups and item-level permissions, all configurable from within the CMS. You can find more information in the following [pull request (#1138)](https://github.com/area17/twill/pull/1138), including notes on how to test this new feature on a new project.
+A complete overhaul of Twill's permissions system is being finalized for Twill 3.0. It adds user roles, groups and
+item-level permissions, all configurable from within the CMS. You can find more information in the
+following [pull request (#1138)](https://github.com/area17/twill/pull/1138), including notes on how to test this new
+feature on a new project.
 
 Thanks for reading and have fun :)
 

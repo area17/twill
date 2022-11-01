@@ -33,9 +33,9 @@ class PhpTorchExtension extends TorchlightExtension
             $containsCode = Str::contains($code, '##CODE##');
 
             if ($containsCode) {
-                $data = json_decode(Str::before($code, '##CODE##'), flags: JSON_THROW_ON_ERROR);
+                $data = $this->getJson(Str::before($code, '##CODE##'));
             } else {
-                $data = json_decode($code, flags: JSON_THROW_ON_ERROR);
+                $data = $this->getJson($code);
             }
 
             if ($data->language ?? false) {
@@ -64,13 +64,13 @@ class PhpTorchExtension extends TorchlightExtension
             $containsCode = Str::contains($code, '##CODE##');
 
             if ($containsCode) {
-                $data = json_decode(Str::before($code, '##CODE##'), flags: JSON_THROW_ON_ERROR);
+                $data = $this->getJson(Str::before($code, '##CODE##'));
 
                 $code = Str::after($code, '##CODE##');
 
                 $highlighter = Highlight::fromCode(trim($code));
             } else {
-                $data = json_decode($code, flags: JSON_THROW_ON_ERROR);
+                $data = $this->getJson($code);
 
                 if (Str::startsWith($data->file, '/')) {
                     $path = $data->file;
@@ -113,5 +113,14 @@ class PhpTorchExtension extends TorchlightExtension
         }
 
         return parent::getContent($node);
+    }
+
+    private function getJson(string $json): \stdClass
+    {
+        try {
+            return json_decode($json, flags: JSON_THROW_ON_ERROR);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage() . '====>' . $json);
+        }
     }
 }

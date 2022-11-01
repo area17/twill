@@ -1,6 +1,7 @@
 # Building a multilingual site with Twill and Laravel Localization
 
-This is a step by step recipe for installing and configuring the [Laravel Localization](https://github.com/mcamara/laravel-localization) package in a Twill project.
+This is a step by step recipe for installing and configuring
+the [Laravel Localization](https://github.com/mcamara/laravel-localization) package in a Twill project.
 
 Objectives:
 
@@ -10,7 +11,8 @@ Objectives:
 
 ## Configure Twill
 
-In this example, we'll be configuring a site in English and French. Out of the box, Twill is configured for English by default. Let's add French as a secondary language:
+In this example, we'll be configuring a site in English and French. Out of the box, Twill is configured for English by
+default. Let's add French as a secondary language:
 
 `config/translatable.php`
 
@@ -35,19 +37,21 @@ Then, run the migrations, add the module to `routes/admin.php` and to `twill-nav
 
 ## Create your content
 
-On the Twill side, nothing else is needed. When creating an article, you can edit your content in both languages using the language selector. After editing a record, make sure to mark all languages as "Live":
+On the Twill side, nothing else is needed. When creating an article, you can edit your content in both languages using
+the language selector. After editing a record, make sure to mark all languages as "Live":
 
-![01_live_languages](./building_a_multilingual_site_with_twill_and_laravel_localization/create-content.png)
-
+![01_live_languages](building_a_multilingual_site_with_twill_and_laravel_localization/create-content.png)
 
 ## Install Laravel Localization
 
 Install the package in your project via composer:
+
 ```
 composer require mcamara/laravel-localization
 ```
 
 Then publish the configuration file:
+
 ```
 php artisan vendor:publish --provider="Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider"
 ```
@@ -56,7 +60,8 @@ This will create the file: `config/laravellocalization.php`
 
 ## Configure Laravel Localization
 
-Like Twill, the package is configured for English by default. A large number of languages are  made available in the `supportedLocales` array. Let's uncomment the line for French:
+Like Twill, the package is configured for English by default. A large number of languages are made available in
+the `supportedLocales` array. Let's uncomment the line for French:
 
 `config/laravellocalization.php`
 
@@ -72,7 +77,8 @@ For this example, nothing else needs to be customized in this file.
 
 ## Configure Middleware
 
-To enable the various localization features such as route translations, language detection and redirect, register the package's middleware:
+To enable the various localization features such as route translations, language detection and redirect, register the
+package's middleware:
 
 `app/Http/Kernel.php`
 
@@ -95,15 +101,74 @@ We'll create a basic index page to list all the news articles. Let's start with 
 
 `routes/web.php`
 
-<<< @/src/guides/building_a_multilingual_site_with_twill_and_laravel_localization/routes_web.php#newsroute{9-13}
+```php
+use App\Models\Article;
+
+Route::group([
+    'prefix' => LaravelLocalization::setLocale(),
+    'middleware' => ['localize', 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath'],
+], function () {
+    Route::get('news', function () {
+        return view('site.articles.index', [
+            'articles' => Article::published()->orderBy('created_at', 'desc')->get(),
+        ]);
+    })->name('articles');
+});
+```
 
 Then, add a generic layout for all news pages:
 
-<<< @/src/guides/building_a_multilingual_site_with_twill_and_laravel_localization/layouts_news.blade.php
+```blade
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <title>The News</title>
+    </head>
+    <body>
+        <header>
+            <ul>
+                @foreach(LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
+                    <li>
+                        <a 
+                            rel="alternate" 
+                            hreflang="{{ $localeCode }}" 
+                            href="{{ LaravelLocalization::getLocalizedURL($localeCode, null, [], true) }}"
+                        >
+                            {{ strtoupper($localeCode) }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
+        </header>
+        <main>
+            @yield('content')
+        </main>
+    </body>
+</html>
+```
 
 Then, add a template for the articles index page:
 
-<<< @/src/guides/building_a_multilingual_site_with_twill_and_laravel_localization/articles_index.blade.php
+```blade
+@extends('site.layouts.news')
+
+@section('content')
+    <h1>{{ __('news.all_news') }}</h1>
+
+    @if ($articles->isNotEmpty())
+        <ul>
+            @foreach ($articles as $article)
+                <li>
+                    <a href="{{ route('article', $article->slug) }}">{{ $article->title }}</a>
+                </li>
+            @endforeach
+        </ul>
+    @else
+        <p>{{ __('news.no_news') }}</p>
+    @endif
+@endsection
+```
 
 With this, we have a functioning language switcher.
 Switching between languages should change the language code prefix in the URL.
@@ -113,24 +178,40 @@ The list of article titles should also follow the selected language. Let's keep 
 
 Add the `/news/article-slug` route to the translated routes group defined earlier:
 
-<<< @/src/guides/building_a_multilingual_site_with_twill_and_laravel_localization/routes_web.php#newsarticleroute{15-19}
+```php
+use App\Models\Article;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Route;
+
+Route::group([
+    'prefix' => LaravelLocalization::setLocale(),
+    'middleware' => ['localize', 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath'],
+], function () {
+    Route::get('news', function () {
+        return view('site.articles.index', [
+            'articles' => Article::published()->orderBy('created_at', 'desc')->get(),
+        ]);
+    })->name('articles');
+
+    Route::get('news/{article}', function (Article $article) { // [tl! focus:start]
+        return view('site.articles.show', [
+            'article' => $article,
+        ]);
+    })->name('article'); // [tl! focus:end]
+});
+```
 
 Since we're trying to rely on Laravel's route-model binding, we must make a small addition to our `Article`
 model to find the appropriate article by slug:
 
 `app/Models/Article.php`
 
-<<< @/src/guides/building_a_multilingual_site_with_twill_and_laravel_localization/Article.php{31-38}
-
-Then, add a template for the article page:
-
-`resources/views/site/articles/show.blade.php`
-
-<<< @/src/guides/building_a_multilingual_site_with_twill_and_laravel_localization/articles_show.blade.php
-
-Then, add a link to the article page from the index page:
-
-<<< @/src/guides/building_a_multilingual_site_with_twill_and_laravel_localization/articles_index.blade.php{8-12}
+```phptorch
+{
+  "file": "./building_a_multilingual_site_with_twill_and_laravel_localization/Article.php",
+  "focusMethods": "resolveRouteBinding"
+}
+```
 
 ## Finishing touches
 
@@ -138,11 +219,13 @@ We're making good progress, but there are a few problems with our current soluti
 
 - The URL base is not translated (we get `/news` in both languages)
 - Some static text is not translated ("All Articles", "Back", etc.)
-- Our language switcher is not quite aware of the translated slugs (we get English slugs for the French link in the language switcher, and vice versa)
+- Our language switcher is not quite aware of the translated slugs (we get English slugs for the French link in the
+  language switcher, and vice versa)
 
 ## Translate the base URL
 
-To translate route segments, Laravel Localization uses standard Laravel language files. We'll create two new files for our route translations in English and French:
+To translate route segments, Laravel Localization uses standard Laravel language files. We'll create two new files for
+our route translations in English and French:
 
 `resources/lang/en/routes.php`
 
@@ -170,11 +253,33 @@ Then, we'll update our route definitions to make use of the `transRoute` helper 
 
 `routes/web.php`
 
-<<< @/src/guides/building_a_multilingual_site_with_twill_and_laravel_localization/routes_web.php#newsrouteupdated{9,15}
+```php 
+use App\Models\Article;
+use Illuminate\Support\Facades\Route;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+
+Route::group([
+    'prefix' => LaravelLocalization::setLocale(),
+    'middleware' => ['localize', 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath'],
+], function () {
+    Route::get(LaravelLocalization::transRoute('routes.articles'), function () {// [tl! focus]
+        return view('site.articles.index', [
+            'articles' => Article::published()->orderBy('created_at', 'desc')->get(),
+        ]);
+    })->name('articles');
+
+    Route::get(LaravelLocalization::transRoute('routes.article'), function (Article $article) { // [tl! focus]
+        return view('site.articles.show', [
+            'article' => $article,
+        ]);
+    })->name('article');
+});
+```
 
 ## Translate static text
 
-As alluded to before, the same method can be used to translate our static text. We'll create two additional files for our text translations in English and French:
+As alluded to before, the same method can be used to translate our static text. We'll create two additional files for
+our text translations in English and French:
 
 `resources/lang/en/news.php`
 
@@ -187,6 +292,7 @@ return [
     'back' => 'Back',
 ];
 ```
+
 `resources/lang/fr/news.php`
 
 ```php
@@ -199,24 +305,19 @@ return [
 ];
 ```
 
-Then, we'll update our views to make use of the translations:
-
-`resources/views/site/articles/index.blade.php`
-
-<<< @/src/guides/building_a_multilingual_site_with_twill_and_laravel_localization/articles_index.blade.php{4,15}
-
-`resources/views/site/articles/show.blade.php`
-
-<<< @/src/guides/building_a_multilingual_site_with_twill_and_laravel_localization/articles_show.blade.php{8}
-
 ## Fix the language switcher
 
-Because we're using route-model binding, all that's needed to fix our language switcher issue is to implement the `LocalizedUrlRoutable` interface from Laravel Localization in our model. For this, we'll add a new method:
-
+Because we're using route-model binding, all that's needed to fix our language switcher issue is to implement
+the `LocalizedUrlRoutable` interface from Laravel Localization in our model. For this, we'll add a new method:
 
 `app/Models/Article.php`
 
-<<< @/src/guides/building_a_multilingual_site_with_twill_and_laravel_localization/Article.php#routekey
+```phptorch
+{
+  "file": "./building_a_multilingual_site_with_twill_and_laravel_localization/Article.php",
+  "focusMethods": "getLocalizedRouteKey"
+}
+```
 
 And there we have it, a fully translated frontend! The articles index URLs are:
 
@@ -232,7 +333,9 @@ and the single article URLs will look like:
 
 #### Explore configuration options
 
-The `config/laravellocalization.php` file contains a few more options that can be customized. One of the most useful is probably `hideDefaultLocaleInURL`, which can be used to hide the language prefix from the URLs for your default language (`/en`, in this example).
+The `config/laravellocalization.php` file contains a few more options that can be customized. One of the most useful is
+probably `hideDefaultLocaleInURL`, which can be used to hide the language prefix from the URLs for your default
+language (`/en`, in this example).
 
 Similarly, the `config/translatable.php` file published by Twill can be customized.
 
@@ -250,7 +353,8 @@ return [
 
 #### Handle inactive languages
 
-In this example, all articles are shown on the index page, regardless of their active state ("Live" checkbox in the CMS). Filtering articles on the "active" property is a simple way to hide inactive article translations:
+In this example, all articles are shown on the index page, regardless of their active state ("Live" checkbox in the CMS)
+. Filtering articles on the "active" property is a simple way to hide inactive article translations:
 
 `routes/web.php`
 
@@ -263,17 +367,21 @@ In this example, all articles are shown on the index page, regardless of their a
     })->name('articles');
 ```
 
-From the `HasTranslation` model behavior, the `hasActiveTranslation()` method can be used to check if a given article has an active translation for a given locale. To check against the current locale:
+From the `HasTranslation` model behavior, the `hasActiveTranslation()` method can be used to check if a given article
+has an active translation for a given locale. To check against the current locale:
 
 ```php
 $isActive = $article->hasActiveTranslation(app()->getLocale());
 ```
 
-This way, you can decide what to do when a user tries to access an inactive translation (e.g. redirect to another language, redirect to the index page, trigger a 404, etc.)
+This way, you can decide what to do when a user tries to access an inactive translation (e.g. redirect to another
+language, redirect to the index page, trigger a 404, etc.)
 
 #### Redirect old slugs
 
-Out of the box, every time a slug is changed for a given article in the CMS, Twill keeps a record of the old slug in the `article_slugs` table. We can leverage this to conveniently redirect our users (and search engine crawlers ;) to the most up to date URL:
+Out of the box, every time a slug is changed for a given article in the CMS, Twill keeps a record of the old slug in
+the `article_slugs` table. We can leverage this to conveniently redirect our users (and search engine crawlers ;) to the
+most up to date URL:
 
 `routes/web.php`
 

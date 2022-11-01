@@ -19,10 +19,9 @@ class ServeDocsCommand extends ServeCommand
         $process = $this->startProcess(false);
 
         while ($process->isRunning()) {
-            try{
+            try {
                 Artisan::call('twill:staticdocs:generate', ['--updatesOnly' => ''], $this->output);
-            }
-            catch (\Exception $e) {
+            } catch (\Exception $e) {
                 $this->error($e->getMessage());
                 $this->error('sleeping 5 seconds');
                 usleep(5000 * 1000);
@@ -51,8 +50,8 @@ class ServeDocsCommand extends ServeCommand
         return [
             (new PhpExecutableFinder)->find(false),
             '-S',
-            $this->host().':'.$this->port(),
-            __DIR__ . '/../../docs/generator/server.php'
+            $this->host() . ':' . $this->port(),
+            __DIR__ . '/../../docs/generator/server.php',
         ];
     }
 }

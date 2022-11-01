@@ -15,7 +15,7 @@ To customize the contents of the create modal we can add a `create.blade.php` ne
 There is 2 ways we can go about this, the first and usually preferred way is to extend from the default create file, this
 will ensure that also with future updates you stay in line with the Twill defaults
 
-```php
+```blade
 @include('twill::partials.create')
 
 <x-twill::input
@@ -37,7 +37,7 @@ Alternatively you can go completely custom, and to reproduce the same outcome as
 The benefit of this is that you have more control over the positioning and you could move the description field above
 the permalink for example.
 
-```php
+```blade
 <x-twill::input
     :name="$titleFormKey ?? 'title'"
     :label="$titleFormKey === 'title' ? twillTrans('twill::lang.modal.title-field') : ucfirst($titleFormKey)"
@@ -98,7 +98,7 @@ class BlogController extends BaseModuleController
 
 Then in your modules `create.blade.php` file you can use:
 
-```php
+```blade
 @include('twill::partials.create')
 
 <x-twill::select
