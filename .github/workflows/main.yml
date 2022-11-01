@@ -110,8 +110,10 @@ jobs:
       - name: Build twill.
         run: ./vendor/bin/testbench twill:build --forTesting
 
-      - name: Upgrade Chrome Driver
+      - name: Upgrade Chrome
         uses: browser-actions/setup-chrome@latest
+
+      - name: Upgrade Chrome Driver
         run: ./vendor/bin/testbench dusk:chrome-driver
 
       - name: Execute tests
