@@ -22,7 +22,7 @@ class TwillRoutes
     }
 
     /**
-     * Only usefull for testing purposes.
+     * Only useful for testing purposes.
      */
     public function addToRouteRegistry(string $slug, string $prefix): void
     {
@@ -244,14 +244,11 @@ class TwillRoutes
 
     public function getRouteGroupOptions(): array
     {
-        $options = [
+        return [
             'as' => config('twill.admin_route_name_prefix', 'twill.'),
             'middleware' => [config('twill.admin_middleware_group', 'web')],
+            'prefix' => rtrim(ltrim(config('twill.admin_app_path'), '/'), '/'),
         ];
-
-        $options['prefix'] = rtrim(ltrim(config('twill.admin_app_path'), '/'), '/');
-
-        return $options;
     }
 
     public function getRouteMiddleware($middleware = null): array
