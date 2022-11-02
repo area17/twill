@@ -32,6 +32,12 @@ The starter kit setup is a basic page builder. It comes with:
 - A navigation module
 - A frontpage setting
 
+This starter kit requires `kalnoy/nestedset` so install that first:
+
+```bash
+composer require kalnoy/nestedset
+```
+
 The install command is the same as above. Except that you pass the parameter `basic-page-builder` to install it.
 
 ```bash
@@ -67,13 +73,17 @@ Twill's `install` command consists of:
 If you have not yet done this following the Laravel installation guide, now would be a good time to run
 `php artisan storage:link` to setup the storage folders mapping to the public directory.
 
-## .env
+## Admin path and domain
 
-By default, Twill's admin console is available at `admin.domain.test`. This is assuming that your .env `APP_URL`
-variable does not include a scheme (`http`/`https`):
+By default, Twill's admin console is available at `domain.test/admin`
+
+### Using a subdomain
+
+If you want to serve Twill from a subdomain you will have to set the admin app url and app path as follows:
 
 ```bash
-APP_URL=domain.test
+ADMIN_APP_URL=https://admin.domain.test
+ADMIN_APP_PATH=/
 ```
 
 In development, make sure that the `admin` subdomain is available and pointing to your app's `public` directory.
@@ -93,15 +103,13 @@ Optionally, you can specify a custom admin console url using the `ADMIN_APP_URL`
 
 ```bash
 ADMIN_APP_URL=manage.domain.test
+ADMIN_APP_PATH=/
 ```
 
-As well as a path using the `ADMIN_APP_PATH` variable. For example, to have the admin console available on a
-subdirectory of your app (`domain.test/admin`):
+If you just want to modify the admin path you can override just that:
 
 ```bash
-APP_URL=domain.test
-ADMIN_APP_URL=domain.test
-ADMIN_APP_PATH=admin
+ADMIN_APP_PATH=/
 ```
 
 When running on 2 different subdomains (which is the default configuration as seen above), you want to share cookies
@@ -111,6 +119,13 @@ domain, prefixed by a dot, like in the following example:
 ```bash
 SESSION_DOMAIN=.domain.test
 ```
+
+### Strict domain handeling
+
+By default when using a path, Twill does not care about the domain you are on. But if you need this to be more strict
+you can add `ADMIN_APP_STRICT=true` to your `.env` file.
+
+This way, if `APP_URL` does not match your domain, it will not show the admin panel on the app path.
 
 ## Accessing the admin console
 
@@ -123,8 +138,7 @@ open Twill's media library and a dropdown to manage users, your own account and 
 From there, you might want to configure Twill's media library's storage provider and its rendering service.
 
 By default Twill uses local storage and local image rendering using [Glide](https://glide.thephpleague.com/), if you
-have
-more advanced image storage needs you can setup AWS as instructed below.
+have more advanced image storage needs you can setup AWS as instructed below.
 
 See the [media library's configuration documentation](/media-library/) for more information.
 

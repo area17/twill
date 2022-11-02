@@ -125,10 +125,13 @@ class RouteServiceProvider extends ServiceProvider
                         $internalRoutes
                     );
                 } else {
+                    if (config('twill.admin_app_url') || config('twill.admin_app_strict')) {
+                        $options = [
+                            'domain' => config('twill.admin_app_url') ?? config('app.url'),
+                        ];
+                    }
                     $router->group(
-                        [
-                            'domain' => config('twill.admin_app_url'),
-                        ],
+                        $options ?? [],
                         $internalRoutes
                     );
                 }
@@ -271,9 +274,9 @@ class RouteServiceProvider extends ServiceProvider
 
     public static function shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)
     {
-        return ! empty($groupPrefix) && (blank($lastRouteGroupName) ||
+        return !empty($groupPrefix) && (blank($lastRouteGroupName) ||
                 config('twill.allow_duplicates_on_route_names', true) ||
-                (! Str::endsWith($lastRouteGroupName, ".{$groupPrefix}.")));
+                (!Str::endsWith($lastRouteGroupName, ".{$groupPrefix}.")));
     }
 
     public static function getLastRouteGroupName()
@@ -292,7 +295,7 @@ class RouteServiceProvider extends ServiceProvider
             '.'
         );
 
-        if (! empty(config('twill.admin_app_path'))) {
+        if (!empty(config('twill.admin_app_path'))) {
             $groupPrefix = ltrim(
                 str_replace(
                     config('twill.admin_app_path'),

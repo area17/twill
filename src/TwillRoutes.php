@@ -83,12 +83,12 @@ class TwillRoutes
         if (isset($options['only'])) {
             $customRoutes = array_intersect(
                 $defaults,
-                (array) $options['only']
+                (array)$options['only']
             );
         } elseif (isset($options['except'])) {
             $customRoutes = array_diff(
                 $defaults,
-                (array) $options['except']
+                (array)$options['except']
             );
         }
 
@@ -212,10 +212,11 @@ class TwillRoutes
                         $hostRoutes
                     );
                 } else {
+                    if (config('twill.admin_app_url') || config('twill.admin_app_strict')) {
+                        $groupOptions['domain'] = config('twill.admin_app_url') ?? config('app.url');
+                    }
                     $router->group(
-                        $groupOptions + [
-                            'domain' => config('twill.admin_app_url'),
-                        ],
+                        $groupOptions,
                         $hostRoutes
                     );
                 }
@@ -243,11 +244,14 @@ class TwillRoutes
 
     public function getRouteGroupOptions(): array
     {
-        return [
-            'as' => config('twill.admin_route_name_prefix', 'admin.'),
+        $options = [
+            'as' => config('twill.admin_route_name_prefix', 'twill.'),
             'middleware' => [config('twill.admin_middleware_group', 'web')],
-            'prefix' => rtrim(ltrim(config('twill.admin_app_path'), '/'), '/'),
         ];
+
+        $options['prefix'] = rtrim(ltrim(config('twill.admin_app_path'), '/'), '/');
+
+        return $options;
     }
 
     public function getRouteMiddleware($middleware = null): array
@@ -286,7 +290,7 @@ class TwillRoutes
                 $capsule->getControllersNamespace(),
                 $routesFile,
                 // When it is not a package capsule we can register it immediately.
-                ! $capsule->packageCapsule
+                !$capsule->packageCapsule
             );
         }
     }
