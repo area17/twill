@@ -2,23 +2,24 @@
 
 ## Environment requirements
 
-Twill `2.x` is compatible with Laravel versions `5.8` to `8`, running on PHP 7.1 and above. As a dependency to your own
-application, Twill shares Laravel's [server requirements](https://laravel.com/docs/8.x/deployment#server-requirements).
+Twill `3.x` is compatible with Laravel versions `8.x` to `9.x`, running on PHP 8.0 and above. As a dependency to your
+own application, Twill shares Laravel's
+[server requirements](https://laravel.com/docs/9.x/deployment#server-requirements).
 
 ## Development
 
 For development, those requirements are satisfied by the following first-party solutions:
 
-- [Sail](https://laravel.com/docs/8.x/sail) (All platforms)
-- [Homestead](https://laravel.com/docs/8.x/homestead) (All platforms)
-- [Valet](https://laravel.com/docs/8.x/valet) (macOS)
+- [Sail](https://laravel.com/docs/9.x/sail) (All platforms)
+- [Homestead](https://laravel.com/docs/9.x/homestead) (All platforms)
+- [Valet](https://laravel.com/docs/9.x/valet) (macOS)
 
 ## Production
 
 For production deployments, we recommend:
 
 - [Forge](https://forge.laravel.com)
-- [Envoyer](https://envoyer.io) or [Envoy](https://laravel.com/docs/8.x/envoy)
+- [Envoyer](https://envoyer.io) or [Envoy](https://laravel.com/docs/9.x/envoy)
 
 Of course, any other Laravel compatible server configuration and deployment strategy will be supported.
 
@@ -38,9 +39,9 @@ developed and tested against MySQL (`>=5.7`) and PostgreSQL(`>=9.3`).
 
 |            | Supported versions | Recommended version |
 |:-----------|:------------------:|:-------------------:|
-| PHP        | >= 7.1             | 8.0                 |
-| Laravel    | >= 5.8             | 8.x                 |
-| npm        | >= 5.7             | 6.13                |
-| MySQL      | >= 5.7             | 5.7                 |
-| PostgreSQL | >= 9.3             | 10                  |
+| PHP        |       >= 8.0       | 8.1                 |
+| Laravel    |       >= 8.0       | 9.x                 |
+| npm        |       >= 5.7       | 6.13                |
+| MySQL      |       >= 5.7       | 5.7                 |
+| PostgreSQL |       >= 9.3       | 10                  |
 
