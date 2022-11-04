@@ -55,6 +55,8 @@ trait HasNesting
     {
         $nodeModels = self::all();
         $nodeArrays = self::flattenTree($nodeTree);
+        // Store models actually saved
+        $savedModels = [];
 
         foreach ($nodeArrays as $nodeArray) {
             $nodeModel = $nodeModels->where('id', $nodeArray['id'])->first();
@@ -63,15 +65,18 @@ trait HasNesting
                 if (!$nodeModel->isRoot() || $nodeModel->position !== $nodeArray['position']) {
                     $nodeModel->position = $nodeArray['position'];
                     $nodeModel->saveAsRoot();
+                    $savedModels[] = $nodeModel;
                 }
             } else {
                 if ($nodeModel->position !== $nodeArray['position'] || $nodeModel->parent_id !== $nodeArray['parent_id']) {
                     $nodeModel->position = $nodeArray['position'];
                     $nodeModel->parent_id = $nodeArray['parent_id'];
                     $nodeModel->save();
+                    $savedModels[] = $nodeModel;
                 }
             }
         }
+        return $savedModels;
     }
 
     public static function flattenTree(array $nodeTree, int $parentId = null)

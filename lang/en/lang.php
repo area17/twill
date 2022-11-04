@@ -56,6 +56,7 @@ return [
             'unfeatured' => 'Unfeatured',
             'restored' => 'Restored',
             'deleted' => 'Deleted',
+            'reordered' => 'Reordered',
         ],
         'activity-row' => [
             'edit' => 'Edit',

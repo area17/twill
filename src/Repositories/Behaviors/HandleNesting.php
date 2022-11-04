@@ -35,7 +35,7 @@ trait HandleNesting
 
     public function setNewOrder($ids)
     {
-        ReorderNestedModuleItems::dispatch($this->model, $ids)
+        ReorderNestedModuleItems::dispatch($this->model, $ids, auth()->user())
             ->onQueue($this->reorderNestedModuleItemsJobQueue);
     }
 
