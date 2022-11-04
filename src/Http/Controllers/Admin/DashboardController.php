@@ -7,6 +7,7 @@ use Analytics;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -15,7 +16,6 @@ use Psr\Log\LoggerInterface as Logger;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Analytics\Period;
-use Illuminate\Database\Eloquent\Relations\Relation;
 
 class DashboardController extends Controller
 {
@@ -43,6 +43,9 @@ class DashboardController extends Controller
      * @var AuthFactory
      */
     protected $authFactory;
+
+    protected $paginator;
+    protected $myPaginator;
 
     public function __construct(
         Application $app,
@@ -98,6 +101,8 @@ class DashboardController extends Controller
             'shortcuts' => $this->getShortcuts($modules),
             'facts' => $this->config->get('twill.dashboard.analytics.enabled', false) ? $this->getFacts() : null,
             'drafts' => $this->getDrafts($modules),
+            'paginator' => $this->paginator,
+            'myPaginator' => $this->myPaginator,
         ]);
     }
 
@@ -173,16 +178,16 @@ class DashboardController extends Controller
      * @return array
      */
     private function getAllActivities()
-    {
-        return Activity::whereIn('subject_type', $this->getEnabledActivities())
-            ->take(20)
-            ->latest()
-            ->get()
-            ->map(function ($activity) {
-                return $this->formatActivity($activity);
-            })
-            ->filter()
-            ->values();
+    {       
+        $offset = $this->config->get('twill.dashboard.offset');
+        $this->paginator = Activity::whereIn('subject_type', $this->getEnabledActivities())
+        ->latest()
+        ->paginate($offset);
+        return $this->paginator->map(function ($activity) {
+            return $this->formatActivity($activity);
+        })
+        ->filter()
+        ->values();
     }
 
     /**
@@ -190,16 +195,13 @@ class DashboardController extends Controller
      */
     private function getLoggedInUserActivities()
     {
-        return Activity::whereIn('subject_type', $this->getEnabledActivities())
-            ->where('causer_id', $this->authFactory->guard('twill_users')->user()->id)
-            ->take(20)
-            ->latest()
-            ->get()
-            ->map(function ($activity) {
-                return $this->formatActivity($activity);
-            })
-            ->filter()
-            ->values();
+        $offset = $this->config->get('twill.dashboard.offset');
+        $this->myPaginator = Activity::whereIn('subject_type', $this->getEnabledActivities())->where('causer_id', $this->authFactory->guard('twill_users')->user()->id)->latest()->paginate($offset);
+        return $this->myPaginator->map(function ($activity) {
+            return $this->formatActivity($activity);
+        })
+        ->filter()
+        ->values();
     }
 
     /**

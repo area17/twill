@@ -13,6 +13,22 @@
     @unless(config('twill.dev_mode', false))
         <link href="{{ twillAsset('main-dashboard.css') }}" rel="stylesheet" crossorigin/>
     @endunless
+    <style>
+        .pagination li{
+        background: white;
+        }
+    
+        .pagination li a,
+        .pagination li span{
+            padding: 16px;
+            display: inline-block;
+        }
+    
+        .pagination li.active{
+            background: #3278b8;
+            color: white;
+        }
+    </style>
 @endpush
 
 @push('extra_js_head')
@@ -52,6 +68,7 @@
                     <div class="col col--primary">
                         @endif
                         <a17-activity-feed empty-message="{{ $emptyMessage }}"></a17-activity-feed>
+                        {{ $paginator->links('twill::pagination.dashboard') }}
                         @if(($facts ?? false) || (!$drafts->isEmpty()))
                     </div>
                 </div>

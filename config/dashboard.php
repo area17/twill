@@ -13,4 +13,5 @@ return [
     'modules' => [],
     'analytics' => ['enabled' => false],
     'search_endpoint' => 'admin.search',
+    'offset' => 20,
 ];
