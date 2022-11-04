@@ -45,6 +45,9 @@ class DashboardController extends Controller
      */
     protected $authFactory;
 
+    protected $paginator;
+    protected $myPaginator;
+
     public function __construct(
         Application $app,
         Config $config,
@@ -99,6 +102,8 @@ class DashboardController extends Controller
             'shortcuts' => $this->getShortcuts($modules),
             'facts' => $this->config->get('twill.dashboard.analytics.enabled', false) ? $this->getFacts() : null,
             'drafts' => $this->getDrafts($modules),
+            'paginator' => $this->paginator,
+            'myPaginator' => $this->myPaginator,
         ]);
     }
 
@@ -177,29 +182,28 @@ class DashboardController extends Controller
 
     private function getAllActivities(): Collection
     {
-        return Activity::whereIn('subject_type', $this->getEnabledActivities())
-            ->take(20)
-            ->latest()
-            ->get()
-            ->map(function ($activity) {
-                return $this->formatActivity($activity);
-            })
+        $perPage = $this->config->get('twill.dashboard.per_page');
+
+        $this->paginator = Activity::whereIn('subject_type', $this->getEnabledActivities())
+            ->paginate($perPage)
+            ->latest();
+
+        return $this->paginator->map(function ($activity) {
+            return $this->formatActivity($activity);
+        })
             ->filter()
             ->values();
     }
 
     private function getLoggedInUserActivities(): Collection
     {
-        return Activity::whereIn('subject_type', $this->getEnabledActivities())
-            ->where('causer_id', $this->authFactory->guard('twill_users')->user()->id)
-            ->take(20)
-            ->latest()
-            ->get()
-            ->map(function ($activity) {
-                return $this->formatActivity($activity);
-            })
-            ->filter()
-            ->values();
+        $offset = $this->config->get('twill.dashboard.per_page');
+        $this->myPaginator = Activity::whereIn('subject_type', $this->getEnabledActivities())->where('causer_id', $this->authFactory->guard('twill_users')->user()->id)->latest()->paginate($offset);
+        return $this->myPaginator->map(function ($activity) {
+            return $this->formatActivity($activity);
+        })
+        ->filter()
+        ->values();
     }
 
     /**
