@@ -38,7 +38,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:8.*" "doctrine/dbal:^3.0" --no-interaction --no-update
+          composer require "laravel/framework:9.*" "doctrine/dbal:^3.0" --no-interaction --no-update
           composer update --prefer-stable --prefer-dist --no-interaction
 
       - name: Execute tests
