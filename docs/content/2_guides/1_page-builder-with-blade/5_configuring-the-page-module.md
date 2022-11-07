@@ -256,12 +256,12 @@ class PageController extends BaseModuleController
 Nice! We can now go back to a create or edit page for our page module and we should see the media field:
 
 <!-- <div class="max-w-lg mx-auto"></div> -->
-![twill media field](./assets/media-field-added.png){.max-w-lg.mx-auto}
+![twill media field](./assets/media-field-added.png)
 
 And when we actually attach a file we can see that the default crop configuration is being applied!
 
 <!-- <div class="max-w-lg mx-auto"></div> -->
-![twill media field demo](./assets/attach-media-demo.gif){.max-w-lg.mx-auto}
+![twill media field demo](./assets/attach-media-demo.gif)
 
 ## Adding the block editor
 
@@ -326,7 +326,7 @@ class PageController extends BaseModuleController
 Head over to the form once more and you will see that there is now a block editor at the bottom!
 
 <!-- <div class="max-w-lg mx-auto"></div> -->
-![twill block editor field](./assets/block-editor-field.png){.max-w-lg.mx-auto}
+![twill block editor field](./assets/block-editor-field.png)
 
 And that is about it for now! We have our page module, a media field for the cover image and a block editor.
 

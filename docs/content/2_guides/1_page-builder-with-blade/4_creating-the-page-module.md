@@ -152,8 +152,8 @@ In our `boot` method we will add the suggested snippet:
     ],
     "diffInMethod": {
       "method": "boot",
-      "start": 1,
-      "end": 3
+      "start": 2,
+      "end": 4
     }
 }
 ##CODE##

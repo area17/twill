@@ -67,7 +67,7 @@ As you can see from the output, it:
 Once you have filled everything in, we can refresh our browser. We now see a proper login screen:
 
 <!-- <div class="max-w-lg mx-auto"></div> -->
-![login screen fixed](./assets/login-fixed.png){.max-w-lg.mx-auto}
+![login screen fixed](./assets/login-fixed.png)
 
 **Congratulations, you have successfully installed Twill!**
 

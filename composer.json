@@ -57,8 +57,7 @@
     "spatie/invade": "^1.1",
     "squizlabs/php_codesniffer": "*",
     "torchlight/torchlight-commonmark": "^0.5",
-    "area17/phptorch": "dev-main",
-    "cweagans/composer-patches": "dev-master"
+    "area17/phptorch": "dev-main"
   },
   "autoload": {
     "psr-4": {
@@ -87,11 +86,6 @@
     ]
   },
   "extra": {
-    "patches": {
-      "nette/php-generator": {
-        "more comments": "https://patch-diff.githubusercontent.com/raw/nette/php-generator/pull/121.patch"
-      }
-    },
     "laravel": {
       "providers": [
         "A17\\Twill\\TwillServiceProvider"

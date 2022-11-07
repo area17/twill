@@ -83,7 +83,7 @@ You can modify this if you wish, but out of the box this does exactly what we wa
 browser and add a block to our page.
 
 <!-- <div class="max-w-lg mx-auto"></div> -->
-![add a block in Twill](./assets/add-block.gif){.max-w-lg.mx-auto}
+![add a block in Twill](./assets/add-block.gif)
 
 As you may have noticed, the preview does not show our content yet. That's normal because we have not added anything yet
 in the preview file.
