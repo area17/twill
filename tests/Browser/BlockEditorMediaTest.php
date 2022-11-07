@@ -77,9 +77,7 @@ HTML;
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->superAdmin, 'twill_users');
             $browser->visitTwill();
-            $browser->screenshot('1');
             $browser->createModuleEntryWithTitle('Command', 'Build');
-            $browser->screenshot('2');
 
             $browser->press('Add content');
             $browser->waitForText('Image');
