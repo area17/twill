@@ -58,6 +58,10 @@ class TwillAppSettings
 
         $block = $this->getGroupDataForSectionAndName($group, $section);
 
+        if ($block->getRelated($key)->isNotEmpty()) {
+            return $block->getRelated($key);
+        }
+
         return $block->input($key);
     }
 

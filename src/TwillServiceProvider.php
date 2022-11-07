@@ -8,6 +8,8 @@ use A17\Twill\Commands\CapsuleInstall;
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\Dev;
 use A17\Twill\Commands\GenerateBlocks;
+use A17\Twill\Commands\GenerateDocsCommand;
+use A17\Twill\Commands\ServeDocsCommand;
 use A17\Twill\Commands\TwillFlushManifest;
 use A17\Twill\Commands\GeneratePackageCommand;
 use A17\Twill\Commands\Install;
@@ -145,7 +147,7 @@ class TwillServiceProvider extends ServiceProvider
     {
         // select auth service provider implementation
         $this->providers[] = config('twill.custom_auth_service_provider') ?: (
-            config('twill.enabled.permissions-management') ?
+        config('twill.enabled.permissions-management') ?
             PermissionAuthServiceProvider::class : AuthServiceProvider::class
         );
 
@@ -233,10 +235,6 @@ class TwillServiceProvider extends ServiceProvider
         );
 
         $this->publishes([__DIR__ . '/../config/twill-publish.php' => config_path('twill.php')], 'config');
-        $this->publishes(
-            [__DIR__ . '/../config/twill-navigation.php' => config_path('twill-navigation.php')],
-            'config'
-        );
         $this->publishes([__DIR__ . '/../config/translatable.php' => config_path('translatable.php')], 'config');
     }
 
@@ -335,7 +333,7 @@ class TwillServiceProvider extends ServiceProvider
 
     private function registerCommands(): void
     {
-        $this->commands([
+        $commands = [
             Install::class,
             ModuleMake::class,
             MakeCapsule::class,
@@ -355,10 +353,17 @@ class TwillServiceProvider extends ServiceProvider
             CapsuleInstall::class,
             UpdateExampleCommand::class,
             SetupDevTools::class,
-            Release::class,
             GeneratePackageCommand::class,
             TwillFlushManifest::class,
-        ]);
+        ];
+
+        if (app()->runningInConsole()) {
+            $commands[] = Release::class;
+            $commands[] = GenerateDocsCommand::class;
+            $commands[] = ServeDocsCommand::class;
+        }
+
+        $this->commands($commands);
     }
 
     /**
@@ -454,7 +459,7 @@ class TwillServiceProvider extends ServiceProvider
             $viewModuleTwill = "'twill::'.$moduleName.'.{$viewName}'";
             $view = $partialNamespace . '.' . $viewName;
 
-            if (! isset($moduleName) || is_null($moduleName)) {
+            if (!isset($moduleName) || is_null($moduleName)) {
                 $viewModule = $viewApplication;
             }
 
@@ -597,7 +602,7 @@ class TwillServiceProvider extends ServiceProvider
      */
     public function check2FA(): void
     {
-        if (! $this->app->runningInConsole() || ! config('twill.enabled.users-2fa')) {
+        if (!$this->app->runningInConsole() || !config('twill.enabled.users-2fa')) {
             return;
         }
 

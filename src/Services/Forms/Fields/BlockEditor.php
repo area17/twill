@@ -20,8 +20,8 @@ class BlockEditor extends BaseFormField
 
     public function name(string $name): static
     {
-        if ($this->label === 'Default') {
-            $this->label = null;
+        if ($this->label === null) {
+            $this->label = twillTrans('twill::lang.fields.block-editor.add-content');
         }
 
         return parent::name($name);
