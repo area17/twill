@@ -2,6 +2,27 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.0.0-beta2
+
+This is a stabilization release to prepare a first stable release.
+
+### Improvements
+
+- New documentation system
+- New guide
+- Improved defaults for new projects
+- Added .gitattributes to reduce package size
+
+### Features
+
+- No new features were introduced in this release
+
+### Bugfixes
+
+- Restored edit link on user profiles [`#1891`](https://github.com/area17/twill/pull/1891)
+- Fixed console error on forms with permissions [`#1890`](https://github.com/area17/twill/pull/1890)
+- Fixed backwards compatibility for navigation link access [`#1886`](https://github.com/area17/twill/pull/1886)
+
 ## 3.0.0-beta1
 
 ### Features
