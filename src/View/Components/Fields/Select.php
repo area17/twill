@@ -2,6 +2,7 @@
 
 namespace A17\Twill\View\Components\Fields;
 
+use A17\Twill\Services\Forms\Options;
 use Illuminate\Contracts\View\View;
 
 class Select extends FieldWithOptions
@@ -30,6 +31,10 @@ class Select extends FieldWithOptions
         ?string $moduleName = null,
         ?string $storeUrl = null,
     ) {
+        if ($options instanceof Options) {
+            $options = $options->toArray();
+        }
+
         parent::__construct(
             $name,
             $label,
