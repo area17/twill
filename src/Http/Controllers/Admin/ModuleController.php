@@ -485,7 +485,7 @@ abstract class ModuleController extends Controller
             return View::exists($view);
         });
 
-        $item = $this->repository->getById($id);
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
         if ($this->moduleHas('revisions')) {
             $latestRevision = $item->revisions->first();
