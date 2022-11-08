@@ -674,7 +674,7 @@ abstract class ModuleController extends Controller
      */
     protected function eagerLoadFormRelationCounts(array $relations): void
     {
-        $this->formWith = $relations;
+        $this->formWithCount = $relations;
     }
 
     /**
