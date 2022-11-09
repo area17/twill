@@ -142,7 +142,7 @@
             </a17-datatable>
         @endif
 
-        @if($create)
+        @if($create || (isset($tableData[0]['editInModal']) &&!empty($tableData[0]['editInModal'])))
             <a17-modal-create
                 ref="editionModal"
                 form-create="{{ $storeUrl }}"
