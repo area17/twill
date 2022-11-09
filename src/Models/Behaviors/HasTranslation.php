@@ -74,12 +74,12 @@ trait HasTranslation
         return $query
             ->join($translationTable, function (JoinClause $join) use ($translationTable, $localeKey, $table, $keyName) {
                 $join
-                    ->on($translationTable.'.'.$this->getRelationKey(), '=', $table.'.'.$keyName)
-                    ->where($translationTable.'.'.$localeKey, $this->locale());
+                    ->on($translationTable . '.' . $this->getRelationKey(), '=', $table . '.' . $keyName)
+                    ->where($translationTable . '.' . $localeKey, $this->locale());
             })
-            ->where($translationTable.'.'.$this->getLocaleKey(), $locale)
-            ->orderBy($translationTable.'.'.$orderField, $orderType)
-            ->select($table.'.*')
+            ->where($translationTable . '.' . $this->getLocaleKey(), $locale)
+            ->orderBy($translationTable . '.' . $orderField, $orderType)
+            ->select($table . '.*')
             ->with('translations');
     }
 
@@ -105,25 +105,16 @@ trait HasTranslation
             ->with('translations');
     }
 
-    /**
-     * Checks if this model has active translations.
-     *
-     * @param string|null $locale
-     * @return bool
-     */
-    public function hasActiveTranslation($locale = null)
+    public function hasActiveTranslation(?string $locale = null): bool
     {
-        $locale = $locale ?: $this->locale();
+        $locale = $locale ?? $this->locale();
 
-        $translations = $this->memoizedTranslations ?? ($this->memoizedTranslations = $this->translations()->get());
-
-        foreach ($translations as $translation) {
-            if ($translation->getAttribute($this->getLocaleKey()) == $locale && $translation->getAttribute('active')) {
-                return true;
+        return once(function () use ($locale) {
+            if ($this->relationLoaded('translations')) {
+                return $this->translations->where($this->getLocaleKey(), $locale)->where('active', true)->isNotEmpty();
             }
-        }
-
-        return false;
+            return $this->translations()->where($this->getLocaleKey(), $locale)->where('active', true)->exists();
+        });
     }
 
     /**

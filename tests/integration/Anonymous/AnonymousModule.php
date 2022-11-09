@@ -827,7 +827,7 @@ PHP
                     createDefaultTranslationsTableFields($table, $this->nameSingular);
 
                     foreach (collect($this->fields)->where('translatable', true) as $fieldName => $data) {
-                        $table->string($fieldName);
+                        $table->string($fieldName)->nullable();
                     }
                 });
 
