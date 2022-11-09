@@ -33,7 +33,7 @@
     "imgix/imgix-php": "^3.0",
     "laravel/framework": "^9.0",
     "laravel/socialite": "^5.3",
-    "laravel/ui": "^3.0",
+    "laravel/ui": "^4.0",
     "league/flysystem-aws-s3-v3": "^3.0",
     "league/glide-laravel": "^1.0",
     "matthewbdaly/laravel-azure-storage": "^2.0",
