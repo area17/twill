@@ -2,6 +2,16 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.11.0 (2022-11-09)
+
+### Features
+
+- When displaying a field with html after the block name, this is now stripped and cleaned [`#1843`](https://github.com/area17/twill/pull/1843)
+
+### Other
+
+- Added support for laravel/ui 4.x and fixes an issue with Laravel 9 aws adapter [`#1900`](https://github.com/area17/twill/pull/1900)
+
 ## 2.10.0 (2022-10-18)
 
 ### Features
