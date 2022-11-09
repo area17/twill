@@ -21,12 +21,12 @@ class Capsule
     protected ?string $cachedViewPrefix = null;
 
     public function __construct(
-        public string  $name,
-        public string  $namespace,
-        public string  $path,
+        public string $name,
+        public string $namespace,
+        public string $path,
         public ?string $singular = null,
-        public bool    $enabled = true,
-        public bool    $packageCapsule = false
+        public bool $enabled = true,
+        public bool $packageCapsule = false
     )
     {
         $this->boot();
