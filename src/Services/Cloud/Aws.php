@@ -5,7 +5,6 @@ namespace A17\Twill\Services\Cloud;
 use Aws\S3\S3Client;
 use Illuminate\Support\Str;
 use League\Flysystem\Filesystem;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
 
 class Aws
 {
@@ -15,7 +14,15 @@ class Aws
 
         $client = new S3Client($config);
 
-        $adapter = new AwsS3Adapter($client, $config['bucket'], $config['root']);
+        if (class_exists($class = \League\Flysystem\AwsS3v3\AwsS3Adapter::class)) {
+            $adapter = new $class($client, $config['bucket'], $config['root']);
+        }
+        else if (class_exists($class = \League\Flysystem\AwsS3V3\AwsS3V3Adapter::class)) {
+            $adapter = new $class($client, $config['bucket'], $config['root']);
+        }
+        else {
+            throw new \Exception('Missing compatible aws adapter.');
+        }
 
         return new Filesystem($adapter);
     }
