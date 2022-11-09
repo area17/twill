@@ -242,6 +242,7 @@
   }
 
   .block__title {
+    text-overflow: ellipsis;
     font-weight: 600;
     max-width: 45%;
     overflow: hidden;
@@ -258,6 +259,7 @@
 
     .dropdown {
       display: inline-block;
+      vertical-align: top;
     }
   }
 
@@ -283,10 +285,11 @@
 
   .block__actions {
     button[data-action] {
-      display: none;
+      visibility: hidden;
     }
 
     .dropdown--active button[data-action] {
+      visibility: visible;
       display: inline-block;
     }
   }
@@ -301,6 +304,7 @@
     }
 
     button[data-action] {
+      visibility: visible;
       display: inline-block;
     }
   }
