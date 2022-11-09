@@ -109,12 +109,10 @@ trait HasTranslation
     {
         $locale = $locale ?? $this->locale();
 
-        return once(function () use ($locale) {
-            if ($this->relationLoaded('translations')) {
-                return $this->translations->where($this->getLocaleKey(), $locale)->where('active', true)->isNotEmpty();
-            }
-            return $this->translations()->where($this->getLocaleKey(), $locale)->where('active', true)->exists();
-        });
+        if ($this->relationLoaded('translations')) {
+            return $this->translations->where($this->getLocaleKey(), $locale)->where('active', true)->isNotEmpty();
+        }
+        return $this->translations()->where($this->getLocaleKey(), $locale)->where('active', true)->exists();
     }
 
     /**
