@@ -101,8 +101,8 @@ class SlugTest extends TestCase
             'slug' => ['en' => 'slug-update'],
         ]);
 
-        // Total slugs should be 3.
-        $this->assertCount(3, $this->module->getSlugModelClassName()::withTrashed()->get());
+        // Total slugs should be 4.
+        $this->assertCount(4, $this->module->getSlugModelClassName()::withTrashed()->get());
 
         // Restore the deleted model.
         $this->assertTrue($this->module->getRepository()->restore($model->id));

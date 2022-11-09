@@ -14,6 +14,10 @@ trait HasSlug
         static::restoring(function ($model) {
             $model->restoreSlugs();
         });
+
+        static::created(function ($model) {
+            $model->createRemainingLocaleSlugs();
+        });
     }
 
     /**
@@ -134,8 +138,31 @@ trait HasSlug
     }
 
     /**
+     * When a new model is created there is more than one language, we generate the slugs where there is no locale
+     * variant yet based on the source.
+     *
+     * @return void
+     */
+    public function createRemainingLocaleSlugs(): void
+    {
+        $slugParams = $this->getSlugParams();
+
+        foreach ($slugParams as $params) {
+            if (in_array($params['locale'], config('twill.slug_utf8_languages', []))) {
+                $params['slug'] = $this->getUtf8Slug($params['slug']);
+            } else {
+                $params['slug'] = Str::slug($params['slug']);
+            }
+
+            if ($this->slugs()->where('locale', $params['locale'])->where('slug', $params['slug'])->doesntExist()) {
+                $this->updateOrNewSlug($params);
+            }
+        }
+    }
+
+    /**
      * @param array $slugParams
-     * @param bool $restoring
+     *
      * @return void
      */
     public function updateOrNewSlug($slugParams)
@@ -360,6 +387,10 @@ trait HasSlug
             if ($translation->locale == $locale || $locale == null) {
                 $attributes = $this->slugAttributes;
 
+                if (!$attributes) {
+                    continue;
+                }
+
                 $slugAttribute = array_shift($attributes);
 
                 $slugDependenciesAttributes = [];
@@ -402,6 +433,9 @@ trait HasSlug
         foreach (getLocales() as $appLocale) {
             if ($appLocale == $locale || $locale == null) {
                 $attributes = $this->slugAttributes;
+                if (!$attributes) {
+                    continue;
+                }
                 $slugAttribute = array_shift($attributes);
                 $slugDependenciesAttributes = [];
                 foreach ($attributes as $attribute) {
