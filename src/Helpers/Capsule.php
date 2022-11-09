@@ -40,7 +40,7 @@ class Capsule
         $this->loadMigrations();
 
         if ($this->packageCapsule) {
-            $this->registerConfig();
+            $this->registerNavigation();
         }
 
         $this->registerRoutes();
@@ -323,7 +323,7 @@ class Capsule
         return [];
     }
 
-    public function registerConfig(): void
+    public function registerNavigation(): void
     {
         $config = Config::get('twill-navigation', []);
 
