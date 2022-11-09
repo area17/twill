@@ -1,6 +1,6 @@
 <?php
 
-namespace integration\Models;
+namespace A17\Twill\Tests\Integration\Models;
 
 use A17\Twill\Models\Behaviors\HasTranslation;
 use A17\Twill\Tests\Integration\TestCase;
