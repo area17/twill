@@ -2,8 +2,10 @@
 
 namespace A17\Twill\Helpers;
 
+use A17\Twill\Facades\TwillNavigation;
 use A17\Twill\Facades\TwillRoutes;
 use A17\Twill\Http\Controllers\Admin\SingletonModuleController;
+use A17\Twill\View\Components\Navigation\NavigationLink;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\Facades\App;
@@ -19,13 +21,14 @@ class Capsule
     protected ?string $cachedViewPrefix = null;
 
     public function __construct(
-        public string $name,
-        public string $namespace,
-        public string $path,
+        public string  $name,
+        public string  $namespace,
+        public string  $path,
         public ?string $singular = null,
-        public bool $enabled = true,
-        public bool $packageCapsule = false
-    ) {
+        public bool    $enabled = true,
+        public bool    $packageCapsule = false
+    )
+    {
         $this->boot();
     }
 
@@ -324,19 +327,32 @@ class Capsule
     {
         $config = Config::get('twill-navigation', []);
 
-        if ($this->isSingleton()) {
-            $config[lcfirst($this->getSingular())] = [
-                'title' => $this->name,
-                'singleton' => true,
-            ];
+        if ($config === []) {
+            if ($this->isSingleton()) {
+                TwillNavigation::addLink(
+                    NavigationLink::make()->forSingleton(lcfirst($this->getSingular()))->title($this->name)
+                );
+            } else {
+                TwillNavigation::addLink(
+                    NavigationLink::make()->forModule($this->name)->title($this->name)
+                );
+            }
         } else {
-            $config[$this->name] = [
-                'title' => $this->name,
-                'module' => true,
-            ];
-        }
+            // @todo: Deprecated in twill 4.x?
+            if ($this->isSingleton()) {
+                $config[lcfirst($this->getSingular())] = [
+                    'title' => $this->name,
+                    'singleton' => true,
+                ];
+            } else {
+                $config[$this->name] = [
+                    'title' => $this->name,
+                    'module' => true,
+                ];
+            }
 
-        Config::set('twill-navigation', $config);
+            Config::set('twill-navigation', $config);
+        }
     }
 
     public function isSingleton(): bool
