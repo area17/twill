@@ -188,4 +188,9 @@ class TwillNavigation
 
         return $tree;
     }
+
+    public function clear(): void
+    {
+        $this->links = [];
+    }
 }
