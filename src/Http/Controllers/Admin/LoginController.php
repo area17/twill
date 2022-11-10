@@ -95,6 +95,10 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
+        if ($this->autologin()) {
+            return redirect()->back();
+        }
+
         return $this->viewFactory->make('twill::auth.login');
     }
 
@@ -288,5 +292,44 @@ class LoginController extends Controller
     protected function credentials(Request $request): array
     {
         return array_merge($request->only($this->username(), 'password'), ['published' => 1]);
+    }
+
+    /**
+     * Try to autologin a user
+     */
+    protected function autologin(): bool
+    {
+        if (!$this->autologinEnabled()) {
+            return false;
+        }
+
+        return $this->guard()->attempt([
+            $this->username() => $this->config->get('twill.autologin.email'),
+            'password' => $this->config->get('twill.autologin.password'),
+        ], false);
+    }
+
+    /**
+     * Check if autologin is enabled for the current environment
+     */
+    protected function autologinEnabled(): bool
+    {
+        if (blank($this->config->get('twill.autologin.email'))) {
+            return false;
+        }
+
+        if (blank($this->config->get('twill.autologin.password'))) {
+            return false;
+        }
+
+        if (blank($environments = $this->config->get('twill.autologin.environments', []))) {
+            return false;
+        }
+
+        if (!in_array(app()->environment(), $environments)) {
+            return false;
+        }
+
+        return true;
     }
 }
