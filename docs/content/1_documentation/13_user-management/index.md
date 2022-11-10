@@ -133,3 +133,14 @@ You can use your new permission and existing ones in many places like the `twill
 Also in forms blade files using `@can`, as well as in middleware definitions in routes or controllers, see [Laravel's documentation](https://laravel.com/docs/5.7/authorization#via-middleware) for more info.
 
 You should follow the Laravel documentation regarding [authorization](https://laravel.com/docs/5.3/authorization). It's pretty good. Also if you would like to bring administration of roles and permissions to the admin application, [spatie/laravel-permission](https://github.com/spatie/laravel-permission) would probably be your best friend.
+
+## Auto login
+
+Developers can configure Twill to do auto login using a pre-defined username and password and skip the login form:
+
+``` dotenv
+TWILL_AUTO_LOGIN_EMAIL=email@email.com
+TWILL_AUTO_LOGIN_PASSWORD=passv0rt
+```
+
+This feature is only available for the `local` environment by default. Please check the `config/twill.php` file for more configuration options.
