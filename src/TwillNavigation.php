@@ -20,7 +20,7 @@ class TwillNavigation
      */
     private array $secondaryRequestLinks = [];
 
-    public function addLink(NavigationLink $link): void
+    public function addLink(NavigationLink $link): self
     {
         if (config('twill-navigation', []) !== []) {
             throw new CannotCombineNavigationBuilderWithLegacyConfig(
@@ -29,6 +29,8 @@ class TwillNavigation
         }
 
         $this->links[] = $link;
+
+        return $this;
     }
 
     public function addSecondaryNavigationForCurrentRequest(NavigationLink $link): void
