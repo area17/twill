@@ -2,8 +2,6 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
-use Illuminate\Support\Str;
-
 trait HandleTags
 {
     /**
