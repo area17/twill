@@ -10,7 +10,7 @@ class TagsHandlerTest extends ModulesTestBase
     public function testBasicTagSlug(): void
     {
         $author = app(AuthorRepository::class)
-            ->create(['tags' => ['Tag a', 'Tag_-2134 b', 'Tag & !@#! C']]);
+            ->create(['tags' => 'Tag a,Tag_-2134 b,Tag & !@#! C']);
 
         $this->assertEquals(3, $author->tags()->count());
 
@@ -30,7 +30,7 @@ class TagsHandlerTest extends ModulesTestBase
     public function testTagSlugsCharacters(string $string, string $slug): void
     {
         $author = app(AuthorRepository::class)
-            ->create(['tags' => [$string]]);
+            ->create(['tags' => $string]);
 
         $this->assertEquals($string, $author->tags()->get()[0]->name);
         $this->assertEquals($slug, $author->tags()->get()[0]->slug);
@@ -57,12 +57,16 @@ class TagsHandlerTest extends ModulesTestBase
             ],
             'chinesecharacters' => [
                 'string' => '標籤',
-                'slug' => ''
+                'slug' => '標籤'
             ],
             'chinesecharacters2' => [
                 'string' => '示範',
-                'slug' => ''
-            ]
+                'slug' => '示範'
+            ],
+            'chinesecharacters3' => [
+                'string' => 'test:示@範 foo!',
+                'slug' => 'test-示-範-foo-'
+            ],
         ];
     }
 }

@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use Illuminate\Support\Str;
+
 trait HandleTags
 {
     /**
@@ -12,8 +14,10 @@ trait HandleTags
     public function afterSaveHandleTags($object, $fields)
     {
         if (preg_match("/\p{Han}+/u", $fields['tags'] ?? '')) {
-            $object->setSlugGenerator(function ($name) {
-                return str_replace(' ', '_', strtolower($name));
+            $object->setSlugGenerator(function ($slug) {
+                return trim(mb_strtolower(
+                    preg_replace('/([?]|\p{P}|\s)+/u', '-', $slug)
+                ));
             });
         } else {
             $object->setSlugGenerator('Illuminate\Support\Str::slug');
