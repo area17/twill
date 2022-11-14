@@ -2,20 +2,19 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\Contracts\TwillModelContract;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+
 trait HandleTags
 {
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @return void
-     */
-    public function afterSaveHandleTags($object, $fields)
+    public function afterSaveHandleTags(TwillModelContract $object, array $fields): void
     {
         if (preg_match("/\p{Han}+/u", $fields['tags'] ?? '')) {
             $object->setSlugGenerator(function ($slug) {
-                return trim(mb_strtolower(
-                    preg_replace('/([?]|\p{P}|\s)+/u', '-', $slug)
-                ));
+                return mb_strtolower(
+                    trim(preg_replace('/([?]|\p{P}|\s)+/u', '-', $slug))
+                );
             });
         } else {
             $object->setSlugGenerator('Illuminate\Support\Str::slug');
@@ -34,17 +33,12 @@ trait HandleTags
         }
     }
 
-    private function getTagsQuery()
+    private function getTagsQuery(): Builder
     {
         return $this->model->allTags()->orderBy('count', 'desc');
     }
 
-    /**
-     * @param string $query
-     * @param array $ids
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function getTags($query = '', $ids = [])
+    public function getTags(string $query = '', array $ids = []): Collection
     {
         $tagQuery = $this->getTagsQuery();
 
@@ -61,10 +55,7 @@ trait HandleTags
         return $tagQuery->get();
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    public function getTagsList()
+    public function getTagsList(): \Illuminate\Support\Collection
     {
         return $this->getTagsQuery()->where('count', '>', 0)->select('name', 'id')->get()->map(function ($tag) {
             return [
