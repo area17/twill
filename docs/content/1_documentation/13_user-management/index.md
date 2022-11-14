@@ -138,7 +138,7 @@ You should follow the Laravel documentation regarding [authorization](https://la
 
 Developers can configure Twill to do auto login using a pre-defined username and password and skip the login form. 
 
-Add this array object to your twill.php file: 
+Add this array object to your `twill.php` file: 
 
 ``` php
 'autologin' => [
