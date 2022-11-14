@@ -16,7 +16,7 @@
         <button type="button"
                 @click="cloneBlock">
               <span v-svg
-                    symbol="add"></span>
+                    symbol="clone"></span>
         </button>
         <a17-dropdown v-if="blocksLength > 1"
                       class="f--small"
