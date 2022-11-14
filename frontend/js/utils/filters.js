@@ -1,7 +1,7 @@
+import { getCurrentLocale, getTimeFormatForCurrentLocale, locales } from '@/utils/locale'
+
 import config from '@/store/modules/config'
 import dateFormat from 'date-fns/format'
-
-import { locales, getCurrentLocale, getTimeFormatForCurrentLocale } from '@/utils/locale'
 
 function dateFormatLocale (date, format) {
   const locale = locales[getCurrentLocale()]
@@ -19,7 +19,7 @@ const filters = {
       .replace(/\s+/g, '-') // Replace spaces with -
       .replace(p, c => charMap[c]) // Replace special chars
       .replace(/&/g, '-and-') // Replace & with 'and'
-      .replace(/[^\w-]+/g, '-') // Replace all non-word chars with -
+      .replace(/[^\w(?!\p{Script=Han})-]+/gu, '-') // Replace all non-word chars with - except Chinese characters
       .replace(/--+/g, '-') // Replace multiple - with single -
       .replace(/(^-+)|(-+$)/, '') // Remove leading and traling -
   },
