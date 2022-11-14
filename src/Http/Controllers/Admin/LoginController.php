@@ -294,9 +294,6 @@ class LoginController extends Controller
         return array_merge($request->only($this->username(), 'password'), ['published' => 1]);
     }
 
-    /**
-     * Try to autologin a user
-     */
     protected function autologin(): bool
     {
         if (!$this->autologinEnabled()) {
@@ -309,9 +306,6 @@ class LoginController extends Controller
         ], false);
     }
 
-    /**
-     * Check if autologin is enabled for the current environment
-     */
     protected function autologinEnabled(): bool
     {
         if (blank($this->config->get('twill.autologin.email'))) {
