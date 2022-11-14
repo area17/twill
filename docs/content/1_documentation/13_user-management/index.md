@@ -142,7 +142,7 @@ Add this array object to your `twill.php` file:
 
 ``` php
 'autologin' => [
-    'environments' => ['local'],
+    'environments' => ['local'], // It's safer to make this feature only available for the `local` environment. 
     'email' => env('TWILL_AUTO_LOGIN_EMAIL'),
     'password' => env('TWILL_AUTO_LOGIN_PASSWORD'),
 ],
@@ -154,5 +154,3 @@ And add these entries to your `.env` file:
 TWILL_AUTO_LOGIN_EMAIL=email@email.com
 TWILL_AUTO_LOGIN_PASSWORD=passv0rt
 ```
-
-This feature is only available for the `local` environment by default. Please check the `config/twill.php` file for more configuration options.
