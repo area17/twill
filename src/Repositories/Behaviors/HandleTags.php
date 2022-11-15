@@ -38,7 +38,7 @@ trait HandleTags
         return $this->model->allTags()->orderBy('count', 'desc');
     }
 
-    public function getTags(string $query = '', array $ids = []): Collection
+    public function getTags(?string $query = null, array $ids = []): Collection
     {
         $tagQuery = $this->getTagsQuery();
 
