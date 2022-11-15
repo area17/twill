@@ -161,19 +161,19 @@ class IssueArticleController extends BaseModuleController
 
     protected function setUpController(): void
     {
+        $this->setModuleName('issues.articles');
         if (request('issue')) {
             $this->setBreadcrumbs(
                 NestedBreadcrumbs::make()
                     ->forParent(
                         parentModule: 'issues',
-                        module: 'issues.articles',
+                        module: $this->modelName,
                         activeParentId: request('issue'),
                         repository: \App\Repositories\IssueRepository::class
                     )
                     ->label('Article')
             );
         }
-        $this->setModuleName('issues.articles');
     }
 }
 
