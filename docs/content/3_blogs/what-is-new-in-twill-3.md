@@ -1,4 +1,4 @@
-# Twill 3
+# What is new in Twill 3
 
 Twill 3 has been in development for quite some time. The work started somewhere beginning of 2022.
 
