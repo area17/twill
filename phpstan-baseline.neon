@@ -39,8 +39,3 @@ parameters:
 			message: "#^Method A17\\\\Twill\\\\Rector\\\\RenameViews\\:\\:getRuleDefinition\\(\\) has invalid return type Symplify\\\\RuleDocGenerator\\\\ValueObject\\\\RuleDefinition\\.$#"
 			count: 1
 			path: src/Rector/RenameViews.php
-
-		-
-			message: "#^Instantiated class League\\\\Flysystem\\\\AwsS3v3\\\\AwsS3Adapter not found\\.$#"
-			count: 1
-			path: src/Services/Cloud/Aws.php
