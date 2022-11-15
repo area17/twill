@@ -30,6 +30,16 @@ php ./vendor/area17/twill/upgrade.php
 
 ## Other changes
 
+### Changes in admin app url/path
+
+The admin url is now by default /admin instead of a subdomain. Please consult the docs to change this to a subdomain if 
+you were relying on that.
+
+On top of that, this is now more "loose" and does not require the exact url. However, you can set it back to being
+strict using:
+
+`ADMIN_APP_STRICT=true`
+
 ### withVideo on media defaults to false
 
 Previously `withVideo` was true by default, if you relied on this you have to update these media fields to
