@@ -102,3 +102,12 @@ Also see [Migrations documentation](./migrations.md).
 
 If the database for you model has the fields `publish_start_date` and `publish_end_date` you need to make those fillable
 to allow content scheduling.
+
+In addition to them being fillable you also need to add the following casts:
+
+```php
+public $dates = [
+    'publish_start_date',
+    'publish_end_date'
+];
+```
