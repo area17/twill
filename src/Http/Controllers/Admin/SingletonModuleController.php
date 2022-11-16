@@ -37,8 +37,20 @@ abstract class SingletonModuleController extends ModuleController
 
         Session::put('pages_back_link', url()->current());
 
+        $controllerForm = $this->getForm($item);
+
+        if ($controllerForm->isNotEmpty()) {
+            $view = 'twill::layouts.form';
+        } else {
+            $view = "twill.{$this->moduleName}.form";
+        }
+
         View::share('form', $this->form($item->id));
-        return view("twill.{$this->moduleName}.form", $this->form($item->id));
+        return view($view, $this->form($item->id))
+            ->with(
+                'renderFields',
+                $controllerForm
+            );
     }
 
     private function seed(): void

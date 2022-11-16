@@ -35,7 +35,7 @@ abstract class BaseFormField
     {
         $this->name = $name;
 
-        if (! $this->label) {
+        if (!$this->label) {
             $this->label(Str::headline($name));
         }
 
@@ -88,15 +88,21 @@ abstract class BaseFormField
     {
         $vars = collect(get_object_vars($this))->except(['component']);
 
-        if ($this->mandatoryProperties !== []) {
-            // If the view component has mandatory parameters we construct it
-            // slightly different from regular ones.
-            // This allows more control.
-            $class = new ReflectionClass($this->component);
-            $args = [];
+        $args = [];
 
+        $class = new ReflectionClass($this->component);
+
+        foreach ($class->getConstructor()->getParameters() as $parameter) {
+            if ($vars->has($parameter->getName())) {
+                $args[$parameter->getName()] = $this->getValue($parameter->getName());
+            }
+        }
+
+        $args += $this->getAdditionalConstructorArguments();
+
+        if ($this->mandatoryProperties !== []) {
             foreach ($this->mandatoryProperties as $property) {
-                if (! $this->{$property}) {
+                if (!$this->{$property}) {
                     throw new \InvalidArgumentException(
                         "Missing required field property '$property' on " . $this::class
                     );
@@ -105,16 +111,13 @@ abstract class BaseFormField
                 $args[$property] = $this->getValue($property);
             }
 
-            $args += $this->getAdditionalConstructorArguments();
-
+            // If the view component has mandatory parameters we construct it
+            // slightly different from regular ones.
+            // This allows more control.
             $component = $class->newInstance(...$args);
         } else {
             /** @var \A17\Twill\View\Components\Fields\TwillFormComponent $component */
-            $component = new $this->component();
-        }
-
-        foreach ($vars->keys() as $name) {
-            $component->{$name} = $this->getValue($name);
+            $component = $class->newInstance(...$args);
         }
 
         return $component->render();

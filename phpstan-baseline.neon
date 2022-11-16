@@ -9,3 +9,33 @@ parameters:
 			message: "#^Variable \\$activeRepositoryTraits in empty\\(\\) always exists and is not falsy\\.$#"
 			count: 1
 			path: src/Commands/ModuleMake.php
+
+		-
+			message: "#^Instantiated class Symplify\\\\RuleDocGenerator\\\\ValueObject\\\\CodeSample\\\\CodeSample not found\\.$#"
+			count: 1
+			path: src/Rector/RenameRoutes.php
+
+		-
+			message: "#^Instantiated class Symplify\\\\RuleDocGenerator\\\\ValueObject\\\\RuleDefinition not found\\.$#"
+			count: 1
+			path: src/Rector/RenameRoutes.php
+
+		-
+			message: "#^Method A17\\\\Twill\\\\Rector\\\\RenameRoutes\\:\\:getRuleDefinition\\(\\) has invalid return type Symplify\\\\RuleDocGenerator\\\\ValueObject\\\\RuleDefinition\\.$#"
+			count: 1
+			path: src/Rector/RenameRoutes.php
+
+		-
+			message: "#^Instantiated class Symplify\\\\RuleDocGenerator\\\\ValueObject\\\\CodeSample\\\\CodeSample not found\\.$#"
+			count: 1
+			path: src/Rector/RenameViews.php
+
+		-
+			message: "#^Instantiated class Symplify\\\\RuleDocGenerator\\\\ValueObject\\\\RuleDefinition not found\\.$#"
+			count: 1
+			path: src/Rector/RenameViews.php
+
+		-
+			message: "#^Method A17\\\\Twill\\\\Rector\\\\RenameViews\\:\\:getRuleDefinition\\(\\) has invalid return type Symplify\\\\RuleDocGenerator\\\\ValueObject\\\\RuleDefinition\\.$#"
+			count: 1
+			path: src/Rector/RenameViews.php

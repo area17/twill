@@ -96,6 +96,7 @@ class Browser extends BaseFormField
     public function modulesCustom(array $modules): self
     {
         $this->modules = $modules;
+
         return $this;
     }
 

@@ -20,7 +20,7 @@ class TwillNavigation
      */
     private array $secondaryRequestLinks = [];
 
-    public function addLink(NavigationLink $link): void
+    public function addLink(NavigationLink $link): self
     {
         if (config('twill-navigation', []) !== []) {
             throw new CannotCombineNavigationBuilderWithLegacyConfig(
@@ -29,6 +29,8 @@ class TwillNavigation
         }
 
         $this->links[] = $link;
+
+        return $this;
     }
 
     public function addSecondaryNavigationForCurrentRequest(NavigationLink $link): void
@@ -115,8 +117,12 @@ class TwillNavigation
             $link = NavigationLink::make()->forModule($key);
         }
 
-        if ($link && ($legacy['title'] ?? false)) {
+        if ($legacy['title'] ?? false) {
             $link->title($legacy['title']);
+        }
+
+        if ($legacy['can'] ?? false) {
+            $link->onlyWhen(fn () => (bool) Auth::user()?->can($legacy['can']));
         }
 
         return $link;
@@ -165,7 +171,7 @@ class TwillNavigation
         }
 
         $tree['right'][] = NavigationLink::make()
-            ->withAttributes(['data-medialib-btn'])
+            ->withAttributes(['data-medialib-btn', 'data-closenav-btn'])
             ->title(twillTrans('twill::lang.nav.media-library'))
             ->onlyWhen(fn() => Auth::user()?->can('access-media-library') ?? false);
         $tree['right'][] = NavigationLink::make()
@@ -181,5 +187,10 @@ class TwillNavigation
         }
 
         return $tree;
+    }
+
+    public function clear(): void
+    {
+        $this->links = [];
     }
 }

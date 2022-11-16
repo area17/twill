@@ -38,7 +38,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:8.*" "doctrine/dbal:^3.0" --no-interaction --no-update
+          composer require "laravel/framework:9.*" "doctrine/dbal:^3.0" --no-interaction --no-update
           composer update --prefer-stable --prefer-dist --no-interaction
 
       - name: Execute tests
@@ -52,12 +52,10 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         php: [8.1, 8.0]
-        laravel: [9.*, 8.*]
+        laravel: [9.*]
         include:
           - laravel: 9.*
             testbench: 7.*
-          - laravel: 8.*
-            testbench: 6.*
     name: PHP ${{ matrix.php }} - LARAVEL ${{ matrix.laravel }}
 
     steps:
@@ -110,8 +108,11 @@ jobs:
       - name: Build twill.
         run: ./vendor/bin/testbench twill:build --forTesting
 
+      - name: Upgrade Chrome
+        uses: browser-actions/setup-chrome@latest
+
       - name: Upgrade Chrome Driver
-        run: ./vendor/bin/testbench dusk:chrome-driver
+        run: ./vendor/bin/testbench dusk:chrome-driver --detect
 
       - name: Execute tests
         run: vendor/bin/testbench package:test

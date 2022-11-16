@@ -2,6 +2,51 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.0.0-beta2
+
+This is a stabilization release to prepare a first stable release.
+
+### Improvements
+
+- New documentation system
+- New guide
+- Improved defaults for new projects
+- Added .gitattributes to reduce package size
+
+### Features
+
+- No new features were introduced in this release
+
+### Bugfixes
+
+- Restored edit link on user profiles [`#1891`](https://github.com/area17/twill/pull/1891)
+- Fixed console error on forms with permissions [`#1890`](https://github.com/area17/twill/pull/1890)
+- Fixed backwards compatibility for navigation link access [`#1886`](https://github.com/area17/twill/pull/1886)
+
+## 3.0.0-beta1
+
+### Features
+
+- The upgrade path is now about complete. Check [UPGRADE.MD](./UPGRADE.MD) for full instructions.
+- You can now validate array contains in multiselects [#1854](https://github.com/area17/twill/pull/1854)
+- Added breadcrumbs using ->setBreadcrumbs on controllers.
+- Added a new command that allows to only flush the twill manifest file [#1862](https://github.com/area17/twill/pull/1862)
+
+### Bugfixes
+
+- Translated media and slideshows can now be disabled [#1847](https://github.com/area17/twill/pull/1847)
+- Fixed an issue where block fields would not fallback in translations [#1852](https://github.com/area17/twill/pull/1852)
+- Small improvement to avoid additional queries in blocks [#1853](https://github.com/area17/twill/pull/1853)
+- Fixed an issue where the menu would overlay the media browser
+- Fixed form builder support for singletons
+- The preview function is now more open and allows interaction [#1861](https://github.com/area17/twill/pull/1861)
+
+### Translations
+
+- Small improvements to the french translations [#1851](https://github.com/area17/twill/pull/1851)
+
+
+
 ## 3.0.0-alpha3
 
 ### Features

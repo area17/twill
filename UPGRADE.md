@@ -28,18 +28,6 @@ Prepare the directories.
 php ./vendor/area17/twill/upgrade.php
 ```
 
-
-Clear rector cache (just to be sure, do this before every attempt if multiple)
-```
-./vendor/bin/rector --clear-cache
-```
-
-Then run the migrations (in order!):
-```
-./vendor/bin/rector process --config=vendor/area17/twill/rector-upgrade-compatibility.php
-./vendor/bin/rector process --config=vendor/area17/twill/rector-upgrade-routes-views.php
-```
-
 ## Other changes
 
 ### withVideo on media defaults to false

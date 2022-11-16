@@ -115,6 +115,7 @@ class UserController extends ModuleController
         $tableColumns->add(
             Text::make()
                 ->field($this->titleColumnKey)
+                ->linkToEdit()
                 ->sortable(),
         );
         $tableColumns->add(
