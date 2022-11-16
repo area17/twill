@@ -227,5 +227,6 @@
 @stop
 
 @push('extra_js')
+    @includeWhen(config('twill.block_editor.inline_blocks_templates', true) && isset($renderFields) && $renderFields->isNotEmpty(), 'twill::partials.form.utils._blocks_templates')
     <script src="{{ twillAsset('main-listing.js') }}" crossorigin></script>
 @endpush

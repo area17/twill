@@ -106,11 +106,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         ]);
     }
 
-    /**
-     * @param int|null $parentModuleId
-     * @return array
-     */
-    public function index($parentModuleId = null)
+    public function index(?int $parentModuleId = null): array
     {
         if ($this->request->has('except')) {
             $prependScope['exceptIds'] = $this->request->get('except');

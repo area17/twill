@@ -16,8 +16,6 @@ use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Breadcrumbs\Breadcrumbs;
 use A17\Twill\Services\Forms\Fields\BaseFormField;
 use A17\Twill\Services\Forms\Fields\BlockEditor;
-use A17\Twill\Services\Forms\Fields\Files;
-use A17\Twill\Services\Forms\Fields\Medias;
 use A17\Twill\Services\Forms\Fields\Repeater;
 use A17\Twill\Services\Forms\Form;
 use A17\Twill\Services\Listings\Columns\Browser;
@@ -964,7 +962,10 @@ abstract class ModuleController extends Controller
         return null;
     }
 
-    public function index(?int $parentModuleId = null): \Illuminate\Contracts\View\View|JsonResponse
+    /**
+     * @return \Illuminate\Contracts\View\View|JsonResponse
+     */
+    public function index(?int $parentModuleId = null): mixed
     {
         $this->authorizeOption('list', $this->moduleName);
 
@@ -990,13 +991,11 @@ abstract class ModuleController extends Controller
         $form = $this->getCreateForm();
 
         if ($form->filter(function (BaseFormField $field) {
-            return $field instanceof Medias ||
-                $field instanceof BlockEditor ||
-                $field instanceof Files ||
+            return $field instanceof BlockEditor ||
                 $field instanceof Repeater;
         })
             ->isNotEmpty()) {
-            throw new \Exception('Create forms do not support media, files and blocks');
+            throw new \Exception('Create forms do not support repeaters and blocks');
         }
 
         if ($form->isNotEmpty()) {
