@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Commands;
 
-use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Services\Blocks\Block;
+use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Support\Str;
 
 class ListBlocks extends Command
@@ -30,22 +30,15 @@ class ListBlocks extends Command
     protected $description = 'List all available Twill blocks';
 
     /**
-     * Blocks collection.
-     *
-     * @var A17\Twill\Services\Blocks\BlockCollection
+     * @return BlockCollection
      */
-    public $blockCollection;
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->blockCollection = TwillBlocks::getBlockCollection();
+    protected function getBlockCollection() {
+        return app(BlockCollection::class);
     }
 
     protected function displayMissingDirectories(): void
     {
-        $this->blockCollection
+        $this->getBlockCollection()
             ->getMissingDirectories()
             ->each(function ($directory) {
                 $this->error("Directory not found: {$directory}");
@@ -87,7 +80,7 @@ class ListBlocks extends Command
 
         $typeFiltered = $this->option('blocks') || $this->option('repeaters');
 
-        $filteredList = $this->blockCollection
+        $filteredList = $this->getBlockCollection()
             ->reject(function (Block $block) use ($sourceFiltered) {
                 return $sourceFiltered && ! $this->option($block->source);
             })
