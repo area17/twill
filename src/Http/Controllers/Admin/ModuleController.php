@@ -15,6 +15,10 @@ use A17\Twill\Repositories\ModuleRepository;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Breadcrumbs\Breadcrumbs;
 use A17\Twill\Services\Forms\Fields\BaseFormField;
+use A17\Twill\Services\Forms\Fields\BlockEditor;
+use A17\Twill\Services\Forms\Fields\Files;
+use A17\Twill\Services\Forms\Fields\Medias;
+use A17\Twill\Services\Forms\Fields\Repeater;
 use A17\Twill\Services\Forms\Form;
 use A17\Twill\Services\Listings\Columns\Browser;
 use A17\Twill\Services\Listings\Columns\FeaturedStatus;
@@ -984,6 +988,16 @@ abstract class ModuleController extends Controller
         }
 
         $form = $this->getCreateForm();
+
+        if ($form->filter(function (BaseFormField $field) {
+            return $field instanceof Medias ||
+                $field instanceof BlockEditor ||
+                $field instanceof Files ||
+                $field instanceof Repeater;
+        })
+            ->isNotEmpty()) {
+            throw new \Exception('Create forms do not support media, files and blocks');
+        }
 
         if ($form->isNotEmpty()) {
             $view = 'twill::layouts.listing';
