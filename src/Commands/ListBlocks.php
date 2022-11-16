@@ -32,7 +32,7 @@ class ListBlocks extends Command
     /**
      * @return BlockCollection
      */
-    protected function getBlockCollection() {
+    public function getBlockCollection() {
         return app(BlockCollection::class);
     }
 
