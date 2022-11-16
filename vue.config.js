@@ -69,7 +69,7 @@ const svgConfig = (suffix = null) => {
   }
 }
 
-let plugins = [
+const plugins = [
   new CleanWebpackPlugin(),
   new SVGSpritemapPlugin(`${srcDirectory}/icons/**/*.svg`, svgConfig()),
   new SVGSpritemapPlugin(`${srcDirectory}/icons-files/**/*.svg`, svgConfig('files')),
@@ -85,6 +85,10 @@ let plugins = [
     }
   })
 ]
+
+if (fs.existsSync(`${srcDirectory}/icons-custom`) && fs.readdirSync(`${srcDirectory}/icons-custom`).length !== 0) {
+  plugins.push(new SVGSpritemapPlugin(`${srcDirectory}/icons-custom/**/*.svg`, svgConfig('custom')));
+}
 
 if (!isProd) {
   plugins.push(new WebpackNotifierPlugin({

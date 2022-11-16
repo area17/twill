@@ -19,7 +19,7 @@ return [
                 'routePrefix' => 'work', // optional, if the module is living under a specific routes group
                 'count' => true, // show total count with link to index of this module
                 'create' => true, // show link in create new dropdown
-                'activity' => true, // show activities on this module in actities list
+                'activity' => true, // show activities on this module in activities list
                 'draft' => true, // show drafts of this module for current user 
                 'search' => true, // show results for this module in global search
             ],

@@ -14,7 +14,7 @@
       </div>
       <div class="block__actions">
         <slot name="block-actions"/>
-        <a17-dropdown :ref="addDropdown" position="bottom-right" @open="hover = true" @close="hover = false" v-if="withAddDropdown">
+        <a17-dropdown :ref="addDropdown" position="bottom-right" :maxHeight="430" @open="hover = true" @close="hover = false" v-if="withAddDropdown">
           <a17-button variant="icon" data-action @click="$refs[addDropdown].toggle()"><span v-svg symbol="add"></span>
           </a17-button>
           <div slot="dropdown__content">
@@ -97,10 +97,17 @@
         const suffix = this.titleFieldValue || ''
         const separator = title && suffix ? ' — ' : ''
 
+        let fullTitle
+
         if (this.block.hideTitlePrefix) {
-          return `${suffix}`
+          fullTitle = `${suffix}`
+        } else {
+          fullTitle = `${title}${separator}${suffix}`
         }
-        return `${title}${separator}${suffix}`
+
+        const cleanup = document.createElement('div')
+        cleanup.innerHTML = fullTitle
+        return cleanup.innerText
       },
       blockClasses () {
         return [
@@ -162,7 +169,6 @@
 </script>
 
 <style lang="scss" scoped>
-
   .block__content {
     display: none;
     padding: 35px 15px;
@@ -232,17 +238,24 @@
   }
 
   .block__title {
+    text-overflow: ellipsis;
     font-weight: 600;
+    max-width: 45%;
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
     height: 50px;
     line-height: 50px;
     user-select: none;
   }
 
   .block__toggle {
+    overflow: hidden;
     flex-grow: 1;
 
     .dropdown {
       display: inline-block;
+      vertical-align: top;
     }
   }
 
@@ -268,10 +281,11 @@
 
   .block__actions {
     button[data-action] {
-      display: none;
+      visibility: hidden;
     }
 
     .dropdown--active button[data-action] {
+      visibility: visible;
       display: inline-block;
     }
   }
@@ -286,6 +300,7 @@
     }
 
     button[data-action] {
+      visibility: visible;
       display: inline-block;
     }
   }

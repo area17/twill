@@ -4,6 +4,7 @@
       <slot></slot>
       <a17-modal-validation
         :mode="mode"
+        ref="validation"
         :is-disable="createMode"
         :active-publish-state="withPublicationToggle"
         :is-publish="published"
@@ -68,11 +69,17 @@
       ...mapState({
         action: state => state.modalEdition.action,
         mode: state => state.modalEdition.mode,
-        columns: state => state.datatable.columns
+        columns: state => state.datatable.columns,
+        language: state => state.language.active
       }),
       ...mapGetters([
         'fieldValueByName'
       ])
+    },
+    watch: {
+      language () {
+        this.$refs.validation.addListeners()
+      }
     },
     methods: {
       open: function () {

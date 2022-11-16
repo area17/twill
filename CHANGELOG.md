@@ -2,6 +2,59 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.11.0 (2022-11-09)
+
+### Features
+
+- When displaying a field with html after the block name, this is now stripped and cleaned [`#1843`](https://github.com/area17/twill/pull/1843)
+
+### Other
+
+- Added support for laravel/ui 4.x and fixes an issue with Laravel 9 aws adapter [`#1900`](https://github.com/area17/twill/pull/1900)
+
+## 2.10.0 (2022-10-18)
+
+### Features
+
+- Add command to allow developers to flush only the twill-manifest.json from cache [`#1859`](https://github.com/area17/twill/pull/1859)
+- Adds a ArrayContains support to connected fields [`#1848`](https://github.com/area17/twill/pull/1848)
+- The preview function now allows more interaction [`#1561`](https://github.com/area17/twill/pull/1561)
+- Adds disabled support to translated media and slideshow [`#1845`](https://github.com/area17/twill/pull/1845)
+
+### Bugfixes
+
+- Avoids additional queries when getting blocks [`#1790`](https://github.com/area17/twill/pull/1790)
+- Fixed an issue where translation fallback would not work for blocks [`#1754`](https://github.com/area17/twill/pull/1754)
+
+## 2.9.1 (2022-09-30)
+
+### Fixes
+
+- Fixes an issue that would allow unpublished users to continue to login [`#1833`](https://github.com/area17/twill/pull/1833)
+- Fixes an issue that where custom icons were not picked up by the build process [`#1825`](https://github.com/area17/twill/pull/1825)
+
+## 2.9.0 (2022-09-13)
+
+### Features
+
+- Submit options are now configurable using the getSubmitOptions [`#1719`](https://github.com/area17/twill/pull/1719)
+- Using enableDraftRevisions you can now have drafts on top of published versions [`#1725`](https://github.com/area17/twill/pull/1725)
+
+### Fixes
+
+- When having many blocks, the list is now srollable [`#1464`](https://github.com/area17/twill/pull/1464)
+- Improved support for custom icons [`#1732`](https://github.com/area17/twill/pull/1732)
+- Fixes a js error that occurred when cloning repeaters [`#1734`](https://github.com/area17/twill/pull/1734)
+- Resolved an issue where slug models could not be found if directories were nested [`#1738`](https://github.com/area17/twill/pull/1738)
+- Fixed slugs in nested modules to not rely on random sort anymore [`#1743`](https://github.com/area17/twill/pull/1743)
+- Fixed an issue where the activities dashboard could show less entries [`#1764`](https://github.com/area17/twill/pull/1764)
+- Fixed an issue that could cause undefined errors when using subdomain routing [`#1779`](https://github.com/area17/twill/pull/1779)
+- Optimized a query in HasRelated [`#1789`](https://github.com/area17/twill/pull/1789)
+
+### Docs
+
+Various small documentation updates.
+
 ## 2.8.8 (2022-06-27)
 
 ###  Features

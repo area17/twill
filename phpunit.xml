@@ -37,6 +37,7 @@
       <file>tests/integration/BrowsersTest.php</file>
       <file>tests/integration/NestedModuleTest.php</file>
       <file>tests/integration/SingletonModuleTest.php</file>
+      <file>tests/integration/RevisionsTest.php</file>
     </testsuite>
   </testsuites>
   <filter>
