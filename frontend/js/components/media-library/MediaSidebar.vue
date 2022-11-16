@@ -60,11 +60,21 @@
           <a17-textfield v-else-if="isImage" :label="$trans('media-library.sidebar.alt-text', 'Alt text')" name="alt_text"
                          :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur"/>
 
-          <a17-locale type="a17-textfield" v-if="isImage && translatableMetadatas.includes('caption')"
-                      :attributes="{ type: 'textarea', rows: 1, label: $trans('media-library.sidebar.caption', 'Caption'), name: 'caption', size: 'small' }"
-                      :initialValues="captionValues" @focus="focus" @blur="blur"></a17-locale>
-          <a17-textfield v-else-if="isImage" type="textarea" :rows="1" size="small" :label="$trans('media-library.sidebar.caption', 'Caption')" name="caption"
-                         :initialValue="firstMedia.metadatas.default.caption" @focus="focus" @blur="blur"/>
+          <template v-if="useWysiwyg">
+            <a17-locale type="a17-wysiwyg" v-if="isImage && translatableMetadatas.includes('caption')"
+                        :attributes="{ options: wysiwygOptions, label: $trans('media-library.sidebar.caption', 'Caption'), name: 'caption', size: 'small' }"
+                        :initialValues="captionValues" @focus="focus" @blur="blur"></a17-locale>
+            <a17-wysiwyg v-else-if="isImage" type="textarea" :rows="1" size="small" :label="$trans('media-library.sidebar.caption', 'Caption')" name="caption"
+                           :options="wysiwygOptions"
+                           :initialValue="firstMedia.metadatas.default.caption" @focus="focus" @blur="blur"/>
+          </template>
+          <template v-else>
+            <a17-locale type="a17-textfield" v-if="isImage && translatableMetadatas.includes('caption')"
+                        :attributes="{ type: 'textarea', rows: 1, label: $trans('media-library.sidebar.caption', 'Caption'), name: 'caption', size: 'small' }"
+                        :initialValues="captionValues" @focus="focus" @blur="blur"></a17-locale>
+            <a17-textfield v-else-if="isImage" type="textarea" :rows="1" size="small" :label="$trans('media-library.sidebar.caption', 'Caption')" name="caption"
+                           :initialValue="firstMedia.metadatas.default.caption" @focus="focus" @blur="blur"/>
+          </template>
 
           <template v-for="field in singleOnlyMetadatas">
             <a17-locale type="a17-textfield" v-bind:key="field.name"
@@ -257,7 +267,9 @@
         return this.extraMetadatas.filter(m => !m.multiple || (m.multiple && this.translatableMetadatas.includes(m.name)))
       },
       ...mapState({
-        mediasLoading: state => state.mediaLibrary.loading
+        mediasLoading: state => state.mediaLibrary.loading,
+        useWysiwyg: state => state.mediaLibrary.config.useWysiwyg,
+        wysiwygOptions: state => state.mediaLibrary.config.wysiwygOptions
       })
     },
     methods: {

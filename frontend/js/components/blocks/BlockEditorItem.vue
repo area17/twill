@@ -1,10 +1,9 @@
 <template>
   <div class="block" :class="blockClasses">
     <div class="block__header" @dblclick.prevent="toggleExpand()">
-      <span class="block__handle"></span>
+      <span v-if="withHandle" class="block__handle"></span>
       <div class="block__toggle">
-        <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown"
-                      :maxHeight="270">
+        <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown" :maxHeight="270">
           <span class="block__counter f--tiny" @click="$refs[moveDropdown].toggle()">{{ index + 1 }}</span>
           <div slot="dropdown__content">
             <slot name="dropdown-numbers"/>
@@ -15,8 +14,7 @@
       </div>
       <div class="block__actions">
         <slot name="block-actions"/>
-        <a17-dropdown :ref="addDropdown" position="bottom-right" @open="hover = true" @close="hover = false"
-                      v-if="withAddDropdown">
+        <a17-dropdown :ref="addDropdown" position="bottom-right" :maxHeight="430" @open="hover = true" @close="hover = false" v-if="withAddDropdown">
           <a17-button variant="icon" data-action @click="$refs[addDropdown].toggle()"><span v-svg symbol="add"></span>
           </a17-button>
           <div slot="dropdown__content">
@@ -36,9 +34,10 @@
         </a17-dropdown>
       </div>
     </div>
-    <div class="block__content" :aria-hidden="!visible ? true : null">
-      <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes"
-                 :key="`form_${block.type}_${block.id}`"><!-- dynamic components --></component>
+    <div class="block__content" v-if="visible">
+      <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes" :key="`form_${block.type}_${block.id}`">
+        <!-- dynamic components -->
+      </component>
       <!-- Block validation input frame, to display errors -->
       <a17-inputframe size="small" label="" :name="`block.${block.id}`"></a17-inputframe>
     </div>
@@ -67,11 +66,15 @@
       block: {
         type: Object,
         default: () => {}
+      },
+      withHandle: {
+        type: Boolean,
+        default: true
       }
     },
     data () {
       return {
-        visible: true,
+        visible: false,
         hover: false,
         withMoveDropdown: true,
         withAddDropdown: true
@@ -94,10 +97,17 @@
         const suffix = this.titleFieldValue || ''
         const separator = title && suffix ? ' — ' : ''
 
+        let fullTitle
+
         if (this.block.hideTitlePrefix) {
-          return `${suffix}`
+          fullTitle = `${suffix}`
+        } else {
+          fullTitle = `${title}${separator}${suffix}`
         }
-        return `${title}${separator}${suffix}`
+
+        const cleanup = document.createElement('div')
+        cleanup.innerHTML = fullTitle
+        return cleanup.innerText
       },
       blockClasses () {
         return [
@@ -127,10 +137,14 @@
         this.visible = this.opened
       }
     },
+    created () {
+      if (this.block.ui && this.block.ui.isNew) {
+        this.toggleExpand()
+      }
+    },
     methods: {
       toggleExpand () {
         this.visible = !this.visible
-        this.$emit('expand', this.visible)
       },
       componentName (id) {
         return 'blocks[' + id + ']'
@@ -155,7 +169,6 @@
 </script>
 
 <style lang="scss" scoped>
-
   .block__content {
     display: none;
     padding: 35px 15px;
@@ -225,17 +238,24 @@
   }
 
   .block__title {
+    text-overflow: ellipsis;
     font-weight: 600;
+    max-width: 45%;
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
     height: 50px;
     line-height: 50px;
     user-select: none;
   }
 
   .block__toggle {
+    overflow: hidden;
     flex-grow: 1;
 
     .dropdown {
       display: inline-block;
+      vertical-align: top;
     }
   }
 
@@ -261,10 +281,11 @@
 
   .block__actions {
     button[data-action] {
-      display: none;
+      visibility: hidden;
     }
 
     .dropdown--active button[data-action] {
+      visibility: visible;
       display: inline-block;
     }
   }
@@ -279,6 +300,7 @@
     }
 
     button[data-action] {
+      visibility: visible;
       display: inline-block;
     }
   }

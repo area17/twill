@@ -4,6 +4,7 @@
                   :locale="locale"
                   @localize="updateLocale"
                   :size="size"
+                  :note="note"
                   :name="name">
     <a17-slideshow v-if="max > 1 || max === 0"
                    :name="name"
@@ -16,7 +17,8 @@
                    :withCaption="withCaption"
                    :altTextMaxLength="altTextMaxLength"
                    :captionMaxLength="captionMaxLength"
-                   :extraMetadatas="extraMetadatas">
+                   :extraMetadatas="extraMetadatas"
+                   :disabled="disabled">
       <slot />
     </a17-slideshow>
     <a17-mediafield v-else
@@ -28,7 +30,8 @@
                     :withCaption="withCaption"
                     :altTextMaxLength="altTextMaxLength"
                     :captionMaxLength="captionMaxLength"
-                    :extraMetadatas="extraMetadatas">
+                    :extraMetadatas="extraMetadatas"
+                    :disabled="disabled">
       <slot />
     </a17-mediafield>
   </a17-inputframe>

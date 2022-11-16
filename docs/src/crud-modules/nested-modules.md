@@ -10,14 +10,14 @@ Out of the box, Twill supports 2 kinds of nested modules: [self-nested](#self-ne
 
 Self-nested modules allow items to be nested within other items of the same module (e.g. Pages can contain other Pages):
 
-![self-nested module](/docs/_media/nested-module.png)
+![self-nested module](../.vuepress/public/_media/nested-module.png)
 
 ### Creating self-nested modules
 
 You can enable nesting when creating a new module with the `--hasNesting` or `-N` option:
 
 ```
-php artisan twill:module:make -N pages
+php artisan twill:make:module -N pages
 ```
 
 This will prefill some options and methods in your module's controller and use the supporting traits on your model and repository.
@@ -85,7 +85,7 @@ For more information on how to work with nested items in your application, you c
 
 Parent-child modules are 2 distinct modules, where items of the child module are attached to items of the parent module (e.g. Issues can contain Articles):
 
-![parent-child modules](/docs/_media/nested-parent-index.png)
+![parent-child modules](../.vuepress/public/_media/nested-parent-index.png)
 
 Items of the child module can't be created independently.
 
@@ -94,8 +94,8 @@ Items of the child module can't be created independently.
 We'll use the `slug` and `position` features in this example but you can customize as needed:
 
 ```
-php artisan twill:module issues -SP
-php artisan twill:module issueArticles -SP
+php artisan twill:make:module issues -SP
+php artisan twill:make:module issueArticles -SP
 ```
 
 Add the `issue_id` foreign key to the child module's migration:
@@ -251,7 +251,7 @@ class IssueArticleController extends BaseModuleController
 }
 ```
 
-![child module index](/docs/_media/nested-child-index.png)
+![child module index](../.vuepress/public/_media/nested-child-index.png)
 
 <br>
 
@@ -284,4 +284,4 @@ Then, override the `formData()` method to do the same in the form view:
     }
 ```
 
-![nested child form](/docs/_media/nested-child-form.png)
+![nested child form](../.vuepress/public/_media/nested-child-form.png)

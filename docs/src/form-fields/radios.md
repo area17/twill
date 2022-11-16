@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Radios
 
-![screenshot](/docs/_media/radios.png)
+![screenshot](../.vuepress/public/_media/radios.png)
 
 ```php
 @formField('radios', [
@@ -43,3 +43,4 @@ pageClass: twill-doc
 | required            | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean | false |
 | border              | Draws a border around the field                                     | boolean | false         |
 | columns             | Aligns the options on a grid with a given number of columns         | integer | 0 (off)       |
+| disabled            | Disables the field                                      | boolean         | false         | 

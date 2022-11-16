@@ -13,6 +13,8 @@
     $border = $border ?? false;
     $columns = $columns ?? 0;
 
+    $disabled = $disabled ?? false;
+
     // do not use for now, but this will allow you to create a new option directly from the form
     $addNew = $addNew ?? false;
     $moduleName = $moduleName ?? null;
@@ -30,6 +32,7 @@
     @if ($default) selected="{{ $default }}" @endif
     :grid="false"
     :columns="{{ $columns }}"
+    :disabled="{{$disabled ? 'true' : 'false'}}"
     @if ($inline) :inline="true" @endif
     @if ($border) :border="true" @endif
     @if ($required) :required="true" @endif
@@ -43,13 +46,12 @@
 >
     @if($addNew)
         <div slot="addModal">
-            {{-- unset($note, $options, $required, $default, $inline, $addNew, $inModal); --}}
             @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
         </div>
     @endif
 </a17-singleselect>
 
-@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
+@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name, $default)))
 @push('vuexStore')
     @include('twill::partials.form.utils._selector_input_store')
 @endpush

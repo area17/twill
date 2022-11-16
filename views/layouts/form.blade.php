@@ -45,6 +45,7 @@
                 <a17-title-editor
                     name="{{ $titleFormKey }}"
                     :editable-title="{{ json_encode($editableTitle ?? true) }}"
+                    :control-languages-publication="{{ json_encode($controlLanguagesPublication) }}"
                     custom-title="{{ $customTitle ?? '' }}"
                     custom-permalink="{{ $customPermalink ?? '' }}"
                     localized-permalinkbase="{{ json_encode($localizedPermalinkBase ?? '') }}"
@@ -65,7 +66,7 @@
                 </div>
             </a17-sticky-nav>
         </div>
-        <form action="{{ $saveUrl }}" novalidate method="POST" @unless($customForm) v-on:submit.prevent="submitForm" @endif>
+        <form action="{{ $saveUrl }}" novalidate method="POST" @if($customForm) ref="customForm" @else v-on:submit.prevent="submitForm" @endif>
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="container">
                 <div class="wrapper wrapper--reverse" v-sticky data-sticky-id="publisher" data-sticky-offset="80">
@@ -144,68 +145,15 @@
         createWithoutModal: {{ isset($createWithoutModal) && $createWithoutModal ? 'true' : 'false' }},
         withPublicationTimeframe: {{ json_encode(($schedule ?? true) && isset($item) && $item->isFillable('publish_start_date')) }},
         publishedLabel: '{{ $customPublishedLabel ?? twillTrans('twill::lang.main.published') }}',
+        expiredLabel: '{{twillTrans('twill::lang.publisher.expired')}}',
+        scheduledLabel: '{{twillTrans('twill::lang.publisher.scheduled')}}',
         draftLabel: '{{ $customDraftLabel ?? twillTrans('twill::lang.main.draft') }}',
         submitDisableMessage: '{{ $submitDisableMessage ?? '' }}',
         startDate: '{{ $item->publish_start_date ?? '' }}',
         endDate: '{{ $item->publish_end_date ?? '' }}',
         visibility: '{{ isset($item) && $item->isFillable('public') ? ($item->public ? 'public' : 'private') : false }}',
         reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!},
-        submitOptions: @if(isset($item) && $item->cmsRestoring) {
-            draft: [
-                {
-                    name: 'restore',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-draft') }}'
-                },
-                {
-                    name: 'restore-close',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-draft-close') }}'
-                },
-                {
-                    name: 'restore-new',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-draft-new') }}'
-                },
-                {
-                    name: 'cancel',
-                    text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
-                }
-            ],
-            live: [
-                {
-                    name: 'restore',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live') }}'
-                },
-                {
-                    name: 'restore-close',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live-close') }}'
-                },
-                {
-                    name: 'restore-new',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live-new') }}'
-                },
-                {
-                    name: 'cancel',
-                    text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
-                }
-            ],
-            update: [
-                {
-                    name: 'restore',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live') }}'
-                },
-                {
-                    name: 'restore-close',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live-close') }}'
-                },
-                {
-                    name: 'restore-new',
-                    text: '{{ twillTrans('twill::lang.publisher.restore-live-new') }}'
-                },
-                {
-                    name: 'cancel',
-                    text: '{{ twillTrans('twill::lang.publisher.cancel') }}'
-                }
-            ]
-        } @else null @endif
+        submitOptions: {!! isset($submitOptions) ? json_encode($submitOptions) : 'null' !!}
     }
 
     window['{{ config('twill.js_namespace') }}'].STORE.revisions = {!! json_encode($revisions ?? []) !!}

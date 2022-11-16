@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Storage;
+use Aws\S3\S3Client;
+use Aws\S3\PostObjectV4;
 
 if (!function_exists('s3Endpoint')) {
     /**
@@ -9,8 +11,19 @@ if (!function_exists('s3Endpoint')) {
      */
     function s3Endpoint($disk = 'libraries')
     {
-        $scheme = config("filesystems.disks.{$disk}.use_https") ? 'https://' : '';
-        return $scheme . config("filesystems.disks.{$disk}.bucket") . '.' . Storage::disk($disk)->getAdapter()->getClient()->getEndpoint()->getHost();
+        $diskInstance = Storage::disk($disk);
+
+        $adapter = $diskInstance->getAdapter();
+
+        if (is_callable([$adapter, 'getClient'])) {
+            $s3Client = $adapter->getClient();
+        } else {
+            $s3Client = new S3Client($diskInstance->getConfig());
+        }
+
+        $s3PostObject = new PostObjectV4($s3Client, config("filesystems.disks.{$disk}.bucket"), []);
+
+        return $s3PostObject->getFormAttributes()['action'];
     }
 }
 
@@ -50,6 +63,9 @@ if (!function_exists('replaceAccents')) {
      */
     function replaceAccents($str)
     {
+        if (function_exists('mb_convert_encoding')) {
+            return mb_convert_encoding($str, 'ASCII', 'UTF-8');
+        }
         return iconv('UTF-8', 'ASCII//TRANSLIT', $str);
     }
 }

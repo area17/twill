@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use A17\Twill\Facades\TwillCapsules;
+
 trait HasRevisions
 {
     /**
@@ -34,13 +36,22 @@ trait HasRevisions
      */
     public function revisionsArray()
     {
-        return $this->revisions->map(function ($revision) {
-            return [
-                'id' => $revision->id,
-                'author' => $revision->user->name ?? 'Unknown',
-                'datetime' => $revision->created_at->toIso8601String(),
-            ];
-        })->toArray();
+        $currentRevision = null;
+
+        return $this->revisions
+            ->map(function ($revision, $index) use (&$currentRevision) {
+                if (!$currentRevision && !$revision->isDraft()) {
+                    $currentRevision = $revision;
+                }
+
+                return [
+                    'id' => $revision->id,
+                    'author' => $revision->user->name ?? 'Unknown',
+                    'datetime' => $revision->created_at->toIso8601String(),
+                    'label' => $currentRevision === $revision ? twillTrans('twill::lang.publisher.current') : '',
+                ];
+            })
+            ->toArray();
     }
 
     protected function getRevisionModel()
@@ -52,6 +63,6 @@ trait HasRevisions
             return $revision;
         }
 
-        return $this->getCapsuleRevisionClass(class_basename($this));
+        return TwillCapsules::getCapsuleForModel(class_basename($this))->getRevisionModel();
     }
 }

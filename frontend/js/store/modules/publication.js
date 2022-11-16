@@ -6,12 +6,15 @@ const state = {
   publishSubmit: (window[process.env.VUE_APP_NAME].STORE.publication.published || !window[process.env.VUE_APP_NAME].STORE.publication.withPublicationToggle) ? 'update' : 'live',
   publishedLabel: window[process.env.VUE_APP_NAME].STORE.publication.publishedLabel || 'Live',
   draftLabel: window[process.env.VUE_APP_NAME].STORE.publication.draftLabel || 'Draft',
+  expiredLabel: window[process.env.VUE_APP_NAME].STORE.publication.expiredLabel || 'Expired',
+  scheduledLabel: window[process.env.VUE_APP_NAME].STORE.publication.scheduledLabel || 'Scheduled',
   withPublicationTimeframe: window[process.env.VUE_APP_NAME].STORE.publication.withPublicationTimeframe || false,
   startDate: window[process.env.VUE_APP_NAME].STORE.publication.startDate || null,
   endDate: window[process.env.VUE_APP_NAME].STORE.publication.endDate || null,
   visibility: window[process.env.VUE_APP_NAME].STORE.publication.visibility || false,
   reviewProcess: window[process.env.VUE_APP_NAME].STORE.publication.reviewProcess || [],
   createWithoutModal: window[process.env.VUE_APP_NAME].STORE.publication.createWithoutModal || false,
+  hasUnsavedChanges: false,
   saveType: undefined,
   visibilityOptions: [
     {
@@ -24,6 +27,7 @@ const state = {
     }
   ],
   submitDisableMessage: window[process.env.VUE_APP_NAME].STORE.publication.submitDisableMessage || '',
+  // @todo(3.x): Remove 'submitOptions' default values as they are now defined in ModuleController.php
   submitOptions: window[process.env.VUE_APP_NAME].STORE.publication.submitOptions || {
     draft: [
       {
@@ -100,9 +104,6 @@ const getters = {
     return state.reviewProcess.filter(reviewProcess => reviewProcess.checked)
   },
   getSubmitOptions: state => {
-    if (state.createWithoutModal) {
-      return state.submitOptions.draft
-    }
     return (state.published || !state.withPublicationToggle) ? state.submitOptions[state.publishSubmit] : state.submitOptions.draft
   },
   isEnabledSubmitOption: (state, getters) => name => {
@@ -160,6 +161,9 @@ const mutations = {
   },
   [PUBLICATION.UPDATE_SAVE_TYPE] (state, newValue) {
     state.saveType = newValue
+  },
+  [PUBLICATION.UPDATE_HAS_UNSAVED_CHANGES] (state, newValue) {
+    state.hasUnsavedChanges = newValue
   }
 }
 

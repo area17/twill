@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Multi Select
 
-![screenshot](/docs/_media/multiselectunpacked.png)
+![screenshot](../.vuepress/public/_media/multiselectunpacked.png)
 
 ```php
 @formField('multi_select', [
@@ -108,7 +108,7 @@ In this case that it can be implemented as follows:
 - Create a Sectors [module](/crud-modules/cli-generator.html)
 
 ```
-php artisan twill:module sectors
+php artisan twill:make:module sectors
 ```
 
 - Create a migration for a pivot table.

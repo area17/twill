@@ -1,12 +1,12 @@
 ---
 pageClass: twill-doc
-title: Documenation
+title: Documentation
 next: "/preface/"
 ---
 
 # Twill Documentation
 
-![Twill Dashboard](/docs/_media/twill-dashboard.jpg)
+![Twill Dashboard](./.vuepress/public/_media/twill-dashboard.jpg)
 
 #### About Twill
 

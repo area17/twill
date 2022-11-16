@@ -2,9 +2,11 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use A17\Twill\Exceptions\MediaCropNotFoundException;
 use A17\Twill\Models\Media;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use ImageService;
+use A17\Twill\Services\MediaLibrary\ImageService;
 
 trait HasMedias
 {
@@ -14,6 +16,16 @@ trait HasMedias
         'crop_w',
         'crop_h',
     ];
+
+    public static function bootHasMedias(): void
+    {
+        self::deleted(static function (Model $model) {
+            if (!method_exists($model, 'isForceDeleting') || $model->isForceDeleting()) {
+                /** @var \A17\Twill\Models\Behaviors\HasMedias $model */
+                $model->medias()->detach();
+            }
+        });
+    }
 
     /**
      * Defines the many-to-many relationship for media objects.
@@ -40,7 +52,7 @@ trait HasMedias
             ->withTimestamps()->orderBy(config('twill.mediables_table', 'twill_mediables') . '.id', 'asc');
     }
 
-    private function findMedia($role, $crop = "default")
+    private function findMedia($role, $crop = 'default')
     {
         $media = $this->medias->first(function ($media) use ($role, $crop) {
             if (config('twill.media_library.translated_form_fields', false)) {
@@ -50,7 +62,7 @@ trait HasMedias
             return $media->pivot->role === $role && $media->pivot->crop === $crop && ($localeScope ?? true);
         });
 
-        if (!$media && config('twill.media_library.translated_form_fields', false)) {
+        if (! $media && config('twill.media_library.translated_form_fields', false)) {
             $media = $this->medias->first(function ($media) use ($role, $crop) {
                 return $media->pivot->role === $role && $media->pivot->crop === $crop;
             });

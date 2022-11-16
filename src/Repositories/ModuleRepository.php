@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories;
 
+use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Model;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
@@ -9,7 +10,7 @@ use A17\Twill\Repositories\Behaviors\HandleDates;
 use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
 use A17\Twill\Repositories\Behaviors\HandleRelatedBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleRepeaters;
-use A17\Twill\Services\Capsules\HasCapsules;
+use Exception;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -19,10 +20,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use PDO;
+use ReflectionClass;
 
 abstract class ModuleRepository
 {
-    use HandleDates, HandleBrowsers, HandleRelatedBrowsers, HandleRepeaters, HandleFieldsGroups, HasCapsules;
+    use HandleDates, HandleBrowsers, HandleRelatedBrowsers, HandleRepeaters, HandleFieldsGroups;
 
     /**
      * @var \A17\Twill\Models\Model
@@ -60,7 +62,7 @@ abstract class ModuleRepository
      * @param array $orders
      * @param int $perPage
      * @param bool $forcePagination
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Illuminate\Support\Collection|\Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function get($with = [], $scopes = [], $orders = [], $perPage = 20, $forcePagination = false)
     {
@@ -269,17 +271,17 @@ abstract class ModuleRepository
             return $this->create($fields);
         }
 
-        $this->update($object->id, $fields);
+        return $this->update($object->id, $fields);
     }
 
     /**
      * @param mixed $id
      * @param array $fields
-     * @return void
+     * @return \A17\Twill\Models\Model
      */
     public function update($id, $fields)
     {
-        DB::transaction(function () use ($id, $fields) {
+        return DB::transaction(function () use ($id, $fields) {
             $object = $this->model->findOrFail($id);
 
             $this->beforeSave($object, $fields);
@@ -291,6 +293,8 @@ abstract class ModuleRepository
             $object->save();
 
             $this->afterSave($object, $fields);
+
+            return $object->fresh();
         }, 3);
     }
 
@@ -413,8 +417,11 @@ abstract class ModuleRepository
                 Collection::make($ids)->each(function ($id) {
                     $this->delete($id);
                 });
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error($e);
+                if (config('app.debug')) {
+                    throw $e;
+                }
                 return false;
             }
 
@@ -455,7 +462,7 @@ abstract class ModuleRepository
                 $objects->each(function ($object) {
                     $this->afterDelete($object);
                 });
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error($e);
                 return false;
             }
@@ -497,7 +504,7 @@ abstract class ModuleRepository
                 $objects->each(function ($object) {
                     $this->afterRestore($object);
                 });
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 Log::error($e);
                 return false;
             }
@@ -859,11 +866,11 @@ abstract class ModuleRepository
     {
         if (!$modelOrRepository) {
             if (class_exists($relation) && (new $relation) instanceof Model) {
-                $modelOrRepository = Str::afterLast($relation, '\\');
+                $modelOrRepository = str_after_last($relation, '\\');
             } else {
                 $morphedModel = Relation::getMorphedModel($relation);
                 if (class_exists($morphedModel) && (new $morphedModel) instanceof Model) {
-                    $modelOrRepository = (new \ReflectionClass($morphedModel))->getShortName();
+                    $modelOrRepository = (new ReflectionClass($morphedModel))->getShortName();
                 } else {
                     $modelOrRepository = ucfirst(Str::singular($relation));
                 }
@@ -876,21 +883,21 @@ abstract class ModuleRepository
 
         if ($repository instanceof ModuleRepository) {
             return $repository;
-        } else {
-            $class = Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($modelOrRepository) . "Repository";
         }
+
+        $class = Config::get('twill.namespace') . "\\Repositories\\" . ucfirst($modelOrRepository) . "Repository";
 
         if (class_exists($class)) {
             return App::make($class);
         }
 
-        $capsule = $this->getCapsuleByModel($modelOrRepository);
+        $capsule = TwillCapsules::getCapsuleForModel($modelOrRepository);
 
         if (blank($capsule)) {
-            throw new \Exception("Repository class not found for model '{$modelOrRepository}'");
+            throw new Exception("Repository class not found for model '{$modelOrRepository}'");
         }
 
-        return App::make($capsule['repository']);
+        return App::make($capsule->getRepositoryClass());
     }
 
     /**

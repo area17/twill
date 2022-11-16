@@ -33,6 +33,8 @@ const srcDirectory = 'frontend'
 const partialsDirectory = '../views/partials'
 const outputDir = isProd ? 'dist' : (process.env.TWILL_DEV_ASSETS_PATH || 'dist')
 const assetsDir = process.env.TWILL_ASSETS_DIR || 'assets/admin'
+// Only works with laravel valet.
+const useHttps = process.env.TWILL_DEV_MODE_SSH ? process.env.TWILL_DEV_MODE_SSH === 'true' : false
 
 const pages = {
   'main-buckets': `${srcDirectory}/js/main-buckets.js`,
@@ -67,7 +69,7 @@ const svgConfig = (suffix = null) => {
   }
 }
 
-let plugins = [
+const plugins = [
   new CleanWebpackPlugin(),
   new SVGSpritemapPlugin(`${srcDirectory}/icons/**/*.svg`, svgConfig()),
   new SVGSpritemapPlugin(`${srcDirectory}/icons-files/**/*.svg`, svgConfig('files')),
@@ -83,6 +85,10 @@ let plugins = [
     }
   })
 ]
+
+if (fs.existsSync(`${srcDirectory}/icons-custom`) && fs.readdirSync(`${srcDirectory}/icons-custom`).length !== 0) {
+  plugins.push(new SVGSpritemapPlugin(`${srcDirectory}/icons-custom/**/*.svg`, svgConfig('custom')));
+}
 
 if (!isProd) {
   plugins.push(new WebpackNotifierPlugin({
@@ -117,6 +123,7 @@ const config = {
   pages,
   devServer: {
     hot: true,
+    https: useHttps,
     disableHostCheck: true,
     headers: {
       "Access-Control-Allow-Origin": "*"
@@ -150,6 +157,19 @@ const config = {
       config.plugins.delete(`preload-${page}`)
       config.plugins.delete(`prefetch-${page}`)
     })
+  }
+}
+
+if (useHttps) {
+  const homeDir = process.env.HOME;
+  const host = process.env.APP_URL.split('//')[1] ?? process.env.APP_URL;
+
+  // This takes the ssh certificates from your `valet secure` domain so that browsers (Looking at safari) stop
+  // complaining about it.
+  config.devServer.host = host;
+  config.devServer.https = {
+    key: fs.readFileSync(path.resolve(homeDir, `.config/valet/Certificates/${host}.key`)),
+    cert: fs.readFileSync(path.resolve(homeDir, `.config/valet/Certificates/${host}.crt`)),
   }
 }
 

@@ -181,6 +181,7 @@ return [
     'manifest_file' => 'twill-manifest.json',
     'vendor_path' => 'vendor/area17/twill',
     'custom_components_resource_path' => 'assets/js/components',
+    'vendor_components_resource_path' => 'assets/vendor/js/components',
     'build_timeout' => 300,
     'internal_icons' => [
         'content-editor.svg',
@@ -205,9 +206,17 @@ return [
         'pt',
         'zh-Hans',
         'ru',
-        'tr'
+        'tr',
+        'bs',
+        'ar'
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | When a singleton is not seeded, you can use this flag to automatically seed it.
+    |--------------------------------------------------------------------------
+    */
+    'auto_seed_singletons' => false,
 
     /*
     |--------------------------------------------------------------------------

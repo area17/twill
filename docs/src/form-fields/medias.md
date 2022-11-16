@@ -4,7 +4,7 @@ pageClass: twill-doc
 
 # Medias
 
-![screenshot](/docs/_media/medias.png)
+![screenshot](../.vuepress/public/_media/medias.png)
 
 ```php
 @formField('medias', [
@@ -31,6 +31,8 @@ pageClass: twill-doc
 | fieldNote      | Hint message displayed above the field               | string         |               |
 | note           | Hint message displayed in the field                  | string         |               |
 | buttonOnTop    | Displays the `Attach images` button above the images | true<br/>false | false         |
+| extraMetadatas | An array of additional metadatas, explained below    | array          | []            |
+| disabled       | Disables the field                                   | boolean        | false         |
 
 
 Right after declaring the `medias` formField in the blade template file, you still need to do a few things to make it work properly.
@@ -104,3 +106,43 @@ Then, add the form field to the `form.blade.php` file.
 ```
 
 No migration is needed to save `medias` form fields.
+
+## Extra metadatas
+
+On field level you can specify additional metadatas.
+
+There are currently 2 supported field types:
+
+- Text
+- Checkbox
+
+When defining your media field you can pass the extraMetadatas:
+
+```
+@formField('medias', [
+    'name' => 'images',
+    'label' => 'Images',
+    'max' => 5,
+    'fieldNote' => 'Minimum image width: 1500px',
+    'extraMetadatas' => [
+        [
+            'name' => 'credits_list',
+            'label' => 'Credits list',
+            'type' => 'text',
+            'wysiwyg' => true,
+            'wysiwygOptions' => [
+                'modules' => [
+                    'toolbar' => [
+                        'italic',
+                        'link'
+                    ]
+                ]
+            ],
+        ],
+    ],
+])
+```
+
+The parameters `name`, `label` and `type` are mandatory, `wysiwyg` and `wysiwygOptions` are optional.
+
+If no `wysiwygOptions` are provided it will fall back to the ones defined in the [media config](/getting-started/configuration.html#media-library/)

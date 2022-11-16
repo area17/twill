@@ -4,17 +4,19 @@ pageClass: twill-doc
 
 # Repeater
 
-![screenshot](/docs/_media/repeater.png)
+![screenshot](../.vuepress/public/_media/repeater.png)
 
 ```php
 @formField('repeater', ['type' => 'video'])
 ```
 
-| Option       | Description                                   | Type    | Default value  |
-| :----------- | :-------------------------------------------- | :-------| :------------- |
-| type         | Type of repeater items                        | string  |                |
-| name         | Name of the field                             | string  | same as `type` |
-| buttonAsLink | Displays the `Add` button as a centered link  | boolean | false          |
+| Option       | Description                                  | Type    | Default value    |
+|:-------------|:---------------------------------------------|:--------|:-----------------|
+| type         | Type of repeater items                       | string  |                  |
+| name         | Name of the field                            | string  | same as `type`   |
+| max          | Maximum amount that can be created           | number  | null (unlimited) |
+| buttonAsLink | Displays the `Add` button as a centered link | boolean | false            |
+| reorder      | Allow reordering of repeater items           | boolean | true             |
 
 <br/>
 
@@ -87,6 +89,7 @@ class TeamMember extends Model
 ```
 
 - Update `TeamRepository`. Override the `afterSave` and `getFormFields` methods to process the repeater field:
+  - Note: For Polymorphic relationships, use `updateRepeaterMorphMany` in place of `updateRepeater`
 
 ```php
 class TeamRepository extends ModuleRepository

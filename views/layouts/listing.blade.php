@@ -10,6 +10,7 @@
     $bulkEdit = $bulkEdit ?? true;
     $create = $create ?? false;
     $skipCreateModal = $skipCreateModal ?? false;
+    $controlLanguagesPublication = $controlLanguagesPublication ?? true;
 
     $requestFilter = json_decode(request()->get('filter'), true) ?? [];
 @endphp
@@ -136,7 +137,7 @@
             </a17-datatable>
         @endif
 
-        @if($create)
+        @if($create || (isset($tableData[0]['editInModal']) &&!empty($tableData[0]['editInModal'])))
             <a17-modal-create
                 ref="editionModal"
                 form-create="{{ $storeUrl }}"
@@ -144,7 +145,9 @@
                 @if ($customPublishedLabel ?? false) published-label="{{ $customPublishedLabel }}" @endif
                 @if ($customDraftLabel ?? false) draft-label="{{ $customDraftLabel }}" @endif
             >
-                <a17-langmanager></a17-langmanager>
+                <a17-langmanager
+                    :control-publication="{{ json_encode($controlLanguagesPublication) }}"
+                ></a17-langmanager>
                 @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
             </a17-modal-create>
         @endif
