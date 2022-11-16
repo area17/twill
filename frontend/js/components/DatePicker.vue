@@ -127,7 +127,7 @@
           wrap: true,
           altInput: true,
           altFormat: self.altFormatComputed,
-          dateFormat: 'Z', // This is the universal format that will be parsed by the back-end.
+          dateFormat: self.enableTime ? 'Z' : 'Y-m-d', // This is the universal format that will be parsed by the back-end.
           static: self.staticMode,
           appendTo: self.staticMode ? self.$refs[self.refs.flatPicker] : undefined,
           enableTime: self.enableTime,
