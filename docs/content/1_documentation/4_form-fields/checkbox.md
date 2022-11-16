@@ -2,7 +2,6 @@
 
 ![screenshot](/assets/checkbox.png)
 
-
 :::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
 
 :::tab=name.FormBuilder:::
@@ -42,7 +41,7 @@ Checkbox::make()
 |:--------------------|:--------------------------------------------------------|:--------|:------------------------------------------------|
 | name                | Name of the field                                       | string  |                                                 |
 | label               | Label of the field                                      | string  |                                                 |
-| note                | Hint message displayed above the field                  | string  |                                                 |
+| note                | Hint message displayed below the label                  | string  |                                                 |
 | default             | Sets a default value                                    | boolean | false                                           |
 | disabled            | Disables the field                                      | boolean | false                                           | 
 | requireConfirmation | Displays a confirmation dialog when modifying the field | boolean | false                                           |
