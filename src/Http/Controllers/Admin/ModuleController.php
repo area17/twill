@@ -14,6 +14,7 @@ use A17\Twill\Models\Group;
 use A17\Twill\Repositories\ModuleRepository;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Breadcrumbs\Breadcrumbs;
+use A17\Twill\Services\Forms\Fields\BaseFormField;
 use A17\Twill\Services\Forms\Form;
 use A17\Twill\Services\Listings\Columns\Browser;
 use A17\Twill\Services\Listings\Columns\FeaturedStatus;
@@ -959,11 +960,7 @@ abstract class ModuleController extends Controller
         return null;
     }
 
-    /**
-     * @param int|null $parentModuleId
-     * @return \Illuminate\View\View|JsonResponse
-     */
-    public function index($parentModuleId = null)
+    public function index(?int $parentModuleId = null): \Illuminate\Contracts\View\View|JsonResponse
     {
         $this->authorizeOption('list', $this->moduleName);
 
@@ -986,21 +983,30 @@ abstract class ModuleController extends Controller
             $indexData += ['openCreate' => true];
         }
 
-        $view = Collection::make([
-            "$this->viewPrefix.index",
-            "twill::$this->moduleName.index",
-            'twill::layouts.listing',
-        ])->first(function ($view) {
-            return View::exists($view);
-        });
+        $form = $this->getCreateForm();
 
-        return View::make($view, $indexData + ['repository' => $this->repository]);
+        if ($form->isNotEmpty()) {
+            $view = 'twill::layouts.listing';
+        } else {
+            $view = Collection::make([
+                "$this->viewPrefix.index",
+                "twill::$this->moduleName.index",
+                'twill::layouts.listing',
+            ])->first(function ($view) {
+                return View::exists($view);
+            });
+        }
+
+        return View::make($view, $indexData + ['repository' => $this->repository])
+            ->with('renderFields', $form);
     }
 
-    /**
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function browser()
+    public function getCreateForm(): Form
+    {
+        return new Form();
+    }
+
+    public function browser(): JsonResponse
     {
         return Response::json($this->getBrowserData());
     }
@@ -2440,8 +2446,7 @@ abstract class ModuleController extends Controller
         return $appUrl . '/'
             . ((!$this->withoutLanguageInPermalink && $this->moduleHas('translations')) ? '{language}/' : '')
             . ($this->moduleHas('revisions') ? '{preview}/' : '')
-            . (empty($this->getLocalizedPermalinkBase()) ? ($this->permalinkBase ?? $this->getModulePermalinkBase(
-            )) : '')
+            . (empty($this->getLocalizedPermalinkBase()) ? ($this->permalinkBase ?? $this->getModulePermalinkBase()) : '')
             . (((isset($this->permalinkBase) && empty($this->permalinkBase)) || !empty(
                 $this->getLocalizedPermalinkBase()
                 )) ? '' : '/');
