@@ -1,10 +1,15 @@
 # User Management
 
-Authentication and authorization are provided by default in Laravel. This package simply leverages what Laravel provides and configures the views for you. By default, users can login at `/login` and can also reset their password through that same screen. New users have to reset their password before they can gain access to the admin application. By using the twill configuration file, you can change the default redirect path (`auth_login_redirect_path`) and send users to anywhere in your application following login.
+Authentication and authorization are provided by default in Laravel. This package simply leverages what Laravel provides
+and configures the views for you. By default, users can login at `/login` and can also reset their password through that
+same screen. New users have to reset their password before they can gain access to the admin application. By using the
+twill configuration file, you can change the default redirect path (`auth_login_redirect_path`) and send users to
+anywhere in your application following login.
 
 ## Roles
 
 The package currently provides three different roles:
+
 - view only
 - publisher
 - admin
@@ -14,6 +19,7 @@ The package currently provides three different roles:
 Default permissions are as follows. To learn how permissions can be modified or extended, see the next section.
 
 View only users are able to:
+
 - login
 - view CRUD listings
 - filter CRUD listings
@@ -22,6 +28,7 @@ View only users are able to:
 - edit their own profile
 
 Publishers have the same permissions as view only users plus:
+
 - full CRUD permissions
 - publish
 - sort
@@ -29,17 +36,20 @@ Publishers have the same permissions as view only users plus:
 - upload new images/files to the media/file library
 
 Admin users have the same permissions as publisher users plus:
+
 - full permissions on users
 
 There is also a super admin user that can impersonate other users at `/users/impersonate/{id}`.
-The super admin can be a useful tool for testing features with different user roles without having to logout/login manually,
-as well as for debugging issues reported by specific users. You can stop impersonating by going to `/users/impersonate/stop`.
+The super admin can be a useful tool for testing features with different user roles without having to logout/login
+manually,
+as well as for debugging issues reported by specific users. You can stop impersonating by going
+to `/users/impersonate/stop`.
 
 ## Extending user roles and permissions
 
 You can create or modify new permissions for existing roles by using the Gate facade in your `AuthServiceProvider`.
-The `can` middleware, provided by default in Laravel, is very easy to use, either through route definition or controller constructor.
-
+The `can` middleware, provided by default in Laravel, is very easy to use, either through route definition or controller
+constructor.
 
 In `app/Models/Enums/UserRole.php` (or another file) define your roles:
 
@@ -72,7 +82,9 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-Finally, in your `AuthServiceProvider` class, redefine [Twill's default permissions](https://github.com/area17/twill/blob/e8866e40b7df4a6919e0ddb368990d04caeb705a/src/AuthServiceProvider.php#L26-L48) if you need to, or add your own, for example:
+Finally, in your `AuthServiceProvider` class,
+redefine [Twill's default permissions](https://github.com/area17/twill/blob/e8866e40b7df4a6919e0ddb368990d04caeb705a/src/AuthServiceProvider.php#L26-L48)
+if you need to, or add your own, for example:
 
 ```php
 <?php
@@ -118,8 +130,6 @@ If you need a more dynamic aproach you can also get the current permission enum 
 TwillPermissons::roles()::PUBLISHER (or any role)
 ```
 
-
-
 You can use your new permission and existing ones in many places like the `twill-navigation` configuration using `can`:
 
 ```php
@@ -130,6 +140,10 @@ You can use your new permission and existing ones in many places like the `twill
     ],
 ```
 
-Also in forms blade files using `@can`, as well as in middleware definitions in routes or controllers, see [Laravel's documentation](https://laravel.com/docs/5.7/authorization#via-middleware) for more info.
+Also in forms blade files using `@can`, as well as in middleware definitions in routes or controllers,
+see [Laravel's documentation](https://laravel.com/docs/5.7/authorization#via-middleware) for more info.
 
-You should follow the Laravel documentation regarding [authorization](https://laravel.com/docs/5.3/authorization). It's pretty good. Also if you would like to bring administration of roles and permissions to the admin application, [spatie/laravel-permission](https://github.com/spatie/laravel-permission) would probably be your best friend.
+You should follow the Laravel documentation regarding [authorization](https://laravel.com/docs/5.3/authorization). It's
+pretty good. Also if you would like to bring administration of roles and permissions to the admin
+application, [spatie/laravel-permission](https://github.com/spatie/laravel-permission) would probably be your best
+friend.

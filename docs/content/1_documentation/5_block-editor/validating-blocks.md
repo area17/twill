@@ -17,7 +17,7 @@ Both take an array of `[field => rules]` values. All Laravel validation rules ar
 
 Example:
 
-```html
+```blade
 @twillBlockValidationRules([
     'text' => 'required'
 ])
@@ -30,7 +30,7 @@ Example:
 
 If you need more control you can use the block class to set validation rules, or even hook into the validation process.
 
-See [Block classes documentation](/block-editor/block-classes.html) for more details about the block class.
+See [Block classes documentation](./block-classes.md) for more details about the block class.
 
 ```php
 <?php

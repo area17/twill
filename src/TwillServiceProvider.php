@@ -25,7 +25,6 @@ use A17\Twill\Commands\SetupDevTools;
 use A17\Twill\Commands\SyncLang;
 use A17\Twill\Commands\Update;
 use A17\Twill\Commands\UpdateExampleCommand;
-use A17\Twill\Commands\UpgradeCommand;
 use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
 use A17\Twill\Http\ViewComposers\Localization;
@@ -338,7 +337,6 @@ class TwillServiceProvider extends ServiceProvider
             ModuleMake::class,
             MakeCapsule::class,
             MakeSingleton::class,
-            UpgradeCommand::class,
             BlockMake::class,
             ListIcons::class,
             ListBlocks::class,

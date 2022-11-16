@@ -674,7 +674,7 @@ abstract class ModuleController extends Controller
      */
     protected function eagerLoadFormRelationCounts(array $relations): void
     {
-        $this->formWith = $relations;
+        $this->formWithCount = $relations;
     }
 
     /**
@@ -1125,7 +1125,7 @@ abstract class ModuleController extends Controller
             });
         }
 
-        $item = $this->repository->getById($id);
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
         if ($this->moduleHas('revisions')) {
             $latestRevision = $item->revisions->first();

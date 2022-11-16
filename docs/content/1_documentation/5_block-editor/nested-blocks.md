@@ -6,9 +6,10 @@ To make this work you can add **one** or **more** [block editors](form-fields/bl
 
 However, you have to specify their names
 
+:::filename:::
 `resources/views/twill/blocks/nested-block.blade.php`
-
-```php{11,12}
+:::#filename:::
+```blade
 @twillBlockTitle('Nested Block left right')
 @twillBlockIcon('text')
 @twillBlockGroup('app')
@@ -19,8 +20,8 @@ However, you have to specify their names
     :translated="true"
 />
 
-<x-twill::block-editor name="left"/>
-<x-twill::block-editor name="right"/>
+<x-twill::block-editor name="left"/> <!-- [tl! focus] -->
+<x-twill::block-editor name="right"/> <!-- [tl! focus] -->
 ```
 
 With the example above we now have 2 editors. One is named `left` and the other `right`.
@@ -32,8 +33,9 @@ Now, let's move over to the rendering aspect.
 Following the documentation of [block editors](form-fields/block-editor.html) we know already how to render
 a block.
 
+:::filename:::
 `resources/views/site/blocks/nested-block.blade.php`
-
+:::#filename:::
 ```blade
 @php
     /** @var \A17\Twill\Services\Blocks\RenderData $renderData */
@@ -74,9 +76,9 @@ children each in their own container you can use the `getChildrenFor` method on 
     <div style="width: 50%; float: left;">
         Right
 
-        @foreach($renderData->getChildrenFor('right') as $leftBlock)
+        @foreach($renderData->getChildrenFor('right') as $rightBlock)
             <div style="background-color: orange; padding: 150px;">
-                {!! $leftBlock !!}
+                {!! $rightBlock !!}
             </div>
         @endforeach
     </div>
