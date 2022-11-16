@@ -18,7 +18,7 @@
           <a17-blockeditor-model :block="savedBlock"
                            :key="savedBlock.id"
                            :editor-name="editorName"
-                           v-slot="{ block, isActive, blockIndex, move, remove, edit, unEdit }">
+                           v-slot="{ block, isActive, blockIndex, move, remove, edit, unEdit, cloneBlock }">
             <a17-editor-block-preview :ref="block.id"
                                       :block="block"
                                       :blockIndex="blockIndex"
@@ -28,6 +28,7 @@
                                       @block:select="_selectBlock(edit, blockIndex)"
                                       @block:unselect="_unselectBlock(unEdit, blockIndex)"
                                       @block:move="move"
+                                      @block:clone="_cloneBlock(cloneBlock, blockIndex)"
                                       @block:delete="_deleteBlock(remove)"
                                       @scroll-to="scrollToActive"/>
           </a17-blockeditor-model>
@@ -148,6 +149,11 @@
       _deleteBlock (fn) {
         this.unSubscribe()
         this.deleteBlock(fn)
+      },
+      _cloneBlock (fn, index) {
+        // Clone block and refresh preview
+        this.cloneBlock(fn)
+        this.getPreview(index + 1)
       },
       unSubscribe () {
         if (!this._unSubscribeInternal) return
