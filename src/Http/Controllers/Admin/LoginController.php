@@ -308,6 +308,11 @@ class LoginController extends Controller
 
     protected function autologinEnabled(): bool
     {
+        if (!$this->config->get('twill.autologin.enabled', false)) {
+            return false;
+        }
+
+        dd('enabled');
         if (blank($this->config->get('twill.autologin.email'))) {
             return false;
         }

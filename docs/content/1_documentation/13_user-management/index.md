@@ -150,19 +150,15 @@ friend.
 
 ## Auto login
 
+**DANGER**: don't use this feature in `production` as your CMS will be open for public.
+
 Developers can configure Twill to do auto login using a pre-defined username and password and skip the login form. 
 
-Add this array object to your `twill.php` file: 
+To enable it you need:
 
-``` php
-'autologin' => [
-    'environments' => ['local'], // It's safer to make this feature only available for the `local` environment. 
-    'email' => env('TWILL_AUTO_LOGIN_EMAIL'),
-    'password' => env('TWILL_AUTO_LOGIN_PASSWORD'),
-],
-```
-
-And add these entries to your `.env` file: 
+- Put the application in `debug` mode
+- Create a user in the CMS
+- Add this user's credentials to your `.env` file: 
 
 ``` dotenv
 TWILL_AUTO_LOGIN_EMAIL=email@email.com

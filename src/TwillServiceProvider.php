@@ -25,6 +25,7 @@ use A17\Twill\Commands\SetupDevTools;
 use A17\Twill\Commands\SyncLang;
 use A17\Twill\Commands\Update;
 use A17\Twill\Commands\UpdateExampleCommand;
+use A17\Twill\Commands\UpgradeCommand;
 use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
 use A17\Twill\Http\ViewComposers\Localization;
@@ -256,6 +257,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/models.php', 'twill.models');
         $this->mergeConfigFrom(__DIR__ . '/../config/oauth.php', 'twill.oauth');
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
+        $this->mergeConfigFrom(__DIR__ . '/../config/autologin.php', 'twill.autologin');
 
         if (config('twill.enabled.permissions-management')) {
             $this->mergeConfigFrom(__DIR__ . '/../config/permissions.php', 'twill.permissions');
@@ -337,6 +339,7 @@ class TwillServiceProvider extends ServiceProvider
             ModuleMake::class,
             MakeCapsule::class,
             MakeSingleton::class,
+            UpgradeCommand::class,
             BlockMake::class,
             ListIcons::class,
             ListBlocks::class,
