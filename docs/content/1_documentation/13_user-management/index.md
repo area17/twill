@@ -154,11 +154,11 @@ friend.
 
 Developers can configure Twill to do auto login using a pre-defined username and password and skip the login form. 
 
-To enable it you need:
+To enable it you have to:
 
 - Put the application in `debug` mode
 - Create a user in the CMS
-- Add this user's credentials to your `.env` file: 
+- Add user's credentials to your `.env` file: 
 
 ``` dotenv
 TWILL_AUTO_LOGIN_EMAIL=email@email.com
