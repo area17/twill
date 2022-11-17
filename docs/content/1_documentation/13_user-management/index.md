@@ -158,10 +158,17 @@ To enable it you have to:
 
 - Put the application in `debug` mode
 - Create a user in the CMS
-- Add user's credentials to your `.env` file: 
-- This feature is available by default only for the `local` environment
+- Add user's credentials to your `.env` file:
 
 ``` dotenv
 TWILL_AUTO_LOGIN_EMAIL=email@email.com
 TWILL_AUTO_LOGIN_PASSWORD=passv0rt
 ```
+
+- Enabled the autologin feature:
+
+``` dotenv
+TWILL_AUTO_LOGIN_ENABLED=false
+```
+
+**Note**: this feature is available by default only for the `local` environment.
