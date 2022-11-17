@@ -1,4 +1,5 @@
 @props(['type' => 'success'])
+<div class="my-4">
 @if ($type === 'success')
     <div class="rounded-md bg-green-50 p-4">
         <div class="flex">
@@ -32,3 +33,4 @@
         </div>
     </div>
 @endif
+</div>

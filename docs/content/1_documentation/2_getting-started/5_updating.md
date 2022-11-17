@@ -23,5 +23,3 @@ backwards compatability.
 For major updates we try our best to provide a seamless upgrade experience, but we cannot always handle every case.
 
 When upgrading for example 2.x to 3.x make sure you check the upgrade notes in the repository.
-
-

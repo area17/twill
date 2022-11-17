@@ -49,7 +49,7 @@ class ListBlocksTest extends TestCase
         );
 
         $this->getCommand($command)
-            ->blockCollection
+            ->getBlockCollection()
             ->load();
 
         $this->assertExitCodeIsGood($pendingCommand->run());

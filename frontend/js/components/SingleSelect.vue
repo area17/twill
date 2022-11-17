@@ -153,7 +153,6 @@
 </script>
 
 <style lang="scss" scoped>
-
   .singleselector {
     color:$color__text;
   }
@@ -339,13 +338,13 @@
 
     // .singleselector__radio:checked + .singleselector__label::before,
     .singleselector__radio--checked + .singleselector__label::before {
-      border-color: $color__blue;
-      background-color: $color__blue;
+      border-color: $color__fborder--active;
+      background-color: $color__fborder--active;
     }
 
     // .singleselector__radio:focus:checked + .singleselector__label::before,
     .singleselector__radio--checked:focus + .singleselector__label::before {
-      border-color: $color__blue;
+      border-color: $color__fborder--active;
     }
   }
 

@@ -63,6 +63,9 @@ if (!function_exists('replaceAccents')) {
      */
     function replaceAccents($str)
     {
+        if (function_exists('mb_convert_encoding')) {
+            return mb_convert_encoding($str, 'ASCII', 'UTF-8');
+        }
         return iconv('UTF-8', 'ASCII//TRANSLIT', $str);
     }
 }

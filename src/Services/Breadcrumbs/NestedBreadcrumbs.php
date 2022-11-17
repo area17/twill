@@ -8,6 +8,7 @@ class NestedBreadcrumbs extends Breadcrumbs
 {
     private ?string $parentLabel = null;
     private string $parentModule;
+    private string $module;
     private string $parentRepository;
     private int $activeParentId;
     private string $titleKey;
@@ -22,10 +23,13 @@ class NestedBreadcrumbs extends Breadcrumbs
 
     public function forParent(
         string $parentModule,
+        string $module,
         int $activeParentId,
         string $repository,
         ?string $titleKey = 'title'
-    ): self {
+    ): self
+    {
+        $this->module = $module;
         $this->parentModule = $parentModule;
         $this->parentRepository = $repository;
         $this->activeParentId = $activeParentId;
@@ -67,7 +71,7 @@ class NestedBreadcrumbs extends Breadcrumbs
                 ->displayOnListing(),
             BreadcrumbItem::make()->label($this->label)
                 ->displayOnForm()
-                ->url(moduleRoute('brands.products', '', 'index')),
+                ->url(moduleRoute($this->module, '', 'index')),
             BreadcrumbItem::make()->label('Edit')
                 ->displayOnForm(),
         ];

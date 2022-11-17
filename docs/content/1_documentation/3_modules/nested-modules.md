@@ -161,16 +161,19 @@ class IssueArticleController extends BaseModuleController
 
     protected function setUpController(): void
     {
-        $this->setBreadcrumbs(
-            NestedBreadcrumbs::make()
-                ->forParent(
-                    parentModule: 'issues',
-                    activeParentId: request('issue'),
-                    repository: IssueRepository::class
-                )
-                ->label('Article')
-        );
         $this->setModuleName('issues.articles');
+        if (request('issue')) {
+            $this->setBreadcrumbs(
+                NestedBreadcrumbs::make()
+                    ->forParent(
+                        parentModule: 'issues',
+                        module: $this->modelName,
+                        activeParentId: request('issue'),
+                        repository: \App\Repositories\IssueRepository::class
+                    )
+                    ->label('Article')
+            );
+        }
     }
 }
 
@@ -223,7 +226,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         TwillNavigation::addLink(
-            NavigationLink::make()->forModule('brands')
+            NavigationLink::make()->forModule('issues')
         );
     }
 }
