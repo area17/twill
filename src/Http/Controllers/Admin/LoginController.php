@@ -312,7 +312,6 @@ class LoginController extends Controller
             return false;
         }
 
-        dd('enabled');
         if (blank($this->config->get('twill.autologin.email'))) {
             return false;
         }
