@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class ModuleController extends Controller
@@ -467,11 +468,11 @@ abstract class ModuleController extends Controller
         ? $this->getParentModuleIdFromRequest($this->request) ?? $id
         : head($params);
 
-        $id = last($params);
+        $routeId = last($params);
 
         if ($this->getIndexOption('editInModal')) {
             return $this->request->ajax()
-            ? Response::json($this->modalFormData($id))
+            ? Response::json($this->modalFormData($routeId))
             : Redirect::to(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
 
@@ -485,7 +486,11 @@ abstract class ModuleController extends Controller
             return View::exists($view);
         });
 
-        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
+        try {
+            $item = $this->repository->getById($routeId, $this->formWith, $this->formWithCount);
+        } catch (ModelNotFoundException $exceptiom) {
+            $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
+        }
 
         if ($this->moduleHas('revisions')) {
             $latestRevision = $item->revisions->first();
