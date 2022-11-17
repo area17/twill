@@ -165,7 +165,7 @@ TWILL_AUTO_LOGIN_EMAIL=email@email.com
 TWILL_AUTO_LOGIN_PASSWORD=passv0rt
 ```
 
-- Enabled the autologin feature:
+- Enable the autologin feature:
 
 ``` dotenv
 TWILL_AUTO_LOGIN_ENABLED=false
