@@ -252,7 +252,7 @@ return [
         'permalink-field' => 'Permalink',
         'title-field' => 'Titolo',
         'update' => [
-            'title' => 'Aggiurna',
+            'title' => 'Aggiorna',
         ],
     ],
     'nav' => [
