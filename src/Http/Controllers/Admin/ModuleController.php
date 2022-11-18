@@ -382,12 +382,14 @@ abstract class ModuleController extends Controller
         $this->app = $app;
         $this->request = $request;
 
-        $this->modelName = $this->getModelName();
-        $this->routePrefix = $this->getRoutePrefix();
-        $this->namespace = $this->getNamespace();
-        $this->repository = $this->getRepository();
-        $this->viewPrefix = $this->getViewPrefix();
-        $this->modelTitle = $this->getModelTitle();
+        $this->setUpController();
+
+        $this->modelName = $this->modelName ?? $this->getModelName();
+        $this->routePrefix = $this->routePrefix ?? $this->getRoutePrefix();
+        $this->namespace = $this->namespace ?? $this->getNamespace();
+        $this->repository = $this->repository ?? $this->getRepository();
+        $this->viewPrefix = $this->viewPrefix ?? $this->getViewPrefix();
+        $this->modelTitle = $this->modelTitle ?? $this->getModelTitle();
         $this->labels = array_merge($this->defaultLabels, $this->labels);
         $this->middleware(function ($request, $next) {
             $this->user = auth('twill_users')->user();
@@ -396,8 +398,6 @@ abstract class ModuleController extends Controller
         });
 
         $this->searchColumns = [$this->titleColumnKey];
-
-        $this->setUpController();
     }
 
     /**
