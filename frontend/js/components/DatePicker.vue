@@ -156,7 +156,7 @@
             }
 
             // Hope for the best..
-            return date;
+            return new Date(date);
           },
           onOpen: function () {
             setTimeout(function () {
