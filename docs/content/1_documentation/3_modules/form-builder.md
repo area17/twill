@@ -11,13 +11,13 @@ There are benefits and drawbacks to using the form builder or the form blade fil
 
 **Drawbacks**
 
-- Less control over appearance
+- Less control over appearance (at this moment)
 
 ## Using the form builder
 
-To create a form from code you can add the `getForm` method to your controller.
+To create a form from code you can add the `getForm` or `getCreateForm` method to your controller.
 
-The `getForm` method should return a `Form` object as illustrated below:
+The `getForm` and `getCreateForm` method should return a `Form` object as illustrated below:
 
 ```php
 <?php
@@ -32,6 +32,11 @@ class PageController extends ModuleController
     protected $moduleName = 'pages';
 
     public function getForm(\Illuminate\Database\Eloquent\Model $model): Form
+    {
+        return Form::make();
+    }
+
+    public function getCreateForm(): Form
     {
         return Form::make();
     }

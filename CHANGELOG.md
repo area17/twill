@@ -131,8 +131,7 @@ This is a stabilization release to prepare a first stable release.
 - [BREAKING] Better defaults [PR](https://github.com/area17/twill/pull/1484)
 - Config file names are aligned with their config key name [PR](https://github.com/area17/twill/pull/1434)
 - [BREAKING] Namespaces have been renamed from Admin to Twill [PR](https://github.com/area17/twill/pull/1388)
-    - You can use php artisan twill:upgrade to automate this in your code base,
-      see [UPGRADE GUIDE](https://github.com/area17/twill/blob/3.x/UPGRADE.md)
+  - see [UPGRADE GUIDE](https://github.com/area17/twill/blob/3.x/UPGRADE.md)
 
 ### Bugfixes
 

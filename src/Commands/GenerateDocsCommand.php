@@ -243,7 +243,7 @@ class GenerateDocsCommand extends Command
             $tailwindTo = realpath($dir . '_build');
 
             shell_exec(
-                'cd ' . realpath($dir) . ' && tailwindcss -i ' . $tailwindFrom . ' -o ' . $tailwindTo . '/style.css'
+                'cd ' . realpath($dir) . ' && ../node_modules/.bin/tailwindcss -i ' . $tailwindFrom . ' -o ' . $tailwindTo . '/style.css'
             );
         }
     }

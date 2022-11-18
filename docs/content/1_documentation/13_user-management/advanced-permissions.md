@@ -23,7 +23,8 @@ In addition to this we have to configure the permissions system. There are 3 lev
 
 - [**role**](#level-role): this manages the access of modules based on the role of a user
 - [**roleGroup**](#level-rolegroup): this manages the access of modules for a group of users, in addition to `role`
-- [**roleGroupItem**](#level-rolegroupitem): this manages the permission of items within a module, in addition to `roleGroup`
+- [**roleGroupItem**](#level-rolegroupitem): this manages the permission of items within a module, in addition
+  to `roleGroup`
 
 Set the `twill.permissions.level` to the desired type. And also set the modules to manage in
 the `twill.permissions.modules` key.
@@ -74,7 +75,8 @@ By default there is only one group "Everyone" where every user belongs to except
 
 You can use Roles in combination with Groups to have more control over the permission a user gets.
 
-You can for example have an administrator, but you still want to let an administrator be in control over a specific module.
+You can for example have an administrator, but you still want to let an administrator be in control over a specific
+module.
 
 Now you can have a group "Module 1" and "Module 2", together with the "administrator" role, each user can only access
 the content for their groups.

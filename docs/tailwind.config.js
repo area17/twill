@@ -7,6 +7,6 @@ module.exports = {
         extend: {}
     },
     plugins: [
-        require('/opt/homebrew/lib/node_modules/@tailwindcss/typography'),
+        require('@tailwindcss/typography'),
     ],
 }

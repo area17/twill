@@ -11,7 +11,7 @@ abstract class SingletonModuleController extends ModuleController
 {
     protected $permalinkBase = '';
 
-    public function index($parentModuleId = null)
+    public function index(?int $parentModuleId = null): mixed
     {
         throw new \Exception("{$this->getModelName()} has no index");
     }

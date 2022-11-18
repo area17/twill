@@ -114,6 +114,7 @@ class TeamMember extends Model
 ```
 
 - Update `TeamRepository`. Override the `afterSave` and `getFormFields` methods to process the repeater field:
+  - Note: For Polymorphic relationships, use `updateRepeaterMorphMany` in place of `updateRepeater`
 
 ```php
 class TeamRepository extends ModuleRepository

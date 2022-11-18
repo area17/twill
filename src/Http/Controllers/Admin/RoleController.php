@@ -90,7 +90,7 @@ class RoleController extends ModuleController
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }
 
-    public function index($parentModuleId = null)
+    public function index(?int $parentModuleId = null): mixed
     {
         // Superadmins can reorder groups to determine the access-level of each one.
         // A given group can't edit other groups with a higher access-level.
