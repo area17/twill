@@ -129,7 +129,7 @@ return [
         'dialogs' => [
             'delete' => [
                 'confirm' => 'Cancella',
-                'confirmation' => 'Sei sicuro ?<br />Non si puo riprestinare.',
+                'confirmation' => 'Sei sicuro?<br />Non è possibile annullare questa modifica.',
                 'delete-content' => 'Cancella contenuto',
                 'title' => 'Cancella contenuto',
             ],
@@ -137,12 +137,15 @@ return [
         'editor' => 'Editor',
     ],
     'lang-manager' => [
-        'published' => 'In diretta',
+        'published' => 'Attive',
+    ],
+    'lang-switcher' => [
+        'edit-in' => 'Modifica in',
     ],
     'listing' => [
-        'add-new-button' => 'Nuovo',
-        'bulk-actions' => 'Azioni raggruppate',
-        'bulk-clear' => 'Cancella',
+        'add-new-button' => 'Aggiungi nuovo',
+        'bulk-actions' => 'Azioni di gruppo',
+        'bulk-clear' => 'Annulla',
         'columns' => [
             'featured' => 'Evidenziato',
             'name' => 'Nome',
@@ -152,19 +155,17 @@ return [
         ],
         'dialogs' => [
             'delete' => [
-                'confirm' => 'Conferma',
-                'disclaimer' => 'Sostantivo',
-                'move-to-trash' => 'Elimina',
-                'title' => 'Titolo',
+                'confirm' => 'Elimina',
+                'disclaimer' => 'Questo elemento non sarà eliminato ma sarà spostato nel cestino.',
+                'move-to-trash' => 'Sposta nel cestino',
+                'title' => 'Elimina elemento',
             ],
             'destroy' => [
-                'confirm' => 'Conferma',
-                'destroy-permanently' => 'Distruggi permanente',
-                'disclaimer' => 'Sostantivo.',
-                'title' => 'Muovi dalla spazzatura',
-                'cancel' => 'Cancella',
+                'confirm' => 'Distruggi',
+                'destroy-permanently' => 'Distruggi definitivamente',
+                'disclaimer' => 'Non sarà più possibile recuperare questo elemento.',
+                'title' => 'Distruggi elemento',
             ],
-            'cancel' => 'Cancella',
         ],
         'dropdown' => [
             'delete' => 'Elimina',
@@ -174,8 +175,8 @@ return [
             'publish' => 'Pubblica',
             'feature' => 'Promuovi',
             'restore' => 'Ripristina',
-            'unfeature' => 'Non promuovere',
-            'unpublish' => 'Spubblica',
+            'unfeature' => 'Rimuovi dai promossi',
+            'unpublish' => 'Rimuovi dalla pubblicazione',
         ],
         'filter' => [
             'all-items' => 'Tutti',
@@ -292,8 +293,8 @@ return [
     ],
     'publisher' => [
         'cancel' => 'Annulla',
-        'languages' => 'Linguaggi',
-        'languages-published' => 'in diretta',
+        'languages' => 'Lingue',
+        'languages-published' => 'attive',
         'preview' => 'Anteprima modifiche',
         'publish' => 'Pubblica',
         'publish-close' => 'Pubblica e chiudi',
