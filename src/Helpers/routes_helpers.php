@@ -19,7 +19,7 @@ if (!function_exists('moduleRoute')) {
 
         // Nested module, pass in current parameters for deeply nested modules
         if (Str::contains($moduleName, '.')) {
-            $parameters = array_merge(Route::current()->parameters(), $parameters);
+            $parameters = array_merge(Route::current()->parameters(), (array) $parameters);
         }
 
         // Create base route name
