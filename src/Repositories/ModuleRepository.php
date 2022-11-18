@@ -155,7 +155,7 @@ abstract class ModuleRepository
             if (in_array($field, $translatedAttributes, true)) {
                 $builder->orWhereTranslationLike($field, "%$search%");
             } else {
-                $builder->orWhere($field, $this->getLikeOperator(), "%$search%");
+                $builder->orWhere($field, getLikeOperator(), "%$search%");
             }
         }
 
@@ -527,7 +527,7 @@ abstract class ModuleRepository
 
     public function filter(Builder $query, array $scopes = []): Builder
     {
-        $likeOperator = $this->getLikeOperator();
+        $likeOperator = getLikeOperator();
 
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($query, $scopes);
@@ -624,7 +624,7 @@ abstract class ModuleRepository
     public function addLikeFilterScope(Builder $query, array &$scopes, string $scopeField): void
     {
         if (isset($scopes[$scopeField]) && is_string($scopes[$scopeField])) {
-            $query->where($scopeField, $this->getLikeOperator(), '%' . $scopes[$scopeField] . '%');
+            $query->where($scopeField, getLikeOperator(), '%' . $scopes[$scopeField] . '%');
             unset($scopes[$scopeField]);
         }
     }
@@ -716,13 +716,12 @@ abstract class ModuleRepository
         });
     }
 
+    /**
+     * @deprecated use the helper getLikeOperator directly.
+     */
     protected function getLikeOperator(): string
     {
-        if (DB::connection()->getPDO()->getAttribute(\PDO::ATTR_DRIVER_NAME) === 'pgsql') {
-            return 'ILIKE';
-        }
-
-        return 'LIKE';
+        return getLikeOperator();
     }
 
     public function __call(string $method, array $parameters): mixed

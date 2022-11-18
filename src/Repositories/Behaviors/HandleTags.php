@@ -43,7 +43,7 @@ trait HandleTags
         $tagQuery = $this->getTagsQuery();
 
         if (!empty($query)) {
-            $tagQuery->where('slug', 'like', '%' . $query . '%');
+            $tagQuery->where('slug', getLikeOperator(), '%' . $query . '%');
         }
 
         foreach ($ids as $id) {

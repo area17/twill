@@ -26,7 +26,7 @@ public function filter($query, array $scopes = []) {
     // or just go manually with the $query object
     if (isset($scopes['field_in_scope'])) {
       $query->orWhereHas('relationName', function ($query) use ($scopes) {
-          $query->where('field', 'like', '%' . $scopes['field_in_scope'] . '%');
+          $query->where('field', getLikeOperator(), '%' . $scopes['field_in_scope'] . '%');
       });
     }
 
