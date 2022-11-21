@@ -34,8 +34,10 @@ if (!function_exists('moduleRoute')) {
             $routeName .= "{$moduleName}";
         }
 
+        $glue = Str::endsWith($routeName, '.') ? '' : '.';
+
         //  Add the action name
-        $routeName .= $action ? ".{$action}" : '';
+        $routeName .= $action ? "{$glue}{$action}" : '';
 
         // Build the route
         return route($routeName, $parameters, $absolute);
