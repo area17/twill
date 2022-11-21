@@ -8,12 +8,15 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 
-if (! function_exists('dumpUsableSqlQuery')) {
-    function dumpUsableSqlQuery($query)
-    {
-        dd(vsprintf(str_replace('?', '%s', $query->toSql()), array_map(function ($binding) {
-            return is_numeric($binding) ? $binding : "'{$binding}'";
-        }, $query->getBindings())));
+if (! function_exists('getLikeOperator')) {
+    function getLikeOperator(): string {
+        return once(function() {
+            if (DB::connection()->getPDO()->getAttribute(\PDO::ATTR_DRIVER_NAME) === 'pgsql') {
+                return 'ILIKE';
+            }
+
+            return 'LIKE';
+        });
     }
 }
 

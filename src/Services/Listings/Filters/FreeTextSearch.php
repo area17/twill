@@ -22,7 +22,7 @@ class FreeTextSearch extends TwillBaseFilter
                     if (in_array($column, $translatedAttributes, true)) {
                         $builder->orWhereTranslationLike($column, "%$this->searchString%");
                     } else {
-                        $builder->orWhere($column, 'LIKE', "%$this->searchString%");
+                        $builder->orWhere($column, getLikeOperator(), "%$this->searchString%");
                     }
                 }
             });
