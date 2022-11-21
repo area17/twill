@@ -547,9 +547,14 @@ abstract class ModuleController extends Controller
         $this->submodule = isset($submoduleParentId);
         $this->submoduleParentId = $submoduleParentId;
 
-        $id = last($params);
+        $routeId = last($params);
 
-        $item = $this->repository->getById($id);
+        try {
+            $item = $this->repository->getById($routeId);
+        } catch (ModelNotFoundException $exceptiom) {
+            $item = $this->repository->getById($id);
+        }
+
         $input = $this->request->all();
 
         if (isset($input['cmsSaveType']) && $input['cmsSaveType'] === 'cancel') {
@@ -557,7 +562,7 @@ abstract class ModuleController extends Controller
                 $this->moduleName,
                 $this->routePrefix,
                 'edit',
-                [Str::singular($this->moduleName) => $id]
+                [Str::singular($this->moduleName) => $routeId]
             ));
         } else {
             $this->performUpdate($item);
@@ -587,7 +592,7 @@ abstract class ModuleController extends Controller
                         $this->moduleName,
                         $this->routePrefix,
                         'edit',
-                        [Str::singular($this->moduleName) => $id]
+                        [Str::singular($this->moduleName) => $routeId ?? $id]
                     ));
                 }
             }
@@ -746,10 +751,22 @@ abstract class ModuleController extends Controller
     {
         $params = $this->request->route()->parameters();
 
-        $id = last($params);
+        $routeId = last($params);
 
-        $item = $this->repository->getById($id);
-        if ($newItem = $this->repository->duplicate($id, $this->titleColumnKey)) {
+        try {
+            $item = $this->repository->getById($routeId);
+
+            $id = $routeId;
+        } catch (ModelNotFoundException $exceptiom) {
+            $item = $this->repository->getById($id);
+
+            if (blank($item)) {
+                // We could not find a model with any given id
+                $id = null;
+            }
+        }
+
+        if (filled($id) && $newItem = $this->repository->duplicate($id, $this->titleColumnKey)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('duplicated');
 
@@ -777,10 +794,22 @@ abstract class ModuleController extends Controller
     {
         $params = $this->request->route()->parameters();
 
-        $id = last($params);
+        $routeId = last($params);
 
-        $item = $this->repository->getById($id);
-        if ($this->repository->delete($id)) {
+        try {
+            $item = $this->repository->getById($routeId);
+
+            $id = $routeId;
+        } catch (ModelNotFoundException $exceptiom) {
+            $item = $this->repository->getById($id);
+
+            if (blank($item)) {
+                // We could not find a model with any given id
+                $id = null;
+            }
+        }
+
+        if (filled($id) && $this->repository->delete($id)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('deleted');
 
