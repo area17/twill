@@ -9,18 +9,18 @@ trait HandleSlugs
      * @param array $fields
      * @return void
      */
-    public function afterSaveHandleSlugs($object, $fields)
+    public function beforeSaveHandleSlugs($object, $fields)
     {
         if (property_exists($this->model, 'slugAttributes')) {
+            $object->twillSlugData = [];
             foreach (getLocales() as $locale) {
                 if (isset($fields['slug']) && isset($fields['slug'][$locale]) && !empty($fields['slug'][$locale])) {
-                    $object->disableLocaleSlugs($locale);
                     $currentSlug = [];
                     $currentSlug['slug'] = $fields['slug'][$locale];
                     $currentSlug['locale'] = $locale;
                     $currentSlug['active'] = $this->model->isTranslatable() ? $object->translate($locale)->active : 1;
                     $currentSlug = $this->getSlugParameters($object, $fields, $currentSlug);
-                    $object->updateOrNewSlug($currentSlug);
+                    $object->twillSlugData[] = $currentSlug;
                 }
             }
         }

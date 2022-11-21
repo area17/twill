@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 trait HasSlug
 {
     private $nb_variation_slug = 3;
+    public array $twillSlugData = [];
 
     protected static function bootHasSlug()
     {
@@ -15,8 +16,8 @@ trait HasSlug
             $model->restoreSlugs();
         });
 
-        static::created(function ($model) {
-            $model->createRemainingLocaleSlugs();
+        static::saved(function ($model) {
+            $model->handleSlugsOnSave();
         });
     }
 
@@ -143,9 +144,17 @@ trait HasSlug
      *
      * @return void
      */
-    public function createRemainingLocaleSlugs(): void
+    public function handleSlugsOnSave(): void
     {
-        $slugParams = $this->getSlugParams();
+        if ($this->twillSlugData === []) {
+            return;
+        }
+
+        foreach (getLocales() as $locale) {
+            $this->disableLocaleSlugs($locale);
+        }
+
+        $slugParams = $this->twillSlugData !== [] ? $this->twillSlugData : $this->getSlugParams();
 
         foreach ($slugParams as $params) {
             if (in_array($params['locale'], config('twill.slug_utf8_languages', []))) {
@@ -154,7 +163,7 @@ trait HasSlug
                 $params['slug'] = Str::slug($params['slug']);
             }
 
-            if ($this->slugs()->where('locale', $params['locale'])->where('slug', $params['slug'])->doesntExist()) {
+            if ($this->slugs()->where('locale', $params['locale'])->where('slug', $params['slug'])->where('active', true)->doesntExist()) {
                 $this->updateOrNewSlug($params);
             }
         }
