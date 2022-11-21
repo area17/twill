@@ -147,3 +147,28 @@ You should follow the Laravel documentation regarding [authorization](https://la
 pretty good. Also if you would like to bring administration of roles and permissions to the admin
 application, [spatie/laravel-permission](https://github.com/spatie/laravel-permission) would probably be your best
 friend.
+
+## Auto login
+
+**DANGER**: don't use this feature in `production` as your CMS will be open for public.
+
+Developers can configure Twill to do auto login using a pre-defined username and password and skip the login form. 
+
+To enable it you have to:
+
+- Put the application in `debug` mode
+- Create a user in the CMS
+- Add user's credentials to your `.env` file:
+
+``` dotenv
+TWILL_AUTO_LOGIN_EMAIL=email@email.com
+TWILL_AUTO_LOGIN_PASSWORD=passv0rt
+```
+
+- Enable the autologin feature:
+
+``` dotenv
+TWILL_AUTO_LOGIN_ENABLED=false
+```
+
+**Note**: this feature is available by default only for the `local` environment.

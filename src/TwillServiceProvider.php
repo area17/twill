@@ -256,6 +256,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/models.php', 'twill.models');
         $this->mergeConfigFrom(__DIR__ . '/../config/oauth.php', 'twill.oauth');
         $this->mergeConfigFrom(__DIR__ . '/../config/disks.php', 'filesystems.disks');
+        $this->mergeConfigFrom(__DIR__ . '/../config/autologin.php', 'twill.autologin');
 
         if (config('twill.enabled.permissions-management')) {
             $this->mergeConfigFrom(__DIR__ . '/../config/permissions.php', 'twill.permissions');
