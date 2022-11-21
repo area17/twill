@@ -6,7 +6,6 @@ use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Behaviors\Sortable;
-use A17\Twill\Models\Block;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Model;
 use A17\Twill\Repositories\Behaviors\HandleBrowsers;
