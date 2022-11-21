@@ -23,10 +23,8 @@ public function boot(): void
     );
     TwillNavigation::addLink(
         NavigationLink::make()->forModule('projects')
-          ->addAsFirstChild()
           ->setChildren([
             NavigationLink::make()->forModule('projects')
-              ->addAsFirstChild()
               ->setChildren([
                 NavigationLink::make()->forModule('projectCustomers'),
               ]),

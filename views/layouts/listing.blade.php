@@ -142,7 +142,7 @@
             </a17-datatable>
         @endif
 
-        @if($create)
+        @if($create || (isset($tableData[0]['editInModal']) &&!empty($tableData[0]['editInModal'])))
             <a17-modal-create
                 ref="editionModal"
                 form-create="{{ $storeUrl }}"
@@ -153,7 +153,14 @@
                 <a17-langmanager
                     :control-publication="{{ json_encode($controlLanguagesPublication) }}"
                 ></a17-langmanager>
-                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
+
+                @if (isset($renderFields) && $renderFields->isNotEmpty())
+                    @foreach($renderFields as $field)
+                        {!! $field->render() !!}
+                    @endforeach
+                @else
+                    @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
+                @endif
             </a17-modal-create>
         @endif
 
