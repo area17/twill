@@ -21,8 +21,8 @@ return [
     |
      */
     'auth_activity_log' => [
-        'login' => true,
-        'logout' => true,
+        'login' => false,
+        'logout' => false,
     ],
     'auth_activity_causer' => 'users',
 ];
