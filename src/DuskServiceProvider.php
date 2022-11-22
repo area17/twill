@@ -108,6 +108,15 @@ class DuskServiceProvider extends ServiceProvider
             $this->waitForText('Content saved. All good!');
         });
 
+        Browser::macro('withinEditor', function (\Closure $closure) {
+            $this->press('EDITOR');
+            $this->with('.overlay__window', function (Browser $element) use ($closure) {
+                $closure($element);
+
+                $element->press('Close');
+            });
+        });
+
         Browser::macro('withinNewBlock', function (string $block, \Closure $closure, string $addLabel = 'Add content') {
             $this->press($addLabel);
 
@@ -123,6 +132,48 @@ class DuskServiceProvider extends ServiceProvider
                 $prefix = Str::before($for ?? '', ']') . ']';
 
                 $closure($element, $prefix);
+            });
+        });
+
+        Browser::macro('attachImage', function (string $fieldName, string $imagePath) {
+            $this->with('.input-wrapper-medias\.' . $fieldName, function (Browser $mediaField) use ($imagePath) {
+                $mediaField->waitForText('Attach image');
+                $mediaField->press('Attach image');
+                $mediaField->elsewhere('.medialibrary', function (Browser $mediaManager) use ($imagePath) {
+                    $mediaManager->attach('.uploader__dropzone input', $imagePath);
+                    $mediaManager->pause(150);
+                    $mediaManager->waitFor('.mediagrid__item');
+                    $mediaManager->click('.mediagrid__item:nth-of-type(1)');
+                    $mediaManager->press('Insert image');
+                });
+            });
+        });
+
+        Browser::macro('dragBlock', function (string $block, ?\Closure $closure = null) {
+            $buttons = $this->elements('.editorSidebar__button');
+
+            $index = 1;
+            foreach ($buttons as $button) {
+                if ($button->findElement(WebDriverBy::className('editorSidebar__buttonLabel'))->getText() === $block) {
+                    $this->drag('.editorSidebar__button:nth-of-type(' . $index . ')', '.editorPreview__content');
+                    break;
+                }
+                $index++;
+            }
+
+            if ($closure) {
+                $this->waitFor('.editorSidebar__body');
+                $this->with('.editorSidebar__body', function (Browser $element) use ($closure) {
+                    $for = $element->element('label')?->getAttribute('for');
+                    $prefix = Str::before($for ?? '', ']') . ']';
+
+                    $closure($element, $prefix);
+
+                });
+            }
+
+            $this->with('.editorSidebar__actions', function (Browser $element) {
+                $element->press('Done');
             });
         });
 
