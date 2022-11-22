@@ -5,6 +5,8 @@ namespace A17\Twill;
 use Carbon\Carbon;
 use Carbon\Laravel\ServiceProvider;
 use Facebook\WebDriver\Chrome\ChromeDevToolsDriver;
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverKeys;
 use Illuminate\Support\Str;
 use Laravel\Dusk\Browser;
 
@@ -62,7 +64,12 @@ class DuskServiceProvider extends ServiceProvider
 
             $this->waitFor('.modal__header');
 
-            $this->type('title', $title);
+            if ($this->element('.input-wrapper-title\[en\]')) {
+                $this->type('title[en]', $title);
+            } else {
+                $this->type('title', $title);
+            }
+
             $this->press('Create');
 
             $this->waitForReload();
@@ -99,6 +106,36 @@ class DuskServiceProvider extends ServiceProvider
         Browser::macro('pressSaveAndCheckSaved', function (string $saveButtonText = 'Update') {
             $this->press($saveButtonText);
             $this->waitForText('Content saved. All good!');
+        });
+
+        Browser::macro('addBlockWithContent', function (string $block, array $fields, string $addLabel = 'Add content') {
+            $this->press($addLabel);
+
+            $this->waitFor('.dropdown__scroller');
+
+            $this->with('.dropdown__scroller', function (Browser $element) use ($block) {
+                $element->press($block);
+            });
+
+            $this->with('.blocks .blocks__container div:last-child', function (Browser $element) use ($fields) {
+                foreach ($fields as $label => $value) {
+                    $labelElement = $element->driver
+                        ->findElement(WebDriverBy::xpath('.//label[contains(string(), "' . $label . '")]'));
+                    $for = $labelElement->getAttribute('for');
+
+                    $wrapper = '.input-wrapper-' . Str::replace(['[', ']'], ['\[', '\]'], Str::beforeLast($for, '-'));
+
+                    if ($wysiwyg = $element->element($wrapper . ' .ql-editor')) {
+                        $wysiwyg->sendKeys($value);
+                        $this->pause(100);
+                        $element->element('.input__label')->click();
+                    } else {
+                        $field = $element->driver->findElement(WebDriverBy::id($for));
+                        $field->sendKeys($value);
+                    }
+                    $this->pause(100);
+                }
+            });
         });
 
         /**

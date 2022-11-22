@@ -20,7 +20,6 @@ From within a dusk test you can run the following macro's:
 
 ```php
 $this->browse(function(Browser $browser) {
-    $browser->loginAs($this->superAdmin, 'twill_users');
     $browser->visitTwill();
 });
 ```
@@ -29,7 +28,6 @@ $this->browse(function(Browser $browser) {
 
 ```php
 $this->browse(function(Browser $browser) {
-    $browser->loginAs($this->superAdmin, 'twill_users');
     $browser->visitTwill();
     $browser->createModuleEntryWithTitle('Partners', 'Twill')
 });
@@ -39,7 +37,6 @@ $this->browse(function(Browser $browser) {
 
 ```php
 $this->browse(function(Browser $browser) {
-    $browser->loginAs($this->superAdmin, 'twill_users');
     $browser->visitTwill();
     $browser->visitModuleEntryWithTitle('Partners', 'Twill')
 });
@@ -51,7 +48,6 @@ The first parameter is the selector by which the field identifies.
 
 ```php
 $this->browse(function(Browser $browser) {
-    $browser->loginAs($this->superAdmin, 'twill_users');
     $browser->visitTwill();
     $browser->visitModuleEntryWithTitle('Partners', 'Twill')
     $browser->assertVselectHasOptions('.input-wrapper-option', ['option1', 'option2']);
@@ -64,7 +60,6 @@ The first parameter is the selector by which the field identifies.
 
 ```php
 $this->browse(function(Browser $browser) {
-    $browser->loginAs($this->superAdmin, 'twill_users');
     $browser->visitTwill();
     $browser->visitModuleEntryWithTitle('Partners', 'Twill')
     $browser->selectVselectOption('.input-wrapper-option', 'option1');
@@ -77,7 +72,6 @@ The first parameter is the selector by which the field identifies.
 
 ```php
 $this->browse(function(Browser $browser) {
-    $browser->loginAs($this->superAdmin, 'twill_users');
     $browser->visitTwill();
     $browser->visitModuleEntryWithTitle('Partners', 'Twill')
     $browser->selectVselectOption('.input-wrapper-option', 'option1');
@@ -85,13 +79,27 @@ $this->browse(function(Browser $browser) {
 });
 ```
 
-**pressSaveAndCheckSaved**: Save and check that the save was successfull.
+**pressSaveAndCheckSaved**: Save and check that the save was successfully.
 
 ```php
 $this->browse(function(Browser $browser) {
-    $browser->loginAs($this->superAdmin, 'twill_users');
     $browser->visitTwill();
     $browser->visitModuleEntryWithTitle('Partners', 'Twill')
     $browser->pressSaveAndCheckSaved();
+});
+```
+
+**addBlockWithContent**: Add a new block and set the content.
+
+```php
+$this->browse(function(Browser $browser) {
+    $browser->visitTwill();
+
+    $browser->addBlockWithContent('Text', [
+        'Title' => 'This is the title',
+        'Text' => 'This is the wysiwyg'
+    ]);
+
+    $browser->pressSaveAndCheckSaved('Save as draft');
 });
 ```
