@@ -108,6 +108,24 @@ class DuskServiceProvider extends ServiceProvider
             $this->waitForText('Content saved. All good!');
         });
 
+        Browser::macro('withinNewBlock', function (string $block, \Closure $closure, string $addLabel = 'Add content') {
+            $this->press($addLabel);
+
+            $this->waitFor('.dropdown__scroller');
+
+            $this->with('.dropdown__scroller', function (Browser $element) use ($block) {
+                $element->press($block);
+            });
+
+            $this->with('.blocks .blocks__container div:last-child', function (Browser $element) use ($closure) {
+                $for = $element->element('label')?->getAttribute('for');
+
+                $prefix = Str::before($for ?? '', ']') . ']';
+
+                $closure($element, $prefix);
+            });
+        });
+
         Browser::macro('addBlockWithContent', function (string $block, array $fields, string $addLabel = 'Add content') {
             $this->press($addLabel);
 

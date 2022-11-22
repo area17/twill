@@ -29,4 +29,23 @@ class BrowserTestHelperTest extends BrowserTestCase
         $this->assertEquals('This is the title', $block->translatedInput('title'));
         $this->assertStringContainsString('This is the wysiwyg', $block->translatedInput('text'));
     }
+
+    public function testBlockEditorManual(): void
+    {
+        $this->browse(function (Browser $browser) {
+            $browser->loginAs($this->superAdmin, 'twill_users');
+            $browser->visitTwill();
+
+            $browser->createModuleEntryWithTitle('Page', 'Example page');
+            $browser->withinNewBlock('Text', function(Browser $browser, string $prefix) {
+                $browser->type($prefix . '\[title\]\[en\]', 'Hello world');
+            });
+
+            $browser->pressSaveAndCheckSaved('Save as draft');
+        });
+
+        $block = Page::latest()->first()->blocks()->first();
+
+        $this->assertEquals('Hello world', $block->translatedInput('title'));
+    }
 }

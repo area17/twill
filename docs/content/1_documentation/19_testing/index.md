@@ -94,11 +94,27 @@ $this->browse(function(Browser $browser) {
 ```php
 $this->browse(function(Browser $browser) {
     $browser->visitTwill();
+    $browser->visitModuleEntryWithTitle('Partners', 'Twill')
 
     $browser->addBlockWithContent('Text', [
         'Title' => 'This is the title',
         'Text' => 'This is the wysiwyg'
     ]);
+
+    $browser->pressSaveAndCheckSaved('Save as draft');
+});
+```
+
+**withinNewBlock**: Same ass add block with content but for more manual control.
+
+```php
+$this->browse(function(Browser $browser) {
+    $browser->visitTwill();
+    $browser->visitModuleEntryWithTitle('Partners', 'Twill')
+
+    $browser->withinNewBlock('Text', function(Browser $browser, string $prefix) {
+        $browser->type($prefix . '\[title\]\[en\]', 'Hello world');
+    });
 
     $browser->pressSaveAndCheckSaved('Save as draft');
 });
