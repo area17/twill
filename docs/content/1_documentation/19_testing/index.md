@@ -107,13 +107,15 @@ $this->browse(function(Browser $browser) {
 
 **withinNewBlock**: Same ass add block with content but for more manual control.
 
+`$prefix` is the block identifier which is prefixed for block fields.
+
 ```php
 $this->browse(function(Browser $browser) {
     $browser->visitTwill();
     $browser->visitModuleEntryWithTitle('Partners', 'Twill')
 
     $browser->withinNewBlock('Text', function(Browser $browser, string $prefix) {
-        $browser->type($prefix . '\[title\]\[en\]', 'Hello world');
+        $browser->type($prefix . '[title][en]', 'Hello world');
     });
 
     $browser->pressSaveAndCheckSaved('Save as draft');

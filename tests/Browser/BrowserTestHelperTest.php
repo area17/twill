@@ -38,7 +38,7 @@ class BrowserTestHelperTest extends BrowserTestCase
 
             $browser->createModuleEntryWithTitle('Page', 'Example page');
             $browser->withinNewBlock('Text', function(Browser $browser, string $prefix) {
-                $browser->type($prefix . '\[title\]\[en\]', 'Hello world');
+                $browser->type($prefix . '[title][en]', 'Hello world');
             });
 
             $browser->pressSaveAndCheckSaved('Save as draft');
