@@ -115,6 +115,10 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
+        config('twill.dashboard.auth_activity_log.logout', false) && activity()
+                                                            ->performedOn($this->user())
+                                                            ->causedBy($this->user())
+                                                            ->log('logout');
         $this->guard()->logout();
 
         $request->session()->invalidate();
@@ -154,6 +158,11 @@ class LoginController extends Controller
                 'error' => 'Your password needs to be reset before login',
             ]);
         }
+
+        config('twill.dashboard.auth_activity_log.login', false) && activity()
+                                                            ->performedOn($this->user())
+                                                            ->causedBy($this->user())
+                                                            ->log('login');
 
         return $this->redirector->intended($this->redirectTo);
     }
@@ -292,6 +301,14 @@ class LoginController extends Controller
     protected function credentials(Request $request): array
     {
         return array_merge($request->only($this->username(), 'password'), ['published' => 1]);
+    }
+
+    /**
+     * @return \A17\Twill\Models\User|null
+     */
+    protected function user()
+    {
+        return $this->guard()->user();
     }
 
     protected function autologin(): bool
