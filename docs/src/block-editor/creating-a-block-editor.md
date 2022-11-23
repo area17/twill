@@ -170,6 +170,8 @@ Using `php artisan twill:list:blocks` will list all blocks and repeaters. There 
 
 ##### Using custom icons
 
+Custom icons need to be named differently from default icons to avoid issues when creating the SVG sprites.
+
 If you want to use custom icons in a block, you have to define the source directory's path in `config/twill.php`. Add it under `block_editor.directories.source.icons` key:
 
 filename: ```config/twill.php```
