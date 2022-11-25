@@ -261,6 +261,10 @@
       display: inline-block;
       vertical-align: top;
     }
+
+    .block__counter {
+      vertical-align: top;
+    }
   }
 
   .block__actions {
