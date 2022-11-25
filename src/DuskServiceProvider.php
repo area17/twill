@@ -5,8 +5,10 @@ namespace A17\Twill;
 use Carbon\Carbon;
 use Carbon\Laravel\ServiceProvider;
 use Facebook\WebDriver\Chrome\ChromeDevToolsDriver;
+use Facebook\WebDriver\WebDriverBy;
 use Illuminate\Support\Str;
 use Laravel\Dusk\Browser;
+use Laravel\Dusk\ElementResolver;
 
 class DuskServiceProvider extends ServiceProvider
 {
@@ -34,6 +36,19 @@ class DuskServiceProvider extends ServiceProvider
             $this->pause(100);
         });
 
+        Browser::macro('inRow', function (string $stringInTable, \Closure $closure) {
+            $resolver = new ElementResolver(
+                $this->driver->findElement(WebDriverBy::xpath('//table//tr[td/span//text()[contains(., "' . $stringInTable . '")]]')),
+            );
+
+            $browser = new Browser(
+                $this->driver,
+                $resolver
+            );
+
+            $closure($browser);
+        });
+
         Browser::macro('visitTwill', function () {
             if (
                 !Str::contains($this->driver->getCurrentURL(), '/twill') ||
@@ -58,6 +73,11 @@ class DuskServiceProvider extends ServiceProvider
             $this->visitTwill();
 
             $this->clickLink($menuName);
+
+            $this->createWithTitle($title);
+        });
+
+        Browser::macro('createWithTitle', function (string $title) {
             $this->press('Add new');
 
             $this->waitFor('.modal__header');
