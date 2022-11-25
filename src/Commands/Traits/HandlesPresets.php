@@ -109,7 +109,7 @@ trait HandlesPresets
 
     private function checkMeetsRequirementsForPreset(string $preset): void
     {
-        if ($preset === 'basic-page-builder' && !\Composer\InstalledVersions::isInstalled('kalnoy/nestedset')) {
+        if ($preset === 'basic-page-builder' && class_exists('Kalnoy\Nestedset\NodeTrait')) {
             throw new \RuntimeException(
                 'Missing nestedset, please install it using "composer require kalnoy/nestedset"'
             );
