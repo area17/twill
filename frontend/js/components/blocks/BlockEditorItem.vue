@@ -254,7 +254,6 @@
   }
 
   .block__toggle {
-    overflow: hidden;
     flex-grow: 1;
 
     .dropdown {
