@@ -4,7 +4,7 @@
       <div class="locale__item" v-for="language in languages" :key="language.value">
         <component
             v-bind:is="`${type}`"
-            v-if="language.value === currentLocale.value || isCustomForm"
+            v-if="language.value === currentLocale.value || isCustomForm || keepInDom"
             :data-lang="language.value"
             v-bind="attributesPerLang(language.value)"
             :name="`${attributes.name}[${language.value}]`"
@@ -45,6 +45,10 @@
       type: {
         type: String,
         default: 'text'
+      },
+      keepInDom: {
+        type: Boolean,
+        default: false
       },
       attributes: {
         type: Object,
