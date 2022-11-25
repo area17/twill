@@ -21,7 +21,7 @@ return [
     |
      */
     'admin_app_url' => env('ADMIN_APP_URL', null),
-    'admin_app_path' => env('ADMIN_APP_PATH', env('ADMIN_APP_URL', null) ? '' : '/admin'),
+    'admin_app_path' => ltrim(env('ADMIN_APP_PATH', env('ADMIN_APP_URL', null) ? '' : 'admin'), '/'),
 
     /*
     |--------------------------------------------------------------------------
