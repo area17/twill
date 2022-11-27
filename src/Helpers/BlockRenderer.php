@@ -230,7 +230,10 @@ class BlockRenderer
         $class = Block::findFirstWithType($block->type);
 
         /** @var \A17\Twill\Models\Block[] $childBlocks */
-        $childBlocks = A17Block::whereParentId($block->id)->get();
+        $childBlocks = A17Block::whereParentId($block->id)->orderBy(
+            config('twill.blocks_table', 'twill_blocks') . '.position',
+            'asc'
+        )->get();
 
         $children = [];
 
