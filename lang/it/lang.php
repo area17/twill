@@ -112,7 +112,7 @@ return [
             'btn-label' => 'Allega immagine',
             'crop' => 'Ritaglia',
             'crop-edit' => 'Modifica ritaglio immagine',
-            'crop-list' => 'ritaglia',
+            'crop-list' => 'ritaglio',
             'crop-save' => 'Aggiorna',
             'delete' => 'Elimina',
             'download' => 'Scarica',
