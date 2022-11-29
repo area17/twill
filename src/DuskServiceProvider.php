@@ -72,6 +72,7 @@ class DuskServiceProvider extends ServiceProvider
         Browser::macro('createModuleEntryWithTitle', function (string $menuName, string $title) {
             $this->visitTwill();
 
+            $this->waitForText($menuName);
             $this->clickLink($menuName);
 
             $this->createWithTitle($title);
