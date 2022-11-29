@@ -101,11 +101,11 @@ class RoleController extends ModuleController
         return parent::index($parentModuleId);
     }
 
-    public function edit(int|TwillModelContract $id, ?int $submoduleId = null): mixed
+    public function edit(int|TwillModelContract $id): mixed
     {
         $this->authorizableOptions['edit'] = 'edit-role';
 
-        return parent::edit($id, $submoduleId);
+        return parent::edit($id);
     }
 
     public function update(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse

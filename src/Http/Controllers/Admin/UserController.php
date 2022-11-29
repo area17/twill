@@ -291,11 +291,11 @@ class UserController extends ModuleController
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }
 
-    public function edit(int|TwillModelContract $id, ?int $submoduleId = null): mixed
+    public function edit(int|TwillModelContract $id): mixed
     {
         $this->authorizableOptions['edit'] = 'edit-user';
 
-        return parent::edit($id, $submoduleId);
+        return parent::edit($id);
     }
 
     public function update(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse

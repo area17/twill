@@ -97,11 +97,11 @@ class GroupController extends ModuleController
         })->values();
     }
 
-    public function edit(int|TwillModelContract $id, ?int $submoduleId = null): mixed
+    public function edit(int|TwillModelContract $id): mixed
     {
         $this->authorizableOptions['edit'] = 'edit-group';
 
-        return parent::edit($id, $submoduleId);
+        return parent::edit($id);
     }
 
     public function update(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
