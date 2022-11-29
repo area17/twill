@@ -99,7 +99,7 @@ trait HandleRevisions
         TwillModelContract $object,
         array $fields,
         string $relationship,
-        ?TwillModelContract $model = null,
+        null|string|TwillModelContract $model = null,
         ?string $customHydratedRelationship = null
     ): void
     {
@@ -122,7 +122,7 @@ trait HandleRevisions
         array $fields,
         string $relationship,
         string $positionAttribute = 'position',
-        ?TwillModelContract $model = null): void
+        null|TwillModelContract|string $model = null): void
     {
         $this->hydrateOrderedBelongsToMany($object, $fields, $relationship, $positionAttribute, $model);
     }
@@ -131,7 +131,7 @@ trait HandleRevisions
         array $fields,
         string $relationship,
         string $positionAttribute = 'position',
-        ?TwillModelContract $model = null): void
+        null|TwillModelContract|string $model = null): void
     {
         $fieldsHasElements = isset($fields['browsers'][$relationship]) && !empty($fields['browsers'][$relationship]);
         $relatedElements = $fieldsHasElements ? $fields['browsers'][$relationship] : [];
@@ -188,7 +188,7 @@ trait HandleRevisions
         TwillModelContract $object,
         array $fields,
         string $relationship,
-        TwillModelContract $model,
+        string $model,
         ?string $repeaterName = null): void
     {
         if (!$repeaterName) {
