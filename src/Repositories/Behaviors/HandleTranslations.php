@@ -57,7 +57,7 @@ trait HandleTranslations
                     }
 
                     return [
-                        $attribute => ($attributeValue[$locale] ?? null),
+                        $attribute => ($attributeValue[$locale] ?? $fields[$locale][$attribute] ?? null),
                     ];
                 })->toArray();
             }
