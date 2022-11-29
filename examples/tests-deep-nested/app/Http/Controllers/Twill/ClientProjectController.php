@@ -18,7 +18,7 @@ class ClientProjectController extends BaseModuleController
     protected function setUpController(): void
     {
         $this->setModuleName('clients.projects');
-        $this->setModelName('clientProject');
+        $this->setModelName('ClientProject');
         $this->disablePermalink();
     }
 
