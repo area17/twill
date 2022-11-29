@@ -17,6 +17,7 @@ use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -290,34 +291,14 @@ class UserController extends ModuleController
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }
 
-//    protected function filterScope($prepend = [])
-//    {
-//        $scope = [];
-//
-//        $requestFilters = $this->getRequestFilters();
-//
-//        if (array_key_exists('status', $requestFilters)) {
-//            switch ($requestFilters['status']) {
-//                case 'activated':
-//                    $scope['activated'] = true;
-//                    break;
-//                case 'pending':
-//                    $scope['pending'] = true;
-//                    break;
-//            }
-//        }
-//
-//        return parent::filterScope($prepend + $scope);
-//    }
-
-    public function edit($id, $submoduleId = null)
+    public function edit(int|TwillModelContract $id, ?int $submoduleId = null): mixed
     {
         $this->authorizableOptions['edit'] = 'edit-user';
 
         return parent::edit($id, $submoduleId);
     }
 
-    public function update($id, $submoduleId = null)
+    public function update(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
         $this->authorizableOptions['edit'] = 'edit-user';
 

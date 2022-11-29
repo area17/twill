@@ -1187,17 +1187,16 @@ abstract class ModuleController extends Controller
      * @param int|null $submoduleId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update($id, $submoduleId = null)
+    public function update(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
-        $params = $this->request->route()->parameters();
-
-        $submoduleParentId = $this->getParentModuleIdFromRequest($this->request) ?? $id;
-        $this->submodule = $submoduleParentId;
-        $this->submoduleParentId = $submoduleParentId;
-
-        $id = last($params);
-
-        $item = $this->repository->getById($id);
+        if ($id instanceof TwillModelContract) {
+            $item = $id;
+            $id = $item->id;
+        } else {
+            $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+            $id = $this->request->route()->parameter($parameter, $id);
+            $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
+        }
 
         $this->authorizeOption('edit', $item);
 
@@ -1421,18 +1420,17 @@ abstract class ModuleController extends Controller
         );
     }
 
-    /**
-     * @param int $id
-     * @param int|null $submoduleId
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function duplicate($id, $submoduleId = null)
+    public function duplicate(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
-        $params = $this->request->route()->parameters();
+        if ($id instanceof TwillModelContract) {
+            $item = $id;
+            $id = $item->id;
+        } else {
+            $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+            $id = $this->request->route()->parameter($parameter, $id);
+            $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
+        }
 
-        $id = last($params);
-
-        $item = $this->repository->getById($id);
         if ($newItem = $this->repository->duplicate($id, $this->titleColumnKey)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('duplicated');
@@ -1454,18 +1452,17 @@ abstract class ModuleController extends Controller
         );
     }
 
-    /**
-     * @param int $id
-     * @param int|null $submoduleId
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function destroy($id, $submoduleId = null)
+    public function destroy(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
-        $params = $this->request->route()->parameters();
+        if ($id instanceof TwillModelContract) {
+            $item = $id;
+            $id = $item->id;
+        } else {
+            $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+            $id = $this->request->route()->parameter($parameter, $id);
+            $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
+        }
 
-        $id = last($params);
-
-        $item = $this->repository->getById($id);
         if ($this->repository->delete($id)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('deleted');
