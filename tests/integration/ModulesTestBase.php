@@ -170,7 +170,7 @@ abstract class ModulesTestBase extends TestCase
 
         $this->assertNotNull($this->translation);
 
-        $this->assertCount(3, $this->author->slugs);
+        $this->assertCount(2, $this->author->slugs);
 
         return $this->author;
     }
