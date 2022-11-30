@@ -56,6 +56,7 @@
 
           <a17-locale type="a17-textfield" v-if="isImage && translatableMetadatas.includes('alt_text')"
                       :attributes="{ label: $trans('media-library.sidebar.alt-text', 'Alt text'), name: 'alt_text', type: 'text', size: 'small' }"
+                      :keepInDom="true"
                       :initialValues="altValues" @focus="focus" @blur="blur"></a17-locale>
           <a17-textfield v-else-if="isImage" :label="$trans('media-library.sidebar.alt-text', 'Alt text')" name="alt_text"
                          :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur"/>
@@ -63,6 +64,7 @@
           <template v-if="useWysiwyg">
             <a17-locale type="a17-wysiwyg" v-if="isImage && translatableMetadatas.includes('caption')"
                         :attributes="{ options: wysiwygOptions, label: $trans('media-library.sidebar.caption', 'Caption'), name: 'caption', size: 'small' }"
+                        :keepInDom="true"
                         :initialValues="captionValues" @focus="focus" @blur="blur"></a17-locale>
             <a17-wysiwyg v-else-if="isImage" type="textarea" :rows="1" size="small" :label="$trans('media-library.sidebar.caption', 'Caption')" name="caption"
                            :options="wysiwygOptions"
@@ -71,6 +73,7 @@
           <template v-else>
             <a17-locale type="a17-textfield" v-if="isImage && translatableMetadatas.includes('caption')"
                         :attributes="{ type: 'textarea', rows: 1, label: $trans('media-library.sidebar.caption', 'Caption'), name: 'caption', size: 'small' }"
+                        :keepInDom="true"
                         :initialValues="captionValues" @focus="focus" @blur="blur"></a17-locale>
             <a17-textfield v-else-if="isImage" type="textarea" :rows="1" size="small" :label="$trans('media-library.sidebar.caption', 'Caption')" name="caption"
                            :initialValue="firstMedia.metadatas.default.caption" @focus="focus" @blur="blur"/>
@@ -79,6 +82,7 @@
           <template v-for="field in singleOnlyMetadatas">
             <a17-locale type="a17-textfield" v-bind:key="field.name"
                         v-if="isImage && (field.type === 'text' || !field.type) && translatableMetadatas.includes(field.name)"
+                        :keepInDom="true"
                         :attributes="{ label: field.label, name: field.name, type: 'textarea', rows: 1, size: 'small' }"
                         :initialValues="firstMedia.metadatas.default[field.name]" @focus="focus" @blur="blur"/>
             <a17-textfield v-bind:key="field.name" v-else-if="isImage && (field.type === 'text' || !field.type)"
@@ -96,6 +100,7 @@
         <template v-for="field in singleAndMultipleMetadatas">
           <a17-locale type="a17-textfield" v-bind:key="field.name"
                       v-if="isImage && (field.type === 'text' || !field.type)&& ((hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)) || hasSingleMedia) && translatableMetadatas.includes(field.name)"
+                      :keepInDom="true"
                       :attributes="{ label: field.label, name: field.name, type: 'textarea', rows: 1, size: 'small' }"
                       :initialValues="sharedMetadata(field.name, 'object')" @focus="focus" @blur="blur"/>
           <a17-textfield v-bind:key="field.name"

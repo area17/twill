@@ -69,26 +69,30 @@ const svgConfig = (suffix = null) => {
   }
 }
 
-const plugins = [
-  new CleanWebpackPlugin(),
-  new SVGSpritemapPlugin(`${srcDirectory}/icons/**/*.svg`, svgConfig()),
-  new SVGSpritemapPlugin(`${srcDirectory}/icons-files/**/*.svg`, svgConfig('files')),
-  new SVGSpritemapPlugin(`${srcDirectory}/icons-wysiwyg/**/*.svg`, svgConfig('wysiwyg')),
-  new WebpackAssetsManifest({
-    output: `${assetsDir}/twill-manifest.json`,
-    publicPath: true,
-    customize (entry, original, manifest, asset) {
-      const search = new RegExp(`${assetsDir.replace(/\//gm, '\/')}\/(css|fonts|js|icons)\/`, 'gm')
-      return {
-        key: entry.key.replace(search, '')
-      }
-    }
-  })
-]
+const plugins = [ new CleanWebpackPlugin() ]
 
+// Default icons and optionnal custom admin icons
+// Warning : user need to make sure each SVG files are named uniquely
+const iconDirectories = [`${srcDirectory}/icons/**/*.svg`];
 if (fs.existsSync(`${srcDirectory}/icons-custom`) && fs.readdirSync(`${srcDirectory}/icons-custom`).length !== 0) {
-  plugins.push(new SVGSpritemapPlugin(`${srcDirectory}/icons-custom/**/*.svg`, svgConfig('custom')));
+  iconDirectories.push(`${srcDirectory}/icons-custom/**/*.svg`);
 }
+plugins.push(new SVGSpritemapPlugin(iconDirectories, svgConfig()))
+// File format icons
+plugins.push(new SVGSpritemapPlugin(`${srcDirectory}/icons-files/**/*.svg`, svgConfig('files')))
+// Wysiwyg icons
+plugins.push(new SVGSpritemapPlugin(`${srcDirectory}/icons-wysiwyg/**/*.svg`, svgConfig('wysiwyg')))
+
+plugins.push(new WebpackAssetsManifest({
+  output: `${assetsDir}/twill-manifest.json`,
+  publicPath: true,
+  customize (entry, original, manifest, asset) {
+    const search = new RegExp(`${assetsDir.replace(/\//gm, '\/')}\/(css|fonts|js|icons)\/`, 'gm')
+    return {
+      key: entry.key.replace(search, '')
+    }
+  }
+}))
 
 if (!isProd) {
   plugins.push(new WebpackNotifierPlugin({
