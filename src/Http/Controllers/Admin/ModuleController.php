@@ -17,6 +17,7 @@ use A17\Twill\Services\Breadcrumbs\Breadcrumbs;
 use A17\Twill\Services\Forms\Fields\BaseFormField;
 use A17\Twill\Services\Forms\Fields\BlockEditor;
 use A17\Twill\Services\Forms\Fields\Repeater;
+use A17\Twill\Services\Forms\Fieldsets;
 use A17\Twill\Services\Forms\Form;
 use A17\Twill\Services\Listings\Columns\Browser;
 use A17\Twill\Services\Listings\Columns\FeaturedStatus;
@@ -1154,10 +1155,28 @@ abstract class ModuleController extends Controller
             }
         }
 
-        return View::make($view, $this->form($id))->with(
-            'renderFields',
-            $controllerForm
-        );
+        $viewWithData = [];
+
+        if ($controllerForm instanceof Fieldsets) {
+            $viewWithData['renderFieldsets'] = $controllerForm;
+            $viewWithData['disableContentFieldset'] = true;
+            $viewWithData['additionalFieldsets'] = $controllerForm->map(fn ($fieldset) => [
+                'fieldset' => $fieldset->id,
+                'label' => $fieldset->title,
+            ])->toArray();
+
+            $controllerSideFieldsets = $this->getSideFieldsets($item);
+
+            if ($controllerSideFieldsets instanceof Fieldsets) {
+                $viewWithData['renderSideFieldsets'] = $controllerSideFieldsets;
+            } else {
+                $viewWithData['renderSideFieldset'] = $controllerSideFieldsets;
+            }
+        } else {
+            $viewWithData['renderFields'] = $controllerForm;
+        }
+
+        return View::make($view, $this->form($id))->with($viewWithData);
     }
 
     /**
@@ -2671,7 +2690,12 @@ abstract class ModuleController extends Controller
         return twillTrans(Arr::has($this->labels, $key) ? Arr::get($this->labels, $key) : $key, $replace);
     }
 
-    public function getForm(TwillModelContract $model): Form
+    public function getForm(TwillModelContract $model): Form | Fieldsets
+    {
+        return new Form();
+    }
+
+    public function getSideFieldsets(TwillModelContract $model): Form | Fieldsets
     {
         return new Form();
     }

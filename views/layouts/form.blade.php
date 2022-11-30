@@ -29,6 +29,7 @@
     $editModalTitle = ($createWithoutModal ?? false) ? twillTrans('twill::lang.modal.create.title') : null;
     $item = isset($item) ? $item : null;
 
+    // TODO: cache and move out of view
     if (config('twill.enabled.permissions-management')) {
         $users = app()->make('A17\Twill\Repositories\UserRepository')->published()->notSuperAdmin()->get();
         $groups = app()->make('A17\Twill\Repositories\GroupRepository')->get()->map(function ($group) {
@@ -89,18 +90,46 @@
                             </a17-publisher>
                             <a17-page-nav placeholder="Go to page" previous-url="{{ $parentPreviousUrl ?? '' }}"
                                           next-url="{{ $parentNextUrl ?? '' }}"></a17-page-nav>
-                            @hasSection('sideFieldset')
-                                <a17-fieldset title="{{ $sideFieldsetLabel ?? 'Options' }}" id="options">
-                                    @yield('sideFieldset')
-                                </a17-fieldset>
+                            @if(isset($renderSideFieldset) && $renderSideFieldset->isNotEmpty())
+                                <x-twill::formFieldset
+                                    id="options"
+                                    title="{{ $sideFieldsetLabel ?? 'Options' }}"
+                                >
+                                    @foreach($renderSideFieldset as $field)
+                                        {!! $field->render() !!}
+                                    @endforeach
+                                </x-twill::formFieldset>
+                            @else
+                                @hasSection('sideFieldset')
+                                    <x-twill::formFieldset
+                                        id="options"
+                                        title="{{ $sideFieldsetLabel ?? 'Options' }}"
+                                    >
+                                        @yield('sideFieldset')
+                                    </x-twill::formFieldset>
+                                @endif
                             @endif
-                            @yield('sideFieldsets')
+                            @if(isset($renderSideFieldsets) && $renderFieldsets->isNotEmpty())
+                                @foreach($renderSideFieldsets as $fieldset)
+                                    @if($fieldset->fields->isNotEmpty())
+                                        <x-twill::formFieldset :id="$fieldset->id" :title="$fieldset->title" :open="$fieldset->open">
+                                            @foreach($fieldset->fields as $field)
+                                                {!! $field->render() !!}
+                                            @endforeach
+                                        </x-twill::formFieldset>
+                                    @endif
+                                @endforeach
+                            @else
+                                @yield('sideFieldsets')
+                            @endif
                         </div>
                     </aside>
                     <section class="col col--primary" data-sticky-top="publisher">
                         @unless($disableContentFieldset)
-                            <a17-fieldset title="{{ $contentFieldsetLabel ?? twillTrans('twill::lang.form.content') }}"
-                                          id="content">
+                            <x-twill::formFieldset
+                                id="content"
+                                title="{{ $contentFieldsetLabel ?? twillTrans('twill::lang.form.content') }}"
+                            >
                                 @if (isset($renderFields) && $renderFields->isNotEmpty())
                                     @foreach($renderFields as $field)
                                         {!! $field->render() !!}
@@ -108,22 +137,34 @@
                                 @else
                                     @yield('contentFields')
                                 @endif
-                            </a17-fieldset>
+                            </x-twill::formFieldset>
                         @endunless
+
+                        @if(isset($renderFieldsets) && $renderFieldsets->isNotEmpty())
+                            @foreach($renderFieldsets as $fieldset)
+                                @if($fieldset->fields->isNotEmpty())
+                                    <x-twill::formFieldset :id="$fieldset->id" :title="$fieldset->title" :open="$fieldset->open">
+                                        @foreach($fieldset->fields as $field)
+                                            {!! $field->render() !!}
+                                        @endforeach
+                                    </x-twill::formFieldset>
+                                @endif
+                            @endforeach
+                        @else
+                            @yield('fieldsets')
+                        @endif
 
                         @if(\A17\Twill\Facades\TwillPermissions::levelIs(\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM))
                             @if($showPermissionFieldset ?? null)
                                 @can('manage-item', isset($item) ? $item : null)
-                                    <a17-fieldset title="User Permissions" id="permissions">
+                                    <x-twill::formFieldset id="permissions" title="User Permissions" :open="false">
                                         <x-twill::select-permissions :items-in-selects-tables="$users" label-key="name"
                                                                      name-pattern="user_%id%_permission"
                                                                      :list-user="true"/>
-                                    </a17-fieldset>
+                                    </x-twill::formFieldset>
                                 @endcan
                             @endif
                         @endif
-
-                        @yield('fieldsets')
                     </section>
                 </div>
             </div>
