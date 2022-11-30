@@ -18,8 +18,8 @@ class DashboardTest extends TestCase
     {
         parent::setUp();
 
-        $this->computer = AnonymousModule::make('computers', $this->app)->boot();
-        $this->licences = AnonymousModule::make('licences', $this->app)->boot();
+        $this->computer = AnonymousModule::make('computers', $this->app)->withLinkInPrimaryNavigation()->boot();
+        $this->licences = AnonymousModule::make('licences', $this->app)->withLinkInPrimaryNavigation()->boot();
 
         $this->actingAs($this->superAdmin(), 'twill_users');
     }

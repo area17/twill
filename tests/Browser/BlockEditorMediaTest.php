@@ -62,6 +62,7 @@ HTML;
             }
 
             $class = \A17\Twill\Tests\Integration\Anonymous\AnonymousModule::make('commands', app())
+                ->withLinkInPrimaryNavigation()
                 ->withFields([
                     'title' => [],
                 ])

@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Tests\Integration\Anonymous;
+namespace A17\Twill\Services\Anonymous;
 
 use A17\Twill\Facades\TwillNavigation;
 use A17\Twill\Models\Behaviors\HasSlug;
@@ -883,7 +883,7 @@ PHP
                     $update = true;
                 }
 
-                // PRtodo
+                // TODO
                 foreach ($this->belongsToMany as $target => $model) {
                     $targetSingular = Str::singular($target);
                     Schema::create(
@@ -904,8 +904,9 @@ PHP
                         createDefaultTableFields($table);
                     }
 
-                    // PRtodo
+                    // TODO
                     foreach ($this->belongsTo as $target) {
+//                        if (! Schema::hasColumn($fieldName)) {
                         $table->foreignIdFor($target)->nullable();
                     }
 

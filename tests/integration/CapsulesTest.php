@@ -3,7 +3,9 @@
 namespace A17\Twill\Tests\Integration;
 
 use A17\Twill\Facades\TwillCapsules;
+use A17\Twill\Facades\TwillNavigation;
 use A17\Twill\Facades\TwillRoutes;
+use A17\Twill\View\Components\Navigation\NavigationLink;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -57,15 +59,11 @@ class CapsulesTest extends TestCase
             ],
         ]);
 
-        config()->set([
-            'twill-navigation' => [
-                $this->capsuleName => [
-                    'title' => Str::studly($this->capsuleClassName),
-
-                    'module' => true,
-                ],
-            ],
-        ]);
+        TwillNavigation::addLink(
+            NavigationLink::make()
+                ->forModule($this->capsuleName)
+                ->title(Str::title(Str::studly($this->capsuleClassName)))
+        );
     }
 
     public function getPackageProviders($app)

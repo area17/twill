@@ -17,6 +17,7 @@ class ScheduleDatesTest extends BrowserTestCase
             config()->set('translatable.locales', ['en']);
             config()->set('twill.publish_date_24h', $time24h);
             $class = \A17\Twill\Tests\Integration\Anonymous\AnonymousModule::make('scheduleservers', app())
+                ->withLinkInPrimaryNavigation()
                 ->withFields([
                     'title' => [],
                     'publish_start_date' => [

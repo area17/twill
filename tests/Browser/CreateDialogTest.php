@@ -15,6 +15,7 @@ class CreateDialogTest extends BrowserTestCase
         $this->tweakApplication(function () use (&$class) {
             \Illuminate\Support\Facades\Config::set('translatable.locales', ['en', 'fr']);
             $class = \A17\Twill\Tests\Integration\Anonymous\AnonymousModule::make('servers', app())
+                ->withLinkInPrimaryNavigation()
                 ->withFields([
                     'title' => ['translatable' => true],
                 ])

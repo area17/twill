@@ -17,6 +17,7 @@ class FrontendDateConversionTest extends BrowserTestCase
         $class = null;
         $this->tweakApplication(function () use (&$class, $use24h) {
             $class = \A17\Twill\Tests\Integration\Anonymous\AnonymousModule::make('gateways', app())
+                ->withLinkInPrimaryNavigation()
                 ->withFields([
                     'title' => [],
                     'last_booted' => [

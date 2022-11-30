@@ -15,6 +15,7 @@ class SelectFieldTest extends BrowserTestCase
         $class = null;
         $this->tweakApplication(function () use (&$class) {
             $class = \A17\Twill\Tests\Integration\Anonymous\AnonymousModule::make('servers', app())
+                ->withLinkInPrimaryNavigation()
                 ->withFields([
                     'title' => [],
                     'option' => [],
@@ -56,6 +57,7 @@ class SelectFieldTest extends BrowserTestCase
     {
         $this->tweakApplication(function () {
             \A17\Twill\Tests\Integration\Anonymous\AnonymousModule::make('servers', app())
+                ->withLinkInPrimaryNavigation()
                 ->withFields([
                     'title' => [],
                     'option' => [],
