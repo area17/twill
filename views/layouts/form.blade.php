@@ -190,37 +190,37 @@
 
 @section('initialStore')
     window['{{ config('twill.js_namespace') }}'].STORE.form = {
-    baseUrl: '{{ $baseUrl ?? '' }}',
-    saveUrl: '{{ $saveUrl }}',
-    previewUrl: '{{ $previewUrl ?? '' }}',
-    restoreUrl: '{{ $restoreUrl ?? '' }}',
-    availableBlocks: {},
-    blocks: {},
-    blockPreviewUrl: '{{ $blockPreviewUrl ?? '' }}',
-    availableRepeaters: {!! $availableRepeaters ?? '{}' !!},
-    repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
-    fields: [],
-    editor: {{ $editor ? 'true' : 'false' }},
-    isCustom: {{ $customForm ? 'true' : 'false' }},
-    reloadOnSuccess: {{ ($reloadOnSuccess ?? false) ? 'true' : 'false' }},
-    editorNames: []
+        baseUrl: '{{ $baseUrl ?? '' }}',
+        saveUrl: '{{ $saveUrl }}',
+        previewUrl: '{{ $previewUrl ?? '' }}',
+        restoreUrl: '{{ $restoreUrl ?? '' }}',
+        availableBlocks: {},
+        blocks: {},
+        blockPreviewUrl: '{{ $blockPreviewUrl ?? '' }}',
+        availableRepeaters: {!! $availableRepeaters ?? '{}' !!},
+        repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
+        fields: [],
+        editor: {{ $editor ? 'true' : 'false' }},
+        isCustom: {{ $customForm ? 'true' : 'false' }},
+        reloadOnSuccess: {{ ($reloadOnSuccess ?? false) ? 'true' : 'false' }},
+        editorNames: []
     }
 
     window['{{ config('twill.js_namespace') }}'].STORE.publication = {
-    withPublicationToggle: {{ json_encode(($publish ?? true) && $item?->isFillable('published')) }},
-    published: {{ $item?->published ? 'true' : 'false' }},
-    createWithoutModal: {{ isset($createWithoutModal) && $createWithoutModal ? 'true' : 'false' }},
-    withPublicationTimeframe: {{ json_encode(($schedule ?? true) && $item?->isFillable('publish_start_date')) }},
-    publishedLabel: '{{ $publishedLabel ?? twillTrans('twill::lang.main.published') }}',
-    draftLabel: '{{ $draftLabel ?? twillTrans('twill::lang.main.draft') }}',
-    expiredLabel: '{{twillTrans('twill::lang.publisher.expired')}}',
-    scheduledLabel: '{{twillTrans('twill::lang.publisher.scheduled')}}',
-    submitDisableMessage: '{{ $submitDisableMessage ?? '' }}',
-    startDate: '{{ $item?->publish_start_date ?? '' }}',
-    endDate: '{{ $item?->publish_end_date ?? '' }}',
-    visibility: '{{ $item?->isFillable('public') ? ($item?->public ? 'public' : 'private') : false }}',
-    reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!},
-    submitOptions: {!! isset($submitOptions) ? json_encode($submitOptions) : 'null' !!}
+        withPublicationToggle: {{ json_encode(($publish ?? true) && $item?->isFillable('published')) }},
+        published: {{ $item?->published ? 'true' : 'false' }},
+        createWithoutModal: {{ isset($createWithoutModal) && $createWithoutModal ? 'true' : 'false' }},
+        withPublicationTimeframe: {{ json_encode(($schedule ?? true) && $item?->isFillable('publish_start_date')) }},
+        publishedLabel: '{{ $publishedLabel ?? twillTrans('twill::lang.main.published') }}',
+        draftLabel: '{{ $draftLabel ?? twillTrans('twill::lang.main.draft') }}',
+        expiredLabel: '{{twillTrans('twill::lang.publisher.expired')}}',
+        scheduledLabel: '{{twillTrans('twill::lang.publisher.scheduled')}}',
+        submitDisableMessage: '{{ $submitDisableMessage ?? '' }}',
+        startDate: '{{ $item?->publish_start_date ?? '' }}',
+        endDate: '{{ $item?->publish_end_date ?? '' }}',
+        visibility: '{{ $item?->isFillable('public') ? ($item?->public ? 'public' : 'private') : false }}',
+        reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!},
+        submitOptions: {!! isset($submitOptions) ? json_encode($submitOptions) : 'null' !!}
     }
 
     window['{{ config('twill.js_namespace') }}'].STORE.revisions = {!! json_encode($revisions ?? []) !!}
@@ -239,7 +239,7 @@
     window['{{ config('twill.js_namespace') }}'].STORE.browser.selected = {}
 
     window['{{ config('twill.js_namespace') }}'].APIKEYS = {
-    'googleMapApi': '{{ config('twill.google_maps_api_key') }}'
+        'googleMapApi': '{{ config('twill.google_maps_api_key') }}'
     }
 
     {{-- Permissions --}}
