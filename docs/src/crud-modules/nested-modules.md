@@ -194,8 +194,8 @@ class IssueController extends BaseModuleController
 Add both modules to `routes/admin.php`:
 
 ```php
-Route::module('issues');
-Route::module('issues.articles');
+Route::twillModule('issues');
+Route::twillModule('issues.articles');
 ```
 
 Add the parent module to `config/twill-navigation.php`:

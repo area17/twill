@@ -27,7 +27,7 @@ Add the route to your admin routes file(`routes/admin.php`).
 ```php
 <?php
 
-Route::module('moduleName');
+Route::twillModule('moduleName');
 ```
 
 Setup a new CMS navigation item in `config/twill-navigation.php`.
@@ -78,7 +78,7 @@ Add the route to your admin routes file(`routes/admin.php`).
 ```php
 <?php
 
-Route::singleton('moduleName');
+Route::twillSingleton('moduleName');
 ```
 
 Setup a new CMS navigation item in `config/twill-navigation.php`.

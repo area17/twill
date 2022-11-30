@@ -237,7 +237,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->middleware(['web', 'twill_auth:twill_users', 'can:list']);
         });
 
-        Route::macro('module', function (
+        Route::macro('twillModule', function (
             $slug,
             $options = [],
             $resource_options = [],
@@ -360,7 +360,7 @@ class RouteServiceProvider extends ServiceProvider
             }
         });
 
-        Route::macro('singleton', function (
+        Route::macro('twillSingleton', function (
             $slug,
             $options = [],
             $resource_options = [],
@@ -369,7 +369,7 @@ class RouteServiceProvider extends ServiceProvider
             $pluralSlug = Str::plural($slug);
             $modelName = Str::studly($slug);
 
-            Route::module($pluralSlug, $options, $resource_options, $resource);
+            Route::twillModule($pluralSlug, $options, $resource_options, $resource);
 
             $lastRouteGroupName = RouteServiceProvider::getLastRouteGroupName();
 
