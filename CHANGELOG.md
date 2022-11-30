@@ -1551,7 +1551,7 @@ It also gives up a slight performance boost in HMR mode when developing.
 - Replace image in media form field
 - Context based image alternative text and caption
 - Restore soft deleted models
-- Suggested frontend controller for show and preview routes with its associated router macro (Route::twillModuleShowWithPreview)
+- Suggested frontend controller for show and preview routes with its associated router macro (Route::moduleShowWithPreview)
 - Allow custom buckets routes prefixes, default to "featured" prefix
 - Support starred items in buckets
 - Preview in selected language
