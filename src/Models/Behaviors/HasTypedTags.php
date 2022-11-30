@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Models\Traits;
+namespace A17\Twill\Models\Behaviors;
 
-use App\Models\Tag;
+use A17\Twill\Models\Tag;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 trait HasTypedTags
