@@ -308,7 +308,7 @@ class ModuleMake extends Command
             $this->info("    Route::twillSingleton('{$singularModuleName}');\n");
         } else {
             $this->info("\nAdd to routes/admin.php:\n");
-            $this->info("    Route::twillModule('{$moduleName}');\n");
+            $this->info("    Route::module('{$moduleName}');\n");
         }
 
         $navModuleName = $this->isSingleton ? $singularModuleName : $moduleName;

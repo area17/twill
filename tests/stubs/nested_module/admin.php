@@ -2,4 +2,4 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::twillModule('nodes');
+Route::module('nodes');

@@ -57,15 +57,15 @@ To make it work properly and to get active states automatically in Twill's UI, y
 ```php
 <?php
 
-Route::twillModule('pages');
+Route::module('pages');
 
 Route::group(['prefix' => 'work'], function () {
     Route::group(['prefix' => 'projects'], function () {
-        Route::twillModule('projectCustomers');
+        Route::module('projectCustomers');
     });
-    Route::twillModule('projects');
-    Route::twillModule('clients');
-    Route::twillModule('industries');
-    Route::twillModule('studios');
+    Route::module('projects');
+    Route::module('clients');
+    Route::module('industries');
+    Route::module('studios');
 });
 ```

@@ -1,7 +1,7 @@
 <?php
 
 Route::group(['prefix' => 'personnel'], function () {
-    Route::twillModule('authors');
+    Route::module('authors');
 });
 
-Route::twillModule('categories');
+Route::module('categories');

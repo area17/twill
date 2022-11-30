@@ -36,9 +36,9 @@ Add the modules to our admin routes:
 ```php
 // update file: routes/admin.php
 
-Route::twillModule('pages');
+Route::module('pages');
 
-Route::twillModule('posts');
+Route::module('posts');
 ```
 
 ... and to our navigation:
@@ -246,11 +246,11 @@ Then, add the route groups and middleware in the admin routes configuration:
 
 ```php
 Route::group(['middleware' => 'can:edit-pages'], function () {
-    Route::twillModule('pages');
+    Route::module('pages');
 });
 
 Route::group(['middleware' => 'can:edit-posts'], function () {
-    Route::twillModule('posts');
+    Route::module('posts');
 });
 
 // ...

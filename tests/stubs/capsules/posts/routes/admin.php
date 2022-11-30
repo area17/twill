@@ -1,3 +1,3 @@
 <?php
 
-Route::twillModule('posts');
+Route::module('posts');

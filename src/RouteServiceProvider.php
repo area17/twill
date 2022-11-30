@@ -369,7 +369,7 @@ class RouteServiceProvider extends ServiceProvider
             $pluralSlug = Str::plural($slug);
             $modelName = Str::studly($slug);
 
-            Route::twillModule($pluralSlug, $options, $resource_options, $resource);
+            Route::module($pluralSlug, $options, $resource_options, $resource);
 
             $lastRouteGroupName = RouteServiceProvider::getLastRouteGroupName();
 

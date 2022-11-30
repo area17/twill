@@ -4,7 +4,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 
 if (config('twill.enabled.users-management')) {
-    Route::twillModule('users', ['except' => ['sort', 'feature']]);
+    Route::module('users', ['except' => ['sort', 'feature']]);
 }
 
 if (config('twill.enabled.media-library')) {
