@@ -305,7 +305,7 @@ class ModuleMake extends Command
         } elseif ($this->isSingleton) {
             $this->createSingletonSeed($modelName);
             $this->info("\nAdd to routes/admin.php:\n");
-            $this->info("    Route::singleton('{$singularModuleName}');\n");
+            $this->info("    Route::twillSingleton('{$singularModuleName}');\n");
         } else {
             $this->info("\nAdd to routes/admin.php:\n");
             $this->info("    Route::module('{$moduleName}');\n");
