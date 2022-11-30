@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use A17\Twill\Models\Tag;
 
-class UpdateActivityLogMorphSize extends Migration
+class AddTagTypeToTaggedTable extends Migration
 {
     /**
      * Run the migrations.
