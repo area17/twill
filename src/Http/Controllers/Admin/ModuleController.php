@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class ModuleController extends Controller
@@ -461,18 +460,13 @@ abstract class ModuleController extends Controller
      */
     public function edit($id, $submoduleId = null)
     {
-        $params = $this->request->route()->parameters();
-
-        $this->submodule = count($params) > 1;
-        $this->submoduleParentId = $this->submodule
-        ? $this->getParentModuleIdFromRequest($this->request) ?? $id
-        : head($params);
-
-        $routeId = last($params);
+        $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+        $id = $this->request->route()->parameter($parameter, $id);
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
         if ($this->getIndexOption('editInModal')) {
             return $this->request->ajax()
-            ? Response::json($this->modalFormData($routeId))
+            ? Response::json($this->modalFormData($id))
             : Redirect::to(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
 
@@ -485,12 +479,6 @@ abstract class ModuleController extends Controller
         ])->first(function ($view) {
             return View::exists($view);
         });
-
-        try {
-            $item = $this->repository->getById($routeId, $this->formWith, $this->formWithCount);
-        } catch (ModelNotFoundException $exceptiom) {
-            $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
-        }
 
         if ($this->moduleHas('revisions')) {
             $latestRevision = $item->revisions->first();
@@ -541,19 +529,9 @@ abstract class ModuleController extends Controller
      */
     public function update($id, $submoduleId = null)
     {
-        $params = $this->request->route()->parameters();
-
-        $submoduleParentId = $this->getParentModuleIdFromRequest($this->request) ?? $id;
-        $this->submodule = isset($submoduleParentId);
-        $this->submoduleParentId = $submoduleParentId;
-
-        $routeId = last($params);
-
-        try {
-            $item = $this->repository->getById($routeId);
-        } catch (ModelNotFoundException $exceptiom) {
-            $item = $this->repository->getById($id);
-        }
+        $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+        $id = $this->request->route()->parameter($parameter, $id);
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
         $input = $this->request->all();
 
@@ -562,7 +540,7 @@ abstract class ModuleController extends Controller
                 $this->moduleName,
                 $this->routePrefix,
                 'edit',
-                [Str::singular($this->moduleName) => $routeId]
+                [Str::singular($this->moduleName) => $id]
             ));
         } else {
             $this->performUpdate($item);
@@ -592,7 +570,7 @@ abstract class ModuleController extends Controller
                         $this->moduleName,
                         $this->routePrefix,
                         'edit',
-                        [Str::singular($this->moduleName) => $routeId ?? $id]
+                        [Str::singular($this->moduleName) => $id]
                     ));
                 }
             }
@@ -749,22 +727,9 @@ abstract class ModuleController extends Controller
      */
     public function duplicate($id, $submoduleId = null)
     {
-        $params = $this->request->route()->parameters();
-
-        $routeId = last($params);
-
-        try {
-            $item = $this->repository->getById($routeId);
-
-            $id = $routeId;
-        } catch (ModelNotFoundException $exceptiom) {
-            $item = $this->repository->getById($id);
-
-            if (blank($item)) {
-                // We could not find a model with any given id
-                $id = null;
-            }
-        }
+        $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+        $id = $this->request->route()->parameter($parameter, $id);
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
         if (filled($id) && $newItem = $this->repository->duplicate($id, $this->titleColumnKey)) {
             $this->fireEvent();
@@ -792,22 +757,9 @@ abstract class ModuleController extends Controller
      */
     public function destroy($id, $submoduleId = null)
     {
-        $params = $this->request->route()->parameters();
-
-        $routeId = last($params);
-
-        try {
-            $item = $this->repository->getById($routeId);
-
-            $id = $routeId;
-        } catch (ModelNotFoundException $exceptiom) {
-            $item = $this->repository->getById($id);
-
-            if (blank($item)) {
-                // We could not find a model with any given id
-                $id = null;
-            }
-        }
+        $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+        $id = $this->request->route()->parameter($parameter, $id);
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
         if (filled($id) && $this->repository->delete($id)) {
             $this->fireEvent();
