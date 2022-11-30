@@ -237,7 +237,7 @@ class RouteServiceProvider extends ServiceProvider
                 ->middleware(['web', 'twill_auth:twill_users', 'can:list']);
         });
 
-        Route::macro('twillModule', function (
+        Route::macro('module', function (
             $slug,
             $options = [],
             $resource_options = [],
