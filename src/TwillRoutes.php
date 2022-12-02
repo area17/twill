@@ -291,4 +291,72 @@ class TwillRoutes
             );
         }
     }
+
+    public function singleton(
+        string $slug,
+        array $options = [],
+        array $resource_options = [],
+        bool $resource = true
+    ): void {
+        $pluralSlug = Str::plural($slug);
+        $modelName = Str::studly($slug);
+
+        $this->module($pluralSlug, $options, $resource_options, $resource);
+
+        $lastRouteGroupName = RouteServiceProvider::getLastRouteGroupName();
+
+        $groupPrefix = RouteServiceProvider::getGroupPrefix();
+
+        // Check if name will be a duplicate, and prevent if needed/allowed
+        if (RouteServiceProvider::shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)) {
+            $singletonRouteName = "{$groupPrefix}.{$slug}";
+        } else {
+            $singletonRouteName = $slug;
+        }
+
+        Route::get($slug, $modelName . 'Controller@editSingleton')->name($singletonRouteName);
+    }
+
+    public function module(
+        string $slug,
+        array $options = [],
+        array $resource_options = [],
+        bool $resource = true
+    ): void {
+        $this->buildModuleRoutes($slug, $options, $resource_options, $resource);
+    }
+
+    public function moduleShowWithPreview(
+        string $moduleName,
+        string $routePrefix = null,
+        string $controllerName = null
+    ): void {
+        if ($routePrefix === null) {
+            $routePrefix = $moduleName;
+        }
+
+        if ($controllerName === null) {
+            $controllerName = ucfirst(Str::plural($moduleName));
+        }
+
+        $routePrefix = empty($routePrefix)
+            ? '/'
+            : (Str::startsWith($routePrefix, '/')
+                ? $routePrefix
+                : '/' . $routePrefix);
+        $routePrefix = Str::endsWith($routePrefix, '/')
+            ? $routePrefix
+            : $routePrefix . '/';
+
+        Route::name($moduleName . '.show')->get(
+            $routePrefix . '{slug}',
+            $controllerName . 'Controller@show'
+        );
+        Route::name($moduleName . '.preview')
+            ->get(
+                '/admin-preview' . $routePrefix . '{slug}',
+                $controllerName . 'Controller@show'
+            )
+            ->middleware(['web', 'twill_auth:twill_users', 'can:list']);
+    }
 }

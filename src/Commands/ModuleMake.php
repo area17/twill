@@ -313,7 +313,7 @@ class ModuleMake extends Command
             $this->createCapsuleRoutes();
         } elseif ($this->isSingleton) {
             $this->createSingletonSeed($modelName);
-            $this->addEntryToRoutesFile("\nRoute::singleton('{$singularModuleName}');");
+            $this->addEntryToRoutesFile("\nTwillRoutes::singleton('{$singularModuleName}');");
         } else {
             $moduleNameForRoute = $navModuleName;
             if ($this->hasOption('parentModel') && $parent = $this->option('parentModel')) {
@@ -322,7 +322,7 @@ class ModuleMake extends Command
 
                 $moduleNameForRoute = $firstPart . '.' . $secondPart;
             }
-            $this->addEntryToRoutesFile("\nRoute::module('{$moduleNameForRoute}');");
+            $this->addEntryToRoutesFile("\nTwillRoutes::module('{$moduleNameForRoute}');");
         }
 
         $navTitle = $this->isSingleton ? $modelName : $moduleTitle;

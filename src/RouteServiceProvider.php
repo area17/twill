@@ -27,7 +27,6 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerMacros();
         $this->registerRouteMiddlewares();
         $this->app->bind(TwillRoutes::class);
         parent::boot();
@@ -194,82 +193,6 @@ class RouteServiceProvider extends ServiceProvider
         );
         Route::aliasMiddleware('localization', Localization::class);
         Route::aliasMiddleware('permission', Permission::class);
-    }
-
-    /**
-     * Registers Route macros.
-     *
-     * @return void
-     */
-    protected function registerMacros()
-    {
-        Route::macro('moduleShowWithPreview', function (
-            $moduleName,
-            $routePrefix = null,
-            $controllerName = null
-        ) {
-            if ($routePrefix === null) {
-                $routePrefix = $moduleName;
-            }
-
-            if ($controllerName === null) {
-                $controllerName = ucfirst(Str::plural($moduleName));
-            }
-
-            $routePrefix = empty($routePrefix)
-                ? '/'
-                : (Str::startsWith($routePrefix, '/')
-                    ? $routePrefix
-                    : '/' . $routePrefix);
-            $routePrefix = Str::endsWith($routePrefix, '/')
-                ? $routePrefix
-                : $routePrefix . '/';
-
-            Route::name($moduleName . '.show')->get(
-                $routePrefix . '{slug}',
-                $controllerName . 'Controller@show'
-            );
-            Route::name($moduleName . '.preview')
-                ->get(
-                    '/admin-preview' . $routePrefix . '{slug}',
-                    $controllerName . 'Controller@show'
-                )
-                ->middleware(['web', 'twill_auth:twill_users', 'can:list']);
-        });
-
-        Route::macro('module', function (
-            $slug,
-            $options = [],
-            $resource_options = [],
-            $resource = true
-        ) {
-            \A17\Twill\Facades\TwillRoutes::buildModuleRoutes($slug, $options, $resource_options, $resource);
-        });
-
-        Route::macro('singleton', function (
-            $slug,
-            $options = [],
-            $resource_options = [],
-            $resource = true
-        ) {
-            $pluralSlug = Str::plural($slug);
-            $modelName = Str::studly($slug);
-
-            Route::module($pluralSlug, $options, $resource_options, $resource);
-
-            $lastRouteGroupName = RouteServiceProvider::getLastRouteGroupName();
-
-            $groupPrefix = RouteServiceProvider::getGroupPrefix();
-
-            // Check if name will be a duplicate, and prevent if needed/allowed
-            if (RouteServiceProvider::shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)) {
-                $singletonRouteName = "{$groupPrefix}.{$slug}";
-            } else {
-                $singletonRouteName = $slug;
-            }
-
-            Route::get($slug, $modelName . 'Controller@editSingleton')->name($singletonRouteName);
-        });
     }
 
     public static function shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)

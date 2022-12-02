@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use A17\Twill\Facades\TwillRoutes;
 
 // Register Twill routes here eg.
 
-Route::module('writers');
-Route::module('letters');
-Route::module('bios');
-Route::module('books');
+TwillRoutes::module('writers');
+TwillRoutes::module('letters');
+TwillRoutes::module('bios');
+TwillRoutes::module('books');
