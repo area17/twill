@@ -460,14 +460,9 @@ abstract class ModuleController extends Controller
      */
     public function edit($id, $submoduleId = null)
     {
-        $params = $this->request->route()->parameters();
-
-        $this->submodule = count($params) > 1;
-        $this->submoduleParentId = $this->submodule
-        ? $this->getParentModuleIdFromRequest($this->request) ?? $id
-        : head($params);
-
-        $id = last($params);
+        $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+        $id = $this->request->route()->parameter($parameter, $id);
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
         if ($this->getIndexOption('editInModal')) {
             return $this->request->ajax()
@@ -484,8 +479,6 @@ abstract class ModuleController extends Controller
         ])->first(function ($view) {
             return View::exists($view);
         });
-
-        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
         if ($this->moduleHas('revisions')) {
             $latestRevision = $item->revisions->first();
@@ -536,15 +529,10 @@ abstract class ModuleController extends Controller
      */
     public function update($id, $submoduleId = null)
     {
-        $params = $this->request->route()->parameters();
+        $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+        $id = $this->request->route()->parameter($parameter, $id);
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
-        $submoduleParentId = $this->getParentModuleIdFromRequest($this->request) ?? $id;
-        $this->submodule = isset($submoduleParentId);
-        $this->submoduleParentId = $submoduleParentId;
-
-        $id = last($params);
-
-        $item = $this->repository->getById($id);
         $input = $this->request->all();
 
         if (isset($input['cmsSaveType']) && $input['cmsSaveType'] === 'cancel') {
@@ -739,12 +727,11 @@ abstract class ModuleController extends Controller
      */
     public function duplicate($id, $submoduleId = null)
     {
-        $params = $this->request->route()->parameters();
+        $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+        $id = $this->request->route()->parameter($parameter, $id);
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
-        $id = last($params);
-
-        $item = $this->repository->getById($id);
-        if ($newItem = $this->repository->duplicate($id, $this->titleColumnKey)) {
+        if (filled($id) && $newItem = $this->repository->duplicate($id, $this->titleColumnKey)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('duplicated');
 
@@ -770,12 +757,11 @@ abstract class ModuleController extends Controller
      */
     public function destroy($id, $submoduleId = null)
     {
-        $params = $this->request->route()->parameters();
+        $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+        $id = $this->request->route()->parameter($parameter, $id);
+        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
-        $id = last($params);
-
-        $item = $this->repository->getById($id);
-        if ($this->repository->delete($id)) {
+        if (filled($id) && $this->repository->delete($id)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('deleted');
 
