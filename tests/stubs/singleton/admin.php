@@ -2,4 +2,4 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::singleton('contactPage');
+Route::twillSingleton('contactPage');

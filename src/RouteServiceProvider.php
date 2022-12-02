@@ -360,7 +360,7 @@ class RouteServiceProvider extends ServiceProvider
             }
         });
 
-        Route::macro('singleton', function (
+        Route::macro('twillSingleton', function (
             $slug,
             $options = [],
             $resource_options = [],

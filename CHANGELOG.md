@@ -2,6 +2,21 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.12.0 (2022-11-30)
+
+### Breaking change
+
+- Route::singleton is now Route::twillSingleton [`#1961`](https://github.com/area17/twill/issues/1961)
+
+### Features
+
+- Checkboxes can now have notes [`#1354`](https://github.com/area17/twill/issues/1354)
+- Blocks in the editor can now be cloned [`#1748`](https://github.com/area17/twill/pull/1748)
+
+### Bugfixes
+
+- Various bug fixes
+
 ## 2.11.0 (2022-11-09)
 
 ### Features
