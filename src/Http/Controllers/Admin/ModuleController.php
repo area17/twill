@@ -1098,39 +1098,28 @@ abstract class ModuleController extends Controller
         return $this->redirectToForm($this->getParentModuleIdFromRequest($this->request) ?? $submoduleId ?? $id);
     }
 
-    /**
-     * @param int $id
-     * @param int|null $submoduleId
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
-     */
-    public function edit(TwillModelContract|int $id, $submoduleId = null)
+    public function edit(TwillModelContract|int $id): mixed
     {
-        $params = $this->request->route()->parameters();
-
-        $this->submodule = count($params) > 1;
-        $this->submoduleParentId = $this->submodule
-            ? $this->getParentModuleIdFromRequest($this->request) ?? $id
-            : head($params);
-
         if ($id instanceof TwillModelContract) {
             $item = $id;
             $id = $item->id;
         } else {
-            $id = last($params);
-
-            $item = $this->repository->getById($submoduleId ?? $id);
+            $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+            $id = $this->request->route()->parameter($parameter, $id);
+            $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
         }
+
         $this->authorizeOption('edit', $item);
 
         if ($this->getIndexOption('editInModal')) {
             return $this->request->ajax()
-                ? Response::json($this->modalFormData($id))
+                ? Response::json($this->modalFormData($item))
                 : Redirect::to(moduleRoute($this->moduleName, $this->routePrefix, 'index'));
         }
 
         $this->setBackLink();
 
-        $controllerForm = $this->getForm($this->repository->getById($id));
+        $controllerForm = $this->getForm($item);
 
         if ($controllerForm->isNotEmpty()) {
             $view = 'twill::layouts.form';
@@ -1143,8 +1132,6 @@ abstract class ModuleController extends Controller
                 return View::exists($view);
             });
         }
-
-        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
         if ($this->moduleHas('revisions')) {
             $latestRevision = $item->revisions->first();
@@ -1200,17 +1187,16 @@ abstract class ModuleController extends Controller
      * @param int|null $submoduleId
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update($id, $submoduleId = null)
+    public function update(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
-        $params = $this->request->route()->parameters();
-
-        $submoduleParentId = $this->getParentModuleIdFromRequest($this->request) ?? $id;
-        $this->submodule = $submoduleParentId;
-        $this->submoduleParentId = $submoduleParentId;
-
-        $id = last($params);
-
-        $item = $this->repository->getById($id);
+        if ($id instanceof TwillModelContract) {
+            $item = $id;
+            $id = $item->id;
+        } else {
+            $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+            $id = $this->request->route()->parameter($parameter, $id);
+            $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
+        }
 
         $this->authorizeOption('edit', $item);
 
@@ -1434,18 +1420,17 @@ abstract class ModuleController extends Controller
         );
     }
 
-    /**
-     * @param int $id
-     * @param int|null $submoduleId
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function duplicate($id, $submoduleId = null)
+    public function duplicate(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
-        $params = $this->request->route()->parameters();
+        if ($id instanceof TwillModelContract) {
+            $item = $id;
+            $id = $item->id;
+        } else {
+            $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+            $id = $this->request->route()->parameter($parameter, $id);
+            $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
+        }
 
-        $id = last($params);
-
-        $item = $this->repository->getById($id);
         if ($newItem = $this->repository->duplicate($id, $this->titleColumnKey)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('duplicated');
@@ -1467,18 +1452,17 @@ abstract class ModuleController extends Controller
         );
     }
 
-    /**
-     * @param int $id
-     * @param int|null $submoduleId
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function destroy($id, $submoduleId = null)
+    public function destroy(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
-        $params = $this->request->route()->parameters();
+        if ($id instanceof TwillModelContract) {
+            $item = $id;
+            $id = $item->id;
+        } else {
+            $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+            $id = $this->request->route()->parameter($parameter, $id);
+            $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
+        }
 
-        $id = last($params);
-
-        $item = $this->repository->getById($id);
         if ($this->repository->delete($id)) {
             $this->fireEvent();
             activity()->performedOn($item)->log('deleted');
@@ -2259,13 +2243,14 @@ abstract class ModuleController extends Controller
         return $form;
     }
 
-    /**
-     * @param int $id
-     * @return array
-     */
-    protected function modalFormData($id)
+    protected function modalFormData(int|TwillModelContract $modelOrId): array
     {
-        $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
+        if ($modelOrId instanceof TwillModelContract) {
+            $item = $modelOrId;
+        } else {
+            $item = $this->repository->getById($modelOrId, $this->formWith, $this->formWithCount);
+        }
+
         $fields = $this->repository->getFormFields($item);
         $data = [];
 
@@ -2372,19 +2357,30 @@ abstract class ModuleController extends Controller
         $base = '';
         $moduleParts = explode('.', $this->moduleName);
 
+        $prev = [];
         foreach ($moduleParts as $index => $name) {
             if (array_key_last($moduleParts) !== $index) {
                 $singularName = Str::singular($name);
                 $modelClass = config('twill.namespace') . '\\Models\\' . Str::studly($singularName);
 
                 if (!class_exists($modelClass)) {
-                    $modelClass = TwillCapsules::getCapsuleForModel($name)->getModel();
+                    // First try to construct it based on the last.
+                    $modelClass = config('twill.namespace') .
+                        '\\Models\\' .
+                        implode('', array_merge($prev + [99 => Str::studly($singularName)]));
+
+                    // Last option is to search for a capsule model.
+                    if (!class_exists($modelClass)) {
+                        $modelClass = TwillCapsules::getCapsuleForModel($name)->getModel();
+                    }
                 }
 
                 $model = (new $modelClass())->findOrFail(request()->route()->parameter($singularName));
                 $hasSlug = Arr::has(class_uses($modelClass), HasSlug::class);
 
                 $base .= $name . '/' . ($hasSlug ? $model->slug : $model->id) . '/';
+
+                $prev[] = Str::studly($singularName);
             } else {
                 $base .= $name;
             }

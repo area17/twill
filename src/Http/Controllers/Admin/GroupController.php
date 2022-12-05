@@ -3,6 +3,8 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Facades\TwillPermissions;
+use A17\Twill\Models\Contracts\TwillModelContract;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use A17\Twill\Models\Permission;
 use Illuminate\Contracts\Foundation\Application;
@@ -95,14 +97,14 @@ class GroupController extends ModuleController
         })->values();
     }
 
-    public function edit($id, $submoduleId = null)
+    public function edit(int|TwillModelContract $id): mixed
     {
         $this->authorizableOptions['edit'] = 'edit-group';
 
-        return parent::edit($id, $submoduleId);
+        return parent::edit($id);
     }
 
-    public function update($id, $submoduleId = null)
+    public function update(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
         $this->authorizableOptions['edit'] = 'edit-group';
 
