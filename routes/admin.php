@@ -3,14 +3,15 @@
 use A17\Twill\Http\Controllers\Admin\AppSettingsController;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
+use A17\Twill\Facades\TwillRoutes;
 
 if (config('twill.enabled.users-management')) {
-    Route::module('users', ['except' => ['sort', 'feature']]);
+    TwillRoutes::module('users', ['except' => ['sort', 'feature']]);
     Route::name('users.resend.registrationEmail')->get('users/{user}/registration-email', 'UserController@resendRegistrationEmail');
 
     if (config('twill.enabled.permissions-management')) {
-        Route::module('groups', ['except' => ['sort', 'feature', 'search']]);
-        Route::module('roles', ['except' => ['sort', 'feature']]);
+        TwillRoutes::module('groups', ['except' => ['sort', 'feature', 'search']]);
+        TwillRoutes::module('roles', ['except' => ['sort', 'feature']]);
     }
 }
 
