@@ -105,9 +105,10 @@ Once the command is complete you will be prompted with some instructions:
 
 ```shell
 The following snippet has been added to routes/twill.php:
-┌─────────────────────────┐
-│ Route::module('pages'); │
-└─────────────────────────┘
+┌──────────────────────────────────┐
+│ use A17\Twill\Facades\TwillRoutes│
+│ TwillRoutes::module('pages');    │
+└──────────────────────────────────┘
 To add a navigation entry add the following to your AppServiceProvider BOOT method.
 **************************
 use A17\Twill\Facades\TwillNavigation;

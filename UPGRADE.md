@@ -18,6 +18,7 @@ We provide an automated upgrade path using the commands explaned below. This wil
 - Moving the twill views to the new namespace
 - Moving the twill routes to the new location
 - Fixing (most) compatibility issues.
+- Using the new TwillRoutes facade for ::module and ::singleton instead of a Route macro.
 
 ### Run the upgrade:
 
