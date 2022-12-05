@@ -1,5 +1,5 @@
 <?php
 
-Route::module('clients');
-Route::module('clients.projects');
-Route::module('clients.projects.applications');
+\A17\Twill\Facades\TwillRoutes::module('clients');
+\A17\Twill\Facades\TwillRoutes::module('clients.projects');
+\A17\Twill\Facades\TwillRoutes::module('clients.projects.applications');
