@@ -12,9 +12,6 @@ const {
 // config
 const feConfig = require('./frontend.config.json')
 
-console.log(feConfig.color.border)
-console.log(feConfig.color.tokens)
-
 module.exports = {
   content: ['./_build/**/*.html'],
   theme: {
