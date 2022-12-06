@@ -10,10 +10,12 @@
           </div>
         </a17-dropdown>
         <span class="block__counter f--tiny" v-else>{{ index + 1 }}</span>
-        <span class="block__title"
-        :style="{
-          'max-width': titleMaxWidth
-        }">{{ blockTitle }}</span>
+        <span
+          class="block__title"
+          :style="{
+            'max-width': titleMaxWidth
+          }"
+        >{{ blockTitle }}</span>
       </div>
       <div class="block__actions">
         <slot name="block-actions"/>
