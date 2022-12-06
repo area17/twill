@@ -31,6 +31,6 @@ Or to build fresh (For example on layout/structure change)
 
 ## FAQ
 
-**Question:** I added a new component in `docs/_templates/components` and it isnt showing
+**Question:** I added/updated a new component in `docs/_templates/components` and it isnt showing updated code.
 
 **Answer:** Templates are compiled in `docs/_build` and need to be refreshed if you make any component level changes, (classes, html, ect), however, this is not the case with `layout.blade.php`. You must stop the server, delete `updated.json` from `docs/_build/` and rerun the server. This will recompile the json file and you will see your changes
