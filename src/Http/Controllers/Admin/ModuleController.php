@@ -1345,6 +1345,8 @@ abstract class ModuleController extends Controller
 
         $this->setBackLink();
 
+        $controllerForm = $this->getForm($this->repository->getById($id));
+
         $view = Collection::make([
             "$this->viewPrefix.form",
             "twill::$this->moduleName.form",
@@ -1367,7 +1369,10 @@ abstract class ModuleController extends Controller
 
         View::share('form', $this->form($id, $item));
 
-        return View::make($view, $this->form($id, $item));
+        return View::make($view, $this->form($id, $item))->with(
+            'renderFields',
+            $controllerForm
+        );
     }
 
     public function publish(): JsonResponse
