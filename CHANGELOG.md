@@ -2,6 +2,12 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.12.1 (2022-12-06)
+
+### Bugfixes
+
+- Fix long dynamic titles overflow on Block items [`#1975`](https://github.com/area17/twill/pull/1975)
+
 ## 2.12.0 (2022-11-30)
 
 ### Breaking change
