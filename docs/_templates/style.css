@@ -7,11 +7,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.sidebar {
-  overflow-x: hidden;
-  overflow-y: auto;
-}
-
 [x-cloak] {
   display: none !important;
 }
