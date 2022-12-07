@@ -58,6 +58,15 @@
     @apply underline;
   }
 
+  .markdown p a {
+    color: var(--purple);
+    text-decoration: none;
+  }
+
+  .markdown p a:hover {
+    text-decoration: underline;
+  }
+
   h1,
   h2,
   h3,
@@ -73,9 +82,41 @@
   .heading-permalink {
     position: absolute;
     opacity: 0;
+    font-weight: 400;
     transform: translateX(calc(-100%));
     padding-right: 10px;
-    color: var(--grey-dark);
+    color: var(--purple);
     text-decoration: none !important;
+  }
+
+  .heading-permalink:hover {
+    text-decoration: none;
+  }
+
+  table {
+    @apply mt-20;
+  }
+
+  thead tr {
+    font-weight: 500;
+  }
+
+  tr {
+    text-align: left;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 16px 8px;
+  }
+
+  td,
+  th {
+    border: 1px solid #dfe2e5;
+  }
+
+  tr:nth-child(2n) {
+    background-color: #f6f8fa;
   }
 }

@@ -13,6 +13,7 @@
 </head>
 
 <body
+class="overflow-x-hidden"
 x-data="{ isMobile: (window.innerWidth < 1024) ? true : false, openNav: false }"
     x-bind:class="{ isMobile: isMobile ? true : false, openNav: openNav ? true : false }"
     x-on:resize.window="isMobile = (window.innerWidth < 1024) ? true : false"
@@ -28,16 +29,16 @@ x-data="{ isMobile: (window.innerWidth < 1024) ? true : false, openNav: false }"
         <div class="container">
             <div class="cols-container">
                 <x-twilldocs::sidebar :tree="$tree" :currentSegment="$currentSegment" :url="$url" />
-                <div class="content w-full lg:w-9-cols mt-68 lg:mt-116">
+                <div class="content w-full lg:w-9-cols mt-68">
                     <div class="markdown lg:w-7-cols mx-auto">
                         @if (isset($tree[$currentSegment]))
                             <div class="print:!hidden" x-transition x-bind:class="{ hidden: !open }"></div>
                         @endif
 
                         {!! $content !!}
-                        <div class="">
+                        {{-- <div class="">
                             {!! $toc !!}
-                        </div>
+                        </div> --}}
                     </div>
 
                 </div>

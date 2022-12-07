@@ -41,9 +41,9 @@
                 <ul class="core-list mt-30">
                     @foreach ($tree[$currentSegment]['items'] ?? [] as $item)
                         @php $open = \Illuminate\Support\Str::betweenFirst(ltrim($item['url'], '/'), '/', '/') === \Illuminate\Support\Str::betweenFirst(ltrim($url, '/'), '/', '/'); @endphp
-                        <li class="relative mt-18" x-data="{ open: {{ $open ? 'true' : 'false' }} }">
+                        <li class="relative mt-12" x-data="{ open: {{ $open ? 'true' : 'false' }} }">
                             <div class="flex">
-                                <a class="inline pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block no-underline hover:text-purple @if ($open) text-purple font-bold no-underline @endif"
+                                <a class="inline pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block no-underline hover:text-purple @if ($open) text-purple font-medium no-underline @endif"
                                     href="{{ $item['url'] ?? '#' }}">{{ $item['title'] ?? '' }}</a>
                                 @if (!empty($item['items'] ?? []))
                                     <div
@@ -53,7 +53,7 @@
                                 @endif
                             </div>
                             @if (!empty($item['items'] ?? []))
-                                <ul class="@if ($open) block @else hidden @endif ml-24 mt-18"
+                                <ul class="@if ($open) block @else hidden @endif ml-24 mt-12"
                                     x-bind:class="{ 'hidden': !open }"
                                     @foreach ($item['items'] ?? [] as $item) @php $active=$url===$item['url']; @endphp
                                         <li class="relative mt-8">
