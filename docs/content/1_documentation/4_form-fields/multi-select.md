@@ -99,13 +99,13 @@ MultiSelect::make()
 | min         | Minimum number of selectable options                                                                                     | integer         |               |
 | max         | Maximum number of selectable options                                                                                     | integer         |               |
 | options     | Array of options for the dropdown, must include _value_ and _label_                                                      | array           |               |
-| unpack      | Defines if the multi select will be displayed as an open list of options                                                 | true<br/>false  | true          |
+| unpack      | Defines if the multi select will be displayed as an open list of options                                                 | boolean  | true          |
 | columns     | Aligns the options on a grid with a given number of columns                                                              | integer         | 0 (off)       |
-| searchable  | Filter the field values while typing                                                                                     | true<br/>false  | false         |
+| searchable  | Filter the field values while typing                                                                                     | boolean  | false         |
 | note        | Hint message displayed above the field                                                                                   | string          |               |
 | placeholder | Text displayed as a placeholder in the field                                                                             | string          |               |
-| required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | true<br/>false  | false         |
-| disabled    | Disables the field                                                                                                       | true<br />false | false         |
+| required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean  | false         |
+| disabled    | Disables the field                                                                                                       | boolean | false         |
 
 There are several ways to implement a `multi_select` form field.
 
