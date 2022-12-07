@@ -57,7 +57,7 @@ Files::make()
 | max         | Max number of attached items              | integer        | 1             |
 | fieldNote   | Hint message displayed above the field    | string         |               |
 | note        | Hint message displayed in the field       | string         |               |
-| buttonOnTop | Displays the `Add` button above the files | boolean | false         |
+| buttonOnTop | Displays the `Add` button above the files | boolean        | false         |
 
 Similar to the media formField, to make the file field work, you have to include the `HasFiles` trait in your
 module's [Model](/crud-modules/models.html), and include `HandleFiles` trait in your

@@ -34,14 +34,14 @@ tbd
 |:----------------|:-------------------------------------------------------------------------------------------------------------------------|:---------------|:--------------|
 | name            | Name of the field                                                                                                        | string         |               |
 | label           | Label of the field                                                                                                       | string         |               |
-| time24Hr        | Pick time with a 24h picker instead of AM/PM                                                                             | boolean | false         |
-| allowClear      | Adds a button to clear the field                                                                                         | boolean | false         |
-| allowInput      | Allow manually editing the selected date in the field                                                                    | boolean | false         |
+| time24Hr        | Pick time with a 24h picker instead of AM/PM                                                                             | boolean        | false         |
+| allowClear      | Adds a button to clear the field                                                                                         | boolean        | false         |
+| allowInput      | Allow manually editing the selected date in the field                                                                    | boolean        | false         |
 | hourIncrement   | Time picker hours increment                                                                                              | number         | 1             |
 | minuteIncrement | Time picker minutes increment                                                                                            | number         | 30            |
 | altFormat       | Format used by [flatpickr](https://flatpickr.js.org/formatting/)                                                         | string         | h:i           |
 | note            | Hint message displayed above the field                                                                                   | string         |               |
-| required        | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean | false         |
+| required        | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean        | false         |
 
 A migration to save a `time_picker` field would be:
 

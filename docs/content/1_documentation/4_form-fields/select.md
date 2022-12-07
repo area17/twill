@@ -86,7 +86,7 @@ Select::make()
 | placeholder | Text displayed as a placeholder in the field                 | string          |               |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean  | false         |
 | default     |	Sets a default value if empty	      	                       | string          |               |
-| disabled            | Disables the field                                      | boolean         | false         | 
+| disabled            | Disables the field                                   | boolean         | false         | 
 
 Select item option
 | Option | Description | Type/values | Default value |
