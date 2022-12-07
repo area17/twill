@@ -123,7 +123,7 @@ fields for flexible content. This will give you greater control over your fronte
 | maxlength      | Max character count of the field                                                                                         | integer                                                    | 255                                     |
 | note           | Hint message displayed above the field                                                                                   | string                                                     |                                         |
 | placeholder    | Text displayed as a placeholder in the field                                                                             | string                                                     |                                         |
-| required       | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean                                             | false                                   |
+| required       | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean                                                    | false                                   |
 
 A migration to save a `wysiwyg` field would be:
 
