@@ -1,46 +1,53 @@
 # Rendering Blocks
 
-When it is time to build a frontend, you will want to render a designed set of blocks, with all blocks in their proper order.
-When working with a model instance that uses the HasBlocks trait in a view, you can call the `renderBlocks` helper on it.
-This will render the list of blocks that were created from the CMS. By default, this function will loop over all the blocks and their child blocks.
+When it is time to build a frontend, you will want to render a designed set of blocks, with all blocks in their proper
+order.
+When working with a model instance that uses the HasBlocks trait in a view, you can call the `renderBlocks` helper on
+it.
+This will render the list of blocks that were created from the CMS. By default, this function will loop over all the
+blocks and their child blocks.
 In each case, the function will look for a Blade view to render for a given block.
 
-Create views for your blocks in the `resources/views/site/blocks` directory. Their filenames should match the block key  specified in your Twill configuration and module form.
+Create views for your blocks in the `resources/views/site/blocks` directory. Their filenames should match the block key
+specified in your Twill configuration and module form.
 
 For the `products` block example above, a corresponding view would be `resources/views/site/blocks/products.blade.php`.
 
 You can call the `renderBlocks` helper within a *Blade* file. Such a call would look like this:
 
-```php
+```blade
 {!! $item->renderBlocks() !!}
 ```
 
-If you do not want to render child blocks (when using repeaters) inside the parent block, you can do the following:
+If you have more block fields, you can get a specific one using:
 
-```php
-{!! $work->renderBlocks(true) !!}
+```blade
+{!! $item->renderNamedBlocks('field-name') !!}
 ```
 
-You can also specify alternate blade views for blocks. This can be helpful if you use the same block in 2 different modules of the CMS,
+You can also specify alternate blade views for blocks. This can be helpful if you use the same block in 2 different
+modules of the CMS,
 but you want to have design flexibility in how each is rendered.
 
 To do that, specify the block view file in your call to the renderBlocks helper like this
 
-```php
-{!! $work->renderBlocks(false, [
+```blade
+{!! $work->renderBlocks([
   'block-type' => 'view.path',
   'block-type-2' => 'another.view.path'
 ]) !!}
 ```
 
-Within these Blade views, you will have access to a `$block` variable with helper functions available to retrieve the block content:
+Within these Blade views, you will have access to a `$block` variable with helper functions available to retrieve the
+block content:
 
 ```php
 {{ $block->input('inputNameYouSpecifiedInTheBlockFormField') }}
 {{ $block->translatedinput('inputNameYouSpecifiedInATranslatedBlockFormField') }}
 ```
 
-If the block has a media field, you can refer to the Media Library documentation below to learn about the `HasMedias` trait helpers. Here's an example of how a media field could be rendered:
+If the block has a media field, you can refer to the Media Library documentation below to learn about the `HasMedias`
+trait helpers. Here's an example of how a media field could be rendered:
 
 ```php
 {{ $block->image('mediaFieldName', 'cropNameFromBlocksConfig') }}

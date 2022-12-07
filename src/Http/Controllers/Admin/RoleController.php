@@ -3,8 +3,10 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Facades\TwillPermissions;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Permission;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class RoleController extends ModuleController
@@ -90,7 +92,7 @@ class RoleController extends ModuleController
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }
 
-    public function index($parentModuleId = null)
+    public function index(?int $parentModuleId = null): mixed
     {
         // Superadmins can reorder groups to determine the access-level of each one.
         // A given group can't edit other groups with a higher access-level.
@@ -99,14 +101,14 @@ class RoleController extends ModuleController
         return parent::index($parentModuleId);
     }
 
-    public function edit($id, $submoduleId = null)
+    public function edit(int|TwillModelContract $id): mixed
     {
         $this->authorizableOptions['edit'] = 'edit-role';
 
-        return parent::edit($id, $submoduleId);
+        return parent::edit($id);
     }
 
-    public function update($id, $submoduleId = null)
+    public function update(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
         $this->authorizableOptions['edit'] = 'edit-role';
 

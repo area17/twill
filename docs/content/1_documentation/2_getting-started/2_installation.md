@@ -79,11 +79,10 @@ By default, Twill's admin console is available at `domain.test/admin`
 
 ### Using a subdomain
 
-If you want to serve Twill from a subdomain you will have to set the admin app url and app path as follows:
+If you want to serve Twill from a subdomain you will have to set the admin app url as follows:
 
 ```bash
 ADMIN_APP_URL=https://admin.domain.test
-ADMIN_APP_PATH=/
 ```
 
 In development, make sure that the `admin` subdomain is available and pointing to your app's `public` directory.
@@ -103,13 +102,12 @@ Optionally, you can specify a custom admin console url using the `ADMIN_APP_URL`
 
 ```bash
 ADMIN_APP_URL=manage.domain.test
-ADMIN_APP_PATH=/
 ```
 
 If you just want to modify the admin path you can override just that:
 
 ```bash
-ADMIN_APP_PATH=/
+ADMIN_APP_PATH=/cms
 ```
 
 When running on 2 different subdomains (which is the default configuration as seen above), you want to share cookies

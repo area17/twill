@@ -8,6 +8,7 @@ use A17\Twill\Models\Behaviors\HasBlocks;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasRelated;
 use A17\Twill\Models\Behaviors\HasRevisions;
+use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Behaviors\HasTranslation;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Model;
@@ -16,6 +17,7 @@ use A17\Twill\Repositories\Behaviors\HandleBlocks;
 use A17\Twill\Repositories\Behaviors\HandleJsonRepeaters;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleRevisions;
+use A17\Twill\Repositories\Behaviors\HandleSlugs;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use A17\Twill\Repositories\ModuleRepository;
 use A17\Twill\Services\Forms\Form;
@@ -79,6 +81,8 @@ class AnonymousModule
 
     private ?string $revisionClass = null;
 
+    private ?string $slugClass = null;
+
     private ?string $controllerClass = null;
 
     private ?string $modelTranslationClass = null;
@@ -86,6 +90,9 @@ class AnonymousModule
     private ?string $repositoryClass = null;
 
     private PsrPrinter $classPrinter;
+
+    /** @var string[] */
+    private array $slugAttributes = [];
 
     protected function __construct(public string $namePlural, public Application $app)
     {
@@ -189,6 +196,13 @@ class AnonymousModule
         return $this;
     }
 
+    public function withSlugAttributes(array $fields): self
+    {
+        $this->slugAttributes = $fields;
+
+        return $this;
+    }
+
     /**
      * Boots the anonymous module and returns the model class.
      */
@@ -222,6 +236,14 @@ class AnonymousModule
 
         if (!class_exists($this->revisionClass)) {
             eval($this->classPrinter->printNamespace($this->getRevisionClass($this->revisionClass)));
+        }
+
+        /*
+         * The slug class.
+         */
+        $this->slugClass = '\App\Models\Slugs\\' . $modelName . 'Slug';
+        if (!class_exists($this->slugClass)) {
+            eval($this->classPrinter->printNamespace($this->getSlugClass($this->slugClass)));
         }
 
         /*
@@ -271,6 +293,14 @@ class AnonymousModule
     public function getRepositoryClassName(): string
     {
         return $this->repositoryClass;
+    }
+
+    /**
+     * @return Model
+     */
+    public function getSlugModelClassName(): string
+    {
+        return $this->slugClass;
     }
 
     public function getRepository(): ModuleRepository
@@ -520,6 +550,22 @@ class AnonymousModule
         return $namespace;
     }
 
+    private function getSlugClass(string $classNameWithNamespace): PhpNamespace
+    {
+        $namespace = Str::beforeLast($classNameWithNamespace, '\\');
+        $className = Str::afterLast($classNameWithNamespace, '\\');
+
+        $namespace = new PhpNamespace(ltrim($namespace, '\\'));
+
+        $class = $namespace->addClass($className);
+
+        $class->addProperty('table', Str::singular($this->namePlural) . '_slugs');
+
+        $class->setExtends(Model::class);
+
+        return $namespace;
+    }
+
     private function getRevisionClass(string $classNameWithNamespace): PhpNamespace
     {
         $namespace = Str::beforeLast($classNameWithNamespace, '\\');
@@ -577,6 +623,13 @@ class AnonymousModule
                 ->all()
         );
 
+        if ($this->slugAttributes !== []) {
+            $class->addProperty(
+                'slugAttributes',
+                $this->slugAttributes
+            );
+        }
+
         foreach ($this->belongsToMany as $name => $target) {
             $method = $class->addMethod($name);
             $method->setBody(
@@ -596,6 +649,7 @@ PHP
         }
 
         $class->setExtends(Model::class);
+        $class->addTrait(HasSlug::class);
         $class->addTrait(HasBlocks::class);
         $class->addTrait(HasTranslation::class);
 
@@ -625,6 +679,7 @@ PHP
 
         $class = $namespace->addClass($className);
         $class->setExtends(ModuleRepository::class);
+        $class->addTrait(HandleSlugs::class);
         $class->addTrait(HandleTranslations::class);
         $class->addTrait(HandleBlocks::class);
 

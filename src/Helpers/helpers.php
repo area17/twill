@@ -17,6 +17,18 @@ if (! function_exists('dumpUsableSqlQuery')) {
     }
 }
 
+if (! function_exists('getLikeOperator')) {
+    function getLikeOperator(): string {
+        return once(function() {
+            if (DB::connection()->getPDO()->getAttribute(\PDO::ATTR_DRIVER_NAME) === 'pgsql') {
+                return 'ILIKE';
+            }
+
+            return 'LIKE';
+        });
+    }
+}
+
 if (! function_exists('classUsesDeep')) {
     /**
      * @param mixed $class
@@ -167,6 +179,10 @@ if (! function_exists('twill_put_stub')) {
             sprintf('namespace %s\\', config('twill.namespace')),
             $stub
         );
+
+        $dir = Str::beforeLast($path, DIRECTORY_SEPARATOR);
+
+        $fs->ensureDirectoryExists($dir);
 
         if (! $fs->exists($path)) {
             $fs->put($path, $stub);

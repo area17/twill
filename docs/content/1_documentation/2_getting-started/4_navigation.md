@@ -23,10 +23,8 @@ public function boot(): void
     );
     TwillNavigation::addLink(
         NavigationLink::make()->forModule('projects')
-          ->addAsFirstChild()
           ->setChildren([
             NavigationLink::make()->forModule('projects')
-              ->addAsFirstChild()
               ->setChildren([
                 NavigationLink::make()->forModule('projectCustomers'),
               ]),
@@ -41,16 +39,18 @@ public function boot(): void
 ```php
 <?php
 
-Route::module('pages');
+use A17\Twill\Facades\TwillRoutes;
+
+TwillRoutes::module('pages');
 
 Route::group(['prefix' => 'work'], function () {
     Route::group(['prefix' => 'projects'], function () {
-        Route::module('projectCustomers');
+        TwillRoutes::module('projectCustomers');
     });
-    Route::module('projects');
-    Route::module('clients');
-    Route::module('industries');
-    Route::module('studios');
+    TwillRoutes::module('projects');
+    TwillRoutes::module('clients');
+    TwillRoutes::module('industries');
+    TwillRoutes::module('studios');
 });
 ```
 

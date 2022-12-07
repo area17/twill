@@ -3,12 +3,15 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Facades\TwillAppSettings;
+use A17\Twill\Http\Requests\Admin\Request;
 use A17\Twill\Models\AppSetting;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Repositories\AppSettingsRepository;
 use A17\Twill\Services\Forms\Fields\BlockEditor;
 use A17\Twill\Services\Forms\Form;
+use A17\Twill\Tests\Integration\ModuleLimitRevisionsTest;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Session;
 
 /**
@@ -31,7 +34,7 @@ class AppSettingsController extends ModuleController
         }
     }
 
-    public function update($id, $submoduleId = null)
+    public function update(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
         $model = AppSetting::findOrFail($id);
 
@@ -52,7 +55,7 @@ class AppSettingsController extends ModuleController
 
         $model->registerSettingBlocks();
 
-        return parent::edit($model);
+        return $this->edit($model);
     }
 
     public function getForm(TwillModelContract|AppSetting $model): Form
@@ -73,7 +76,7 @@ class AppSettingsController extends ModuleController
         return $form;
     }
 
-    protected function getModuleRoute($id, $action)
+    protected function getModuleRoute($id, $action): ?string
     {
         if ($action === 'update') {
             return route('twill.app.settings.update', $id);
@@ -82,19 +85,19 @@ class AppSettingsController extends ModuleController
         return null;
     }
 
-    protected function setBackLink($back_link = null, $params = [])
+    protected function setBackLink($back_link = null, $params = []): void
     {
         Session::put($this->moduleName . '_retain', $this->getBackLink());
     }
 
-    protected function getBackLink($fallback = null, $params = [])
+    protected function getBackLink($fallback = null, $params = []): ?string
     {
         return null;
     }
 
-    public function getFormRequestClass()
+    public function getFormRequestClass(): string
     {
-        $class = new class() extends \A17\Twill\Http\Requests\Admin\Request {
+        $class = new class() extends Request {
         };
 
         return $class::class;
@@ -108,6 +111,8 @@ class AppSettingsController extends ModuleController
     protected function form(?int $id, ?TwillModelContract $item = null): array
     {
         $base = parent::form($id, $item);
+
+        $base['customTitle'] = $base['item']->getSettingGroup()->getLabel();
 
         $base['publish'] = false;
         $base['editableTitle'] = false;

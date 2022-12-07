@@ -1,5 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use A17\Twill\Facades\TwillRoutes;
 
-Route::module('nodes');
+TwillRoutes::module('nodes');

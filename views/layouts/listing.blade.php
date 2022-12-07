@@ -153,7 +153,14 @@
                 <a17-langmanager
                     :control-publication="{{ json_encode($controlLanguagesPublication) }}"
                 ></a17-langmanager>
-                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
+
+                @if (isset($renderFields) && $renderFields->isNotEmpty())
+                    @foreach($renderFields as $field)
+                        {!! $field->render() !!}
+                    @endforeach
+                @else
+                    @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
+                @endif
             </a17-modal-create>
         @endif
 

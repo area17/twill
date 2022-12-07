@@ -1,6 +1,6 @@
 # Adding data to block forms
 
-When needed you can expose additional data to block forms using a [Block class](/block-editor/block-classes.md).
+When needed you can expose additional data to block forms using a [Block class](./block-classes.md).
 
 :::alert=type.warning:::
 The `getFormData` is only called once per module form and is not context aware.
