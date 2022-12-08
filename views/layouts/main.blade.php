@@ -80,9 +80,11 @@
     </section>
 </div>
 
-<form style="display: none" method="POST" action="{{ route('twill.logout') }}" data-logout-form>
-    @csrf
-</form>
+@if (config('twill.enabled.users-management'))
+    <form style="display: none" method="POST" action="{{ route('twill.logout') }}" data-logout-form>
+        @csrf
+    </form>
+@endif
 
 <script>
     window['{{ config('twill.js_namespace') }}'] = {}
