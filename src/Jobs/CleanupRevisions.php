@@ -13,7 +13,9 @@ use A17\Twill\Models\Model;
 
 class CleanupRevisions implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
 
     protected int $maxAttempts = 3;
     private Model $model;

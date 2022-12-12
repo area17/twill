@@ -2,18 +2,6 @@
 
 ## Install
 
-Currently this requires a local system installation of tailwindcss
-
-```
-npm install -D -g tailwindcss
-npm install -D -g @tailwindcss/typography
-```
-
-To run in development mode run in the root of the `/docs`
-```
-npm i
-```
-
 To compile and serve the docs site at `http://localhost:8000/` run at the ROOT of `/twill`
 ```
 ./vendor/bin/testbench twill:staticdocs:serve

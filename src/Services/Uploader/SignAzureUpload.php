@@ -45,7 +45,7 @@ class SignAzureUpload
             $now = new DateTime("now", new DateTimeZone("UTC"));
             $expire = $now->modify('+15 min');
 
-            $path = $this->config->get('filesystems.disks.' . $disk .'.container') . str_replace(azureEndpoint($disk), '', $blobUri);
+            $path = $this->config->get('filesystems.disks.' . $disk . '.container') . str_replace(azureEndpoint($disk), '', $blobUri);
             $sasUrl = $blobUri . '?' . $this->blobSharedAccessSignatureHelper->generateBlobServiceSharedAccessSignatureToken('b', $path, $permissions, $expire);
             return $listener->uploadIsSigned($sasUrl, false);
         } catch (\Exception $exception) {

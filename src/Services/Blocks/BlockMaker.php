@@ -16,11 +16,6 @@ class BlockMaker
     protected $files;
 
     /**
-     * @var \A17\Twill\Services\Blocks\BlockCollection
-     */
-    protected $blockCollection;
-
-    /**
      * @var \Illuminate\Console\Command
      */
     protected $command;
@@ -35,13 +30,13 @@ class BlockMaker
      */
     protected $icon;
 
+    /**
+     * @param Filesystem $files
+     */
     public function __construct(
-        Filesystem $files,
-        BlockCollection $blockCollection
+        Filesystem $files
     ) {
         $this->files = $files;
-
-        $this->blockCollection = $blockCollection;
     }
 
     /**
@@ -49,7 +44,7 @@ class BlockMaker
      */
     public function getBlockCollection()
     {
-        return $this->blockCollection;
+        return app(BlockCollection::class);
     }
 
     /**
@@ -332,7 +327,7 @@ class BlockMaker
      */
     public function getBlockByName($block, $sources = [])
     {
-        return $this->blockCollection->findByName($block, $sources);
+        return $this->getBlockCollection()->findByName($block, $sources);
     }
 
     /**
@@ -363,7 +358,6 @@ class BlockMaker
 
                 return $file->getFilename() === $icon ? $file->getPathName() : null;
             }, null);
-
         }, null);
     }
 
@@ -438,7 +432,7 @@ class BlockMaker
         $blockBase,
         $blockString
     ) {
-        $baseRepeater = $this->blockCollection->findByName($repeaterName);
+        $baseRepeater = $this->getBlockCollection()->findByName($repeaterName);
 
         return [
             'baseRepeater' => $baseRepeater,

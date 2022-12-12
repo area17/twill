@@ -2,25 +2,17 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\Contracts\TwillModelContract;
 use Carbon\Carbon;
 
 trait HandleDates
 {
-    /**
-     * @param array $fields
-     * @return array
-     */
-    public function prepareFieldsBeforeCreateHandleDates($fields)
+    public function prepareFieldsBeforeCreateHandleDates(array $fields): array
     {
         return $this->prepareFieldsBeforeSaveHandleDates(null, $fields);
     }
 
-    /**
-     * @param \A17\Twill\Models\Model|null $object
-     * @param array $fields
-     * @return array
-     */
-    public function prepareFieldsBeforeSaveHandleDates($object, $fields)
+    public function prepareFieldsBeforeSaveHandleDates(?TwillModelContract $object, array $fields): array
     {
         foreach ($this->model->getDates() as $f) {
             if (isset($fields[$f])) {
@@ -35,14 +27,9 @@ trait HandleDates
         return $fields;
     }
 
-    /**
-     * @param array $fields
-     * @param string $f
-     * @return array
-     */
-    public function prepareDatesField($fields, $f)
+    public function prepareDatesField(array $fields, string $field): array
     {
-        $fields[$f] = ($date = Carbon::parse($fields[$f])) ? $date->format("Y-m-d H:i:s") : null;
+        $fields[$field] = Carbon::parse($fields[$field]);
 
         return $fields;
     }

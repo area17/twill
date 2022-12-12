@@ -78,7 +78,8 @@ class Release extends Command
      * @param string $version
      * @return void
      */
-    private function checkChangelogContainsVersion($version) {
+    private function checkChangelogContainsVersion($version)
+    {
         if (!str_contains(file_get_contents($this->getTwillDir('CHANGELOG.md')), "## $version")) {
             $this->error('The changelog is currently missing the version you are trying to tag.');
             exit(1);

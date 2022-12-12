@@ -18,6 +18,7 @@ We provide an automated upgrade path using the commands explaned below. This wil
 - Moving the twill views to the new namespace
 - Moving the twill routes to the new location
 - Fixing (most) compatibility issues.
+- Using the new TwillRoutes facade for ::module and ::singleton instead of a Route macro.
 
 ### Run the upgrade:
 
@@ -29,6 +30,16 @@ php ./vendor/area17/twill/upgrade.php
 ```
 
 ## Other changes
+
+### Changes in admin app url/path
+
+The admin url is now by default /admin instead of a subdomain. Please consult the docs to change this to a subdomain if 
+you were relying on that.
+
+On top of that, this is now more "loose" and does not require the exact url. However, you can set it back to being
+strict using:
+
+`ADMIN_APP_STRICT=true`
 
 ### withVideo on media defaults to false
 
@@ -42,8 +53,10 @@ then you now need to specify this in your `.env`.
 
 ### Block editor render children
 
+The `renderBlocks` method now has the mapping as first argument.
+
 The `renderBlocks` method now by default will NOT render the nested repeaters below the block. If you relied on this
-you now need to update to `renderBlocks(true)`
+you now need to update to `renderBlocks([], true)`
 
 ### Crops
 

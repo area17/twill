@@ -40,9 +40,9 @@ Map::make()
 |:-----------------|:------------------------------------------------------------|:----------------|:--------------|
 | name             | Name of the field                                           | string          |               |
 | label            | Label of the field                                          | string          |               |
-| showMap          | Adds a button to toggle the map visibility                  | true<br />false | true          |
-| openMap          | Used with `showMap`, initialize the field with the map open | true<br />false | false         |
-| saveExtendedData | Enables saving Bounding Box Coordinates and Location types  | true<br />false | false         |
+| showMap          | Adds a button to toggle the map visibility                  | boolean         | true          |
+| openMap          | Used with `showMap`, initialize the field with the map open | boolean         | false         |
+| saveExtendedData | Enables saving Bounding Box Coordinates and Location types  | boolean         | false         |
 
 This field requires that you provide a `GOOGLE_MAPS_API_KEY` variable in your .env file.
 

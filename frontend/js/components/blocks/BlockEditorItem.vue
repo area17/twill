@@ -1,6 +1,6 @@
 <template>
   <div class="block" :class="blockClasses">
-    <div class="block__header" @dblclick.prevent="toggleExpand()">
+    <div class="block__header" @dblclick.prevent="toggleExpand()" ref="header">
       <span v-if="withHandle" class="block__handle"></span>
       <div class="block__toggle">
         <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown" :maxHeight="270">
@@ -10,7 +10,12 @@
           </div>
         </a17-dropdown>
         <span class="block__counter f--tiny" v-else>{{ index + 1 }}</span>
-        <span class="block__title">{{ blockTitle }}</span>
+        <span
+          class="block__title"
+          :style="{
+            'max-width': titleMaxWidth
+          }"
+        >{{ blockTitle }}</span>
       </div>
       <div class="block__actions" v-if="withActions">
         <slot name="block-actions"/>
@@ -81,7 +86,8 @@
         visible: false,
         hover: false,
         withMoveDropdown: true,
-        withAddDropdown: true
+        withAddDropdown: true,
+        titleMaxWidth: null
       }
     },
     filters: a17VueFilters,
@@ -101,10 +107,17 @@
         const suffix = this.titleFieldValue || ''
         const separator = title && suffix ? ' — ' : ''
 
+        let fullTitle
+
         if (this.block.hideTitlePrefix) {
-          return `${suffix}`
+          fullTitle = `${suffix}`
+        } else {
+          fullTitle = `${title}${separator}${suffix}`
         }
-        return `${title}${separator}${suffix}`
+
+        const cleanup = document.createElement('div')
+        cleanup.innerHTML = fullTitle
+        return cleanup.innerText
       },
       blockClasses () {
         return [
@@ -156,7 +169,21 @@
 
         const blockFieldName = this.blockFieldName(fieldName)
         return this.fieldValueByName(blockFieldName)
+      },
+      updateTitleMaxWidth () {
+        if (this.titleFieldValue && this.$refs.header) {
+          this.titleMaxWidth = `calc(${this.$refs.header.offsetWidth * 0.45}px - 5ch)`
+        } else {
+          this.titleMaxWidth = '45%'
+        }
       }
+    },
+    mounted () {
+      this.updateTitleMaxWidth()
+      window.addEventListener('resize', this.updateTitleMaxWidth)
+    },
+    unmounted () {
+      window.removeEventListener('resize', this.updateTitleMaxWidth)
     },
     beforeMount () {
       if (!this.$slots['dropdown-numbers']) this.withMoveDropdown = false
@@ -166,7 +193,6 @@
 </script>
 
 <style lang="scss" scoped>
-
   .block__content {
     display: none;
     padding: 35px 15px;
@@ -236,7 +262,12 @@
   }
 
   .block__title {
+    text-overflow: ellipsis;
     font-weight: 600;
+    max-width: 45%;
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
     height: 50px;
     line-height: 50px;
     user-select: none;
@@ -247,6 +278,11 @@
 
     .dropdown {
       display: inline-block;
+      vertical-align: top;
+    }
+
+    .block__counter {
+      vertical-align: top;
     }
   }
 
@@ -272,10 +308,11 @@
 
   .block__actions {
     button[data-action] {
-      display: none;
+      visibility: hidden;
     }
 
     .dropdown--active button[data-action] {
+      visibility: visible;
       display: inline-block;
     }
   }
@@ -290,6 +327,7 @@
     }
 
     button[data-action] {
+      visibility: visible;
       display: inline-block;
     }
   }

@@ -15,5 +15,4 @@ class TwillConfig
     {
         return $this->maxRevisions;
     }
-
 }

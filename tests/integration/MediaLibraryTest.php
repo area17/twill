@@ -2,9 +2,6 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use A17\Twill\Models\Media;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\DB;
 use A17\Twill\Tests\Integration\Behaviors\CreatesMedia;
 
 class MediaLibraryTest extends ModulesTestBase

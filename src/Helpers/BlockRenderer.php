@@ -126,7 +126,7 @@ class BlockRenderer
      */
     private static function getPivotDummy(array $data): object
     {
-        return new class($data) implements Arrayable {
+        return new class ($data) implements Arrayable {
             public function __construct(public array $data)
             {
             }
@@ -230,7 +230,7 @@ class BlockRenderer
         $class = Block::findFirstWithType($block->type);
 
         /** @var \A17\Twill\Models\Block[] $childBlocks */
-        $childBlocks = A17Block::whereParentId($block->id)->get();
+        $childBlocks = A17Block::whereParentId($block->id)->orderBy('position')->get();
 
         $children = [];
 

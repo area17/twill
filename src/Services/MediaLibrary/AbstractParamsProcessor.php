@@ -27,7 +27,7 @@ abstract class AbstractParamsProcessor
     /**
      * @var array<string, string>
      */
-    const COMPATIBLE_PARAMS = [
+    public const COMPATIBLE_PARAMS = [
         'w' => 'width',
         'h' => 'height',
         'fm' => 'format',

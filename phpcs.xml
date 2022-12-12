@@ -11,4 +11,7 @@
             <property name="absoluteLineLimit" value="M"/>
         </properties>
     </rule>
+    <rule ref="Internal.NoCodeFound">
+        <exclude-pattern>*.blade.php</exclude-pattern>
+    </rule>
 </ruleset>

@@ -4,5 +4,3 @@
 
 - [`2.x`](https://twill.io/docs/api/2.x)
 - [`main`](https://twill.io/docs/api/main)
-- [`1.2`](https://twill.io/docs/api/1.2)
-- [`1.1`](https://twill.io/docs/api/1.1)

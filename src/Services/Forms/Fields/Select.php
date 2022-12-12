@@ -2,17 +2,17 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\hasOptions;
-use A17\Twill\Services\Forms\Fields\Traits\hasPlaceholder;
-use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
-use A17\Twill\Services\Forms\Fields\Traits\unpackable;
+use A17\Twill\Services\Forms\Fields\Traits\HasOptions;
+use A17\Twill\Services\Forms\Fields\Traits\HasPlaceholder;
+use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
+use A17\Twill\Services\Forms\Fields\Traits\Unpackable;
 
 class Select extends BaseFormField
 {
-    use isTranslatable;
-    use hasOptions;
-    use hasPlaceholder;
-    use unpackable;
+    use IsTranslatable;
+    use HasOptions;
+    use HasPlaceholder;
+    use Unpackable;
 
     public static function make(): static
     {

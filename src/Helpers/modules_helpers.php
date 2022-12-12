@@ -1,10 +1,12 @@
 <?php
 
+use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Models\Permission;
+use A17\Twill\Repositories\ModuleRepository;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
-if (! function_exists('getAllModules')) {
+if (!function_exists('getAllModules')) {
     function getAllModules()
     {
         $repositories = collect(app(FileSystem::class)->glob(app_path('Repositories') . '/*.php'))->map(function ($repository) {
@@ -15,53 +17,57 @@ if (! function_exists('getAllModules')) {
         });
 
         $moduleRepositories = $repositories->filter(function ($repository) {
-            return is_subclass_of($repository, \A17\Twill\Repositories\ModuleRepository::class);
+            return is_subclass_of($repository, ModuleRepository::class);
         });
 
         return $moduleRepositories->map(function ($repository) {
-            $modelName = str_replace('Repository', '', str_replace('App\\Repositories\\', '', $repository));
+            $modelName = str_replace(array('App\\Repositories\\', 'Repository'), '', $repository);
 
             return Str::plural(lcfirst($modelName));
         });
     }
 }
 
-if (! function_exists('getModelByModuleName')) {
+if (!function_exists('getModelByModuleName')) {
     function getModelByModuleName($moduleName)
     {
         $model = config('twill.namespace') . '\\Models\\' . Str::studly(Str::singular($moduleName));
-        if (! class_exists($model)) {
-            throw new Exception($model . ' not existed');
+        if (!class_exists($model)) {
+            try {
+                $model = \A17\Twill\Facades\TwillCapsules::getCapsuleForModule($moduleName)->getModel();
+            } catch (NoCapsuleFoundException) {
+                throw new Exception($model . ' not existed');
+            }
         }
 
         return $model;
     }
 }
 
-if (! function_exists('getModuleNameByModel')) {
+if (!function_exists('getModuleNameByModel')) {
     function getModuleNameByModel($model)
     {
         return Str::plural(lcfirst(class_basename($model)));
     }
 }
 
-if (! function_exists('getRepositoryByModuleName')) {
+if (!function_exists('getRepositoryByModuleName')) {
     function getRepositoryByModuleName($moduleName)
     {
         return getModelRepository(class_basename(getModelByModuleName($moduleName)));
     }
 }
 
-if (! function_exists('getModelRepository')) {
+if (!function_exists('getModelRepository')) {
     function getModelRepository($relation, $model = null)
     {
-        if (! $model) {
+        if (!$model) {
             $model = ucfirst(Str::singular($relation));
         }
 
         $repository = config('twill.namespace') . '\\Repositories\\' . ucfirst($model) . 'Repository';
 
-        if (! class_exists($repository)) {
+        if (!class_exists($repository)) {
             throw new Exception($repository . ' not found');
         }
 
@@ -69,7 +75,7 @@ if (! function_exists('getModelRepository')) {
     }
 }
 
-if (! function_exists('updatePermissionOptions')) {
+if (!function_exists('updatePermissionOptions')) {
     function updatePermissionOptions($options, $user, $item)
     {
         $permissions = [];
@@ -83,7 +89,7 @@ if (! function_exists('updatePermissionOptions')) {
 
         // looking for group permissions belonging to the user
         foreach ($user->publishedGroups as $group) {
-            if (($permission = $group->permissions()->ofItem($item)->first()) != null) {
+            if (($permission = $group->permissions()->ofItem($item)->first()) !== null) {
                 if (isset($permissions[get_class($item)])) {
                     $scopes = Permission::available(Permission::SCOPE_ITEM);
                     $previous = array_search($permissions[get_class($item)], $scopes);
@@ -102,7 +108,7 @@ if (! function_exists('updatePermissionOptions')) {
         if (isset($permissions[get_class($item)])) {
             $globalPermission = str_replace('-module', '-item', $permissions[get_class($item)]);
             foreach ($options as &$option) {
-                if ($option['value'] != $globalPermission || $globalPermission == 'manage-item') {
+                if ($option['value'] !== $globalPermission || $globalPermission === 'manage-item') {
                     $option['disabled'] = true;
                 } else {
                     break;
@@ -114,14 +120,14 @@ if (! function_exists('updatePermissionOptions')) {
     }
 }
 
-if (! function_exists('updatePermissionGroupOptions')) {
+if (!function_exists('updatePermissionGroupOptions')) {
     function updatePermissionGroupOptions($options, $item, $group)
     {
         return $options;
     }
 }
 
-if (! function_exists('isUserGroupPermissionItemExists')) {
+if (!function_exists('isUserGroupPermissionItemExists')) {
     function isUserGroupPermissionItemExists($user, $item, $permission)
     {
         foreach ($user->publishedGroups as $group) {
@@ -134,13 +140,15 @@ if (! function_exists('isUserGroupPermissionItemExists')) {
     }
 }
 
-if (! function_exists('isUserGroupPermissionModuleExists')) {
+if (!function_exists('isUserGroupPermissionModuleExists')) {
     function isUserGroupPermissionModuleExists($user, $moduleName, $permission)
     {
         foreach ($user->publishedGroups as $group) {
-            if ($moduleName == 'global') {
+            if ($moduleName === 'global') {
                 return $group->permissions()->global()->where('name', 'manage-modules')->exists();
-            } elseif (in_array($permission, $group->permissions()->OfModuleName($moduleName)->get()->pluck('name')->all())) {
+            }
+
+            if (in_array($permission, $group->permissions()->OfModuleName($moduleName)->get()->pluck('name')->all())) {
                 return true;
             }
         }

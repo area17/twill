@@ -53,4 +53,4 @@ See [Block editor](/1_documentation/block-editor/index.md)
 |:-----------------|:----------------------------------------------------------------------------|:---------------|:--------------|
 | blocks           | Array of blocks                                                             | array          |               |
 | label            | Label used for the button                                                   | string         | 'Add Content' |
-| withoutSeparator | Defines if a separator before the block editor container should be rendered | true<br/>false | false         |
+| withoutSeparator | Defines if a separator before the block editor container should be rendered | boolean        | false         |

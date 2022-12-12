@@ -1,7 +1,3 @@
-:::alert=type.warning:::
-Twill packages are new. If you found any issue please let us know by creating an issue.
-:::#alert:::
-
 # Creating a package
 
 As mentioned in the introduction, a Twill package is at its core the same as a regular Laravel package.
