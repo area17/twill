@@ -4,7 +4,9 @@ namespace A17\Twill;
 
 use A17\Twill\Exceptions\Settings\SettingsGroupDoesNotExistException;
 use A17\Twill\Exceptions\Settings\SettingsSectionDoesNotExistException;
+use A17\Twill\Helpers\BlockRenderer;
 use A17\Twill\Models\Block;
+use A17\Twill\Services\Blocks\Block as BlockService;
 use A17\Twill\Services\Settings\SettingsGroup;
 
 class TwillAppSettings
@@ -93,6 +95,17 @@ class TwillAppSettings
         $groupObject = $this->getGroupForGroupAndSectionName($group, $section);
 
         return $groupObject->getSettingsModel()->blocks()->where('editor_name', $section)->firstOrFail();
+    }
+
+    public function getBlockServiceForGroupAndSection(string $group, string $section): BlockService
+    {
+        $groupObject = $this->getGroupForGroupAndSectionName($group, $section)->getSettingsModel();
+
+        $groupObject->registerSettingBlocks();
+
+        $block = $this->getGroupDataForSectionAndName($group, $section);
+
+        return BlockRenderer::getNestedBlocksForBlock($block, $groupObject, '');
     }
 
     /**

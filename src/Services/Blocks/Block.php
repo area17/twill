@@ -164,7 +164,7 @@ class Block
      */
     public static function findFirstWithType(string $type): ?self
     {
-        return app(BlockCollection::class)->findByName($type);
+        return TwillBlocks::getBlockCollection()->findByName($type);
     }
 
     public static function getForType(string $type, bool $repeater = false): self

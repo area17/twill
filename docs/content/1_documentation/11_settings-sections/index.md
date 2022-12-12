@@ -87,4 +87,13 @@ To access most, you need to know the identifier. To get that we have to combine 
 - `TwillAppSettings::get('site-settings.copyright.year')`: Get a non-translatable setting.
 - `TwillAppSettings::getGroupDataForSectionAndName('site-settings', 'copyright')`: Get the full `block` model for the
   settings.
-  This is especially useful if you have a block editor in the settings and you need to render those.
+- `TwillAppSettings::getBlockServiceForGroupAndSection('site-settings', 'copyright')`: Get the full block object,
+  this is especially useful if you have a block editor in the settings and you need to render those.
+
+## Rendering nested block editors.
+
+When you have a settings block that has an editor inside, you can render it by name like this:
+
+```blade
+{!! \TwillAppSettings::getBlockServiceForGroupAndSection('site-settings','text')->renderData->renderChildren('default') !!}
+```

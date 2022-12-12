@@ -3,7 +3,7 @@
 namespace A17\Twill\Services\Blocks;
 
 use A17\Twill\Models\Block;
-use A17\Twill\Models\Model;
+use A17\Twill\Models\Contracts\TwillModelContract;
 
 /**
  * DTO for rendering a Block.
@@ -17,7 +17,7 @@ class RenderData
         public Block $block,
         public string $editorName,
         public array $children,
-        public ?Model $model = null,
+        public ?TwillModelContract $model = null,
         public ?string $parentEditorName = null,
         public bool $inEditor = false,
     ) {
