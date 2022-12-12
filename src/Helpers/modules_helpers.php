@@ -4,7 +4,6 @@ use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Models\Permission;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
-use const A17\Twill\Exceptions\NoCapsuleFoundException;
 
 if (!function_exists('getAllModules')) {
     function getAllModules()
