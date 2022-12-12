@@ -173,11 +173,15 @@ abstract class ModuleRepository
 
             $fields = $this->prepareFieldsBeforeCreate($fields);
 
-            $model = $this->model->create(Arr::except($fields, $this->getReservedFields()));
+            $model = $this->model->make(Arr::except($fields, $this->getReservedFields()));
+
+            $fields = $this->prepareFieldsBeforeSave($model, $fields);
+
+            $model->fill(Arr::except($fields, $this->getReservedFields()));
 
             $this->beforeSave($model, $original_fields);
 
-            $fields = $this->prepareFieldsBeforeSave($model, $fields);
+            $model->save();
 
             $this->afterSave($model, $fields);
 

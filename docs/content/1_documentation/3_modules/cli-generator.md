@@ -24,7 +24,9 @@ Once you ran the command a new entry will be added to `routes/twill.php`.
 ```php
 <?php
 
-Route::module('moduleName');
+use A17\Twill\Facades\TwillRoutes;
+
+TwillRoutes::module('moduleName');
 ```
 
 And a navigation entry will be added in `config/twill-navigation.php`.
@@ -74,8 +76,9 @@ Once you ran the command a new entry will be added to `routes/twill.php`.
 
 ```php
 <?php
+use A17\Twill\Facades\TwillRoutes;
 
-Route::singleton('moduleName');
+TwillRoutes::singleton('moduleName');
 ```
 
 And a navigation entry will be added in `config/twill-navigation.php`.

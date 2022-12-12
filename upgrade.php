@@ -12,6 +12,8 @@ $arrayRename = [
 $arrayRenameInFile = [
     'config/twill-navigation.php' => ['admin.', 'twill.'],
     'config/twill.php' => ['admin.', 'twill.'],
+    'routes/twill.php' => ['Route::module', 'TwillRoutes::module'],
+    'routes/twill.php+1' => ['Route::singleton', 'TwillRoutes::singleton'],
 ];
 
 foreach ($arrayRename as $original => $new) {
@@ -22,6 +24,7 @@ foreach ($arrayRename as $original => $new) {
 }
 
 foreach ($arrayRenameInFile as $file => $replace) {
+    $file = explode('+', $file)[0];
     if (file_exists(getcwd() . '/' . $file)) {
         echo "Replacing legacy routes in $file" . PHP_EOL;
         $contents = file_get_contents(getcwd() . '/' . $file);

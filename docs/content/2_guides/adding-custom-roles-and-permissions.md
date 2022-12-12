@@ -33,13 +33,15 @@ php artisan migrate
 Add the modules to our admin routes:
 
 :::filename:::
-`routes/admin.hpp`
+`routes/twill.php`
 :::#filename:::
 
 ```php
-Route::module('pages');
+use A17\Twill\Facades\TwillRoutes;
 
-Route::module('posts');
+TwillRoutes::module('pages');
+
+TwillRoutes::module('posts');
 ```
 
 ... and to our navigation:
@@ -265,16 +267,18 @@ class PostController extends ModuleController
 Then, add the route groups and middleware in the admin routes configuration:
 
 :::filename:::
-`routes/admin.php`
+`routes/twill.php`
 :::#filename:::
 
 ```php
+use A17\Twill\Facades\TwillRoutes;
+
 Route::group(['middleware' => 'can:edit-pages'], function () {
-    Route::module('pages');
+    TwillRoutes::module('pages');
 });
 
 Route::group(['middleware' => 'can:edit-posts'], function () {
-    Route::module('posts');
+    TwillRoutes::module('posts');
 });
 
 // ...
