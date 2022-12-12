@@ -11,7 +11,7 @@ trait HandleTags
      */
     public function afterSaveHandleTags($object, $fields)
     {
-        if (is_array($fields['tags'])) {
+        if (isset($fields['tags']) && is_array($fields['tags'])) {
             $fields['tags'] = implode(',', $fields['tags']);
         }
 
