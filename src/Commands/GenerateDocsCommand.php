@@ -165,11 +165,18 @@ class GenerateDocsCommand extends Command
                 // Remove the first item as that is the content dir.
                 unset($structure[0]);
 
+                $documentString = (string)$document;
+
+                // Remove the title as it is rendered manually.
+                if (Str::startsWith($documentString, '<h1>')) {
+                    $documentString = Str::after($documentString, '</h1>');
+                }
+
                 $treeData = [
                     'title' => $title,
                     'url' => $url,
                     'relativePath' => $this->withoutNumbers($relativePath),
-                    'content' => (string)$document,
+                    'content' => $documentString,
                     'toc' => $tocRendered,
                 ];
 
