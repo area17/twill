@@ -2,13 +2,13 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\hasBorder;
-use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
+use A17\Twill\Services\Forms\Fields\Traits\HasBorder;
+use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 class Checkbox extends BaseFormField
 {
-    use isTranslatable;
-    use hasBorder;
+    use IsTranslatable;
+    use HasBorder;
 
     protected ?string $confirmMessageText = null;
 

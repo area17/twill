@@ -47,9 +47,11 @@ class Install extends Command
 
         if (filled($preset = $this->argument('preset'))) {
             if ($this->presetExists($preset)) {
-                if ($this->confirm(
-                    'Are you sure to install this preset? This can overwrite your models, config and routes.'
-                )) {
+                if (
+                    $this->confirm(
+                        'Are you sure to install this preset? This can overwrite your models, config and routes.'
+                    )
+                ) {
                     $this->installPreset($preset);
                 } else {
                     $this->warn('Cancelled.');

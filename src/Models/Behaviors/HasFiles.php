@@ -96,5 +96,4 @@ trait HasFiles
     {
         return $this->findFile($role, $locale);
     }
-
 }

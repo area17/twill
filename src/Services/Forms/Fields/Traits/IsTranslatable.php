@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields\Traits;
 
-trait isTranslatable
+trait IsTranslatable
 {
     protected bool $translated = false;
 

@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields\Traits;
 
-trait hasPlaceholder
+trait HasPlaceholder
 {
     protected ?string $placeholder = null;
 

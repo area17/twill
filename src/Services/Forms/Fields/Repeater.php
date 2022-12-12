@@ -2,13 +2,13 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\canReorder;
-use A17\Twill\Services\Forms\Fields\Traits\hasMax;
+use A17\Twill\Services\Forms\Fields\Traits\CanReorder;
+use A17\Twill\Services\Forms\Fields\Traits\HasMax;
 
 class Repeater extends BaseFormField
 {
-    use hasMax;
-    use canReorder;
+    use HasMax;
+    use CanReorder;
 
     protected ?string $type = null;
 

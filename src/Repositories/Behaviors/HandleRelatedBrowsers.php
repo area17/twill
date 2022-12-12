@@ -93,7 +93,8 @@ trait HandleRelatedBrowsers
     /**
      * Called from afterReplicate in ModuleRepository.
      */
-    public function afterDuplicateHandleRelatedBrowsers(TwillModelContract $old, TwillModelContract $new): void {
+    public function afterDuplicateHandleRelatedBrowsers(TwillModelContract $old, TwillModelContract $new): void
+    {
         foreach ($old->relatedItems?->groupBy('browser_name') ?? [] as $browserName => $group) {
             $new->saveRelated(
                 $group->map(function ($item) {

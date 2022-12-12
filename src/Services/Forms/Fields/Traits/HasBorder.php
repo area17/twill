@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields\Traits;
 
-trait hasBorder
+trait HasBorder
 {
     protected bool $border = false;
 

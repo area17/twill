@@ -126,7 +126,7 @@ class BlockRenderer
      */
     private static function getPivotDummy(array $data): object
     {
-        return new class($data) implements Arrayable {
+        return new class ($data) implements Arrayable {
             public function __construct(public array $data)
             {
             }

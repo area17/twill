@@ -37,7 +37,7 @@ class Handler extends ExceptionHandler
         if ($frontend) {
             $view = config('twill.frontend.views_path') . ".errors.$statusCode";
 
-            return view()->exists($view)? $view : "errors::{$statusCode}";
+            return view()->exists($view) ? $view : "errors::{$statusCode}";
         }
 
         $view = "twill.errors.$statusCode";

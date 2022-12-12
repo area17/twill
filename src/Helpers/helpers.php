@@ -18,8 +18,9 @@ if (! function_exists('dumpUsableSqlQuery')) {
 }
 
 if (! function_exists('getLikeOperator')) {
-    function getLikeOperator(): string {
-        return once(function() {
+    function getLikeOperator(): string
+    {
+        return once(function () {
             if (DB::connection()->getPDO()->getAttribute(\PDO::ATTR_DRIVER_NAME) === 'pgsql') {
                 return 'ILIKE';
             }

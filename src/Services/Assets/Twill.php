@@ -8,7 +8,7 @@ class Twill
 {
     public static $cache = [];
 
-    function asset($file)
+    public function asset($file)
     {
         return $this->devAsset($file) ?? $this->twillAsset($file);
     }

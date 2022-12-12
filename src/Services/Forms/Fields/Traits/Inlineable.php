@@ -2,9 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields\Traits;
 
-use Illuminate\Support\Collection;
-
-trait inlineable
+trait Inlineable
 {
     protected bool $inline = false;
 
