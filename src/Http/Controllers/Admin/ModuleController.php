@@ -2374,7 +2374,7 @@ abstract class ModuleController extends Controller
                 $singularName = Str::singular($name);
                 $modelClass = config('twill.namespace') . '\\Models\\' . Str::studly($singularName);
 
-                if (!class_exists($modelClass)) {
+                if (!@class_exists($modelClass)) {
                     // First try to construct it based on the last.
                     $modelClass = config('twill.namespace') .
                         '\\Models\\' .
