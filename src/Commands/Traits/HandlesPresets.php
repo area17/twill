@@ -122,7 +122,7 @@ trait HandlesPresets
             }
 
             if (str_ends_with($file['from'], DIRECTORY_SEPARATOR)) {
-                $this->recurse_copy($file['from'], $file['to']);
+                $this->recurseCopy($file['from'], $file['to']);
             } else {
                 copy($file['from'], $file['to']);
             }
@@ -132,7 +132,7 @@ trait HandlesPresets
     /**
      * @see https://www.php.net/manual/en/function.copy.php#91010
      */
-    private function recurse_copy(string $from, string $to): void
+    private function recurseCopy(string $from, string $to): void
     {
         $dir = opendir($from);
         if (!is_dir($to)) {
@@ -141,7 +141,7 @@ trait HandlesPresets
         while (false !== ($file = readdir($dir))) {
             if (($file !== '.') && ($file !== '..')) {
                 if (is_dir($from . '/' . $file)) {
-                    $this->recurse_copy($from . '/' . $file, $to . '/' . $file);
+                    $this->recurseCopy($from . '/' . $file, $to . '/' . $file);
                 } else {
                     copy($from . '/' . $file, $to . '/' . $file);
                 }

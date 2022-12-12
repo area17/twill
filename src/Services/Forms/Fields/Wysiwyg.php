@@ -2,20 +2,20 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\hasMaxlength;
-use A17\Twill\Services\Forms\Fields\Traits\hasOnChange;
-use A17\Twill\Services\Forms\Fields\Traits\hasPlaceholder;
-use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
+use A17\Twill\Services\Forms\Fields\Traits\HasMaxlength;
+use A17\Twill\Services\Forms\Fields\Traits\HasOnChange;
+use A17\Twill\Services\Forms\Fields\Traits\HasPlaceholder;
+use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 /**
  * @todo: Split this? Text, Textarea, Number, ...?
  */
 class Wysiwyg extends BaseFormField
 {
-    use isTranslatable;
-    use hasMaxlength;
-    use hasPlaceholder;
-    use hasOnChange;
+    use IsTranslatable;
+    use HasMaxlength;
+    use HasPlaceholder;
+    use HasOnChange;
 
     public bool $hideCounter = false;
 

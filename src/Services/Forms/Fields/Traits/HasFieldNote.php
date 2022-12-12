@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields\Traits;
 
-trait hasFieldNote
+trait HasFieldNote
 {
     protected ?string $fieldNote = null;
 

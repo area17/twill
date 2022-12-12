@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields\Traits;
 
-trait hasOnChange
+trait HasOnChange
 {
     protected ?string $ref = null;
 

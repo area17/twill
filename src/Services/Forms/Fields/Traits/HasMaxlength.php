@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields\Traits;
 
-trait hasMaxlength
+trait HasMaxlength
 {
     protected ?int $maxlength = null;
 

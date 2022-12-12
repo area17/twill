@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields\Traits;
 
-trait canHaveButtonOnTop
+trait CanHaveButtonOnTop
 {
     protected bool $buttonOnTop = false;
 

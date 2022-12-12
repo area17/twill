@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields\Traits;
 
-trait canReorder
+trait CanReorder
 {
     protected bool $reorder = true;
 

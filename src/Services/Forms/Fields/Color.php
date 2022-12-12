@@ -2,11 +2,11 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
+use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 class Color extends BaseFormField
 {
-    use isTranslatable;
+    use IsTranslatable;
 
     public static function make(): static
     {

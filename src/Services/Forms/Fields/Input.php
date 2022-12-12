@@ -2,18 +2,25 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\hasMax;
-use A17\Twill\Services\Forms\Fields\Traits\hasMaxlength;
-use A17\Twill\Services\Forms\Fields\Traits\hasMin;
-use A17\Twill\Services\Forms\Fields\Traits\hasOnChange;
-use A17\Twill\Services\Forms\Fields\Traits\hasPlaceholder;
-use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
+use A17\Twill\Services\Forms\Fields\Traits\HasMax;
+use A17\Twill\Services\Forms\Fields\Traits\HasMaxlength;
+use A17\Twill\Services\Forms\Fields\Traits\HasMin;
+use A17\Twill\Services\Forms\Fields\Traits\HasOnChange;
+use A17\Twill\Services\Forms\Fields\Traits\HasPlaceholder;
+use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 /**
  * @todo: Split this? Text, Textarea, Number, ...?
  */
 class Input extends BaseFormField
 {
+    use IsTranslatable;
+    use HasMin;
+    use HasMax;
+    use HasMaxlength;
+    use HasPlaceholder;
+    use HasOnChange;
+
     /**
      * @var string
      */
@@ -38,13 +45,6 @@ class Input extends BaseFormField
      * @var string
      */
     public const TYPE_URL = 'url';
-
-    use isTranslatable;
-    use hasMin;
-    use hasMax;
-    use hasMaxlength;
-    use hasPlaceholder;
-    use hasOnChange;
 
     protected string $type = self::TYPE_TEXT;
 
