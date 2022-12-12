@@ -2,13 +2,13 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\hasPlaceholder;
-use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
+use A17\Twill\Services\Forms\Fields\Traits\HasPlaceholder;
+use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 class DatePicker extends BaseFormField
 {
-    use isTranslatable;
-    use hasPlaceholder;
+    use IsTranslatable;
+    use HasPlaceholder;
 
     protected bool $withTime = true;
 

@@ -44,6 +44,9 @@ jobs:
       - name: Execute tests
         run: vendor/bin/phpstan
 
+      - name: Check code style
+        run: vendor/bin/phpcs
+
   test:
     timeout-minutes: 15
     runs-on: ${{ matrix.os }}

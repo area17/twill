@@ -51,10 +51,12 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
             $allModelPermissions = (clone $allPermissions)->ofModel($model);
 
             // If the user has any module permissions, or global manage all modules permissions, all items will be return
-            if ((clone $allModelPermissions)->module()
+            if (
+                (clone $allModelPermissions)->module()
                     ->whereIn('name', Permission::available(Permission::SCOPE_MODULE))
                     ->exists()
-                || (clone $allPermissions)->global()->where('name', 'manage-modules')->exists()) {
+                || (clone $allPermissions)->global()->where('name', 'manage-modules')->exists()
+            ) {
                 return $query;
             }
 

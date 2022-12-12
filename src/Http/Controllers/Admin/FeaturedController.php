@@ -197,7 +197,6 @@ class FeaturedController extends Controller
                     ] : []);
                 })->toArray();
             });
-
         });
 
         return $featuredSources;

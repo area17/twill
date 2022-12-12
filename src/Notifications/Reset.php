@@ -15,7 +15,7 @@ class Reset extends ResetPassword
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
+        return (new MailMessage())
             ->subject(twillTrans('twill::lang.notifications.reset.subject', [
                 'appName' => config('app.name')
             ]))

@@ -9,14 +9,14 @@ use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
-    const SUPERADMIN = 'SUPERADMIN';
+    public const SUPERADMIN = 'SUPERADMIN';
 
     /**
      * Map between the legacy gates and the new gates from PermissionAuthServiceProvider.
      * The new gates are being used in the code now and the old gates are kept for
      * backward compatibility.
      */
-    const ABILITY_ALIASES = [
+    public const ABILITY_ALIASES = [
         'list' => ['access-module-list', 'access-media-library'],
         'edit' => [
             'view-item',
@@ -161,9 +161,9 @@ class AuthServiceProvider extends ServiceProvider
             return $this->authorize($user, function ($user) {
                 $editedUserObject = User::find(request('id'));
                 return $this->userHasRole(
-                        $user,
-                        [TwillPermissions::roles()::ADMIN]
-                    ) && (
+                    $user,
+                    [TwillPermissions::roles()::ADMIN]
+                ) && (
                         $editedUserObject && $user->id !== $editedUserObject->id &&
                         $editedUserObject->role !== self::SUPERADMIN
                     );

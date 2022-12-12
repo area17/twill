@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields\Traits;
 
-trait unpackable
+trait Unpackable
 {
     protected bool $unpack = false;
 

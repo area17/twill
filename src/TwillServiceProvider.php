@@ -554,9 +554,7 @@ class TwillServiceProvider extends ServiceProvider
      */
     private function addViewComposers(): void
     {
-        if (config('twill.enabled.users-management')) {
-            View::composer(['twill.*', 'twill::*'], CurrentUser::class);
-        }
+        View::composer(['twill.*', 'twill::*'], CurrentUser::class);
 
         if (config('twill.enabled.media-library')) {
             View::composer('twill::layouts.main', MediasUploaderConfig::class);

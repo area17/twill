@@ -2,25 +2,25 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\hasBorder;
-use A17\Twill\Services\Forms\Fields\Traits\hasMax;
-use A17\Twill\Services\Forms\Fields\Traits\hasMin;
-use A17\Twill\Services\Forms\Fields\Traits\hasOptions;
-use A17\Twill\Services\Forms\Fields\Traits\hasPlaceholder;
-use A17\Twill\Services\Forms\Fields\Traits\inlineable;
-use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
-use A17\Twill\Services\Forms\Fields\Traits\unpackable;
+use A17\Twill\Services\Forms\Fields\Traits\HasBorder;
+use A17\Twill\Services\Forms\Fields\Traits\HasMax;
+use A17\Twill\Services\Forms\Fields\Traits\HasMin;
+use A17\Twill\Services\Forms\Fields\Traits\HasOptions;
+use A17\Twill\Services\Forms\Fields\Traits\HasPlaceholder;
+use A17\Twill\Services\Forms\Fields\Traits\Inlineable;
+use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
+use A17\Twill\Services\Forms\Fields\Traits\Unpackable;
 
 class MultiSelect extends BaseFormField
 {
-    use isTranslatable;
-    use hasOptions;
-    use hasMax;
-    use hasMin;
-    use inlineable;
-    use unpackable;
-    use hasBorder;
-    use hasPlaceholder;
+    use IsTranslatable;
+    use HasOptions;
+    use HasMax;
+    use HasMin;
+    use Inlineable;
+    use Unpackable;
+    use HasBorder;
+    use HasPlaceholder;
 
     protected bool $searchable = false;
 

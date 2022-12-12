@@ -4,7 +4,6 @@ namespace A17\Twill\Models\Behaviors;
 
 trait HasPosition
 {
-
     protected static function bootHasPosition()
     {
         static::creating(function ($model) {

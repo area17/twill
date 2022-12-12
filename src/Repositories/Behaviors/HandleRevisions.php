@@ -13,7 +13,6 @@ use A17\Twill\Jobs\CleanupRevisions;
 
 trait HandleRevisions
 {
-
     /**
      * The Laravel queue name to be used for the revision limiting.
      *
@@ -101,8 +100,7 @@ trait HandleRevisions
         string $relationship,
         null|string|TwillModelContract $model = null,
         ?string $customHydratedRelationship = null
-    ): void
-    {
+    ): void {
         $fieldsHasElements = isset($fields[$relationship]) && !empty($fields[$relationship]);
         $relatedElements = $fieldsHasElements ? $fields[$relationship] : [];
 
@@ -122,17 +120,18 @@ trait HandleRevisions
         array $fields,
         string $relationship,
         string $positionAttribute = 'position',
-        null|TwillModelContract|string $model = null): void
-    {
+        null|TwillModelContract|string $model = null
+    ): void {
         $this->hydrateOrderedBelongsToMany($object, $fields, $relationship, $positionAttribute, $model);
     }
 
-    public function hydrateOrderedBelongsToMany(TwillModelContract $object,
+    public function hydrateOrderedBelongsToMany(
+        TwillModelContract $object,
         array $fields,
         string $relationship,
         string $positionAttribute = 'position',
-        null|TwillModelContract|string $model = null): void
-    {
+        null|TwillModelContract|string $model = null
+    ): void {
         $fieldsHasElements = isset($fields['browsers'][$relationship]) && !empty($fields['browsers'][$relationship]);
         $relatedElements = $fieldsHasElements ? $fields['browsers'][$relationship] : [];
 
@@ -189,8 +188,8 @@ trait HandleRevisions
         array $fields,
         string $relationship,
         string $model,
-        ?string $repeaterName = null): void
-    {
+        ?string $repeaterName = null
+    ): void {
         if (!$repeaterName) {
             $repeaterName = $relationship;
         }

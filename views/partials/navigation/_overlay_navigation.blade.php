@@ -11,7 +11,7 @@
                 @foreach ($linkGroups['right'] as $link)
                     {!! $link->render('mobile') !!}<br />
                 @endforeach
-                @if ($currentUser = auth()->user())
+                @if (($currentUser = auth()->user()) && config('twill.enabled.users-management'))
                     <a
                         href="{{ route('twill.users.index') }}">{{ twillTrans('twill::lang.nav.cms-users') }}</a><br />
                     <a

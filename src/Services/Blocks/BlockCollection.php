@@ -151,10 +151,12 @@ class BlockCollection extends Collection
      */
     public function detectCustomSources(Block $block)
     {
-        if ($block->source === Block::SOURCE_APP && $this->collect()
+        if (
+            $block->source === Block::SOURCE_APP && $this->collect()
                 ->where('fileName', $block->getFileName())
                 ->where('source', Block::SOURCE_TWILL)
-                ->isNotEmpty()) {
+                ->isNotEmpty()
+        ) {
             return Block::SOURCE_CUSTOM;
         }
 

@@ -168,8 +168,8 @@ trait HasSlug
             }
         } elseif (
             $this->slugNeedsSuffix($slugParams) &&
-            (($oldSlug = $this->getExistingSlug($slugParams)) !== null)
-            && ($slugParams['slug'] === $this->suffixSlugIfExisting($slugParams))
+            (($oldSlug = $this->getExistingSlug($slugParams)) !== null) &&
+            ($slugParams['slug'] === $this->suffixSlugIfExisting($slugParams))
         ) {
             if (!$oldSlug->active && ($slugParams['active'] ?? false)) {
                 $this->getSlugModelClass()::where('id', $oldSlug->id)->update(['active' => 1]);
@@ -793,14 +793,22 @@ trait HasSlug
      */
     public function urlSlugShorter(string $string): string
     {
-        return strtolower(trim(preg_replace('#[^0-9a-z]+#i',
-            '-',
-            html_entity_decode(preg_replace('#&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);#i',
-                '$1',
-                htmlentities($string, ENT_QUOTES, 'UTF-8')),
-                ENT_QUOTES,
-                'UTF-8')),
-            '-'));
+        return strtolower(trim(
+            preg_replace(
+                '#[^0-9a-z]+#i',
+                '-',
+                html_entity_decode(
+                    preg_replace(
+                        '#&([a-z]{1,2})(?:acute|cedil|circ|grave|lig|orn|ring|slash|th|tilde|uml);#i',
+                        '$1',
+                        htmlentities($string, ENT_QUOTES, 'UTF-8')
+                    ),
+                    ENT_QUOTES,
+                    'UTF-8'
+                )
+            ),
+            '-'
+        ));
     }
 
     /**
