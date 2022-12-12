@@ -1,6 +1,7 @@
 <?php
 
 use A17\Twill\Models\Permission;
+use A17\Twill\Repositories\ModuleRepository;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
@@ -15,7 +16,7 @@ if (! function_exists('getAllModules')) {
         });
 
         $moduleRepositories = $repositories->filter(function ($repository) {
-            return is_subclass_of($repository, \A17\Twill\Repositories\ModuleRepository::class);
+            return is_subclass_of($repository, ModuleRepository::class);
         });
 
         return $moduleRepositories->map(function ($repository) {
