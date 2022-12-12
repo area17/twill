@@ -176,5 +176,4 @@ class Browser extends BaseFormField
 
         return ['name' => $this->name ?? $this->moduleName, 'endpoints' => $this->endpoints];
     }
-
 }

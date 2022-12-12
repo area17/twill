@@ -40,9 +40,9 @@ class UserRequest extends Request
                 return [
                         'name' => 'required',
                         'email' => 'required|email|unique:' . config(
-                                'twill.users_table',
-                                'twill_users'
-                            ) . ',email,' . $this->route('user'),
+                            'twill.users_table',
+                            'twill_users'
+                        ) . ',email,' . $this->route('user'),
                         'verify-code' => function ($attribute, $value, $fail) {
                             $user = Auth::guard('twill_users')->user();
                             $with2faSettings = config('twill.enabled.users-2fa') && $user->id == $this->route('user');

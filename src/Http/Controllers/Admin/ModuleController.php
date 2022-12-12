@@ -990,11 +990,13 @@ abstract class ModuleController extends Controller
 
         $form = $this->getCreateForm();
 
-        if ($form->filter(function (BaseFormField $field) {
-            return $field instanceof BlockEditor ||
+        if (
+            $form->filter(function (BaseFormField $field) {
+                return $field instanceof BlockEditor ||
                 $field instanceof Repeater;
-        })
-            ->isNotEmpty()) {
+            })
+            ->isNotEmpty()
+        ) {
             throw new \Exception('Create forms do not support repeaters and blocks');
         }
 
@@ -1302,8 +1304,8 @@ abstract class ModuleController extends Controller
         }
 
         $previewView = $this->previewView ?? (Config::get('twill.frontend.views_path', 'site') . '.' . Str::singular(
-                $this->moduleName
-            ));
+            $this->moduleName
+        ));
 
         return View::exists($previewView) ? View::make(
             $previewView,
@@ -1369,9 +1371,11 @@ abstract class ModuleController extends Controller
                 'active' => 'bool|required',
             ]);
 
-            if ($this->repository->updateBasic($data['id'], [
+            if (
+                $this->repository->updateBasic($data['id'], [
                 'published' => !$data['active'],
-            ])) {
+                ])
+            ) {
                 activity()->performedOn(
                     $this->repository->getById($data['id'])
                 )->log(
@@ -1402,9 +1406,11 @@ abstract class ModuleController extends Controller
     public function bulkPublish(): JsonResponse
     {
         try {
-            if ($this->repository->updateBasic(explode(',', $this->request->get('ids')), [
+            if (
+                $this->repository->updateBasic(explode(',', $this->request->get('ids')), [
                 'published' => $this->request->get('publish'),
-            ])) {
+                ])
+            ) {
                 $this->fireEvent();
                 if ($this->request->get('publish')) {
                     return $this->respondWithSuccess(
@@ -2220,8 +2226,8 @@ abstract class ModuleController extends Controller
                     [$this->submoduleParentId]
                 ),
                 'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas(
-                        'blocks'
-                    ) && !$this->disableEditor,
+                    'blocks'
+                ) && !$this->disableEditor,
                 'blockPreviewUrl' => Route::has('twill.blocks.preview') ? URL::route('twill.blocks.preview') : '#',
                 'availableRepeaters' => $this->getRepeaterList()->toJson(),
                 'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
@@ -2463,7 +2469,7 @@ abstract class ModuleController extends Controller
             . (empty($this->getLocalizedPermalinkBase()) ? ($this->permalinkBase ?? $this->getModulePermalinkBase()) : '')
             . (((isset($this->permalinkBase) && empty($this->permalinkBase)) || !empty(
                 $this->getLocalizedPermalinkBase()
-                )) ? '' : '/');
+            )) ? '' : '/');
     }
 
     /**

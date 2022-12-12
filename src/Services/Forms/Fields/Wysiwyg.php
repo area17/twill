@@ -132,5 +132,4 @@ class Wysiwyg extends BaseFormField
 
         return $this;
     }
-
 }

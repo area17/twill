@@ -272,7 +272,8 @@ class ModuleMake extends Command
             $this->sortable = true;
         }
 
-        if ($this->hasOption('parentModel') &&
+        if (
+            $this->hasOption('parentModel') &&
             ($parent = $this->option('parentModel')) &&
             !Str::startsWith($singularModuleName, lcfirst($parent))
         ) {
@@ -638,14 +639,14 @@ PHP;
         }
 
         $activeModelTraitsString = empty($activeModelTraits) ? '' : 'use ' . rtrim(
-                implode(', ', $activeModelTraits),
-                ', '
-            ) . ';';
+            implode(', ', $activeModelTraits),
+            ', '
+        ) . ';';
 
         $activeModelTraitsImports = empty($activeModelTraits) ? '' : "use A17\Twill\Models\Behaviors\\" . implode(
-                ";\nuse A17\Twill\Models\Behaviors\\",
-                $activeModelTraits
-            ) . ';';
+            ";\nuse A17\Twill\Models\Behaviors\\",
+            $activeModelTraits
+        ) . ';';
 
         $activeModelImplements = $this->sortable ? 'implements Sortable' : '';
 
@@ -706,8 +707,8 @@ PHP;
         $repositoriesDir = $this->isCapsule ? $this->capsule->getRepositoriesDir() : 'Repositories';
 
         $modelClass = $this->isCapsule ? $this->capsule->getModel() : config(
-                'twill.namespace'
-            ) . "\Models\\{$modelName}";
+            'twill.namespace'
+        ) . "\Models\\{$modelName}";
 
         $this->makeTwillDirectory($repositoriesDir);
 
@@ -724,14 +725,14 @@ PHP;
         $activeRepositoryTraits = array_filter($activeRepositoryTraits);
 
         $activeRepositoryTraitsString = empty($activeRepositoryTraits) ? '' : 'use ' . (empty($activeRepositoryTraits) ? '' : rtrim(
-                    implode(', ', $activeRepositoryTraits),
-                    ', '
-                ) . ';');
+            implode(', ', $activeRepositoryTraits),
+            ', '
+        ) . ';');
 
         $activeRepositoryTraitsImports = empty($activeRepositoryTraits) ? '' : "use A17\Twill\Repositories\Behaviors\\" . implode(
-                ";\nuse A17\Twill\Repositories\Behaviors\\",
-                $activeRepositoryTraits
-            ) . ';';
+            ";\nuse A17\Twill\Repositories\Behaviors\\",
+            $activeRepositoryTraits
+        ) . ';';
 
         $stub = str_replace(
             [

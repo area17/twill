@@ -39,5 +39,4 @@ trait hasOnChange
 
         return $this;
     }
-
 }

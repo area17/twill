@@ -161,9 +161,9 @@ class AuthServiceProvider extends ServiceProvider
             return $this->authorize($user, function ($user) {
                 $editedUserObject = User::find(request('id'));
                 return $this->userHasRole(
-                        $user,
-                        [TwillPermissions::roles()::ADMIN]
-                    ) && (
+                    $user,
+                    [TwillPermissions::roles()::ADMIN]
+                ) && (
                         $editedUserObject && $user->id !== $editedUserObject->id &&
                         $editedUserObject->role !== self::SUPERADMIN
                     );

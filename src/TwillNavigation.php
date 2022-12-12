@@ -38,7 +38,8 @@ class TwillNavigation
         $this->secondaryRequestLinks[] = $link;
     }
 
-    public function getSecondaryRequestLinks(): array {
+    public function getSecondaryRequestLinks(): array
+    {
         return $this->secondaryRequestLinks;
     }
 

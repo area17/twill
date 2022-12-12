@@ -88,7 +88,8 @@ class Input extends BaseFormField
      *
      * @see https://alpinejs.dev/plugins/mask
      */
-    public function mask(string $mask): self {
+    public function mask(string $mask): self
+    {
         $this->mask = $mask;
 
         return $this;

@@ -137,5 +137,4 @@ class Medias extends BaseFormField
 
         return $this;
     }
-
 }

@@ -176,8 +176,8 @@ class NavigationLink extends Component
         }
 
         return 'twill.' . TwillRoutes::getModuleRouteFromRegistry(
-                Str::camel($routeMatcher)
-            ) . '.' . ($action ?? 'index');
+            Str::camel($routeMatcher)
+        ) . '.' . ($action ?? 'index');
     }
 
     protected function getRoute(): ?string

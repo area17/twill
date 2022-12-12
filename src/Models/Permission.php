@@ -184,7 +184,7 @@ class Permission extends BaseModel
      */
     public function scopeOfItem(Builder $query, BaseModel $item)
     {
-        $permissionableSubmodule = self::permissionableModules()->filter(function($module) use ($item){
+        $permissionableSubmodule = self::permissionableModules()->filter(function ($module) use ($item) {
             return strpos($module, '.') && explode('.', $module)[1] === getModuleNameByModel($item);
         })->first();
 
@@ -235,5 +235,4 @@ class Permission extends BaseModel
     {
         return getModuleNameByModel($this->permissionable_type);
     }
-
 }
