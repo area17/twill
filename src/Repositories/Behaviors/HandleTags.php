@@ -10,7 +10,7 @@ trait HandleTags
 {
     public function afterSaveHandleTags(TwillModelContract $object, array $fields): void
     {
-        if (is_array($fields['tags'])) {
+        if (isset($fields['tags']) && is_array($fields['tags'])) {
             $fields['tags'] = implode(',', $fields['tags']);
         }
 
