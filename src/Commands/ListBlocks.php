@@ -30,10 +30,8 @@ class ListBlocks extends Command
      */
     protected $description = 'List all available Twill blocks';
 
-    /**
-     * @return BlockCollection
-     */
-    public function getBlockCollection() {
+    public function getBlockCollection(): BlockCollection
+    {
         return TwillBlocks::getBlockCollection();
     }
 
