@@ -4,8 +4,8 @@ namespace A17\Twill\Helpers;
 
 use A17\Twill\Models\Behaviors\HasBlocks;
 use A17\Twill\Models\Block as A17Block;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Media;
-use A17\Twill\Models\Model;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\RenderData;
 use Exception;
@@ -201,7 +201,7 @@ class BlockRenderer
     }
 
     public static function fromEditor(
-        Model $model,
+        TwillModelContract $model,
         string $editorName,
     ): self {
         if (!isset(class_uses_recursive($model)[HasBlocks::class])) {
@@ -221,9 +221,9 @@ class BlockRenderer
         return $renderer;
     }
 
-    private static function getNestedBlocksForBlock(
+    public static function getNestedBlocksForBlock(
         A17Block $block,
-        Model $rootModel,
+        TwillModelContract $rootModel,
         string $editorName
     ): Block {
         // We do not know if the block is a repeater or block so we use the first match.

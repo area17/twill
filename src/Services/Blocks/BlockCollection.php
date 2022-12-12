@@ -54,7 +54,7 @@ class BlockCollection extends Collection
     {
         return $this->collect()
             ->filter(function ($block) use ($search, $sources) {
-                return $block->name == $search &&
+                return $block->name === $search &&
                     (blank($sources) ||
                         collect($sources)->contains($block->source));
             })
