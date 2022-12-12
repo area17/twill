@@ -358,7 +358,6 @@ class BlockMaker
 
                 return $file->getFilename() === $icon ? $file->getPathName() : null;
             }, null);
-
         }, null);
     }
 

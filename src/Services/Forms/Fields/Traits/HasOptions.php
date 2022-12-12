@@ -5,7 +5,7 @@ namespace A17\Twill\Services\Forms\Fields\Traits;
 use A17\Twill\Services\Forms\Option;
 use A17\Twill\Services\Forms\Options;
 
-trait hasOptions
+trait HasOptions
 {
     protected Options|null $options = null;
 

@@ -16,7 +16,11 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Role extends BaseModel implements Sortable, TwillModelContract
 {
-    use HasMedias, SoftDeletes, HasPermissions, IsTranslatable, HasPosition;
+    use HasMedias;
+    use SoftDeletes;
+    use HasPermissions;
+    use IsTranslatable;
+    use HasPosition;
 
     public $timestamps = true;
 

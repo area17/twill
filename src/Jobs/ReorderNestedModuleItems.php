@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Jobs;
 
-
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -15,6 +14,7 @@ class ReorderNestedModuleItems implements ShouldQueue
     use Dispatchable;
     use InteractsWithQueue;
     use Queueable;
+
     protected $modelClass;
 
     protected $ids;

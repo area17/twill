@@ -2,6 +2,7 @@
 
 use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Models\Permission;
+use A17\Twill\Repositories\ModuleRepository;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 
@@ -16,11 +17,11 @@ if (!function_exists('getAllModules')) {
         });
 
         $moduleRepositories = $repositories->filter(function ($repository) {
-            return is_subclass_of($repository, \A17\Twill\Repositories\ModuleRepository::class);
+            return is_subclass_of($repository, ModuleRepository::class);
         });
 
         return $moduleRepositories->map(function ($repository) {
-            $modelName = str_replace('Repository', '', str_replace('App\\Repositories\\', '', $repository));
+            $modelName = str_replace(array('App\\Repositories\\', 'Repository'), '', $repository);
 
             return Str::plural(lcfirst($modelName));
         });
@@ -88,7 +89,7 @@ if (!function_exists('updatePermissionOptions')) {
 
         // looking for group permissions belonging to the user
         foreach ($user->publishedGroups as $group) {
-            if (($permission = $group->permissions()->ofItem($item)->first()) != null) {
+            if (($permission = $group->permissions()->ofItem($item)->first()) !== null) {
                 if (isset($permissions[get_class($item)])) {
                     $scopes = Permission::available(Permission::SCOPE_ITEM);
                     $previous = array_search($permissions[get_class($item)], $scopes);
@@ -107,7 +108,7 @@ if (!function_exists('updatePermissionOptions')) {
         if (isset($permissions[get_class($item)])) {
             $globalPermission = str_replace('-module', '-item', $permissions[get_class($item)]);
             foreach ($options as &$option) {
-                if ($option['value'] != $globalPermission || $globalPermission == 'manage-item') {
+                if ($option['value'] !== $globalPermission || $globalPermission === 'manage-item') {
                     $option['disabled'] = true;
                 } else {
                     break;
@@ -143,10 +144,11 @@ if (!function_exists('isUserGroupPermissionModuleExists')) {
     function isUserGroupPermissionModuleExists($user, $moduleName, $permission)
     {
         foreach ($user->publishedGroups as $group) {
-            if ($moduleName == 'global') {
+            if ($moduleName === 'global') {
                 return $group->permissions()->global()->where('name', 'manage-modules')->exists();
-            } elseif (in_array($permission,
-                $group->permissions()->OfModuleName($moduleName)->get()->pluck('name')->all())) {
+            }
+
+            if (in_array($permission, $group->permissions()->OfModuleName($moduleName)->get()->pluck('name')->all())) {
                 return true;
             }
         }

@@ -187,8 +187,8 @@ class UserController extends ModuleController
     {
         $currentUser = $this->authFactory->guard('twill_users')->user();
         $with2faSettings = $this->config->get('twill.enabled.users-2fa') && $currentUser->id == $this->request->get(
-                'user'
-            );
+            'user'
+        );
 
         if ($with2faSettings) {
             $currentUser->generate2faSecretKey();

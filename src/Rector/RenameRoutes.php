@@ -18,7 +18,8 @@ class RenameRoutes extends LaravelAwareRectorRule
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change usages of admin. routes', [
+            'Change usages of admin. routes',
+            [
                 new CodeSample(
                     'route("admin.blogs");',
                     'route("twill.blogs");'

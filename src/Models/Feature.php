@@ -32,5 +32,4 @@ class Feature extends BaseModel
     {
         return config('twill.features_table', 'twill_features');
     }
-
 }

@@ -27,8 +27,7 @@ class Capsule
         public ?string $singular = null,
         public bool $enabled = true,
         public bool $packageCapsule = false
-    )
-    {
+    ) {
         $this->boot();
     }
 

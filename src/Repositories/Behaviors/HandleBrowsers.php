@@ -119,7 +119,8 @@ trait HandleBrowsers
             }
 
             $object->save();
-        } elseif ($object->$relationship() instanceof HasOne ||
+        } elseif (
+            $object->$relationship() instanceof HasOne ||
             $object->$relationship() instanceof HasMany
         ) {
             $this->updateBelongsToInverseBrowser($object, $relationship, $relatedElements);

@@ -9,5 +9,4 @@ use Illuminate\Support\Collection;
  */
 class Options extends Collection
 {
-
 }

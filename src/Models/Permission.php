@@ -16,26 +16,23 @@ class Permission extends BaseModel
     /**
      * Constant that represents a list of permissions that belongs to the global scope.
      *
-     * @var string
      * @see Permission::available($scope)
      */
-    const SCOPE_GLOBAL = 'global';
+    public const SCOPE_GLOBAL = 'global';
 
     /**
      * Constant that represents a list of permissions that belongs to the module scope.
      *
-     * @var string
      * @see Permission::available($scope)
      */
-    const SCOPE_MODULE = 'module';
+    public const SCOPE_MODULE = 'module';
 
     /**
      * Constant that represents a list of permissions that belongs to the module item scope.
      *
-     * @var string
      * @see Permission::available($scope)
      */
-    const SCOPE_ITEM = 'item';
+    public const SCOPE_ITEM = 'item';
 
     protected $fillable = [
         'name',
@@ -184,7 +181,7 @@ class Permission extends BaseModel
      */
     public function scopeOfItem(Builder $query, BaseModel $item)
     {
-        $permissionableSubmodule = self::permissionableModules()->filter(function($module) use ($item){
+        $permissionableSubmodule = self::permissionableModules()->filter(function ($module) use ($item) {
             return strpos($module, '.') && explode('.', $module)[1] === getModuleNameByModel($item);
         })->first();
 
@@ -235,5 +232,4 @@ class Permission extends BaseModel
     {
         return getModuleNameByModel($this->permissionable_type);
     }
-
 }

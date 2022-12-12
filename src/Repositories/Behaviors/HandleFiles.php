@@ -72,8 +72,10 @@ trait HandleFiles
                 }
 
                 $locale = $locale ?? config('app.locale');
-                if (in_array($role, $this->model->filesParams ?? [])
-                    || in_array($role, config('twill.block_editor.files', []))) {
+                if (
+                    in_array($role, $this->model->filesParams ?? [])
+                    || in_array($role, config('twill.block_editor.files', []))
+                ) {
                     Collection::make($filesForRole)->each(function ($file) use (&$files, $role, $locale) {
                         $files->push([
                             'id' => $file['id'],
