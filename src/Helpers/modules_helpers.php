@@ -33,7 +33,7 @@ if (!function_exists('getModelByModuleName')) {
         $model = config('twill.namespace') . '\\Models\\' . Str::studly(Str::singular($moduleName));
         if (!class_exists($model)) {
             try {
-                $model = TwillCapsules::getCapsuleForModule($moduleName)->getModel();
+                $model = \A17\Twill\Facades\TwillCapsules::getCapsuleForModule($moduleName)->getModel();
             } catch (NoCapsuleFoundException) {
                 throw new Exception($model . ' not existed');
             }
