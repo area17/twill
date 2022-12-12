@@ -11,6 +11,10 @@ trait HandleTags
      */
     public function afterSaveHandleTags($object, $fields)
     {
+        if (isset($fields['tags']) && is_array($fields['tags'])) {
+            $fields['tags'] = implode(',', $fields['tags']);
+        }
+
         if (preg_match("/\p{Han}+/u", $fields['tags'] ?? '')) {
             $object->setSlugGenerator(function ($slug) {
                 return mb_strtolower(
