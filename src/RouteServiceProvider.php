@@ -23,21 +23,16 @@ class RouteServiceProvider extends ServiceProvider
 
     /**
      * Bootstraps the package services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->registerRouteMiddlewares();
         $this->app->bind(TwillRoutes::class);
-        $this->registerMacros();
+        $this->registerRouteMacros();
         parent::boot();
     }
 
-    /**
-     * @return void
-     */
-    public function map(Router $router)
+    public function map(Router $router): void
     {
         \A17\Twill\Facades\TwillRoutes::registerRoutePatterns();
 
@@ -175,12 +170,7 @@ class RouteServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * Register Route middleware.
-     *
-     * @return void
-     */
-    private function registerRouteMiddlewares()
+    private function registerRouteMiddlewares(): void
     {
         Route::aliasMiddleware(
             'supportSubdomainRouting',
@@ -197,12 +187,7 @@ class RouteServiceProvider extends ServiceProvider
         Route::aliasMiddleware('permission', Permission::class);
     }
 
-    /**
-     * Registers Route macros.
-     *
-     * @return void
-     */
-    protected function registerMacros()
+    protected function registerRouteMacros(): void
     {
         Route::macro('module', function (
             string $slug,
