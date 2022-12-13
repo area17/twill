@@ -43,6 +43,8 @@
             </div>
           @endif
           {!! $content !!}
+
+          <x-twilldocs::contentFooter :currentSegment="$currentSegment" :url="$url" :githubLink="$githubLink" :tree="$tree" />
         </div>
 
       </div>

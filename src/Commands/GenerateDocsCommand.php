@@ -98,18 +98,22 @@ class GenerateDocsCommand extends Command
         $sorted = Arr::sort($unsorted, function (string $item) {
             $parts = explode('/', Str::after($item, '/'));
 
-            $index = '';
+            $index = 0;
 
+            $weight = 3;
             foreach ($parts as $part) {
                 if (Str::contains($part, '_')) {
-                    $index .= (int)Str::before($part, '_');
-                } else {
-                    $index .= 99;
-                }
-            }
+                    $number = (int)Str::before($part, '_');
 
-            for ($i = 0; $i < (5 - count($parts)); $i++) {
-                $index .= 99;
+                    $index += $number;
+                    if ($weight === 3) {
+                        $index *= 100;
+                    }
+                } else {
+                    $index += 1;
+                }
+
+                $weight--;
             }
 
             return $index;
@@ -176,6 +180,7 @@ class GenerateDocsCommand extends Command
                     'title' => $title,
                     'url' => $url,
                     'relativePath' => $this->withoutNumbers($relativePath),
+                    'githubLink' => 'https://github.com/area17/twill/tree/3.x/docs/' . $relativePath,
                     'content' => $documentString,
                     'toc' => $tocRendered,
                 ];
