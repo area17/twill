@@ -54,13 +54,18 @@
                             </div>
                             @if (!empty($item['items'] ?? []))
                                 <ul class="@if ($open) block @else hidden @endif ml-24 mt-12"
-                                    x-bind:class="{ 'hidden': !open }"
-                                    @foreach ($item['items'] ?? [] as $item) @php $active=$url===$item['url']; @endphp
-                                        <li class="relative mt-8">
-                                            <a class="block w-full pl-3.5 before:pointer-events-none text-black no-underline hover:text-purple ___inline_directive______________________________________2___" href="{{ $item['url'] ?? '#' }}">{{ $item['title'] ?? '' }}</a>
+                                    x-bind:class="{ 'hidden': !open }">
+                                    @foreach ($item['items'] ?? [] as $item)
+                                        @php $active = $url === $item['url']; @endphp
+                                        <li class="relative mt-8 @if($active) font-bold @endif">
+                                            <a
+                                              class="block w-full pl-3.5 before:pointer-events-none text-black no-underline hover:text-purple"
+                                              href="{{ $item['url'] ?? '#' }}">
+                                              {{ $item['title'] ?? '' }}
+                                            </a>
                                         </li>
                                     @endforeach
-                                    </ul>
+                                </ul>
                             @endif
                         </li>
                     @endforeach

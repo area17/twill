@@ -13,7 +13,7 @@
 </head>
 
 <body
-  class="overflow-x-hidden"
+  class="overflow-x-hidden page--{{ Str::slug(Str::replace(['/', '.html'], ['-', ''], $url)) }}"
   x-data="{ isMobile: (window.innerWidth < 1024) ? true : false, openNav: false }"
   x-bind:class="{ isMobile: isMobile ? true : false, openNav: openNav ? true : false }"
   x-on:resize.window="isMobile = (window.innerWidth < 1024) ? true : false"

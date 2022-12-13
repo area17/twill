@@ -42,7 +42,7 @@ class GenerateDocsCommand extends Command
      */
     public static ?string $currentFile = null;
 
-    public function handle()
+    public function handle(): void
     {
         config()->set('torchlight.token', env('TORCHLIGHT_API_TOKEN'));
         config()->set('torchlight.theme', 'nord');
@@ -189,6 +189,7 @@ class GenerateDocsCommand extends Command
                         );
                     }
                 } else {
+                    $treeData['parent'] = Str::beforeLast($url, '/') . '/index.html';
                     Arr::set(
                         $navTree,
                         implode('.items.', $structure) . '.items.' . Str::replace(
