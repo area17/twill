@@ -11,6 +11,7 @@ use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
 use A17\Twill\Http\Middleware\SupportSubdomainRouting;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
 use A17\Twill\Services\MediaLibrary\Glide;
+use A17\Twill\Facades\TwillRoutes;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->registerRouteMiddlewares();
         $this->app->bind(TwillRoutes::class);
+        $this->registerMacros();
         parent::boot();
     }
 
@@ -193,6 +195,32 @@ class RouteServiceProvider extends ServiceProvider
         );
         Route::aliasMiddleware('localization', Localization::class);
         Route::aliasMiddleware('permission', Permission::class);
+    }
+
+    /**
+     * Registers Route macros.
+     *
+     * @return void
+     */
+    protected function registerMacros()
+    {
+        Route::macro('module', function (
+            string $slug,
+            array $options = [],
+            array $resource_options = [],
+            bool $resource = true
+        ): void {
+            TwillRoutes::module($slug, $options, $resource_options, $resource);
+        });
+
+        Route::macro('twillSingleton', function (
+            $slug,
+            $options = [],
+            $resource_options = [],
+            $resource = true
+        ) {
+            TwillRoutes::singleton($slug, $options, $resource_options, $resource);
+        });
     }
 
     public static function shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)
