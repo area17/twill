@@ -54,7 +54,7 @@ class BlockCollection extends Collection
     {
         return $this->collect()
             ->filter(function ($block) use ($search, $sources) {
-                return $block->name == $search &&
+                return $block->name === $search &&
                     (blank($sources) ||
                         collect($sources)->contains($block->source));
             })
@@ -151,10 +151,12 @@ class BlockCollection extends Collection
      */
     public function detectCustomSources(Block $block)
     {
-        if ($block->source === Block::SOURCE_APP && $this->collect()
+        if (
+            $block->source === Block::SOURCE_APP && $this->collect()
                 ->where('fileName', $block->getFileName())
                 ->where('source', Block::SOURCE_TWILL)
-                ->isNotEmpty()) {
+                ->isNotEmpty()
+        ) {
             return Block::SOURCE_CUSTOM;
         }
 

@@ -45,7 +45,6 @@ class TwicPics implements ImageServiceInterface
     public function getUrlWithFocalCrop($id, array $cropParams, $width, $height, array $params = [])
     {
         return $this->getUrl($id, $this->getFocalPointCrop($cropParams, $width, $height) + $params);
-
     }
 
     /**

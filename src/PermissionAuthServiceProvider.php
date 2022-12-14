@@ -83,10 +83,12 @@ class PermissionAuthServiceProvider extends ServiceProvider
         });
 
         $this->define('edit-user-groups', function ($user) {
-            if (!TwillPermissions::levelIsOneOf([
+            if (
+                !TwillPermissions::levelIsOneOf([
                 PermissionLevel::LEVEL_ROLE_GROUP,
                 PermissionLevel::LEVEL_ROLE_GROUP_ITEM,
-            ])) {
+                ])
+            ) {
                 return false;
             }
 

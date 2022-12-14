@@ -53,7 +53,7 @@ trait HandlePermissions
 
         // Group-Item permissions
         $userGroups = $user->groups()->where('is_everyone_group', false)->get();
-        foreach($userGroups as $group) {
+        foreach ($userGroups as $group) {
             if ($permission = $group->permissions()->ofItem($item)->first()) {
                 $allPermissionNames->push($permission->name);
             }
@@ -75,7 +75,9 @@ trait HandlePermissions
 
         $itemScopes = collect(Permission::available(Permission::SCOPE_ITEM))
             ->reverse()
-            ->mapWithKeys(function ($scope) { return [$scope => 0]; })
+            ->mapWithKeys(function ($scope) {
+                return [$scope => 0];
+            })
             ->toArray();
 
         foreach ($permissionNames as $name) {

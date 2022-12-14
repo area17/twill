@@ -74,7 +74,7 @@ class SyncLang extends Command
                 $translations = $this->files->getRequire($directory . '/lang.php');
                 foreach (Arr::dot($translations) as $key => $translation) {
                     $rowIndex = array_search($key, Arr::pluck(array_slice($csvArray, 2), 0));
-                    if ($rowIndex === FALSE) {
+                    if ($rowIndex === false) {
                         $newRow = array_fill(0, count($csvArray[0]), "");
                         $newRow[0] = $key;
                         $newRow[$columnIndex] = $translation;

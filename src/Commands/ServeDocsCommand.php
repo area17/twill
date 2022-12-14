@@ -48,7 +48,7 @@ class ServeDocsCommand extends ServeCommand
     protected function serverCommand()
     {
         return [
-            (new PhpExecutableFinder)->find(false),
+            (new PhpExecutableFinder())->find(false),
             '-S',
             $this->host() . ':' . $this->port(),
             __DIR__ . '/../../docs/generator/server.php',

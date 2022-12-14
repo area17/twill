@@ -1,78 +1,33 @@
+@import './css/markdown.css';
+@import './css/card.css';
+@import './css/link.css';
+@import './css/code.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 [x-cloak] {
-    display: none !important;
+  display: none !important;
 }
 
-/* Hide the default markers, as we provide our own */
-.torchlight details > summary::marker,
-.torchlight details > summary::-webkit-details-marker {
-    display: none;
+.isMobile .sidebar {
+  left: -100%;
+  position: fixed;
+  top: 0;
+  margin-left: 0 !important;
+  z-index: 3;
+  padding-top: 40px;
+  padding-left: 40px;
+  min-width: 300px;
+  width: 40%;
+  padding-bottom: 60px;
 }
 
-.torchlight details .summary-caret::after {
-    pointer-events: none;
+.isMobile .sidebar > ul {
+  padding-bottom: 60px;
 }
 
-/* Add spaces to keep everything aligned */
-.torchlight .summary-caret-empty::after,
-.torchlight details .summary-caret-middle::after,
-.torchlight details .summary-caret-end::after {
-    content: " ";
+.isMobile.openNav .sidebar {
+  left: -10px;
 }
-
-/* Show a minus sign when the block is open. */
-.torchlight details[open] .summary-caret-start::after {
-    content: "-";
-}
-
-/* And a plus sign when the block is closed. */
-.torchlight details:not([open]) .summary-caret-start::after {
-    content: "+";
-}
-
-/* Hide the [...] indicator when open. */
-.torchlight details[open] .summary-hide-when-open {
-    display: none;
-}
-
-/* Show the [...] indicator when closed. */
-.torchlight details:not([open]) .summary-hide-when-open {
-    display: initial;
-}
-
-pre {
-    background-color: #2e3440!important;
-    @apply my-4 rounded overflow-x-auto;
-}
-
-pre code.torchlight {
-    @apply block py-4 min-w-max;
-}
-
-pre code.torchlight .line {
-    @apply px-4;
-}
-
-pre code.torchlight .line-number,
-pre code.torchlight .summary-caret {
-    @apply mr-4;
-}
-
-.torchlight.has-focus-lines .line:not(.line-focus) {
-    transition: filter 0.35s, opacity 0.35s;
-    filter: blur(.095rem);
-    opacity: .65;
-}
-
-.torchlight.has-focus-lines:hover .line:not(.line-focus) {
-    filter: blur(0px);
-    opacity: 1;
-}
-
-.torchlight summary:focus {
-    outline: none;
-}
-

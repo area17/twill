@@ -6,7 +6,7 @@ use Exception;
 
 class Glide
 {
-    function makeCloudSource($source = null)
+    public function makeCloudSource($source = null)
     {
         if (blank($source)) {
             throw new Exception(
@@ -14,11 +14,11 @@ class Glide
             );
         }
 
-        if ($source == 's3' || $source == 'aws') {
+        if ($source === 's3' || $source === 'aws') {
             return app(Aws::class)->filesystemFactory($source);
         }
 
-        if ($source == 'azure') {
+        if ($source === 'azure') {
             return app(Azure::class)->filesystemFactory($source);
         }
 

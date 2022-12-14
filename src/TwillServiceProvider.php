@@ -5,6 +5,7 @@ namespace A17\Twill;
 use A17\Twill\Commands\BlockMake;
 use A17\Twill\Commands\Build;
 use A17\Twill\Commands\CapsuleInstall;
+use A17\Twill\Commands\CreateExampleCommand;
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\Dev;
 use A17\Twill\Commands\GenerateBlocks;
@@ -351,6 +352,7 @@ class TwillServiceProvider extends ServiceProvider
             SyncLang::class,
             CapsuleInstall::class,
             UpdateExampleCommand::class,
+            CreateExampleCommand::class,
             SetupDevTools::class,
             GeneratePackageCommand::class,
             TwillFlushManifest::class,
@@ -552,9 +554,7 @@ class TwillServiceProvider extends ServiceProvider
      */
     private function addViewComposers(): void
     {
-        if (config('twill.enabled.users-management')) {
-            View::composer(['twill.*', 'twill::*'], CurrentUser::class);
-        }
+        View::composer(['twill.*', 'twill::*'], CurrentUser::class);
 
         if (config('twill.enabled.media-library')) {
             View::composer('twill::layouts.main', MediasUploaderConfig::class);

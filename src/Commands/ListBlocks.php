@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Support\Str;
@@ -29,11 +30,9 @@ class ListBlocks extends Command
      */
     protected $description = 'List all available Twill blocks';
 
-    /**
-     * @return BlockCollection
-     */
-    public function getBlockCollection() {
-        return app(BlockCollection::class);
+    public function getBlockCollection(): BlockCollection
+    {
+        return TwillBlocks::getBlockCollection();
     }
 
     protected function displayMissingDirectories(): void

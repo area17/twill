@@ -206,8 +206,12 @@ class IssueController extends BaseModuleController
 Add both modules to `routes/twill.php`:
 
 ```php
-Route::module('issues');
-Route::module('issues.articles');
+<?php
+
+use A17\Twill\Facades\TwillRoutes;
+
+TwillRoutes::module('issues');
+TwillRoutes::module('issues.articles');
 ```
 
 Add the parent module to `AppServiceProvider.php`:

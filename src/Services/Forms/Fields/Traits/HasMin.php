@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields\Traits;
 
-trait hasMin
+trait HasMin
 {
     protected ?int $min = null;
 

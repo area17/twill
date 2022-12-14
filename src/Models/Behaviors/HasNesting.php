@@ -39,7 +39,9 @@ trait HasNesting
     public function getAncestorsSlug($locale = null)
     {
         return collect($this->ancestors->sortByDesc('position') ?? [])
-            ->map(function ($i) use ($locale) { return $i->getSlug($locale); })
+            ->map(function ($i) use ($locale) {
+                return $i->getSlug($locale);
+            })
             ->implode('/');
     }
 

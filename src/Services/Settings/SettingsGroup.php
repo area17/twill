@@ -65,7 +65,7 @@ class SettingsGroup
     {
         return collect($this->getSettingsModel()->getFormBlocks())->first(function (string $name) use ($sectionName) {
                 return $name === $sectionName;
-            }) !== null;
+        }) !== null;
     }
 
     public function getSettingsModel(): AppSetting

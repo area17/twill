@@ -89,14 +89,14 @@ class NavigationLink extends Component
 
     public function doNotAddSelfAsFirstChild(bool $doNotAddSelfAsFirstChild = true): self
     {
-        $this->selfAsFirstChild = !$doNotAddSelfAsFirstChild;
+        $this->selfAsFirstChild = ! $doNotAddSelfAsFirstChild;
 
         return $this;
     }
 
     public function forModule(string $module, ?string $action = null): self
     {
-        if (!isset($this->title)) {
+        if (! isset($this->title)) {
             $this->title(Str::title($module));
         }
 
@@ -110,7 +110,7 @@ class NavigationLink extends Component
 
     public function forSingleton(string $module): self
     {
-        if (!isset($this->title)) {
+        if (! isset($this->title)) {
             $this->title(Str::title($module));
         }
 
@@ -176,8 +176,8 @@ class NavigationLink extends Component
         }
 
         return 'twill.' . TwillRoutes::getModuleRouteFromRegistry(
-                Str::camel($routeMatcher)
-            ) . '.' . ($action ?? 'index');
+            Str::camel($routeMatcher)
+        ) . '.' . ($action ?? 'index');
     }
 
     protected function getRoute(): ?string
@@ -216,6 +216,16 @@ class NavigationLink extends Component
 
         // Check if it maybe is a edit route of a model.
         if ($this->isModuleRoute) {
+            // Attempt to handle nested items.
+            $parent = null;
+            foreach (array_keys($currentRoute->parameters()) as $singularModuleName) {
+                $moduleName = Str::plural($singularModuleName);
+                if ($moduleName === $this->module || ($parent . $moduleName) === $this->module) {
+                    return true;
+                }
+                $parent .= $moduleName;
+            }
+
             $baseRoute = Str::beforeLast($currentRoute->getName(), '.');
             $linkRoute = Str::beforeLast($this->getRoute(), '.');
 

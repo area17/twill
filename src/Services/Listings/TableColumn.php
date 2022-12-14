@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 
 abstract class TableColumn
 {
-
     final protected function __construct(
         protected ?string $key = null,
         protected ?string $field = null,
@@ -251,5 +250,4 @@ abstract class TableColumn
 
         return $model->{$this->field} ?? '';
     }
-
 }

@@ -11,6 +11,7 @@ use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
 use A17\Twill\Http\Middleware\SupportSubdomainRouting;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
 use A17\Twill\Services\MediaLibrary\Glide;
+use A17\Twill\Facades\TwillRoutes;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
@@ -22,21 +23,16 @@ class RouteServiceProvider extends ServiceProvider
 
     /**
      * Bootstraps the package services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
-        $this->registerMacros();
         $this->registerRouteMiddlewares();
         $this->app->bind(TwillRoutes::class);
+        $this->registerRouteMacros();
         parent::boot();
     }
 
-    /**
-     * @return void
-     */
-    public function map(Router $router)
+    public function map(Router $router): void
     {
         \A17\Twill\Facades\TwillRoutes::registerRoutePatterns();
 
@@ -174,12 +170,7 @@ class RouteServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * Register Route middleware.
-     *
-     * @return void
-     */
-    private function registerRouteMiddlewares()
+    private function registerRouteMiddlewares(): void
     {
         Route::aliasMiddleware(
             'supportSubdomainRouting',
@@ -196,79 +187,24 @@ class RouteServiceProvider extends ServiceProvider
         Route::aliasMiddleware('permission', Permission::class);
     }
 
-    /**
-     * Registers Route macros.
-     *
-     * @return void
-     */
-    protected function registerMacros()
+    protected function registerRouteMacros(): void
     {
-        Route::macro('moduleShowWithPreview', function (
-            $moduleName,
-            $routePrefix = null,
-            $controllerName = null
-        ) {
-            if ($routePrefix === null) {
-                $routePrefix = $moduleName;
-            }
-
-            if ($controllerName === null) {
-                $controllerName = ucfirst(Str::plural($moduleName));
-            }
-
-            $routePrefix = empty($routePrefix)
-                ? '/'
-                : (Str::startsWith($routePrefix, '/')
-                    ? $routePrefix
-                    : '/' . $routePrefix);
-            $routePrefix = Str::endsWith($routePrefix, '/')
-                ? $routePrefix
-                : $routePrefix . '/';
-
-            Route::name($moduleName . '.show')->get(
-                $routePrefix . '{slug}',
-                $controllerName . 'Controller@show'
-            );
-            Route::name($moduleName . '.preview')
-                ->get(
-                    '/admin-preview' . $routePrefix . '{slug}',
-                    $controllerName . 'Controller@show'
-                )
-                ->middleware(['web', 'twill_auth:twill_users', 'can:list']);
-        });
-
         Route::macro('module', function (
-            $slug,
-            $options = [],
-            $resource_options = [],
-            $resource = true
-        ) {
-            \A17\Twill\Facades\TwillRoutes::buildModuleRoutes($slug, $options, $resource_options, $resource);
+            string $slug,
+            array $options = [],
+            array $resource_options = [],
+            bool $resource = true
+        ): void {
+            TwillRoutes::module($slug, $options, $resource_options, $resource);
         });
 
-        Route::macro('singleton', function (
+        Route::macro('twillSingleton', function (
             $slug,
             $options = [],
             $resource_options = [],
             $resource = true
         ) {
-            $pluralSlug = Str::plural($slug);
-            $modelName = Str::studly($slug);
-
-            Route::module($pluralSlug, $options, $resource_options, $resource);
-
-            $lastRouteGroupName = RouteServiceProvider::getLastRouteGroupName();
-
-            $groupPrefix = RouteServiceProvider::getGroupPrefix();
-
-            // Check if name will be a duplicate, and prevent if needed/allowed
-            if (RouteServiceProvider::shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)) {
-                $singletonRouteName = "{$groupPrefix}.{$slug}";
-            } else {
-                $singletonRouteName = $slug;
-            }
-
-            Route::get($slug, $modelName . 'Controller@editSingleton')->name($singletonRouteName);
+            TwillRoutes::singleton($slug, $options, $resource_options, $resource);
         });
     }
 

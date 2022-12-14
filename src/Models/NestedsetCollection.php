@@ -36,8 +36,7 @@ class NestedsetCollection extends BaseNestedsetCollection
         foreach ($this->items as $node) {
             if ($node->getParentId() == $root) {
                 $items[] = $node;
-            }
-            elseif (!in_array($node->getParentId(), $ids)) {
+            } elseif (!in_array($node->getParentId(), $ids)) {
                 $items[] = $node;
             }
         }
