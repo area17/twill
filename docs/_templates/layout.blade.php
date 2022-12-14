@@ -23,39 +23,44 @@
     }"
 >
 @php $currentSegment = \Illuminate\Support\Str::before(ltrim($url, '/'), '/'); @endphp
-<div class="min-h-screen">
+<div class="min-h-screen-minus-header">
   <x-twilldocs::header/>
 
   <div class="container">
-    <div class="cols-container">
+    <div class="cols-container ">
       <x-twilldocs::sidebar :tree="$tree" :currentSegment="$currentSegment" :url="$url"/>
-      <div class="content w-full lg:w-9-cols mt-68">
-        <div class="markdown lg:w-7-cols mx-auto">
+      <div class="content w-full lg:w-9-cols xxl:w-8-cols mt-68">
+        <div class="markdown lg:w-7-cols xxl:w-6-cols mx-auto">
           @if (isset($tree[$currentSegment]))
             <div class="print:!hidden" x-transition x-bind:class="{ hidden: !open }"></div>
           @endif
 
           <h1>{{$title}}</h1>
           @if ($toc)
-            <div class="prose">
+            <div class="chapters-nav xxl:hidden">
               {!! $toc !!}
-              <hr/>
             </div>
           @endif
           {!! $content !!}
 
           <x-twilldocs::contentFooter :currentSegment="$currentSegment" :url="$url" :githubLink="$githubLink" :tree="$tree" />
         </div>
-
       </div>
+
+      @if ($toc)
+            <div class="chapters-nav-fixed hidden xxl:block xxl:w-2-cols top-[80px] sticky h-screen-minus-header overflow-auto">
+                <h2 id="quick-reference" class="sr-only">Quick chapter reference</h2>
+                {!! $toc !!}
+            </div>
+          @endif
     </div>
   </div>
 </div>
 
-<x-twilldocs::footer/>
+<x-twilldocs::devTools />
 
-{{-- DEV MODE grid --}}
-{{-- <x-twilldocs::devTools /> --}}
+<script src="/js/nav.js"></script>
+
 </body>
 
 </html>

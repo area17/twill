@@ -42,16 +42,27 @@ foreach($tree[$currentSegment]['items'] ?? [] as $item) {
 }
 @endphp
 
-<hr class="py-4" />
+<div class="mt-68">
 
-<div class="flex py-4">
-@if ($prev)
-        <a href="{{$prev['url']}}">< {{$prev['title']}}</a>
-@endif
-@if ($next)
-        <a class="ml-auto" href="{{$next['url']}}">{{$next['title']}} ></a>
-@endif
+    <a
+        class="text-purple no-underline hover:underline"
+        href="{{$githubLink}}"
+        ref="noopener noreferrer"
+        target="_blank">
+        Edit this page on Github
+    </a>
+
+    <div class="flex border-t-[1px] border-grey mt-32">
+        @if ($prev)
+            <a class="no-underline hover:text-purple mt-15" href="{{$prev['url']}}">
+                ← {{$prev['title']}}
+            </a>
+        @endif
+        @if ($next)
+            <a class="ml-auto no-underline hover:text-purple mt-15" href="{{$next['url']}}">
+                {{$next['title']}} →
+            </a>
+        @endif
+    </div>
+
 </div>
-
-<a href="{{$githubLink}}" target="_blank">Edit on Github</a>
-

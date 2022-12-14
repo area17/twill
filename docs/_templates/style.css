@@ -2,6 +2,7 @@
 @import './css/card.css';
 @import './css/link.css';
 @import './css/code.css';
+@import './css/chaptersNav.css';
 
 @tailwind base;
 @tailwind components;
@@ -16,12 +17,14 @@
   position: fixed;
   top: 0;
   margin-left: 0 !important;
-  z-index: 3;
-  padding-top: 40px;
+  z-index: 11;
+  height: 100%;
+  padding-top: 30px;
   padding-left: 40px;
   min-width: 300px;
   width: 40%;
   padding-bottom: 60px;
+  transition: all 0.4s;
 }
 
 .isMobile .sidebar > ul {
@@ -30,4 +33,13 @@
 
 .isMobile.openNav .sidebar {
   left: -10px;
+}
+
+.page--index .sidebar {
+  display: none;
+}
+
+.page--index .content {
+  margin: 0 auto;
+  margin-top: 68px;
 }

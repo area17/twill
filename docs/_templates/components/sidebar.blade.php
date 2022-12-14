@@ -1,5 +1,5 @@
 <nav
-    class="sidebar w-3-cols bg-white sticky top-0 h-screen pr-32 border-r-[1px] border-grey overflow-x-hidden overflow-y-auto"
+    class="sidebar w-3-cols xxl:w-2-cols bg-white sticky top-[80px] h-screen-minus-header pr-32 border-r-[1px] border-grey overflow-x-hidden overflow-y-auto"
     x-bind:inert="if (isMobile) {
     if (openNav) {
         return false
@@ -57,9 +57,9 @@
                                     x-bind:class="{ 'hidden': !open }">
                                     @foreach ($item['items'] ?? [] as $item)
                                         @php $active = $url === $item['url']; @endphp
-                                        <li class="relative mt-8 @if($active) font-bold @endif">
+                                        <li class="relative mt-8">
                                             <a
-                                              class="block w-full pl-3.5 before:pointer-events-none text-black no-underline hover:text-purple"
+                                              class="block w-full pl-3.5 before:pointer-events-none text-black no-underline hover:text-purple @if($active) font-medium text-purple @endif"
                                               href="{{ $item['url'] ?? '#' }}">
                                               {{ $item['title'] ?? '' }}
                                             </a>

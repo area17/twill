@@ -162,6 +162,15 @@
           "font-smoothing": "true"
         }
       },
+      "body-2": {
+        "xs": {
+          "font-family": "var(--sans)",
+          "font-weight": "400",
+          "font-size": "14",
+          "line-height": "1",
+          "font-smoothing": "true"
+        }
+      },
       "doc-title": {
         "xs": {
           "font-family": "var(--sans)",
