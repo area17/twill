@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Services\Forms;
 
-use A17\Twill\Models\Contracts\TwillModelContract;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\View\View;
 
@@ -10,8 +9,8 @@ class Form extends Collection
 {
     public ?Fieldsets $fieldsets = null;
 
-    private TwillModelContract $item;
     private ?Form $sideForm = null;
+    private bool $isCreate = false;
 
     public function withFieldSets(Fieldsets $fieldsets): self
     {
@@ -31,10 +30,11 @@ class Form extends Collection
         return $this;
     }
 
-    public function toFrontend(TwillModelContract $item, ?Form $sideFieldSets = null): self
+    public function toFrontend(?Form $sideFieldSets = null, bool $isCreate = false): self
     {
-        $this->item = $item;
         $this->sideForm = $sideFieldSets;
+
+        $this->isCreate = $isCreate;
 
         return $this;
     }
@@ -49,7 +49,7 @@ class Form extends Collection
 
     public function formToRenderArray(): array
     {
-        $viewWithData = [];
+        $viewWithData = ['isCreate' => $this->isCreate];
 
         if ($this->fieldsets) {
             $viewWithData['renderFieldsets'] = $this->fieldsets;

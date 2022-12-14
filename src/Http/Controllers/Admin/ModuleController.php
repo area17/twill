@@ -1014,7 +1014,7 @@ abstract class ModuleController extends Controller
         }
 
         return View::make($view, $indexData + ['repository' => $this->repository])
-            ->with('renderFields', $form);
+            ->with(['formBuilder' => $form->toFrontend(isCreate: true)]);
     }
 
     public function getCreateForm(): Form
@@ -1145,7 +1145,7 @@ abstract class ModuleController extends Controller
         }
 
         return View::make($view, $this->form($id))->with(
-            ['formBuilder' => $controllerForm->toFrontend($item, $this->getSideFieldsets($item))]
+            ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($item))]
         );
     }
 
@@ -1357,9 +1357,8 @@ abstract class ModuleController extends Controller
 
         View::share('form', $this->form($id, $item));
 
-        return View::make($view, $this->form($id, $item))->with(
-            'renderFields',
-            $controllerForm
+        return View::make($view, $this->form($id))->with(
+            ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($item))]
         );
     }
 
