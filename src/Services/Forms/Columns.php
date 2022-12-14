@@ -52,5 +52,4 @@ class Columns
             'rightFields' => $this->right,
         ]);
     }
-
 }
