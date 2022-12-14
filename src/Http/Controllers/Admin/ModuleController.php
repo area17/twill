@@ -1144,28 +1144,9 @@ abstract class ModuleController extends Controller
             }
         }
 
-        $viewWithData = [];
-
-        if ($controllerForm instanceof Fieldsets) {
-            $viewWithData['renderFieldsets'] = $controllerForm;
-            $viewWithData['disableContentFieldset'] = true;
-            $viewWithData['additionalFieldsets'] = $controllerForm->map(fn ($fieldset) => [
-                'fieldset' => $fieldset->id,
-                'label' => $fieldset->title,
-            ])->toArray();
-
-            $controllerSideFieldsets = $this->getSideFieldsets($item);
-
-            if ($controllerSideFieldsets instanceof Fieldsets) {
-                $viewWithData['renderSideFieldsets'] = $controllerSideFieldsets;
-            } else {
-                $viewWithData['renderSideFieldset'] = $controllerSideFieldsets;
-            }
-        } else {
-            $viewWithData['renderFields'] = $controllerForm;
-        }
-
-        return View::make($view, $this->form($id))->with($viewWithData);
+        return View::make($view, $this->form($id))->with(
+            ['formBuilder' => $controllerForm->toFrontend($item, $this->getSideFieldsets($item))]
+        );
     }
 
     /**
@@ -2697,12 +2678,12 @@ abstract class ModuleController extends Controller
         return twillTrans(Arr::has($this->labels, $key) ? Arr::get($this->labels, $key) : $key, $replace);
     }
 
-    public function getForm(TwillModelContract $model): Form | Fieldsets
+    public function getForm(TwillModelContract $model): Form
     {
         return new Form();
     }
 
-    public function getSideFieldsets(TwillModelContract $model): Form | Fieldsets
+    public function getSideFieldsets(TwillModelContract $model): Form
     {
         return new Form();
     }
