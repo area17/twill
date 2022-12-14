@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\SettingRepository;
+use A17\Twill\Services\Forms\Form;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -67,6 +68,7 @@ class SettingController extends Controller
             'customTitle' => ucfirst($section) . ' settings',
             'section' => $section,
             'form_fields' => $this->settings->getFormFieldsForSection($section),
+            'formBuilder' => Form::make(),
             'saveUrl' => $this->urlGenerator->route('twill.settings.update', $section),
             'translate' => true,
         ])
