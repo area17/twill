@@ -41,6 +41,10 @@ class Form extends Collection
 
     public function getAdditionalFieldsets(): array
     {
+        if (!$this->fieldsets) {
+            return [];
+        }
+
         return $this->fieldsets->map(fn($fieldset): array => [
             'fieldset' => $fieldset->id,
             'label' => $fieldset->title,
