@@ -15,7 +15,8 @@ class Fieldset
     ) {
     }
 
-    public static function make(): self {
+    public static function make(): self
+    {
         return new self();
     }
 

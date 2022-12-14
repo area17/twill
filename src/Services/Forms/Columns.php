@@ -15,7 +15,8 @@ class Columns
     ) {
     }
 
-    public static function make(): self {
+    public static function make(): self
+    {
         return new self();
     }
 
@@ -40,7 +41,8 @@ class Columns
         return $this;
     }
 
-    public function render(): View {
+    public function render(): View
+    {
         return ViewFacade::make('twill::partials.form.utils._columns', [
             'left' => null,
             'middle' => null,

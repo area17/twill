@@ -6,5 +6,4 @@ use Illuminate\Support\Collection;
 
 class Fieldsets extends Collection
 {
-
 }

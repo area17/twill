@@ -12,7 +12,8 @@ class BladePartial
     ) {
     }
 
-    public static function make(): self {
+    public static function make(): self
+    {
         return new self();
     }
 
@@ -23,7 +24,8 @@ class BladePartial
         return $this;
     }
 
-    public function render(): ?View {
+    public function render(): ?View
+    {
         if (! $this->view) {
             return null;
         }

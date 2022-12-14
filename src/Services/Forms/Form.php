@@ -21,7 +21,7 @@ class Form extends Collection
 
     public function addFieldset(Fieldset $fieldset): self
     {
-        if (!$this->fieldsets) {
+        if (! $this->fieldsets) {
             $this->fieldsets = Fieldsets::make();
         }
 
@@ -85,5 +85,4 @@ class Form extends Collection
     {
         return view('twill::partials.form.renderer.base_form', $this->sideForm->formToRenderArray());
     }
-
 }
