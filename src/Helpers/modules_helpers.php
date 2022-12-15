@@ -36,7 +36,7 @@ if (!function_exists('getModelByModuleName')) {
             try {
                 $model = \A17\Twill\Facades\TwillCapsules::getCapsuleForModule($moduleName)->getModel();
             } catch (NoCapsuleFoundException) {
-                throw new Exception($model . ' not existed');
+                throw new Exception($model . ' not found');
             }
         }
 
@@ -68,7 +68,11 @@ if (!function_exists('getModelRepository')) {
         $repository = config('twill.namespace') . '\\Repositories\\' . ucfirst($model) . 'Repository';
 
         if (!class_exists($repository)) {
-            throw new Exception($repository . ' not found');
+            try {
+                $repository = \A17\Twill\Facades\TwillCapsules::getCapsuleForModel($model)->getRepositoryClass();
+            } catch (NoCapsuleFoundException) {
+                throw new Exception($repository . ' not found');
+            }
         }
 
         return app($repository);

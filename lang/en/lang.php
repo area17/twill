@@ -135,6 +135,7 @@ return [
         'version' => 'Version',
     ],
     'form' => [
+        'options' => 'Options',
         'content' => 'Content',
         'dialogs' => [
             'delete' => [

@@ -15,9 +15,9 @@ There are benefits and drawbacks to using the form builder or the form blade fil
 
 ## Using the form builder
 
-To create a form from code you can add the `getForm` or `getCreateForm` method to your controller.
+To create a form from code you can add the `getForm`, `getCreateForm` or `getSideFieldsets` method to your controller.
 
-The `getForm` and `getCreateForm` method should return a `Form` object as illustrated below:
+The `getForm`, `getCreateForm`, `getSideFieldsets` method should return a `Form` object as illustrated below:
 
 ```php
 <?php
@@ -39,6 +39,11 @@ class PageController extends ModuleController
     public function getCreateForm(): Form
     {
         return Form::make();
+    }
+    
+    public function getSideFieldsets(TwillModelContract $model): Form
+    {
+        return new Form();
     }
 }
 ```
@@ -76,4 +81,63 @@ If you want translated field labels you should use:
 Input::make()
     ->name('description')
     ->label(twillTrans('Description'))
+```
+
+## Fieldsets
+
+It is also possible to add fieldsets to your form.
+
+There are 2 `Form` methods that you can do this with:
+
+**withFieldSets**
+
+```php
+$form->withFieldSets([
+    Fieldset::make()->title('Fieldset 1')->id('fieldset')->fields([
+      // Fields come here.
+    ]),
+    Fieldset::make()->title('Fieldset 2')->id('fieldset')->fields([
+      // Fields come here.
+    ])
+]);
+```
+
+Or if you need more control:
+
+**addFieldset**
+
+```php
+$form->addFieldset(
+    Fieldset::make()->title('Fieldset!')->id('fieldset')->fields([
+      // Fields come here.
+    ])
+);
+```
+
+## Other utilities
+
+### Columns field
+
+Using the `A17\Twill\Services\Forms\Columns` you can add a left/right split:
+
+```php
+Columns::make()
+    ->left([
+        Input::make()
+            ->name('description')
+            ->translatable(),
+    ])
+    ->right([
+        Input::make()
+            ->name('subtitle')
+            ->translatable(),
+    ]),
+```
+
+### Blade partial
+
+You can also inject a blade file (which can hold a form in itself) as a field using `A17\Twill\Services\Forms\BladePartial`:
+
+```php
+BladePartial::make()->view('twill.fields.field-under-condition')
 ```

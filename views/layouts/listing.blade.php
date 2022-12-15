@@ -154,10 +154,8 @@
                     :control-publication="{{ json_encode($controlLanguagesPublication) }}"
                 ></a17-langmanager>
 
-                @if (isset($renderFields) && $renderFields->isNotEmpty())
-                    @foreach($renderFields as $field)
-                        {!! $field->render() !!}
-                    @endforeach
+                @if ($formBuilder->hasForm())
+                    {!! $formBuilder->renderBaseForm() !!}
                 @else
                     @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
                 @endif
@@ -181,44 +179,39 @@
 @stop
 
 @section('initialStore')
-
     window['{{ config('twill.js_namespace') }}'].CMS_URLS = {
-    index: @if(isset($indexUrl))
-        '{{ $indexUrl }}'
-    @else
-        window.location.href.split('?')[0]
-    @endif,
-    publish: '{{ $publishUrl }}',
-    bulkPublish: '{{ $bulkPublishUrl }}',
-    restore: '{{ $restoreUrl }}',
-    bulkRestore: '{{ $bulkRestoreUrl }}',
-    forceDelete: '{{ $forceDeleteUrl }}',
-    bulkForceDelete: '{{ $bulkForceDeleteUrl }}',
-    reorder: '{{ $reorderUrl }}',
-    create: '{{ $createUrl ?? '' }}',
-    feature: '{{ $featureUrl }}',
-    bulkFeature: '{{ $bulkFeatureUrl }}',
-    bulkDelete: '{{ $bulkDeleteUrl }}'
+        index: @if(isset($indexUrl)) '{{ $indexUrl }}' @else window.location.href.split('?')[0] @endif,
+        publish: '{{ $publishUrl }}',
+        bulkPublish: '{{ $bulkPublishUrl }}',
+        restore: '{{ $restoreUrl }}',
+        bulkRestore: '{{ $bulkRestoreUrl }}',
+        forceDelete: '{{ $forceDeleteUrl }}',
+        bulkForceDelete: '{{ $bulkForceDeleteUrl }}',
+        reorder: '{{ $reorderUrl }}',
+        create: '{{ $createUrl ?? '' }}',
+        feature: '{{ $featureUrl }}',
+        bulkFeature: '{{ $bulkFeatureUrl }}',
+        bulkDelete: '{{ $bulkDeleteUrl }}'
     }
 
     window['{{ config('twill.js_namespace') }}'].STORE.form = {
-    fields: []
+        fields: []
     }
 
     window['{{ config('twill.js_namespace') }}'].STORE.datatable = {
-    data: {!! json_encode($tableData) !!},
-    columns: {!! json_encode($tableColumns) !!},
-    navigation: {!! json_encode($tableMainFilters) !!},
-    filter: { status: '{{ $filters['status'] ?? $defaultFilterSlug ?? 'all' }}' },
-    page: '{{ request('page') ?? 1 }}',
-    maxPage: '{{ $maxPage ?? 1 }}',
-    defaultMaxPage: '{{ $defaultMaxPage ?? 1 }}',
-    offset: '{{ request('offset') ?? $offset ?? 60 }}',
-    defaultOffset: '{{ $defaultOffset ?? 60 }}',
-    sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? '') }}',
-    sortDir: '{{ request('sortDir') ?? 'asc' }}',
-    baseUrl: '{{ rtrim(config('app.url'), '/') . '/' }}',
-    localStorageKey: '{{ isset($currentUser) ? $currentUser->id : 0 }}__{{ $moduleName ?? Route::currentRouteName() }}'
+        data: {!! json_encode($tableData) !!},
+        columns: {!! json_encode($tableColumns) !!},
+        navigation: {!! json_encode($tableMainFilters) !!},
+        filter: { status: '{{ $filters['status'] ?? $defaultFilterSlug ?? 'all' }}' },
+        page: '{{ request('page') ?? 1 }}',
+        maxPage: '{{ $maxPage ?? 1 }}',
+        defaultMaxPage: '{{ $defaultMaxPage ?? 1 }}',
+        offset: '{{ request('offset') ?? $offset ?? 60 }}',
+        defaultOffset: '{{ $defaultOffset ?? 60 }}',
+        sortKey: '{{ $reorder ? (request('sortKey') ?? '') : (request('sortKey') ?? '') }}',
+        sortDir: '{{ request('sortDir') ?? 'asc' }}',
+        baseUrl: '{{ rtrim(config('app.url'), '/') . '/' }}',
+        localStorageKey: '{{ isset($currentUser) ? $currentUser->id : 0 }}__{{ $moduleName ?? Route::currentRouteName() }}'
     }
 
     @if ($create && ($openCreate ?? false))

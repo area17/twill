@@ -29,7 +29,7 @@ class Browser extends BaseFormField
 
     protected bool $wide = false;
 
-    protected bool $sortable = false;
+    protected bool $sortable = true;
 
     protected ?string $routePrefix = null;
 

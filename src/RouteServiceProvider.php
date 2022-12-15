@@ -11,6 +11,7 @@ use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
 use A17\Twill\Http\Middleware\SupportSubdomainRouting;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
 use A17\Twill\Services\MediaLibrary\Glide;
+use A17\Twill\Facades\TwillRoutes;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
@@ -22,20 +23,16 @@ class RouteServiceProvider extends ServiceProvider
 
     /**
      * Bootstraps the package services.
-     *
-     * @return void
      */
-    public function boot()
+    public function boot(): void
     {
         $this->registerRouteMiddlewares();
         $this->app->bind(TwillRoutes::class);
+        $this->registerRouteMacros();
         parent::boot();
     }
 
-    /**
-     * @return void
-     */
-    public function map(Router $router)
+    public function map(Router $router): void
     {
         \A17\Twill\Facades\TwillRoutes::registerRoutePatterns();
 
@@ -173,12 +170,7 @@ class RouteServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * Register Route middleware.
-     *
-     * @return void
-     */
-    private function registerRouteMiddlewares()
+    private function registerRouteMiddlewares(): void
     {
         Route::aliasMiddleware(
             'supportSubdomainRouting',
@@ -193,6 +185,27 @@ class RouteServiceProvider extends ServiceProvider
         );
         Route::aliasMiddleware('localization', Localization::class);
         Route::aliasMiddleware('permission', Permission::class);
+    }
+
+    protected function registerRouteMacros(): void
+    {
+        Route::macro('module', function (
+            string $slug,
+            array $options = [],
+            array $resource_options = [],
+            bool $resource = true
+        ): void {
+            TwillRoutes::module($slug, $options, $resource_options, $resource);
+        });
+
+        Route::macro('twillSingleton', function (
+            $slug,
+            $options = [],
+            $resource_options = [],
+            $resource = true
+        ) {
+            TwillRoutes::singleton($slug, $options, $resource_options, $resource);
+        });
     }
 
     public static function shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)

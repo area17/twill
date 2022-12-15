@@ -46,11 +46,10 @@ abstract class SingletonModuleController extends ModuleController
         }
 
         View::share('form', $this->form($item->id));
-        return view($view, $this->form($item->id))
-            ->with(
-                'renderFields',
-                $controllerForm
-            );
+
+        return View::make($view, $this->form($item->id))->with(
+            ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($item))]
+        );
     }
 
     private function seed(): void

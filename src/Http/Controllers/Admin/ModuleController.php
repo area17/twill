@@ -17,6 +17,7 @@ use A17\Twill\Services\Breadcrumbs\Breadcrumbs;
 use A17\Twill\Services\Forms\Fields\BaseFormField;
 use A17\Twill\Services\Forms\Fields\BlockEditor;
 use A17\Twill\Services\Forms\Fields\Repeater;
+use A17\Twill\Services\Forms\Fieldsets;
 use A17\Twill\Services\Forms\Form;
 use A17\Twill\Services\Listings\Columns\Browser;
 use A17\Twill\Services\Listings\Columns\FeaturedStatus;
@@ -1013,7 +1014,7 @@ abstract class ModuleController extends Controller
         }
 
         return View::make($view, $indexData + ['repository' => $this->repository])
-            ->with('renderFields', $form);
+            ->with(['formBuilder' => $form->toFrontend(isCreate: true)]);
     }
 
     public function getCreateForm(): Form
@@ -1144,8 +1145,7 @@ abstract class ModuleController extends Controller
         }
 
         return View::make($view, $this->form($id))->with(
-            'renderFields',
-            $controllerForm
+            ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($item))]
         );
     }
 
@@ -1357,9 +1357,8 @@ abstract class ModuleController extends Controller
 
         View::share('form', $this->form($id, $item));
 
-        return View::make($view, $this->form($id, $item))->with(
-            'renderFields',
-            $controllerForm
+        return View::make($view, $this->form($id))->with(
+            ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($item))]
         );
     }
 
@@ -2679,6 +2678,11 @@ abstract class ModuleController extends Controller
     }
 
     public function getForm(TwillModelContract $model): Form
+    {
+        return new Form();
+    }
+
+    public function getSideFieldsets(TwillModelContract $model): Form
     {
         return new Form();
     }
