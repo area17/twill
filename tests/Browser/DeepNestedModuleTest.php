@@ -21,7 +21,7 @@ class DeepNestedModuleTest extends BrowserTestCase
             $browser->inRow('SecondaryClient', function(Browser $browser) {
                 // Clicklink does not work "within" another element for some reason.
                 // $browser->clickLink('0 children');
-                $browser->click('td:nth-of-type(4) a');
+                $browser->click('td:nth-of-type(5) a');
             });
 
             $browser->assertPathIs('/twill/clients/2/projects');
@@ -33,7 +33,7 @@ class DeepNestedModuleTest extends BrowserTestCase
             $browser->visit('/twill/clients/2/projects');
 
             $browser->inRow('SecondaryClientProject', function(Browser $browser) {
-                $browser->click('td:nth-of-type(4) a');
+                $browser->click('td:nth-of-type(5) a');
             });
 
             $browser->assertPathIs('/twill/clients/2/projects/1/applications');
