@@ -211,7 +211,7 @@ abstract class TableColumn
     {
         $visible = $this->visible;
 
-        if ($this->optional && (empty($visibleColumns) || !in_array($this->key, $visibleColumns, true))) {
+        if (!empty($visibleColumns) && !in_array($this->key, $visibleColumns, true)) {
             $visible = false;
         }
 
