@@ -41,5 +41,5 @@ return [
         'dpr' => '1',
     ],
     'presets' => [],
-    'original_media_for_extensions' => [],
+    'original_media_for_extensions' => ['svg'],
 ];
