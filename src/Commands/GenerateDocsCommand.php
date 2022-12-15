@@ -223,7 +223,7 @@ class GenerateDocsCommand extends Command
         }
 
         // Check for changes in the _templates folder.
-        if (!$hasChange) {
+        if (!$hasChange || $this->option('fresh')) {
             foreach ($disk->allFiles('_templates') as $templatesPath) {
                 if (
                     isset($navTree['last_updated']) &&
