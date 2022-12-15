@@ -31,10 +31,14 @@ class CreateTwillDefaultUsersTables extends Migration
         $twillPasswordResetsTable = config('twill.password_resets_table', 'twill_password_resets');
 
         if (!Schema::hasTable($twillPasswordResetsTable)) {
-            Schema::create($twillPasswordResetsTable, function (Blueprint $table) {
+            Schema::create($twillPasswordResetsTable, function (Blueprint $table) use ($twillUsersTable) {
                 $table->string('email')->index();
                 $table->string('token')->index();
                 $table->timestamp('created_at')->nullable();
+                $table->foreign('email')
+                    ->references('email')->on($twillUsersTable)
+                    ->cascadeOnUpdate()
+                    ->cascadeOnDelete();
             });
         }
     }
