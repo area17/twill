@@ -76,7 +76,7 @@ class BlockRenderer
     ): Block {
         $class = clone Block::getForComponent($data['type'], $data['is_repeater'] ?? false);
 
-        if (!$class) {
+        if (! $class) {
             $type = Str::replace('a17-block-', '', $data['type']);
             // It is important to always clone this as it would otherwise overwrite the renderData inside.
             $class = clone Block::getForType($type, $data['is_repeater'] ?? false);
@@ -146,7 +146,8 @@ class BlockRenderer
         };
     }
 
-    private static function getChildren(array $blocks): Collection {
+    private static function getChildren(array $blocks): Collection
+    {
         if ($blocks === []) {
             return new Collection();
         }
@@ -188,7 +189,7 @@ class BlockRenderer
                 if (array_key_exists($role, $crops)) {
                     Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
-                        if (isset($media['crops']) && !empty($media['crops'])) {
+                        if (isset($media['crops']) && ! empty($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
                                 $media = (new Media())->forceFill(
                                     $data = [
@@ -222,7 +223,7 @@ class BlockRenderer
         TwillModelContract $model,
         string $editorName,
     ): self {
-        if (!isset(class_uses_recursive($model)[HasBlocks::class])) {
+        if (! isset(class_uses_recursive($model)[HasBlocks::class])) {
             throw new Exception('Model ' . $model::class . ' does not implement HasBlocks');
         }
 
