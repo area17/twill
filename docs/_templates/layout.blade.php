@@ -57,7 +57,7 @@
   </div>
 </div>
 
-<x-twilldocs::devTools />
+{{--<x-twilldocs::devTools />--}}
 
 <script src="/js/nav.js"></script>
 
