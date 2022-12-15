@@ -75,13 +75,14 @@ class BlockRenderer
         string $parentEditorName = null
     ): Block {
         $class = clone Block::getForComponent($data['type'], $data['is_repeater'] ?? false);
-        $type = $class->type;
 
         if (!$class) {
             $type = Str::replace('a17-block-', '', $data['type']);
             // It is important to always clone this as it would otherwise overwrite the renderData inside.
             $class = clone Block::getForType($type, $data['is_repeater'] ?? false);
         }
+
+        $type = $class->name;
 
         $children = [];
 
@@ -104,6 +105,8 @@ class BlockRenderer
                 'editor_name' => $editorName,
             ]
         );
+
+        $block->setRelation('children', self::getChildren($children));
 
         $block->medias = self::getMedias($data);
 
@@ -141,6 +144,21 @@ class BlockRenderer
                 return $this->data;
             }
         };
+    }
+
+    private static function getChildren(array $blocks): Collection {
+        if ($blocks === []) {
+            return new Collection();
+        }
+
+        $blocksCollection = Collection::make();
+
+        /** @var Block $block */
+        foreach ($blocks as $block) {
+            $blocksCollection->push($block->renderData?->block);
+        }
+
+        return $blocksCollection;
     }
 
     /**
