@@ -163,9 +163,10 @@ abstract class ModuleRepository
      * @param string $column
      * @param array $orders
      * @param null $exceptId
+     * @param string $pluckby
      * @return \Illuminate\Support\Collection
      */
-    public function listAll($column = 'title', $orders = [], $exceptId = null)
+    public function listAll($column = 'title', $orders = [], $exceptId = null, $pluckby = 'id')
     {
         $query = $this->model->newQuery();
 
@@ -183,7 +184,7 @@ abstract class ModuleRepository
             $query = $query->withTranslation();
         }
 
-        return $query->get()->pluck($column, 'id');
+        return $query->get()->pluck($column, $pluckby);
     }
 
     /**
