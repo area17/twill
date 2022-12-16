@@ -4,8 +4,12 @@ namespace A17\Twill;
 
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\BlockCollection;
+use A17\Twill\View\Components\Blocks\TwillBlockComponent;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class TwillBlocks
 {
@@ -23,6 +27,11 @@ class TwillBlocks
      * @var array<string, string>
      */
     public static $repeatersDirectories = [];
+
+    /**
+     * @var array<string, string>
+     */
+    public static $componentBlockNamespaces = [];
 
     /**
      * @return A17\Twill\Services\Blocks\BlockCollection
@@ -50,6 +59,15 @@ class TwillBlocks
                 ];
             }
         }
+    }
+
+    public function registerComponentBlocks(string $namespace): void
+    {
+        if (! Str::startsWith($namespace, '\\')) {
+            $namespace = '\\' . $namespace;
+        }
+
+        self::$componentBlockNamespaces[$namespace] = $namespace;
     }
 
     /**
@@ -87,7 +105,10 @@ class TwillBlocks
         // Consume the repeatersDirectories. We act a bit dumb here by not taking into account duplicates
         // as a package should only register a directory once.
         foreach (self::$repeatersDirectories as $repeaterDir => $data) {
-            foreach ($this->readBlocksFromDirectory($repeaterDir, $data['type'], Block::TYPE_REPEATER, $data['renderNamespace']) as $repeater) {
+            foreach ($this->readBlocksFromDirectory($repeaterDir,
+                $data['type'],
+                Block::TYPE_REPEATER,
+                $data['renderNamespace']) as $repeater) {
                 $this->blockCollection->add($repeater);
             }
 
@@ -95,11 +116,37 @@ class TwillBlocks
         }
 
         foreach (self::$blockDirectories as $blockDir => $data) {
-            foreach ($this->readBlocksFromDirectory($blockDir, $data['type'], Block::TYPE_BLOCK, $data['renderNamespace']) as $block) {
+            foreach ($this->readBlocksFromDirectory($blockDir,
+                $data['type'],
+                Block::TYPE_BLOCK,
+                $data['renderNamespace']) as $block) {
                 $this->blockCollection->add($block);
             }
 
             unset(self::$blockDirectories[$blockDir]);
+        }
+
+
+        if (self::$componentBlockNamespaces !== []) {
+            foreach (self::$componentBlockNamespaces as $namespace) {
+                $path = Str::replace('\\', '/', $namespace);
+
+                $disk = Storage::build([
+                    'driver' => 'local',
+                    'root' => base_path($path),
+                ]);
+
+                foreach ($disk->allFiles() as $file) {
+                    $class = $namespace . '\\' . Str::before($file, '.');
+                    if (is_subclass_of($class, TwillBlockComponent::class)) {
+                        $this->blockCollection->add(
+                            Block::forComponent($class)
+                        );
+                    }
+                }
+
+                unset(self::$componentBlockNamespaces[$namespace]);
+            }
         }
 
         return $this->blockCollection;

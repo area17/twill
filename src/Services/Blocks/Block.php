@@ -3,6 +3,7 @@
 namespace A17\Twill\Services\Blocks;
 
 use A17\Twill\Facades\TwillBlocks;
+use A17\Twill\View\Components\Blocks\TwillBlockComponent;
 use Exception;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
@@ -132,6 +133,30 @@ class Block
     public ?RenderData $renderData = null;
 
     /**
+     * @var TwillBlockComponent
+     */
+    public ?string $componentClass = null;
+
+    /**
+     * @param TwillBlockComponent $componentClass
+     */
+    public static function forComponent(string $componentClass): self
+    {
+        $class = new self(
+            file: null,
+            type: 'block',
+            source: $componentClass::getBlockGroup(),
+            name: $componentClass::getBlockTitle(),
+            componentClass: $componentClass
+        );
+
+        $class->rulesForTranslatedFields = (new $componentClass())->getTranslatableValidationRules();
+        $class->rules = (new $componentClass())->getValidationRules();
+
+        return $class;
+    }
+
+    /**
      * Make a block instance out of arguments.
      *
      * @param $file
@@ -197,15 +222,15 @@ class Block
 
     /**
      * Block constructor.
-     * @param Symfony\Component\Finder\SplFileInfo $file
-     * @param $type
+     * @param Symfony\Component\Finder\SplFileInfo|null $file
+     * @param strign|null $type
      * @param $source
      * @param $name
      * @param string $renderNamespace
      *   Mainly for packages, but this will get the preview/render view file from that namespace.
      * @throws \Exception
      */
-    public function __construct($file, $type, $source, $name = null, ?string $renderNamespace = null)
+    public function __construct($file, $type, $source, $name = null, ?string $renderNamespace = null, ?string $componentClass = null)
     {
         $this->file = $file;
 
@@ -213,8 +238,11 @@ class Block
 
         $this->source = $source;
 
-        // @change: This now holds the full file path instead of just the fileName.
-        $this->fileName = $this->file ? $this->file->getPathName() : 'Custom vue file';
+        $this->componentClass = $componentClass;
+
+        if (!$this->componentClass) {
+            $this->fileName = $this->file ? $this->file->getPathName() : 'Custom vue file';
+        }
 
         $this->renderNamespace = $renderNamespace;
 
@@ -523,6 +551,10 @@ class Block
             }
         }
 
+        if ($property === 'title' && $this->componentClass) {
+            return $this->componentClass::getBlockTitle();
+        }
+
         if ($property !== 'title') {
             return $default;
         }
@@ -561,12 +593,17 @@ class Block
     public function renderForm()
     {
         View::share('TwillUntilConsumed', ['renderForBlocks' => true]);
-        $block = BladeCompiler::render(
-            $this->contents,
-            [
-                'renderForBlocks' => true,
-            ] + $this->getFormData()
-        );
+        if ($this->componentClass) {
+            $block = (new $this->componentClass)->render();
+        }
+        else {
+            $block = BladeCompiler::render(
+                $this->contents,
+                [
+                    'renderForBlocks' => true,
+                ] + $this->getFormData()
+            );
+        }
         View::share('TwillUntilConsumed', []);
 
         return $block;
