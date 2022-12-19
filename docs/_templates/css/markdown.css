@@ -1,6 +1,7 @@
 @layer components {
   .markdown {
     @apply f-body text-black;
+    padding-bottom: 60px;
   }
 
   .markdown h1 {
@@ -9,6 +10,7 @@
 
   .markdown h2 {
     @apply f-h2 mt-68;
+    scroll-margin-top: 80px;
   }
 
   .markdown h3 {
@@ -74,6 +76,16 @@
     position: relative;
   }
 
+  .markdown ul {
+    margin-left: 1.2em;
+    list-style-type: disc;
+  }
+
+  .markdown ol {
+    margin-left: 1.2em;
+    list-style-type: dot;
+  }
+
   h1:hover .heading-permalink,
   h2:hover .heading-permalink,
   h3:hover .heading-permalink {
@@ -87,6 +99,7 @@
     padding-right: 10px;
     color: var(--purple);
     text-decoration: none !important;
+    scroll-margin-top: calc(80px + 32px);
   }
 
   .heading-permalink:hover {
