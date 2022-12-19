@@ -70,6 +70,25 @@ For `additionalIndexTableColumns` these items will be added after the title.
 
 In `additionalBrowserTableColumns` these will be added at the end.
 
+#### Example for adding a thumbnail before the title
+
+Using collection methods, you can easily add a thumbnail before the title column in the table:
+
+```php
+protected function getIndexTableColumns(): TableColumns
+{
+    $table = parent::getIndexTableColumns();
+
+    $after = $table->splice(1);
+
+    $table->push(
+        Image::make()->field('cover')
+    );
+
+    return $table->merge($after);
+}
+```
+
 ### Column methods
 
 There are currently 10 different columns. Most column share a set of setters that you can use. Because these columns
@@ -94,6 +113,7 @@ All columns are placed under the `src/Services/Listings/Columns` directory.
   unprotected data sources.)
 - `customRender(Closure $renderFunction)`: A closure with a custom render function instead of using the raw field value.
 - `linkCell(Closure|string $link)`: A closure or string on where to link the field contents to.
+- `shrink(bool $shrink = true)`: Make the column shrink.
 
 #### CustomRender
 
