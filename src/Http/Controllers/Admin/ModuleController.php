@@ -96,10 +96,7 @@ abstract class ModuleController extends Controller
      */
     protected $modelTitle;
 
-    /**
-     * @var \A17\Twill\Repositories\ModuleRepository
-     */
-    protected $repository;
+    protected ModuleRepository $repository;
 
     /**
      * @var \A17\Twill\Models\User
@@ -1333,7 +1330,7 @@ abstract class ModuleController extends Controller
 
         $this->setBackLink();
 
-        $controllerForm = $this->getForm($this->repository->getById($id));
+        $controllerForm = $this->getForm($item);
 
         $view = Collection::make([
             "$this->viewPrefix.form",
@@ -1357,7 +1354,7 @@ abstract class ModuleController extends Controller
 
         View::share('form', $this->form($id, $item));
 
-        return View::make($view, $this->form($id))->with(
+        return View::make($view, $this->form($id, $item))->with(
             ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($item))]
         );
     }

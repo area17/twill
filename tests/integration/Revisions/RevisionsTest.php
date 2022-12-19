@@ -1,91 +1,17 @@
 <?php
 
-namespace A17\Twill\Tests\Integration;
+namespace A17\Twill\Tests\Integration\Revisions;
 
-use App\Models\Author;
-use App\Repositories\AuthorRepository;
-use Carbon\Carbon;
-
-class RevisionsTest extends ModulesTestBase
+class RevisionsTest extends RevisionTestBase
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-    }
-
-    public function addMinutes($minutes = 1)
-    {
-        Carbon::setTestNow($this->now->addMinutes($minutes));
-    }
-
-    public function createAuthorWithRevisions()
-    {
-        $this->addMinutes(1);
-
-        $author = $this->createSingleAuthor();
-
-        $this->addMinutes(1);
-
-        $this->updateAuthor($author, [
-            'name' => ['en' => 'Bobby', 'fr' => 'Bobby'],
-            'published' => false,
-        ]);
-
-        $this->addMinutes(1);
-
-        $this->updateAuthor($author, [
-            'name' => ['en' => 'Bobby', 'fr' => 'Bobby'],
-            'published' => true,
-        ]);
-
-        $this->addMinutes(1);
-
-        return $author;
-    }
-
-    public function createSingleAuthor(array $fields = []): Author
-    {
-        $defaults = [
-            'name' => ['en' => 'Bob', 'fr' => 'Bob'],
-            'published' => false,
-        ];
-
-        return app(AuthorRepository::class)->create(
-            array_merge($defaults, $fields)
-        );
-    }
-
-    public function updateAuthor($author, $fields = [])
-    {
-        app(AuthorRepository::class)->update($author->id, $fields);
-
-        return $author->refresh();
-    }
-
-    public function getRevisionLabels($item)
-    {
-        return collect($item->refresh()->revisionsArray())
-            ->pluck('label')
-            ->toArray();
-    }
-
-    public function getRevisionPayloads($item)
-    {
-        $revisions = $item->refresh()->revisions;
-
-        return collect($revisions)->map(function ($revision) {
-            return json_decode($revision->payload, true);
-        });
-    }
-
-    public function test_module_has_revisions()
+    public function test_module_has_revisions(): void
     {
         $author = $this->createAuthorWithRevisions();
 
         $this->assertEquals(3, $author->revisions()->count());
     }
 
-    public function test_update_modifies_published_record()
+    public function test_update_modifies_published_record(): void
     {
         $author = $this->createAuthorWithRevisions();
 
@@ -95,11 +21,11 @@ class RevisionsTest extends ModulesTestBase
         ]);
 
         $author->refresh();
-        $this->assertTrue((bool) $author->published);
+        $this->assertTrue((bool)$author->published);
         $this->assertEquals('Test', $author->name);
     }
 
-    public function test_latest_revision_is_identified_as_current()
+    public function test_latest_revision_is_identified_as_current(): void
     {
         $author = $this->createSingleAuthor();
 
@@ -120,7 +46,7 @@ class RevisionsTest extends ModulesTestBase
         $this->assertEquals(['Current', '', ''], $this->getRevisionLabels($author));
     }
 
-    public function test_can_create_draft_revisions()
+    public function test_can_create_draft_revisions(): void
     {
         putenv('ENABLE_DRAFT_REVISIONS=true');
 
@@ -135,7 +61,7 @@ class RevisionsTest extends ModulesTestBase
         $this->assertEquals(4, $author->revisions()->count());
     }
 
-    public function test_draft_revision_does_not_modify_published_record()
+    public function test_draft_revision_does_not_modify_published_record(): void
     {
         putenv('ENABLE_DRAFT_REVISIONS=true');
 
@@ -148,11 +74,11 @@ class RevisionsTest extends ModulesTestBase
         ]);
 
         $author->refresh();
-        $this->assertTrue((bool) $author->published);
+        $this->assertTrue((bool)$author->published);
         $this->assertNotEquals('Test', $author->name);
     }
 
-    public function test_draft_revision_is_saved_as_draft()
+    public function test_draft_revision_is_saved_as_draft(): void
     {
         putenv('ENABLE_DRAFT_REVISIONS=true');
 
@@ -166,10 +92,10 @@ class RevisionsTest extends ModulesTestBase
 
         $revisionData = $this->getRevisionPayloads($author)->first();
         $this->assertEquals('draft-revision', $revisionData['cmsSaveType']);
-        $this->assertFalse((bool) $revisionData['published']);
+        $this->assertFalse((bool)$revisionData['published']);
     }
 
-    public function test_draft_revision_is_not_identified_as_current()
+    public function test_draft_revision_is_not_identified_as_current(): void
     {
         putenv('ENABLE_DRAFT_REVISIONS=true');
 

@@ -27,7 +27,7 @@ class ListIconsTest extends TestCase
     {
         parent::setUp();
 
-        $this->copyFiles($this->allFiles);
+        $this->copyFiles(collect($this->allFiles));
     }
 
     public function testCanListIcons()
