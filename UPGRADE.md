@@ -46,6 +46,10 @@ strict using:
 Previously `withVideo` was true by default, if you relied on this you have to update these media fields to
 `'withVideo' => true`.
 
+### SVG's are now no longer passing thorough glide
+
+These are now rendered directly, you can change this by updating config `twill.glide.original_media_for_extensions` to an empty array `[]`
+
 ### media/file library
 
 The default for media and file libraries are now local and glide, if you relied on the default config for aws

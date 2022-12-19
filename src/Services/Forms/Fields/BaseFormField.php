@@ -18,6 +18,7 @@ abstract class BaseFormField
         protected ?string $note = null,
         protected ?bool $required = false,
         protected ?bool $disabled = false,
+        protected mixed $default = null,
         /**
          * A list of mandatory properties in order of their component
          * constructor.
@@ -35,9 +36,16 @@ abstract class BaseFormField
     {
         $this->name = $name;
 
-        if (!$this->label) {
+        if (! $this->label) {
             $this->label(Str::headline($name));
         }
+
+        return $this;
+    }
+
+    public function default(mixed $default): self
+    {
+        $this->default = $default;
 
         return $this;
     }
@@ -102,7 +110,7 @@ abstract class BaseFormField
 
         if ($this->mandatoryProperties !== []) {
             foreach ($this->mandatoryProperties as $property) {
-                if (!$this->{$property}) {
+                if (! $this->{$property}) {
                     throw new \InvalidArgumentException(
                         "Missing required field property '$property' on " . $this::class
                     );
