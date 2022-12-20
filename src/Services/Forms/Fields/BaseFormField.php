@@ -27,7 +27,7 @@ abstract class BaseFormField
     ) {
     }
 
-    /* abstract public static function make(): self; */
+    abstract public static function make(): static;
 
     /**
      * Set the name of the field, if no label is set yet, this method will also update that.
@@ -43,7 +43,7 @@ abstract class BaseFormField
         return $this;
     }
 
-    public function default(mixed $default): static
+    public function default(mixed $default): self
     {
         $this->default = $default;
 
@@ -53,7 +53,7 @@ abstract class BaseFormField
     /**
      * Set the label of the field, you can use twillTrans('') Laravel translatable strings here.
      */
-    public function label(string $label): static
+    public function label(string $label): self
     {
         $this->label = $label;
 
@@ -63,7 +63,7 @@ abstract class BaseFormField
     /**
      * Add a note to the field to display on the form.
      */
-    public function note(string $note): static
+    public function note(string $note): self
     {
         $this->note = $note;
 
@@ -73,7 +73,7 @@ abstract class BaseFormField
     /**
      * Marks the field as mandatory, however you still need to add validation rules.
      */
-    public function required(bool $required = true): static
+    public function required(bool $required = true): self
     {
         $this->required = $required;
 
@@ -85,7 +85,7 @@ abstract class BaseFormField
      *
      * There might be some fields not supporting this.
      */
-    public function disabled(bool $disabled = true): static
+    public function disabled(bool $disabled = true): self
     {
         $this->disabled = $disabled;
 

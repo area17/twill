@@ -49,7 +49,7 @@ class Browser extends BaseFormField
     /**
      * Additional parameters to pass to the module route.
      */
-    public function params(array $params): static
+    public function params(array $params): self
     {
         $this->params = $params;
 
@@ -59,7 +59,7 @@ class Browser extends BaseFormField
     /**
      * A list of custom endpoints to use.
      */
-    public function endpoints(array $endpoints): static
+    public function endpoints(array $endpoints): self
     {
         $this->endpoints = $endpoints;
 
@@ -69,7 +69,7 @@ class Browser extends BaseFormField
     /**
      * A note to display inside the browser.
      */
-    public function browserNote(string $browserNote): static
+    public function browserNote(string $browserNote): self
     {
         $this->browserNote = $browserNote;
 
@@ -79,7 +79,7 @@ class Browser extends BaseFormField
     /**
      * The label to display for items, defaults to the field label.
      */
-    public function itemLabel(string $itemLabel): static
+    public function itemLabel(string $itemLabel): self
     {
         $this->itemLabel = $itemLabel;
 
@@ -93,7 +93,7 @@ class Browser extends BaseFormField
      *
      * Provide an array with: label, name, routePrefix, params
      */
-    public function modulesCustom(array $modules): static
+    public function modulesCustom(array $modules): self
     {
         $this->modules = $modules;
 
@@ -103,7 +103,7 @@ class Browser extends BaseFormField
     /**
      * Makes the modal window use the full width.
      */
-    public function wide(bool $wide = true): static
+    public function wide(bool $wide = true): self
     {
         $this->wide = $wide;
 
@@ -113,7 +113,7 @@ class Browser extends BaseFormField
     /**
      * Makes the columns in the browser sortable.
      */
-    public function sortable(bool $sortable = true): static
+    public function sortable(bool $sortable = true): self
     {
         $this->sortable = $sortable;
 
@@ -123,7 +123,7 @@ class Browser extends BaseFormField
     /**
      * Set a custom route prefix if needed.
      */
-    public function routePrefix(string $routePrefix): static
+    public function routePrefix(string $routePrefix): self
     {
         $this->routePrefix = $routePrefix;
 
@@ -133,7 +133,7 @@ class Browser extends BaseFormField
     /**
      * Conditionally show this field based on another browser field.
      */
-    public function connectedBrowserField(string $connectedBrowserField): static
+    public function connectedBrowserField(string $connectedBrowserField): self
     {
         $this->connectedBrowserField = $connectedBrowserField;
 
@@ -143,7 +143,7 @@ class Browser extends BaseFormField
     /**
      * A list of modules that can be be selected in the browser modal.
      */
-    public function modules(array $modules): static
+    public function modules(array $modules): self
     {
         if (count($modules) === 1) {
             $this->moduleName = getModuleNameByModel(array_pop($modules));

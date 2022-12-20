@@ -49,7 +49,7 @@ class Medias extends BaseFormField
     /**
      * Disables the additional metadata input fields.
      */
-    public function withoutAddInfo(bool $withoutAddInfo = true): static
+    public function withoutAddInfo(bool $withoutAddInfo = true): self
     {
         $this->withAddInfo = !$withoutAddInfo;
 
@@ -59,7 +59,7 @@ class Medias extends BaseFormField
     /**
      * Removes the video url field from the additional info section.
      */
-    public function withoutVideoUrl(bool $withoutVideoUrl = true): static
+    public function withoutVideoUrl(bool $withoutVideoUrl = true): self
     {
         $this->withVideoUrl = !$withoutVideoUrl;
 
@@ -69,7 +69,7 @@ class Medias extends BaseFormField
     /**
      * Removes the caption field from the additional info section.
      */
-    public function withoutCaption(bool $withoutCaption = true): static
+    public function withoutCaption(bool $withoutCaption = true): self
     {
         $this->withCaption = !$withoutCaption;
 
@@ -79,7 +79,7 @@ class Medias extends BaseFormField
     /**
      * Set the max length of the alt field.
      */
-    public function altTextMaxLength(bool $altTextMaxLength): static
+    public function altTextMaxLength(bool $altTextMaxLength): self
     {
         $this->altTextMaxLength = $altTextMaxLength;
 
@@ -89,7 +89,7 @@ class Medias extends BaseFormField
     /**
      * Set the max length of the caption field.
      */
-    public function captionMaxLength(int $captionMaxLength): static
+    public function captionMaxLength(int $captionMaxLength): self
     {
         $this->captionMaxLength = $captionMaxLength;
 
@@ -101,7 +101,7 @@ class Medias extends BaseFormField
      *
      * @see https://twill.io/docs/form-fields/medias.html#extra-metadatas
      */
-    public function extraMetadatas(array $extraMetadatas): static
+    public function extraMetadatas(array $extraMetadatas): self
     {
         $this->extraMetadatas = $extraMetadatas;
 
@@ -111,7 +111,7 @@ class Medias extends BaseFormField
     /**
      * The minimum width of the image.
      */
-    public function minWidth(int $minWidth): static
+    public function minWidth(int $minWidth): self
     {
         $this->widthMin = $minWidth;
 
@@ -121,7 +121,7 @@ class Medias extends BaseFormField
     /**
      * The minimum height of the image.
      */
-    public function minHeight(int $minHeight): static
+    public function minHeight(int $minHeight): self
     {
         $this->heightMin = $minHeight;
 
@@ -131,7 +131,7 @@ class Medias extends BaseFormField
     /**
      * Hide the cropper.
      */
-    public function hideActiveCrop(bool $hideActiveCrop = true): static
+    public function hideActiveCrop(bool $hideActiveCrop = true): self
     {
         $this->activeCrop = !$hideActiveCrop;
 

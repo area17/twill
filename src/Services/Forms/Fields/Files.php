@@ -48,7 +48,7 @@ class Files extends BaseFormField
     /**
      * Default is 0 which is unlimited (depending on server config).
      */
-    public function filesizeMax(int $filesizeMax): static
+    public function filesizeMax(int $filesizeMax): self
     {
         $this->filesizeMax = $filesizeMax;
 
@@ -58,7 +58,7 @@ class Files extends BaseFormField
     /**
      * The label to display for items, defaults to the field label.
      */
-    public function itemLabel(string $itemLabel): static
+    public function itemLabel(string $itemLabel): self
     {
         $this->itemLabel = $itemLabel;
 

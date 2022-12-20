@@ -27,14 +27,14 @@ class BlockEditor extends BaseFormField
         return parent::name($name);
     }
 
-    public function withoutSeparator(bool $withoutSeparator = true): static
+    public function withoutSeparator(bool $withoutSeparator = true): self
     {
         $this->withoutSeparator = $withoutSeparator;
 
         return $this;
     }
 
-    public function isSettings(bool $isSettings = true): static
+    public function isSettings(bool $isSettings = true): self
     {
         $this->isSettings = $isSettings;
 
@@ -44,7 +44,7 @@ class BlockEditor extends BaseFormField
     /**
      * Default is all, but using this method you can limit the block types the field can use.
      */
-    public function blocks(array $blocks): static
+    public function blocks(array $blocks): self
     {
         $this->blocks = $blocks;
 

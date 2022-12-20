@@ -27,7 +27,7 @@ class Checkbox extends BaseFormField
     /**
      * The message to show when confirming the checking of the checkbox.
      */
-    public function confirmMessageText(string $confirmMessageText): static
+    public function confirmMessageText(string $confirmMessageText): self
     {
         $this->confirmMessageText = $confirmMessageText;
 
@@ -41,7 +41,7 @@ class Checkbox extends BaseFormField
     /**
      * The title to show when confirming the checking of the checkbox.
      */
-    public function confirmTitleText(string $confirmTitleText): static
+    public function confirmTitleText(string $confirmTitleText): self
     {
         $this->confirmTitleText = $confirmTitleText;
 
@@ -55,7 +55,7 @@ class Checkbox extends BaseFormField
     /**
      * If the checkbox needs confirmation on ticking.
      */
-    public function requireConfirmation(bool $requireConfirmation = true): static
+    public function requireConfirmation(bool $requireConfirmation = true): self
     {
         $this->requireConfirmation = $requireConfirmation;
 

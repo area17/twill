@@ -65,7 +65,7 @@ class Input extends BaseFormField
     /**
      * Text to display (inside) before the actual input.
      */
-    public function prefix(string $prefix): static
+    public function prefix(string $prefix): self
     {
         $this->prefix = $prefix;
 
@@ -75,7 +75,7 @@ class Input extends BaseFormField
     /**
      * The type of input field like: text, number, email, ..
      */
-    public function type(string $type): static
+    public function type(string $type): self
     {
         $this->type = $type;
 
@@ -88,7 +88,7 @@ class Input extends BaseFormField
      *
      * @see https://alpinejs.dev/plugins/mask
      */
-    public function mask(string $mask): static
+    public function mask(string $mask): self
     {
         $this->mask = $mask;
 
@@ -98,7 +98,7 @@ class Input extends BaseFormField
     /**
      * The amount of rows, only used with textarea type.
      */
-    public function rows(int $rows): static
+    public function rows(int $rows): self
     {
         $this->rows = $rows;
 
