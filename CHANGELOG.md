@@ -2,6 +2,13 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.12.2 (2022-12-20)
+
+### Bugfixes
+
+- Fix long dynamic titles not showing inside fieldsets [`#2014`](https://github.com/area17/twill/pull/2014)
+- Fix issue where tags could not save [`#1993`](https://github.com/area17/twill/pull/1993)
+
 ## 2.12.1 (2022-12-06)
 
 ### Bugfixes

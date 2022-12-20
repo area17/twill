@@ -50,7 +50,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const VERSION = '2.12.1';
+    public const VERSION = '2.12.2';
 
     /**
      * Service providers to be registered.
