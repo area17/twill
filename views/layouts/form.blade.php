@@ -47,7 +47,7 @@
         <div class="navbar navbar--sticky" data-sticky-top="navbar">
             @php
                 $additionalFieldsets = $additionalFieldsets ?? $formBuilder->getAdditionalFieldsets();
-                if(!$disableContentFieldset) {
+                if(!$disableContentFieldset && $formBuilder->hasFieldsInBaseFieldset()) {
                     array_unshift($additionalFieldsets, [
                         'fieldset' => 'content',
                         'label' => $contentFieldsetLabel ?? twillTrans('twill::lang.form.content')
