@@ -8,7 +8,7 @@ use App\Repositories\AuthorRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
-class RevisionTestBase extends ModulesTestBase
+abstract class RevisionTestBase extends ModulesTestBase
 {
     public function addMinute(): void
     {

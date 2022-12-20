@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Tests\Integration\Revisions;
 
+use A17\Twill\Repositories\ModuleRepository;
 use App\Repositories\AuthorRepository;
 
 class RevisionSlugTest extends RevisionTestBase
