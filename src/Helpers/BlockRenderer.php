@@ -97,7 +97,7 @@ class BlockRenderer
         }
 
         // Load the original block if it exists or make a new one then fill it with the data from the request.
-        $block = A17Block::findOrNew($data['id'] ?? null);
+        $block = twillModel('block')::findOrNew($data['id'] ?? null);
         $block->fill(
             [
                 'type' => $type,
@@ -249,7 +249,7 @@ class BlockRenderer
         $class = Block::findFirstWithType($block->type);
 
         /** @var \A17\Twill\Models\Block[] $childBlocks */
-        $childBlocks = A17Block::whereParentId($block->id)->orderBy('position')->get();
+        $childBlocks = twillModel('block')::whereParentId($block->id)->get();
 
         $children = [];
 
