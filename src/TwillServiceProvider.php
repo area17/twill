@@ -126,7 +126,7 @@ class TwillServiceProvider extends ServiceProvider
             'users' => User::class,
             'media' => Media::class,
             'files' => File::class,
-            'blocks' => Block::class,
+            'blocks' => twillModel('block'),
             'groups' => Group::class,
         ]);
 
