@@ -1,6 +1,6 @@
 <template>
   <div class="block" :class="blockClasses">
-    <div class="block__header" @dblclick.prevent="toggleExpand()" ref="header">
+    <div class="block__header" @dblclick.prevent="toggleExpand()">
       <span v-if="withHandle" class="block__handle"></span>
       <div class="block__toggle">
         <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown" :maxHeight="270">
@@ -10,12 +10,7 @@
           </div>
         </a17-dropdown>
         <span class="block__counter f--tiny" v-else>{{ index + 1 }}</span>
-        <span
-          class="block__title"
-          :style="{
-            'max-width': titleMaxWidth
-          }"
-        >{{ blockTitle }}</span>
+        <span class="block__title">{{ blockTitle }}</span>
       </div>
       <div class="block__actions" v-if="withActions">
         <slot name="block-actions"/>
@@ -86,8 +81,7 @@
         visible: false,
         hover: false,
         withMoveDropdown: true,
-        withAddDropdown: true,
-        titleMaxWidth: null
+        withAddDropdown: true
       }
     },
     filters: a17VueFilters,
@@ -169,21 +163,7 @@
 
         const blockFieldName = this.blockFieldName(fieldName)
         return this.fieldValueByName(blockFieldName)
-      },
-      updateTitleMaxWidth () {
-        if (this.titleFieldValue && this.$refs.header) {
-          this.titleMaxWidth = `calc(${this.$refs.header.offsetWidth * 0.45}px - 5ch)`
-        } else {
-          this.titleMaxWidth = '45%'
-        }
       }
-    },
-    mounted () {
-      this.updateTitleMaxWidth()
-      window.addEventListener('resize', this.updateTitleMaxWidth)
-    },
-    unmounted () {
-      window.removeEventListener('resize', this.updateTitleMaxWidth)
     },
     beforeMount () {
       if (!this.$slots['dropdown-numbers']) this.withMoveDropdown = false
@@ -264,7 +244,6 @@
   .block__title {
     text-overflow: ellipsis;
     font-weight: 600;
-    max-width: 45%;
     overflow: hidden;
     display: inline-block;
     white-space: nowrap;
@@ -275,6 +254,9 @@
 
   .block__toggle {
     flex-grow: 1;
+    display: flex;
+    max-width: 50%;
+    padding-right: 30px;
 
     .dropdown {
       display: inline-block;
@@ -291,6 +273,7 @@
     font-size: 0px;
     padding-top: (50px - 26px) / 2;
     padding-bottom: (50px - 26px) / 2;
+    margin-left: auto;
 
     > * {
       margin-left: 10px;
