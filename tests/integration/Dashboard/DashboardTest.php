@@ -1,9 +1,10 @@
 <?php
 
-namespace A17\Twill\Tests\Integration;
+namespace A17\Twill\Tests\Integration\Dashboard;
 
 use A17\Twill\Http\Controllers\Admin\DashboardController;
 use A17\Twill\Tests\Integration\Anonymous\AnonymousModule;
+use A17\Twill\Tests\Integration\TestCase;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Config;
 use Spatie\Activitylog\Models\Activity;
