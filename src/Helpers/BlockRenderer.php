@@ -74,12 +74,12 @@ class BlockRenderer
         string $editorName,
         string $parentEditorName = null
     ): Block {
-        $class = clone Block::getForComponent($data['type'], $data['is_repeater'] ?? false);
+        $class = clone Block::getForComponent($data['type'], $data['is_repeater'] ?? false)->newInstance();
 
         if (! $class) {
             $type = Str::replace('a17-block-', '', $data['type']);
             // It is important to always clone this as it would otherwise overwrite the renderData inside.
-            $class = clone Block::getForType($type, $data['is_repeater'] ?? false);
+            $class = clone Block::getForType($type, $data['is_repeater'] ?? false)->newInstance();
         }
 
         $type = $class->name;
@@ -230,7 +230,7 @@ class BlockRenderer
         $renderer = new self();
 
         /** @var \A17\Twill\Models\Block[] $blocks */
-        $blocks = $model->blocks()->whereEditorName($editorName)->whereParentId(null)->get();
+        $blocks = $model->blocks->where('editor_name', $editorName)->where('parent_id', null);
 
         foreach ($blocks as $block) {
             $data = self::getNestedBlocksForBlock($block, $model, $editorName);
@@ -246,14 +246,11 @@ class BlockRenderer
         string $editorName
     ): Block {
         // We do not know if the block is a repeater or block so we use the first match.
-        $class = Block::findFirstWithType($block->type);
-
-        /** @var \A17\Twill\Models\Block[] $childBlocks */
-        $childBlocks = A17Block::whereParentId($block->id)->orderBy('position')->get();
+        $class = Block::findFirstWithType($block->type)->newInstance();
 
         $children = [];
 
-        foreach ($childBlocks as $childBlock) {
+        foreach ($block->children ?? [] as $childBlock) {
             $children[] = self::getNestedBlocksForBlock(
                 block: $childBlock,
                 rootModel: $rootModel,
