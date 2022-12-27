@@ -53,16 +53,16 @@ class BlockRenderer
         array $data = [],
     ): string {
         $viewResult = [];
-        $originalData = $data;
         /** @var Block $block */
         foreach ($this->rootBlocks as $block) {
-            $data = $originalData;
             if ($block->componentClass) {
-                $data['block'] = $block->renderData->block;
-                $data['renderData'] = $block->renderData;
-                $data['inEditor'] = $this->inEditor;
+                $component = $block->componentClass::forRendering(
+                    $block->renderData->block,
+                    $block->renderData,
+                    $this->inEditor
+                );
 
-                $viewResult[] = (new $block->componentClass)->render()->with($data);
+                $viewResult[] = $component->render()->with(array_merge($data, $component->data()));
             } else {
                 $viewResult[] = $block->renderView($blockViewMappings, $data, $this->inEditor);
             }
