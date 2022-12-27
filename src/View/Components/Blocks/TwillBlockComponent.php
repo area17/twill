@@ -43,8 +43,10 @@ abstract class TwillBlockComponent extends Component
 
     abstract public function getForm(): Form;
 
-    final public function render(): View
+    final public function renderForm(): View
     {
-        return view('twill::partials.form.renderer.block_form', ['fields' => $this->getForm()]);
+        return view('twill::partials.form.renderer.block_form', [
+            'fields' => $this->getForm()->renderForBlocks()
+        ]);
     }
 }

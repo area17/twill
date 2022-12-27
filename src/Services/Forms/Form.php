@@ -11,6 +11,7 @@ class Form extends Collection
 
     private ?Form $sideForm = null;
     private bool $isCreate = false;
+    private bool $forBlocks = false;
 
     public function withFieldSets(Fieldsets $fieldsets): self
     {
@@ -68,6 +69,18 @@ class Form extends Collection
         $viewWithData['renderFields'] = $this;
 
         return $viewWithData;
+    }
+
+    public function forBlocks(): bool
+    {
+        return $this->forBlocks;
+    }
+
+    public function renderForBlocks(bool $renderForBlocks = true): self
+    {
+        $this->forBlocks = $renderForBlocks;
+
+        return $this;
     }
 
     public function hasForm(): bool

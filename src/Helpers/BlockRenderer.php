@@ -53,9 +53,19 @@ class BlockRenderer
         array $data = [],
     ): string {
         $viewResult = [];
+        $originalData = $data;
         /** @var Block $block */
         foreach ($this->rootBlocks as $block) {
-            $viewResult[] = $block->renderView($blockViewMappings, $data, $this->inEditor);
+            $data = $originalData;
+            if ($block->componentClass) {
+                $data['block'] = $block->renderData->block;
+                $data['renderData'] = $block->renderData;
+                $data['inEditor'] = $this->inEditor;
+
+                $viewResult[] = (new $block->componentClass)->render()->with($data);
+            } else {
+                $viewResult[] = $block->renderView($blockViewMappings, $data, $this->inEditor);
+            }
         }
 
         return implode('', $viewResult);

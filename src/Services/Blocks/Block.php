@@ -223,7 +223,7 @@ class Block
     /**
      * Block constructor.
      * @param Symfony\Component\Finder\SplFileInfo|null $file
-     * @param strign|null $type
+     * @param string|null $type
      * @param $source
      * @param $name
      * @param string $renderNamespace
@@ -594,7 +594,7 @@ class Block
     {
         View::share('TwillUntilConsumed', ['renderForBlocks' => true]);
         if ($this->componentClass) {
-            $block = (new $this->componentClass)->render();
+            $block = (new $this->componentClass)->renderForm();
         }
         else {
             $block = BladeCompiler::render(
