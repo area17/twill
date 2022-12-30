@@ -3,9 +3,11 @@
 namespace A17\Twill\View\Components\Blocks;
 
 use A17\Twill\Models\Block;
+use A17\Twill\Services\Blocks\Block as A17Block;
 use A17\Twill\Services\Blocks\RenderData;
 use A17\Twill\Services\Forms\Form;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
 
@@ -39,6 +41,14 @@ abstract class TwillBlockComponent extends Component
     public function translatedInput(string $fieldName): mixed
     {
         return $this->block->translatedInput($fieldName);
+    }
+
+    /**
+     * @return Collection<A17Block>
+     */
+    public function repeater(string $repeaterName): Collection
+    {
+        return collect($this->renderData->children)->where('name', $repeaterName);
     }
 
     /**
