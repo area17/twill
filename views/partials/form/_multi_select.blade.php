@@ -1,4 +1,5 @@
 @php
+    $options = $options ?? [];
     $options = is_object($options) && method_exists($options, 'map') ? $options->map(function($label, $value) {
         return [
             'value' => $value,
@@ -50,6 +51,9 @@
         @if ($endpoint ?? false) endpoint="{{ $endpoint }}" @endif
         :multiple="true"
         in-store="inputValue"
+        @if ($taggable ?? false) taggable="{{ $taggable }}" @endif
+        @if ($searchable ?? false) searchable="{{ $searchable }}" @endif
+        @if ($pushTags ?? false) pushTags="{{ $pushTags }}" @endif
     >
         @if($addNew)
             <div slot="addModal">
@@ -60,10 +64,10 @@
 @endif
 
 @unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
-@push('vuexStore')
-    window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
+    @push('vuexStore')
+        window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
         name: '{{ $name }}',
         value: {!! json_encode(isset($item) && isset($item->$name) ? Arr::pluck($item->$name, 'id') : $formFieldsValue) !!}
-    })
-@endpush
+        })
+    @endpush
 @endunless
