@@ -6,10 +6,11 @@ use Laravel\Dusk\Browser;
 
 class CapsuleSingletonTest extends BrowserTestCase
 {
-    public ?string $example = 'tests-modules';
+    public ?string $example = 'tests-capsules';
 
     public function testCapsuleAutoSeeds(): void
     {
+        $this->artisan('twill:update');
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->superAdmin, 'twill_users');
             $browser->visitTwill();
