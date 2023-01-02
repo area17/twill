@@ -10,7 +10,7 @@ class MakeSingletonTest extends TestCase
     {
         $this->assertExitCodeIsGood(
             $this->artisan('twill:make:singleton', [
-                'moduleName' => 'homepage',
+                'moduleName' => 'homepager',
                 '--hasBlocks' => true,
                 '--hasTranslation' => true,
                 '--hasSlug' => true,
@@ -22,11 +22,11 @@ class MakeSingletonTest extends TestCase
         );
 
         $this->assertFileExists(
-            twill_path('Http/Controllers/Twill/HomepageController.php')
+            twill_path('Http/Controllers/Twill/HomepagerController.php')
         );
 
         $this->assertIsObject(
-            $this->app->make(\App\Http\Controllers\Twill\HomepageController::class)
+            $this->app->make(\App\Http\Controllers\Twill\HomepagerController::class)
         );
     }
 }
