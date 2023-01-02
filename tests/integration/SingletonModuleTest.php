@@ -32,7 +32,6 @@ class SingletonModuleTest extends TestCase
 
     public function testSingletonNavigationItem(): void
     {
-        ray(config('twill-navigation'));
         $this->createContactPage();
 
         $this->httpRequestAssert('/twill', 'GET');
