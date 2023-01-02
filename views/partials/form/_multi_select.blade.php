@@ -33,6 +33,9 @@
         @if ($disabled ?? false) :disabled="true" @endif
         :multiple="true"
         in-store="inputValue"
+        @if ($taggable ?? false) taggable="{{ $taggable }}" @endif
+        @if ($searchable ?? false) searchable="{{ $searchable }}" @endif
+        @if ($pushTags ?? false) pushTags="{{ $pushTags }}" @endif
     >
         @if($addNew)
             <div slot="addModal">
