@@ -1,9 +1,9 @@
-<?php 
+<?php
 
 return [
     'capsules' => [
         'list' => [
-            0 => [
+            'posts' => [
                 'name' => 'Posts',
                 'enabled' => true,
             ],
