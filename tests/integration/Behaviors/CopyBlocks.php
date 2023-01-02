@@ -66,7 +66,7 @@ trait CopyBlocks
                 }
 
                 if ($this->files->exists($destination)) {
-                    $this->files->delete($destination);
+                    /* $this->files->delete($destination); */
                 }
 
                 $this->files->copy($source, $destination);

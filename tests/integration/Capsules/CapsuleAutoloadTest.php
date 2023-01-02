@@ -1,7 +1,8 @@
 <?php
 
-namespace A17\Twill\Tests\Integration;
+namespace A17\Twill\Tests\Integration\Capsules;
 
+use A17\Twill\Tests\Integration\TestCase;
 use App\Twill\Capsules\Posts\PostsCapsuleServiceProvider;
 
 class CapsuleAutoloadTest extends TestCase
