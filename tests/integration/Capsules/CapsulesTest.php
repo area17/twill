@@ -1,12 +1,13 @@
 <?php
 
-namespace A17\Twill\Tests\Integration;
+namespace A17\Twill\Tests\Integration\Capsules;
 
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Facades\TwillRoutes;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use A17\Twill\Tests\Integration\TestCase;
 
 class CapsulesTest extends TestCase
 {
