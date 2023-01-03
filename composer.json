@@ -40,7 +40,7 @@
     "myclabs/php-enum": "^1.5",
     "pragmarx/google2fa-qrcode": "^1.0|^2.0",
     "spatie/laravel-activitylog": "^4.0",
-    "spatie/laravel-analytics": "^3.0|^4.0",
+    "spatie/laravel-analytics": "^4.0",
     "spatie/once": "^2.0|^3.0"
   },
   "require-dev": {
