@@ -97,7 +97,7 @@ class BlockRenderer
         }
 
         // Load the original block if it exists or make a new one then fill it with the data from the request.
-        $block = A17Block::findOrNew($data['id'] ?? null);
+        $block = twillModel('block')::findOrNew($data['id'] ?? null);
         $block->fill(
             [
                 'type' => $type,
