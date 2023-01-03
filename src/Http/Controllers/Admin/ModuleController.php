@@ -460,7 +460,7 @@ abstract class ModuleController extends Controller
      */
     public function edit($id, $submoduleId = null)
     {
-        $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+        $parameter = Str::singular(str_after_last($this->moduleName, '.'));
         $id = $this->request->route()->parameter($parameter, $id);
         $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
@@ -529,7 +529,7 @@ abstract class ModuleController extends Controller
      */
     public function update($id, $submoduleId = null)
     {
-        $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+        $parameter = Str::singular(str_after_last($this->moduleName, '.'));
         $id = $this->request->route()->parameter($parameter, $id);
         $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
@@ -727,7 +727,7 @@ abstract class ModuleController extends Controller
      */
     public function duplicate($id, $submoduleId = null)
     {
-        $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+        $parameter = Str::singular(str_after_last($this->moduleName, '.'));
         $id = $this->request->route()->parameter($parameter, $id);
         $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
@@ -757,7 +757,7 @@ abstract class ModuleController extends Controller
      */
     public function destroy($id, $submoduleId = null)
     {
-        $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
+        $parameter = Str::singular(str_after_last($this->moduleName, '.'));
         $id = $this->request->route()->parameter($parameter, $id);
         $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
