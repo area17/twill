@@ -2,6 +2,10 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.12.3 (2023-01-03)
+
+- Restore laravel 5.8 support.
+
 ## 2.12.2 (2022-12-20)
 
 ### Bugfixes
