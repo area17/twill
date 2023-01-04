@@ -54,6 +54,10 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+      - name: Set ownership
+        run: |
+          # this is to fix GIT not liking owner of the checkout dir
+          chown -R $(id -u):$(id -g) $PWD
       - name: "Check for BC breaks"
         uses: docker://nyholm/roave-bc-check-ga
 
