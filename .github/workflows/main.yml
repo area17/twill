@@ -56,8 +56,7 @@ jobs:
           fetch-depth: 0
       - name: Set ownership
         run: |
-          # this is to fix GIT not liking owner of the checkout dir
-          chown -R $(id -u):$(id -g) $PWD
+          git config --global --add safe.directory /github/workspace
       - name: "Check for BC breaks"
         uses: docker://nyholm/roave-bc-check-ga
 
