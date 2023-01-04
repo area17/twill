@@ -48,17 +48,19 @@ jobs:
         run: vendor/bin/phpcs
 
   roave-backwards-compatibility-check:
-    name: Roave Backwards Compatibility Check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Set ownership
-        run: |
-          git config --global --add safe.directory /github/workspace
+      - name: "Install PHP"
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.1"
+      - name: "Install dependencies"
+        run: "composer install"
       - name: "Check for BC breaks"
-        uses: docker://nyholm/roave-bc-check-ga
+        run: "vendor/bin/roave-backward-compatibility-check"
 
   test:
     timeout-minutes: 15

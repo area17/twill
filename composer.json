@@ -44,6 +44,7 @@
     "spatie/once": "^3.0"
   },
   "require-dev": {
+    "area17/phptorch": "dev-main",
     "chillerlan/php-qrcode": "~4.0",
     "friendsofphp/php-cs-fixer": "^3.0",
     "kalnoy/nestedset": "^6.0",
@@ -54,10 +55,10 @@
     "orchestra/testbench-dusk": "^7.8",
     "phpunit/phpunit": "~9.0",
     "rector/rector": "^0.12.15",
+    "roave/backward-compatibility-check": "^8.2",
     "spatie/invade": "^1.1",
     "squizlabs/php_codesniffer": "*",
-    "torchlight/torchlight-commonmark": "^0.5",
-    "area17/phptorch": "dev-main"
+    "torchlight/torchlight-commonmark": "^0.5"
   },
   "autoload": {
     "psr-4": {
