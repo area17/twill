@@ -171,6 +171,12 @@
       })
     },
     methods: {
+      setOpened: function () {
+        const allClosed = this.$refs.blockList && this.$refs.blockList.every((block) => !block.visible)
+        if (allClosed) {
+          this.opened = false
+        }
+      },
       addBlock: function () {
         this.$store.commit(FORM.ADD_FORM_BLOCK, { type: this.type, name: this.name })
 
@@ -215,8 +221,13 @@
       }
     },
     mounted: function () {
-      this.$nextTick(() => {
-        this.collapseAllBlocks()
+      // if there are blocks, these should be all collapse by default
+      this.$nextTick(function () {
+        if (this.$refs.blockList && this.blocks && this.blocks.length < 4) {
+          this.$refs.blockList.forEach((block) => block.toggleExpand())
+        }
+
+        this.setOpened()
       })
     }
   }
