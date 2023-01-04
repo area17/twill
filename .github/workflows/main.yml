@@ -62,7 +62,7 @@ jobs:
       - name: "Install checker"
         run: "composer require roave/backward-compatibility-check --dev"
       - name: "Check for BC breaks"
-        run: "vendor/bin/roave-backward-compatibility-check"
+        run: "vendor/bin/roave-backward-compatibility-check --format=github-actions --from=3.0.0-rc1"
 
   test:
     timeout-minutes: 15
