@@ -2,6 +2,10 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.12.4 (2023-01-04)
+
+- Revert listAll change as it may conflict with method overrides.
+
 ## 2.12.3 (2023-01-03)
 
 - Restore laravel 5.8 support.
