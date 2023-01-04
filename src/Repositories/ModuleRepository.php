@@ -166,7 +166,7 @@ abstract class ModuleRepository
      * @param string $pluckby
      * @return \Illuminate\Support\Collection
      */
-    public function listAll($column = 'title', $orders = [], $exceptId = null, $pluckby = 'id')
+    public function listAll($column = 'title', $orders = [], $exceptId = null, $pluckby = 'id', $barfoo = 'break')
     {
         $query = $this->model->newQuery();
 
