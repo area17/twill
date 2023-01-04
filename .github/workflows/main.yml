@@ -24,7 +24,7 @@ jobs:
       - name: Require dep
         run: composer require kalnoy/nestedset
       - name: Check for BC breaks
-        run: vendor/bin/roave-backward-compatibility-check --format=github-actions --from=2.12.3
+        run: vendor/bin/roave-backward-compatibility-check --format=github-actions --from=2.12.3 --install-development-dependencies
 
   test:
     runs-on: ${{ matrix.os }}
