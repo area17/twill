@@ -55,7 +55,6 @@
     "orchestra/testbench-dusk": "^7.8",
     "phpunit/phpunit": "~9.0",
     "rector/rector": "^0.12.15",
-    "roave/backward-compatibility-check": "^8.2",
     "spatie/invade": "^1.1",
     "squizlabs/php_codesniffer": "*",
     "torchlight/torchlight-commonmark": "^0.5"
