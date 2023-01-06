@@ -28,9 +28,9 @@ abstract class TwillBlockComponent extends Component
         return $instance;
     }
 
-    public function image(string $role, string $crop = 'default'): ?string
+    public function image(string $role, string $crop = 'default', array $params = []): ?string
     {
-        return $this->block->image($role, $crop);
+        return $this->block->image($role, $crop, $params);
     }
 
     public function input(string $fieldName): mixed

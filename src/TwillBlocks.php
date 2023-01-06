@@ -6,7 +6,6 @@ use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\BlockCollection;
 use A17\Twill\View\Components\Blocks\TwillBlockComponent;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -137,7 +136,7 @@ class TwillBlocks
                 ]);
 
                 foreach ($disk->allFiles() as $file) {
-                    $class = $namespace . '\\' . Str::before($file, '.');
+                    $class = $namespace . '\\' . Str::replace('/', '\\', Str::before($file, '.'));
                     if (is_subclass_of($class, TwillBlockComponent::class)) {
                         $this->blockCollection->add(
                             Block::forComponent($class)
