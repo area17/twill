@@ -195,6 +195,9 @@
         } else {
           this.$root.$refs.browser.open(this.endpoints.length <= 0)
         }
+      },
+      destroyValue: function () {
+        this.deleteAll()
       }
     },
     watch: {

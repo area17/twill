@@ -1,7 +1,7 @@
 <template>
   <div>
     <template v-if="!keepAlive">
-      <div v-if="open">
+      <div v-if="open" ref="fieldContainer">
         <slot></slot>
       </div>
     </template>
@@ -81,6 +81,32 @@
     },
     methods: {
       toggleVisibility: function (value) {
+
+        if (this.$refs.fieldContainer) {
+          this.$slots.default.forEach((child) => {
+            // Base input fields.
+            if (
+              child.componentInstance !== undefined &&
+              child.componentInstance.$refs &&
+              child.componentInstance.$refs.field
+            ) {
+              if (child.componentInstance.$refs.field[0]) {
+                child.componentInstance.$refs.field[0].destroyValue()
+              }
+            }
+            // Special fields such as browsers.
+            else if (
+              child.componentInstance !== undefined
+            ) {
+              child.componentInstance.$slots.default.forEach((subChild) => {
+                if (subChild.componentInstance.destroyValue) {
+                  subChild.componentInstance.destroyValue()
+                }
+              })
+            }
+          })
+        }
+
         if (this.isBrowser) {
           const browserLength = (value && value.length) ?? 0
           if (this.matchEmptyBrowser && (browserLength === 0)) {

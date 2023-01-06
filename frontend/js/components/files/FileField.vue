@@ -133,6 +133,9 @@
           name: this.name,
           index: index
         })
+      },
+      destroyValue: function () {
+        this.deleteAll()
       }
     }
   }
