@@ -9,6 +9,7 @@ class BladePartial
 {
     protected function __construct(
         protected ?string $view = null,
+        protected ?array $params = [],
     ) {
     }
 
@@ -17,9 +18,10 @@ class BladePartial
         return new self();
     }
 
-    public function view(string $view): static
+    public function view(string $view, array $params = []): static
     {
         $this->view = $view;
+        $this->params = $params;
 
         return $this;
     }
@@ -30,13 +32,19 @@ class BladePartial
             return null;
         }
 
-        $form = ViewFacade::shared("form");
+        $form = ViewFacade::shared('form');
 
-        return ViewFacade::make($this->view, [
-            'item' => $form['item'] ?? null,
-            'form_fields' => $form['form_fields'] ?? [],
-            'formModuleName' => $form['moduleName'] ?? null,
-            'routePrefix' => $form['routePrefix'] ?? null,
-        ]);
+        return ViewFacade::make(
+            $this->view,
+            array_merge(
+            $this->params,
+            [
+                'item' => $form['item'] ?? null,
+                'form_fields' => $form['form_fields'] ?? [],
+                'formModuleName' => $form['moduleName'] ?? null,
+                'routePrefix' => $form['routePrefix'] ?? null,
+            ]
+        )
+        );
     }
 }
