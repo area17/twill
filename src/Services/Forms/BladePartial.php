@@ -37,14 +37,14 @@ class BladePartial
         return ViewFacade::make(
             $this->view,
             array_merge(
-            $this->params,
-            [
-                'item' => $form['item'] ?? null,
-                'form_fields' => $form['form_fields'] ?? [],
-                'formModuleName' => $form['moduleName'] ?? null,
-                'routePrefix' => $form['routePrefix'] ?? null,
-            ]
-        )
+                [
+                    'item' => $form['item'] ?? null,
+                    'form_fields' => $form['form_fields'] ?? [],
+                    'formModuleName' => $form['moduleName'] ?? null,
+                    'routePrefix' => $form['routePrefix'] ?? null,
+                ],
+                $this->params
+            )
         );
     }
 }
