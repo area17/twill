@@ -1,5 +1,5 @@
 <nav
-    class="sidebar w-3-cols bg-white sticky top-0 h-screen pr-32 border-r-[1px] border-grey overflow-x-hidden overflow-y-auto"
+    class="sidebar w-3-cols xxl:w-2-cols bg-white sticky top-[80px] h-screen-minus-header pr-32 border-r-[1px] border-grey overflow-x-hidden overflow-y-auto"
     x-bind:inert="if (isMobile) {
     if (openNav) {
         return false
@@ -54,13 +54,18 @@
                             </div>
                             @if (!empty($item['items'] ?? []))
                                 <ul class="@if ($open) block @else hidden @endif ml-24 mt-12"
-                                    x-bind:class="{ 'hidden': !open }"
-                                    @foreach ($item['items'] ?? [] as $item) @php $active=$url===$item['url']; @endphp
+                                    x-bind:class="{ 'hidden': !open }">
+                                    @foreach ($item['items'] ?? [] as $item)
+                                        @php $active = $url === $item['url']; @endphp
                                         <li class="relative mt-8">
-                                            <a class="block w-full pl-3.5 before:pointer-events-none text-black no-underline hover:text-purple ___inline_directive______________________________________2___" href="{{ $item['url'] ?? '#' }}">{{ $item['title'] ?? '' }}</a>
+                                            <a
+                                              class="block w-full pl-3.5 before:pointer-events-none text-black no-underline hover:text-purple @if($active) font-medium text-purple @endif"
+                                              href="{{ $item['url'] ?? '#' }}">
+                                              {{ $item['title'] ?? '' }}
+                                            </a>
                                         </li>
                                     @endforeach
-                                    </ul>
+                                </ul>
                             @endif
                         </li>
                     @endforeach

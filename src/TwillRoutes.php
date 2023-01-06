@@ -18,7 +18,19 @@ class TwillRoutes
 
     public function getModuleRouteFromRegistry(string $module): string
     {
-        return $this->registry[$module];
+        if (isset($this->registry[$module])) {
+            return $this->registry[$module];
+        }
+
+        // Find and cache a match.
+        /** @var $route \Illuminate\Support\Facades\Route */
+        foreach (app('router')->getRoutes()->getRoutes() as $route) {
+            if (isset($route->action['twill']['slug']) && $route->action['twill']['slug'] === $module) {
+                return $route->action['twill']['customRoutePrefix'];
+            }
+        }
+
+        return '';
     }
 
     /**
@@ -117,11 +129,19 @@ class TwillRoutes
             ];
 
             if (in_array($route, ['browser', 'tags'])) {
-                Route::get($routeSlug, $mapping);
+                $route = Route::get($routeSlug, $mapping);
+                $route->action['twill'] = [
+                    'customRoutePrefix' => $customRoutePrefix,
+                    'slug' => $slug,
+                ];
             }
 
             if ($route === 'restoreRevision') {
-                Route::get($routeSlug . '/{id}', $mapping);
+                $route = Route::get($routeSlug . '/{id}', $mapping);
+                $route->action['twill'] = [
+                    'customRoutePrefix' => $customRoutePrefix,
+                    'slug' => $slug,
+                ];
             }
 
             if (
@@ -132,11 +152,19 @@ class TwillRoutes
                     'forceDelete',
                 ])
             ) {
-                Route::put($routeSlug, $mapping);
+                $route = Route::put($routeSlug, $mapping);
+                $route->action['twill'] = [
+                    'customRoutePrefix' => $customRoutePrefix,
+                    'slug' => $slug,
+                ];
             }
 
             if ($route === 'duplicate' || $route === 'preview') {
-                Route::put($routeSlug . '/{id}', $mapping);
+                $route = Route::put($routeSlug . '/{id}', $mapping);
+                $route->action['twill'] = [
+                    'customRoutePrefix' => $customRoutePrefix,
+                    'slug' => $slug,
+                ];
             }
 
             if (
@@ -149,19 +177,27 @@ class TwillRoutes
                     'bulkForceDelete',
                 ])
             ) {
-                Route::post($routeSlug, $mapping);
+                $route = Route::post($routeSlug, $mapping);
+                $route->action['twill'] = [
+                    'customRoutePrefix' => $customRoutePrefix,
+                    'slug' => $slug,
+                ];
             }
         }
 
         if ($resource) {
             Route::group(
                 ['as' => $resourceCustomGroupPrefix],
-                function () use ($slug, $className, $resource_options) {
-                    Route::resource(
+                function () use ($slug, $className, $resource_options, $customRoutePrefix) {
+                    $route = Route::resource(
                         $slug,
                         "{$className}Controller",
                         $resource_options
                     );
+                    $route->action['twill'] = [
+                        'customRoutePrefix' => $customRoutePrefix,
+                        'slug' => $slug,
+                    ];
                 }
             );
         }

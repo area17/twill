@@ -21,6 +21,7 @@ class Image extends TableColumn
     {
         $column = parent::make();
         $column->specificType = 'thumbnail';
+        $column->shrink();
 
         return $column;
     }

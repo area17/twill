@@ -68,7 +68,7 @@ abstract class ModuleRepository
             $query = $filter->applyFilter($query);
         }
 
-        if (!$forcePagination && $this->model instanceof Sortable) {
+        if (! $forcePagination && $this->model instanceof Sortable) {
             return $query->ordered()->get();
         }
 
@@ -123,8 +123,15 @@ abstract class ModuleRepository
         });
     }
 
-    public function listAll(string $column = 'title', array $orders = [], int|string|null $exceptId = null): Collection
-    {
+    /**
+     * @return Collection<int,TwillModelContract>
+     */
+    public function listAll(
+        string $column = 'title',
+        array $orders = [],
+        int|string|null $exceptId = null,
+        string $pluckBy = 'id'
+    ): Collection {
         $query = $this->model::query();
 
         if ($exceptId) {
@@ -141,7 +148,7 @@ abstract class ModuleRepository
             $query = $query->withTranslation();
         }
 
-        return $query->get()->pluck($column, 'id');
+        return $query->get()->pluck($column, $pluckBy);
     }
 
     public function cmsSearch(string $search, array $fields = []): Collection
@@ -202,7 +209,7 @@ abstract class ModuleRepository
     {
         $model = $this->model->where($attributes)->first();
 
-        if (!$model) {
+        if (! $model) {
             return $this->create($fields);
         }
 
@@ -307,7 +314,7 @@ abstract class ModuleRepository
     {
         return DB::transaction(function () use ($id) {
             if ($object = $this->model->find($id)) {
-                if (!method_exists($object, 'canDeleteSafely') || $object->canDeleteSafely()) {
+                if (! method_exists($object, 'canDeleteSafely') || $object->canDeleteSafely()) {
                     $object->delete();
                     $this->afterDelete($object);
 
@@ -415,22 +422,22 @@ abstract class ModuleRepository
     {
         if (property_exists($this->model, 'checkboxes')) {
             foreach ($this->model->checkboxes as $field) {
-                if (!$this->shouldIgnoreFieldBeforeSave($field)) {
-                    $fields[$field] = isset($fields[$field]) && !empty($fields[$field]);
+                if (! $this->shouldIgnoreFieldBeforeSave($field)) {
+                    $fields[$field] = isset($fields[$field]) && ! empty($fields[$field]);
                 }
             }
         }
 
         if (property_exists($this->model, 'nullable')) {
             foreach ($this->model->nullable as $field) {
-                if (!isset($fields[$field]) && !$this->shouldIgnoreFieldBeforeSave($field)) {
+                if (! isset($fields[$field]) && ! $this->shouldIgnoreFieldBeforeSave($field)) {
                     $fields[$field] = null;
                 }
             }
         }
 
         foreach ($fields as $key => $value) {
-            if (!$this->shouldIgnoreFieldBeforeSave($key)) {
+            if (! $this->shouldIgnoreFieldBeforeSave($key)) {
                 if ($value === []) {
                     $fields[$key] = null;
                 }
@@ -444,6 +451,9 @@ abstract class ModuleRepository
         return $fields;
     }
 
+    /**
+     * @return array|<missing>
+     */
     public function prepareFieldsBeforeCreate(array $fields): array
     {
         $fields = $this->cleanupFields(null, $fields);
@@ -455,6 +465,9 @@ abstract class ModuleRepository
         return $fields;
     }
 
+    /**
+     * @return array|<missing>
+     */
     public function prepareFieldsBeforeSave(TwillModelContract $object, array $fields): array
     {
         $fields = $this->cleanupFields($object, $fields);
@@ -595,7 +608,7 @@ abstract class ModuleRepository
             }
 
             foreach ($object->$relationship as $relationshipObject) {
-                if (!in_array($relationshipObject->$attribute, $fields[$formField])) {
+                if (! in_array($relationshipObject->$attribute, $fields[$formField])) {
                     $relationshipObject->delete();
                 }
             }
@@ -666,7 +679,7 @@ abstract class ModuleRepository
         string $relation,
         string|ModuleRepository|null $modelOrRepository = null
     ): ModuleRepository {
-        if (!$modelOrRepository) {
+        if (! $modelOrRepository) {
             if (class_exists($relation) && (new $relation()) instanceof Model) {
                 $modelOrRepository = Str::afterLast($relation, '\\');
             } else {

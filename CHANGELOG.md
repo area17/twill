@@ -2,6 +2,27 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.0.0-rc1
+
+The first release candidate for Twill 3!
+
+### Features
+
+- Form builder now supports fieldsets, side forms, columns and more [`#1963`](https://github.com/area17/twill/pull/1963)
+- Blocks can now be cloned from within the editor [`#1912`](https://github.com/area17/twill/pull/1912)
+- Developer experience: Added a feature that can auto-login on development environments [`#1904`](https://github.com/area17/twill/pull/1904)
+
+### Improvements
+
+- A new slug implementation to have more consisten slug creation [`#1897`](https://github.com/area17/twill/pull/1897)
+- Various styling fixes
+- Improved defaults such as svg support
+- Improved documentation styling and generator
+
+### Bugfixes
+
+- Many issues have been resolved in since beta2.
+
 ## 3.0.0-beta2
 
 This is a stabilization release to prepare a first stable release.

@@ -148,7 +148,6 @@
         "xs": {
           "font-family": "var(--sans)",
           "font-weight": "500",
-          "text-transform": "uppercase",
           "font-size": "16",
           "line-height": "1.56",
           "font-smoothing": "true"
@@ -160,6 +159,15 @@
           "font-weight": "400",
           "font-size": "16",
           "line-height": "1.66",
+          "font-smoothing": "true"
+        }
+      },
+      "body-2": {
+        "xs": {
+          "font-family": "var(--sans)",
+          "font-weight": "400",
+          "font-size": "14",
+          "line-height": "1",
           "font-smoothing": "true"
         }
       },

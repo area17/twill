@@ -184,6 +184,11 @@ class Block
         return new self($file, $type, $source, $name, $renderNamespace);
     }
 
+    public function newInstance(): self
+    {
+        return new self($this->file, $this->type, $this->source, $this->name, $this->renderNamespace);
+    }
+
     /**
      * Gets the first match being a block or repeater.
      */

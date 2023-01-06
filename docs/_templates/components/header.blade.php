@@ -1,4 +1,4 @@
-<header class="header border-b-[1px] border-grey h-[80px]">
+<header class="header border-b-[1px] bg-white border-grey h-header sticky top-0 z-header">
     <div class="container flex justify-between items-center h-full">
         <a href="/index.html">
             <x-twilldocs::logo />

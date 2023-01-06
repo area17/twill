@@ -85,6 +85,7 @@ class ImageColumnTest extends ModulesTestBase
                 "html" => false,
                 "variation" => "square",
                 "specificType" => "thumbnail",
+                'shrink' => true,
             ],
             $column->toColumnArray()
         );
@@ -101,6 +102,7 @@ class ImageColumnTest extends ModulesTestBase
                 "html" => false,
                 "variation" => "rounded",
                 "specificType" => "thumbnail",
+                "shrink" => true,
             ],
             $column->toColumnArray()
         );

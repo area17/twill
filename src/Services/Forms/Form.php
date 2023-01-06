@@ -52,6 +52,11 @@ class Form extends Collection
         ])->toArray();
     }
 
+    public function hasFieldsInBaseFieldset(): bool
+    {
+        return !$this->isEmpty();
+    }
+
     public function formToRenderArray(): array
     {
         $viewWithData = ['isCreate' => $this->isCreate];
@@ -64,7 +69,7 @@ class Form extends Collection
             ])->toArray();
         }
 
-        $viewWithData['disableContentFieldset'] = $this->isEmpty();
+        $viewWithData['disableContentFieldset'] = !$this->hasFieldsInBaseFieldset();
 
         $viewWithData['renderFields'] = $this;
 
