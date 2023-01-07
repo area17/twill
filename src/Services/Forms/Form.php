@@ -5,7 +5,7 @@ namespace A17\Twill\Services\Forms;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\View\View;
 
-class Form extends Collection
+class Form extends Collection implements CanHaveSubfields
 {
     public ?Fieldsets $fieldsets = null;
 
@@ -42,7 +42,7 @@ class Form extends Collection
 
     public function getAdditionalFieldsets(): array
     {
-        if (!$this->fieldsets) {
+        if (! $this->fieldsets) {
             return [];
         }
 
@@ -54,7 +54,7 @@ class Form extends Collection
 
     public function hasFieldsInBaseFieldset(): bool
     {
-        return !$this->isEmpty();
+        return ! $this->isEmpty();
     }
 
     public function formToRenderArray(): array
@@ -69,7 +69,7 @@ class Form extends Collection
             ])->toArray();
         }
 
-        $viewWithData['disableContentFieldset'] = !$this->hasFieldsInBaseFieldset();
+        $viewWithData['disableContentFieldset'] = ! $this->hasFieldsInBaseFieldset();
 
         $viewWithData['renderFields'] = $this;
 
@@ -106,5 +106,31 @@ class Form extends Collection
     public function renderSideForm(): View
     {
         return view('twill::partials.form.renderer.base_form', $this->sideForm->formToRenderArray());
+    }
+
+    public function registerDynamicRepeaters(): void
+    {
+        // We have to loop over all of the fields/fieldsets.
+        foreach ($this as $field) {
+            if ($field instanceof InlineRepeater) {
+                $field->register();
+            }
+            if ($field instanceof CanHaveSubfields) {
+                $field->registerDynamicRepeaters();
+            }
+        }
+
+        if ($this->fieldsets) {
+            foreach ($this->fieldsets as $fieldset) {
+                foreach ($fieldset->fields as $field) {
+                    if ($field instanceof InlineRepeater) {
+                        $field->register();
+                    }
+                    if ($field instanceof CanHaveSubfields) {
+                        $field->registerDynamicRepeaters();
+                    }
+                }
+            }
+        }
     }
 }

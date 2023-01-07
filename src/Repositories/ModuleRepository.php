@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories;
 
 use A17\Twill\Exceptions\NoCapsuleFoundException;
+use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Behaviors\Sortable;
@@ -759,5 +760,10 @@ abstract class ModuleRepository
     public function isTranslatable($column): bool
     {
         return $this->model->isTranslatable($column);
+    }
+
+    public function getBaseModel(): TwillModelContract
+    {
+        return $this->model;
     }
 }

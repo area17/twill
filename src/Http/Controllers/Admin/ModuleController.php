@@ -3,7 +3,6 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Exceptions\NoCapsuleFoundException;
-use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Helpers\FlashLevel;
@@ -12,7 +11,6 @@ use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Contracts\TwillSchedulableModel;
 use A17\Twill\Models\Group;
 use A17\Twill\Repositories\ModuleRepository;
-use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Breadcrumbs\Breadcrumbs;
 use A17\Twill\Services\Forms\Fields\BaseFormField;
 use A17\Twill\Services\Forms\Fields\BlockEditor;
@@ -397,6 +395,9 @@ abstract class ModuleController extends Controller
 
             return $next($request);
         });
+
+        $this->getForm($this->repository->getBaseModel())->registerDynamicRepeaters();
+        $this->getSideFieldsets($this->repository->getBaseModel())->registerDynamicRepeaters();
 
         $this->searchColumns = [$this->titleColumnKey];
     }
@@ -2224,7 +2225,6 @@ abstract class ModuleController extends Controller
                     'blocks'
                 ) && !$this->disableEditor,
                 'blockPreviewUrl' => Route::has('twill.blocks.preview') ? URL::route('twill.blocks.preview') : '#',
-                'availableRepeaters' => $this->getRepeaterList()->toJson(),
                 'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
                 'submitOptions' => $this->getSubmitOptions($item),
                 'groupUserMapping' => $this->getGroupUserMapping(),
@@ -2649,16 +2649,6 @@ abstract class ModuleController extends Controller
         }
 
         return false;
-    }
-
-    /**
-     * @return Collection|Block[]
-     */
-    public function getRepeaterList()
-    {
-        return TwillBlocks::getBlockCollection()->getRepeaters()->mapWithKeys(function (Block $repeater) {
-            return [$repeater->name => $repeater->toList()];
-        });
     }
 
     /**

@@ -4,6 +4,8 @@ namespace A17\Twill;
 
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\BlockCollection;
+use A17\Twill\Services\Forms\Fields\BaseFormField;
+use A17\Twill\Services\Forms\InlineRepeater;
 use A17\Twill\View\Components\Blocks\TwillBlockComponent;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
@@ -33,6 +35,16 @@ class TwillBlocks
     public static $componentBlockNamespaces = [];
 
     /**
+     * @var array<string, InlineRepeater>
+     */
+    public static $dynamicRepeaters = [];
+
+    /**
+     * @var array
+     */
+    public static $loadedDynamicRepeaters = [];
+
+    /**
      * @return A17\Twill\Services\Blocks\BlockCollection
      */
     private $blockCollection;
@@ -58,6 +70,31 @@ class TwillBlocks
                 ];
             }
         }
+    }
+
+    public function registerDynamicRepeater(string $name, InlineRepeater $repeater): void
+    {
+        self::$dynamicRepeaters[$name] = $repeater;
+    }
+
+    public function discoverDynamicRepeaters(Collection $collection): void
+    {
+        /** @var Block $item */
+        foreach ($collection as $item) {
+            if ($item->componentClass) {
+                $component = new $item->componentClass();
+                $component->getForm()->registerDynamicRepeaters();
+            }
+        }
+    }
+
+    public function getAvailableRepeaters(): string
+    {
+        $baseList = $this->getBlockCollection()->getRepeaters()->mapWithKeys(function (Block $repeater) {
+            return [$repeater->name => $repeater->toList()];
+        });
+
+        return $baseList->toJson();
     }
 
     public function registerComponentBlocks(string $namespace): void
@@ -145,6 +182,15 @@ class TwillBlocks
                 }
 
                 unset(self::$componentBlockNamespaces[$namespace]);
+            }
+        }
+
+        $this->discoverDynamicRepeaters($this->blockCollection);
+
+        foreach (self::$dynamicRepeaters as $name => $dynamicRepeater) {
+            if (! isset(self::$loadedDynamicRepeaters[$name])) {
+                $this->blockCollection->add($dynamicRepeater->asBlock());
+                self::$loadedDynamicRepeaters[$name] = true;
             }
         }
 

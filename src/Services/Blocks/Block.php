@@ -3,6 +3,7 @@
 namespace A17\Twill\Services\Blocks;
 
 use A17\Twill\Facades\TwillBlocks;
+use A17\Twill\Services\Forms\InlineRepeater;
 use A17\Twill\View\Components\Blocks\TwillBlockComponent;
 use Exception;
 use Illuminate\Support\Facades\View;
@@ -137,6 +138,8 @@ class Block
      */
     public ?string $componentClass = null;
 
+    public ?InlineRepeater $inlineRepeater = null;
+
     /**
      * @param TwillBlockComponent $componentClass
      */
@@ -233,10 +236,18 @@ class Block
      * @param $name
      * @param string $renderNamespace
      *   Mainly for packages, but this will get the preview/render view file from that namespace.
+     * @param InlineRepeater $inlineRepeater used when registering dynamic repeaters.
      * @throws \Exception
      */
-    public function __construct($file, $type, $source, $name = null, ?string $renderNamespace = null, ?string $componentClass = null)
-    {
+    public function __construct(
+        $file,
+        $type,
+        $source,
+        $name = null,
+        ?string $renderNamespace = null,
+        ?string $componentClass = null,
+        ?InlineRepeater $inlineRepeater = null
+    ) {
         $this->file = $file;
 
         $this->type = $type;
@@ -245,7 +256,9 @@ class Block
 
         $this->componentClass = $componentClass;
 
-        if (!$this->componentClass) {
+        $this->inlineRepeater = $inlineRepeater;
+
+        if (! $this->componentClass) {
             $this->fileName = $this->file ? $this->file->getPathName() : 'Custom vue file';
         }
 
@@ -261,7 +274,9 @@ class Block
             $this->type = self::TYPE_REPEATER;
         }
 
-        $this->parse();
+        if (! $inlineRepeater) {
+            $this->parse();
+        }
     }
 
     /**
@@ -348,7 +363,7 @@ class Block
      */
     public function parse()
     {
-        $contents = $this->file ? file_get_contents((string) $this->file->getPathName()) : '';
+        $contents = $this->file ? file_get_contents((string)$this->file->getPathName()) : '';
 
         $this->title = $this->parseProperty('title', $contents, $this->name);
         $this->trigger = $this->parseProperty(
@@ -357,11 +372,14 @@ class Block
             $this->name,
             $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.add-item') : null
         );
-        $this->selectTrigger = $this->parseProperty('SelectTrigger', $contents, $this->name, $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.select-existing') : null);
-        $this->max = (int) $this->parseProperty('max', $contents, $this->name, 999);
+        $this->selectTrigger = $this->parseProperty('SelectTrigger',
+            $contents,
+            $this->name,
+            $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.select-existing') : null);
+        $this->max = (int)$this->parseProperty('max', $contents, $this->name, 999);
         $this->group = $this->parseProperty('group', $contents, $this->name, 'app');
         $this->icon = $this->parseProperty('icon', $contents, $this->name, 'text');
-        $this->compiled = (bool) $this->parseProperty('compiled', $contents, $this->name, false);
+        $this->compiled = (bool)$this->parseProperty('compiled', $contents, $this->name, false);
         $this->component = $this->parseProperty('component', $contents, $this->name, "a17-block-{$this->name}");
         $this->isNewFormat = $this->isNewFormat($contents);
         $this->contents = $contents;
@@ -376,7 +394,7 @@ class Block
 
         $this->parseMixedProperty('titleField', $contents, $this->name, function ($value, $options) {
             $this->titleField = $value;
-            $this->hideTitlePrefix = (bool) ($options['hidePrefix'] ?? false);
+            $this->hideTitlePrefix = (bool)($options['hidePrefix'] ?? false);
         });
 
         return $this;
@@ -564,6 +582,10 @@ class Block
             return $default;
         }
 
+        if ($this->{$property} !== null) {
+            return $this->{$property};
+        }
+
         // Title is mandatory
         throw new Exception(
             "Block {$blockName} does not exists or the mandatory property '{$property}' " .
@@ -600,8 +622,9 @@ class Block
         View::share('TwillUntilConsumed', ['renderForBlocks' => true]);
         if ($this->componentClass) {
             $block = (new $this->componentClass)->renderForm();
-        }
-        else {
+        } elseif ($this->inlineRepeater) {
+            $block = $this->inlineRepeater->renderForm();
+        } else {
             $block = BladeCompiler::render(
                 $this->contents,
                 [

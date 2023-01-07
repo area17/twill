@@ -29,7 +29,7 @@ class Repeater extends BaseFormField
     {
         $this->type = $type;
 
-        if (!$this->name) {
+        if (! $this->name) {
             $this->name($type);
         }
 

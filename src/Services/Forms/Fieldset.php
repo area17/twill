@@ -5,7 +5,7 @@ namespace A17\Twill\Services\Forms;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-class Fieldset
+class Fieldset implements CanHaveSubfields
 {
     protected function __construct(
         public ?string $title = null,
@@ -72,5 +72,17 @@ class Fieldset
         $this->fields = collect($fields);
 
         return $this;
+    }
+
+    public function registerDynamicRepeaters(): void
+    {
+        foreach ($this as $field) {
+            if ($field instanceof InlineRepeater) {
+                $field->register();
+            }
+            if ($field instanceof CanHaveSubfields) {
+                $field->registerDynamicRepeaters();
+            }
+        }
     }
 }
