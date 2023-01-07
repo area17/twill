@@ -9,9 +9,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
-/**
- * @todo: Needs correct context if inside a block or not.
- */
 class InlineRepeater implements CanHaveSubfields
 {
     protected function __construct(
