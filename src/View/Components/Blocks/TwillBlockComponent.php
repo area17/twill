@@ -17,6 +17,10 @@ abstract class TwillBlockComponent extends Component
     public ?RenderData $renderData = null;
     public bool $inEditor = false;
 
+    final public function __construct()
+    {
+    }
+
     public static function forRendering(Block $block, RenderData $renderData, bool $inEditor): static
     {
         $instance = new static();
