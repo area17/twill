@@ -17,8 +17,9 @@ class InlineRepeater implements CanHaveSubfields
         private ?string $selectTrigger = null,
         private ?Collection $fields = null,
         private ?string $label = null,
-        private bool $allowCreate = false,
+        private bool $allowCreate = true,
         private ?string $relation = null,
+        private ?bool $allowBrowse = false,
         private ?array $browser = null,
     ) {
     }
@@ -61,9 +62,9 @@ class InlineRepeater implements CanHaveSubfields
     /**
      * Only to be used when you are referring to other models. Not for json repeaters.
      */
-    public function allowCreate(bool $allowCreate = true): static
+    public function disableCreate(bool $disableCreate = true): static
     {
-        $this->allowCreate = $allowCreate;
+        $this->allowCreate = ! $disableCreate;
 
         return $this;
     }
@@ -83,6 +84,12 @@ class InlineRepeater implements CanHaveSubfields
             'name' => $relation,
         ];
 
+        return $this;
+    }
+
+    public function allowBrowser(bool $allowBrowse = true): static
+    {
+        $this->allowBrowse = $allowBrowse;
         return $this;
     }
 
@@ -158,8 +165,8 @@ class InlineRepeater implements CanHaveSubfields
             ->name($this->name)
             ->type($this->getRenderName())
             ->allowCreate($this->allowCreate)
-            ->relation($this->relation)
-            ->browserModule($this->browser);
+            ->relation($this->relation ?? null)
+            ->browserModule($this->allowBrowse ? $this->browser : null);
 
         $repeater->renderForBlocks = $this->renderForBlocks ?? false;
         return $repeater->render();

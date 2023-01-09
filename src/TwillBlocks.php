@@ -206,9 +206,18 @@ class TwillBlocks
 
     public function findRepeaterByName(string $name): ?Block
     {
-        return $this->getRepeaters()->first(function (Block $block) use ($name) {
+        $repeater = $this->getRepeaters()->first(function (Block $block) use ($name) {
             return $block->name === $name;
         });
+
+        if ($repeater === null) {
+            // Search for the dynamic one.
+            $repeater = $this->getRepeaters()->first(function (Block $block) use ($name) {
+                return $block->name === 'dynamic-repeater-' . $name;
+            });
+        }
+
+        return $repeater;
     }
 
     /**

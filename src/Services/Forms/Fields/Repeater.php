@@ -49,7 +49,7 @@ class Repeater extends BaseFormField
         return $this;
     }
 
-    public function relation(string $relation): static
+    public function relation(?string $relation = null): static
     {
         $this->relation = $relation;
 
@@ -63,7 +63,7 @@ class Repeater extends BaseFormField
         return $this;
     }
 
-    public function browserModule(array $browserModule): static
+    public function browserModule(?array $browserModule = null): static
     {
         $this->browserModule = $browserModule;
 
