@@ -5,22 +5,43 @@ namespace A17\Twill\Services\Forms;
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Forms\Fields\Repeater;
+use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Illuminate\View\View;
 
 class InlineRepeater implements CanHaveSubfields
 {
     protected function __construct(
-        public ?string $name = null,
-        public ?Collection $fields = null,
-        public ?string $label = null
+        private ?string $name = null,
+        private ?string $trigger = null,
+        private ?string $selectTrigger = null,
+        private ?Collection $fields = null,
+        private ?string $label = null,
+        private bool $allowCreate = false,
+        private ?string $relation = null,
+        private ?array $browser = null,
     ) {
+    }
+
+    public function triggerText(string $trigger): static
+    {
+        $this->trigger = $trigger;
+
+        return $this;
+    }
+
+    public function selectTriggerText(string $selectTrigger): static
+    {
+        $this->selectTrigger = $selectTrigger;
+
+        return $this;
     }
 
     public static function make(): self
     {
-        return new self();
+        $self = new self();
+        $self->fields = collect();
+        return $self;
     }
 
     /**
@@ -33,6 +54,34 @@ class InlineRepeater implements CanHaveSubfields
         if (! $this->name) {
             $this->name(Str::slug($label));
         }
+
+        return $this;
+    }
+
+    /**
+     * Only to be used when you are referring to other models. Not for json repeaters.
+     */
+    public function allowCreate(bool $allowCreate = true): static
+    {
+        $this->allowCreate = $allowCreate;
+
+        return $this;
+    }
+
+    /**
+     * The name of the module to use for selecting existing records. Not for json repeaters.
+     */
+    public function relation(string $relation): static
+    {
+        if (str_contains($relation, '\\')) {
+            $relation = getModuleNameByModel($relation);
+        }
+        $this->relation = $relation;
+
+        $this->browser = [
+            'label' => Str::title($relation),
+            'name' => $relation,
+        ];
 
         return $this;
     }
@@ -87,9 +136,9 @@ class InlineRepeater implements CanHaveSubfields
         );
         $repeaterBlock->title = $this->label;
         $repeaterBlock->component = $this->getRenderName();
-        $repeaterBlock->selectTrigger = $this->label;
         $repeaterBlock->compiled = false;
-        $repeaterBlock->trigger = $this->label;
+        $repeaterBlock->trigger = $this->trigger ?? 'Add ' . $this->label;
+        $repeaterBlock->selectTrigger = $this->selectTrigger ?? 'Select ' . $this->label;
         $repeaterBlock->group = 'dynamic';
 
         return $repeaterBlock;
@@ -105,7 +154,13 @@ class InlineRepeater implements CanHaveSubfields
 
     public function render(): View
     {
-        $repeater = Repeater::make()->name($this->name)->type($this->getRenderName());
+        $repeater = Repeater::make()
+            ->name($this->name)
+            ->type($this->getRenderName())
+            ->allowCreate($this->allowCreate)
+            ->relation($this->relation)
+            ->browserModule($this->browser);
+
         $repeater->renderForBlocks = $this->renderForBlocks ?? false;
         return $repeater->render();
     }
