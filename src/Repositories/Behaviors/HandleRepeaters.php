@@ -154,7 +154,7 @@ trait HandleRepeaters
     }
 
     public function updateRepeaterWithPivot(
-        Model $object,
+        TwillModelContract $object,
         array $fields,
         string $relation,
         array $pivotFields,
@@ -266,7 +266,7 @@ trait HandleRepeaters
      * Given relation, model and repeaterName, retrieve the repeater data from request and update the database record.
      */
     public function updateRepeater(
-        Model $object,
+        TwillModelContract $object,
         array $fields,
         string $relation,
         null|string|TwillModelContract|ModuleRepository $modelOrRepository = null,
@@ -362,7 +362,7 @@ trait HandleRepeaters
      * @todo: This is currently a massive duplication, once done, this needs to be cleaned up
      */
     public function getFormFieldForRepeaterWithPivot(
-        Model $object,
+        TwillModelContract $object,
         array $fields,
         string $relation,
         array $pivotFields,
