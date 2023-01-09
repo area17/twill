@@ -50,13 +50,13 @@ trait HandleSlugs
         $object->slugs()->restore();
     }
 
-    public function getFormFieldsHandleSlugs(TwillModelContract $object, array $fields): array
+    public function getFormFieldsHandleSlugs(TwillModelContract $model, array $fields): array
     {
         unset($fields['slugs']);
 
-        if ($object->slugs != null) {
-            foreach ($object->slugs as $slug) {
-                if ($slug->active || $object->slugs->where('locale', $slug->locale)->where('active', true)->count() === 0) {
+        if ($model->slugs !== null) {
+            foreach ($model->slugs as $slug) {
+                if ($slug->active || $model->slugs->where('locale', $slug->locale)->where('active', true)->count() === 0) {
                     $fields['translations']['slug'][$slug->locale] = $slug->slug;
                 }
             }
