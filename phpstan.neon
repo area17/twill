@@ -32,4 +32,3 @@ parameters:
     # Not needed
     - src/Rector/LaravelAwareRectorRule.php
     - src/DuskServiceProvider.php
-    - src/Commands/stubs/blockComponent/component.php

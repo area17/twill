@@ -372,10 +372,12 @@ class Block
             $this->name,
             $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.add-item') : null
         );
-        $this->selectTrigger = $this->parseProperty('SelectTrigger',
+        $this->selectTrigger = $this->parseProperty(
+            'SelectTrigger',
             $contents,
             $this->name,
-            $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.select-existing') : null);
+            $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.select-existing') : null
+        );
         $this->max = (int)$this->parseProperty('max', $contents, $this->name, 999);
         $this->group = $this->parseProperty('group', $contents, $this->name, 'app');
         $this->icon = $this->parseProperty('icon', $contents, $this->name, 'text');
@@ -621,7 +623,7 @@ class Block
     {
         View::share('TwillUntilConsumed', ['renderForBlocks' => true]);
         if ($this->componentClass) {
-            $block = (new $this->componentClass)->renderForm();
+            $block = (new $this->componentClass())->renderForm();
         } elseif ($this->inlineRepeater) {
             $block = $this->inlineRepeater->renderForm();
         } else {

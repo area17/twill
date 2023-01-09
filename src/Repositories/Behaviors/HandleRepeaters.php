@@ -452,9 +452,9 @@ trait HandleRepeaters
                 }
             }
 
-            $itemFields = method_exists($relationItem,
-                'toRepeaterArray') ? $relationItem->toRepeaterArray() : Arr::except($relationItem->attributesToArray(),
-                $translatedFields);
+            $itemFields = method_exists($relationItem, 'toRepeaterArray') ?
+                $relationItem->toRepeaterArray() :
+                Arr::except($relationItem->attributesToArray(), $translatedFields);
 
             foreach ($pivotFields as $pivotField) {
                 if ($pivotField === 'id') {
@@ -600,9 +600,9 @@ trait HandleRepeaters
                 }
             }
 
-            $itemFields = method_exists($relationItem,
-                'toRepeaterArray') ? $relationItem->toRepeaterArray() : Arr::except($relationItem->attributesToArray(),
-                $translatedFields);
+            $itemFields = method_exists($relationItem, 'toRepeaterArray') ?
+                $relationItem->toRepeaterArray() :
+                Arr::except($relationItem->attributesToArray(), $translatedFields);
 
             foreach ($itemFields as $key => $value) {
                 $repeatersFields[] = [
@@ -686,7 +686,7 @@ trait HandleRepeaters
     }
 
     /**
-     * Guess the relation name (shoud be lower camel case, ex. userGroup, contactOffice).
+     * Guess the relation name (should be lower camel case, ex. userGroup, contactOffice).
      */
     protected function inferRelationFromRepeaterName(string $repeaterName): string
     {

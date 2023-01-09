@@ -44,7 +44,7 @@ class GenerateBlockComponent extends ComponentMakeCommand
 
     protected function getStub()
     {
-        return __DIR__ . '/stubs/blockComponent/component.php';
+        return __DIR__ . '/stubs/blockComponent/component.php.stub';
     }
 
     protected function buildClass($name): string
@@ -106,4 +106,3 @@ class GenerateBlockComponent extends ComponentMakeCommand
         return true;
     }
 }
-

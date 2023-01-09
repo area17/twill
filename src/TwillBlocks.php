@@ -141,10 +141,14 @@ class TwillBlocks
         // Consume the repeatersDirectories. We act a bit dumb here by not taking into account duplicates
         // as a package should only register a directory once.
         foreach (self::$repeatersDirectories as $repeaterDir => $data) {
-            foreach ($this->readBlocksFromDirectory($repeaterDir,
-                $data['type'],
-                Block::TYPE_REPEATER,
-                $data['renderNamespace']) as $repeater) {
+            foreach (
+                $this->readBlocksFromDirectory(
+                    $repeaterDir,
+                    $data['type'],
+                    Block::TYPE_REPEATER,
+                    $data['renderNamespace']
+                ) as $repeater
+            ) {
                 $this->blockCollection->add($repeater);
             }
 
@@ -152,10 +156,14 @@ class TwillBlocks
         }
 
         foreach (self::$blockDirectories as $blockDir => $data) {
-            foreach ($this->readBlocksFromDirectory($blockDir,
-                $data['type'],
-                Block::TYPE_BLOCK,
-                $data['renderNamespace']) as $block) {
+            foreach (
+                $this->readBlocksFromDirectory(
+                    $blockDir,
+                    $data['type'],
+                    Block::TYPE_BLOCK,
+                    $data['renderNamespace']
+                ) as $block
+            ) {
                 $this->blockCollection->add($block);
             }
 
