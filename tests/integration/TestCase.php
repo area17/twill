@@ -86,6 +86,7 @@ abstract class TestCase extends OrchestraTestCase
     public function tearDown(): void
     {
         $toDelete = [
+            app_path('Providers/AppServiceProvider.php'),
             app_path('Http/Controllers/Twill'),
             app_path('Http/Requests/Twill'),
             app_path('Models'),
@@ -296,12 +297,18 @@ abstract class TestCase extends OrchestraTestCase
             require __DIR__ . '/../../vendor/autoload.php'
         );
 
-        return [
+        $list = [
             RouteServiceProvider::class,
             TwillServiceProvider::class,
             ValidationServiceProvider::class,
             NestedSetServiceProvider::class,
         ];
+
+        if ($this->example && file_exists(app_path('Providers/AppServiceProvider.php'))) {
+            $list[] = AppServiceProvider::class;
+        }
+
+        return $list;
     }
 
     /**

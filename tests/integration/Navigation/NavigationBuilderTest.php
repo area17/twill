@@ -16,7 +16,8 @@ class NavigationBuilderTest extends TestCase
         $this->assertEquals(['left' => [], 'right' => []], $navigation);
     }
 
-    public function testNavigationWhenAuthenticated(): void {
+    public function testNavigationWhenAuthenticated(): void
+    {
         $this->login();
 
         $navigation = TwillNavigation::buildNavigationTree();
@@ -27,7 +28,8 @@ class NavigationBuilderTest extends TestCase
         $this->assertEquals('Media Library', $navigation['right'][0]->getTitle());
     }
 
-    public function testAddLinkToNavigation(): void {
+    public function testAddLinkToNavigation(): void
+    {
         $this->login();
 
         TwillNavigation::addLink(NavigationLink::make()->forRoute('twill.users')->title('USERS'));
@@ -37,7 +39,8 @@ class NavigationBuilderTest extends TestCase
         $this->assertEquals('USERS', $navigation['left'][0]->getTitle());
     }
 
-    public function testNavigationLinkWithRouteArguments(): void {
+    public function testNavigationLinkWithRouteArguments(): void
+    {
         $this->login();
 
         $link = NavigationLink::make()
@@ -47,7 +50,8 @@ class NavigationBuilderTest extends TestCase
         $this->assertStringContainsString('/twill/users/' . $this->superAdmin()->id, $link->render());
     }
 
-    public function testTargetBlank(): void {
+    public function testTargetBlank(): void
+    {
         $this->login();
 
         $link = NavigationLink::make()->forRoute('twill.users.index')->title('USERS');
@@ -60,7 +64,8 @@ class NavigationBuilderTest extends TestCase
         $this->assertStringContainsString('target="_blank"', $link->render());
     }
 
-    public function testCannotCombineLegacyWithNavigationBuilder(): void {
+    public function testCannotCombineLegacyWithNavigationBuilder(): void
+    {
         config()->set('twill-navigation', ['some-data']);
 
         $this->expectException(CannotCombineNavigationBuilderWithLegacyConfig::class);
