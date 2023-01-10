@@ -10,6 +10,7 @@
             :name="`${attributes.name}[${language.value}]`"
             :fieldName="attributes.name"
             :locale="language"
+            ref="field"
             @localize="updateLocale"
             @change="updateValue(language.value, ...arguments)"
             @blur="$emit('blur')"
@@ -22,6 +23,7 @@
     <template v-else>
       <component v-bind:is="`${type}`"
                  :name="attributes.name"
+                 ref="field"
                  v-bind="attributesNoLang()"
                  @change="updateValue(false, ...arguments)"
                  @blur="$emit('blur')"
