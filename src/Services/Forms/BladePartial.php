@@ -18,9 +18,15 @@ class BladePartial
         return new self();
     }
 
-    public function view(string $view, array $params = []): static
+    public function view(string $view): static
     {
         $this->view = $view;
+
+        return $this;
+    }
+
+    public function withAdditionalParams(array $params = []): static
+    {
         $this->params = $params;
 
         return $this;
