@@ -109,10 +109,10 @@ jobs:
           mkdir ./frontend/js/components/blocks/customs
 
       - name: Execute integration tests
-        run: vendor/bin/phpunit test/integration
+        run: vendor/bin/phpunit tests/integration
 
       - name: Execute integration unit
-        run: vendor/bin/phpunit test/unit
+        run: vendor/bin/phpunit tests/unit
 
       - name: Build twill.
         run: ./vendor/bin/testbench twill:build --forTesting
@@ -124,7 +124,7 @@ jobs:
         run: ./vendor/bin/testbench dusk:chrome-driver --detect
 
       - name: Execute browser tests
-        run: vendor/bin/phpunit test/Browser
+        run: vendor/bin/phpunit tests/Browser
 
       - uses: codecov/codecov-action@v2
         with:
