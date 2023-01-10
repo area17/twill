@@ -195,7 +195,6 @@ class Block
             $this->source,
             $this->name,
             $this->renderNamespace,
-            $this->renderNamespace,
             $this->componentClass,
             $this->inlineRepeater
         );
