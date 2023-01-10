@@ -8,6 +8,7 @@ use A17\Twill\RouteServiceProvider;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
+use App\Providers\AppServiceProvider;
 use Carbon\Carbon;
 use Exception;
 use Faker\Factory as Faker;
