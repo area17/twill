@@ -123,6 +123,7 @@ class DuskServiceProvider extends ServiceProvider
         });
 
         Browser::macro('pressSaveAndCheckSaved', function (string $saveButtonText = 'Update') {
+            $this->pause(200);
             $this->press($saveButtonText);
             $this->waitForText('Content saved. All good!');
         });
@@ -152,6 +153,8 @@ class DuskServiceProvider extends ServiceProvider
 
                 $closure($element, $prefix);
             });
+
+            $this->pause(500);
         });
 
         Browser::macro('attachImage', function (string $fieldName, string $imagePath) {
@@ -217,15 +220,17 @@ class DuskServiceProvider extends ServiceProvider
 
                         if ($wysiwyg = $element->element($wrapper . ' .ql-editor')) {
                             $wysiwyg->sendKeys($value);
-                            $this->pause(100);
+                            $this->pause(200);
                             $element->element('.input__label')->click();
                         } else {
                             $field = $element->driver->findElement(WebDriverBy::id($for));
                             $field->sendKeys($value);
                         }
-                        $this->pause(100);
+                        $this->pause(200);
                     }
                 });
+
+                $this->pause(500);
             }
         );
 
