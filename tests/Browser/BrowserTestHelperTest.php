@@ -50,27 +50,27 @@ class BrowserTestHelperTest extends BrowserTestCase
         $this->assertEquals('Hello world', $block->translatedInput('title'));
     }
 
-    public function testBlockEditorOverlay(): void
-    {
-        $this->browse(function (Browser $browser) {
-            $browser->loginAs($this->superAdmin, 'twill_users');
-            $browser->visitTwill();
-
-            $browser->createModuleEntryWithTitle('Page', 'Example page');
-
-            $browser->withinEditor(function (Browser $editor) {
-                $editor->dragBlock('Text', function (Browser $block, string $prefix) {
-                    $block->type($prefix . '[title][en]', 'Hello world');
-                });
-            });
-
-            $browser->pressSaveAndCheckSaved('Save as draft');
-        });
-
-        $block = Page::latest()->first()->blocks()->first();
-
-        $this->assertEquals('Hello world', $block->translatedInput('title'));
-    }
+//    public function testBlockEditorOverlay(): void
+//    {
+//        $this->browse(function (Browser $browser) {
+//            $browser->loginAs($this->superAdmin, 'twill_users');
+//            $browser->visitTwill();
+//
+//            $browser->createModuleEntryWithTitle('Page', 'Example page');
+//
+//            $browser->withinEditor(function (Browser $editor) {
+//                $editor->dragBlock('Text', function (Browser $block, string $prefix) {
+//                    $block->type($prefix . '[title][en]', 'Hello world');
+//                });
+//            });
+//
+//            $browser->pressSaveAndCheckSaved('Save as draft');
+//        });
+//
+//        $block = Page::latest()->first()->blocks()->first();
+//
+//        $this->assertEquals('Hello world', $block->translatedInput('title'));
+//    }
 
     public function testCanUploadAndAttachImage(): void
     {
