@@ -189,7 +189,16 @@ class Block
 
     public function newInstance(): self
     {
-        return new self($this->file, $this->type, $this->source, $this->name, $this->renderNamespace);
+        return new self(
+            $this->file,
+            $this->type,
+            $this->source,
+            $this->name,
+            $this->renderNamespace,
+            $this->renderNamespace,
+            $this->componentClass,
+            $this->inlineRepeater
+        );
     }
 
     /**
