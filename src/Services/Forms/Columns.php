@@ -6,7 +6,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View as ViewFacade;
 
-class Columns
+class Columns implements CanHaveSubfields
 {
     protected function __construct(
         public ?Collection $left = null,
@@ -51,5 +51,41 @@ class Columns
             'middleFields' => $this->middle,
             'rightFields' => $this->right,
         ]);
+    }
+
+    public function registerDynamicRepeaters(): void
+    {
+        if ($this->left) {
+            foreach ($this->left as $field) {
+                if ($field instanceof InlineRepeater) {
+                    $field->register();
+                }
+                if ($field instanceof CanHaveSubfields) {
+                    $field->registerDynamicRepeaters();
+                }
+            }
+        }
+
+        if ($this->middle) {
+            foreach ($this->middle as $field) {
+                if ($field instanceof InlineRepeater) {
+                    $field->register();
+                }
+                if ($field instanceof CanHaveSubfields) {
+                    $field->registerDynamicRepeaters();
+                }
+            }
+        }
+
+        if ($this->right) {
+            foreach ($this->right as $field) {
+                if ($field instanceof InlineRepeater) {
+                    $field->register();
+                }
+                if ($field instanceof CanHaveSubfields) {
+                    $field->registerDynamicRepeaters();
+                }
+            }
+        }
     }
 }
