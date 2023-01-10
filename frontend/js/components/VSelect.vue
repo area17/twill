@@ -169,8 +169,11 @@
           } else {
             this.value = this.options.find(o => {
               // Try to always compare to the same type. But we only check for a numeric value. Because it can only be
-              // a string or a number for now.
+              // a string or a number (int or float) for now.
               if (typeof o.value === 'number') {
+                if (o.value % 1 !== 0) {
+                  return o.value === parseFloat(value)
+                }
                 return o.value === parseInt(value)
               }
               return o.value === String(value)
