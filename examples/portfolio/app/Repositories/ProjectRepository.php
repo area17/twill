@@ -64,7 +64,7 @@ class ProjectRepository extends ModuleRepository
             $fields,
             'links',
             'Link',
-            'link'
+            'links'
         );
 
         return $this->getFormFieldForRepeaterWithPivot(

@@ -9,7 +9,6 @@ use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Repositories\AppSettingsRepository;
 use A17\Twill\Services\Forms\Fields\BlockEditor;
 use A17\Twill\Services\Forms\Form;
-use A17\Twill\Tests\Integration\ModuleLimitRevisionsTest;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Session;

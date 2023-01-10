@@ -28,6 +28,141 @@ scope only certain *blocks* to be available in a given module, you can specify w
 
 ## Create and define blocks
 
+### Block component class
+
+As of Twill 3, you can make use of Block component classes.
+
+These are essentially regular Blade components, but they are also responsible for your Block's form and rendering!
+
+You can generate Block components using the command:
+
+```
+php artisan twill:make:componentBlock Namespace/Name
+php artisan twill:make:componentBlock namespace.name
+php artisan twill:make:componentBlock name
+```
+
+These blocks will be placed under `App\View\Components\Twill\Blocks`.
+
+While the rendering blade file looks the same, there is no longer a form blade file.
+
+Instead, you define the form in your component class, the same way you can
+do [module forms](../3_modules/form-builder.md)!
+
+```php
+<?php
+
+namespace App\View\Components\Twill\Blocks;
+
+use A17\Twill\Services\Forms\Fields\Wysiwyg;
+use A17\Twill\Services\Forms\Form;
+use A17\Twill\Services\Forms\Fields\Input;
+use A17\Twill\View\Components\Blocks\TwillBlockComponent;
+use Illuminate\Contracts\View\View;
+
+class Example extends TwillBlockComponent
+{
+    public function render(): View
+    {
+        return view('components.twill.blocks.example');
+    }
+
+    public function getForm(): Form
+    {
+        return Form::make([
+            Input::make()->name('title'),
+            Wysiwyg::make()->name('text')
+        ]);
+    }
+}
+```
+
+#### Block helpers
+
+By default the class name will be used as your block name, and 'app' will be the default group.
+
+These can be overwritten by overriding the following methods:
+
+```php
+public static function getBlockTitle(?Block $block = null): string
+{
+    return Str::replace('Block', '', Str::afterLast(static::class, '\\'));
+}
+
+public static function getBlockGroup(): string
+{
+    return 'app';
+}
+
+public static function getBlockIcon(): string
+{
+    return 'text';
+}
+```
+
+#### Validation
+
+As with default blocks, you can also [validate](./validating-blocks.md) fields:
+
+```php
+public function getValidationRules(): array
+{
+    return [];
+}
+
+public function getTranslatableValidationRules(): array
+{
+    return [];
+}
+```
+
+#### Rendering helpers
+
+You have access to all the same variables as in a regular block, however with the components you have some additional
+helpers:
+
+##### input and translated input
+
+With components you can directly access input values like this:
+
+```blade
+{{ $input('title') }}
+{{ $translatedInput('title') }}
+```
+
+##### Image url
+
+Getting an image url:
+
+```blade
+{{$image('cover', 'default', ['h' => 100)}}
+```
+
+##### Repeaters
+
+Looping over a repeater:
+
+```blade
+@foreach ($repeater('slider-item') as $repeaterItem)
+  <li>
+    <img src="{{ $repeaterItem->renderData->block->image('slider', 'desktop', ['h' => 850]) }}" alt="">
+    {{ $repeaterItem->renderData->block->input('title') }}
+  </li>
+@endforeach
+```
+
+#### Block component in packages or domain specific directories
+
+If you want to register blocks from your package you can add:
+
+```php
+\A17\Twill\Facades\TwillBlocks::registerComponentBlocks('\\Your\\Namespace\\Components\\Twill\\Blocks');
+```
+
+This will register the namespace in your package or domain and load them!
+
+### Using blade files
+
 Blocks and Repeaters are built on the same Block model and are created and defined in their respective folders. By
 default, Twill will look for Blade templates in `views/twill/blocks` for blocks and `views/twill/repeaters` for
 repeaters.
