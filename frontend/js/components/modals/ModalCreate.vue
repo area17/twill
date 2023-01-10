@@ -78,7 +78,9 @@
     },
     watch: {
       language () {
-        this.$refs.validation.addListeners()
+        if (this.$refs.validation) {
+          this.$refs.validation.addListeners()
+        }
       }
     },
     methods: {

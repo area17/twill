@@ -34,7 +34,7 @@ class Block extends BaseModel implements TwillModelContract
         'content' => 'array',
     ];
 
-    protected $with = ['medias'];
+    protected $with = ['medias', 'children'];
 
     public function scopeEditor($query, $name = 'default')
     {

@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 
 abstract class TableColumn
 {
-
     final protected function __construct(
         protected ?string $key = null,
         protected ?string $field = null,
@@ -26,6 +25,7 @@ abstract class TableColumn
         protected ?Closure $render = null,
         protected ?Closure $sortFunction = null,
         protected ?string $specificType = null,
+        protected bool $shrink = false,
     ) {
     }
 
@@ -41,6 +41,13 @@ abstract class TableColumn
         }
 
         return $this->key;
+    }
+
+    public function shrink(bool $shrink = true): static
+    {
+        $this->shrink = $shrink;
+
+        return $this;
     }
 
     /**
@@ -204,13 +211,14 @@ abstract class TableColumn
     {
         $visible = $this->visible;
 
-        if ($this->optional && (empty($visibleColumns) || in_array($this->key, $visibleColumns, true))) {
+        if (!empty($visibleColumns) && !in_array($this->key, $visibleColumns, true)) {
             $visible = false;
         }
 
         return [
             'name' => $this->getKey(),
             'label' => $this->title,
+            'shrink' => $this->shrink,
             'visible' => $visible,
             'optional' => $this->optional,
             'sortable' => $sortable && $this->sortable,
@@ -251,5 +259,4 @@ abstract class TableColumn
 
         return $model->{$this->field} ?? '';
     }
-
 }

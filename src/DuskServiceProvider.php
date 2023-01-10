@@ -9,6 +9,7 @@ use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverKeys;
 use Illuminate\Support\Str;
 use Laravel\Dusk\Browser;
+use Laravel\Dusk\ElementResolver;
 
 class DuskServiceProvider extends ServiceProvider
 {
@@ -36,6 +37,19 @@ class DuskServiceProvider extends ServiceProvider
             $this->pause(100);
         });
 
+        Browser::macro('inRow', function (string $stringInTable, \Closure $closure) {
+            $resolver = new ElementResolver(
+                $this->driver->findElement(WebDriverBy::xpath('//table//tr[td/span//text()[contains(., "' . $stringInTable . '")]]')),
+            );
+
+            $browser = new Browser(
+                $this->driver,
+                $resolver
+            );
+
+            $closure($browser);
+        });
+
         Browser::macro('visitTwill', function () {
             if (
                 !Str::contains($this->driver->getCurrentURL(), '/twill') ||
@@ -59,7 +73,13 @@ class DuskServiceProvider extends ServiceProvider
         Browser::macro('createModuleEntryWithTitle', function (string $menuName, string $title) {
             $this->visitTwill();
 
+            $this->waitForText($menuName);
             $this->clickLink($menuName);
+
+            $this->createWithTitle($title);
+        });
+
+        Browser::macro('createWithTitle', function (string $title) {
             $this->press('Add new');
 
             $this->waitFor('.modal__header');

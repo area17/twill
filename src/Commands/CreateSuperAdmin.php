@@ -104,8 +104,8 @@ class CreateSuperAdmin extends Command
      */
     private function setPassword()
     {
-        if (filled($email = $this->argument('password'))) {
-            return $email;
+        if (filled($password = $this->argument('password'))) {
+            return $password;
         }
 
         $password = $this->secret('Enter a password');

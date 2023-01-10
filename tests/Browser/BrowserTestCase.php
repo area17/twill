@@ -11,6 +11,7 @@ use App\Providers\AppServiceProvider;
 use Carbon\Carbon;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverDimension;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\DB;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Orchestra\Testbench\Dusk\TestCase;
@@ -34,13 +35,7 @@ class BrowserTestCase extends TestCase
         $this->configTwill($app);
     }
 
-    /**
-     * Get application package providers.
-     *
-     * @param \Illuminate\Foundation\Application $app
-     * @return array
-     */
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         app()->instance(
             'autoloader',

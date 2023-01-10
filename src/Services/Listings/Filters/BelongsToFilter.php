@@ -24,7 +24,7 @@ class BelongsToFilter extends BasicFilter
             $modelClass = $this->getModel();
 
             $builder->whereHas($this->field, function (Builder $builder) use ($modelClass) {
-                $builder->where($modelClass::make()->getKeyName(), $this->appliedValue);
+                $builder->where((new $modelClass())->getKeyName(), $this->appliedValue);
             });
         }
 
@@ -38,7 +38,7 @@ class BelongsToFilter extends BasicFilter
 
         $query = $model::query();
 
-        if ($model::make()->isTranslatable()) {
+        if ((new $model())->isTranslatable()) {
             $query = $query->withTranslation();
         }
 

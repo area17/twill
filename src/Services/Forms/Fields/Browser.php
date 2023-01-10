@@ -2,18 +2,18 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\canHaveButtonOnTop;
-use A17\Twill\Services\Forms\Fields\Traits\hasFieldNote;
-use A17\Twill\Services\Forms\Fields\Traits\hasMax;
-use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
+use A17\Twill\Services\Forms\Fields\Traits\CanHaveButtonOnTop;
+use A17\Twill\Services\Forms\Fields\Traits\HasFieldNote;
+use A17\Twill\Services\Forms\Fields\Traits\HasMax;
+use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 use Illuminate\Support\Str;
 
 class Browser extends BaseFormField
 {
-    use isTranslatable;
-    use hasMax;
-    use hasFieldNote;
-    use canHaveButtonOnTop;
+    use IsTranslatable;
+    use HasMax;
+    use HasFieldNote;
+    use CanHaveButtonOnTop;
 
     protected ?string $moduleName = null;
 
@@ -29,7 +29,7 @@ class Browser extends BaseFormField
 
     protected bool $wide = false;
 
-    protected bool $sortable = false;
+    protected bool $sortable = true;
 
     protected ?string $routePrefix = null;
 
@@ -176,5 +176,4 @@ class Browser extends BaseFormField
 
         return ['name' => $this->name ?? $this->moduleName, 'endpoints' => $this->endpoints];
     }
-
 }

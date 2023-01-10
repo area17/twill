@@ -244,7 +244,6 @@
   .block__title {
     text-overflow: ellipsis;
     font-weight: 600;
-    max-width: 45%;
     overflow: hidden;
     display: inline-block;
     white-space: nowrap;
@@ -254,11 +253,17 @@
   }
 
   .block__toggle {
-    overflow: hidden;
     flex-grow: 1;
+    display: flex;
+    max-width: 50%;
+    padding-right: 30px;
 
     .dropdown {
       display: inline-block;
+      vertical-align: top;
+    }
+
+    .block__counter {
       vertical-align: top;
     }
   }
@@ -268,6 +273,7 @@
     font-size: 0px;
     padding-top: (50px - 26px) / 2;
     padding-bottom: (50px - 26px) / 2;
+    margin-left: auto;
 
     > * {
       margin-left: 10px;

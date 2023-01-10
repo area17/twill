@@ -111,13 +111,13 @@ class DuplicateTest extends TestCase
         $this->assertEquals('English title', $model->title);
         $this->assertCount(1, $model->blocks);
 
-        $this->assertCount(1, Block::get());
+        $this->assertCount(1, twillModel('block')::get());
 
         $duplicate = $module->getRepository()->duplicate($model->id);
 
         $this->assertCount(1, $model->repeaterdata);
         $this->assertCount(1, $duplicate->blocks);
-        $this->assertCount(2, Block::get());
+        $this->assertCount(2, twillModel('block')::get());
 
         $this->assertNotEquals($duplicate->blocks->first()->id, $model->blocks->first()->id);
     }

@@ -1,19 +1,19 @@
-<div class="flex flex-col" x-data="{ activeTab: '{{$currenttab ?? ''}}' }">
-    <div class="inline-flex mt-3 -mb-px">
+<div class="flex flex-col mt-20" x-data="{ activeTab: '{{$currenttab ?? ''}}' }">
+    <div class="inline-flex">
         @foreach ($items ?? [] as $item)
             <button @click="activeTab = '{{$item}}'"
                     :class="{
-                        'rounded-tr-lg': {{$loop->last ? 'true' : 'false'}},
-                        'rounded-tl-lg': {{$loop->first ? 'true' : 'false'}},
-                        'border-grey-500 !bg-gray-500 !text-white': activeTab === '{{$item}}'
+                        // 'rounded-r-lg': {{$loop->last ? 'true' : 'false'}},
+                        // 'rounded-l-lg': {{$loop->first ? 'true' : 'false'}},
+                        '!bg-white !text-black border-purple border-[2px] pointer-events-none': activeTab === '{{$item}}'
                         }"
-                    class="py-[10px] sm:py-2 mt-1 border-l border-t border-r px-[12px] sm:px-6 inline-flex items-center justify-center font-medium border border-gray-50 text-center focus:bg-primary text-black text-sm sm:text-base capitalize bg-gray-100"
+                    class="f-body text-white bg-black px-20 py-4 rounded-[4px] mr-20 font-bold"
             >
                 {{$item}}
             </button>
         @endforeach
     </div>
-    <div class="border px-4">
+    <div>
         {{$slot}}
     </div>
 </div>

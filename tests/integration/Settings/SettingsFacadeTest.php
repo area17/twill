@@ -45,6 +45,21 @@ class SettingsFacadeTest extends TestCase
                                 ],
                                 'label' => 'Non translated.',
                             ],
+                            'blocks' => [
+                                'default' => [
+                                    [
+                                        'id' => time(),
+                                        'content' => [
+                                            'title' => [
+                                                'en' => 'Title english.'
+                                            ]
+                                        ],
+                                        'editor_name' => 'blocks-' . $model->blocks[0]->id . '|default',
+                                        'type' => 'a17-block-text',
+                                        'is_repeater' => false,
+                                    ]
+                                ]
+                            ]
 
                         ],
                     ],
@@ -63,12 +78,23 @@ class SettingsFacadeTest extends TestCase
         $this->assertEquals('Non translated.', TwillAppSettings::get('test.test.label'));
     }
 
-    public function testGetInvalidGroup(): void {
+    public function testCanRenderNestedSettingsBlock(): void
+    {
+        $output = TwillAppSettings::getBlockServiceForGroupAndSection('test', 'test')
+            ->renderData
+            ->renderChildren('default');
+
+        $this->assertEquals('Hi, I am the text block rendered!' . PHP_EOL, $output);
+    }
+
+    public function testGetInvalidGroup(): void
+    {
         $this->expectException(SettingsGroupDoesNotExistException::class);
         TwillAppSettings::getGroupForName('someRandomName');
     }
-    
-    public function testGetInvalidSection(): void {
+
+    public function testGetInvalidSection(): void
+    {
         $this->expectException(SettingsSectionDoesNotExistException::class);
         TwillAppSettings::getGroupDataForSectionAndName('test', 'someRandomSection');
     }

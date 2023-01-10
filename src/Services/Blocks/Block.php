@@ -159,12 +159,17 @@ class Block
         return new self($file, $type, $source, $name, $renderNamespace);
     }
 
+    public function newInstance(): self
+    {
+        return new self($this->file, $this->type, $this->source, $this->name, $this->renderNamespace);
+    }
+
     /**
      * Gets the first match being a block or repeater.
      */
     public static function findFirstWithType(string $type): ?self
     {
-        return app(BlockCollection::class)->findByName($type);
+        return TwillBlocks::getBlockCollection()->findByName($type);
     }
 
     public static function getForType(string $type, bool $repeater = false): self
