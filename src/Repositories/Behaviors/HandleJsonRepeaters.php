@@ -69,13 +69,7 @@ trait HandleJsonRepeaters
         return $fields;
     }
 
-    /**
-     * @param array $fields
-     * @param string $repeaterName
-     * @param array $serializedData
-     * @return array
-     */
-    public function getJsonRepeater($fields, $repeaterName, $serializedData)
+    public function getJsonRepeater(array $fields, string $repeaterName, array $serializedData): array
     {
         $repeatersFields = [];
         $repeatersBrowsers = [];

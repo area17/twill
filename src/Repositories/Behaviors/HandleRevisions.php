@@ -15,10 +15,7 @@ trait HandleRevisions
 {
     /**
      * The Laravel queue name to be used for the revision limiting.
-     *
-     * @var string
      */
-
     protected string $revisionLimitJobQueue = 'default';
 
     public function hydrateHandleRevisions(TwillModelContract $object, array $fields): TwillModelContract
@@ -38,7 +35,7 @@ trait HandleRevisions
         return $object;
     }
 
-    public function afterSaveHandleRevisions(TwillModelContract $object, array $fields): array
+    public function afterSaveOriginalDataHandleRevisions(TwillModelContract $object, array $fields): array
     {
         $this->createRevisionIfNeeded($object, $fields);
 
@@ -77,9 +74,7 @@ trait HandleRevisions
 
         $object->fill(Arr::except($fields, $this->getReservedFields()));
 
-        $object = $this->hydrate($object, $fields);
-
-        return $object;
+        return $this->hydrate($object, $fields);
     }
 
     public function previewForRevision(int $id, int $revisionId): TwillModelContract
