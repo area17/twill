@@ -5,6 +5,7 @@ namespace A17\Twill\Tests\Browser;
 use A17\Twill\Commands\Traits\HandlesPresets;
 use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
+use A17\Twill\TwillNavigation;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
 use App\Providers\AppServiceProvider;
@@ -49,7 +50,7 @@ class BrowserTestCase extends TestCase
             NestedSetServiceProvider::class,
         ];
 
-        if ($this->example) {
+        if ($this->example && file_exists(app_path('Providers/AppServiceProvider.php'))) {
             $list[] = AppServiceProvider::class;
         }
 
@@ -90,6 +91,7 @@ class BrowserTestCase extends TestCase
     public function tearDown(): void
     {
         $toDelete = [
+            app_path('Providers/AppServiceProvider.php'),
             app_path('Http/Controllers/Twill'),
             app_path('Http/Requests/Twill'),
             app_path('Models'),
