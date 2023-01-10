@@ -117,8 +117,14 @@ jobs:
       - name: Upgrade Chrome Driver
         run: ./vendor/bin/testbench dusk:chrome-driver --detect
 
-      - name: Execute tests
-        run: vendor/bin/testbench package:test
+      - name: Execute browser tests
+        run: vendor/bin/testbench package:test test/Browser
+
+      - name: Execute integration tests
+        run: vendor/bin/testbench package:test test/integration
+
+      - name: Execute integration unit
+        run: vendor/bin/testbench package:test test/unit
 
       - uses: codecov/codecov-action@v2
         with:
