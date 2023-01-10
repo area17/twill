@@ -6,7 +6,6 @@ use Carbon\Carbon;
 use Carbon\Laravel\ServiceProvider;
 use Facebook\WebDriver\Chrome\ChromeDevToolsDriver;
 use Facebook\WebDriver\WebDriverBy;
-use Facebook\WebDriver\WebDriverKeys;
 use Illuminate\Support\Str;
 use Laravel\Dusk\Browser;
 use Laravel\Dusk\ElementResolver;
@@ -52,7 +51,7 @@ class DuskServiceProvider extends ServiceProvider
 
         Browser::macro('visitTwill', function () {
             if (
-                !Str::contains($this->driver->getCurrentURL(), '/twill') ||
+                ! Str::contains($this->driver->getCurrentURL(), '/twill') ||
                 Str::contains($this->driver->getCurrentURL(), '_dusk')
             ) {
                 $this->visit('/twill');
@@ -188,7 +187,6 @@ class DuskServiceProvider extends ServiceProvider
                     $prefix = Str::before($for ?? '', ']') . ']';
 
                     $closure($element, $prefix);
-
                 });
             }
 
@@ -197,35 +195,39 @@ class DuskServiceProvider extends ServiceProvider
             });
         });
 
-        Browser::macro('addBlockWithContent', function (string $block, array $fields, string $addLabel = 'Add content') {
-            $this->press($addLabel);
+        Browser::macro(
+            'addBlockWithContent',
+            function (string $block, array $fields, string $addLabel = 'Add content') {
+                $this->press($addLabel);
 
-            $this->waitFor('.dropdown__scroller');
+                $this->waitFor('.dropdown__scroller');
 
-            $this->with('.dropdown__scroller', function (Browser $element) use ($block) {
-                $element->press($block);
-            });
+                $this->with('.dropdown__scroller', function (Browser $element) use ($block) {
+                    $element->press($block);
+                });
 
-            $this->with('.blocks .blocks__container div:last-child', function (Browser $element) use ($fields) {
-                foreach ($fields as $label => $value) {
-                    $labelElement = $element->driver
-                        ->findElement(WebDriverBy::xpath('.//label[contains(string(), "' . $label . '")]'));
-                    $for = $labelElement->getAttribute('for');
+                $this->with('.blocks .blocks__container div:last-child', function (Browser $element) use ($fields) {
+                    foreach ($fields as $label => $value) {
+                        $labelElement = $element->driver
+                            ->findElement(WebDriverBy::xpath('.//label[contains(string(), "' . $label . '")]'));
+                        $for = $labelElement->getAttribute('for');
 
-                    $wrapper = '.input-wrapper-' . Str::replace(['[', ']'], ['\[', '\]'], Str::beforeLast($for, '-'));
+                        $wrapper = '.input-wrapper-' .
+                            Str::replace(['[', ']'], ['\[', '\]'], Str::beforeLast($for, '-'));
 
-                    if ($wysiwyg = $element->element($wrapper . ' .ql-editor')) {
-                        $wysiwyg->sendKeys($value);
+                        if ($wysiwyg = $element->element($wrapper . ' .ql-editor')) {
+                            $wysiwyg->sendKeys($value);
+                            $this->pause(100);
+                            $element->element('.input__label')->click();
+                        } else {
+                            $field = $element->driver->findElement(WebDriverBy::id($for));
+                            $field->sendKeys($value);
+                        }
                         $this->pause(100);
-                        $element->element('.input__label')->click();
-                    } else {
-                        $field = $element->driver->findElement(WebDriverBy::id($for));
-                        $field->sendKeys($value);
                     }
-                    $this->pause(100);
-                }
-            });
-        });
+                });
+            }
+        );
 
         /**
          * Example:
