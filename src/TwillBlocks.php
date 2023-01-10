@@ -175,9 +175,15 @@ class TwillBlocks
             foreach (self::$componentBlockNamespaces as $namespace) {
                 $path = Str::replace('\\', '/', $namespace);
 
+                // As the App part is usually at the beginning, we have to replace it with 'app' instead for case
+                // sensitive filesystems.
+                if (Str::startsWith($path, ['/App/', 'App/'])) {
+                    $path = Str::replaceFirst('App/', 'app/', $path);
+                }
+
                 $disk = Storage::build([
                     'driver' => 'local',
-                    'root' => base_path($path),
+                    'root' => str_replace('//', '/', base_path($path)),
                 ]);
 
                 foreach ($disk->allFiles() as $file) {
