@@ -4,8 +4,13 @@ namespace A17\Twill;
 
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\BlockCollection;
+use A17\Twill\Services\Forms\Fields\BaseFormField;
+use A17\Twill\Services\Forms\InlineRepeater;
+use A17\Twill\View\Components\Blocks\TwillBlockComponent;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class TwillBlocks
 {
@@ -23,6 +28,21 @@ class TwillBlocks
      * @var array<string, string>
      */
     public static $repeatersDirectories = [];
+
+    /**
+     * @var array<string, string>
+     */
+    public static $componentBlockNamespaces = [];
+
+    /**
+     * @var array<string, InlineRepeater>
+     */
+    public static $dynamicRepeaters = [];
+
+    /**
+     * @var array
+     */
+    public static $loadedDynamicRepeaters = [];
 
     /**
      * @return A17\Twill\Services\Blocks\BlockCollection
@@ -50,6 +70,40 @@ class TwillBlocks
                 ];
             }
         }
+    }
+
+    public function registerDynamicRepeater(string $name, InlineRepeater $repeater): void
+    {
+        self::$dynamicRepeaters[$name] = $repeater;
+    }
+
+    public function discoverDynamicRepeaters(Collection $collection): void
+    {
+        /** @var Block $item */
+        foreach ($collection as $item) {
+            if ($item->componentClass) {
+                $component = new $item->componentClass();
+                $component->getForm()->registerDynamicRepeaters();
+            }
+        }
+    }
+
+    public function getAvailableRepeaters(): string
+    {
+        $baseList = $this->getBlockCollection()->getRepeaters()->mapWithKeys(function (Block $repeater) {
+            return [$repeater->name => $repeater->toList()];
+        });
+
+        return $baseList->toJson();
+    }
+
+    public function registerComponentBlocks(string $namespace): void
+    {
+        if (! Str::startsWith($namespace, '\\')) {
+            $namespace = '\\' . $namespace;
+        }
+
+        self::$componentBlockNamespaces[$namespace] = $namespace;
     }
 
     /**
@@ -87,7 +141,14 @@ class TwillBlocks
         // Consume the repeatersDirectories. We act a bit dumb here by not taking into account duplicates
         // as a package should only register a directory once.
         foreach (self::$repeatersDirectories as $repeaterDir => $data) {
-            foreach ($this->readBlocksFromDirectory($repeaterDir, $data['type'], Block::TYPE_REPEATER, $data['renderNamespace']) as $repeater) {
+            foreach (
+                $this->readBlocksFromDirectory(
+                    $repeaterDir,
+                    $data['type'],
+                    Block::TYPE_REPEATER,
+                    $data['renderNamespace']
+                ) as $repeater
+            ) {
                 $this->blockCollection->add($repeater);
             }
 
@@ -95,11 +156,50 @@ class TwillBlocks
         }
 
         foreach (self::$blockDirectories as $blockDir => $data) {
-            foreach ($this->readBlocksFromDirectory($blockDir, $data['type'], Block::TYPE_BLOCK, $data['renderNamespace']) as $block) {
+            foreach (
+                $this->readBlocksFromDirectory(
+                    $blockDir,
+                    $data['type'],
+                    Block::TYPE_BLOCK,
+                    $data['renderNamespace']
+                ) as $block
+            ) {
                 $this->blockCollection->add($block);
             }
 
             unset(self::$blockDirectories[$blockDir]);
+        }
+
+
+        if (self::$componentBlockNamespaces !== []) {
+            foreach (self::$componentBlockNamespaces as $namespace) {
+                $path = Str::replace('\\', '/', $namespace);
+
+                $disk = Storage::build([
+                    'driver' => 'local',
+                    'root' => base_path($path),
+                ]);
+
+                foreach ($disk->allFiles() as $file) {
+                    $class = $namespace . '\\' . Str::replace('/', '\\', Str::before($file, '.'));
+                    if (is_subclass_of($class, TwillBlockComponent::class)) {
+                        $this->blockCollection->add(
+                            Block::forComponent($class)
+                        );
+                    }
+                }
+
+                unset(self::$componentBlockNamespaces[$namespace]);
+            }
+        }
+
+        $this->discoverDynamicRepeaters($this->blockCollection);
+
+        foreach (self::$dynamicRepeaters as $name => $dynamicRepeater) {
+            if (! isset(self::$loadedDynamicRepeaters[$name])) {
+                $this->blockCollection->add($dynamicRepeater->asBlock());
+                self::$loadedDynamicRepeaters[$name] = true;
+            }
         }
 
         return $this->blockCollection;
@@ -114,9 +214,18 @@ class TwillBlocks
 
     public function findRepeaterByName(string $name): ?Block
     {
-        return $this->getRepeaters()->first(function (Block $block) use ($name) {
+        $repeater = $this->getRepeaters()->first(function (Block $block) use ($name) {
             return $block->name === $name;
         });
+
+        if ($repeater === null) {
+            // Search for the dynamic one.
+            $repeater = $this->getRepeaters()->first(function (Block $block) use ($name) {
+                return $block->name === 'dynamic-repeater-' . $name;
+            });
+        }
+
+        return $repeater;
     }
 
     /**

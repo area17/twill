@@ -19,9 +19,10 @@ class Repeater extends TwillFormComponent
         bool $renderForBlocks = false,
         bool $renderForModal = false,
         ?string $label = null,
+        ?string $name = null,
     ) {
         parent::__construct(
-            name: $type,
+            name: $name ?? $type,
             label: $label ?? $type,
             renderForBlocks: $renderForBlocks,
             renderForModal: $renderForModal,

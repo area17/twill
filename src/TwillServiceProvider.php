@@ -8,6 +8,7 @@ use A17\Twill\Commands\CapsuleInstall;
 use A17\Twill\Commands\CreateExampleCommand;
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\Dev;
+use A17\Twill\Commands\GenerateBlockComponent;
 use A17\Twill\Commands\GenerateBlocks;
 use A17\Twill\Commands\GenerateDocsCommand;
 use A17\Twill\Commands\ServeDocsCommand;
@@ -121,6 +122,8 @@ class TwillServiceProvider extends ServiceProvider
         Blade::componentNamespace('A17\\Twill\\View\\Components\\Partials', 'twill.partials');
         Blade::componentNamespace('A17\\Twill\\View\\Components\\Layout', 'twill.layout');
         Blade::componentNamespace('A17\\Twill\\View\\Components\\Fields', 'twill');
+
+        \A17\Twill\Facades\TwillBlocks::registerComponentBlocks('\\App\\View\\Components\\Twill\\Blocks');
 
         Relation::morphMap([
             'users' => User::class,
@@ -356,6 +359,7 @@ class TwillServiceProvider extends ServiceProvider
             SetupDevTools::class,
             GeneratePackageCommand::class,
             TwillFlushManifest::class,
+            GenerateBlockComponent::class
         ];
 
         if (app()->runningInConsole()) {

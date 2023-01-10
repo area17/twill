@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories;
 
 use A17\Twill\Exceptions\NoCapsuleFoundException;
+use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Behaviors\Sortable;
@@ -190,6 +191,8 @@ abstract class ModuleRepository
 
             $model->save();
 
+            $this->afterSaveOriginalData($model, $original_fields);
+
             $this->afterSave($model, $fields);
 
             return $model;
@@ -221,19 +224,23 @@ abstract class ModuleRepository
     public function update(int|string $id, array $fields): TwillModelContract
     {
         return DB::transaction(function () use ($id, $fields) {
-            $object = $this->model->findOrFail($id);
+            $model = $this->model->findOrFail($id);
 
-            $this->beforeSave($object, $fields);
+            $original_fields = $fields;
 
-            $fields = $this->prepareFieldsBeforeSave($object, $fields);
+            $this->beforeSave($model, $fields);
 
-            $object->fill(Arr::except($fields, $this->getReservedFields()));
+            $fields = $this->prepareFieldsBeforeSave($model, $fields);
 
-            $object->save();
+            $model->fill(Arr::except($fields, $this->getReservedFields()));
 
-            $this->afterSave($object, $fields);
+            $model->save();
 
-            return $object->fresh();
+            $this->afterSaveOriginalData($model, $original_fields);
+
+            $this->afterSave($model, $fields);
+
+            return $model->fresh();
         }, 3);
     }
 
@@ -490,6 +497,13 @@ abstract class ModuleRepository
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object, $fields);
+        }
+    }
+
+    public function afterSaveOriginalData(TwillModelContract $model, array $fields): void
+    {
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
+            $this->$method($model, $fields);
         }
     }
 
@@ -759,5 +773,10 @@ abstract class ModuleRepository
     public function isTranslatable($column): bool
     {
         return $this->model->isTranslatable($column);
+    }
+
+    public function getBaseModel(): TwillModelContract
+    {
+        return $this->model;
     }
 }

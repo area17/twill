@@ -4,7 +4,9 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillUtil;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Model;
+use A17\Twill\Repositories\ModuleRepository;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Arr;
@@ -32,14 +34,9 @@ trait HandleRepeaters
      *
      * @var array
      */
-    protected $repeaters = [];
+    protected array $repeaters = [];
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @return void
-     */
-    public function afterSaveHandleRepeaters($object, $fields)
+    public function afterSaveHandleRepeaters(TwillModelContract $object, array $fields): void
     {
         foreach ($this->getRepeaters() as $repeater) {
             $this->updateRepeater(
@@ -52,12 +49,7 @@ trait HandleRepeaters
         }
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @return array
-     */
-    public function getFormFieldsHandleRepeaters($object, $fields)
+    public function getFormFieldsHandleRepeaters(TwillModelContract $object, array $fields): array
     {
         foreach ($this->getRepeaters() as $repeater) {
             $fields = $this->getFormFieldsForRepeater(
@@ -73,20 +65,19 @@ trait HandleRepeaters
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relation
-     * @param bool $keepExisting
-     * @param \A17\Twill\Models\Model|null $model
-     * @return void
      * @deprecated use updateRepeaterWithPivot
      */
-    public function updateRepeaterMany($object, $fields, $relation, $keepExisting = true, $model = null)
-    {
+    public function updateRepeaterMany(
+        TwillModelContract $object,
+        array $fields,
+        string $relation,
+        bool $keepExisting = true,
+        ?string $model = null
+    ): void {
         $relationFields = $fields['repeaters'][$relation] ?? [];
         $relationRepository = getModelRepository($relation, $model);
 
-        if (!$keepExisting) {
+        if (! $keepExisting) {
             $object->$relation()->each(function ($repeaterElement) {
                 $repeaterElement->forceDelete();
             });
@@ -98,24 +89,15 @@ trait HandleRepeaters
         }
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relation
-     * @param string|null $morph
-     * @param \A17\Twill\Models\Model|null $model
-     * @param string|null $repeaterName
-     * @return void
-     */
     public function updateRepeaterMorphMany(
-        $object,
-        $fields,
-        $relation,
-        $morph = null,
-        $model = null,
-        $repeaterName = null
-    ) {
-        if (!$repeaterName) {
+        TwillModelContract $object,
+        array $fields,
+        string $relation,
+        ?string $morph = null,
+        ?string $model = null,
+        ?string $repeaterName = null
+    ): void {
+        if (! $repeaterName) {
             $repeaterName = $relation;
         }
 
@@ -128,7 +110,7 @@ trait HandleRepeaters
         $morphFieldId = $morph . '_id';
 
         // if no relation field submitted, soft deletes all associated rows
-        if (!$relationFields) {
+        if (! $relationFields) {
             $relationRepository->updateBasic(null, [
                 'deleted_at' => Carbon::now(),
             ], [
@@ -150,18 +132,18 @@ trait HandleRepeaters
                 // row already exists, let's update
                 $id = str_replace($relation . '-', '', $relationField['id']);
                 $relationRepository->update($id, $relationField);
-                $currentIdList[] = $id;
+                $currentIdList[] = (int)$id;
             } else {
                 // new row, let's attach to our object and create
                 unset($relationField['id']);
                 $newRelation = $relationRepository->create($relationField);
                 $object->$relation()->save($newRelation);
-                $currentIdList[] = $newRelation['id'];
+                $currentIdList[] = (int)$newRelation['id'];
             }
         }
 
         foreach ($object->$relation()->pluck('id') as $id) {
-            if (!in_array($id, $currentIdList)) {
+            if (! in_array($id, $currentIdList, true)) {
                 $relationRepository->updateBasic(null, [
                     'deleted_at' => Carbon::now(),
                 ], [
@@ -172,14 +154,14 @@ trait HandleRepeaters
     }
 
     public function updateRepeaterWithPivot(
-        Model $object,
+        TwillModelContract $object,
         array $fields,
         string $relation,
         array $pivotFields,
-        string $modelOrRepository = null,
+        ?string $modelOrRepository = null,
         ?string $repeaterName = null,
-    ) {
-        if (!$repeaterName) {
+    ): void {
+        if (! $repeaterName) {
             $repeaterName = $relation;
         }
 
@@ -189,7 +171,7 @@ trait HandleRepeaters
 
         // If no relation field submitted, soft deletes all associated rows.
         // We only do this when the model is already existing.
-        if (!$relationFields && !$object->wasRecentlyCreated) {
+        if (! $relationFields && ! $object->wasRecentlyCreated) {
             $object->{$relation}()->detach();
         }
 
@@ -208,14 +190,14 @@ trait HandleRepeaters
 
             // If the relation is not an "existing" one try to match it with our session.
             if (
-                !Str::startsWith($relationField['id'], $relation) &&
+                ! Str::startsWith($relationField['id'], $relation) &&
                 $pivotRowId = TwillUtil::hasRepeaterIdFor($relationField['id'])
             ) {
                 $relationField['id'] = $relation . '-' . $pivotRowId;
             }
 
             // Set the active data based on the parent.
-            if (!isset($relationField['languages']) && isset($relationField['active'])) {
+            if (! isset($relationField['languages']) && isset($relationField['active'])) {
                 foreach (array_keys($relationField['active']) as $langCode) {
                     // Add the languages field.
                     $relationField['languages'][] = [
@@ -237,11 +219,11 @@ trait HandleRepeaters
                 $relationRepository->update($currentRelation->id, $relationField);
 
                 $pivotFieldData = $this->encodePivotFields(collect($relationField)->only($pivotFields)->all());
-                if (!empty($pivotFieldData)) {
+                if (! empty($pivotFieldData)) {
                     $currentRelation->pivot->update($pivotFieldData);
                 }
 
-                $currentIdList[] = $pivotRowId;
+                $currentIdList[] = (int)$pivotRowId;
             } else {
                 $frontEndId = $relationField['id'];
                 if ($relationField['repeater_target_id'] ?? false) {
@@ -257,7 +239,7 @@ trait HandleRepeaters
                     $newRelation = $relationRepository->create($relationField);
                 }
 
-                $currentIdList[] = $newRelation['id'];
+                $currentIdList[] = (int)$newRelation['id'];
 
                 $pivotFieldData = $this->encodePivotFields(collect($relationField)->only($pivotFields)->all());
 
@@ -272,7 +254,7 @@ trait HandleRepeaters
         $current = $object->{$relation}()->withPivot('id')->get();
         if ($current->isNotEmpty()) {
             foreach ($current as $existingRelation) {
-                if (!in_array((int)$existingRelation->pivot->id, $currentIdList, true)) {
+                if (! in_array((int)$existingRelation->pivot->id, $currentIdList, true)) {
                     // The pivot table is treated differently.
                     $object->{$relation}()->detach($existingRelation->pivot->id);
                 }
@@ -282,17 +264,15 @@ trait HandleRepeaters
 
     /**
      * Given relation, model and repeaterName, retrieve the repeater data from request and update the database record.
-     *
-     * @param \A17\Twill\Models\Model|\A17\Twill\Repositories\ModuleRepository|null $modelOrRepository
      */
     public function updateRepeater(
-        Model $object,
+        TwillModelContract $object,
         array $fields,
         string $relation,
-        $modelOrRepository = null,
+        null|string|TwillModelContract|ModuleRepository $modelOrRepository = null,
         ?string $repeaterName = null
     ): void {
-        if (!$repeaterName) {
+        if (! $repeaterName) {
             $repeaterName = $relation;
         }
 
@@ -302,7 +282,7 @@ trait HandleRepeaters
 
         // If no relation field submitted, soft deletes all associated rows.
         // We only do this when the model is already existing.
-        if (!$relationFields && !$object->wasRecentlyCreated) {
+        if (! $relationFields && ! $object->wasRecentlyCreated) {
             $relationRepository->updateBasic(null, [
                 'deleted_at' => Carbon::now(),
             ], [
@@ -317,14 +297,14 @@ trait HandleRepeaters
             $relationField['position'] = $index + 1;
             // If the relation is not an "existing" one try to match it with our session.
             if (
-                !Str::startsWith($relationField['id'], $relation) &&
+                ! Str::startsWith($relationField['id'], $relation) &&
                 $id = TwillUtil::hasRepeaterIdFor($relationField['id'])
             ) {
                 $relationField['id'] = $relation . '-' . $id;
             }
 
             // Set the active data based on the parent.
-            if (!isset($relationField['languages']) && isset($relationField['active'])) {
+            if (! isset($relationField['languages']) && isset($relationField['active'])) {
                 foreach (array_keys($relationField['active']) as $langCode) {
                     // Add the languages field.
                     $relationField['languages'][] = [
@@ -339,21 +319,21 @@ trait HandleRepeaters
                 $id = str_replace($relation . '-', '', $relationField['id']);
                 $relationRepository->update($id, $relationField);
 
-                $currentIdList[] = $id;
+                $currentIdList[] = (int)$id;
             } else {
                 // new row, let's attach to our object and create
                 $relationField[$this->model->getForeignKey()] = $object->id;
                 $frontEndId = $relationField['id'];
                 unset($relationField['id']);
                 $newRelation = $relationRepository->create($relationField);
-                $currentIdList[] = $newRelation['id'];
+                $currentIdList[] = (int)$newRelation['id'];
 
                 TwillUtil::registerRepeaterId($frontEndId, $newRelation->id);
             }
         }
 
         foreach ($object->{$relation}()->pluck('id') as $id) {
-            if (!in_array($id, $currentIdList)) {
+            if (! in_array($id, $currentIdList, true)) {
                 // The pivot table is treated differently.
                 $relationRepository->updateBasic(null, [
                     'deleted_at' => Carbon::now(),
@@ -382,14 +362,14 @@ trait HandleRepeaters
      * @todo: This is currently a massive duplication, once done, this needs to be cleaned up
      */
     public function getFormFieldForRepeaterWithPivot(
-        Model $object,
+        TwillModelContract $object,
         array $fields,
         string $relation,
         array $pivotFields,
-        ?string $modelOrRepository = null,
+        null|string|TwillModelContract|ModuleRepository $modelOrRepository = null,
         ?string $repeaterName = null
     ): array {
-        if (!$repeaterName) {
+        if (! $repeaterName) {
             $repeaterName = $relation;
         }
 
@@ -472,8 +452,9 @@ trait HandleRepeaters
                 }
             }
 
-            $itemFields = method_exists($relationItem, 'toRepeaterArray') ? $relationItem->toRepeaterArray(
-            ) : Arr::except($relationItem->attributesToArray(), $translatedFields);
+            $itemFields = method_exists($relationItem, 'toRepeaterArray') ?
+                $relationItem->toRepeaterArray() :
+                Arr::except($relationItem->attributesToArray(), $translatedFields);
 
             foreach ($pivotFields as $pivotField) {
                 if ($pivotField === 'id') {
@@ -514,11 +495,11 @@ trait HandleRepeaters
             }
         }
 
-        if (!empty($repeatersMedias) && config('twill.media_library.translated_form_fields', false)) {
+        if (! empty($repeatersMedias) && config('twill.media_library.translated_form_fields', false)) {
             $repeatersMedias = array_merge(...$repeatersMedias);
         }
 
-        if (!empty($repeatersFiles)) {
+        if (! empty($repeatersFiles)) {
             $repeatersFiles = array_merge(...$repeatersFiles);
         }
 
@@ -533,22 +514,15 @@ trait HandleRepeaters
 
     /**
      * Given relation, model and repeaterName, get the necessary fields for rendering a repeater.
-     *
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relation
-     * @param \A17\Twill\Models\Model|\A17\Twill\Repositories\ModuleRepository|null $modelOrRepository
-     * @param string|null $repeaterName
-     * @return array
      */
     public function getFormFieldsForRepeater(
-        $object,
-        $fields,
-        $relation,
-        $modelOrRepository = null,
-        $repeaterName = null
-    ) {
-        if (!$repeaterName) {
+        TwillModelContract $object,
+        array $fields,
+        string $relation,
+        null|string|TwillModelContract|ModuleRepository $modelOrRepository = null,
+        ?string $repeaterName = null
+    ): array {
+        if (! $repeaterName) {
             $repeaterName = $relation;
         }
 
@@ -626,8 +600,9 @@ trait HandleRepeaters
                 }
             }
 
-            $itemFields = method_exists($relationItem, 'toRepeaterArray') ? $relationItem->toRepeaterArray(
-            ) : Arr::except($relationItem->attributesToArray(), $translatedFields);
+            $itemFields = method_exists($relationItem, 'toRepeaterArray') ?
+                $relationItem->toRepeaterArray() :
+                Arr::except($relationItem->attributesToArray(), $translatedFields);
 
             foreach ($itemFields as $key => $value) {
                 $repeatersFields[] = [
@@ -659,11 +634,11 @@ trait HandleRepeaters
             }
         }
 
-        if (!empty($repeatersMedias) && config('twill.media_library.translated_form_fields', false)) {
+        if (! empty($repeatersMedias) && config('twill.media_library.translated_form_fields', false)) {
             $repeatersMedias = array_merge(...$repeatersMedias);
         }
 
-        if (!empty($repeatersFiles)) {
+        if (! empty($repeatersFiles)) {
             $repeatersFiles = array_merge(...$repeatersFiles);
         }
 
@@ -676,9 +651,9 @@ trait HandleRepeaters
         return $fields;
     }
 
-    private function decodePivotField(?string $data)
+    private function decodePivotField(?string $data): null|array|string
     {
-        if (!$data) {
+        if (! $data) {
             return null;
         }
 
@@ -692,10 +667,8 @@ trait HandleRepeaters
     /**
      * Get all repeaters' model and relation from the $repeaters attribute.
      * The missing information will be inferred by convention of Twill.
-     *
-     * @return \Illuminate\Support\Collection
      */
-    protected function getRepeaters()
+    protected function getRepeaters(): Collection
     {
         return collect($this->repeaters)->map(function ($repeater, $key) {
             $repeaterName = is_string($repeater) ? $repeater : $key;
@@ -713,7 +686,7 @@ trait HandleRepeaters
     }
 
     /**
-     * Guess the relation name (shoud be lower camel case, ex. userGroup, contactOffice).
+     * Guess the relation name (should be lower camel case, ex. userGroup, contactOffice).
      */
     protected function inferRelationFromRepeaterName(string $repeaterName): string
     {

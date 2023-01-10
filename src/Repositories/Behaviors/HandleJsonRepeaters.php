@@ -69,13 +69,7 @@ trait HandleJsonRepeaters
         return $fields;
     }
 
-    /**
-     * @param array $fields
-     * @param string $repeaterName
-     * @param array $serializedData
-     * @return array
-     */
-    public function getJsonRepeater($fields, $repeaterName, $serializedData)
+    public function getJsonRepeater(array $fields, string $repeaterName, array $serializedData): array
     {
         $repeatersFields = [];
         $repeatersBrowsers = [];
@@ -86,12 +80,14 @@ trait HandleJsonRepeaters
         foreach ($serializedData as $index => $repeaterItem) {
             $id = $repeaterItem['id'] ?? $index;
 
+            $repeater = $repeatersList[$repeaterName] ?? $repeatersList['dynamic-repeater-' . $repeaterName];
+
             $repeaters[] = [
                 'id' => $id,
-                'type' => $repeatersList[$repeaterName]->component,
-                'title' => $repeatersList[$repeaterName]->title,
-                'titleField' => $repeatersList[$repeaterName]->titleField,
-                'hideTitlePrefix' => $repeatersList[$repeaterName]->hideTitlePrefix,
+                'type' => $repeater->component,
+                'title' => $repeater->title,
+                'titleField' => $repeater->titleField,
+                'hideTitlePrefix' => $repeater->hideTitlePrefix,
             ];
 
             if (isset($repeaterItem['browsers'])) {

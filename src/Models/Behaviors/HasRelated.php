@@ -35,6 +35,11 @@ trait HasRelated
         return $this->relatedCache[$browser_name];
     }
 
+    public function getFirstRelated(string $browserName): mixed
+    {
+        return $this->getRelated($browserName)->first();
+    }
+
     /**
      * Eager load related items for a browser field.
      *

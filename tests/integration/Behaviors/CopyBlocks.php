@@ -3,6 +3,7 @@
 namespace A17\Twill\Tests\Integration\Behaviors;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 trait CopyBlocks
@@ -49,10 +50,8 @@ trait CopyBlocks
 
     /**
      * Copy all sources to destinations.
-     *
-     * @param array $files
      */
-    public function copyFiles($files)
+    public function copyFiles(Collection $files): void
     {
         $this->files = app()->make(Filesystem::class);
         collect($files)->each(function ($destination, $source) {
@@ -66,7 +65,8 @@ trait CopyBlocks
                 }
 
                 if ($this->files->exists($destination)) {
-                    /* $this->files->delete($destination); */
+                    // @todo: Check why this removes the source file on my local environment.
+                    // $this->files->delete($destination);
                 }
 
                 $this->files->copy($source, $destination);
