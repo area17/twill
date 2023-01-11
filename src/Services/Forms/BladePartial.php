@@ -9,6 +9,7 @@ class BladePartial
 {
     protected function __construct(
         protected ?string $view = null,
+        protected ?array $params = [],
     ) {
     }
 
@@ -24,19 +25,32 @@ class BladePartial
         return $this;
     }
 
+    public function withAdditionalParams(array $params = []): static
+    {
+        $this->params = $params;
+
+        return $this;
+    }
+
     public function render(): ?View
     {
         if (! $this->view) {
             return null;
         }
 
-        $form = ViewFacade::shared("form");
+        $form = ViewFacade::shared('form');
 
-        return ViewFacade::make($this->view, [
-            'item' => $form['item'] ?? null,
-            'form_fields' => $form['form_fields'] ?? [],
-            'formModuleName' => $form['moduleName'] ?? null,
-            'routePrefix' => $form['routePrefix'] ?? null,
-        ]);
+        return ViewFacade::make(
+            $this->view,
+            array_merge(
+                [
+                    'item' => $form['item'] ?? null,
+                    'form_fields' => $form['form_fields'] ?? [],
+                    'formModuleName' => $form['moduleName'] ?? null,
+                    'routePrefix' => $form['routePrefix'] ?? null,
+                ],
+                $this->params
+            )
+        );
     }
 }
