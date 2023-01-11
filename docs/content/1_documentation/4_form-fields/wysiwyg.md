@@ -142,4 +142,4 @@ Schema::table('article_translations', function (Blueprint $table) {
 });
 ```
 
-When used in a [block](/block-editor/creating-a-block-editor.html), no migration is needed.
+When used in a [block](../5_block-editor), no migration is needed.

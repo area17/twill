@@ -2,7 +2,6 @@
 
 ![screenshot](/assets/browser.png)
 
-
 :::tabs=currenttab.FormBuilder&items.FormBuilder|FormView|Directive:::
 
 :::tab=name.FormBuilder:::
@@ -67,13 +66,16 @@ Browser::make()
 
 Browser fields can be used inside as well as outside the block editor.
 
-Inside the block editor, no migration is needed when using browsers. Refer to the section titled [Adding browser fields to a block](/block-editor/adding-browser-fields-to-a-block.html) for a detailed explanation.
+Inside the block editor, no migration is needed when using browsers. Refer to the section
+titled [Adding browser fields to a block](../5_block-editor/04_adding-browser-fields-to-a-block.md) for a detailed
+explanation.
 
-Outside the block editor, browser fields are used to save `belongsToMany` relationships. The relationships can be stored in Twill's own `related` table or in a custom pivot table.
+Outside the block editor, browser fields are used to save `belongsToMany` relationships. The relationships can be stored
+in Twill's own `related` table or in a custom pivot table.
 
 ## Using browser fields as related items
 
-The following example demonstrates how to use a browser field to attach `Authors` to `Articles`. 
+The following example demonstrates how to use a browser field to attach `Authors` to `Articles`.
 
 - Update the `Article` model to add the `HasRelated` trait:
 
@@ -175,7 +177,8 @@ class ArticleRepository extends ModuleRepository
 
 ## Working with related items
 
-To retrieve the items in the frontend, you can use the `getRelated` method on models and blocks. It will return of collection of related models in the correct order:
+To retrieve the items in the frontend, you can use the `getRelated` method on models and blocks. It will return of
+collection of related models in the correct order:
 
 ```php
     $item->getRelated('collaborators');
@@ -184,10 +187,6 @@ To retrieve the items in the frontend, you can use the `getRelated` method on mo
 
     $block->getRelated('collaborators');
 ```
-
-## Using browser fields and custom pivot tables
-
-Checkout this [Spectrum tutorial](https://spectrum.chat/twill/tips-and-tricks/step-by-step-ii-creating-a-twill-app~37c36601-1198-4c53-857a-a2b47c6d11aa) that walks through the entire process of using browser fields with custom pivot tables.
 
 ## Connecting 2 browser fields
 
@@ -213,7 +212,8 @@ The following example demonstrates how to make a browser field depend on the sel
 
 The second browser is using the `connectedBrowserField` option, which will:
 
-- add the connected browser's selected items IDs to the browser endpoint url, using the `connectedBrowserIds` query parameter,
+- add the connected browser's selected items IDs to the browser endpoint url, using the `connectedBrowserIds` query
+  parameter,
 - disable the browser field when the connected browser is empty,
 - empty the browser field automatically when removing all items from the connected browser.
 
@@ -231,7 +231,8 @@ public function getBrowserData($prependScope = [])
 }
 ```
 
-In the presented example, this will make sure only variants of the selected product in the first browser can be selected in the second one.
+In the presented example, this will make sure only variants of the selected product in the first browser can be selected
+in the second one.
 
 ## Morphable browser fields
 
@@ -311,11 +312,12 @@ Then in our `MenuItemRepository` we have to setup a few things:
 And finally in our form we can add the field:
 
 ```html
+
 <x-twill::browser
-    label="Link"
-    :max="1"
-    name="linkables"
-    :modules="[
+        label="Link"
+        :max="1"
+        name="linkables"
+        :modules="[
         [
         'label' => 'Homepages',
         'name' => 'homepages',

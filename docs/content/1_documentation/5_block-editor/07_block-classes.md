@@ -21,6 +21,6 @@ class ExampleBlock extends Block
 
 With a block class you can:
 
-- [Customize block validation](/documentation/block-editor/validating-blocks.html#block-class)
-- [Send more data properties to the rendering blade file](/documentation/block-editor/rendering-blocks.html#modifying-block-data)
-- [Send more data properties to the form](/documentation/block-editor/adding-data-to-block-forms.html)
+- [Customize block validation](./08_validating-blocks.md#block-class)
+- [Send more data properties to the rendering blade file](./05_rendering-blocks.md#modifying-block-data)
+- [Send more data properties to the form](./09_adding-data-to-block-forms.md)

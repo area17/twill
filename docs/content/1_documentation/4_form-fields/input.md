@@ -81,7 +81,7 @@ Input::make()
 | prefix      | Text displayed as a prefix in the field                                                                                  | string                                                      |               |
 | rows        | Sets the number of rows in a textarea                                                                                    | integer                                                     | 5             |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean                                                     | false         |
-| disabled    | Disables the field                                                                                                       |boolean                                                      | false         |
+| disabled    | Disables the field                                                                                                       | boolean                                                     | false         |
 | readonly    | Sets the field as readonly                                                                                               | boolean                                                     | false         |
 | default     | Sets a default value if empty                                                                                            | string                                                      |               |
 | mask        | Set a mask using the alpinejs mask plugin                                                                                | string                                                      |               |
@@ -121,4 +121,4 @@ Schema::table('articles', function (Blueprint $table) {
 });
 ```
 
-When used in a [block](/block-editor/creating-a-block-editor.html), no migration is needed.
+When used in a [block](../5_block-editor), no migration is needed.

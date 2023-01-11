@@ -89,7 +89,7 @@ If you do not need to distribute, read along!
 ### Generating the capsule
 
 A capsule can be bootstrapped using the command `php artisan twill:make:capsule`, it accepts the same arguments as
-[the module cli generator](./cli-generator.md), if no arguments are passed it will ask during generation with the
+[the module cli generator](./2_cli-generator.md), if no arguments are passed it will ask during generation with the
 exception of `--singleton` which can be added if you want it to be a singleton module
 
 ```

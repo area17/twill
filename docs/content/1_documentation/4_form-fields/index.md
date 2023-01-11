@@ -3,7 +3,7 @@
 ## Using controller method
 
 Since Twill 3.0 there is also a possibility to define your forms from the module controller,
-for details about this approach see [Form builder documentation](../3_modules/form-builder.md).
+for details about this approach see [Form builder documentation](../3_modules/8_form-builder.md).
 
 This method will still continue to receive improvements as it does not yet support all the features
 that the form views method has such as fieldset, sidebars and conditional fields.
@@ -49,11 +49,11 @@ like in the following example:
 
 You can use the following arguments when defining a `formFieldset`
 
-| Option      | Description                                                                  | Type/values    | Default value |
-|:------------|:-----------------------------------------------------------------------------|:---------------|:--------------|
-| id          | The id of the fieldset, this should match the value in `additionalFieldsets` | string         |               |
-| title       | The title of the fieldset                                                    | string         |               |
-| open        | If the fieldset should be open by default                                    | boolean        | false         |
+| Option | Description                                                                  | Type/values | Default value |
+|:-------|:-----------------------------------------------------------------------------|:------------|:--------------|
+| id     | The id of the fieldset, this should match the value in `additionalFieldsets` | string      |               |
+| title  | The title of the fieldset                                                    | string      |               |
+| open   | If the fieldset should be open by default                                    | boolean     | false         |
 
 The additional fieldsets array passed to the form layout will display a sticky navigation of your fieldset on scroll.
 You can also rename the content section by passing a `contentFieldsetLabel` property to the layout, or disable it
