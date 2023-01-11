@@ -523,6 +523,10 @@
       metadatasInfos: function () {
         this.metadatas.active = !this.metadatas.active
         this.metadatas.text = this.metadatas.active ? this.metadatas.textClose : this.metadatas.textOpen
+      },
+      destroyValue: function () {
+        if (this.isSlide) return // for Slideshows : the medias are deleted when the slideshow component is destroyed (so no need to do it here)
+        if (!this.isDestroyed) this.deleteMedia()
       }
     },
     beforeMount: function () {
