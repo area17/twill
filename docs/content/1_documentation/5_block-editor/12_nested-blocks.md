@@ -2,13 +2,14 @@
 
 Since Twill 3.x it is possible to nest blocks. In theory to infinity.
 
-To make this work you can add **one** or **more** [block editors](form-fields/block-editor.html) to your block.
+To make this work you can add **one** or **more** [block editors](../4_form-fields/block-editor.md) to your block.
 
 However, you have to specify their names
 
 :::filename:::
 `resources/views/twill/blocks/nested-block.blade.php`
 :::#filename:::
+
 ```blade
 @twillBlockTitle('Nested Block left right')
 @twillBlockIcon('text')
@@ -30,12 +31,13 @@ Now, let's move over to the rendering aspect.
 
 ## Basic usage
 
-Following the documentation of [block editors](form-fields/block-editor.html) we know already how to render
+Following the documentation of [block editors](../4_form-fields/block-editor.md) we know already how to render
 a block.
 
 :::filename:::
 `resources/views/site/blocks/nested-block.blade.php`
 :::#filename:::
+
 ```blade
 @php
     /** @var \A17\Twill\Services\Blocks\RenderData $renderData */

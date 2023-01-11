@@ -1,6 +1,8 @@
 # Conditional Fields
 
-You can conditionally display fields based on the values of other fields in your form. For example, if you wanted to display a video embed text field only if the type of article, a radio field, is "video" you'd do something like the following:
+You can conditionally display fields based on the values of other fields in your form. For example, if you wanted to
+display a video embed text field only if the type of article, a radio field, is "video" you'd do something like the
+following:
 
 ```blade
 <x-twill::radios
@@ -31,6 +33,7 @@ You can conditionally display fields based on the values of other fields in your
     />
 </x-twill::formConnectedFields>
 ```
+
 Here's an example based on a checkbox field where the value is either true or false:
 
 ```blade
@@ -50,6 +53,7 @@ Here's an example based on a checkbox field where the value is either true or fa
     />
 </x-twill::formConnectedFields>
 ```
+
 Here's an example based on a checkboxes field where the values are stored in a json field:
 
 ```blade

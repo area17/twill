@@ -11,19 +11,20 @@ To define a block as being `compiled` (ie. using a custom Vue component), you ca
 You can bootstrap your custom Vue blocks by generating them from their Blade counterpart using `php artisan twill:blocks`. It will ask you to confirm before overriding any existing custom Vue block. To start a custom Vue block from scratch, use the following template:
 
 ```vue
+
 <template>
-    <!-- eslint-disable -->
-    <div class="block__body">
-        <!-- CUSTOM CODE -->
-    </div>
+  <!-- eslint-disable -->
+  <div class="block__body">
+    <!-- CUSTOM CODE -->
+  </div>
 </template>
 
 <script>
-  import BlockMixin from '@/mixins/block'
+import BlockMixin from '@/mixins/block'
 
-  export default {
-    mixins: [BlockMixin]
-  }
+export default {
+  mixins: [BlockMixin]
+}
 </script>
 
 ```
@@ -63,5 +64,3 @@ to:
 On top of custom Vue blocks, It is possible to rebuild Twill with custom Vue components. This can be used to override Twill's own Vue components or create new form fields, for example. The `twill.custom_components_resource_path` configuration can be used to provide a path under Laravel `resources` folder that will be used as a source of Vue components to include in your form js build when running `php artisan twill:build`.
 
 You have to run `php artisan twill:build` for your custom Vue components to be included in the frontend build.
-
-For a more in depth tutorial, check out this [Spectrum post](https://spectrum.chat/twill/tips-and-tricks/adding-a-custom-block-to-twill-admin-view-with-vuejs~028d79b1-b3cd-4fb7-a89c-ce64af7be4af).

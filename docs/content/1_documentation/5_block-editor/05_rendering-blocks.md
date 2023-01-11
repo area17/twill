@@ -59,7 +59,7 @@ trait helpers. Here's an example of how a media field could be rendered:
 Sometimes it can be useful to abstract some PHP you would usually put at the top of the blade file.
 This will keep your blade files cleaner and allow for easier logic writing.
 
-See [Block classes documentation](/block-editor/block-classes.html) for more details about the block class.
+See [Block classes documentation](../5_block-editor/07_block-classes.md) for more details about the block class.
 
 ```php
 <?php

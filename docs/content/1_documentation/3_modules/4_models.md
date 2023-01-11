@@ -94,11 +94,11 @@ class Author extends Model implements Sortable
 ```
 
 You can also set a global revisions limit using by
-setting [TwillConfig::maxRevisions](../2_getting-started/configuration.md#twillconfig-facade)
+setting [TwillConfig::maxRevisions](../2_getting-started/3_configuration.md#twillconfig-facade)
 
 #### Scheduling
 
-Also see [Migrations documentation](./migrations.md).
+Also see [Migrations documentation](./3_migrations.md).
 
 If the database for you model has the fields `publish_start_date` and `publish_end_date` you need to make those fillable
 to allow content scheduling.

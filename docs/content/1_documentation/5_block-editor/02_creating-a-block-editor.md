@@ -47,7 +47,7 @@ These blocks will be placed under `App\View\Components\Twill\Blocks`.
 While the rendering blade file looks the same, there is no longer a form blade file.
 
 Instead, you define the form in your component class, the same way you can
-do [module forms](../3_modules/form-builder.md)!
+do [module forms](../3_modules/8_form-builder.md)!
 
 ```php
 <?php
@@ -102,7 +102,7 @@ public static function getBlockIcon(): string
 
 #### Validation
 
-As with default blocks, you can also [validate](./validating-blocks.md) fields:
+As with default blocks, you can also [validate](./08_validating-blocks.md) fields:
 
 ```php
 public function getValidationRules(): array
@@ -167,11 +167,6 @@ Blocks and Repeaters are built on the same Block model and are created and defin
 default, Twill will look for Blade templates in `views/twill/blocks` for blocks and `views/twill/repeaters` for
 repeaters.
 
-Note: Prior to Twill version 2.2, Blocks (and Repeaters) needed to be defined in the configuration file – this is no
-longer necessary and not recommended. This change is backward compatible, so your existing configuration should work as
-it used to. Defining blocks in the configuration file will be deprecated in a future release (see the section
-below [Legacy configuration](/block-editor/legacy-configuration-2-2.html).
-
 Blocks (and Repeaters) are exactly like a regular form, without any Blade layout or section. The templates take special
 annotations to add further customization. The title annotation is mandatory and Twill will throw an error if it is not
 defined.
@@ -184,7 +179,7 @@ Available annotations:
 - Provide a group with `@twillPropGroup` or `@twillBlockGroup` or `@twillRepeaterGroup` (defaults to `app`)
 - Provide a repeater trigger label with `@twillPropTrigger` or `@twillRepeaterTrigger`
 - Provide a repeater max items with `@twillPropMax` or `@twillRepeaterMax`, `@twillRepeaterMax` can also be defined from
-  the formField. See [Repeater form field](/form-fields/repeater.html)
+  the formField. See [Repeater form field](../4_form-fields/repeater.md)
 - Define a block or repeater as compiled with `@twillPropCompiled` or `@twillBlockCompiled` or `@twillRepeaterCompiled`
 - Define a block or repeater component with `@twillPropComponent` or `@twillBlockComponent` or `@twillRepeaterComponent`
 
@@ -348,7 +343,7 @@ return [
 ];
 ```
 
-See also [Default Configuration](https://twill.io/docs/block-editor/default-configuration.html).
+See also [Default Configuration](../11_default-configuration.md).
 
 If the `resource_path('assets/admin/icons')` directory contains a `my-custom-icon.svg` file, you can use this icon in
 your block by using its basename: `@twillBlockIcon('my-custom-icon')`.

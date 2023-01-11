@@ -2,7 +2,7 @@
 
 ## Environment requirements
 
-Twill `3.x` is compatible with Laravel versions `8.x` to `9.x`, running on PHP 8.0 and above. As a dependency to your
+Twill `3.x` is compatible with Laravel version `9.x`, running on PHP 8.0 and above. As a dependency to your
 own application, Twill shares Laravel's
 [server requirements](https://laravel.com/docs/9.x/deployment#server-requirements).
 
@@ -39,9 +39,9 @@ developed and tested against MySQL (`>=5.7`) and PostgreSQL(`>=9.3`).
 
 |            | Supported versions | Recommended version |
 |:-----------|:------------------:|:-------------------:|
-| PHP        |       >= 8.0       | 8.1                 |
-| Laravel    |       >= 8.0       | 9.x                 |
-| npm        |       >= 5.7       | 6.13                |
-| MySQL      |       >= 5.7       | 5.7                 |
-| PostgreSQL |       >= 9.3       | 10                  |
+| PHP        |       >= 8.0       |         8.1         |
+| Laravel    |       >= 9.0       |         9.x         |
+| npm        |       >= 5.7       |        6.13         |
+| MySQL      |       >= 5.7       |         5.7         |
+| PostgreSQL |       >= 9.3       |         10          |
 

@@ -2,7 +2,7 @@
 
 ## CRUD modules
 
-A Twill [CRUD module](/crud-modules/) is a set of classes and configurations in your Laravel application that enable
+A Twill [CRUD module](../3_modules/) is a set of classes and configurations in your Laravel application that enable
 your publishers to manage a certain type of content. The structure of a CRUD module is completely up to you.
 
 Another way to think of a CRUD module is as a feature rich Laravel resource. In other words (and for the non-Laravel
@@ -19,7 +19,7 @@ migrations and Eloquent model conventions.
 
 Twill's CRUD modules features are enabled using PHP traits you include in your Eloquent models and Twill repositories,
 as well as various configuration variables, and a bunch of conventions to follow. Further guidance is documented in
-the [CRUD modules](/crud-modules/) section.
+the [CRUD modules](../3_modules/) section.
 
 A Twill module can be modified however you like – you can include countless types of content fields, and change the
 organization and structure according to the needs of the module and your product. Setup is simple: you just need to
@@ -57,7 +57,7 @@ show and make parent/child relationships manageable on a module's records.
 
 Elements are modules or snippets of content that are added to an entity, page, or screen. Examples include the ability
 to manage footer text or create a global alert that can be turned on/off, etc. Twill offers developers the ability to
-quickly create [settings sections](/settings-sections/) to manage elements. A Twill module could also be configured to
+quickly create [settings sections](../11_settings-sections) to manage elements. A Twill module could also be configured to
 manage any sort of standalone element or content composition. There's nothing wrong with having a database table with a
 single record if that is what your product require, so you should feel free to create a Twill module to have a custom
 form for a single record. You can use a Laravel seeder or migration to initialize your admin console with those records.
