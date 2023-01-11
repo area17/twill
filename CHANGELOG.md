@@ -2,6 +2,26 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.0.0-rc2
+
+This is the second release candidate for Twill 3!
+
+### Features
+
+- From builder now supports inline fieldsets [`#2007`](https://github.com/area17/twill/pull/2007)
+- Blocks can now be defined as a blade component `php twill:make:componentBlock blockName` [`#2007`](https://github.com/area17/twill/pull/2007)
+
+### Bugfixes
+
+- Fixed an issue where media tags would not save [`#2051`](https://github.com/area17/twill/pull/2051)
+- Fixed an issue where conditional fields would not unset [`#2043`](https://github.com/area17/twill/pull/2043)
+- Vselect now properly handles floats [`#2048`](https://github.com/area17/twill/pull/2048)
+- Repeaters now properly collapse/expand [`#2037`](https://github.com/area17/twill/pull/2037)
+
+### Docs
+
+- Various docs updated [`#2052`](https://github.com/area17/twill/pull/2052)
+
 ## 3.0.0-rc1
 
 The first release candidate for Twill 3!
