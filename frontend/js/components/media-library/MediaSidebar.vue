@@ -385,15 +385,17 @@
         }
       },
       save: function () {
-        const form = this.$refs.form
-        if (!form) return
+        this.$nextTick(() => {
+          const form = this.$refs.form
+          if (!form) return
 
-        const formData = this.getFormData(form)
+          const formData = this.getFormData(form)
 
-        if (!isEqual(formData, this.previousSavedData) && !this.loading) {
-          this.previousSavedData = formData
-          this.update(form)
-        }
+          if (!isEqual(formData, this.previousSavedData) && !this.loading) {
+            this.previousSavedData = formData
+            this.update(form)
+          }
+        })
       },
       submit: function (event) {
         event.preventDefault()
