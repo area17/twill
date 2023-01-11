@@ -10,4 +10,4 @@ Packages are composer installable.
 
 In the following section we will explain how you can create your own package.
 
-- [Creating a package](./creating-a-package.md)
+- [Creating a package](./1_creating-a-package.md)

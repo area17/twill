@@ -146,7 +146,7 @@ public function hydrate($object, $fields)
 
 ## Duplicating content
 
-When enabling the duplicate feature on your [controller](./controllers.md) the ui will expose a button and
+When enabling the duplicate feature on your [controller](./6_controllers.md) the ui will expose a button and
 row action to duplicate the entry.
 
 By default the duplicate function will take care of duplicating the following:

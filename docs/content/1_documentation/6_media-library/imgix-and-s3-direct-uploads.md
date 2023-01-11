@@ -22,20 +22,20 @@ Create another IAM user for Imgix with read-only access to your bucket and use i
 
 ```json
 {
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-                "s3:GetObject",
-                "s3:ListBucket",
-                "s3:GetBucketLocation"
-            ],
-            "Resource": [
-                "arn:aws:s3:::YOUR_BUCKER_IDENTIFIER/*",
-                "arn:aws:s3:::YOUR_BUCKER_IDENTIFIER"
-            ]
-        }
-    ]
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::YOUR_BUCKER_IDENTIFIER/*",
+        "arn:aws:s3:::YOUR_BUCKER_IDENTIFIER"
+      ]
+    }
+  ]
 }
 ```
 

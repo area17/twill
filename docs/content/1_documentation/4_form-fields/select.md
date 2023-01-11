@@ -74,19 +74,19 @@ Select::make()
 :::#tab:::
 :::#tabs:::
 
-| Option      | Description                                                  | Type/values     | Default value |
-| :---------- | :----------------------------------------------------------- | :-------------- | :------------ |
-| name        | Name of the field                                            | string          |               |
-| label       | Label of the field                                           | string          |               |
-| options     | Array of options for the dropdown, must include _value_ and _label_ | array          |               |
-| unpack      | Defines if the select will be displayed as an open list of options | boolean  | false         |
-| columns     | Aligns the options on a grid with a given number of columns  | integer         | 0 (off)       |
-| searchable  | Filter the field values while typing                         | boolean  | false         |
-| note        | Hint message displayed above the field                       | string          |               |
-| placeholder | Text displayed as a placeholder in the field                 | string          |               |
-| required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean  | false         |
-| default     |	Sets a default value if empty	      	                       | string          |               |
-| disabled            | Disables the field                                   | boolean         | false         | 
+| Option      | Description                                                                                                              | Type/values | Default value |
+|:------------|:-------------------------------------------------------------------------------------------------------------------------|:------------|:--------------|
+| name        | Name of the field                                                                                                        | string      |               |
+| label       | Label of the field                                                                                                       | string      |               |
+| options     | Array of options for the dropdown, must include _value_ and _label_                                                      | array       |               |
+| unpack      | Defines if the select will be displayed as an open list of options                                                       | boolean     | false         |
+| columns     | Aligns the options on a grid with a given number of columns                                                              | integer     | 0 (off)       |
+| searchable  | Filter the field values while typing                                                                                     | boolean     | false         |
+| note        | Hint message displayed above the field                                                                                   | string      |               |
+| placeholder | Text displayed as a placeholder in the field                                                                             | string      |               |
+| required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean     | false         |
+| default     | 	Sets a default value if empty	      	                                                                                   | string      |               |
+| disabled    | Disables the field                                                                                                       | boolean     | false         | 
 
 Select item option
 | Option | Description | Type/values | Default value |
@@ -132,4 +132,4 @@ Schema::table('posts', function (Blueprint $table) {
 });
 ```
 
-When used in a [block](/block-editor/creating-a-block-editor.html), no migration is needed.
+When used in a [block](../5_block-editor), no migration is needed.

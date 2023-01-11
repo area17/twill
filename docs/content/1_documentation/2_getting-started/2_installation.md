@@ -138,7 +138,7 @@ From there, you might want to configure Twill's media library's storage provider
 By default Twill uses local storage and local image rendering using [Glide](https://glide.thephpleague.com/), if you
 have more advanced image storage needs you can setup AWS as instructed below.
 
-See the [media library's configuration documentation](/media-library/) for more information.
+See the [media library's configuration documentation](../6_media-library) for more information.
 
 ### AWS
 

@@ -92,20 +92,20 @@ MultiSelect::make()
 :::#tab:::
 :::#tabs:::
 
-| Option      | Description                                                                                                              | Type/values     | Default value |
-|:------------|:-------------------------------------------------------------------------------------------------------------------------|:----------------|:--------------|
-| name        | Name of the field                                                                                                        | string          |               |
-| label       | Label of the field                                                                                                       | string          |               |
-| min         | Minimum number of selectable options                                                                                     | integer         |               |
-| max         | Maximum number of selectable options                                                                                     | integer         |               |
-| options     | Array of options for the dropdown, must include _value_ and _label_                                                      | array           |               |
-| unpack      | Defines if the multi select will be displayed as an open list of options                                                 | boolean         | true          |
-| columns     | Aligns the options on a grid with a given number of columns                                                              | integer         | 0 (off)       |
-| searchable  | Filter the field values while typing                                                                                     | boolean         | false         |
-| note        | Hint message displayed above the field                                                                                   | string          |               |
-| placeholder | Text displayed as a placeholder in the field                                                                             | string          |               |
-| required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean         | false         |
-| disabled    | Disables the field                                                                                                       | boolean         | false         |
+| Option      | Description                                                                                                              | Type/values | Default value |
+|:------------|:-------------------------------------------------------------------------------------------------------------------------|:------------|:--------------|
+| name        | Name of the field                                                                                                        | string      |               |
+| label       | Label of the field                                                                                                       | string      |               |
+| min         | Minimum number of selectable options                                                                                     | integer     |               |
+| max         | Maximum number of selectable options                                                                                     | integer     |               |
+| options     | Array of options for the dropdown, must include _value_ and _label_                                                      | array       |               |
+| unpack      | Defines if the multi select will be displayed as an open list of options                                                 | boolean     | true          |
+| columns     | Aligns the options on a grid with a given number of columns                                                              | integer     | 0 (off)       |
+| searchable  | Filter the field values while typing                                                                                     | boolean     | false         |
+| note        | Hint message displayed above the field                                                                                   | string      |               |
+| placeholder | Text displayed as a placeholder in the field                                                                             | string      |               |
+| required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean     | false         |
+| disabled    | Disables the field                                                                                                       | boolean     | false         |
 
 There are several ways to implement a `multi_select` form field.
 
@@ -162,7 +162,7 @@ Sometimes the content for the `multi_select` is coming from another model.
 
 In this case that it can be implemented as follows:
 
-- Create a Sectors [module](/crud-modules/cli-generator.html)
+- Create a Sectors [module](../3_modules/2_cli-generator.md)
 
 ```
 php artisan twill:module sectors
@@ -226,4 +226,4 @@ protected function formData($request)
 />
 ```
 
-When used in a [block](/block-editor/creating-a-block-editor.html), no migration is needed.
+When used in a [block](../5_block-editor), no migration is needed.

@@ -29,16 +29,16 @@ Twill follows [Semantic Versioning](https://semver.org/). Major releases are rel
 necessary, while minor and patch releases may be released as often as every week. Minor and patch releases should never
 contain breaking changes.
 
-When referencing Twill from your application, you should always use a version constraint such as `^2.0`, since major
+When referencing Twill from your application, you should always use a version constraint such as `^3.0`, since major
 releases of Twill do include breaking changes.
 
 ## Which branch?
 
-All bug fixes should be sent to the latest stable branch (`2.x`). Bug fixes should never be sent to the `main` branch
+All bug fixes should be sent to the latest stable branch (`3.x`). Bug fixes should never be sent to the `main` branch
 unless they fix features that exist only in the upcoming release.
 
 Minor features that are fully backwards compatible with the current Twill release may be sent to the latest stable
-branch (`2.x`).
+branch (`3.x`).
 
 Major new features should always be sent to the `main` branch, which contains the upcoming Twill release.
 
@@ -49,6 +49,6 @@ before submitting.
 
 ## Coding style
 
--
-PHP: [PSR-2 Coding Standard](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md).
+- PHP: [PSR-12 Coding Standard with small changes](https://github.com/area17/twill/blob/3.x/phpcs.xml).
+
 - Javascript: [Standard](https://standardjs.com/), [Vue ESLint Essentials](https://github.com/vuejs/eslint-plugin-vue).

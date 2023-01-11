@@ -421,9 +421,9 @@ But, for this guide, we will simply open `resources/views/site/page.blade.php` a
 
 ```
 
-Wherever you will put `<x-menu/>` it will render the menu. That's usefull because you could use it in a footer as well.
+Wherever you will put `<x-menu/>` it will render the menu. That's useful because you could use it in a footer as well.
 
 Now that we have pages and a menu, we have one last thing we need to do.
 
-[We need a frontpage](10_setup_the_frontpage.md)!
+[We need a frontpage](./10_setup-the-frontpage.md)!
 

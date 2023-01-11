@@ -37,22 +37,22 @@ DatePicker::make()
 :::#tab:::
 :::#tabs:::
 
-| Option          | Description                                                                                                              | Type/values    | Default value |
-|:----------------|:-------------------------------------------------------------------------------------------------------------------------|:---------------|:--------------|
-| name            | Name of the field                                                                                                        | string         |               |
-| label           | Label of the field                                                                                                       | string         |               |
-| minDate         | Minimum selectable date                                                                                                  | string         |               |
-| maxDate         | Maximum selectable date                                                                                                  | string         |               |
-| withTime        | Define if the field will display the time selector                                                                       | boolean        | true          |
-| time24Hr        | Pick time with a 24h picker instead of AM/PM                                                                             | boolean        | false         |
-| allowClear      | Adds a button to clear the field                                                                                         | boolean        | false         |
-| allowInput      | Allow manually editing the selected date in the field                                                                    | boolean        | false         |
-| altFormat       | Format used by [flatpickr](https://flatpickr.js.org/formatting/)                                                         | string         | F j, Y        |
-| hourIncrement   | Time picker hours increment                                                                                              | number         | 1             |
-| minuteIncrement | Time picker minutes increment                                                                                            | number         | 30            |
-| note            | Hint message displayed above the field                                                                                   | string         |               |
-| required        | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean        | false         |
-| disabled        | Disables the field                                                                                                       | boolean        | false         | 
+| Option          | Description                                                                                                              | Type/values | Default value |
+|:----------------|:-------------------------------------------------------------------------------------------------------------------------|:------------|:--------------|
+| name            | Name of the field                                                                                                        | string      |               |
+| label           | Label of the field                                                                                                       | string      |               |
+| minDate         | Minimum selectable date                                                                                                  | string      |               |
+| maxDate         | Maximum selectable date                                                                                                  | string      |               |
+| withTime        | Define if the field will display the time selector                                                                       | boolean     | true          |
+| time24Hr        | Pick time with a 24h picker instead of AM/PM                                                                             | boolean     | false         |
+| allowClear      | Adds a button to clear the field                                                                                         | boolean     | false         |
+| allowInput      | Allow manually editing the selected date in the field                                                                    | boolean     | false         |
+| altFormat       | Format used by [flatpickr](https://flatpickr.js.org/formatting/)                                                         | string      | F j, Y        |
+| hourIncrement   | Time picker hours increment                                                                                              | number      | 1             |
+| minuteIncrement | Time picker minutes increment                                                                                            | number      | 30            |
+| note            | Hint message displayed above the field                                                                                   | string      |               |
+| required        | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean     | false         |
+| disabled        | Disables the field                                                                                                       | boolean     | false         | 
 
 A migration to save a `date_picker` field would be:
 
@@ -70,4 +70,4 @@ Schema::table('posts', function (Blueprint $table) {
 });
 ```
 
-When used in a [block](/block-editor/creating-a-block-editor.html), no migration is needed.
+When used in a [block](../5_block-editor/02_creating-a-block-editor.md), no migration is needed.

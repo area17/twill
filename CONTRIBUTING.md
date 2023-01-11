@@ -15,12 +15,12 @@ If you discover a security vulnerability within Twill, please email us at [secur
 
 Twill follows [Semantic Versioning](https://semver.org/). Major releases are released only when breaking changes are necessary, while minor and patch releases may be released as often as every week. Minor and patch releases should never contain breaking changes.
 
-When referencing Twill from your application, you should always use a version constraint such as `^2.0`, since major releases of Twill do include breaking changes.
+When referencing Twill from your application, you should always use a version constraint such as `^3.0`, since major releases of Twill do include breaking changes.
 
 # Which branch?
-All bug fixes should be sent to the latest stable branch (`2.x`). Bug fixes should never be sent to the `main` branch unless they fix features that exist only in the upcoming release.
+All bug fixes should be sent to the latest stable branch (`3.x`). Bug fixes should never be sent to the `main` branch unless they fix features that exist only in the upcoming release.
 
-Minor features that are fully backwards compatible with the current Twill release may be sent to the latest stable branch (`2.x`).
+Minor features that are fully backwards compatible with the current Twill release may be sent to the latest stable branch (`3.x`).
 
 Major new features should always be sent to the `main` branch, which contains the upcoming Twill release.
 

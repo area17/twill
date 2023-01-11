@@ -47,10 +47,10 @@ BlockEditor::make()
 
 :::#tabs:::
 
-See [Block editor](/1_documentation/block-editor/index.md)
+See [Block editor](../5_block-editor/01_index.md)
 
-| Option           | Description                                                                 | Type/values    | Default value |
-|:-----------------|:----------------------------------------------------------------------------|:---------------|:--------------|
-| blocks           | Array of blocks                                                             | array          |               |
-| label            | Label used for the button                                                   | string         | 'Add Content' |
-| withoutSeparator | Defines if a separator before the block editor container should be rendered | boolean        | false         |
+| Option           | Description                                                                 | Type/values | Default value |
+|:-----------------|:----------------------------------------------------------------------------|:------------|:--------------|
+| blocks           | Array of blocks                                                             | array       |               |
+| label            | Label used for the button                                                   | string      | 'Add Content' |
+| withoutSeparator | Defines if a separator before the block editor container should be rendered | boolean     | false         |
