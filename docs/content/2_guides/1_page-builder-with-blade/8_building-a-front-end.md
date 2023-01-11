@@ -118,7 +118,7 @@ If everything is correct, you will see the following:
 
 And that is perfect, it is a good illustration on how we can use `dd` to make sure something is as we expect.
 
-Now before we continue, remember in [configuring the page module](5_configuring-the-page-module.md) that we already
+Now before we continue, remember in [configuring the page module](./5_configuring-the-page-module.md) that we already
 cleaned up the permalink and language prefix.
 
 Create a page in the CMS, and set the slug to `example` (or anything else, just remember it as we will use this in the

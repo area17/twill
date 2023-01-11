@@ -310,7 +310,7 @@ There are 3 levels that can be enabled now:
 - **roleGroupItem**: this manages the permission of items within a module, in addition to roleGroup
 
 Make sure to check the documentation for full
-details: [advanced permissions](../1_documentation/13_user-management/advanced-permissions.md)
+details: [advanced permissions](../1_documentation/13_user-management/2_advanced-permissions.md)
 
 ## Nested blocks
 
