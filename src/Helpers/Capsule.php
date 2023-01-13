@@ -152,7 +152,12 @@ class Capsule
         if (File::exists($this->path . DIRECTORY_SEPARATOR . 'Database')) {
             return $this->path . DIRECTORY_SEPARATOR . 'Database';
         }
-        return $this->path . DIRECTORY_SEPARATOR . 'database';
+
+        if (File::exists($this->path . DIRECTORY_SEPARATOR . 'database')) {
+            return $this->path . DIRECTORY_SEPARATOR . 'database';
+        }
+
+        return $this->path . DIRECTORY_SEPARATOR . 'Database';
     }
 
     public function getSeedsNamespace(): string
@@ -237,7 +242,7 @@ class Capsule
 
     public function getViewPrefix(): string
     {
-        if (!$this->cachedViewPrefix) {
+        if (! $this->cachedViewPrefix) {
             $name = Str::studly($this->name);
             // This is for backwards compatability.
             if (File::exists($this->getViewsPath() . DIRECTORY_SEPARATOR . 'twill')) {
