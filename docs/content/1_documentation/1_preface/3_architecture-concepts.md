@@ -99,7 +99,7 @@ breadcrumb.
 ## Block editor
 
 Central to the Twill experience is the block editor, giving publishers full control of how they construct the content of
-a record. A block is a composition of form fields made available to publshers in Twill's block editor form field.
+a record. A block is a composition of form fields made available to publishers in Twill's block editor form field.
 
 Generally speaking, with a standard CMS, all content is managed through fixed forms. While in a Twill CMS some of the
 content may be fixed (such as title, subtitle, intro, required content, etc.), when using the block editor, the content

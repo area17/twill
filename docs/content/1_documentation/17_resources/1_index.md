@@ -17,7 +17,7 @@
 - [sentry/sentry-laravel](https://github.com/getsentry/sentry-laravel) is a Laravel integration for Sentry.
 - [arcanedev/log-viewer](https://github.com/ARCANEDEV/LogViewer) allows you to manage and keep track of each one of your
   logs files in a nice web UI.
-- [laravelium/sitemap](https://gitlab.com/Laravelium/Sitemap) is a very complelete sitemap generator.
+- [laravelium/sitemap](https://gitlab.com/Laravelium/Sitemap) is a very complete sitemap generator.
 - [flynsarmy/csv-seeder](https://github.com/Flynsarmy/laravel-csv-seeder) allows CSV based database seeds.
 - [ufirst/lang-import-export](https://github.com/ufirstgroup/laravel-lang-import-export)  provides artisan commands to
   import and export language files from and to CSV
