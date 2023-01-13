@@ -93,13 +93,14 @@
               if (child.componentInstance.$refs.field[0]) {
                 child.componentInstance.$refs.field[0].destroyValue()
               }
-            }
-            // Special fields such as browsers.
-            else if (
-              child.componentInstance !== undefined
+            } else if (
+              child.componentInstance !== undefined &&
+              child.componentInstance.$slots !== undefined &&
+              child.componentInstance.$slots.default !== undefined
             ) {
+              // Special fields such as browsers.
               child.componentInstance.$slots.default.forEach((subChild) => {
-                if (subChild.componentInstance.destroyValue) {
+                if (subChild.componentInstance && subChild.componentInstance.destroyValue) {
                   subChild.componentInstance.destroyValue()
                 }
               })
