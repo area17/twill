@@ -96,10 +96,12 @@
             }
             // Special fields such as browsers.
             else if (
-              child.componentInstance !== undefined
+              child.componentInstance !== undefined &&
+              child.componentInstance.$slots !== undefined &&
+              child.componentInstance.$slots.default !== undefined
             ) {
               child.componentInstance.$slots.default.forEach((subChild) => {
-                if (subChild.componentInstance.destroyValue) {
+                if (subChild.componentInstance && subChild.componentInstance.destroyValue) {
                   subChild.componentInstance.destroyValue()
                 }
               })

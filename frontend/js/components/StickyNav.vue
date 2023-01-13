@@ -67,8 +67,12 @@
         })
 
         // no active, let fallback on the first one or the last one the user clicked
-        if (this.clickedFieldset >= 0) Vue.set(self.navItems[self.clickedFieldset], 'active', true)
-        else Vue.set(self.navItems[itemToActivate], 'active', true)
+        if (this.clickedFieldset >= 0){
+          Vue.set(self.navItems[self.clickedFieldset], 'active', true)
+        }
+        else if (self.navItems[itemToActivate] !== undefined) {
+          Vue.set(self.navItems[itemToActivate], 'active', true)
+        }
       },
       refresh: function () {
         const self = this
