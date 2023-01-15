@@ -667,6 +667,11 @@ class Block
         $this->renderData = $renderData;
     }
 
+    public function block(): ?\A17\Twill\Models\Block
+    {
+        return $this->renderData?->block;
+    }
+
     public function renderView(
         array $blockViewMappings,
         array $data,

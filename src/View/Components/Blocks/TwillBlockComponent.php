@@ -52,7 +52,15 @@ abstract class TwillBlockComponent extends Component
      */
     public function repeater(string $repeaterName): Collection
     {
-        return collect($this->renderData->children)->where('name', $repeaterName);
+        $baseList = collect($this->renderData->children)
+            ->where('name', $repeaterName);
+
+        if ($baseList->isEmpty()) {
+            $baseList = collect($this->renderData->children)
+                ->where('name', 'dynamic-repeater-' . $repeaterName);
+        }
+
+        return $baseList;
     }
 
     /**
