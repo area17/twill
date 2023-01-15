@@ -80,7 +80,13 @@ trait HandleJsonRepeaters
         foreach ($serializedData as $index => $repeaterItem) {
             $id = $repeaterItem['id'] ?? $index;
 
-            $repeater = $repeatersList[$repeaterName] ?? $repeatersList['dynamic-repeater-' . $repeaterName];
+            $repeater = $repeatersList[$repeaterName] ?? $repeatersList['dynamic-repeater-' . $repeaterName] ?? null;
+
+            if (!$repeater) {
+                // There is no repeater found. This can be due to code removal but a database left-over.
+                // In that case, we cannot do anything so we simply return the fields.
+                return $fields;
+            }
 
             $repeaters[] = [
                 'id' => $id,
