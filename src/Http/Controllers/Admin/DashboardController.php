@@ -164,8 +164,13 @@ class DashboardController extends Controller
             }
         }
 
-        config('twill.dashboard.auth_activity_log.login', false) && array_push($listActivities, config('twill.dashboard.auth_activity_causer', 'users')) ||
-        config('twill.dashboard.auth_activity_log.logout', false) && array_push($listActivities, config('twill.dashboard.auth_activity_causer', 'users'));
+        if (config('twill.dashboard.auth_activity_log.login', false)) {
+            $listActivities[] = config('twill.dashboard.auth_activity_causer', 'users');
+        }
+
+        if (config('twill.dashboard.auth_activity_log.logout', false)) {
+            $listActivities[] = config('twill.dashboard.auth_activity_causer', 'users');
+        }
 
         return $listActivities;
     }
@@ -242,11 +247,7 @@ class DashboardController extends Controller
         ] : []);
     }
 
-    /**
-     * @param \Spatie\Activitylog\Models\Activity $activity
-     * @return array|null
-     */
-    private function formatAuthActivity($activity)
+    private function formatAuthActivity(Activity $activity): array
     {
         return [
             'id' => $activity->id,
