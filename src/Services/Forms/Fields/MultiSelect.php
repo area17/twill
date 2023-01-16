@@ -24,6 +24,10 @@ class MultiSelect extends BaseFormField
 
     protected bool $searchable = false;
 
+    protected bool $pushTags = false;
+
+    protected bool $taggable = false;
+
     protected bool $addNew = false;
 
     protected ?string $moduleName = null;
@@ -67,6 +71,20 @@ class MultiSelect extends BaseFormField
     public function storeUrl(string $storeUrl): self
     {
         $this->storeUrl = $storeUrl;
+
+        return $this;
+    }
+
+    public function taggable(bool $taggable = true): self
+    {
+        $this->taggable = $taggable;
+
+        return $this;
+    }
+
+    public function pushTags(bool $pushTags = true): self
+    {
+        $this->pushTags = $pushTags;
 
         return $this;
     }
