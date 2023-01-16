@@ -1,8 +1,10 @@
 # Dashboard
 
-Once you have created and configured multiple CRUD modules in your Twill's admin console, you can configure Twill's dashboard in `config/twill.php`.
+Once you have created and configured multiple CRUD modules in your Twill's admin console, you can configure Twill's
+dashboard in `config/twill.php`.
 
-For each module that you want to enable in a part or all parts of the dashboad, add an entry to the `dashboard.modules` array, like in the following example:
+For each module that you want to enable in a part or all parts of the dashboad, add an entry to the `dashboard.modules`
+array, like in the following example:
 
 ```php
 return [
@@ -44,4 +46,34 @@ return [
 
 It is using Spatie's [Laravel Analytics](https://github.com/spatie/laravel-analytics) package.
 
-Follow [Spatie's documentation](https://github.com/spatie/laravel-analytics#how-to-obtain-the-credentials-to-communicate-with-google-analytics) to setup a Google service account and download a json file containing your credentials, and provide your Analytics view ID using the `ANALYTICS_VIEW_ID` environment variable.
+Follow [Spatie's documentation](https://github.com/spatie/laravel-analytics#how-to-obtain-the-credentials-to-communicate-with-google-analytics)
+to setup a Google service account and download a json file containing your credentials, and provide your Analytics view
+ID using the `ANALYTICS_VIEW_ID` environment variable.
+
+## User activity
+
+In addition to model activity, you can also enable user login/logout activity.
+
+This feature is enabled by default and can be enabled by setting the following config keys:
+
+```
+twill.dashboard.auth_activity_log.login => true
+twill.dashboard.auth_activity_log.logout => true
+```
+
+:::filename:::
+`config/twill.php`
+:::#filename:::
+
+```php
+<?php
+
+return [
+    'dashboard' => [
+        'auth_activity_log' => [
+            'login' => true,
+            'logout' => true
+        ]
+    ]
+]
+```
