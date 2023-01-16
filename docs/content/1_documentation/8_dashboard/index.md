@@ -3,6 +3,8 @@
 Once you have created and configured multiple CRUD modules in your Twill's admin console, you can configure Twill's
 dashboard in `config/twill.php`.
 
+## Model activity
+
 For each module that you want to enable in a part or all parts of the dashboad, add an entry to the `dashboard.modules`
 array, like in the following example:
 
@@ -28,6 +30,8 @@ return [
     ...
 ];
 ```
+
+## Google analytics
 
 You can also enable a Google Analytics module:
 
