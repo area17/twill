@@ -369,25 +369,13 @@ class ModuleMake extends Command
 
     private function addCapsuleToConfigFile(string $name): void
     {
-        $configFile = base_path('config/twill.php');
-        if (! File::exists($configFile)) {
-            File::put($configFile, '<?php ' . PHP_EOL . PHP_EOL . 'return [];');
-        }
-
-        $navigation = require($configFile);
-
-        $navigation['capsules']['list'][strtolower($name)] = $newEntry = [
+        $newEntry = [
             'name' => $name,
             'enabled' => true,
         ];
 
-        $this->warn('Added capsule entry to config/twill.php:');
+        $this->warn('Add the following capsule entry to config/twill.php:');
         $this->box($this->getFormattedArray($newEntry));
-
-        File::put(
-            $configFile,
-            '<?php ' . PHP_EOL . PHP_EOL . 'return ' . $this->getFormattedArray($navigation) . ';'
-        );
     }
 
     private function addEntryToNavigationFile(string $key, array $value): void
@@ -432,13 +420,8 @@ PHP;
 
         $navigation[$key] = $value;
 
-        $this->warn('Added navigation entry to config/twill-navigation.php:');
+        $this->warn('Add the following navigation entry to config/twill-navigation.php:');
         $this->box($this->getFormattedArray([$key => $navigation[$key]]));
-
-        File::put(
-            $navigationFile,
-            '<?php ' . PHP_EOL . PHP_EOL . 'return ' . $this->getFormattedArray($navigation) . ';'
-        );
     }
 
     /**
