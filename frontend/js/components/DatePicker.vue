@@ -10,13 +10,15 @@
 </template>
 
 <script>
-  import randKeyMixin from '@/mixins/randKey'
+  import 'flatpickr/dist/flatpickr.css'
+
+  import parse from 'date-fns/parse'
+  import FlatPickr from 'flatpickr'
+
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
-  import { locales, getCurrentLocale, isCurrentLocale24HrFormatted } from '@/utils/locale'
-  import FlatPickr from 'flatpickr'
-  import 'flatpickr/dist/flatpickr.css'
-  import parse from 'date-fns/parse'
+  import randKeyMixin from '@/mixins/randKey'
+  import { getCurrentLocale, isCurrentLocale24HrFormatted,locales } from '@/utils/locale'
 
   export default {
     name: 'A17DatePicker',
@@ -236,7 +238,7 @@
     overflow:hidden;
     color: $color__background;
     background:$color__icons;
-    border-radius:#{$button-reset__width / 2};
+    border-radius:#{calc($button-reset__width / 2)};
     margin-top:13px;
     margin-right:13px;
     line-height:$button-reset__width;

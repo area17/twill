@@ -1,11 +1,11 @@
-import { Mandarin } from 'flatpickr/dist/l10n/zh.js'
-import { Russian } from 'flatpickr/dist/l10n/ru.js'
-import { French } from 'flatpickr/dist/l10n/fr.js'
-import { Polish } from 'flatpickr/dist/l10n/pl.js'
 import { German } from 'flatpickr/dist/l10n/de.js'
+import { French } from 'flatpickr/dist/l10n/fr.js'
 import { Dutch } from 'flatpickr/dist/l10n/nl.js'
+import { Polish } from 'flatpickr/dist/l10n/pl.js'
 import { Portuguese } from 'flatpickr/dist/l10n/pt.js'
+import { Russian } from 'flatpickr/dist/l10n/ru.js'
 import { Turkish } from 'flatpickr/dist/l10n/tr.js'
+import { Mandarin } from 'flatpickr/dist/l10n/zh.js'
 
 export const locales = {
   en: {

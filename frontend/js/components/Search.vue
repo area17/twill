@@ -42,8 +42,9 @@
 </template>
 
 <script>
-  import debounce from 'lodash/debounce'
   import axios from 'axios'
+  import debounce from 'lodash/debounce'
+
   import htmlClasses from '@/utils/htmlClasses'
   const html = document.documentElement
   const htmlSearchClasses = [htmlClasses.search, htmlClasses.overlay]

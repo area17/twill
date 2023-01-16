@@ -22,8 +22,8 @@
 
 <script>
 // Hightly inspired by https://github.com/xiaokaike/vue-color
-  import tinyColor from 'tinycolor2'
   import throttle from 'lodash/throttle'
+  import tinyColor from 'tinycolor2'
 
   export default {
     name: 'a17ColorPicker',
@@ -156,7 +156,7 @@
 
         if (this.currentColorHue !== h) {
           this.throttle(this.onChange, {
-            h: h,
+            h,
             s: this.currentColor.toHsl().s,
             l: this.currentColor.toHsl().l,
             a: this.currentColor.toHsl().a,

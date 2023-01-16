@@ -40,8 +40,9 @@
 </template>
 
 <script>
-  import A17Dropdown from '../Dropdown.vue'
   import bucketMixin from '@/mixins/buckets'
+
+  import A17Dropdown from '../Dropdown.vue'
 
   export default {
     components: { A17Dropdown },

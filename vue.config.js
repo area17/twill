@@ -107,17 +107,17 @@ if (!isProd) {
 }
 
 // Define npm module resolve order: 1. local (Twill), 2. root (App)
-const appModuleFolder = path.resolve(__dirname, '../../../node_modules') // vendor/area17/twill/
-const resolveModules = ['node_modules']
-if (fs.existsSync(appModuleFolder)) {
-  resolveModules.push(appModuleFolder)
-}
+// const appModuleFolder = path.resolve(__dirname, '../../../node_modules') // vendor/area17/twill/
+// const resolveModules = ['node_modules']
+// if (fs.existsSync(appModuleFolder)) {
+//   resolveModules.push(appModuleFolder)
+// }
 
 const config = {
   // Define base outputDir of build
-  outputDir: outputDir,
+  outputDir,
   // Define root asset directory
-  assetsDir: assetsDir,
+  assetsDir,
   // Remove sourcemaps for production
   productionSourceMap: false,
   css: {
@@ -133,7 +133,7 @@ const config = {
   devServer: {
     hot: true,
     https: useHttps,
-    disableHostCheck: true,
+    allowedHosts: 'all',
     headers: {
       "Access-Control-Allow-Origin": "*"
     }
@@ -141,13 +141,13 @@ const config = {
   runtimeCompiler: true,
   configureWebpack: {
     resolve: {
-      alias: {
-        'prosemirror-tables': path.join(__dirname, 'node_modules/prosemirror-tables/src/index.js'),
-        'prosemirror-state' : path.join(__dirname, 'node_modules/prosemirror-state/src/index.js'),
-        'prosemirror-view' : path.join(__dirname, 'node_modules/prosemirror-view/src/index.js'),
-        'prosemirror-transform' : path.join(__dirname, 'node_modules/prosemirror-transform/src/index.js')
-      },
-      modules: resolveModules
+      // alias: {
+      //   'prosemirror-tables': path.join(__dirname, 'node_modules/prosemirror-tables/src/index.js'),
+      //   'prosemirror-state' : path.join(__dirname, 'node_modules/prosemirror-state/src/index.js'),
+      //   'prosemirror-view' : path.join(__dirname, 'node_modules/prosemirror-view/src/index.js'),
+      //   'prosemirror-transform' : path.join(__dirname, 'node_modules/prosemirror-transform/src/index.js')
+      // },
+      // modules: resolveModules
     },
     plugins,
     performance: {

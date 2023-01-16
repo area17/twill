@@ -68,7 +68,7 @@
       published: function (value) {
         this.$store.commit(FORM.UPDATE_FORM_FIELD, {
           name: 'published',
-          value: value
+          value
         })
       }
     },

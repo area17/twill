@@ -38,13 +38,13 @@ export default {
           icon: block.icon,
           attributes: block.attributes
         },
-        index: index
+        index
       })
     },
     edit (index = this.blockIndex) {
       this.$store.commit(BLOCKS.ACTIVATE_BLOCK, {
         editorName: this.editorName,
-        index: index
+        index
       })
     },
     unEdit () {
@@ -58,7 +58,7 @@ export default {
       this.$store.commit(BLOCKS.MOVE_BLOCK, {
         editorName: this.editorName,
         oldIndex: this.blockIndex,
-        newIndex: newIndex
+        newIndex
       })
     },
     duplicate () {
@@ -66,7 +66,7 @@ export default {
       this.$store.commit(BLOCKS.DUPLICATE_BLOCK, {
         editorName: this.editorName,
         index: this.blockIndex,
-        block: block,
+        block,
         id: this.setBlockID()
       })
     },

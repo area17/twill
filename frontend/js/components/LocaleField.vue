@@ -36,10 +36,10 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-  import { LANGUAGE } from '@/store/mutations'
-
   import cloneDeep from 'lodash/cloneDeep'
+  import { mapState } from 'vuex'
+
+  import { LANGUAGE } from '@/store/mutations'
 
   export default {
     name: 'A17Locale',
@@ -125,7 +125,7 @@
       updateValue: function (locale, newValue) {
         if (locale) {
           this.$emit('change', {
-            locale: locale,
+            locale,
             value: newValue
           })
         } else {

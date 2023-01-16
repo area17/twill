@@ -1,6 +1,7 @@
+import ACTIONS from '@/store/actions'
+
 import bucketsAPI from '../api/buckets'
 import { BUCKETS, NOTIFICATION } from '../mutations'
-import ACTIONS from '@/store/actions'
 
 const state = {
   saveUrl: window[process.env.VUE_APP_NAME].STORE.buckets.saveUrl || '',
@@ -86,7 +87,7 @@ const actions = {
       buckets[bucket.id] = children
     })
 
-    bucketsAPI.save(state.saveUrl, { buckets: buckets }, (successResponse) => {
+    bucketsAPI.save(state.saveUrl, { buckets }, (successResponse) => {
       commit(NOTIFICATION.SET_NOTIF, {
         message: 'Features saved. All good!',
         variant: 'success'
