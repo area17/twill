@@ -208,7 +208,7 @@ class DashboardController extends Controller
      */
     private function formatActivity($activity)
     {
-        if($activity->subject_type === config('twill.auth_activity_causer', 'users')){
+        if ($activity->subject_type === config('twill.auth_activity_causer', 'users')) {
             return $this->formatAuthActivity($activity);
         }
 
