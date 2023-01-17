@@ -11,10 +11,10 @@ import search from '@/main-search'
 import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
 // Page Components
+import a17Fieldset from '@/components/Fieldset.vue'
 import a17StickyNav from '@/components/StickyNav.vue'
 import a17TitleEditor from '@/components/TitleEditor.vue'
 import a17Langswitcher from '@/components/LangSwitcher.vue'
-import a17Fieldset from '@/components/Fieldset.vue'
 import a17Publisher from '@/components/Publisher.vue'
 import a17PageNav from '@/components/PageNav.vue'
 import a17Blocks from '@/components/blocks/Blocks.vue'

@@ -15,11 +15,6 @@ if (isProd) {
 
 /**
  * For configuration
- * @see: https://github.com/johnagan/clean-webpack-plugin
- */
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-/**
- * For configuration
  * @see: https://github.com/cascornelissen/svg-spritemap-webpack-plugin
  */
 const SVGSpritemapPlugin = require('svg-spritemap-webpack-plugin')
@@ -28,11 +23,6 @@ const SVGSpritemapPlugin = require('svg-spritemap-webpack-plugin')
  * @see: https://github.com/webdeveric/webpack-assets-manifest
  */
 const WebpackAssetsManifest = require('webpack-assets-manifest')
-/**
- * For configuration
- * @see: https://github.com/Turbo87/webpack-notifier
- */
-const WebpackNotifierPlugin = require('webpack-notifier')
 
 const srcDirectory = 'frontend'
 const partialsDirectory = '../views/partials'
@@ -74,7 +64,7 @@ const svgConfig = (suffix = null) => {
   }
 }
 
-const plugins = [ new CleanWebpackPlugin() ]
+const plugins = []
 
 // Default icons and optionnal custom admin icons
 // Warning : user need to make sure each SVG files are named uniquely
@@ -99,13 +89,6 @@ plugins.push(new WebpackAssetsManifest({
   }
 }))
 
-if (!isProd) {
-  plugins.push(new WebpackNotifierPlugin({
-    title: 'Twill',
-    contentImage: path.join(__dirname, 'docs/.vuepress/public/favicon-180.png')
-  }))
-}
-
 // Define npm module resolve order: 1. local (Twill), 2. root (App)
 // const appModuleFolder = path.resolve(__dirname, '../../../node_modules') // vendor/area17/twill/
 // const resolveModules = ['node_modules']
@@ -121,6 +104,7 @@ const config = {
   // Remove sourcemaps for production
   productionSourceMap: false,
   css: {
+    extract: process.env.NODE_ENV === 'production' ? { ignoreOrder: true } : false,
     loaderOptions: {
       // define global settings imported in all components
       sass: {
