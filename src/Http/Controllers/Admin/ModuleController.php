@@ -398,7 +398,7 @@ abstract class ModuleController extends Controller
             $this->getSideFieldsets($this->repository->getBaseModel())->registerDynamicRepeaters();
         }
 
-        $this->searchColumns = [$this->titleColumnKey];
+        $this->searchColumns = array_merge([$this->titleColumnKey], $this->searchColumns);
     }
 
     /**
