@@ -33,6 +33,7 @@ class CustomComponentTest extends BrowserTestCase
 
     public function testBeforeBuild(): void
     {
+        $this->artisan('twill:update');
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->superAdmin, 'twill_users');
 
@@ -52,6 +53,8 @@ class CustomComponentTest extends BrowserTestCase
             'js',
             'components',
         ]);
+
+        $this->assertFileExists($path . DIRECTORY_SEPARATOR . 'HelloWorld.vue');
 
         $this->artisan('twill:build', ['--install' => false, '--customComponentsSource' => $path]);
 
