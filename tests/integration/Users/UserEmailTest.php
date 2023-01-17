@@ -5,9 +5,7 @@ namespace A17\Twill\Tests\Integration\Users;
 use A17\Twill\Notifications\Reset;
 use A17\Twill\Tests\Integration\TestCase;
 use A17\Twill\Tests\Integration\Users\Traits\CreatesUsers;
-use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
-use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 
@@ -44,6 +42,5 @@ class UserEmailTest extends TestCase
             ->sendResetLink(['email' => 'rob@example.org']);
 
         Notification::assertSentTo($user, Reset::class);
-
     }
 }
