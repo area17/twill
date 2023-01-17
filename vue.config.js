@@ -89,6 +89,13 @@ plugins.push(new WebpackAssetsManifest({
   }
 }))
 
+// Define npm module resolve order: 1. local (Twill), 2. root (App)
+const appModuleFolder = path.resolve(__dirname, '../../../node_modules') // vendor/area17/twill/
+const resolveModules = ['node_modules']
+if (fs.existsSync(appModuleFolder)) {
+  resolveModules.push(appModuleFolder)
+}
+
 const config = {
   // Define base outputDir of build
   outputDir,
@@ -126,7 +133,8 @@ const config = {
         'fonts':path.resolve(`${srcDirectory}/fonts`),
         '@':path.resolve(`${srcDirectory}/js`),
         'styles':path.resolve(`${srcDirectory}/scss`),
-      }
+      },
+      modules: resolveModules
     },
     plugins
   }
