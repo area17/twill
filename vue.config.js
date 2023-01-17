@@ -116,10 +116,10 @@ const config = {
     }
   },
   runtimeCompiler: true,
-  performance: {
-    hints: false
-  },
   configureWebpack: {
+    performance: {
+      hints: false
+    },
     devtool: false,
     resolve: {
       alias: {
