@@ -56,10 +56,12 @@ import permissions from '@/store/modules/permissions'
 
 // mixins
 import formatPermalink from '@/mixins/formatPermalink'
-import editorMixin from '@/mixins/editor.js'
+import editorMixin from '@/mixins/editor'
 import BlockMixin from '@/mixins/block'
 import retrySubmitMixin from '@/mixins/retrySubmit'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
+import isEqual from 'lodash/isEqual'
+import sortBy from 'lodash/sortBy'
 
 // configuration
 Vue.use(A17Config)
@@ -223,19 +225,19 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
       const sortArrays = module === 'form' && (prop === 'fields' || prop === 'modalFields')
       // Store the original form state, we will compare against this. It is important to sort it the same way as when
       // we are comparing so that order changes in the fields dont matter.
-      const originalForm = this.sortObjectArraysDeep(_.cloneDeep(this.$store.state[module][prop]), sortArrays)
+      const originalForm = this.sortObjectArraysDeep(cloneDeep(this.$store.state[module][prop]), sortArrays)
       this.$store.watch((state) => {
         return state[module][prop]
       }, (newForm) => {
-        const compareTo = this.sortObjectArraysDeep(_.cloneDeep(newForm), sortArrays)
-        this.isFormUpdated = !_.isEqual(originalForm, compareTo)
+        const compareTo = this.sortObjectArraysDeep(cloneDeep(newForm), sortArrays)
+        this.isFormUpdated = !isEqual(originalForm, compareTo)
         this.$store.commit(PUBLICATION.UPDATE_HAS_UNSAVED_CHANGES, this.isFormUpdated)
       }, {
         deep: true
       })
     },
     sortArrayByFirstKey (data) {
-      return _.sortBy(data, (o) => {
+      return sortBy(data, (o) => {
         if (typeof o === 'object') {
           const firstKey = Object.keys(o)[0]
           return o[firstKey]

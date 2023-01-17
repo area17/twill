@@ -89,13 +89,6 @@ plugins.push(new WebpackAssetsManifest({
   }
 }))
 
-// Define npm module resolve order: 1. local (Twill), 2. root (App)
-// const appModuleFolder = path.resolve(__dirname, '../../../node_modules') // vendor/area17/twill/
-// const resolveModules = ['node_modules']
-// if (fs.existsSync(appModuleFolder)) {
-//   resolveModules.push(appModuleFolder)
-// }
-
 const config = {
   // Define base outputDir of build
   outputDir,
@@ -123,33 +116,19 @@ const config = {
     }
   },
   runtimeCompiler: true,
-  configureWebpack: {
-    resolve: {
-      // alias: {
-      //   'prosemirror-tables': path.join(__dirname, 'node_modules/prosemirror-tables/src/index.js'),
-      //   'prosemirror-state' : path.join(__dirname, 'node_modules/prosemirror-state/src/index.js'),
-      //   'prosemirror-view' : path.join(__dirname, 'node_modules/prosemirror-view/src/index.js'),
-      //   'prosemirror-transform' : path.join(__dirname, 'node_modules/prosemirror-transform/src/index.js')
-      // },
-      // modules: resolveModules
-    },
-    plugins,
-    performance: {
-      hints: false
-    }
+  performance: {
+    hints: false
   },
-  chainWebpack: config => {
-    // Update default vue-cli aliases
-    config.resolve.alias.set('fonts', path.resolve(`${srcDirectory}/fonts`))
-    config.resolve.alias.set('@', path.resolve(`${srcDirectory}/js`))
-    config.resolve.alias.set('styles', path.resolve(`${srcDirectory}/scss`))
-
-    // Delete HTML related webpack plugins by page
-    Object.keys(pages).forEach(page => {
-      config.plugins.delete(`html-${page}`)
-      config.plugins.delete(`preload-${page}`)
-      config.plugins.delete(`prefetch-${page}`)
-    })
+  configureWebpack: {
+    devtool: false,
+    resolve: {
+      alias: {
+        'fonts':path.resolve(`${srcDirectory}/fonts`),
+        '@':path.resolve(`${srcDirectory}/js`),
+        'styles':path.resolve(`${srcDirectory}/scss`),
+      }
+    },
+    plugins
   }
 }
 

@@ -106,7 +106,7 @@ const A17Config = {
 
     // Configurations
     Vue.config.productionTip = isProd
-    Vue.config.devtools = true
+    Vue.config.devtools = !isProd
     Vue.prototype.$http = axios
 
     window.$trans = Vue.prototype.$trans = function (key, defaultValue) {
