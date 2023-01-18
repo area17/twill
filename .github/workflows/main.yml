@@ -118,14 +118,6 @@ jobs:
         run: |
           mkdir ./frontend/js/components/blocks/customs
 
-      - name: Execute integration tests
-        run: vendor/bin/phpunit tests/integration
-        env:
-          DB_PORT: ${{ job.services.mysql.ports['3306'] }}
-
-      - name: Execute unit unit
-        run: vendor/bin/phpunit tests/unit
-
       - name: Build twill.
         run: ./vendor/bin/testbench twill:build --forTesting
 
@@ -135,8 +127,8 @@ jobs:
       - name: Upgrade Chrome Driver
         run: ./vendor/bin/testbench dusk:chrome-driver --detect
 
-      - name: Execute browser tests
-        run: vendor/bin/phpunit tests/Browser
+      - name: Execute all tests
+        run: vendor/bin/phpunit
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
 
