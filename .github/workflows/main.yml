@@ -50,6 +50,10 @@ jobs:
   test:
     timeout-minutes: 15
     runs-on: ${{ matrix.os }}
+    env:
+      DB_DATABASE: twill_testing_3x
+      DB_USERNAME: root
+      DB_PASSWORD: root
     strategy:
       fail-fast: false
       matrix:
