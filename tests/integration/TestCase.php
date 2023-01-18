@@ -15,7 +15,6 @@ use Faker\Generator;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -266,8 +265,6 @@ abstract class TestCase extends OrchestraTestCase
      */
     public function installTwill(): void
     {
-        $this->truncateTwillUsers();
-
         $this->artisan('twill:install --forTests --no-interaction');
         $this->artisan('twill:superadmin ' . $this->superAdmin()->email . ' ' . $this->superAdmin()->password);
 
@@ -534,14 +531,6 @@ abstract class TestCase extends OrchestraTestCase
         if ($response->getStatusCode() !== $expectedStatusCode) {
             var_dump('------------------- ORIGINAL RESPONSE');
             var_dump($response->getContent());
-        }
-    }
-
-    protected function truncateTwillUsers(): void
-    {
-        try {
-            DB::table('twill_users')->truncate();
-        } catch (Exception $exception) {
         }
     }
 
