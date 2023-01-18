@@ -8,7 +8,6 @@ use A17\Twill\RouteServiceProvider;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
-use App\Providers\AppServiceProvider;
 use Carbon\Carbon;
 use Exception;
 use Faker\Factory as Faker;
@@ -23,6 +22,7 @@ use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use Throwable;
 
 abstract class TestCase extends OrchestraTestCase
 {
@@ -65,32 +65,24 @@ abstract class TestCase extends OrchestraTestCase
         return $app;
     }
 
+    public static function setUpBeforeClass(): void
+    {
+        cleanupTestState(self::applicationBasePath());
+        parent::setUpBeforeClass();
+    }
+
     public function tearDown(): void
     {
-        $toDelete = [
-            app_path('Providers/AppServiceProvider.php'),
-            app_path('Http/Controllers/Twill'),
-            app_path('Http/Requests/Twill'),
-            app_path('Models'),
-            app_path('Repositories'),
-            app_path('Twill'),
-            resource_path('views/twill'),
-            resource_path('views/site'),
-            database_path('migrations'),
-            app_path('../routes/twill.php'),
-            config_path('twill.php'),
-            config_path('twill-navigation.php'),
-        ];
-
-        foreach ($toDelete as $path) {
-            if (is_dir($path)) {
-                File::deleteDirectory($path);
-            } elseif (file_exists($path)) {
-                unlink($path);
-            }
-        }
-
+        cleanupTestState(self::applicationBasePath());
         parent::tearDown();
+    }
+
+    protected function onNotSuccessfulTest(Throwable $t): void
+    {
+        // When a test fails it doesnt run teardown.
+        $this->tearDown();
+
+        parent::onNotSuccessfulTest($t);
     }
 
     /**
@@ -240,7 +232,7 @@ abstract class TestCase extends OrchestraTestCase
         ];
 
         if ($this->example && file_exists(app_path('Providers/AppServiceProvider.php'))) {
-            $list[] = AppServiceProvider::class;
+//            $list[] = AppServiceProvider::class;
         }
 
         return $list;

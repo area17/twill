@@ -12,7 +12,7 @@ class TwillCapsules
     /**
      * @var \A17\Twill\Helpers\Capsule[]
      */
-    public $registeredCapsules = [];
+    public array $registeredCapsules = [];
 
     public function registerPackageCapsule(
         string $name,
