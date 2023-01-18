@@ -64,8 +64,7 @@ class Install extends Command
             $this->addRoutesFile();
             if ($this->option('forTests')) {
                 $this->call('migrate:fresh');
-            }
-            else {
+            } else {
                 $this->call('migrate');
             }
             $this->publishConfig();
