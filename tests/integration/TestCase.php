@@ -28,6 +28,8 @@ abstract class TestCase extends OrchestraTestCase
     use CopyBlocks;
     use HandlesPresets;
 
+    public static bool $didInitialFreshMigration = false;
+
     public const DEFAULT_PASSWORD = 'secret';
 
     public const DEFAULT_LOCALE = 'en_US';
@@ -72,8 +74,8 @@ abstract class TestCase extends OrchestraTestCase
 
     public function tearDown(): void
     {
-        cleanupTestState(self::applicationBasePath());
         parent::tearDown();
+        cleanupTestState(self::applicationBasePath());
     }
 
     protected function onNotSuccessfulTest(Throwable $t): void
@@ -116,6 +118,10 @@ abstract class TestCase extends OrchestraTestCase
         $_ENV["GLIDE_SIGN_KEY"] = "";
 
         parent::setUp();
+
+        if (!self::$didInitialFreshMigration) {
+            $this->artisan('migrate:fresh');
+        }
 
         $this->loadConfig();
 
@@ -265,7 +271,7 @@ abstract class TestCase extends OrchestraTestCase
      */
     public function installTwill(): void
     {
-        $this->artisan('twill:install --forTests --no-interaction');
+        $this->artisan('twill:install --no-interaction');
         $this->artisan('twill:superadmin ' . $this->superAdmin()->email . ' ' . $this->superAdmin()->password);
 
         $user = User::where('email', $this->superAdmin()->email)->first();
