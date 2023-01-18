@@ -12,7 +12,10 @@ use App\Providers\AppServiceProvider;
 use Carbon\Carbon;
 use Exception;
 use Faker\Factory as Faker;
+use Faker\Generator;
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
@@ -26,50 +29,28 @@ abstract class TestCase extends OrchestraTestCase
     use CopyBlocks;
     use HandlesPresets;
 
-    public const DATABASE_MEMORY = ':memory:';
-
     public const DEFAULT_PASSWORD = 'secret';
 
     public const DEFAULT_LOCALE = 'en_US';
 
-    public const DB_CONNECTION = 'sqlite';
+    public Generator $faker;
 
-    /**
-     * @var \Faker\Generator
-     */
-    public $faker;
+    public ?string $example = null;
 
-    /**
-     * @var string|null
-     */
-    public $example;
+    public ?User $superAdmin = null;
 
-    /**
-     * @var \A17\Twill\Models\User
-     */
-    public $superAdmin;
+    public Carbon $now;
 
-    /**
-     * @var \Carbon\Carbon
-     */
-    public $now;
+    public int $recursiveCounter = 0;
 
-    /**
-     * @var \Carbon\Carbon
-     */
-    public $recursiveCounter = 0;
-
-    /**
-     * @var TestResponse
-     */
-    public $crawler;
+    public TestResponse $crawler;
 
     /**
      * After a long debugging session I found that this flow is the most stable.
      * Running the example installer in the setup would cause the files to be not on time when tests shift from
      * one example to another.
      */
-    public function createApplication()
+    public function createApplication(): Application
     {
         $app = $this->resolveApplication();
 
@@ -147,8 +128,6 @@ abstract class TestCase extends OrchestraTestCase
 
         $this->loadConfig();
 
-        $this->freshDatabase();
-
         $this->instantiateFaker();
 
         $this->copyBlocks();
@@ -166,7 +145,7 @@ abstract class TestCase extends OrchestraTestCase
      *
      * @param $app
      */
-    public function configTwill($app)
+    public function configTwill($app): void
     {
         $app['config']->set('twill.admin_app_url', '');
         $app['config']->set('twill.admin_app_path', 'twill');
@@ -178,31 +157,11 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * Configure database.
-     *
-     * @param $app
-     */
-    protected function configureDatabase($app)
-    {
-        $app['config']->set(
-            'database.default',
-            $connection = env('DB_CONNECTION', self::DB_CONNECTION)
-        );
-
-        $app['config']->set('activitylog.database_connection', $connection);
-
-        $app['config']->set(
-            'database.connections.' . $connection . '.database',
-            env('DB_DATABASE', self::DATABASE_MEMORY)
-        );
-    }
-
-    /**
      * Configure storage path.
      *
      * @param $app
      */
-    public function configureStorage($app)
+    public function configureStorage($app): void
     {
         $app['config']->set(
             'logging.channels.single.path',
@@ -215,27 +174,9 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * Create sqlite database, if needed.
-     *
-     * @param $database
-     */
-    protected function createDatabase($database): void
-    {
-        if ($database !== self::DATABASE_MEMORY) {
-            if (file_exists($database)) {
-                unlink($database);
-            }
-
-            touch($database);
-        }
-    }
-
-    /**
      * Login the current SuperUser.
-     *
-     * @return \Illuminate\Foundation\Testing\TestResponse|void
      */
-    protected function login()
+    protected function login(): TestResponse
     {
         $this->request('/twill/login', 'POST', [
             'email' => $this->superAdmin()->email,
@@ -247,12 +188,8 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Login with the provided credentials.
-     *
-     * @param string $email
-     * @param string $password
-     * @return \Illuminate\Foundation\Testing\TestResponse|void
      */
-    protected function loginAs($email, $password)
+    protected function loginAs(string $email, string $password): TestResponse
     {
         $this->request('/twill/login', 'POST', [
             'email' => $email,
@@ -265,7 +202,7 @@ abstract class TestCase extends OrchestraTestCase
     /**
      * Fake a super admin.
      */
-    public function makeNewSuperAdmin()
+    public function makeNewSuperAdmin(): User
     {
         $user = new User();
 
@@ -287,9 +224,6 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Get application package providers.
-     *
-     * @param \Illuminate\Foundation\Application $app
-     * @return array
      */
     protected function getPackageProviders($app)
     {
@@ -314,9 +248,6 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Define environment setup.
-     *
-     * @param \Illuminate\Foundation\Application $app
-     * @return void
      */
     protected function getEnvironmentSetUp($app)
     {
@@ -325,33 +256,12 @@ abstract class TestCase extends OrchestraTestCase
         $this->configureStorage($app);
 
         $this->configTwill($app);
-
-        $this->configureDatabase($app);
-
-        $this->setUpDatabase($app);
-    }
-
-    /**
-     * Setup up the database.
-     *
-     * @param \Illuminate\Foundation\Application $app
-     */
-    protected function setUpDatabase($app)
-    {
-        $connection = $app['config']['database.default'];
-
-        if ($app['config']['database.connections.' . $connection . '.driver'] === self::DB_CONNECTION) {
-            $this->createDatabase($app['config']['database.connections.' . $connection . '.database']);
-        }
     }
 
     /**
      * Get or make a super admin.
-     *
-     * @param $force
-     * @return \A17\Twill\Models\User|\A17\Twill\Tests\Integration\UserClass
      */
-    public function superAdmin($force = false)
+    public function superAdmin(bool $force = false): User
     {
         return $this->superAdmin =
             ! $this->superAdmin || $force
@@ -366,14 +276,8 @@ abstract class TestCase extends OrchestraTestCase
     {
         $this->truncateTwillUsers();
 
-        $this->artisan('twill:install')
-            ->expectsQuestion('Enter an email', $this->superAdmin()->email)
-            ->expectsQuestion('Enter a password', $this->superAdmin()->password)
-            ->expectsQuestion(
-                'Confirm the password',
-                $this->superAdmin()->password
-            );
-        // }
+        $this->artisan('twill:install --forTests --no-interaction');
+        $this->artisan('twill:superadmin ' . $this->superAdmin()->email . ' ' . $this->superAdmin()->password);
 
         $user = User::where('email', $this->superAdmin()->email)->first();
 
@@ -387,10 +291,8 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Delete a directory.
-     *
-     * @param string $param
      */
-    public function deleteDirectory(string $param)
+    public function deleteDirectory(string $param): void
     {
         if ($this->files->exists($param)) {
             $this->files->deleteDirectory($param);
@@ -399,11 +301,8 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Get a collection with all routes.
-     *
-     * @param null $method
-     * @return \Illuminate\Support\Collection
      */
-    public function getAllRoutes($method = null)
+    public function getAllRoutes(?string $method = null): Collection
     {
         $routes = Route::getRoutes();
 
@@ -419,10 +318,8 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Get a collection with all package uris.
-     *
-     * @return \Illuminate\Support\Collection
      */
-    public function getAllUris()
+    public function getAllUris(): Collection
     {
         return $this->getAllRoutes()
             ->pluck('uri', 'action.as')
@@ -431,7 +328,7 @@ abstract class TestCase extends OrchestraTestCase
             ->values();
     }
 
-    public function getAllUrisWithName()
+    public function getAllUrisWithName(): Collection
     {
         return $this->getAllRoutes()->map(function ($route, $index) {
             return [$route->action['as'] ?? $index => $route->uri];
@@ -440,39 +337,25 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Get a collection with all package uris.
-     *
-     * @return \Illuminate\Support\Collection
      */
-    public function getUriWithNames()
+    public function getUriWithNames(): Collection
     {
         return $this->getAllRoutes()->pluck('uri', 'action.as');
     }
 
     /**
      * Send request to an ajax route.
-     *
-     * @param $uri
-     * @param string $method
-     * @param array $parameters
-     * @param array $cookies
-     * @param array $files
-     * @param array $server
-     * @param null $content
-     * @param bool $followRedirects
-     * @param bool $allow500
-     *
-     * @return \Illuminate\Foundation\Testing\TestResponse
      */
     public function request(
-        $uri,
-        $method = 'GET',
-        $parameters = [],
-        $cookies = [],
-        $files = [],
-        $server = [],
-        $content = null,
-        $followRedirects = true
-    ) {
+        string $uri,
+        string $method = 'GET',
+        array $parameters = [],
+        array $cookies = [],
+        array $files = [],
+        array $server = [],
+        ?string $content = null,
+        bool $followRedirects = true
+    ): TestResponse {
         $request = $followRedirects ? $this->followingRedirects() : $this;
 
         return $this->crawler = $request->call(
@@ -486,28 +369,16 @@ abstract class TestCase extends OrchestraTestCase
         );
     }
 
-    /**
-     * Send request to an ajax route.
-     *
-     * @param $uri
-     * @param string $method
-     * @param array $parameters
-     * @param array $cookies
-     * @param array $files
-     * @param array $server
-     * @param null $content
-     * @return \Illuminate\Foundation\Testing\TestResponse
-     */
     public function ajax(
-        $uri,
-        $method = 'GET',
-        $parameters = [],
-        $cookies = [],
-        $files = [],
-        $server = [],
-        $content = null,
-        $followRedirects = false
-    ) {
+        string $uri,
+        string $method = 'GET',
+        array $parameters = [],
+        array $cookies = [],
+        array $files = [],
+        array $server = [],
+        ?string $content = null,
+        bool $followRedirects = true
+    ): TestResponse {
         $server = array_merge($server, [
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ]);
@@ -530,12 +401,8 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Replace placeholders to make a filename.
-     *
-     * @param string $file
-     * @param null $source
-     * @return mixed
      */
-    public function makeFileName($file, $source = null)
+    public function makeFileName(string $file, ?string $source = null): string
     {
         $file = str_replace(
             [
@@ -566,7 +433,7 @@ abstract class TestCase extends OrchestraTestCase
         $extension = pathinfo($file, PATHINFO_EXTENSION);
 
         if (filled($source) && ! Str::endsWith($file, ".{$extension}")) {
-            $file = $file . basename($source);
+            $file .= basename($source);
         }
 
         return $file;
@@ -574,20 +441,16 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Return the contents from current crawler response.
-     *
-     * @return false|string
      */
-    public function content()
+    public function content(): bool|string
     {
         return $this->crawler->getContent();
     }
 
     /**
      * Assert can see text.
-     *
-     * @param $text
      */
-    public function assertSee($text)
+    public function assertSee(?string $text): void
     {
         $this->assertStringContainsString(
             clean_file($text),
@@ -597,10 +460,8 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Assert cannot see text.
-     *
-     * @param $text
      */
-    public function assertDontSee($text)
+    public function assertDontSee(string $text): void
     {
         $this->assertStringNotContainsString(
             clean_file($text),
@@ -609,23 +470,11 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * Skip test if running on Travis.
-     */
-    public function skipOnTravis()
-    {
-        if (! is_null(env('TRAVIS_PHP_VERSION'))) {
-            $this->markTestSkipped('This test cannot be executed on Travis');
-        }
-    }
-
-    /**
      * Assert a successful exit code.
-     *
-     * @param int $exitCode
-     * @throws \Exception
      */
-    public function assertExitCodeIsGood($exitCode)
+    public function assertExitCodeIsGood(int $exitCode): void
     {
+        $this->assertFalse($exitCode !== 0);
         if ($exitCode !== 0) {
             throw new Exception(
                 "Test ended with exit code {$exitCode}. Non-fatal errors possibly happened during tests."
@@ -635,11 +484,8 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Assert a failing exit code.
-     *
-     * @param int $exitCode
-     * @throws \Exception
      */
-    public function assertExitCodeIsNotGood($exitCode)
+    public function assertExitCodeIsNotGood(int $exitCode): void
     {
         if ($exitCode === 0) {
             throw new Exception(
@@ -648,13 +494,17 @@ abstract class TestCase extends OrchestraTestCase
         }
     }
 
-    public function getCommand($commandName)
+    public function getCommand(string $commandName): mixed
     {
         return $this->app->make(Kernel::class)->all()[$commandName];
     }
 
-    public function httpJsonRequestAssert($url, $method = 'GET', $data = [], $expectedStatusCode = 200)
-    {
+    public function httpJsonRequestAssert(
+        string $url,
+        string $method = 'GET',
+        array $data = [],
+        int $expectedStatusCode = 200
+    ): TestResponse {
         $response = $this->json(
             $method,
             $url,
@@ -668,8 +518,12 @@ abstract class TestCase extends OrchestraTestCase
         return $response;
     }
 
-    public function httpRequestAssert($url, $method = 'GET', $data = [], $expectedStatusCode = 200)
-    {
+    public function httpRequestAssert(
+        string $url,
+        string $method = 'GET',
+        array $data = [],
+        int $expectedStatusCode = 200
+    ): TestResponse {
         $response = $this->request(
             $url,
             $method,
@@ -683,19 +537,11 @@ abstract class TestCase extends OrchestraTestCase
         return $response;
     }
 
-    public function assertLogStatusCode(TestResponse $response, $expectedStatusCode = 200)
+    public function assertLogStatusCode(TestResponse $response, int $expectedStatusCode = 200): void
     {
         if ($response->getStatusCode() !== $expectedStatusCode) {
             var_dump('------------------- ORIGINAL RESPONSE');
             var_dump($response->getContent());
-        }
-    }
-
-    public function freshDatabase()
-    {
-        if (file_exists($file = env('DB_DATABASE'))) {
-            unlink($file);
-            touch($file);
         }
     }
 
@@ -707,17 +553,9 @@ abstract class TestCase extends OrchestraTestCase
         }
     }
 
-    protected function assertNothingWrongHappened()
+    protected function assertNothingWrongHappened(): void
     {
         $this->assertDontSee('Something wrong happened!');
-    }
-
-    /**
-     * Migrate database.
-     */
-    public function migrate()
-    {
-        $this->artisan('migrate');
     }
 
     public function loadConfig()

@@ -14,7 +14,7 @@ class NestedModuleTest extends NestedModuleTestBase
         $parents = $this->createNodes(['One', 'Two', 'Three']);
         $children = $this->createNodes(['A', 'B', 'C']);
         $this->assertEquals(6, Node::count());
-        $this->assertEquals(0, Node::where(['parent_id', null])->count());
+        $this->assertEquals(6, Node::where('parent_id', null)->count());
 
         // When they are arranged in a parent-child relationship
         $data = $this->arrangeNodes($parents, $children);

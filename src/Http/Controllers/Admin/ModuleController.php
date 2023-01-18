@@ -378,6 +378,7 @@ abstract class ModuleController extends Controller
         $this->app = $app;
         $this->request = $request;
 
+        $this->searchColumns = [$this->titleColumnKey];
         $this->setUpController();
 
         $this->modelName = $this->modelName ?? $this->getModelName();
@@ -397,8 +398,6 @@ abstract class ModuleController extends Controller
             $this->getForm($this->repository->getBaseModel())->registerDynamicRepeaters();
             $this->getSideFieldsets($this->repository->getBaseModel())->registerDynamicRepeaters();
         }
-
-        $this->searchColumns = [$this->titleColumnKey];
     }
 
     /**

@@ -15,7 +15,7 @@ class Install extends Command
      *
      * @var string
      */
-    protected $signature = 'twill:install {preset? : Optional, the preset to install} {--fromBuild}';
+    protected $signature = 'twill:install {preset? : Optional, the preset to install} {--fromBuild} {--forTests}';
 
     /**
      * The console command description.
@@ -62,7 +62,12 @@ class Install extends Command
         } else {
             $this->copyBlockPreviewFile();
             $this->addRoutesFile();
-            $this->call('migrate');
+            if ($this->option('forTests')) {
+                $this->call('migrate:fresh');
+            }
+            else {
+                $this->call('migrate');
+            }
             $this->publishConfig();
             $this->publishAssets();
             $this->createSuperAdmin();

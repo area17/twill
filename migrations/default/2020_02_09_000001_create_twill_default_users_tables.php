@@ -35,10 +35,6 @@ class CreateTwillDefaultUsersTables extends Migration
                 $table->string('email')->index();
                 $table->string('token')->index();
                 $table->timestamp('created_at')->nullable();
-                $table->foreign('email')
-                    ->references('email')->on($twillUsersTable)
-                    ->cascadeOnUpdate()
-                    ->cascadeOnDelete();
             });
         }
     }
