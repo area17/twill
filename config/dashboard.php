@@ -24,6 +24,5 @@ return [
         'login' => false,
         'logout' => false,
     ],
-    'auth_activity_causer' => 'users',
-    'per_page' => 20,
+    'auth_activity_causer' => 'users'
 ];

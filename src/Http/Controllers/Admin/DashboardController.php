@@ -7,8 +7,11 @@ use A17\Twill\Repositories\ModuleRepository;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
@@ -45,9 +48,6 @@ class DashboardController extends Controller
      */
     protected $authFactory;
 
-    protected $paginator;
-    protected $myPaginator;
-
     public function __construct(
         Application $app,
         Config $config,
@@ -66,11 +66,16 @@ class DashboardController extends Controller
 
     /**
      * Displays the Twill dashboard.
-     *
-     * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(): View|JsonResponse
     {
+        if (request()?->expectsJson()) {
+            if (request()?->input('mine')) {
+                return new JsonResponse($this->getLoggedInUserActivities());
+            }
+
+            return new JsonResponse($this->getAllActivities());
+        }
         $modules = Collection::make($this->config->get('twill.dashboard.modules'));
 
         return $this->viewFactory->make('twill::layouts.dashboard', [
@@ -102,16 +107,10 @@ class DashboardController extends Controller
             'shortcuts' => $this->getShortcuts($modules),
             'facts' => $this->config->get('twill.dashboard.analytics.enabled', false) ? $this->getFacts() : null,
             'drafts' => $this->getDrafts($modules),
-            'paginator' => $this->paginator,
-            'myPaginator' => $this->myPaginator,
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return Collection
-     */
-    public function search(Request $request)
+    public function search(Request $request): Collection
     {
         $modules = Collection::make($this->config->get('twill.dashboard.modules'));
 
@@ -180,37 +179,50 @@ class DashboardController extends Controller
         return $listActivities;
     }
 
-    private function getAllActivities(): Collection
+    private function getAllActivities(): LengthAwarePaginator
     {
-        $perPage = $this->config->get('twill.dashboard.per_page');
+        $activity = Activity::whereIn('subject_type', $this->getEnabledActivities())
+            ->latest()
+            ->paginate(perPage: 20, pageName: 'all');
 
-        $this->paginator = Activity::whereIn('subject_type', $this->getEnabledActivities())
-            ->paginate($perPage)
-            ->latest();
-
-        return $this->paginator->map(function ($activity) {
+        $list = $activity->map(function ($activity) {
             return $this->formatActivity($activity);
         })
             ->filter()
             ->values();
+
+        return new LengthAwarePaginator(
+            $list,
+            $activity->total(),
+            $activity->perPage(),
+            $activity->currentPage(),
+            ['path' => request()->path(), 'pageName' => 'all']
+        );
     }
 
-    private function getLoggedInUserActivities(): Collection
+    private function getLoggedInUserActivities(): LengthAwarePaginator
     {
-        $offset = $this->config->get('twill.dashboard.per_page');
-        $this->myPaginator = Activity::whereIn('subject_type', $this->getEnabledActivities())->where('causer_id', $this->authFactory->guard('twill_users')->user()->id)->latest()->paginate($offset);
-        return $this->myPaginator->map(function ($activity) {
+        $activity = Activity::whereIn('subject_type', $this->getEnabledActivities())
+            ->where('causer_id', $this->authFactory->guard('twill_users')->user()->id)
+            ->latest()
+            ->paginate(perPage: 20, pageName: 'mine');
+
+        $list = $activity->map(function ($activity) {
             return $this->formatActivity($activity);
         })
-        ->filter()
-        ->values();
+            ->filter()
+            ->values();
+
+        return new LengthAwarePaginator(
+            $list,
+            $activity->total(),
+            $activity->perPage(),
+            $activity->currentPage(),
+            ['path' => request()->path(), 'pageName' => 'mine']
+        );
     }
 
-    /**
-     * @param \Spatie\Activitylog\Models\Activity $activity
-     * @return array|null
-     */
-    private function formatActivity($activity)
+    private function formatActivity(Activity $activity): ?array
     {
         if ($activity->subject_type === config('twill.auth_activity_causer', 'users')) {
             return $this->formatAuthActivity($activity);

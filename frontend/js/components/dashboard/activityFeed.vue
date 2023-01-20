@@ -8,8 +8,8 @@
       </ul>
     </header>
     <div class="box__body">
-      <table class="activityFeed__table" v-if="rows.length > 0">
-        <template v-for="(row, index) in rows">
+      <table class="activityFeed__table" v-if="rows.data.length > 0">
+        <template v-for="(row, index) in rows.data">
           <a17-activity-row :row="row" :index="index" :columns="columns" :key="row.id"></a17-activity-row>
         </template>
       </table>
@@ -18,6 +18,7 @@
           <h4>{{ emptyMessage }}</h4>
         </div>
       </template>
+      <a17-paginate :max="rows.last_page" :value="rows.current_page" :offset="20" :availableOffsets="[20]" @changePage="getData"/>
     </div>
   </div>
 </template>
@@ -28,10 +29,12 @@
   // import ACTIONS from '@/store/actions'
   import A17ActivityRow from '@/components/dashboard/activityRow.vue'
   import { DATATABLE } from '@/store/mutations'
+  import A17Paginate from "@/components/table/Paginate.vue";
 
   export default {
     name: 'A17ActivityFeed',
     components: {
+      A17Paginate,
       'a17-activity-row': A17ActivityRow
     },
     props: {
@@ -71,6 +74,12 @@
       })
     },
     methods: {
+      getData(pageNumber) {
+        console.log('admin?' + this.navFilters[this.navActive].slug + '=' + pageNumber);
+        this.$http.get('admin?' + this.navFilters[this.navActive].slug + '=' + pageNumber).then(({data}) => {
+          this.rows = data;
+        })
+      },
       filterStatus: function (index, slug) {
         if (this.navActive === index) return
 
