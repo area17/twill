@@ -8,6 +8,7 @@ use A17\Twill\Models\Role;
 use A17\Twill\Models\User;
 use A17\Twill\PermissionAuthServiceProvider;
 use App\Repositories\PostingRepository;
+use Illuminate\Support\Facades\DB;
 
 class PermissionsTest extends PermissionsTestBase
 {
@@ -348,8 +349,13 @@ class PermissionsTest extends PermissionsTestBase
     {
         app('config')->set('twill.permissions.level', PermissionLevel::LEVEL_ROLE_GROUP_ITEM);
 
-        Role::truncate();
+        User::query()->forceDelete();
+        Role::query()->forceDelete();
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         User::truncate();
+        Role::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         [$role1, $role2, $role3] = collect([1, 2, 3])->map(function ($i) {
             $role = $this->createRole("Role $i");
@@ -422,9 +428,14 @@ class PermissionsTest extends PermissionsTestBase
     {
         app('config')->set('twill.permissions.level', PermissionLevel::LEVEL_ROLE_GROUP_ITEM);
 
+        User::query()->forceDelete();
+        Role::query()->forceDelete();
+        Group::query()->forceDelete();
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         User::truncate();
         Role::truncate();
-        Group::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $managerRole = $this->createRole('Manager');
         $managerRole->grantGlobalPermission('manage-modules');
@@ -483,8 +494,13 @@ class PermissionsTest extends PermissionsTestBase
     {
         app('config')->set('twill.permissions.level', PermissionLevel::LEVEL_ROLE_GROUP_ITEM);
 
+        User::query()->forceDelete();
+        Role::query()->forceDelete();
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         User::truncate();
         Role::truncate();
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $managerRole = $this->createRole('Manager');
         $managerRole->grantGlobalPermission('manage-modules');
