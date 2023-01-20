@@ -30,6 +30,7 @@
 
 <script>
   import draggable from 'vuedraggable'
+
   import { DraggableMixin } from '@/mixins'
 
   export default {

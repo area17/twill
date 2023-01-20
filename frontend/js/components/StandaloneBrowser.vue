@@ -40,10 +40,11 @@
 </template>
 
 <script>
+  import FormDataAsObj from '@/utils/formDataAsObj.js'
+
   import a17Filter from './Filter.vue'
   import a17ItemList from './ItemList.vue'
   import a17Modal from './Modal.vue'
-  import FormDataAsObj from '@/utils/formDataAsObj.js'
 
   export default {
     name: 'A17StandaloneBrowser',

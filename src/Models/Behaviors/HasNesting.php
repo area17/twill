@@ -32,23 +32,17 @@ trait HasNesting
 
     /**
      * Returns the combined slug for all ancestors of this item.
-     *
-     * @param string|null $locale
-     * @return string
      */
-    public function getAncestorsSlug($locale = null)
+    public function getAncestorsSlug(?string $locale = null): string
     {
-        return collect($this->ancestors->sortByDesc('position') ?? [])
+        return $this->getAncestors()->reverse()
             ->map(function ($i) use ($locale) {
                 return $i->getSlug($locale);
             })
             ->implode('/');
     }
 
-    /**
-     * @return string
-     */
-    public function getAncestorsSlugAttribute()
+    public function getAncestorsSlugAttribute(): string
     {
         return $this->getAncestorsSlug();
     }

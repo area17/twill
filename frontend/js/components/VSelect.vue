@@ -38,11 +38,12 @@
 
 <script>
   import debounce from 'lodash/debounce'
-  import randKeyMixin from '@/mixins/randKey'
+
+  import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue'
+  import AttributesMixin from '@/mixins/addAttributes'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
-  import AttributesMixin from '@/mixins/addAttributes'
-  import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue'
+  import randKeyMixin from '@/mixins/randKey'
   // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
   // import vSelect from 'vue-select' // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
   export default {

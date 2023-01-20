@@ -52,7 +52,8 @@ class Twill
             $manifest = $this->readJson(
                 $devServerUrl .
                 '/' .
-                config('twill.manifest_file', 'twill-manifest.json')
+                // During dev mode and webpack 5 this is the valid path.
+                'assets/twill/twill-manifest.json'
             );
         } catch (\Exception $exception) {
             throw new \Exception('Twill dev assets manifest is missing. Make sure you are running the npm run serve command inside Twill.', $exception->getCode(), $exception);

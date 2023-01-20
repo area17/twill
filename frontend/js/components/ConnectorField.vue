@@ -14,9 +14,9 @@
 </template>
 
 <script>
-  import isEqual from 'lodash/isEqual'
   import clone from 'lodash/clone'
-  import { mapState, mapGetters } from 'vuex'
+  import isEqual from 'lodash/isEqual'
+  import { mapGetters,mapState } from 'vuex'
 
   export default {
     name: 'A17ConnectorField',

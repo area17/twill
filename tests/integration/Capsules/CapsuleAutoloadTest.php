@@ -7,7 +7,7 @@ use App\Twill\Capsules\Posts\PostsCapsuleServiceProvider;
 
 class CapsuleAutoloadTest extends TestCase
 {
-    public $example = 'tests-capsules';
+    public ?string $example = 'tests-capsules';
 
     public function testStubCapsuleIsLoaded(): void
     {

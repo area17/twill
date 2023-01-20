@@ -37,8 +37,10 @@
         <env name="SESSION_DRIVER" value="array"/>
         <env name="QUEUE_DRIVER" value="sync"/>
         <env name="MAIL_DRIVER" value="array"/>
-        <env name="DB_CONNECTION" value="sqlite"/>
-        <env name="DB_DATABASE" value=":memory:"/>
+        <env name="DB_CONNECTION" value="mysql"/>
+        <env name="DB_DATABASE" value="twill_testing_3x"/>
         <env name="LOG_CHANNEL" value="single"/>
+        <env name="DB_USERNAME" value="root" />
+        <env name="DB_PASSWORD" value="root" />
     </php>
 </phpunit>

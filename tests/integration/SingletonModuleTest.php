@@ -6,7 +6,7 @@ use App\Repositories\ContactPageRepository;
 
 class SingletonModuleTest extends TestCase
 {
-    public $example = 'tests-singleton';
+    public ?string $example = 'tests-singleton';
 
     public function setUp(): void
     {

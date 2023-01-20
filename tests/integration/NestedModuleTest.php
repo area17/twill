@@ -8,13 +8,13 @@ use App\Repositories\NodeRepository;
 
 class NestedModuleTest extends NestedModuleTestBase
 {
-    public function testReorderNestedModuleItems()
+    public function testReorderNestedModuleItems(): void
     {
         // Given some Node items
         $parents = $this->createNodes(['One', 'Two', 'Three']);
         $children = $this->createNodes(['A', 'B', 'C']);
         $this->assertEquals(6, Node::count());
-        $this->assertEquals(0, Node::where(['parent_id', null])->count());
+        $this->assertEquals(6, Node::where('parent_id', null)->count());
 
         // When they are arranged in a parent-child relationship
         $data = $this->arrangeNodes($parents, $children);
@@ -26,7 +26,7 @@ class NestedModuleTest extends NestedModuleTestBase
         $this->assertEquals(0, $parents[2]->refresh()->children()->count());
     }
 
-    public function testNestedModuleBrowseParents()
+    public function testNestedModuleBrowseParents(): void
     {
         NodeController::$forceShowOnlyParentItemsInBrowsers = true;
 
@@ -42,10 +42,10 @@ class NestedModuleTest extends NestedModuleTestBase
         $result = json_decode($this->content(), true);
 
         // Then only parents are returned
-        $this->assertEquals(3, count($result['data']));
+        $this->assertCount(3, $result['data']);
     }
 
-    public function testNestedModuleBrowseParentsAndChildren()
+    public function testNestedModuleBrowseParentsAndChildren(): void
     {
         NodeController::$forceShowOnlyParentItemsInBrowsers = false;
 
@@ -61,10 +61,10 @@ class NestedModuleTest extends NestedModuleTestBase
         $result = json_decode($this->content(), true);
 
         // Then all items are returned
-        $this->assertEquals(6, count($result['data']));
+        $this->assertCount(6, $result['data']);
     }
 
-    public function testAncestorsSlugCreationOrder()
+    public function testAncestorsSlugCreationOrder(): void
     {
         $repository = app(NodeRepository::class);
         $childlvl2 = $repository->create(

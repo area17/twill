@@ -16,8 +16,8 @@
 </template>
 
 <script>
-  import Vue from 'vue'
   import debounce from 'lodash/debounce'
+  import Vue from 'vue'
 
   import scrollToY from '@/utils/scrollToY.js'
 

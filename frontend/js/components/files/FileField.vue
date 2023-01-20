@@ -20,14 +20,16 @@
   </a17-inputframe>
 </template>
 <script>
-  import { mapState, mapGetters } from 'vuex'
-  import { MEDIA_LIBRARY } from '@/store/mutations'
-  import fileItem from './FileItem.vue'
-  import draggableMixin from '@/mixins/draggable'
-  import mediaLibraryMixin from '@/mixins/mediaLibrary/mediaLibrary'
-  import localeMixin from '@/mixins/locale'
-  import inputframeMixin from '@/mixins/inputFrame'
   import draggable from 'vuedraggable'
+  import { mapGetters,mapState } from 'vuex'
+
+  import draggableMixin from '@/mixins/draggable'
+  import inputframeMixin from '@/mixins/inputFrame'
+  import localeMixin from '@/mixins/locale'
+  import mediaLibraryMixin from '@/mixins/mediaLibrary/mediaLibrary'
+  import { MEDIA_LIBRARY } from '@/store/mutations'
+
+  import fileItem from './FileItem.vue'
 
   export default {
     name: 'A17FileField',
@@ -131,7 +133,7 @@
       deleteItem: function (index) {
         this.$store.commit(MEDIA_LIBRARY.DESTROY_SPECIFIC_MEDIA, {
           name: this.name,
-          index: index
+          index
         })
       },
       destroyValue: function () {

@@ -15,6 +15,7 @@
 
 <script>
   import { mapState } from 'vuex'
+
   import { MEDIA_LIBRARY } from '@/store/mutations'
 
   export default {

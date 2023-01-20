@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 class NestedModuleTestBase extends TestCase
 {
-    public $example = 'tests-nestedmodules';
+    public ?string $example = 'tests-nestedmodules';
 
     public function setUp(): void
     {

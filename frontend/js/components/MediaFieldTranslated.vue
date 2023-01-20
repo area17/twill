@@ -38,8 +38,8 @@
 </template>
 
 <script>
-  import localeMixin from '@/mixins/locale'
   import inputframeMixin from '@/mixins/inputFrame'
+  import localeMixin from '@/mixins/locale'
   import mediaFieldMixin from '@/mixins/mediaField.js'
 
   export default {
