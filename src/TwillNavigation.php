@@ -177,7 +177,7 @@ class TwillNavigation
             ->onlyWhen(fn() => Auth::user()?->can('access-media-library') ?? false);
         $tree['right'][] = NavigationLink::make()
             ->title(twillTrans('twill::lang.nav.open-live-site'))
-            ->onlyWhen(fn() => config('twill.enable.site-link', false))
+            ->onlyWhen(fn() => config('twill.enabled.site-link', false))
             ->toExternalUrl(config('app.url'));
 
         // Filter the final tree before handing it off.
