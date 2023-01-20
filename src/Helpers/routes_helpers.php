@@ -9,7 +9,7 @@ if (! function_exists('moduleRoute')) {
         string $moduleName,
         ?string $prefix = null,
         string $action = '',
-        array $parameters = [],
+        array|int|string $parameters = [],
         bool $absolute = true
     ): string {
         // Fix module name case
