@@ -2,7 +2,7 @@
 
 namespace A17\Twill\View\Components\Fields;
 
-use A17\Twill\Exceptions\MissingRequiredComponentData;
+use A17\Twill\Services\Forms\Options;
 
 abstract class FieldWithOptions extends TwillFormComponent
 {
@@ -59,7 +59,11 @@ abstract class FieldWithOptions extends TwillFormComponent
     public function getOptions(): array
     {
         if (null === $this->options) {
-            throw new MissingRequiredComponentData('options');
+            $this->options = [];
+        }
+
+        if ($this->options instanceof Options) {
+            return $this->options->toArray();
         }
 
         return is_object($this->options) && method_exists($this->options, 'map') ? $this->options->map(

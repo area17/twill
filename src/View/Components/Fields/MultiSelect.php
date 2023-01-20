@@ -31,6 +31,8 @@ class MultiSelect extends FieldWithOptions
         public ?int $min = null,
         public ?int $max = null,
         public ?string $endpoint = null,
+        public bool $taggable = false,
+        public bool $pushTags = false
     ) {
         parent::__construct(
             name: $name,

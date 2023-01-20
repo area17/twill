@@ -9,6 +9,7 @@
 MultiSelect::make()
     ->min(1)
     ->max(1)
+    ->searchable()
     ->options(
         Options::make([
             Option::make('key', 'value'),
@@ -102,6 +103,8 @@ MultiSelect::make()
 | unpack      | Defines if the multi select will be displayed as an open list of options                                                 | boolean     | true          |
 | columns     | Aligns the options on a grid with a given number of columns                                                              | integer     | 0 (off)       |
 | searchable  | Filter the field values while typing                                                                                     | boolean     | false         |
+| taggable    | If new items can be added (only works with endpoint)                                                                     | boolean     | false         |
+| endpoint    | The url with the api to get options                                                                                      | string      |               |
 | note        | Hint message displayed above the field                                                                                   | string      |               |
 | placeholder | Text displayed as a placeholder in the field                                                                             | string      |               |
 | required    | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean     | false         |
