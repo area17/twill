@@ -252,12 +252,12 @@ class DashboardController extends Controller
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
         ] : []) + (! $activity->subject->trashed() ? [
-            'edit' => $parent && $parentRelationship ? moduleRoute(
+            'edit' => moduleRoute(
                 $dashboardModule['name'],
                 $dashboardModule['routePrefix'] ?? null,
                 'edit',
                 array_merge($parentRelationship ? [$parent->id] : [], [$activity->subject_id])
-            ) : '',
+            ),
         ] : []) + (! is_null($activity->subject->published) ? [
             'published' => $activity->description === 'published' ? true : ($activity->description === 'unpublished' ? false : $activity->subject->published),
         ] : []);
@@ -510,17 +510,14 @@ class DashboardController extends Controller
             $query = $repository->draft()->limit(3)->latest();
 
             if ($repository->hasBehavior('revisions')) {
-                $drafts = $query->mine();
+                $query->mine();
             }
 
-            // @todo: ????
-            $drafts = $query->get();
-
-            return $drafts->map(function ($draft) use ($module) {
+            return $query->get()->map(function ($draft) use ($module) {
                 return [
                     'type' => ucfirst($module['label_singular'] ?? Str::singular($module['name'])),
                     'name' => $draft->titleInDashboard ?? $draft->title,
-                    'url' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $draft->id),
+                    'url' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', [$draft->id]),
                 ];
             });
         })->collapse()->values();

@@ -5,16 +5,13 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
 if (! function_exists('moduleRoute')) {
-    /**
-     * @param string $moduleName
-     * @param string $prefix
-     * @param string $action
-     * @param array $parameters
-     * @param bool $absolute
-     * @return string
-     */
-    function moduleRoute($moduleName, $prefix, $action = '', $parameters = [], $absolute = true)
-    {
+    function moduleRoute(
+        string $moduleName,
+        ?string $prefix = null,
+        string $action = '',
+        array $parameters = [],
+        bool $absolute = true
+    ): string {
         // Fix module name case
         $moduleName = Str::camel($moduleName);
 
