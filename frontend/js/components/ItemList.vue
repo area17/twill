@@ -57,9 +57,9 @@
 </template>
 
 <script>
-  import a17VueFilters from '@/utils/filters.js'
   import A17Avatar from '@/components/Avatar.vue'
   import mediaItemsMixin from '@/mixins/mediaLibrary/mediaItems'
+  import a17VueFilters from '@/utils/filters.js'
 
   export default {
     name: 'A17Itemlist',

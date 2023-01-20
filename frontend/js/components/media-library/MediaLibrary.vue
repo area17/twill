@@ -68,20 +68,19 @@
 
 <script>
   import { mapState } from 'vuex'
-  import { NOTIFICATION, MEDIA_LIBRARY } from '@/store/mutations'
-  import api from '../../store/api/media-library'
 
-  import a17MediaSidebar from './MediaSidebar.vue'
-  import a17Filter from '../Filter.vue'
-  import a17Uploader from './Uploader.vue'
-  import a17MediaGrid from './MediaGrid.vue'
-  import a17ItemList from '../ItemList.vue'
-  import a17Spinner from '@/components/Spinner.vue'
   import a17Checkbox from '@/components/Checkbox.vue'
-
+  import a17Spinner from '@/components/Spinner.vue'
+  import { MEDIA_LIBRARY,NOTIFICATION } from '@/store/mutations'
+  import FormDataAsObj from '@/utils/formDataAsObj.js'
   import scrollToY from '@/utils/scrollToY.js'
 
-  import FormDataAsObj from '@/utils/formDataAsObj.js'
+  import api from '../../store/api/media-library'
+  import a17Filter from '../Filter.vue'
+  import a17ItemList from '../ItemList.vue'
+  import a17MediaGrid from './MediaGrid.vue'
+  import a17MediaSidebar from './MediaSidebar.vue'
+  import a17Uploader from './Uploader.vue'
 
   export default {
     name: 'A17Medialibrary',
@@ -459,7 +458,7 @@
         }
 
         scrollToY({
-          el: el,
+          el,
           offset: 0,
           easing: 'easeOut',
           onComplete: function () {

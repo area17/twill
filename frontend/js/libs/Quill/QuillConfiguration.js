@@ -229,7 +229,7 @@ function getQuillFormats (toolbarEls) {
 }
 
 export default {
-  Quill: Quill,
+  Quill,
   lineBreak: {
     handle: lineBreakHandle,
     clipboard: [SoftLineBreakBlot.tagName, lineBreakMatcher]

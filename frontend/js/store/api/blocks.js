@@ -1,4 +1,5 @@
 import axios from 'axios'
+
 import { globalError } from '@/utils/errors'
 
 export default {

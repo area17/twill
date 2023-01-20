@@ -70,12 +70,11 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
+  import { mapGetters,mapState } from 'vuex'
 
-  import A17EditorSidebar from '@/components/editor/EditorSidebar.vue'
-  import A17EditorPreview from '@/components/editor/EditorPreview.vue'
   import A17BlocksList from '@/components/blocks/BlocksList'
-
+  import A17EditorPreview from '@/components/editor/EditorPreview.vue'
+  import A17EditorSidebar from '@/components/editor/EditorSidebar.vue'
   import htmlClasses from '@/utils/htmlClasses'
 
   export default {

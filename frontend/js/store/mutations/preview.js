@@ -1,8 +1,8 @@
 /* Mutations that must trigger a change in the preview in the block editor need to be listed here */
-import * as LANGUAGE from './language'
-import * as FORM from './form'
-import * as MEDIA_LIBRARY from './media-library'
 import * as BROWSER from './browser'
+import * as FORM from './form'
+import * as LANGUAGE from './language'
+import * as MEDIA_LIBRARY from './media-library'
 
 const REFRESH_BLOCK_PREVIEW = [
   FORM.UPDATE_FORM_FIELD,

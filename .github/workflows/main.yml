@@ -49,7 +49,7 @@ jobs:
 
   test:
     name: PHP ${{ matrix.php }} - LARAVEL ${{ matrix.laravel }}
-    timeout-minutes: 15
+    timeout-minutes: 30
     runs-on: ${{ matrix.os }}
     services:
       mysql:

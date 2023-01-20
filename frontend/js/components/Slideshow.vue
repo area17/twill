@@ -36,14 +36,13 @@
 </template>
 
 <script>
+  import draggable from 'vuedraggable'
   import { mapState } from 'vuex'
-  import { MEDIA_LIBRARY } from '@/store/mutations'
 
   import draggableMixin from '@/mixins/draggable'
-  import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
   import mediaFieldMixin from '@/mixins/mediaField.js'
-
-  import draggable from 'vuedraggable'
+  import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
+  import { MEDIA_LIBRARY } from '@/store/mutations'
 
   export default {
     name: 'A17Slideshow',

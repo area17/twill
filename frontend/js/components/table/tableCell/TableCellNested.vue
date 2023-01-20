@@ -5,7 +5,7 @@
 </template>
 
 <script>
-  import { TableCellMixin } from '@/mixins'
+  import TableCellMixin from '@/mixins/tableCell'
 
   export default {
     name: 'A17TableCellNested',

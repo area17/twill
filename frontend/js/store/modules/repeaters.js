@@ -1,5 +1,6 @@
-import { FORM } from '../mutations'
 import ACTIONS from '@/store/actions'
+
+import { FORM } from '../mutations'
 
 const state = {
   /**

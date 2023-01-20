@@ -46,12 +46,12 @@
 </template>
 
 <script>
-  import { PUBLICATION } from '@/store/mutations'
-  import { BlockEditorMixin } from '@/mixins'
+  import A17BlockEditorModel from '@/components/blocks/BlockEditorModel'
+  import A17BlocksList from '@/components/blocks/BlocksList'
   import A17EditorSidebarBlockItem from '@/components/editor/EditorSidebarBlockItem'
   import A17EditorSidebarBlockList from '@/components/editor/EditorSidebarBlockList'
-  import A17BlocksList from '@/components/blocks/BlocksList'
-  import A17BlockEditorModel from '@/components/blocks/BlockEditorModel'
+  import { BlockEditorMixin } from '@/mixins'
+  import { PUBLICATION } from '@/store/mutations'
 
   export default {
     name: 'A17editorSidebar',

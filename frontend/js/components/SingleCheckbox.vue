@@ -19,10 +19,10 @@
 </template>
 
 <script>
-  import randKeyMixin from '@/mixins/randKey'
+  import ConfirmationMixin from '@/mixins/confirmationMixin'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
-  import ConfirmationMixin from '@/mixins/confirmationMixin'
+  import randKeyMixin from '@/mixins/randKey'
 
   export default {
     name: 'A17SingleCheckbox',

@@ -28,10 +28,10 @@
 </template>
 
 <script>
-  import InputMixin from '@/mixins/input'
-  import FormStoreMixin from '@/mixins/formStore'
-  import InputframeMixin from '@/mixins/inputFrame'
   import ColorPicker from '@/components/ColorPicker'
+  import FormStoreMixin from '@/mixins/formStore'
+  import InputMixin from '@/mixins/input'
+  import InputframeMixin from '@/mixins/inputFrame'
 
   export default {
     name: 'a17ColorField',
