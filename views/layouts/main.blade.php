@@ -3,6 +3,11 @@
 
 <head>
     @include('twill::partials.head')
+    @if (app()->environment('local', 'development') && config('twill.dev_mode', false))
+        <script>
+            window.hmr_url = '{{config('twill.dev_mode_url', 'http://localhost:8080')}}';
+        </script>
+    @endif
 </head>
 
 <body class="env env--{{ app()->environment() }} @yield('appTypeClass')">

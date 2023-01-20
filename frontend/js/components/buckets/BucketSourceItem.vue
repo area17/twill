@@ -29,8 +29,8 @@
 </template>
 
 <script>
-  import bucketMixin from '@/mixins/buckets'
   import { TableCellLanguages } from '@/components/table/tableCell'
+  import bucketMixin from '@/mixins/buckets'
 
   export default {
     mixins: [bucketMixin],

@@ -14,4 +14,5 @@
     <rule ref="Internal.NoCodeFound">
         <exclude-pattern>*.blade.php</exclude-pattern>
     </rule>
+    <exclude-pattern>*.js</exclude-pattern>
 </ruleset>

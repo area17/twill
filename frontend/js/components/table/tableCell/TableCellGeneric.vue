@@ -4,9 +4,9 @@
 </template>
 
 <script>
-  import A17TableCellHTML from './generic/TableCellHTML'
+  import TableCellMixin from '@/mixins/tableCell'
 
-  import { TableCellMixin } from '@/mixins'
+  import A17TableCellHTML from './generic/TableCellHTML'
 
   export default {
     name: 'A17TableCellGeneric',

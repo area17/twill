@@ -38,6 +38,7 @@
 
 <script>
   import { mapState } from 'vuex'
+
   import { FORM } from '@/store/mutations'
 
   export default {
@@ -139,7 +140,7 @@
         if (!newDatas.locale) {
           const value = newDatas
           newDatas = {
-            value: value
+            value
           }
         }
 

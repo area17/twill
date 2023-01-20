@@ -21,13 +21,14 @@
 </template>
 
 <script>
+  import 'cropperjs/dist/cropper.min.css'
+
+  import CropperJs from 'cropperjs'
   import { mapState } from 'vuex'
 
-  import a17VueFilters from '@/utils/filters.js'
-  import CropperJs from 'cropperjs'
-  import 'cropperjs/dist/cropper.min.css'
   import cropperMixin from '@/mixins/cropper'
   import { cropConversion } from '@/utils/cropper'
+  import a17VueFilters from '@/utils/filters.js'
 
   export default {
     name: 'a17Cropper',
@@ -259,7 +260,7 @@
       color: $color__link;
       cursor: pointer;
       margin: 0 20px;
-      border-radius: $height_li / 2;
+      border-radius: calc($height_li / 2);
 
       &.s--active {
         color: $color__text;

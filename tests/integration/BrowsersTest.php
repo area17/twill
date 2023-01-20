@@ -14,7 +14,7 @@ use A17\Twill\Models\RelatedItem;
 
 class BrowsersTest extends TestCase
 {
-    public $example = 'tests-browsers';
+    public ?string $example = 'tests-browsers';
 
     public function setUp(): void
     {

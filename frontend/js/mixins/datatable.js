@@ -1,6 +1,7 @@
-import { mapState, mapGetters } from 'vuex'
-import { DATATABLE } from '@/store/mutations/index'
+import { mapGetters,mapState } from 'vuex'
+
 import ACTIONS from '@/store/actions'
+import { DATATABLE } from '@/store/mutations/index'
 
 export default {
   props: {

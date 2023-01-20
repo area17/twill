@@ -83,7 +83,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
 
     public function setUpController(): void
     {
-        $this->setSearchColumns(['alt_text', 'filename', 'caption']);
+        $this->setSearchColumns(['filename']);
     }
 
     public function filters(): TableFilters

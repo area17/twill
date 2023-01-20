@@ -92,6 +92,8 @@ class CapsulesTest extends TestCase
         );
 
         class_exists('A17\Twill\Services\Modules\HasModules');
+
+        // @todo: Validate this test.
     }
 
     /**
@@ -254,7 +256,7 @@ class CapsulesTest extends TestCase
             TwillCapsules::getCapsuleForModule($this->capsuleName)
         );
 
-        $this->migrate();
+        $this->artisan('migrate');
     }
 
     public function selectCapsule()
@@ -295,7 +297,7 @@ class CapsulesTest extends TestCase
                 '--hasNesting' => true,
                 '--generatePreview' => true,
             ])
-            ->run()
+                ->run()
         );
 
         $this->assertFileExists(

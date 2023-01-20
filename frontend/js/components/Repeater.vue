@@ -66,13 +66,13 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-  import { FORM } from '@/store/mutations'
-
   import draggable from 'vuedraggable'
-  import draggableMixin from '@/mixins/draggable'
+  import { mapState } from 'vuex'
+
   import BlockEditorItem from '@/components/blocks/BlockEditorItem.vue'
   import A17StandaloneBrowser from "@/components/StandaloneBrowser.vue"
+  import draggableMixin from '@/mixins/draggable'
+  import { FORM } from '@/store/mutations'
 
   export default {
     name: 'A17Repeater',
@@ -191,7 +191,7 @@
         this.$store.commit(FORM.DUPLICATE_FORM_BLOCK, {
           type: this.type,
           name: this.name,
-          index: index
+          index
         })
 
         this.$nextTick(() => {
@@ -202,7 +202,7 @@
         this.$store.commit(FORM.DELETE_FORM_BLOCK, {
           type: this.type,
           name: this.name,
-          index: index
+          index
         })
       },
       collapseAllBlocks: function () {

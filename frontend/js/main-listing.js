@@ -93,7 +93,7 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
       Object.keys(this.$refs).filter(k => {
         return k.indexOf('filterDropdown[') === 0
       }).map(k => {
-        this.$refs[k].updateValue()
+        return this.$refs[k].updateValue()
       })
 
       this.reloadDatas()

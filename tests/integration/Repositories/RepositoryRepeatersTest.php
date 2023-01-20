@@ -16,7 +16,7 @@ use App\Repositories\ProjectRepository;
  */
 class RepositoryRepeatersTest extends ModulesTestBase
 {
-    public $example = 'portfolio';
+    public ?string $example = 'portfolio';
 
     protected Partner $partner;
     protected Project $project;
@@ -46,7 +46,7 @@ class RepositoryRepeatersTest extends ModulesTestBase
                         // not in the data request, but that is not needed.
                         // At least not for repeaters.
                         'title' => ['en' => 'partner 1'],
-                        'role' => 'some role',
+                        'role' => ['some role'],
                         'repeater_target_id' => $this->partner->id,
                         'id' => time(),
                     ],
@@ -67,7 +67,7 @@ class RepositoryRepeatersTest extends ModulesTestBase
         $this->assertEquals(1, $partners->count());
 
         $this->assertEquals($this->partner->title, $partners[0]->title);
-        $this->assertEquals('some role', $partners[0]->pivot->role);
+        $this->assertEquals('["some role"]', $partners[0]->pivot->role);
     }
 
     public function testCanCreatePartnerToProject(): void
@@ -76,7 +76,7 @@ class RepositoryRepeatersTest extends ModulesTestBase
             'repeaters' => [
                 'project_partners' => [
                     [
-                        'role' => 'The partner role',
+                        'role' => ['The partner role'],
                         'repeater_target_id' => null,
                         'title' => ['en' => 'Partner name'],
                         'id' => time(),
@@ -98,7 +98,7 @@ class RepositoryRepeatersTest extends ModulesTestBase
         $this->assertEquals(1, $partners->count());
 
         $this->assertEquals('Partner name', $partners[0]->title);
-        $this->assertEquals('The partner role', $partners[0]->pivot->role);
+        $this->assertEquals('["The partner role"]', $partners[0]->pivot->role);
     }
 
     public function testCanReferenceTheSamePartnerTwice(): void
@@ -107,12 +107,12 @@ class RepositoryRepeatersTest extends ModulesTestBase
             'repeaters' => [
                 'project_partners' => [
                     [
-                        'role' => 'Partner 1 role 1',
+                        'role' => ['Partner 1 role 1'],
                         'repeater_target_id' => $this->partner->id,
                         'id' => time(),
                     ],
                     [
-                        'role' => 'Partner 1 role 2',
+                        'role' => ['Partner 1 role 2'],
                         'repeater_target_id' => $this->partner->id,
                         'id' => time() + 1,
                     ],
@@ -134,10 +134,10 @@ class RepositoryRepeatersTest extends ModulesTestBase
 
         // Here we also check the id's to make sure these are not duplicated.
         $this->assertEquals($this->partner->id, $partners[0]->id);
-        $this->assertEquals('Partner 1 role 1', $partners[0]->pivot->role);
+        $this->assertEquals('["Partner 1 role 1"]', $partners[0]->pivot->role);
 
         $this->assertEquals($this->partner->id, $partners[1]->id);
-        $this->assertEquals('Partner 1 role 2', $partners[1]->pivot->role);
+        $this->assertEquals('["Partner 1 role 2"]', $partners[1]->pivot->role);
     }
 
     public function testCanCreateAndReferenceTAtTheSameTime(): void
@@ -146,12 +146,12 @@ class RepositoryRepeatersTest extends ModulesTestBase
             'repeaters' => [
                 'project_partners' => [
                     [
-                        'role' => 'Existing partner role',
+                        'role' => ['Existing partner role'],
                         'repeater_target_id' => $this->partner->id,
                         'id' => time(),
                     ],
                     [
-                        'role' => 'New Partner role',
+                        'role' => ['New Partner role'],
                         'repeater_target_id' => null,
                         'id' => time() + 1,
                         'title' => ['en' => 'New partner'],
@@ -173,12 +173,12 @@ class RepositoryRepeatersTest extends ModulesTestBase
         $this->assertEquals(2, $partners->count());
 
         $this->assertEquals($this->partner->id, $partners[0]->id);
-        $this->assertEquals('Existing partner role', $partners[0]->pivot->role);
+        $this->assertEquals('["Existing partner role"]', $partners[0]->pivot->role);
 
         $this->assertNotEquals($partners[0]->id, $partners[1]->id);
 
         $this->assertEquals('New partner', $partners[1]->title);
-        $this->assertEquals('New Partner role', $partners[1]->pivot->role);
+        $this->assertEquals('["New Partner role"]', $partners[1]->pivot->role);
     }
 
     public function testCanOverwriteFieldsInPartner(): void
@@ -189,7 +189,7 @@ class RepositoryRepeatersTest extends ModulesTestBase
             'repeaters' => [
                 'project_partners' => [
                     [
-                        'role' => 'some role',
+                        'role' => ['some role'],
                         'title' => ['en' => 'new title'],
                         'repeater_target_id' => $this->partner->id,
                         'id' => time(),
@@ -212,7 +212,7 @@ class RepositoryRepeatersTest extends ModulesTestBase
         // Check that the new title is there.
         $this->assertEquals($this->partner->id, $partners[0]->id);
         $this->assertEquals('new title', $partners[0]->title);
-        $this->assertEquals('some role', $partners[0]->pivot->role);
+        $this->assertEquals('["some role"]', $partners[0]->pivot->role);
     }
 
     public function testGetBrowserDataForRepeater(): void

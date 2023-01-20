@@ -27,11 +27,13 @@
 </template>
 
 <script>
-  import a17LangSwitcher from './LangSwitcher.vue'
-  import VisibilityMixin from '@/mixins/toggleVisibility'
+  import { mapGetters,mapState } from 'vuex'
+
   import LocaleMixin from '@/mixins/locale'
-  import { mapState, mapGetters } from 'vuex'
+  import VisibilityMixin from '@/mixins/toggleVisibility'
   import { LANGUAGE } from '@/store/mutations'
+
+  import a17LangSwitcher from './LangSwitcher.vue'
 
   export default {
     name: 'A17LangManager',

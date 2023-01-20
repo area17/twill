@@ -1,8 +1,8 @@
+import ACTIONS from '@/store/actions'
+import { setStorage } from '@/utils/localeStorage.js'
+
 import api from '../api/datatable'
 import { DATATABLE, NOTIFICATION } from '../mutations'
-import ACTIONS from '@/store/actions'
-
-import { setStorage } from '@/utils/localeStorage.js'
 /* NESTED functions */
 const getObject = (container, id, callback) => {
   container.forEach((item) => {

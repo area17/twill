@@ -8,7 +8,7 @@ use App\Repositories\CategoryRepository;
 
 class ModuleRepositoryTest extends TestCase
 {
-    public $example = 'tests-modules';
+    public ?string $example = 'tests-modules';
 
     public function testSlugIsSetWhenSlugTraitBeforeTranslations(): void
     {
