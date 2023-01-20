@@ -1,17 +1,21 @@
 <?php
 
-namespace A17\Twill\Tests\Integration;
+namespace A17\Twill\Tests\Integration\Users;
 
 use A17\Twill\Models\User;
+use A17\Twill\Tests\Integration\TestCase;
+use A17\Twill\Tests\Integration\Users\Traits\CreatesUsers;
 
 class UsersTest extends TestCase
 {
+    use CreatesUsers;
+
     public function testDummy(): void
     {
         $this->assertTrue(true);
     }
 
-    protected function impersonateUser()
+    protected function impersonateUser(): User
     {
         $this->httpRequestAssert('/twill');
 
@@ -35,32 +39,7 @@ class UsersTest extends TestCase
         $this->login();
     }
 
-    public function createUser($name = null, $email = null)
-    {
-        $name = $name ?? $this->faker->name;
-        $email = $email ?? $this->faker->email;
-
-        $payload = [
-            'name' => $name,
-            'email' => $email,
-            'role' => 'PUBLISHER',
-            'languages' => [
-                [
-                    'shortlabel' => 'EN',
-                    'label' => 'English',
-                    'value' => 'en',
-                    'disabled' => false,
-                    'published' => true,
-                ],
-            ],
-        ];
-
-        $this->ajax('/twill/users', 'POST', $payload)->assertStatus(200);
-
-        return User::where('email', $email)->first();
-    }
-
-    public function testCanListUsers()
+    public function testCanListUsers(): void
     {
         $this->ajax(
             '/twill/users?sortKey=email&sortDir=asc&page=1&offset=20&columns[]=bulk&columns[]=published&columns[]=name&columns[]=email&columns[]=role_value&filter=%7B%22status%22:%22published%22%7D'
@@ -69,7 +48,7 @@ class UsersTest extends TestCase
         $this->assertJson($this->content());
     }
 
-    public function testCanUpdateUser()
+    public function testCanUpdateUser(): void
     {
         $user = $this->createUser(
             $name = $this->faker->name,
@@ -93,7 +72,7 @@ class UsersTest extends TestCase
         $this->assertEquals($newName, $user->name);
     }
 
-    public function testCanCreateUser()
+    public function testCanCreateUser(): void
     {
         $user = $this->createUser(
             $name = $this->faker->name,
@@ -103,7 +82,7 @@ class UsersTest extends TestCase
         $this->assertEquals($name, $user->name);
     }
 
-    public function testCanEditUser()
+    public function testCanEditUser(): void
     {
         $user = User::where(
             'email',
@@ -119,12 +98,12 @@ class UsersTest extends TestCase
         $this->assertSee($email);
     }
 
-    public function testCanImpersonateUser()
+    public function testCanImpersonateUser(): void
     {
         $this->impersonateUser();
     }
 
-    public function testCanStopImpersonatingUser()
+    public function testCanStopImpersonatingUser(): void
     {
         $this->impersonateUser();
 

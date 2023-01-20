@@ -352,7 +352,7 @@ abstract class ModuleController extends Controller
      *
      * Do not modify this directly but use the method setSearchColumns().
      */
-    protected array $searchColumns = [];
+    protected ?array $searchColumns = null;
 
     /**
      * Default label translation keys that can be overridden in the labels array.
@@ -398,7 +398,10 @@ abstract class ModuleController extends Controller
             $this->getSideFieldsets($this->repository->getBaseModel())->registerDynamicRepeaters();
         }
 
-        $this->searchColumns = [$this->titleColumnKey];
+        // When no searchColumns are set we default to the title column key.
+        if ($this->searchColumns === null) {
+            $this->searchColumns = [$this->titleColumnKey];
+        }
     }
 
     /**
