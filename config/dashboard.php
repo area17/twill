@@ -13,4 +13,16 @@ return [
     'modules' => [],
     'analytics' => ['enabled' => false],
     'search_endpoint' => 'twill.search',
+
+    /*
+    |--------------------------------------------------------------------------
+    | Twill Auth activity related configuration
+    |--------------------------------------------------------------------------
+    |
+     */
+    'auth_activity_log' => [
+        'login' => false,
+        'logout' => false,
+    ],
+    'auth_activity_causer' => 'users',
 ];

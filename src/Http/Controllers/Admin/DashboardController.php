@@ -164,6 +164,14 @@ class DashboardController extends Controller
             }
         }
 
+        if (config('twill.dashboard.auth_activity_log.login', false)) {
+            $listActivities[] = config('twill.dashboard.auth_activity_causer', 'users');
+        }
+
+        if (config('twill.dashboard.auth_activity_log.logout', false)) {
+            $listActivities[] = config('twill.dashboard.auth_activity_causer', 'users');
+        }
+
         return $listActivities;
     }
 
@@ -200,6 +208,10 @@ class DashboardController extends Controller
      */
     private function formatActivity($activity)
     {
+        if ($activity->subject_type === config('twill.auth_activity_causer', 'users')) {
+            return $this->formatAuthActivity($activity);
+        }
+
         $dashboardModule = $this->config->get('twill.dashboard.modules.' . $activity->subject_type);
 
         if (! $dashboardModule || ! $dashboardModule['activity'] ?? false) {
@@ -220,7 +232,7 @@ class DashboardController extends Controller
             'date' => $activity->created_at->toIso8601String(),
             'author' => $activity->causer->name ?? twillTrans('twill::lang.dashboard.unknown-author'),
             'name' => $activity->subject->titleInDashboard ?? $activity->subject->title,
-            'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description),
+            'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description, $activity->properties->toArray()),
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
         ] : []) + (! $activity->subject->trashed() ? [
@@ -232,6 +244,20 @@ class DashboardController extends Controller
             ) : '',
         ] : []) + (! is_null($activity->subject->published) ? [
             'published' => $activity->description === 'published' ? true : ($activity->description === 'unpublished' ? false : $activity->subject->published),
+        ] : []);
+    }
+
+    private function formatAuthActivity(Activity $activity): array
+    {
+        return [
+            'id' => $activity->id,
+            'type' => twillTrans('twill::lang.auth.auth-causer'),
+            'date' => $activity->created_at->toIso8601String(),
+            'author' => $activity->causer->name ?? twillTrans('twill::lang.dashboard.unknown-author'),
+            'name' => ucfirst($activity->description) ?? '',
+            'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description, $activity->properties->toArray()),
+        ] + (classHasTrait($activity->subject, HasMedias::class) ? [
+            'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
         ] : []);
     }
 
