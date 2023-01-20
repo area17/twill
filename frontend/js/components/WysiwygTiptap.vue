@@ -148,35 +148,33 @@
 </template>
 
 <script>
+  import debounce from 'lodash/debounce'
   import { Editor, EditorContent, EditorMenuBar } from 'tiptap'
   import {
     Blockquote,
+    Bold,
+    BulletList,
+    Code,
     CodeBlock,
     HardBreak,
     Heading,
-    OrderedList,
-    BulletList,
-    ListItem,
-    Bold,
-    Code,
+    History,
     Italic,
     Link,
+    ListItem,
+    OrderedList,
     Placeholder,
-    Table,
-    TableHeader,
-    TableCell,
-    TableRow,
     Strike,
-    Underline,
-    History
-  } from 'tiptap-extensions'
-  import WysiwygMenuBarBtn from '@/components/WysiwygMenuBarButton'
-
+    Table,
+    TableCell,
+    TableHeader,
+    TableRow,
+    Underline  } from 'tiptap-extensions'
   import { mapState } from 'vuex'
-  import debounce from 'lodash/debounce'
 
-  import InputMixin from '@/mixins/input'
+  import WysiwygMenuBarBtn from '@/components/WysiwygMenuBarButton'
   import FormStoreMixin from '@/mixins/formStore'
+  import InputMixin from '@/mixins/input'
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
 
@@ -361,7 +359,7 @@
               this.headingOptions.push(level)
             })
             extensions.push(new Heading({
-              levels: levels
+              levels
             }))
             break
           }
@@ -418,8 +416,8 @@
       })
 
       this.editor = new Editor({
-        extensions: extensions,
-        content: content,
+        extensions,
+        content,
         onUpdate: ({ getHTML }) => {
           this.value = getHTML()
           this.textUpdate()

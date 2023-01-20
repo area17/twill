@@ -37,12 +37,13 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
+  import draggable from 'vuedraggable'
+  import { mapGetters,mapState } from 'vuex'
+
+  import draggableMixin from '@/mixins/draggable'
   import { BROWSER } from '@/store/mutations'
 
   import Browseritem from './BrowserItem.vue'
-  import draggableMixin from '@/mixins/draggable'
-  import draggable from 'vuedraggable'
 
   export default {
     name: 'A17BrowserField',
@@ -157,7 +158,7 @@
       deleteItem: function (index) {
         this.$store.commit(BROWSER.DESTROY_ITEM, {
           name: this.name,
-          index: index
+          index
         })
       },
       openBrowser: function () {

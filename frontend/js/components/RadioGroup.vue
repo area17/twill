@@ -17,9 +17,9 @@
 </template>
 
 <script>
-  import randKeyMixin from '@/mixins/randKey'
-  import InputframeMixin from '@/mixins/inputFrame'
   import FormStoreMixin from '@/mixins/formStore'
+  import InputframeMixin from '@/mixins/inputFrame'
+  import randKeyMixin from '@/mixins/randKey'
 
   export default {
     name: 'A17CheckboxGroup',

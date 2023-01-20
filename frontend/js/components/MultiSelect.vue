@@ -28,11 +28,12 @@
 
 <script>
   import isEqual from 'lodash/isEqual'
-  import randKeyMixin from '@/mixins/randKey'
-  import FormStoreMixin from '@/mixins/formStore'
-  import InputframeMixin from '@/mixins/inputFrame'
+
   import AttributesMixin from '@/mixins/addAttributes'
   import CheckboxMixin from '@/mixins/checkboxes'
+  import FormStoreMixin from '@/mixins/formStore'
+  import InputframeMixin from '@/mixins/inputFrame'
+  import randKeyMixin from '@/mixins/randKey'
 
   export default {
     name: 'A17Multiselect',

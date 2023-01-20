@@ -1,8 +1,9 @@
 import { mapState } from 'vuex'
-import NOTIFICATION from '@/store/mutations/notification'
+
+import { TableCellPrefix, TableCellSpecificColumns } from '@/components/table/tableCell'
 import ACTIONS from '@/store/actions'
 import { DATATABLE, FORM, LANGUAGE, MODALEDITION } from '@/store/mutations'
-import { TableCellPrefix, TableCellSpecificColumns } from '@/components/table/tableCell'
+import NOTIFICATION from '@/store/mutations/notification'
 
 export default {
   props: {

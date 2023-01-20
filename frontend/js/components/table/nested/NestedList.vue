@@ -24,9 +24,11 @@
 </template>
 
 <script>
-  import { DATATABLE } from '@/store/mutations'
   import draggable from 'vuedraggable'
+
   import { DatatableMixin, DraggableMixin, NestedDraggableMixin } from '@/mixins/index'
+  import { DATATABLE } from '@/store/mutations'
+
   import NestedItem from './NestedItem'
 
   export default {

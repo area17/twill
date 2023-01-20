@@ -7,8 +7,9 @@
 </template>
 
 <script>
-  import a17Accordion from './Accordion.vue'
   import VisibilityMixin from '@/mixins/toggleVisibility'
+
+  import a17Accordion from './Accordion.vue'
 
   export default {
     name: 'A17Radioaccordion',

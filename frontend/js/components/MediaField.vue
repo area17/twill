@@ -94,18 +94,16 @@
 </template>
 
 <script>
+  import smartCrop from 'smartcrop'
   import { mapState } from 'vuex'
-
-  import { MEDIA_LIBRARY } from '@/store/mutations'
 
   import a17Cropper from '@/components/Cropper.vue'
   import a17MediaMetadata from '@/components/MediaMetadata.vue'
-  import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
   import mediaFieldMixin from '@/mixins/mediaField.js'
-
-  import a17VueFilters from '@/utils/filters.js'
+  import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
+  import { MEDIA_LIBRARY } from '@/store/mutations'
   import { cropConversion } from '@/utils/cropper'
-  import smartCrop from 'smartcrop'
+  import a17VueFilters from '@/utils/filters.js'
 
   const IS_SAFARI = navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1
 

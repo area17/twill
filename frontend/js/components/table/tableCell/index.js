@@ -1,12 +1,12 @@
 import TableCellActions_ from './TableCellActions'
 import TableCellBulk_ from './TableCellBulk'
 import TableCellDates_ from './TableCellDates'
-import TableCellFeatured_ from './TableCellFeatured'
 import TableCellDraggable_ from './TableCellDraggable'
-import TableCellLanguages_ from './TableCellLanguages'
-import TableCellPublished_ from './TableCellPublished'
+import TableCellFeatured_ from './TableCellFeatured'
 import TableCellGeneric_ from './TableCellGeneric'
+import TableCellLanguages_ from './TableCellLanguages'
 import TableCellNested_ from './TableCellNested'
+import TableCellPublished_ from './TableCellPublished'
 import TableCellThumbnail_ from './TableCellThumbnail'
 
 export const TableCellSpecificColumns = [

@@ -25,23 +25,20 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
+  import { mapGetters,mapState } from 'vuex'
 
-  import { PUBLICATION } from '@/store/mutations'
-
-  import { getTimeFormatForCurrentLocale, isCurrentLocale24HrFormatted } from '@/utils/locale'
-
-  import a17Switcher from '@/components/Switcher.vue'
+  import a17CheckboxAccordion from '@/components/CheckboxAccordion.vue'
+  import a17MultiButton from '@/components/MultiButton.vue'
+  import a17ParentsAccordion from '@/components/ParentsAccordion.vue'
+  import a17PubAccordion from '@/components/PubAccordion.vue'
   import a17RadioAccordion from '@/components/RadioAccordion.vue'
   import a17ReviewAccordion from '@/components/ReviewAccordion.vue'
-  import a17CheckboxAccordion from '@/components/CheckboxAccordion.vue'
   import a17RevisionAccordion from '@/components/RevisionAccordion.vue'
-  import a17PubAccordion from '@/components/PubAccordion.vue'
-  import a17ParentsAccordion from '@/components/ParentsAccordion.vue'
-  import a17MultiButton from '@/components/MultiButton.vue'
+  import a17Switcher from '@/components/Switcher.vue'
   import a17UserInfo from '@/components/UserInfo.vue'
-
+  import { PUBLICATION } from '@/store/mutations'
   import a17VueFilters from '@/utils/filters.js'
+  import { getTimeFormatForCurrentLocale, isCurrentLocale24HrFormatted } from '@/utils/locale'
 
   export default {
     name: 'A17Publisher',

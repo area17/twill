@@ -8,11 +8,12 @@
 </template>
 
 <script>
-  import { MEDIA_LIBRARY } from '@/store/mutations'
   import qq from 'fine-uploader/lib/dnd'
-  import FineUploaderS3 from 'fine-uploader-wrappers/s3'
   import FineUploaderAzure from 'fine-uploader-wrappers/azure'
+  import FineUploaderS3 from 'fine-uploader-wrappers/s3'
   import FineUploaderTraditional from 'fine-uploader-wrappers/traditional'
+
+  import { MEDIA_LIBRARY } from '@/store/mutations'
   import sanitizeFilename from '@/utils/sanitizeFilename.js'
 
   export default {
@@ -40,7 +41,7 @@
         }
         return {
           allowedExtensions: extensions,
-          acceptFiles: acceptFiles,
+          acceptFiles,
           stopOnFirstInvalidFile: false
         }
       }
@@ -341,7 +342,7 @@
       height: $height_small_btn;
       margin-right: 10px;
       line-height: $height_small_btn - 2px;
-      border-radius: $height_small_btn / 2;
+      border-radius: calc($height_small_btn / 2);
       background-color: transparent;
       border: 1px solid $color__border--hover;
       color: $color__text--light;

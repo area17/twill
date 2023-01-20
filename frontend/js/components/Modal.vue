@@ -17,6 +17,7 @@
 
 <script>
   import { mapState } from 'vuex'
+
   import htmlClasses from '@/utils/htmlClasses'
 
   const html = document.documentElement

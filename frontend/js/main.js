@@ -17,6 +17,12 @@ const A17Init = function () {
   logoutButton()
 }
 
+if (module && module.hot) {
+  /* eslint-disable */
+  __webpack_public_path__ = window.hmr_url + '/'
+  /* eslint-enable */
+}
+
 
 // Alpine js
 Alpine.plugin(mask)

@@ -16,8 +16,8 @@
 </template>
 
 <script>
-  import { DatatableRowMixin } from '@/mixins'
   import TableCellComponents from '@/components/table/tableCell'
+  import { DatatableRowMixin } from '@/mixins'
 
   export default {
     name: 'A17-nested-item',
