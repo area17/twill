@@ -14,11 +14,11 @@ class TwillAppSettings
     /**
      * @var SettingsGroup[]
      */
-    public static array $settingsGroups = [];
+    private array $settingsGroups = [];
 
     public function registerSettingsGroup(SettingsGroup $section): void
     {
-        self::$settingsGroups[$section->getName()] = $section;
+        $this->settingsGroups[$section->getName()] = $section;
     }
 
     /**
@@ -26,7 +26,7 @@ class TwillAppSettings
      */
     public function getAllGroups(): array
     {
-        return self::$settingsGroups;
+        return $this->settingsGroups;
     }
 
     /**
@@ -35,7 +35,7 @@ class TwillAppSettings
     public function getGroupsForNavigation(): array
     {
         return array_filter(
-            self::$settingsGroups,
+            $this->settingsGroups,
             fn(SettingsGroup $group) => !$group->shouldNotAutoRegisterInMenu() && $group->isAvailable()
         );
     }
@@ -81,7 +81,7 @@ class TwillAppSettings
 
     public function getGroupForName(string $groupName): SettingsGroup
     {
-        $group = self::$settingsGroups[$groupName] ?? null;
+        $group = $this->settingsGroups[$groupName] ?? null;
 
         if (!$group) {
             throw new SettingsGroupDoesNotExistException($groupName);

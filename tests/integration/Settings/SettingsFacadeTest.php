@@ -11,7 +11,7 @@ use A17\Twill\Tests\Integration\TestCase;
 class SettingsFacadeTest extends TestCase
 {
 
-    public $example = 'tests-settings';
+    public ?string $example = 'tests-settings';
 
     public function setUp(): void
     {
