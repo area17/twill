@@ -26,7 +26,6 @@
 <script>
   import { mapState } from 'vuex'
 
-  // import ACTIONS from '@/store/actions'
   import A17ActivityRow from '@/components/dashboard/activityRow.vue'
   import { DATATABLE } from '@/store/mutations'
   import A17Paginate from "@/components/table/Paginate.vue";
@@ -75,7 +74,6 @@
     },
     methods: {
       getData(pageNumber) {
-        console.log('admin?' + this.navFilters[this.navActive].slug + '=' + pageNumber);
         this.$http.get('admin?' + this.navFilters[this.navActive].slug + '=' + pageNumber).then(({data}) => {
           this.rows = data;
         })
@@ -83,11 +81,7 @@
       filterStatus: function (index, slug) {
         if (this.navActive === index) return
 
-        // No XHR requests just a simple switch of data
         this.navActive = index
-        // No pagination
-        // this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
-        // this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER_STATUS, slug)
         if (window[process.env.VUE_APP_NAME].STORE.datatable) {
           if (window[process.env.VUE_APP_NAME].STORE.datatable.hasOwnProperty(slug)) this.rows = window[process.env.VUE_APP_NAME].STORE.datatable[slug]
         }
