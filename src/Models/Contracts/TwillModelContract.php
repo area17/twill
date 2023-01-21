@@ -19,9 +19,9 @@ interface TwillModelContract
 
     public function scopeAccessible(Builder $query): Builder;
 
-    public function scopeOnlyTrashed(Builder $query): Builder;
-
     public function scopeDraft(Builder $query): Builder;
 
     public function getTranslatedAttributes(): array;
+
+    public function isTranslatable(): bool;
 }
