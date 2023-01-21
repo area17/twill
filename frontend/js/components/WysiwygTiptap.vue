@@ -56,7 +56,8 @@
             />
 
             <wysiwyg-menu-bar-btn icon="unlink"
-                                  v-if="toolbar.link && editor.isActive('link')"
+                                  v-if="toolbar.link"
+                                  :disabled="!editor.isActive('link')"
                                   :isActive="editor.isActive('link')"
                                   @btn:click="removeLink()"/>
 
@@ -149,6 +150,14 @@
         </a17-button>
       </template>
     </div>
+    <standalone-browser
+        v-if="browserIsOpen && browserEndpoints"
+        ref="localbrowser"
+        :endpoint-multiple="browserEndpoints"
+        @selected="setLinkFromBrowser"
+        @close="browserIsOpen = false"
+        :max="1"
+    />
     <div class="link-window" v-if="linkWindow">
       <div class="link-window-inner">
         <label>
@@ -159,6 +168,7 @@
         <label>
           {{ $trans('wysiwyg.link_window.link', 'Link') }}:
           <input type="text" v-model="linkWindow.href" @keyup:enter="saveLink" tabindex="2" ref="link_window__link">
+          <a v-if="browserEndpoints" @click="browserIsOpen = true">Select internal page</a>
         </label>
 
         <label>
@@ -189,6 +199,7 @@
   import TableHeader from '@tiptap/extension-table-header'
   import {mapState} from 'vuex'
 
+  import StandaloneBrowser from "@/components/StandaloneBrowser.vue";
   import WysiwygMenuBarBtn from '@/components/WysiwygMenuBarButton'
   import FormStoreMixin from '@/mixins/formStore'
   import InputMixin from '@/mixins/input'
@@ -224,6 +235,10 @@
       },
       initialValue: {
         default: ''
+      },
+      browserEndpoints: {
+        required: false,
+        default: null
       },
       limitHeight: {
         type: Boolean,
@@ -268,6 +283,7 @@
     },
     components: {
       EditorContent,
+      StandaloneBrowser,
       'wysiwyg-menu-bar-btn': WysiwygMenuBarBtn
     },
     data () {
@@ -302,7 +318,8 @@
         activeSource: false,
         counter: 0,
         editor: null,
-        linkWindow: null
+        linkWindow: null,
+        browserIsOpen: false,
       }
     },
     methods: {
@@ -416,6 +433,9 @@
           .extendMarkRange('link')
           .unsetLink()
           .run()
+      },
+      setLinkFromBrowser(item) {
+        this.linkWindow.href = '#twillInternalLink::' + item[0].endpointType + '#' + item[0].id
       },
       saveLink () {
         if (this.linkWindow.text !== this.linkWindow.textOriginal) {
@@ -736,7 +756,7 @@
     left: 0;
     bottom: 0;
     right: 0;
-    z-index: 9999;
+    z-index: 450;
     background-color: rgba(0, 0, 0, .5);
     display: flex;
     justify-content: center;

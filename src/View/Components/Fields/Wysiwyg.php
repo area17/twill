@@ -29,7 +29,9 @@ class Wysiwyg extends TwillFormComponent
         public bool $limitHeight = false,
         public bool $syntax = false,
         public string $customTheme = 'github',
-        public ?array $customOptions = null
+        public ?array $customOptions = null,
+        public ?array $browserModules = null,
+        public ?array $endpoints = null,
     ) {
         parent::__construct(
             name: $name,
@@ -44,6 +46,21 @@ class Wysiwyg extends TwillFormComponent
             translated: $translated,
             default: $default
         );
+
+        if (! $this->endpoints) {
+            $this->endpoints = isset($this->browserModules) ? collect($this->browserModules)->map(function ($module) {
+                return [
+                    'label' => $module['label'] ?? ucfirst($module['name']),
+                    'value' => moduleRoute(
+                        $module['name'],
+                        $module['routePrefix'] ?? null,
+                        'browser',
+                        $module['params'] ?? [],
+                        false
+                    ),
+                ];
+            })->toArray() : null;
+        }
     }
 
     public function render(): View

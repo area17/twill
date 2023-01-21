@@ -7,9 +7,6 @@ use A17\Twill\Services\Forms\Fields\Traits\HasOnChange;
 use A17\Twill\Services\Forms\Fields\Traits\HasPlaceholder;
 use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
-/**
- * @todo: Split this? Text, Textarea, Number, ...?
- */
 class Wysiwyg extends BaseFormField
 {
     use IsTranslatable;
@@ -50,6 +47,8 @@ class Wysiwyg extends BaseFormField
     public string $customTheme = 'github';
 
     public ?array $customOptions = null;
+
+    public ?array $browserModules;
 
     public static function make(): static
     {
@@ -145,6 +144,33 @@ class Wysiwyg extends BaseFormField
     public function customOptions(array $customOptions): self
     {
         $this->customOptions = $customOptions;
+
+        return $this;
+    }
+
+    /**
+     * The browser module(s) that can be used to select existing content.
+     */
+    public function browserModules(?array $modules = null): static
+    {
+        if (count($modules) === 1 && ! isset($modules[0])) {
+            $this->browserModules[] = [
+                'name' => getModuleNameByModel(array_pop($modules))
+            ];
+        } else {
+            foreach ($modules as $module) {
+                if (isset($module['name'])) {
+                    $this->browserModules[] = [
+                        'name' => getModuleNameByModel($module['name']),
+                        'label' => $module['label']
+                    ];
+                } else {
+                    $this->browserModules[] = [
+                        'name' => getModuleNameByModel($module),
+                    ];
+                }
+            }
+        }
 
         return $this;
     }

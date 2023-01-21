@@ -145,21 +145,28 @@ class Browser extends BaseFormField
      */
     public function modules(array $modules): self
     {
-        if (count($modules) === 1) {
+        if (count($modules) === 1 && ! isset($modules[0])) {
             $this->moduleName = getModuleNameByModel(array_pop($modules));
 
-            if (!$this->label) {
+            if (! $this->label) {
                 $this->label = Str::headline($this->moduleName);
             }
 
-            if (!$this->name) {
+            if (! $this->name) {
                 $this->name = Str::snake($this->moduleName);
             }
         } else {
             foreach ($modules as $module) {
-                $this->modules[] = [
-                    'name' => getModuleNameByModel($module),
-                ];
+                if (isset($module['name'])) {
+                    $this->modules[] = [
+                        'name' => getModuleNameByModel($module['name']),
+                        'label' => $module['label']
+                    ];
+                } else {
+                    $this->modules[] = [
+                        'name' => getModuleNameByModel($module),
+                    ];
+                }
             }
         }
 
@@ -168,7 +175,7 @@ class Browser extends BaseFormField
 
     protected function getAdditionalConstructorArguments(): array
     {
-        if (!$this->name && !$this->moduleName) {
+        if (! $this->name && ! $this->moduleName) {
             throw new \InvalidArgumentException(
                 'Browser field is missing name field. Use ->name when using more than 1 module.'
             );
