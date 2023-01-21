@@ -1,6 +1,7 @@
 <template>
   <button class="wysiwyg__menubar-button"
           :class="{ 'is-active': isActive }"
+          :disabled="disabled"
           type="button"
           @click="handleClick">
     <span class="icon"
@@ -25,6 +26,10 @@
       isActive: {
         type: Boolean,
         default: false
+      },
+      disabled: {
+        type: Boolean,
+        default: false
       }
     },
     methods: {
@@ -36,6 +41,9 @@
 </script>
 
 <style lang="scss">
+  .wysiwyg__menubar-button:disabled {
+    opacity: 10%;
+  }
   // This icon is not part of the sizes above.
   .icon--wysiwyg_hr,
   .icon--wysiwyg_hr svg {

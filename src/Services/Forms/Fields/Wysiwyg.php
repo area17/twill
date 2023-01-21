@@ -21,11 +21,27 @@ class Wysiwyg extends BaseFormField
 
     public bool $editSource = false;
 
-    public ?array $toolbarOptions = null;
+    public ?array $toolbarOptions = [
+        ['header' => [2, 3, 4, 5, 6, false]],
+        'bold',
+        'italic',
+        'underline',
+        'strike',
+        'blockquote',
+        "code-block",
+        'ordered',
+        'bullet',
+        ["align" => []],
+        ["direction" => "rtl"],
+        'code',
+        'link',
+        'clean',
+        'table'
+    ];
 
     public ?array $options = null;
 
-    public string $type = 'quill';
+    public string $type = 'tiptap';
 
     public bool $limitHeight = false;
 

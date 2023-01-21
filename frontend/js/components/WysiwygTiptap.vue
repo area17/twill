@@ -21,6 +21,7 @@
 
             <template v-if="toolbar.header">
               <wysiwyg-menu-bar-btn icon="paragraph"
+                                    :disabled="editor.isActive('paragraph')"
                                     v-if="toolbar.header"
                                     :isActive="editor.isActive('paragraph')"
                                     @btn:click="editor.chain().focus().setParagraph().run()"/>
@@ -75,19 +76,26 @@
                                   @btn:click="editor.chain().focus().toggleBlockquote().run()"/>
 
             <wysiwyg-menu-bar-btn icon="code"
-                                  v-if="toolbar['code-block']"
+                                  v-if="toolbar.codeBlock"
                                   :isActive="editor.isActive('codeBlock')"
                                   @btn:click="editor.chain().focus().toggleCodeBlock().run()"/>
 
             <wysiwyg-menu-bar-btn icon="code"
-                                  v-if="toolbar['code']"
+                                  v-if="toolbar.code"
                                   :isActive="editor.isActive('code')"
                                   @btn:click="editor.chain().focus().setCode().run()"/>
 
-            <template v-if="toolbar.table">
-              <wysiwyg-menu-bar-btn icon="table"
-                                    @btn:click="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()"/>
+            <wysiwyg-menu-bar-btn icon="table"
+                                  @btn:click="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()"/>
+            <wysiwyg-menu-bar-btn icon="undo"
+                                  :disabled="!editor.can().undo()"
+                                  @btn:click="editor.chain().focus().undo().run()"/>
+            <wysiwyg-menu-bar-btn icon="redo"
+                                  :disabled="!editor.can().redo()"
+                                  @btn:click="editor.chain().focus().redo().run()"/>
 
+            <template v-if="toolbar.table">
+              <br />
               <div class="wysiwyg__menubar-table-buttons"
                    v-if="editor.isActive('table')">
 
@@ -116,12 +124,6 @@
                                       @btn:click="editor.chain().focus().mergeCells().run()"/>
               </div>
             </template>
-            <wysiwyg-menu-bar-btn icon="undo"
-                                  :disabled="!editor.can().undo()"
-                                  @btn:click="editor.chain().focus().undo().run()"/>
-            <wysiwyg-menu-bar-btn icon="redo"
-                                  :disabled="!editor.can().redo()"
-                                  @btn:click="editor.chain().focus().redo().run()"/>
           </div>
           <div class="wysiwyg__contentWrapper" :class="{ 'wysiwyg__contentWrapper--limitHeight' : limitHeight }">
             <editor-content class="wysiwyg__content"
@@ -193,11 +195,8 @@
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
   import {Link} from "@tiptap/extension-link";
-
-  // Todo: load highligth depending of needs
-  // import { loadScript } from '@/utils/loader'
-  //
-  // const HIGHLIGHT = '//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js'
+  import {Placeholder} from "@tiptap/extension-placeholder";
+  import {HardBreak} from "@tiptap/extension-hard-break";
 
   export default {
     name: 'A17Wysiwyg',
@@ -411,10 +410,12 @@
           this.$refs.link_window__link.focus()
         })
       },
-      removeLink() {
-        this.editor.commands.extendMarkRange('link')
-        console.log(this.editor.commands);
-        this.editor.commands.focus().removeLink();
+      removeLink () {
+        this.editor.chain()
+          .focus()
+          .extendMarkRange('link')
+          .unsetLink()
+          .run()
       },
       saveLink () {
         if (this.linkWindow.text !== this.linkWindow.textOriginal) {
@@ -438,31 +439,35 @@
       }
     },
     beforeMount () {
+      if (this.toolbar.header) {
+        this.headingOptions = this.toolbar.header.filter((header) => {
+          return (typeof header === 'number')
+        })
+      }
+
       const content = this.value || ''
       const extensions = [
-        // new HardBreak()
+        HardBreak
       ]
 
       if (this.placeholder && this.placeholder.length > 0) {
-        // extensions.push(new Placeholder({
-        //   emptyNodeClass: 'is-empty',
-        //   emptyNodeText: this.placeHolder,
-        //   showOnlyWhenEditable: true
-        // }))
+        extensions.push(Placeholder.configure({
+          emptyNodeClass: 'is-empty',
+          emptyNodeText: this.placeHolder,
+          showOnlyWhenEditable: true
+        }))
       }
 
       Object.keys(this.toolbar).forEach(tool => {
         switch (tool) {
-          // case 'link': {
-          //   extensions.push(new Link({
-          //     HTMLAttributes: {
-          //       target: null,
-          //       rel: null
-          //     },
-          //     openOnClick: false
-          //   }))
-          //   break
-          // }
+          case 'link': {
+            extensions.push(Link.configure({openOnClick: false}))
+            break;
+          }
+          case 'underline': {
+            extensions.push(Underline)
+            break;
+          }
           case 'table': {
             extensions.push(Table.configure({
               resizable: false
@@ -478,95 +483,10 @@
       extensions.push(StarterKit.configure({
         orderedList: this.toolbar.ordered ?? false,
         bulletList: this.toolbar.bullet ?? false,
-        listItem: this.toolbar.ordered || this.toolbar.bullet,
+        listItem: this.toolbar.ordered || this.toolbar.bullet || false,
+        code: this.toolbar.code ?? false,
+        codeBlock: this.toolbar.codeBlock ?? false,
       }))
-      extensions.push(Underline)
-      extensions.push(Link.configure({openOnClick: false}))
-
-      // const CustomLink = Link.extend({
-      //   addCommands() {
-      //     return {
-      //       openLinkWindow: () => ({state, chain, commands}) => {
-      //         const tr = state.tr
-      //         const { selection } = tr
-      //         const { empty, ranges } = selection
-      //
-      //         if (empty) {
-      //           const oldAttributes = getMarkAttributes(state, "link")
-      //           console.log("Oldattributes", oldAttributes);
-      //
-      //           this.openLinkWindow(oldAttributes)
-      //
-      //           tr.addMark("link", {href:"#"})
-      //         }
-      //         console.log(selection)
-      //       }
-      //       //   console.log(state)
-      //       //   chain()
-      //       //       .focus()
-      //       //       .extendMarkRange()
-      //       //       .first(() => [
-      //       //         ({commands}) => {
-      //       //           console.log('first')
-      //       //           commands.setMark("link", {href:"#"});
-      //       //           return false;
-      //       //         },
-      //       //         () => {
-      //       //           console.log('second')
-      //       //         }
-      //       //       ])
-      //       //       .command(({ tr, commands }) => {
-      //       //         console.log(commands)
-      //       //     // tr.selectParentNode()
-      //       //     var from = tr.selection.ranges[0].$from.pos;
-      //       //     var to = tr.selection.ranges[0].$to.pos;
-      //       //
-      //       //     let isEmptyStart = false;
-      //       //     let isEmptyEnd = false;
-      //       //
-      //       //     if (from === to) {
-      //       //       // If from and to are the same, the cursor is in a position and there is no selection.
-      //       //       // In that case we check if we are in a word.
-      //       //       if (from > 0) {
-      //       //         isEmptyStart = tr.doc.textBetween(from - 1, to) === ' ';
-      //       //         isEmptyEnd = tr.doc.textBetween(from, to +1) === ' ';
-      //       //       }
-      //       //
-      //       //       if (!isEmptyStart || !isEmptyEnd) {
-      //       //         commands.selectNodeBackward()
-      //       //       }
-      //       //     }
-      //       //
-      //       //     return true
-      //       //   }).command(({tr}) => {
-      //       //     const from = tr.selection.ranges[0].$from.pos;
-      //       //     const to = tr.selection.ranges[0].$to.pos;
-      //       //     console.log(from, to)
-      //       //     console.log(tr.doc.textBetween(from, to));
-      //       //   });
-      //       //   // return commands.setMark("link", {href:"#"});
-      //       // }
-      //     }
-      //   },
-      // })
-      //
-      // extensions.push(CustomLink.configure({ openOnClick: false }))
-
-      // const CustomExtension = Mark.create({
-      //   name: "link",
-      //   addCommands() {
-      //     return {
-      //       openLinkPopup: color => ({ chain }) => {
-      //         console.log(color)
-      //         return chain()
-      //           .setMark('textStyle', { color })
-      //           .run()
-      //       },
-      //     }
-      //   },
-      // })
-
-      // extensions.push(new CustomExtension());
 
       this.editor = new Editor({
         content,
