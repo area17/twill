@@ -178,7 +178,7 @@
 
 <script>
   import debounce from 'lodash/debounce'
-  import {Editor, EditorContent, getMarkAttributes, getMarkRange} from '@tiptap/vue-2'
+  import {Editor, EditorContent, getMarkAttributes} from '@tiptap/vue-2'
   import StarterKit from '@tiptap/starter-kit'
   import Underline from '@tiptap/extension-underline'
   import Table from '@tiptap/extension-table'
@@ -277,27 +277,27 @@
         editorHeight: 50,
         toolbarHeight: 52,
         toolbar: this.options.modules.toolbar
-            ? this.options.modules.toolbar
-                .reduce((obj, item) => {
-                  if (item.list) {
-                    obj[item.list] = true
-                    return obj
-                  } else if (typeof item === 'object') {
-                    return {
-                      ...obj,
-                      ...item
-                    }
-                  } else {
-                    obj[item] = true
-                    return obj
-                  }
-                }, {})
-            : {
-              bold: true,
-              italic: true,
-              underline: true,
-              link: true
-            },
+          ? this.options.modules.toolbar
+            .reduce((obj, item) => {
+              if (item.list) {
+                obj[item.list] = true
+                return obj
+              } else if (typeof item === 'object') {
+                return {
+                  ...obj,
+                  ...item
+                }
+              } else {
+                obj[item] = true
+                return obj
+              }
+            }, {})
+          : {
+            bold: true,
+            italic: true,
+            underline: true,
+            link: true
+          },
         headingOptions: [],
         focused: false,
         activeSource: false,
@@ -385,8 +385,8 @@
 
           while (!foundEnd && to < htmlLen) {
             foundEnd = to === htmlLen ||
-                doc.textBetween(to, to + 1) === '' ||
-                doc.textBetween(to, to + 1) === ' '
+              doc.textBetween(to, to + 1) === '' ||
+              doc.textBetween(to, to + 1) === ' '
             endPos = to
             to = to + 1
           }
@@ -398,7 +398,7 @@
         this.editor.commands.setTextSelection({from: startPos, to: endPos})
 
         this.linkWindow = {
-          newLink: newLink,
+          newLink,
           from: startPos ?? 0,
           to: endPos,
           textOriginal: this.editor.state.tr.doc.textBetween(startPos, endPos),
@@ -453,16 +453,16 @@
 
       Object.keys(this.toolbar).forEach(tool => {
         switch (tool) {
-            // case 'link': {
-            //   extensions.push(new Link({
-            //     HTMLAttributes: {
-            //       target: null,
-            //       rel: null
-            //     },
-            //     openOnClick: false
-            //   }))
-            //   break
-            // }
+          // case 'link': {
+          //   extensions.push(new Link({
+          //     HTMLAttributes: {
+          //       target: null,
+          //       rel: null
+          //     },
+          //     openOnClick: false
+          //   }))
+          //   break
+          // }
           case 'table': {
             extensions.push(Table.configure({
               resizable: false
