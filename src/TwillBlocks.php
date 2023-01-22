@@ -97,13 +97,13 @@ class TwillBlocks
         return $baseList->toJson();
     }
 
-    public function registerComponentBlocks(string $namespace): void
+    public function registerComponentBlocks(string $namespace, string $path): void
     {
         if (! Str::startsWith($namespace, '\\')) {
             $namespace = '\\' . $namespace;
         }
 
-        self::$componentBlockNamespaces[$namespace] = $namespace;
+        self::$componentBlockNamespaces[$namespace] = $path;
     }
 
     /**
@@ -172,18 +172,10 @@ class TwillBlocks
 
 
         if (self::$componentBlockNamespaces !== []) {
-            foreach (self::$componentBlockNamespaces as $namespace) {
-                $path = Str::replace('\\', '/', $namespace);
-
-                // As the App part is usually at the beginning, we have to replace it with 'app' instead for case
-                // sensitive filesystems.
-                if (Str::startsWith($path, ['/App/', 'App/'])) {
-                    $path = Str::replaceFirst('App/', 'app/', $path);
-                }
-
+            foreach (self::$componentBlockNamespaces as $namespace => $path) {
                 $disk = Storage::build([
                     'driver' => 'local',
-                    'root' => str_replace('//', '/', base_path($path)),
+                    'root' => $path,
                 ]);
 
                 foreach ($disk->allFiles() as $file) {
