@@ -24,5 +24,5 @@ return [
         'login' => false,
         'logout' => false,
     ],
-    'auth_activity_causer' => 'users'
+    'auth_activity_causer' => 'users',
 ];
