@@ -530,7 +530,15 @@
               const commandsList = {}
 
               commandsList[commandName] = () => ({chain}) => {
-                return chain().toggleWrap(this.name).toggleOrderedList().run()
+                if (wrapper.createElement) {
+                  switch (wrapper.createElement) {
+                    case 'ol':
+                      return chain().toggleWrap(this.name).toggleOrderedList().run()
+                    case 'ul':
+                      return chain().toggleWrap(this.name).toggleBulletList().run()
+                  }
+                }
+                return chain().toggleWrap(this.name).run()
               }
 
               return commandsList;
