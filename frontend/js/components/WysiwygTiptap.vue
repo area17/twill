@@ -100,9 +100,9 @@
                                   @btn:click="editor.chain().focus().redo().run()"/>
 
             <template v-if="toolbar.table">
-              <br />
               <div class="wysiwyg__menubar-table-buttons"
                    v-if="editor.isActive('table')">
+                <br/>
 
                 <wysiwyg-menu-bar-btn icon="delete_table"
                                       @btn:click="editor.chain().focus().deleteTable().run()"/>
@@ -129,6 +129,18 @@
                                       @btn:click="editor.chain().focus().mergeCells().run()"/>
               </div>
             </template>
+
+            <template v-if="this.toolbar.wrappers">
+              <br/>
+              <template v-for="wrapper in this.toolbar.wrappers">
+                <wysiwyg-menu-bar-btn :icon-url="wrapper.icon"
+                                      :key="wrapper.id"
+                                      :isActive="editor.isActive(wrapper.class)"
+                                      :label="wrapper.label"
+                                      @btn:click="editor.commands['set' + wrapper.id]()"/>
+              </template>
+            </template>
+
           </div>
           <div class="wysiwyg__contentWrapper" :class="{ 'wysiwyg__contentWrapper--limitHeight' : limitHeight }">
             <editor-content class="wysiwyg__content"
@@ -194,7 +206,7 @@
 
 <script>
   import debounce from 'lodash/debounce'
-  import {Editor, EditorContent, getMarkAttributes} from '@tiptap/vue-2'
+  import {Editor, EditorContent, getMarkAttributes, mergeAttributes, Node} from '@tiptap/vue-2'
   import StarterKit from '@tiptap/starter-kit'
   import Underline from '@tiptap/extension-underline'
   import Table from '@tiptap/extension-table'
@@ -439,7 +451,7 @@
           .unsetLink()
           .run()
       },
-      setLinkFromBrowser(item) {
+      setLinkFromBrowser (item) {
         this.linkWindow.href = '#twillInternalLink::' + item[0].endpointType + '#' + item[0].id
       },
       saveLink () {
@@ -481,6 +493,50 @@
           emptyNodeText: this.placeHolder,
           showOnlyWhenEditable: true
         }))
+      }
+
+      if (this.toolbar.wrappers) {
+        this.toolbar.wrappers.forEach((wrapper) => {
+          extensions.push(Node.create({
+            name: wrapper.id,
+            group: 'block',
+            marks: '_',
+            atom: true,
+            content: 'block+',
+            addOptions () {
+              return {
+                HTMLAttributes: {
+                  class: wrapper.className,
+                  'data-customwrapper': wrapper.id,
+                  'data-customwrapper-label': wrapper.label
+                },
+              }
+            },
+            parseHTML () {
+              return [
+                {
+                  tag: 'div',
+                  getAttrs: element => {
+                    element.getAttribute('data-customwrapper', wrapper.id)
+                  }
+                },
+              ]
+            },
+            renderHTML ({HTMLAttributes}) {
+              return ['div', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
+            },
+            addCommands () {
+              const commandName = 'set' + this.name
+              const commandsList = {}
+
+              commandsList[commandName] = () => ({chain}) => {
+                return chain().toggleWrap(this.name).toggleOrderedList().run()
+              }
+
+              return commandsList;
+            },
+          }))
+        })
       }
 
       Object.keys(this.toolbar).forEach(tool => {
@@ -626,6 +682,21 @@
   .wysiwyg__content {
     .ProseMirror {
       color: $color__text;
+
+      [data-customwrapper] {
+        position: relative;
+        width: 100%;
+        padding: 3px;
+        border: 1px dashed hsl(0, 0%, 66.7%);
+        margin-top: 10px;
+      }
+
+      [data-customwrapper]::before {
+        content: attr(data-customwrapper-label);
+        position: relative;
+        background-color: white;
+        top: -15px;
+      }
 
       h1, h2, h3, h4, h5, h6 {
         font-weight: 700;

@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
+use A17\Twill\Services\Forms\Fields\Helpers\TiptapWrapper;
 use A17\Twill\Services\Forms\Fields\Traits\HasMaxlength;
 use A17\Twill\Services\Forms\Fields\Traits\HasOnChange;
 use A17\Twill\Services\Forms\Fields\Traits\HasPlaceholder;
@@ -34,8 +35,13 @@ class Wysiwyg extends BaseFormField
         'code',
         'link',
         'clean',
-        'table'
+        'table',
     ];
+
+    /**
+     * @var TiptapWrapper[]
+     */
+    protected array $tiptapWrappers = [];
 
     public ?array $options = null;
 
@@ -147,6 +153,32 @@ class Wysiwyg extends BaseFormField
         $this->customOptions = $customOptions;
 
         return $this;
+    }
+
+    /**
+     * Add wrappers that can be used in the editor.
+     */
+    public function addTiptapWrapper(TiptapWrapper $wrapper): static
+    {
+        $this->tiptapWrappers[$wrapper->className] = $wrapper;
+
+        return $this;
+    }
+
+    protected function getToolbarOptions(): array
+    {
+        $base = $this->toolbarOptions;
+        if ($this->tiptapWrappers !== []) {
+            $wrapperList = [];
+            foreach ($this->tiptapWrappers as $wrapper) {
+                $wrapperList[] = $wrapper->toArray();
+            }
+            $base[] = [
+                'wrappers' => $wrapperList
+            ];
+        }
+
+        return $base;
     }
 
     /**
