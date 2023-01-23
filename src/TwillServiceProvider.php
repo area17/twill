@@ -123,7 +123,10 @@ class TwillServiceProvider extends ServiceProvider
         Blade::componentNamespace('A17\\Twill\\View\\Components\\Layout', 'twill.layout');
         Blade::componentNamespace('A17\\Twill\\View\\Components\\Fields', 'twill');
 
-        \A17\Twill\Facades\TwillBlocks::registerComponentBlocks('\\App\\View\\Components\\Twill\\Blocks');
+        \A17\Twill\Facades\TwillBlocks::registerComponentBlocks(
+            '\\App\\View\\Components\\Twill\\Blocks',
+            base_path('app/View/Components/Twill/Blocks')
+        );
 
         Relation::morphMap([
             'users' => User::class,

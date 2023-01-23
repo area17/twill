@@ -149,7 +149,7 @@ class Block
             file: null,
             type: 'block',
             source: $componentClass::getBlockGroup(),
-            name: $componentClass::getBlockTitle(),
+            name: Str::slug(Str::replace('\\', '-', $componentClass)),
             componentClass: $componentClass
         );
 
