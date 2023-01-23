@@ -359,7 +359,7 @@ class TwillServiceProvider extends ServiceProvider
             SetupDevTools::class,
             GeneratePackageCommand::class,
             TwillFlushManifest::class,
-            GenerateBlockComponent::class
+            GenerateBlockComponent::class,
         ];
 
         if (app()->runningInConsole()) {
