@@ -37,6 +37,9 @@
       'a17-activity-row': A17ActivityRow
     },
     props: {
+      ajaxBaseUrl: {
+        type: String
+      },
       emptyMessage: {
         type: String,
         default: 'You don\'t have any activity yet.'
@@ -74,7 +77,7 @@
     },
     methods: {
       getData(pageNumber) {
-        this.$http.get('admin?' + this.navFilters[this.navActive].slug + '=' + pageNumber).then(({data}) => {
+        this.$http.get(this.ajaxBaseUrl + '?' + this.navFilters[this.navActive].slug + '=' + pageNumber).then(({data}) => {
           this.rows = data;
         })
       },

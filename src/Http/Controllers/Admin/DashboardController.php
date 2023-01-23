@@ -81,6 +81,7 @@ class DashboardController extends Controller
         return $this->viewFactory->make('twill::layouts.dashboard', [
             'allActivityData' => $this->getAllActivities(),
             'myActivityData' => $this->getLoggedInUserActivities(),
+            'ajaxBaseUrl' => request()?->url(),
             'tableColumns' => [
                 [
                     'name' => 'thumbnail',
