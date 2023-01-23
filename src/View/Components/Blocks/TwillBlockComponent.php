@@ -48,6 +48,17 @@ abstract class TwillBlockComponent extends Component
     }
 
     /**
+     * This string should contain no special characters or spaces.
+     *
+     * It will be used as the database identifier for the block, it should not change dynamically nor should it overlap
+     * with an existing block.
+     */
+    public static function getBlockIdentifier(): string
+    {
+        return Str::slug(Str::replace('\\', '-', static::class));
+    }
+
+    /**
      * @return Collection<A17Block>
      */
     public function repeater(string $repeaterName): Collection
