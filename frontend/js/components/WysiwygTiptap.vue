@@ -49,6 +49,10 @@
                                   :isActive="editor.isActive('underline')"
                                   @btn:click="editor.chain().focus().toggleUnderline().run()"/>
 
+            <wysiwyg-menu-bar-btn icon="hr"
+                                  v-if="toolbar.hr"
+                                  @btn:click="editor.chain().focus().setHorizontalRule().run()"/>
+
             <wysiwyg-menu-bar-btn icon="link"
                                   v-if="toolbar.link"
                                   :isActive="editor.isActive('link')"
@@ -208,6 +212,7 @@
   import {Link} from "@tiptap/extension-link";
   import {Placeholder} from "@tiptap/extension-placeholder";
   import {HardBreak} from "@tiptap/extension-hard-break";
+  import {HorizontalRule} from "@tiptap/extension-horizontal-rule";
 
   export default {
     name: 'A17Wysiwyg',
@@ -496,6 +501,9 @@
             extensions.push(TableCell)
             extensions.push(TableRow)
             break
+          }
+          case 'hr': {
+            extensions.push(HorizontalRule)
           }
         }
       })

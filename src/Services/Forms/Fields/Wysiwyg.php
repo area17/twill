@@ -28,6 +28,7 @@ class Wysiwyg extends BaseFormField
         "code-block",
         'ordered',
         'bullet',
+        'hr',
         ["align" => []],
         ["direction" => "rtl"],
         'code',

@@ -15,6 +15,7 @@
   "dependencies": {
     "@alpinejs/mask": "^3.10.0",
     "@tiptap/extension-hard-break": "^2.0.0-beta.209",
+    "@tiptap/extension-horizontal-rule": "^2.0.0-beta.209",
     "@tiptap/extension-link": "^2.0.0-beta.209",
     "@tiptap/extension-placeholder": "^2.0.0-beta.209",
     "@tiptap/extension-table": "^2.0.0-beta.209",
