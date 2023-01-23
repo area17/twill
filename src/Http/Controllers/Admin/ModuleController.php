@@ -1174,6 +1174,8 @@ abstract class ModuleController extends Controller
         $this->submodule = isset($parentModuleId);
         $this->submoduleParentId = $parentModuleId;
 
+        $controllerForm = $this->getForm($this->repository->newInstance());
+
         $view = Collection::make([
             "$this->viewPrefix.form",
             "twill::$this->moduleName.form",
@@ -1184,7 +1186,9 @@ abstract class ModuleController extends Controller
 
         View::share('form', $this->form(null));
 
-        return View::make($view, $this->form(null));
+        return View::make($view, $this->form(null))->with(
+            ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($this->repository->newInstance()))]
+        );
     }
 
     /**
