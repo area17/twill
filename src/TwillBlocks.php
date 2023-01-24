@@ -45,6 +45,11 @@ class TwillBlocks
     public static $loadedDynamicRepeaters = [];
 
     /**
+     * @var array<string, string>
+     */
+    public static $manualBlocks = [];
+
+    /**
      * @return A17\Twill\Services\Blocks\BlockCollection
      */
     private $blockCollection;
@@ -171,24 +176,30 @@ class TwillBlocks
         }
 
 
-        if (self::$componentBlockNamespaces !== []) {
-            foreach (self::$componentBlockNamespaces as $namespace => $path) {
-                $disk = Storage::build([
-                    'driver' => 'local',
-                    'root' => $path,
-                ]);
+        foreach (self::$componentBlockNamespaces as $namespace => $path) {
+            $disk = Storage::build([
+                'driver' => 'local',
+                'root' => $path,
+            ]);
 
-                foreach ($disk->allFiles() as $file) {
-                    $class = $namespace . '\\' . Str::replace('/', '\\', Str::before($file, '.'));
-                    if (is_subclass_of($class, TwillBlockComponent::class)) {
-                        $this->blockCollection->add(
-                            Block::forComponent($class)
-                        );
-                    }
+            foreach ($disk->allFiles() as $file) {
+                $class = $namespace . '\\' . Str::replace('/', '\\', Str::before($file, '.'));
+                if (is_subclass_of($class, TwillBlockComponent::class)) {
+                    $this->blockCollection->add(
+                        Block::forComponent($class)
+                    );
                 }
-
-                unset(self::$componentBlockNamespaces[$namespace]);
             }
+
+            unset(self::$componentBlockNamespaces[$namespace]);
+        }
+
+        foreach (self::$manualBlocks as $class) {
+            $this->blockCollection->add(
+                Block::forComponent($class)
+            );
+
+            unset(self::$manualBlocks[$class]);
         }
 
         $this->discoverDynamicRepeaters($this->blockCollection);
@@ -201,6 +212,11 @@ class TwillBlocks
         }
 
         return $this->blockCollection;
+    }
+
+    public function registerManualBlock(string $blockClass): void
+    {
+        self::$manualBlocks[$blockClass] = $blockClass;
     }
 
     public function findByName(string $name): ?Block

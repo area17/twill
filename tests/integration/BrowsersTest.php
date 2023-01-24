@@ -11,6 +11,7 @@ use App\Repositories\BookRepository;
 use App\Repositories\LetterRepository;
 use App\Repositories\WriterRepository;
 use A17\Twill\Models\RelatedItem;
+use Illuminate\Support\Collection;
 
 class BrowsersTest extends TestCase
 {
@@ -23,7 +24,7 @@ class BrowsersTest extends TestCase
         $this->login();
     }
 
-    public function createWriters()
+    public function createWriters(): Collection
     {
         $this->assertEquals(0, Writer::count());
 
@@ -39,7 +40,7 @@ class BrowsersTest extends TestCase
         return $writers;
     }
 
-    public function createLetter()
+    public function createLetter(): Letter
     {
         $item = app(LetterRepository::class)->create([
             'title' => 'Lorem ipsum dolor sit amet',
@@ -51,7 +52,7 @@ class BrowsersTest extends TestCase
         return $item;
     }
 
-    public function createLetterWithWriters($writers)
+    public function createLetterWithWriters($writers): Letter
     {
         $item = $this->createLetter();
 
@@ -66,7 +67,7 @@ class BrowsersTest extends TestCase
         return $item;
     }
 
-    public function createBio()
+    public function createBio(): Bio
     {
         $item = app(BioRepository::class)->create([
             'title' => 'Lorem ipsum dolor sit amet',
@@ -78,7 +79,7 @@ class BrowsersTest extends TestCase
         return $item;
     }
 
-    public function createBioWithWriter($writer)
+    public function createBioWithWriter($writer): Bio
     {
         $item = $this->createBio();
 
@@ -93,7 +94,7 @@ class BrowsersTest extends TestCase
         return $item;
     }
 
-    public function createWriterWithbios()
+    public function createWriterWithbios(): Writer
     {
         $writers = $this->createWriters();
 
@@ -117,7 +118,7 @@ class BrowsersTest extends TestCase
         return $writers[0]->refresh();
     }
 
-    public function createBook()
+    public function createBook(): Book
     {
         $item = app(BookRepository::class)->create([
             'title' => 'Lorem ipsum dolor sit amet',
@@ -129,7 +130,7 @@ class BrowsersTest extends TestCase
         return $item;
     }
 
-    public function createBookWithWriters($writers)
+    public function createBookWithWriters($writers): Book
     {
         $item = $this->createBook();
 
@@ -146,14 +147,7 @@ class BrowsersTest extends TestCase
         return $item;
     }
 
-    // FIXME — this is needed for the new admin routes to take effect in the next test,
-    // because files are copied in `setUp()` after the app is initialized.
-    public function testDummy()
-    {
-        $this->assertTrue(true);
-    }
-
-    public function testBrowserBelongsToMany()
+    public function testBrowserBelongsToMany(): void
     {
         $writers = $this->createWriters();
         $letter = $this->createLetterWithWriters($writers);
@@ -166,7 +160,7 @@ class BrowsersTest extends TestCase
         );
     }
 
-    public function testBrowserBelongsToManyPreview()
+    public function testBrowserBelongsToManyPreview(): void
     {
         $writers = $this->createWriters();
         $letter = $this->createLetterWithWriters($writers);
@@ -176,7 +170,7 @@ class BrowsersTest extends TestCase
         $this->assertSee('This is an letter');
     }
 
-    public function testBrowserBelongsToManyPreviewRevisions()
+    public function testBrowserBelongsToManyPreviewRevisions(): void
     {
         $writers = $this->createWriters();
         $letter = $this->createLetterWithWriters($writers);
@@ -188,7 +182,7 @@ class BrowsersTest extends TestCase
         $this->assertSee('This is an letter');
     }
 
-    public function testBrowserBelongsToManyRestoreRevisions()
+    public function testBrowserBelongsToManyRestoreRevisions(): void
     {
         $writers = $this->createWriters();
         $letter = $this->createLetterWithWriters($writers);
@@ -200,7 +194,7 @@ class BrowsersTest extends TestCase
         $this->assertSee('You are currently editing an older revision of this content');
     }
 
-    public function testBrowserBelongsTo()
+    public function testBrowserBelongsTo(): void
     {
         $writers = $this->createWriters();
         $bio = $this->createBioWithWriter($writers[0]);
@@ -210,7 +204,7 @@ class BrowsersTest extends TestCase
         $this->assertEquals($writers[0]->id, Bio::first()->writer->id);
     }
 
-    public function testBrowserBelongsToPreview()
+    public function testBrowserBelongsToPreview(): void
     {
         $writers = $this->createWriters();
         $bio = $this->createBioWithWriter($writers[0]);
@@ -232,7 +226,7 @@ class BrowsersTest extends TestCase
         $this->assertSee('Writer: Charlie');
     }
 
-    public function testBrowserBelongsToPreviewRevisions()
+    public function testBrowserBelongsToPreviewRevisions(): void
     {
         $writers = $this->createWriters();
         $bio = $this->createBioWithWriter($writers[0]);
@@ -245,7 +239,7 @@ class BrowsersTest extends TestCase
         $this->assertSee('No writer');
     }
 
-    public function testBrowserBelongsToRestoreRevisions()
+    public function testBrowserBelongsToRestoreRevisions(): void
     {
         $writers = $this->createWriters();
         $bio = $this->createBioWithWriter($writers[0]);
@@ -257,7 +251,7 @@ class BrowsersTest extends TestCase
         $this->assertSee('You are currently editing an older revision of this content');
     }
 
-    public function testBrowserRelated()
+    public function testBrowserRelated(): void
     {
         $writers = $this->createWriters();
         $book = $this->createBookWithWriters($writers);
@@ -271,7 +265,7 @@ class BrowsersTest extends TestCase
         );
     }
 
-    public function testBrowserRelatedPreview()
+    public function testBrowserRelatedPreview(): void
     {
         $writers = $this->createWriters();
         $book = $this->createBookWithWriters($writers);
@@ -293,7 +287,7 @@ class BrowsersTest extends TestCase
         $this->assertSee('Writers: Charlie');
     }
 
-    public function testBrowserRelatedPreviewRevisions()
+    public function testBrowserRelatedPreviewRevisions(): void
     {
         $writers = $this->createWriters();
         $book = $this->createBookWithWriters($writers);
@@ -306,7 +300,7 @@ class BrowsersTest extends TestCase
         $this->assertSee('No writers');
     }
 
-    public function testBrowserRelatedRestoreRevisions()
+    public function testBrowserRelatedRestoreRevisions(): void
     {
         $writers = $this->createWriters();
         $book = $this->createBookWithWriters($writers);
@@ -318,7 +312,7 @@ class BrowsersTest extends TestCase
         $this->assertSee('You are currently editing an older revision of this content');
     }
 
-    public function testBrowserHasMany()
+    public function testBrowserHasMany(): void
     {
         $writer = $this->createWriterWithBios();
 
@@ -330,7 +324,7 @@ class BrowsersTest extends TestCase
         });
     }
 
-    public function testBrowserHasManyPreview()
+    public function testBrowserHasManyPreview(): void
     {
         $writer = $this->createWriterWithBios();
 
@@ -351,7 +345,7 @@ class BrowsersTest extends TestCase
         $this->assertSee('Bios: Biography 2');
     }
 
-    public function testBrowserHasManyPreviewRevisions()
+    public function testBrowserHasManyPreviewRevisions(): void
     {
         $writer = $this->createWriterWithBios();
 
@@ -363,7 +357,7 @@ class BrowsersTest extends TestCase
         $this->assertSee('No bios');
     }
 
-    public function testBrowserHasManyRestoreRevisions()
+    public function testBrowserHasManyRestoreRevisions(): void
     {
         $writer = $this->createWriterWithBios();
 
@@ -372,5 +366,51 @@ class BrowsersTest extends TestCase
             'revisionId' => $writer->revisions->last()->id,
         ]);
         $this->assertSee('You are currently editing an older revision of this content');
+    }
+
+    public function testBrowserAreClearedWhenOnlyOneIsEmpty(): void
+    {
+        $writer = $this->createWriters()->first();
+        $book = $this->createBook();
+
+        /** @var Book $parentBook */
+        $parentBook = app(BookRepository::class)->create([
+            'title' => 'Lorem ipsum dolor sit amet',
+            'published' => true,
+        ]);
+        $this->assertCount(0, $parentBook->relatedItems()->get());
+
+        $this->httpRequestAssert("/twill/books/{$parentBook->id}", 'PUT', [
+            'browsers' => [
+                'writers' => [
+                    [
+                        'id' => $writer->id,
+                        'endpointType' => '\\App\\Models\\Writer',
+                    ]
+                ],
+                'books' => [
+                    [
+                        'id' => $book->id,
+                        'endpointType' => '\\App\\Models\\Book',
+                    ]
+                ]
+            ],
+        ]);
+
+        $this->assertCount(2, $parentBook->relatedItems()->get());
+
+        $this->httpRequestAssert("/twill/books/{$parentBook->id}", 'PUT', [
+            'browsers' => [
+                'writers' => [
+                    [
+                        'id' => $writer->id,
+                        'endpointType' => '\\App\\Models\\Writer',
+                    ]
+                ],
+            ],
+        ]);
+
+        $this->assertCount(1, $parentBook->relatedItems()->get());
+        $this->assertEquals($writer->id, $parentBook->relatedItems()->get()->first()->related_id);
     }
 }
