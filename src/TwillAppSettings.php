@@ -21,6 +21,13 @@ class TwillAppSettings
         $this->settingsGroups[$section->getName()] = $section;
     }
 
+    public function registerSettingsGroups(SettingsGroup ...$sections): void
+    {
+        foreach ($sections as $section) {
+            $this->registerSettingsGroup($section);
+        }
+    }
+
     /**
      * @return array<string, SettingsGroup>
      */
@@ -36,7 +43,7 @@ class TwillAppSettings
     {
         return array_filter(
             $this->settingsGroups,
-            fn(SettingsGroup $group) => !$group->shouldNotAutoRegisterInMenu() && $group->isAvailable()
+            fn(SettingsGroup $group) => ! $group->shouldNotAutoRegisterInMenu() && $group->isAvailable()
         );
     }
 
@@ -83,7 +90,7 @@ class TwillAppSettings
     {
         $group = $this->settingsGroups[$groupName] ?? null;
 
-        if (!$group) {
+        if (! $group) {
             throw new SettingsGroupDoesNotExistException($groupName);
         }
 
@@ -115,7 +122,7 @@ class TwillAppSettings
     {
         $groupObject = $this->getGroupForName($group);
 
-        if (!$groupObject->hasSection($section)) {
+        if (! $groupObject->hasSection($section)) {
             throw new SettingsSectionDoesNotExistException($groupObject, $section);
         }
 
