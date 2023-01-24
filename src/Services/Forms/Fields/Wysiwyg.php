@@ -30,8 +30,6 @@ class Wysiwyg extends BaseFormField
         'ordered',
         'bullet',
         'hr',
-        ["align" => []],
-        ["direction" => "rtl"],
         'code',
         'link',
         'clean',
