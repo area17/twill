@@ -1,6 +1,6 @@
 <?php
 
-namespace integration\Blocks;
+namespace A17\Twill\Tests\Integration\Blocks;
 
 use A17\Twill\Repositories\ModuleRepository;
 use A17\Twill\Tests\Integration\Anonymous\AnonymousModule;

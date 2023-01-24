@@ -1,6 +1,6 @@
 <?php
 
-namespace integration\Blocks;
+namespace A17\Twill\Tests\Integration\Blocks;
 
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Services\Forms\Fields\BlockEditor;
