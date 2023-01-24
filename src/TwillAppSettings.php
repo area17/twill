@@ -36,7 +36,7 @@ class TwillAppSettings
     {
         return array_filter(
             $this->settingsGroups,
-            fn(SettingsGroup $group) => !$group->shouldNotAutoRegisterInMenu() && $group->isAvailable()
+            fn(SettingsGroup $group) => ! $group->shouldNotAutoRegisterInMenu() && $group->isAvailable()
         );
     }
 
@@ -64,6 +64,10 @@ class TwillAppSettings
             return $block->getRelated($key);
         }
 
+        if ($block->children->where('child_key', $key)->isNotEmpty()) {
+            return $block->children->where('child_key', $key);
+        }
+
         return $block->input($key);
     }
 
@@ -83,7 +87,7 @@ class TwillAppSettings
     {
         $group = $this->settingsGroups[$groupName] ?? null;
 
-        if (!$group) {
+        if (! $group) {
             throw new SettingsGroupDoesNotExistException($groupName);
         }
 
@@ -94,7 +98,10 @@ class TwillAppSettings
     {
         $groupObject = $this->getGroupForGroupAndSectionName($group, $section);
 
-        return $groupObject->getSettingsModel()->blocks()->where('editor_name', $section)->firstOrFail();
+        return $groupObject->getSettingsModel()->blocks()
+            ->where('editor_name', $section)
+            ->where('parent_id', null)
+            ->firstOrFail();
     }
 
     public function getBlockServiceForGroupAndSection(string $group, string $section): BlockService
@@ -115,7 +122,7 @@ class TwillAppSettings
     {
         $groupObject = $this->getGroupForName($group);
 
-        if (!$groupObject->hasSection($section)) {
+        if (! $groupObject->hasSection($section)) {
             throw new SettingsSectionDoesNotExistException($groupObject, $section);
         }
 
