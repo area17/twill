@@ -2,6 +2,33 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.0.0-rc3
+
+This is the third (and should be last) release candidate for Twill 3!
+
+### Notable changes
+
+- Twill now uses Tiptap wysiwyg editor by default. If you wish to use quill you will need to update fields to use that specifically. [`#2080`](https://github.com/area17/twill/pull/2080)
+
+### Features
+
+- Twill now uses Tiptap by default, Tiptap has been upgrade to version 2 and now has a link button that also supports browsers. [`#2080`](https://github.com/area17/twill/pull/2080)
+  - The default config for the editor has been exanded to all features it supports
+- The new settings are now translatable [`#2094`](https://github.com/area17/twill/pull/2094)
+- SkipCreateModal now supports the table builder correctly [`#2087`](https://github.com/area17/twill/pull/2087)
+- Adds the ability to show user activity on the dashboard [`#2063`](https://github.com/area17/twill/pull/2063)
+
+### Bugfixes
+
+- Fixed settings accessor when used with nested blocks or repeaters.
+- Fixed a check so that the media library button gets disabled correctly.
+- Fixes browser endpoints no longer crash when no edit url could be build.
+- Various fixes for block components.
+
+### Other
+
+- Vue/node has been upgrade to use all of the latest versions [`#2070`](https://github.com/area17/twill/pull/2070)
+
 ## 3.0.0-rc2
 
 This is the second release candidate for Twill 3!
