@@ -34,6 +34,23 @@ public function boot(): void
 }
 ```
 
+Or you can register multiple at once:
+```php
+use A17\Twill\Facades\TwillAppSettings;
+
+public function boot(): void 
+{
+    TwillAppSettings::registerSettingsGroups(
+        SettingsGroup::make()
+            ->name('site-settings')
+            ->label('Site settings')
+            ->availableWhen(fn() => \Auth::user()->can('manage.settings')) // Example access control.
+        SettingsGroup::make()
+          ...
+    );
+}
+```
+
 In the example above, we call the `TwillAppSettings` facade in which we register a new `SettingsGroup`
 
 Notable methods for the settingsGroup are:
