@@ -13,4 +13,11 @@
         label="Writer"
         :max="4"
     />
+
+    <x-twill::browser
+      module-name="books"
+      name="book"
+      label="Book"
+      :max="4"
+    />
 @stop

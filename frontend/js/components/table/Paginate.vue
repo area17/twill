@@ -1,12 +1,18 @@
 <template>
   <div class="paginate">
-    <p class="paginate__offset  f--small">{{ $trans('listing.paginate.rows-per-page') }}
-      <a17-dropdown ref="paginateDropdown" position="bottom-right">
-        <button @click="$refs.paginateDropdown.toggle()" class="paginate__button">{{ newOffset }}</button>
-        <div slot="dropdown__content">
-          <button type="button" v-for="availableOffset in availableOffsets" :key="availableOffset" :class="{ 'dropdown__active' : availableOffset === newOffset }" @click="changeOffset(availableOffset)">{{ availableOffset }}</button>
-        </div>
-      </a17-dropdown>
+    <p class="paginate__offset  f--small">
+        {{ $trans('listing.paginate.rows-per-page') }}
+        <template v-if="availableOffsets.length > 1">
+          <a17-dropdown ref="paginateDropdown" position="bottom-right">
+            <button @click="$refs.paginateDropdown.toggle()" class="paginate__button">{{ newOffset }}</button>
+            <div slot="dropdown__content">
+              <button type="button" v-for="availableOffset in availableOffsets" :key="availableOffset" :class="{ 'dropdown__active' : availableOffset === newOffset }" @click="changeOffset(availableOffset)">{{ availableOffset }}</button>
+            </div>
+          </a17-dropdown>
+        </template>
+        <template v-else>
+          {{ newOffset }}
+        </template>
     </p>
     <div class="paginate__pages" v-if="max > 1">
       <p class="paginate__current f--small"><input class="form__input paginate__input" type="number" v-model="newPageFormat" maxlength="4" @blur="formatPage" /> of {{ max }}</p>

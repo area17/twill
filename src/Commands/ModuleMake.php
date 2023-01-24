@@ -780,7 +780,7 @@ PHP;
                 $controllerClassName,
                 $this->namespace('controllers', 'Http\Controllers\Twill'),
                 $baseController,
-                $this->translatable ? '->translatable()' : ''
+                $this->translatable ? '->translatable()' : '',
             ],
             $stubFile
         );

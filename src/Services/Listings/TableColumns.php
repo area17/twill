@@ -4,7 +4,9 @@ namespace A17\Twill\Services\Listings;
 
 use A17\Twill\Models\Contracts\TwillModelContract;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Exceptions\UrlGenerationException;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 class TableColumns extends Collection
 {
@@ -12,16 +14,25 @@ class TableColumns extends Collection
     {
         $data = $this->getArrayForModel($model);
 
-        $editUrl = moduleRoute(
-            $tableDataContext->moduleName,
-            $tableDataContext->routePrefix,
-            'edit',
-            $model->{$tableDataContext->identifierColumn}
-        );
+        try {
+            $editUrl = moduleRoute(
+                $tableDataContext->moduleName,
+                $tableDataContext->routePrefix,
+                'edit',
+                [$model->{$tableDataContext->identifierColumn}]
+            );
+        } catch (UrlGenerationException $e) {
+            if (app()->environment() === 'local' || config('app.debug')) {
+                report($e);
+                Log::notice(
+                    "Twill warning: The url for the \"{$tableDataContext->moduleName}\" browser items can't be resolved."
+                );
+            }
+        }
 
         $data['id'] = $model->{$tableDataContext->identifierColumn};
         $data['name'] = $model->{$tableDataContext->titleColumnKey};
-        $data['edit'] = $editUrl;
+        $data['edit'] = $editUrl ?? null;
         $data['endpointType'] = $tableDataContext->endpointType;
         $data['repeaterFields'] = $tableDataContext->repeaterFields;
 

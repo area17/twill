@@ -45,6 +45,11 @@ class TwillBlocks
     public static $loadedDynamicRepeaters = [];
 
     /**
+     * @var array<string, string>
+     */
+    public static $manualBlocks = [];
+
+    /**
      * @return A17\Twill\Services\Blocks\BlockCollection
      */
     private $blockCollection;
@@ -97,13 +102,13 @@ class TwillBlocks
         return $baseList->toJson();
     }
 
-    public function registerComponentBlocks(string $namespace): void
+    public function registerComponentBlocks(string $namespace, string $path): void
     {
         if (! Str::startsWith($namespace, '\\')) {
             $namespace = '\\' . $namespace;
         }
 
-        self::$componentBlockNamespaces[$namespace] = $namespace;
+        self::$componentBlockNamespaces[$namespace] = $path;
     }
 
     /**
@@ -171,32 +176,30 @@ class TwillBlocks
         }
 
 
-        if (self::$componentBlockNamespaces !== []) {
-            foreach (self::$componentBlockNamespaces as $namespace) {
-                $path = Str::replace('\\', '/', $namespace);
+        foreach (self::$componentBlockNamespaces as $namespace => $path) {
+            $disk = Storage::build([
+                'driver' => 'local',
+                'root' => $path,
+            ]);
 
-                // As the App part is usually at the beginning, we have to replace it with 'app' instead for case
-                // sensitive filesystems.
-                if (Str::startsWith($path, ['/App/', 'App/'])) {
-                    $path = Str::replaceFirst('App/', 'app/', $path);
+            foreach ($disk->allFiles() as $file) {
+                $class = $namespace . '\\' . Str::replace('/', '\\', Str::before($file, '.'));
+                if (is_subclass_of($class, TwillBlockComponent::class)) {
+                    $this->blockCollection->add(
+                        Block::forComponent($class)
+                    );
                 }
-
-                $disk = Storage::build([
-                    'driver' => 'local',
-                    'root' => str_replace('//', '/', base_path($path)),
-                ]);
-
-                foreach ($disk->allFiles() as $file) {
-                    $class = $namespace . '\\' . Str::replace('/', '\\', Str::before($file, '.'));
-                    if (is_subclass_of($class, TwillBlockComponent::class)) {
-                        $this->blockCollection->add(
-                            Block::forComponent($class)
-                        );
-                    }
-                }
-
-                unset(self::$componentBlockNamespaces[$namespace]);
             }
+
+            unset(self::$componentBlockNamespaces[$namespace]);
+        }
+
+        foreach (self::$manualBlocks as $class) {
+            $this->blockCollection->add(
+                Block::forComponent($class)
+            );
+
+            unset(self::$manualBlocks[$class]);
         }
 
         $this->discoverDynamicRepeaters($this->blockCollection);
@@ -209,6 +212,11 @@ class TwillBlocks
         }
 
         return $this->blockCollection;
+    }
+
+    public function registerManualBlock(string $blockClass): void
+    {
+        self::$manualBlocks[$blockClass] = $blockClass;
     }
 
     public function findByName(string $name): ?Block

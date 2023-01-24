@@ -38,7 +38,7 @@ class Permission extends BaseModel
         'name',
         'permissionable_type',
         'permissionable_id',
-        'is_default'
+        'is_default',
     ];
 
     protected $appends = ['permissionable_module'];
@@ -61,13 +61,13 @@ class Permission extends BaseModel
                     'edit-user-groups',
                     'manage-modules',
                     'access-media-library',
-                    'edit-media-library'
+                    'edit-media-library',
                 ];
             case self::SCOPE_MODULE:
                 return array_merge(
                     [
                         'view-module',
-                        'edit-module'
+                        'edit-module',
                     ],
                     (TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM) ? ['manage-module'] : [])
                 );
@@ -75,7 +75,7 @@ class Permission extends BaseModel
                 return [
                     'view-item',
                     'edit-item',
-                    'manage-item'
+                    'manage-item',
                 ];
         }
     }

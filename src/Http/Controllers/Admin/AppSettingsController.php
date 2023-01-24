@@ -127,7 +127,7 @@ class AppSettingsController extends ModuleController
                 [
                     'name' => 'update',
                     'text' => twillTrans('twill::lang.publisher.update'),
-                ]
+                ],
             ],
         ];
     }
