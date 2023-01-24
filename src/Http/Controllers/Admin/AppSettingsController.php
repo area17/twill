@@ -115,6 +115,7 @@ class AppSettingsController extends ModuleController
 
         $base['publish'] = false;
         $base['editableTitle'] = false;
+        $base['translate'] = true;
 
         return $base;
     }
