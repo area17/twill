@@ -149,7 +149,7 @@ class Block
             file: null,
             type: 'block',
             source: $componentClass::getBlockGroup(),
-            name: $componentClass::getBlockTitle(),
+            name: $componentClass::getBlockIdentifier(),
             componentClass: $componentClass
         );
 

@@ -156,7 +156,7 @@ Looping over a repeater:
 If you want to register blocks from your package you can add:
 
 ```php
-\A17\Twill\Facades\TwillBlocks::registerComponentBlocks('\\Your\\Namespace\\Components\\Twill\\Blocks');
+\A17\Twill\Facades\TwillBlocks::registerComponentBlocks('\\Your\\Namespace\\Components\\Twill\\Blocks', __DIR__ . '/../../path/to/namespace');
 ```
 
 This will register the namespace in your package or domain and load them!
