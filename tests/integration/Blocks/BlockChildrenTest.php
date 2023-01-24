@@ -1,9 +1,10 @@
 <?php
 
-namespace A17\Twill\Tests\Integration;
+namespace integration\Blocks;
 
 use A17\Twill\Repositories\ModuleRepository;
 use A17\Twill\Tests\Integration\Anonymous\AnonymousModule;
+use A17\Twill\Tests\Integration\TestCase;
 
 class BlockChildrenTest extends TestCase
 {
