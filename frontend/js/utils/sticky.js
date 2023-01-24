@@ -75,8 +75,6 @@ export default class Sticky {
   //
 
   _refresh () {
-    // console.log(getCurrentMediaQuery)
-    // if (getCurrentMediaQuery.indexOf("small") !== -1) return false
     if (!this.target) return false
 
     const scrollPos = this.lastScrollPos
