@@ -22,10 +22,12 @@ class TableColumns extends Collection
                 [$model->{$tableDataContext->identifierColumn}]
             );
         } catch (UrlGenerationException $e) {
-            report($e);
-            Log::notice(
-                "Twill warning: The url for the \"{$tableDataContext->moduleName}\" browser items can't be resolved."
-            );
+            if (app()->environment() === 'local' || config('app.debug')) {
+                report($e);
+                Log::notice(
+                    "Twill warning: The url for the \"{$tableDataContext->moduleName}\" browser items can't be resolved."
+                );
+            }
         }
 
         $data['id'] = $model->{$tableDataContext->identifierColumn};
