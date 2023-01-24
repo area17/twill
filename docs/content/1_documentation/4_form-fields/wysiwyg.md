@@ -8,7 +8,7 @@
 ```php
 Wysiwyg::make()
     ->name('case_study')
-    ->toolbarOptions(['list-ordered', 'list-unordered'])
+    ->toolbarOptions([ [ 'header' => [1, 2, false] ], 'ordered', 'bullet' ])
     ->maxLength(200)
     ->note('Some note')
 ```
@@ -20,7 +20,6 @@ Wysiwyg::make()
 <x-twill::wysiwyg 
     name="case_study" 
     :label="twillTrans('Case study text')"
-    :toolbar-options="['list-ordered', 'list-unordered']" 
     :placeholder="twillTrans('Case study placeholder')"
     :maxlength="200" 
     :note="twillTrans('Help text')"
@@ -29,7 +28,7 @@ Wysiwyg::make()
 <x-twill::wysiwyg 
     name="case_study" 
     :label="twillTrans('Case study text')"
-    :toolbar-options="[ [ 'header' => [1, 2, false] ], 'list-ordered', 'list-unordered', [ 'indent' => '-1'], [ 'indent' => '+1' ] ]" 
+    :toolbar-options="[ [ 'header' => [1, 2, false] ], 'ordered', 'bullet' ]" 
     :placeholder="twillTrans('Case study placeholder')"
     :edit-source="true"
     :translated="true"
@@ -45,7 +44,6 @@ Wysiwyg::make()
 @formField('wysiwyg', [
     'name' => 'case_study',
     'label' => 'Case study text',
-    'toolbarOptions' => ['list-ordered', 'list-unordered'],
     'placeholder' => 'Case study text',
     'maxlength' => 200,
     'note' => 'Hint message',
@@ -54,7 +52,7 @@ Wysiwyg::make()
 @formField('wysiwyg', [
     'name' => 'case_study',
     'label' => 'Case study text',
-    'toolbarOptions' => [ [ 'header' => [1, 2, false] ], 'list-ordered', 'list-unordered', [ 'indent' => '-1'], [ 'indent' => '+1' ] ],
+    'toolbarOptions' => [ [ 'header' => [1, 2, false] ],
     'placeholder' => 'Case study text',
     'maxlength' => 200,
     'editSource' => true,
