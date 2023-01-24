@@ -261,6 +261,7 @@
         this.checkFieldValidity(event.target)
 
         this.$emit('change', newValue)
+        this.$emit('input', newValue)
 
         this.allowSubmit()
       }, 250),

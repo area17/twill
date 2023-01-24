@@ -412,13 +412,6 @@
         const form = this.$refs.form
         const formdata = this.getFormData(form)
 
-        // if (this.selected[this.connector]) {
-        //   formdata.except = this.selected[this.connector].map((media) => {
-        //     return media.id
-        //   })
-        //   console.log(formdata.except)
-        // }
-
         // see api/media-library for actual ajax
         api.get(this.endpoint, formdata, (resp) => {
           // add medias here

@@ -177,9 +177,14 @@
     <a17-modal :title="$trans('wysiwyg.link_window.title', 'Edit link')" ref="link-modal"
                class="modal--form modal--link">
       <template v-if="linkWindow">
-        <a17-textfield name="link_text" v-model="linkWindow.text"
+        <a17-textfield name="link_text"
+                       :initial-value="linkWindow.text"
+                       v-model="linkWindow.text"
                        :label="$trans('wysiwyg.link_window.text', 'Text to display')"/>
-        <a17-textfield name="link_link" v-model="linkWindow.link" :label="$trans('wysiwyg.link_window.link', 'Link')"
+        <a17-textfield name="link_link"
+                       :initial-value="linkWindow.href"
+                       v-model="linkWindow.href"
+                       :label="$trans('wysiwyg.link_window.link', 'Link')"
                        :placeholder="$trans('wysiwyg.link_window.link_placeholder', 'Link to URL address')"
         />
         <div>
@@ -188,7 +193,10 @@
           </a>
         </div>
         <a17-inputframe>
-          <a17-checkbox name="target" @change="linkWindow.target = $event ? '_blank' : null"
+          <a17-checkbox name="link_target"
+                        :initial-value="linkWindow.target"
+                        @change="linkWindow.target = $event ? '_blank' : null"
+                        value="_blank"
                         :label="$trans('wysiwyg.link_window.open_in_new_window', 'Open in a new window')"/>
         </a17-inputframe>
 
@@ -438,7 +446,7 @@
           textOriginal: this.editor.state.tr.doc.textBetween(startPos, endPos),
           text: this.editor.state.tr.doc.textBetween(startPos, endPos),
           href: markAttributes.href,
-          target: markAttributes.target ?? null
+          target: markAttributes.target ?? ''
         }
 
         this.$nextTick(() => {
