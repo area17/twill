@@ -21,6 +21,13 @@ class TwillAppSettings
         $this->settingsGroups[$section->getName()] = $section;
     }
 
+    public function registerSettingsGroups(SettingsGroup ...$sections): void
+    {
+        foreach ($sections as $section) {
+            $this->registerSettingsGroup($section);
+        }
+    }
+
     /**
      * @return array<string, SettingsGroup>
      */

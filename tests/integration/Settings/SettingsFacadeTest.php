@@ -57,7 +57,7 @@ class SettingsFacadeTest extends TestCase
                                         'editor_name' => 'blocks-' . $model->blocks[0]->id . '|default',
                                         'type' => 'a17-block-text',
                                         'is_repeater' => false,
-                                    ]
+                                    ],
                                 ]
                             ]
 

@@ -19,6 +19,26 @@ class SettingsModelTest extends TestCase
         parent::setUp();
     }
 
+    public function testSettingsRegistrationMultiple(): void
+    {
+        TwillAppSettings::registerSettingsGroups(
+            SettingsGroup::make()
+                ->name('test')
+                ->label('Test label'),
+            SettingsGroup::make()
+                ->name('demo')
+                ->label('Test 2 label')
+        );
+
+        // When we open up the controller it should auto register it and settings should be in the menu.
+        // The secondary nav should show both the first and second label.
+        $this->actingAs($this->superAdmin(), 'twill_users')->getJson(route('twill.app.settings.page', ['group' => 'test']))
+            ->assertSee('Settings')
+            ->assertSee('Test label')
+            // Second.
+            ->assertSee('Test 2 label');
+    }
+
     public function testSettingsRegistration(): void
     {
         TwillAppSettings::registerSettingsGroup(
