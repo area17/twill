@@ -174,33 +174,34 @@
         @close="browserIsOpen = false"
         :max="1"
     />
-    <div class="link-window" v-if="linkWindow">
-      <div class="link-window-inner">
-        <label>
-          {{ $trans('wysiwyg.link_window.text', 'Text') }}:
-          <input type="text" v-model="linkWindow.text" @keyup:enter="saveLink" tabindex="1" ref="link_window__text">
-        </label>
+    <a17-modal :title="$trans('wysiwyg.link_window.title', 'Edit link')" ref="link-modal"
+               class="modal--form modal--link">
+      <template v-if="linkWindow">
+        <a17-textfield name="link_text" v-model="linkWindow.text"
+                       :label="$trans('wysiwyg.link_window.text', 'Text to display')"/>
+        <a17-textfield name="link_link" v-model="linkWindow.link" :label="$trans('wysiwyg.link_window.link', 'Link')"
+                       :placeholder="$trans('wysiwyg.link_window.link_placeholder', 'Link to URL address')"
+        />
+        <div>
+          <a href="#" class="link-browser-link" v-if="browserEndpoints" @click="browserIsOpen = true">
+            {{$trans('wysiwyg.link_window.internal_browser_link', 'Select internal content')}}
+          </a>
+        </div>
+        <a17-inputframe>
+          <a17-checkbox name="target" @change="linkWindow.target = $event ? '_blank' : null"
+                        :label="$trans('wysiwyg.link_window.open_in_new_window', 'Open in a new window')"/>
+        </a17-inputframe>
 
-        <label>
-          {{ $trans('wysiwyg.link_window.link', 'Link') }}:
-          <input type="text" v-model="linkWindow.href" @keyup:enter="saveLink" tabindex="2" ref="link_window__link">
-          <a v-if="browserEndpoints" @click="browserIsOpen = true">Select internal page</a>
-        </label>
-
-        <label>
-          <input type="checkbox" v-model="linkWindow.target" true-value="_blank" false-value="" tabindex="3">
-          {{ $trans('wysiwyg.link_window.open_in_new_window', 'Open in a new window') }}
-        </label>
-
-        <br>
-        <a17-button variant="validate" class="dialog-confirm" @click="saveLink" tabindex="4">
-          {{ $trans('wysiwyg.link_window.save', 'Save') }}
-        </a17-button>
-        <a17-button variant="secondary" class="dialog-cancel" @click="linkWindow = null" tabindex="5">
-          {{ $trans('wysiwyg.link_window.save', 'Cancel') }}
-        </a17-button>
-      </div>
-    </div>
+        <div class="modalValidation">
+          <a17-button variant="validate" class="dialog-confirm" @click="saveLink" tabindex="4">
+            {{ $trans('wysiwyg.link_window.save', 'Save') }}
+          </a17-button>
+          <a17-button variant="aslink-grey" class="dialog-cancel" @click="linkWindow = null" tabindex="5">
+            {{ $trans('wysiwyg.link_window.save', 'Cancel') }}
+          </a17-button>
+        </div>
+      </template>
+    </a17-modal>
   </a17-inputframe>
 </template>
 
@@ -441,7 +442,7 @@
         }
 
         this.$nextTick(() => {
-          this.$refs.link_window__link.focus()
+          this.$refs['link-modal'].open()
         })
       },
       removeLink () {
@@ -472,6 +473,7 @@
           this.editor.commands.updateAttributes("link", {href: this.linkWindow.href, target: this.linkWindow.target})
         }
 
+        this.$refs['link-modal'].close()
         this.linkWindow = null
       }
     },
@@ -603,6 +605,24 @@
 
 <style scoped lang="scss">
   $height_input: 45px;
+
+  .modal {
+    &--link {
+      z-index: $zindex__modal__lower;
+    }
+
+    .link-browser-link {
+      color: $color__text--light;
+      margin-top: 10px;
+      display: block;
+    }
+  }
+
+  .modalValidation {
+    display: flex;
+    align-items: center;
+    margin-top: 35px;
+  }
 
   .wysiwyg {
     position: relative;
@@ -836,47 +856,4 @@
       }
     }
   }
-
-  .link-window {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    z-index: 450;
-    background-color: rgba(0, 0, 0, .5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .link-window-inner {
-    width: 100%;
-    max-width: 500px;
-    background-color: #fff;
-    border-radius: 3px;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, .2);
-  }
-
-  .link-window input[type=text] {
-    margin-bottom: 15px;
-    padding: 14px;
-    border: 1px solid #cbcbcb;
-    width: 100%;
-  }
-
-  .link-window label {
-    display: block;
-    padding: 8px 0;
-  }
-
-  .link-window button {
-    border: 0;
-    background: #4b4bd8;
-    color: white;
-    padding: 10px 30px;
-    cursor: pointer;
-  }
-
 </style>
