@@ -1124,7 +1124,7 @@ abstract class ModuleController extends Controller
 
         return [
             $item,
-            $id
+            $id,
         ];
     }
 
