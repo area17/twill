@@ -22,7 +22,7 @@ return new class extends Migration {
     {
         $twillPasswordResetsTable = config('twill.password_resets_table', 'twill_password_resets');
         Schema::table($twillPasswordResetsTable, function (Blueprint $table) {
-            $table->dropForeign('email');
+            $table->dropForeign(['email']);
         });
     }
 };
