@@ -2444,7 +2444,7 @@ abstract class ModuleController extends Controller
     /**
      * @return string
      */
-    protected function getPermalinkBaseUrl()
+    public function getPermalinkBaseUrl()
     {
         $appUrl = Config::get('app.url');
 

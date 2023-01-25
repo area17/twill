@@ -5,6 +5,7 @@ namespace A17\Twill\Models;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\IsTranslatable;
+use A17\Twill\Models\Contracts\TwillLinkableModel;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Contracts\TwillSchedulableModel;
 use Carbon\Carbon;
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
-abstract class Model extends BaseModel implements TaggableInterface, TwillModelContract, TwillSchedulableModel
+abstract class Model extends BaseModel implements TaggableInterface, TwillModelContract, TwillSchedulableModel, TwillLinkableModel
 {
     use HasPresenter;
     use SoftDeletes;
@@ -176,5 +177,20 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
             'taggable_id',
             'tag_id'
         );
+    }
+
+    public function getFullUrl(): string
+    {
+        if ($this->urlWithoutSlug) {
+            return $this->urlWithoutSlug . '/' . $this->getSlug();
+        }
+
+        $controller = getModelController($this);
+
+        return Str::replace(
+                ['/{preview}'],
+                [''],
+                rtrim($controller->getPermalinkBaseUrl(), '/') . '/' . $this->getSlug()
+            );
     }
 }

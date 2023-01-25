@@ -2,6 +2,7 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Models\Contracts\TwillLinkableModel;
 use Illuminate\Support\Facades\Session;
 
 /**
@@ -62,7 +63,12 @@ class TwillUtil
                     $modelClass = $data[2];
                     $id = $data[3];
 
-                    return url($modelClass::published()->where('id', $id)->first()->slug);
+                    $model = $modelClass::published()->where('id', $id)->first();
+                    if ($model instanceof TwillLinkableModel) {
+                        return $model->getFullUrl();
+                    }
+
+                    return url($model->slug);
                 }
             },
             $content

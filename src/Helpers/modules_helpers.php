@@ -79,6 +79,25 @@ if (!function_exists('getModelRepository')) {
     }
 }
 
+if (!function_exists('getModelController')) {
+    function getModelController(\A17\Twill\Models\Contracts\TwillModelContract $model)
+    {
+        $modelName = Str::afterLast($model::class, '\\');
+
+        $controller = config('twill.namespace') . '\\Http\\Controllers\\Twill\\' . $modelName . 'Controller';
+
+        if (!class_exists($controller)) {
+            try {
+                $controller = \A17\Twill\Facades\TwillCapsules::getCapsuleForModel($model)->getControllerClass();
+            } catch (NoCapsuleFoundException) {
+                throw new Exception($controller . ' not found');
+            }
+        }
+
+        return app($controller);
+    }
+}
+
 if (!function_exists('updatePermissionOptions')) {
     function updatePermissionOptions($options, $user, $item)
     {
