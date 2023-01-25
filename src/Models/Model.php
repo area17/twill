@@ -11,6 +11,7 @@ use A17\Twill\Models\Contracts\TwillSchedulableModel;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -187,7 +188,7 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
 
         try {
             $controller = getModelController($this);
-        } catch (\Exception $e) {
+        } catch (Exception) {
             // Fallback to never crash on production.
             return '#';
         }
