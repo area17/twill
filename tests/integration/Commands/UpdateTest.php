@@ -15,7 +15,7 @@ class UpdateTest extends TestCase
         );
     }
 
-    public function testCanExecuteUpdateWithMigrationCommand()
+    public function testCanExecuteUpdateWithMigrationOptionCommand()
     {
         $this->assertExitCodeIsGood(
             $this->artisan('twill:update --migrate')
