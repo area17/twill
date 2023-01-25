@@ -21,7 +21,7 @@ class Update extends Command
         $this->call('view:clear');
         if($this->option('migrate')
             || $this->confirm('Do you want to run any pending database migrations now?')) {
-            $this->call('migrate');``
+            $this->call('migrate');
         }
     }
 
