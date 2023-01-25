@@ -62,7 +62,7 @@ class Block extends BaseModel implements TwillModelContract
 
     public function input($name): mixed
     {
-        return $this->content[$name] ? TwillUtil::parseInternalLinks($this->content[$name]) : null;
+        return isset($this->content[$name]) ? TwillUtil::parseInternalLinks($this->content[$name]) : null;
     }
 
     public function translatedInput($name, $forceLocale = null): mixed
@@ -78,7 +78,7 @@ class Block extends BaseModel implements TwillModelContract
             : app()->getLocale()
         );
 
-        return $value[$locale] ? TwillUtil::parseInternalLinks($value[$locale]) : null;
+        return isset($value[$locale]) ? TwillUtil::parseInternalLinks($value[$locale]) : null;
     }
 
     public function browserIds($name)
