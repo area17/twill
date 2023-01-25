@@ -186,6 +186,7 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
             return '#';
         }
 
+        // @phpstan-ignore-next-line
         if (method_exists($this, 'getUrlWithoutSlug') && $this->urlWithoutSlug) {
             return rtrim($this->urlWithoutSlug, '/') . '/' . $this->getSlug();
         }
