@@ -19,8 +19,7 @@ class Update extends Command
         $this->publishAssets();
         $this->call('twill:flush-manifest');
         $this->call('view:clear');
-        if($this->option('migrate')
-            || $this->confirm('Do you want to run any pending database migrations now?')) {
+        if ($this->option('migrate') || $this->confirm('Do you want to run any pending database migrations now?')) {
             $this->call('migrate');
         }
     }
