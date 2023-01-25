@@ -10,6 +10,8 @@ use A17\Twill\Models\Behaviors\HasRelated;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Block extends BaseModel implements TwillModelContract
 {
@@ -44,12 +46,12 @@ class Block extends BaseModel implements TwillModelContract
             $query->where('editor_name', $name);
     }
 
-    public function blockable()
+    public function blockable(): MorphTo
     {
         return $this->morphTo();
     }
 
-    public function children()
+    public function children(): HasMany
     {
         return $this->hasMany(twillModel('block'), 'parent_id')
             ->orderBy(
@@ -58,12 +60,12 @@ class Block extends BaseModel implements TwillModelContract
             );
     }
 
-    public function input($name)
+    public function input($name): mixed
     {
         return $this->content[$name] ? TwillUtil::parseInternalLinks($this->content[$name]) : null;
     }
 
-    public function translatedInput($name, $forceLocale = null)
+    public function translatedInput($name, $forceLocale = null): mixed
     {
         $value = $this->content[$name] ?? null;
 
