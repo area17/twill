@@ -263,7 +263,7 @@ $multiSelectHeight: 45px;
     .vs__dropdown-toggle {
       min-height:$multiSelectHeight;
       height:auto;
-      padding-bottom:7px;
+      padding-bottom:0px;
       @include defaultState;
       flex-wrap: wrap;
 
