@@ -11,11 +11,6 @@
     margin-top: 0;
   }
 
-  .chapters-nav ul {
-    border: 1px solid var(--grey);
-    padding: 16px;
-  }
-
   .chapters-nav a {
     @apply no-underline f-body-2 font-medium;
     text-decoration: none !important;
@@ -47,6 +42,7 @@
     margin-top: 16px;
   }
 
+  .chapters-nav ul ul,
   .chapters-nav-fixed ul ul {
     margin-top: 8px;
     padding-left: 16px;

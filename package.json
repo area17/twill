@@ -10,7 +10,8 @@
     "format": "prettier --write *.js .*.{js,yml} 'frontend/**/*.{js,vue,scss}'",
     "lint": "vue-cli-service lint frontend",
     "prod": "npm run build",
-    "clean-customs": "rm -rf frontend/js/components/blocks/customs/* && rm -rf frontend/js/components/customs/* && touch frontend/js/components/customs/.keep"
+    "clean-customs": "rm -rf frontend/js/components/blocks/customs/* && rm -rf frontend/js/components/customs/* && touch frontend/js/components/customs/.keep",
+    "docs": "rm -rf docs/_build/* && ./vendor/bin/testbench twill:staticdocs:serve"
   },
   "dependencies": {
     "@alpinejs/mask": "^3.10.0",
