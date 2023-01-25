@@ -182,15 +182,20 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
     public function getFullUrl(): string
     {
         if ($this->urlWithoutSlug) {
-            return $this->urlWithoutSlug . '/' . $this->getSlug();
+            return rtrim($this->urlWithoutSlug, '/') . '/' . $this->getSlug();
         }
 
-        $controller = getModelController($this);
+        try {
+            $controller = getModelController($this);
+        } catch (\Exception $e) {
+            // Fallback to never crash on production.
+            return '#';
+        }
 
         return Str::replace(
-                ['/{preview}'],
-                [''],
-                rtrim($controller->getPermalinkBaseUrl(), '/') . '/' . $this->getSlug()
-            );
+            ['/{preview}'],
+            [''],
+            rtrim($controller->getPermalinkBaseUrl(), '/') . '/' . $this->getSlug()
+        );
     }
 }
