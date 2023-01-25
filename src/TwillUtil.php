@@ -53,6 +53,22 @@ class TwillUtil
         Session::remove(self::SESSION_FIELD);
     }
 
+    public function parseInternalLinks(string $content): string
+    {
+        return preg_replace_callback(
+            '/(#twillInternalLink::(.*)#(\d))/',
+            function (array $data) {
+                if (isset($data[2], $data[3])) {
+                    $modelClass = $data[2];
+                    $id = $data[3];
+
+                    return url($modelClass::published()->where('id', $id)->first()->slug);
+                }
+            },
+            $content
+        );
+    }
+
     private function getFromTempStore(string $key, int $frontendId): ?int
     {
         $data = Session::get(self::SESSION_FIELD, []);

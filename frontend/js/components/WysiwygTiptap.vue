@@ -204,7 +204,7 @@
           <a17-button variant="validate" class="dialog-confirm" @click="saveLink" tabindex="4">
             {{ $trans('wysiwyg.link_window.save', 'Save') }}
           </a17-button>
-          <a17-button variant="aslink-grey" class="dialog-cancel" @click="linkWindow = null" tabindex="5">
+          <a17-button variant="aslink-grey" class="dialog-cancel" @click="$refs['link-modal'].close()" tabindex="5">
             {{ $trans('wysiwyg.link_window.save', 'Cancel') }}
           </a17-button>
         </div>

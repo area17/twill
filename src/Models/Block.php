@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Facades\TwillUtil;
 use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPresenter;
@@ -59,7 +60,7 @@ class Block extends BaseModel implements TwillModelContract
 
     public function input($name)
     {
-        return $this->content[$name] ?? null;
+        return $this->content[$name] ? TwillUtil::parseInternalLinks($this->content[$name]) : null;
     }
 
     public function translatedInput($name, $forceLocale = null)
@@ -75,7 +76,7 @@ class Block extends BaseModel implements TwillModelContract
             : app()->getLocale()
         );
 
-        return $value[$locale] ?? null;
+        return $value[$locale] ? TwillUtil::parseInternalLinks($value[$locale]) : null;
     }
 
     public function browserIds($name)
