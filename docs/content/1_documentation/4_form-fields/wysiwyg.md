@@ -138,3 +138,18 @@ Schema::table('article_translations', function (Blueprint $table) {
 ```
 
 When used in a [block](../5_block-editor), no migration is needed.
+
+## Advanced Tiptap usage
+
+With the Tiptap wysiwyg editor you can access some additional features. Below is a more detailed explanation.
+
+### Link browser
+
+When needed, you can let users browse internal content, this can be especially useful to maintain correct links inside wysiwyg editors.
+
+Instead of taking the slug to the content during the time of writing the content, it let's you
+render the url during render time.
+
+When selecting a piece of content it will link it as such: `href="#twillInternalLink::App\Models\Page#1"`
+
+
