@@ -33,7 +33,8 @@ class CustomComponentTest extends BrowserTestCase
 
     public function testBeforeBuild(): void
     {
-        $this->artisan('twill:update');
+        $this->artisan('twill:update')
+            ->expectsConfirmation('Do you want to run any pending database migrations now?', 'no');
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->superAdmin, 'twill_users');
 
@@ -56,7 +57,8 @@ class CustomComponentTest extends BrowserTestCase
 
         $this->assertFileExists($path . DIRECTORY_SEPARATOR . 'HelloWorld.vue');
 
-        $this->artisan('twill:build', ['--install' => false, '--customComponentsSource' => $path]);
+        $this->artisan('twill:build', ['--install' => false, '--customComponentsSource' => $path])
+            ->expectsConfirmation('Do you want to run any pending database migrations now?', 'no');
 
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->superAdmin, 'twill_users');
