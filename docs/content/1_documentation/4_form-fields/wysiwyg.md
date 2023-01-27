@@ -145,7 +145,8 @@ With the Tiptap wysiwyg editor you can access some additional features. Below is
 
 ### Link browser
 
-When needed, you can let users browse internal content, this can be especially useful to maintain correct links inside wysiwyg editors.
+When needed, you can let users browse internal content, this can be especially useful to maintain correct links inside
+wysiwyg editors.
 
 This can currently only be done using the Form builder by adding the browsermodules to the
 wysiwyg field:
@@ -162,11 +163,11 @@ render the url during render time.
 
 When selecting a piece of content it will link it as such: `href="#twillInternalLink::App\Models\Page#1"`
 
-This will then be replaced during render time* bases on your configuration. You can completely
-customize the url by implementing the `getFullUrl` method on your model class.
+This will then be replaced during render time if you are using the `$block->wysiwyg('field')` or `$block->translatedWysiwyg('field')` helpers.
 
-\* It will  be automatically replaced for blocks, however for regular fields on models you
-will have to manually call `parseInternalLinks` like this:
+You can customize the url by implementing the `getFullUrl` method on your model class.
+
+For regular fields on models you will have to manually call `parseInternalLinks` like this:
 
 ```blade
 {{ \A17\Twill\Facades\TwillUtil::parseInternalLinks($item->description) }}

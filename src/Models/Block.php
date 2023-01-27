@@ -60,17 +60,27 @@ class Block extends BaseModel implements TwillModelContract
             );
     }
 
-    public function input($name): mixed
+    public function wysiwyg(string $name): string
     {
-        return isset($this->content[$name]) ? TwillUtil::parseInternalLinks($this->content[$name]) : null;
+        return TwillUtil::parseInternalLinks($this->input($name) ?? '');
     }
 
-    public function translatedInput($name, $forceLocale = null): mixed
+    public function translatedWysiwyg(string $name): string
+    {
+        return TwillUtil::parseInternalLinks($this->translatedInput($name) ?? '');
+    }
+
+    public function input(string $name): mixed
+    {
+        return $this->content[$name] ?? null;
+    }
+
+    public function translatedInput(string $name, bool $forceLocale = null): mixed
     {
         $value = $this->content[$name] ?? null;
 
         $locale = $forceLocale ?? (
-        config('translatable.use_property_fallback', false) && (!array_key_exists(
+        config('translatable.use_property_fallback', false) && (! array_key_exists(
             app()->getLocale(),
             array_filter($value ?? []) ?? []
         ))
@@ -78,7 +88,7 @@ class Block extends BaseModel implements TwillModelContract
             : app()->getLocale()
         );
 
-        return isset($value[$locale]) ? TwillUtil::parseInternalLinks($value[$locale]) : null;
+        return $value[$locale] ?? null;
     }
 
     public function browserIds($name)
