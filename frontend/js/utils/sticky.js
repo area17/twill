@@ -77,6 +77,11 @@ export default class Sticky {
   _refresh () {
     if (!this.target) return false
 
+    if (!this._isFullyVisible(this.target)) {
+      this._removePositionClass()
+      return false
+    }
+
     const scrollPos = this.lastScrollPos
     const targetHeight = this.target.offsetHeight
     const asideHeight = this.container.offsetHeight
@@ -122,6 +127,11 @@ export default class Sticky {
     }
 
     return this
+  }
+
+  _isFullyVisible(el)
+  {
+    return el.clientHeight < (window.innerHeight / 100 * 75)
   }
 
   _removePositionClass () {
