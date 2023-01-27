@@ -19,9 +19,10 @@ class TwillCapsules
         string $namespace,
         string $path,
         string $singular = null,
-        bool $enabled = true
+        bool $enabled = true,
+        bool $automaticNavigation = true
     ): Capsule {
-        $capsule = new Capsule($name, $namespace, $path, $singular, $enabled, true);
+        $capsule = new Capsule($name, $namespace, $path, $singular, $enabled, true, $automaticNavigation);
 
         $this->registerCapsule($capsule);
 

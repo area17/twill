@@ -26,7 +26,8 @@ class Capsule
         public string $path,
         public ?string $singular = null,
         public bool $enabled = true,
-        public bool $packageCapsule = false
+        public bool $packageCapsule = false,
+        protected bool $automaticNavigation = true
     ) {
         $this->boot();
     }
@@ -329,6 +330,10 @@ class Capsule
 
     public function registerNavigation(): void
     {
+        if (!$this->automaticNavigation) {
+            return;
+        }
+
         $config = Config::get('twill-navigation', []);
 
         if ($config === []) {
