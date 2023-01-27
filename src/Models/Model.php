@@ -5,11 +5,13 @@ namespace A17\Twill\Models;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\IsTranslatable;
+use A17\Twill\Models\Contracts\TwillLinkableModel;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Contracts\TwillSchedulableModel;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;
+use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -17,7 +19,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
-abstract class Model extends BaseModel implements TaggableInterface, TwillModelContract, TwillSchedulableModel
+abstract class Model extends BaseModel implements TaggableInterface, TwillModelContract, TwillSchedulableModel, TwillLinkableModel
 {
     use HasPresenter;
     use SoftDeletes;
@@ -175,6 +177,31 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
             config('twill.tagged_table', 'tagged'),
             'taggable_id',
             'tag_id'
+        );
+    }
+
+    public function getFullUrl(): string
+    {
+        if (! method_exists($this, 'getSlug')) {
+            return '#';
+        }
+
+        // @phpstan-ignore-next-line
+        if (method_exists($this, 'getUrlWithoutSlug') && $this->urlWithoutSlug) {
+            return rtrim($this->urlWithoutSlug, '/') . '/' . $this->getSlug();
+        }
+
+        try {
+            $controller = getModelController($this);
+        } catch (Exception) {
+            // Fallback to never crash on production.
+            return '#';
+        }
+
+        return Str::replace(
+            ['/{preview}'],
+            [''],
+            rtrim($controller->getPermalinkBaseUrl(), '/') . '/' . $this->getSlug()
         );
     }
 }

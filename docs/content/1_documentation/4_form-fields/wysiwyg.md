@@ -138,3 +138,37 @@ Schema::table('article_translations', function (Blueprint $table) {
 ```
 
 When used in a [block](../5_block-editor), no migration is needed.
+
+## Advanced Tiptap usage
+
+With the Tiptap wysiwyg editor you can access some additional features. Below is a more detailed explanation.
+
+### Link browser
+
+When needed, you can let users browse internal content, this can be especially useful to maintain correct links inside
+wysiwyg editors.
+
+This can currently only be done using the Form builder by adding the browsermodules to the
+wysiwyg field:
+
+```php
+Wysiwyg::make()->name('description')
+    ->label('Description')
+    ->translatable()
+    ->browserModules([Page::class])
+```
+
+Instead of taking the slug to the content during the time of writing the content, it let's you
+render the url during render time.
+
+When selecting a piece of content it will link it as such: `href="#twillInternalLink::App\Models\Page#1"`
+
+This will then be replaced during render time if you are using the `$block->wysiwyg('field')` or `$block->translatedWysiwyg('field')` helpers.
+
+You can customize the url by implementing the `getFullUrl` method on your model class.
+
+For regular fields on models you will have to manually call `parseInternalLinks` like this:
+
+```blade
+{{ \A17\Twill\Facades\TwillUtil::parseInternalLinks($item->description) }}
+```
