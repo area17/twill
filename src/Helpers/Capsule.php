@@ -50,13 +50,19 @@ class Capsule
      */
     private $namespace;
 
+    /**
+     * @var bool
+     */
+    protected $automaticNavigation = true;
+
     public function __construct(
         string $name,
         string $namespace,
         string $path,
         string $singular = null,
         bool $enabled = true,
-        bool $packageCapsule = false
+        bool $packageCapsule = false,
+        bool $automaticNavigation = true
     ) {
         $this->name = $name;
         $this->path = $path;
@@ -64,6 +70,7 @@ class Capsule
         $this->namespace = $namespace;
         $this->singular = $singular;
         $this->packageCapsule = $packageCapsule;
+        $this->automaticNavigation = $automaticNavigation;
 
         $this->boot();
     }
@@ -339,6 +346,10 @@ class Capsule
 
     public function registerConfig(): void
     {
+        if (!$this->automaticNavigation) {
+            return;
+        }
+
         $config = Config::get('twill-navigation', []);
 
         if ($this->isSingleton()) {
