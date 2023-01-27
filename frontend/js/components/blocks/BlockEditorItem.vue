@@ -176,7 +176,7 @@
 <style lang="scss" scoped>
   .block__content {
     display: none;
-    padding: 35px 15px;
+    padding: 15px;
     background: $color__background;
   }
 
