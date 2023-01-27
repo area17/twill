@@ -108,8 +108,37 @@ $multiSelectHeight: 45px;
       }
     }
 
-    .vs__selected {
-      cursor:pointer;
+    .vselect__field {
+      .vs__selected {
+        padding: 0;
+        cursor:pointer;
+      }
+
+      input {
+        padding: 0 !important;
+      }
+    }
+
+    .vs__actions {
+      padding-right: 0;
+      padding-left: 0;
+    }
+
+    .vs__selected-options {
+      padding: 0 15px;
+    }
+
+    .vs__search {
+      padding-right: 0;
+      border: 0;
+    }
+
+  }
+
+  .vselect--single .vs--disabled.v-select {
+    background: var(--vs-state-disabled-bg);
+    .vs__dropdown-toggle {
+      background: none;
     }
   }
 
@@ -223,6 +252,7 @@ $multiSelectHeight: 45px;
         min-width: initial;
       }
     }
+
     .vs__dropdown-toggle {
       display: flex;
       flex-wrap: no-wrap;
