@@ -89,5 +89,5 @@ MultiSelect::make()
 :::#tab:::
 :::#tabs:::
 
-See [Multi select](/form-fields/multi-select.html) for more information on how to implement the field with static and
+See [Multi select](./multi-select.md) for more information on how to implement the field with static and
 dynamic values.

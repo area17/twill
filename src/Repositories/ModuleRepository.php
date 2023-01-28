@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories;
 
 use A17\Twill\Exceptions\NoCapsuleFoundException;
+use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Behaviors\Sortable;
@@ -68,7 +69,7 @@ abstract class ModuleRepository
             $query = $filter->applyFilter($query);
         }
 
-        if (!$forcePagination && $this->model instanceof Sortable) {
+        if (! $forcePagination && $this->model instanceof Sortable) {
             return $query->ordered()->get();
         }
 
@@ -123,8 +124,15 @@ abstract class ModuleRepository
         });
     }
 
-    public function listAll(string $column = 'title', array $orders = [], int|string|null $exceptId = null): Collection
-    {
+    /**
+     * @return Collection<int,TwillModelContract>
+     */
+    public function listAll(
+        string $column = 'title',
+        array $orders = [],
+        int|string|null $exceptId = null,
+        string $pluckBy = 'id'
+    ): Collection {
         $query = $this->model::query();
 
         if ($exceptId) {
@@ -141,7 +149,7 @@ abstract class ModuleRepository
             $query = $query->withTranslation();
         }
 
-        return $query->get()->pluck($column, 'id');
+        return $query->get()->pluck($column, $pluckBy);
     }
 
     public function cmsSearch(string $search, array $fields = []): Collection
@@ -173,11 +181,17 @@ abstract class ModuleRepository
 
             $fields = $this->prepareFieldsBeforeCreate($fields);
 
-            $model = $this->model->create(Arr::except($fields, $this->getReservedFields()));
+            $model = $this->model->make(Arr::except($fields, $this->getReservedFields()));
+
+            $fields = $this->prepareFieldsBeforeSave($model, $fields);
+
+            $model->fill(Arr::except($fields, $this->getReservedFields()));
 
             $this->beforeSave($model, $original_fields);
 
-            $fields = $this->prepareFieldsBeforeSave($model, $fields);
+            $model->save();
+
+            $this->afterSaveOriginalData($model, $original_fields);
 
             $this->afterSave($model, $fields);
 
@@ -198,7 +212,7 @@ abstract class ModuleRepository
     {
         $model = $this->model->where($attributes)->first();
 
-        if (!$model) {
+        if (! $model) {
             return $this->create($fields);
         }
 
@@ -210,19 +224,23 @@ abstract class ModuleRepository
     public function update(int|string $id, array $fields): TwillModelContract
     {
         return DB::transaction(function () use ($id, $fields) {
-            $object = $this->model->findOrFail($id);
+            $model = $this->model->findOrFail($id);
 
-            $this->beforeSave($object, $fields);
+            $original_fields = $fields;
 
-            $fields = $this->prepareFieldsBeforeSave($object, $fields);
+            $this->beforeSave($model, $fields);
 
-            $object->fill(Arr::except($fields, $this->getReservedFields()));
+            $fields = $this->prepareFieldsBeforeSave($model, $fields);
 
-            $object->save();
+            $model->fill(Arr::except($fields, $this->getReservedFields()));
 
-            $this->afterSave($object, $fields);
+            $model->save();
 
-            return $object->fresh();
+            $this->afterSaveOriginalData($model, $original_fields);
+
+            $this->afterSave($model, $fields);
+
+            return $model->fresh();
         }, 3);
     }
 
@@ -303,7 +321,7 @@ abstract class ModuleRepository
     {
         return DB::transaction(function () use ($id) {
             if ($object = $this->model->find($id)) {
-                if (!method_exists($object, 'canDeleteSafely') || $object->canDeleteSafely()) {
+                if (! method_exists($object, 'canDeleteSafely') || $object->canDeleteSafely()) {
                     $object->delete();
                     $this->afterDelete($object);
 
@@ -411,22 +429,22 @@ abstract class ModuleRepository
     {
         if (property_exists($this->model, 'checkboxes')) {
             foreach ($this->model->checkboxes as $field) {
-                if (!$this->shouldIgnoreFieldBeforeSave($field)) {
-                    $fields[$field] = isset($fields[$field]) && !empty($fields[$field]);
+                if (! $this->shouldIgnoreFieldBeforeSave($field)) {
+                    $fields[$field] = isset($fields[$field]) && ! empty($fields[$field]);
                 }
             }
         }
 
         if (property_exists($this->model, 'nullable')) {
             foreach ($this->model->nullable as $field) {
-                if (!isset($fields[$field]) && !$this->shouldIgnoreFieldBeforeSave($field)) {
+                if (! isset($fields[$field]) && ! $this->shouldIgnoreFieldBeforeSave($field)) {
                     $fields[$field] = null;
                 }
             }
         }
 
         foreach ($fields as $key => $value) {
-            if (!$this->shouldIgnoreFieldBeforeSave($key)) {
+            if (! $this->shouldIgnoreFieldBeforeSave($key)) {
                 if ($value === []) {
                     $fields[$key] = null;
                 }
@@ -440,6 +458,9 @@ abstract class ModuleRepository
         return $fields;
     }
 
+    /**
+     * @return array|<missing>
+     */
     public function prepareFieldsBeforeCreate(array $fields): array
     {
         $fields = $this->cleanupFields(null, $fields);
@@ -451,6 +472,9 @@ abstract class ModuleRepository
         return $fields;
     }
 
+    /**
+     * @return array|<missing>
+     */
     public function prepareFieldsBeforeSave(TwillModelContract $object, array $fields): array
     {
         $fields = $this->cleanupFields($object, $fields);
@@ -473,6 +497,13 @@ abstract class ModuleRepository
     {
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($object, $fields);
+        }
+    }
+
+    public function afterSaveOriginalData(TwillModelContract $model, array $fields): void
+    {
+        foreach ($this->traitsMethods(__FUNCTION__) as $method) {
+            $this->$method($model, $fields);
         }
     }
 
@@ -591,7 +622,7 @@ abstract class ModuleRepository
             }
 
             foreach ($object->$relationship as $relationshipObject) {
-                if (!in_array($relationshipObject->$attribute, $fields[$formField])) {
+                if (! in_array($relationshipObject->$attribute, $fields[$formField])) {
                     $relationshipObject->delete();
                 }
             }
@@ -662,7 +693,7 @@ abstract class ModuleRepository
         string $relation,
         string|ModuleRepository|null $modelOrRepository = null
     ): ModuleRepository {
-        if (!$modelOrRepository) {
+        if (! $modelOrRepository) {
             if (class_exists($relation) && (new $relation()) instanceof Model) {
                 $modelOrRepository = Str::afterLast($relation, '\\');
             } else {
@@ -742,5 +773,10 @@ abstract class ModuleRepository
     public function isTranslatable($column): bool
     {
         return $this->model->isTranslatable($column);
+    }
+
+    public function getBaseModel(): TwillModelContract
+    {
+        return $this->model;
     }
 }

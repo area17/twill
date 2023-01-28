@@ -27,8 +27,7 @@ class NestedBreadcrumbs extends Breadcrumbs
         int $activeParentId,
         string $repository,
         ?string $titleKey = 'title'
-    ): self
-    {
+    ): self {
         $this->module = $module;
         $this->parentModule = $parentModule;
         $this->parentRepository = $repository;

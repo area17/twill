@@ -9,7 +9,8 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
+  import { mapGetters,mapState } from 'vuex'
+
   import { DATATABLE } from '@/store/mutations'
 
   export default {
@@ -57,7 +58,8 @@
           col.name === 'bulk' ? 'tablehead__cell--bulk' : '',
           col.sortable && this.sortable ? 'tablehead__cell--sortable' : '',
           col.name === this.sortKey ? 'tablehead__cell--sorted' : '',
-          col.name === this.sortKey && this.sortDir ? `tablehead__cell--sorted${this.sortDir}` : ''
+          col.name === this.sortKey && this.sortDir ? `tablehead__cell--sorted${this.sortDir}` : '',
+          col.shrink === true ? 'tablehead__cell--shrink' : '',
         ]
       },
       isDisplayedColumn: function (col) {
@@ -89,6 +91,10 @@
 
     &:hover {
       color:$color__text;
+    }
+
+    &--shrink {
+      width: 1px;
     }
   }
 

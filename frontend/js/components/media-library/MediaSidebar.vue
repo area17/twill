@@ -135,14 +135,15 @@
 </template>
 
 <script>
+  import isEqual from 'lodash/isEqual'
   import { mapState } from 'vuex'
+
+  import a17Langswitcher from '@/components/LangSwitcher'
+  import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
   import api from '@/store/api/media-library'
   import { NOTIFICATION } from '@/store/mutations'
-  import isEqual from 'lodash/isEqual'
-  import FormDataAsObj from '@/utils/formDataAsObj.js'
   import a17VueFilters from '@/utils/filters.js'
-  import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
-  import a17Langswitcher from '@/components/LangSwitcher'
+  import FormDataAsObj from '@/utils/formDataAsObj.js'
 
   export default {
     name: 'A17MediaSidebar',
@@ -385,15 +386,17 @@
         }
       },
       save: function () {
-        const form = this.$refs.form
-        if (!form) return
+        this.$nextTick(() => {
+          const form = this.$refs.form
+          if (!form) return
 
-        const formData = this.getFormData(form)
+          const formData = this.getFormData(form)
 
-        if (!isEqual(formData, this.previousSavedData) && !this.loading) {
-          this.previousSavedData = formData
-          this.update(form)
-        }
+          if (!isEqual(formData, this.previousSavedData) && !this.loading) {
+            this.previousSavedData = formData
+            this.update(form)
+          }
+        })
       },
       submit: function (event) {
         event.preventDefault()

@@ -3,8 +3,134 @@
 namespace A17\Twill\Services\Forms;
 
 use Illuminate\Support\Collection;
+use Illuminate\Contracts\View\View;
 
-class Form extends Collection
+class Form extends Collection implements CanHaveSubfields
 {
+    public ?Fieldsets $fieldsets = null;
 
+    private ?Form $sideForm = null;
+    private bool $isCreate = false;
+    private bool $forBlocks = false;
+
+    public function withFieldSets(Fieldsets $fieldsets): self
+    {
+        $this->fieldsets = $fieldsets;
+
+        return $this;
+    }
+
+    public function addFieldset(Fieldset $fieldset): self
+    {
+        if (! $this->fieldsets) {
+            $this->fieldsets = Fieldsets::make();
+        }
+
+        $this->fieldsets->add($fieldset);
+
+        return $this;
+    }
+
+    public function toFrontend(?Form $sideFieldSets = null, bool $isCreate = false): self
+    {
+        $this->sideForm = $sideFieldSets;
+
+        $this->isCreate = $isCreate;
+
+        return $this;
+    }
+
+    public function getAdditionalFieldsets(): array
+    {
+        if (! $this->fieldsets) {
+            return [];
+        }
+
+        return $this->fieldsets->map(fn($fieldset): array => [
+            'fieldset' => $fieldset->id,
+            'label' => $fieldset->title,
+        ])->toArray();
+    }
+
+    public function hasFieldsInBaseFieldset(): bool
+    {
+        return ! $this->isEmpty();
+    }
+
+    public function formToRenderArray(): array
+    {
+        $viewWithData = ['isCreate' => $this->isCreate];
+
+        if ($this->fieldsets) {
+            $viewWithData['renderFieldsets'] = $this->fieldsets;
+            $viewWithData['additionalFieldsets'] = $this->fieldsets->map(fn($fieldset): array => [
+                'fieldset' => $fieldset->id,
+                'label' => $fieldset->title,
+            ])->toArray();
+        }
+
+        $viewWithData['disableContentFieldset'] = ! $this->hasFieldsInBaseFieldset();
+
+        $viewWithData['renderFields'] = $this;
+
+        return $viewWithData;
+    }
+
+    public function forBlocks(): bool
+    {
+        return $this->forBlocks;
+    }
+
+    public function renderForBlocks(bool $renderForBlocks = true): self
+    {
+        $this->forBlocks = $renderForBlocks;
+
+        return $this;
+    }
+
+    public function hasForm(): bool
+    {
+        return $this->isNotEmpty() || ($this->fieldsets && $this->fieldsets->isNotEmpty());
+    }
+
+    public function hasSideForm(): bool
+    {
+        return $this->sideForm && $this->sideForm->isNotEmpty();
+    }
+
+    public function renderBaseForm(): View
+    {
+        return view('twill::partials.form.renderer.base_form', $this->formToRenderArray());
+    }
+
+    public function renderSideForm(): View
+    {
+        return view('twill::partials.form.renderer.base_form', $this->sideForm->formToRenderArray());
+    }
+
+    public function registerDynamicRepeaters(): void
+    {
+        // We have to loop over all of the fields/fieldsets.
+        foreach ($this as $field) {
+            if ($field instanceof InlineRepeater) {
+                $field->register();
+            }
+            if ($field instanceof CanHaveSubfields) {
+                $field->registerDynamicRepeaters();
+            }
+        }
+
+        if ($this->fieldsets) {
+            foreach ($this->fieldsets as $fieldset) {
+                foreach ($fieldset->fields as $field) {
+                    if ($field instanceof InlineRepeater) {
+                        $field->register();
+                    }
+                    if ($field instanceof CanHaveSubfields) {
+                        $field->registerDynamicRepeaters();
+                    }
+                }
+            }
+        }
+    }
 }

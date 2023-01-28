@@ -17,6 +17,7 @@ use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
@@ -185,9 +186,7 @@ class UserController extends ModuleController
     protected function formData($request)
     {
         $currentUser = $this->authFactory->guard('twill_users')->user();
-        $with2faSettings = $this->config->get('twill.enabled.users-2fa') && $currentUser->id == $this->request->get(
-                'user'
-            );
+        $with2faSettings = $this->config->get('twill.enabled.users-2fa') && $currentUser->id == $request->route('user');
 
         if ($with2faSettings) {
             $currentUser->generate2faSecretKey();
@@ -290,34 +289,14 @@ class UserController extends ModuleController
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }
 
-//    protected function filterScope($prepend = [])
-//    {
-//        $scope = [];
-//
-//        $requestFilters = $this->getRequestFilters();
-//
-//        if (array_key_exists('status', $requestFilters)) {
-//            switch ($requestFilters['status']) {
-//                case 'activated':
-//                    $scope['activated'] = true;
-//                    break;
-//                case 'pending':
-//                    $scope['pending'] = true;
-//                    break;
-//            }
-//        }
-//
-//        return parent::filterScope($prepend + $scope);
-//    }
-
-    public function edit($id, $submoduleId = null)
+    public function edit(int|TwillModelContract $id): mixed
     {
         $this->authorizableOptions['edit'] = 'edit-user';
 
-        return parent::edit($id, $submoduleId);
+        return parent::edit($id);
     }
 
-    public function update($id, $submoduleId = null)
+    public function update(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
         $this->authorizableOptions['edit'] = 'edit-user';
 

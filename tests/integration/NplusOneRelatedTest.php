@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class NplusOneRelatedTest extends TestCase
 {
-    public $example = 'tests-browsers';
+    public ?string $example = 'tests-browsers';
 
     public function setUp(): void
     {

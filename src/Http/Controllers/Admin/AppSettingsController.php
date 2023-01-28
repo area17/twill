@@ -33,7 +33,7 @@ class AppSettingsController extends ModuleController
         }
     }
 
-    public function update($id, $submoduleId = null): JsonResponse
+    public function update(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
         $model = AppSetting::findOrFail($id);
 
@@ -96,7 +96,7 @@ class AppSettingsController extends ModuleController
 
     public function getFormRequestClass(): string
     {
-        $class = new class() extends Request {
+        $class = new class () extends Request {
         };
 
         return $class::class;
@@ -115,6 +115,7 @@ class AppSettingsController extends ModuleController
 
         $base['publish'] = false;
         $base['editableTitle'] = false;
+        $base['translate'] = true;
 
         return $base;
     }
@@ -127,7 +128,7 @@ class AppSettingsController extends ModuleController
                 [
                     'name' => 'update',
                     'text' => twillTrans('twill::lang.publisher.update'),
-                ]
+                ],
             ],
         ];
     }

@@ -6,7 +6,7 @@ use App\Repositories\ContactPageRepository;
 
 class SingletonModuleTest extends TestCase
 {
-    public $example = 'tests-singleton';
+    public ?string $example = 'tests-singleton';
 
     public function setUp(): void
     {
@@ -32,7 +32,6 @@ class SingletonModuleTest extends TestCase
 
     public function testSingletonNavigationItem(): void
     {
-        ray(config('twill-navigation'));
         $this->createContactPage();
 
         $this->httpRequestAssert('/twill', 'GET');

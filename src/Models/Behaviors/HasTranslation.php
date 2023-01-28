@@ -74,12 +74,12 @@ trait HasTranslation
         return $query
             ->join($translationTable, function (JoinClause $join) use ($translationTable, $localeKey, $table, $keyName) {
                 $join
-                    ->on($translationTable.'.'.$this->getRelationKey(), '=', $table.'.'.$keyName)
-                    ->where($translationTable.'.'.$localeKey, $this->locale());
+                    ->on($translationTable . '.' . $this->getRelationKey(), '=', $table . '.' . $keyName)
+                    ->where($translationTable . '.' . $localeKey, $this->locale());
             })
-            ->where($translationTable.'.'.$this->getLocaleKey(), $locale)
-            ->orderBy($translationTable.'.'.$orderField, $orderType)
-            ->select($table.'.*')
+            ->where($translationTable . '.' . $this->getLocaleKey(), $locale)
+            ->orderBy($translationTable . '.' . $orderField, $orderType)
+            ->select($table . '.*')
             ->with('translations');
     }
 
@@ -155,5 +155,4 @@ trait HasTranslation
             return [$translation->locale => $this->translate($translation->locale)->$key];
         });
     }
-
 }

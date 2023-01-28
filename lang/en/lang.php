@@ -26,6 +26,7 @@ return [
         'reset-password' => 'Reset password',
         'reset-send' => 'Send password reset link',
         'verify-login' => 'Verify login',
+        'auth-causer' => 'Authentication'
     ],
     'buckets' => [
         'intro' => 'What would you like to feature today?',
@@ -56,6 +57,8 @@ return [
             'unfeatured' => 'Unfeatured',
             'restored' => 'Restored',
             'deleted' => 'Deleted',
+            'login' => 'Login action',
+            'logout' => 'Logout action'
         ],
         'activity-row' => [
             'edit' => 'Edit',
@@ -135,6 +138,7 @@ return [
         'version' => 'Version',
     ],
     'form' => [
+        'options' => 'Options',
         'content' => 'Content',
         'dialogs' => [
             'delete' => [

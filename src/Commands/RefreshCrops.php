@@ -183,10 +183,8 @@ class RefreshCrops extends Command
     {
         // Handle locales separately because not all items have a 1-1 match in other locales
         foreach ($mediables->get()->groupBy('locale') as $itemsByLocale) {
-
             // Group items by mediable_id to get related crops
             foreach ($itemsByLocale->groupBy('mediable_id') as $itemsByMediableId) {
-
                 // Then, group by media_id to handle slideshows (multiple entries for one role)
                 foreach ($itemsByMediableId->groupBy('media_id') as $items) {
                     $existingCrops = $items->keyBy('crop')->keys();

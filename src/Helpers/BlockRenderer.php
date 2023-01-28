@@ -4,8 +4,8 @@ namespace A17\Twill\Helpers;
 
 use A17\Twill\Models\Behaviors\HasBlocks;
 use A17\Twill\Models\Block as A17Block;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Media;
-use A17\Twill\Models\Model;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\RenderData;
 use Exception;
@@ -55,7 +55,17 @@ class BlockRenderer
         $viewResult = [];
         /** @var Block $block */
         foreach ($this->rootBlocks as $block) {
-            $viewResult[] = $block->renderView($blockViewMappings, $data, $this->inEditor);
+            if ($block->componentClass) {
+                $component = $block->componentClass::forRendering(
+                    $block->renderData->block,
+                    $block->renderData,
+                    $this->inEditor
+                );
+
+                $viewResult[] = $component->render()->with(array_merge($data, $component->data()));
+            } else {
+                $viewResult[] = $block->renderView($blockViewMappings, $data, $this->inEditor);
+            }
         }
 
         return implode('', $viewResult);
@@ -74,14 +84,15 @@ class BlockRenderer
         string $editorName,
         string $parentEditorName = null
     ): Block {
-        $class = clone Block::getForComponent($data['type'], $data['is_repeater'] ?? false);
-        $type = $class->type;
+        $class = clone Block::getForComponent($data['type'], $data['is_repeater'] ?? false)->newInstance();
 
-        if (!$class) {
+        if (! $class) {
             $type = Str::replace('a17-block-', '', $data['type']);
             // It is important to always clone this as it would otherwise overwrite the renderData inside.
-            $class = clone Block::getForType($type, $data['is_repeater'] ?? false);
+            $class = clone Block::getForType($type, $data['is_repeater'] ?? false)->newInstance();
         }
+
+        $type = $class->name;
 
         $children = [];
 
@@ -96,7 +107,7 @@ class BlockRenderer
         }
 
         // Load the original block if it exists or make a new one then fill it with the data from the request.
-        $block = A17Block::findOrNew($data['id'] ?? null);
+        $block = twillModel('block')::findOrNew($data['id'] ?? null);
         $block->fill(
             [
                 'type' => $type,
@@ -104,6 +115,8 @@ class BlockRenderer
                 'editor_name' => $editorName,
             ]
         );
+
+        $block->setRelation('children', self::getChildren($children));
 
         $block->medias = self::getMedias($data);
 
@@ -126,7 +139,7 @@ class BlockRenderer
      */
     private static function getPivotDummy(array $data): object
     {
-        return new class($data) implements Arrayable {
+        return new class ($data) implements Arrayable {
             public function __construct(public array $data)
             {
             }
@@ -141,6 +154,22 @@ class BlockRenderer
                 return $this->data;
             }
         };
+    }
+
+    private static function getChildren(array $blocks): Collection
+    {
+        if ($blocks === []) {
+            return new Collection();
+        }
+
+        $blocksCollection = Collection::make();
+
+        /** @var Block $block */
+        foreach ($blocks as $block) {
+            $blocksCollection->push($block->renderData?->block);
+        }
+
+        return $blocksCollection;
     }
 
     /**
@@ -170,7 +199,7 @@ class BlockRenderer
                 if (array_key_exists($role, $crops)) {
                     Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
-                        if (isset($media['crops']) && !empty($media['crops'])) {
+                        if (isset($media['crops']) && ! empty($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
                                 $media = (new Media())->forceFill(
                                     $data = [
@@ -201,17 +230,17 @@ class BlockRenderer
     }
 
     public static function fromEditor(
-        Model $model,
+        TwillModelContract $model,
         string $editorName,
     ): self {
-        if (!isset(class_uses_recursive($model)[HasBlocks::class])) {
+        if (! isset(class_uses_recursive($model)[HasBlocks::class])) {
             throw new Exception('Model ' . $model::class . ' does not implement HasBlocks');
         }
 
         $renderer = new self();
 
         /** @var \A17\Twill\Models\Block[] $blocks */
-        $blocks = $model->blocks()->whereEditorName($editorName)->whereParentId(null)->get();
+        $blocks = $model->blocks->where('editor_name', $editorName)->where('parent_id', null);
 
         foreach ($blocks as $block) {
             $data = self::getNestedBlocksForBlock($block, $model, $editorName);
@@ -221,20 +250,17 @@ class BlockRenderer
         return $renderer;
     }
 
-    private static function getNestedBlocksForBlock(
+    public static function getNestedBlocksForBlock(
         A17Block $block,
-        Model $rootModel,
+        TwillModelContract $rootModel,
         string $editorName
     ): Block {
         // We do not know if the block is a repeater or block so we use the first match.
-        $class = Block::findFirstWithType($block->type);
-
-        /** @var \A17\Twill\Models\Block[] $childBlocks */
-        $childBlocks = A17Block::whereParentId($block->id)->get();
+        $class = Block::findFirstWithType($block->type)->newInstance();
 
         $children = [];
 
-        foreach ($childBlocks as $childBlock) {
+        foreach ($block->children ?? [] as $childBlock) {
             $children[] = self::getNestedBlocksForBlock(
                 block: $childBlock,
                 rootModel: $rootModel,

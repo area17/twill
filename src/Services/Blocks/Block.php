@@ -3,6 +3,8 @@
 namespace A17\Twill\Services\Blocks;
 
 use A17\Twill\Facades\TwillBlocks;
+use A17\Twill\Services\Forms\InlineRepeater;
+use A17\Twill\View\Components\Blocks\TwillBlockComponent;
 use Exception;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
@@ -132,6 +134,32 @@ class Block
     public ?RenderData $renderData = null;
 
     /**
+     * @var TwillBlockComponent
+     */
+    public ?string $componentClass = null;
+
+    public ?InlineRepeater $inlineRepeater = null;
+
+    /**
+     * @param TwillBlockComponent $componentClass
+     */
+    public static function forComponent(string $componentClass): self
+    {
+        $class = new self(
+            file: null,
+            type: 'block',
+            source: $componentClass::getBlockGroup(),
+            name: $componentClass::getBlockIdentifier(),
+            componentClass: $componentClass
+        );
+
+        $class->rulesForTranslatedFields = (new $componentClass())->getTranslatableValidationRules();
+        $class->rules = (new $componentClass())->getValidationRules();
+
+        return $class;
+    }
+
+    /**
      * Make a block instance out of arguments.
      *
      * @param $file
@@ -159,12 +187,25 @@ class Block
         return new self($file, $type, $source, $name, $renderNamespace);
     }
 
+    public function newInstance(): self
+    {
+        return new self(
+            $this->file,
+            $this->type,
+            $this->source,
+            $this->name,
+            $this->renderNamespace,
+            $this->componentClass,
+            $this->inlineRepeater
+        );
+    }
+
     /**
      * Gets the first match being a block or repeater.
      */
     public static function findFirstWithType(string $type): ?self
     {
-        return app(BlockCollection::class)->findByName($type);
+        return TwillBlocks::getBlockCollection()->findByName($type);
     }
 
     public static function getForType(string $type, bool $repeater = false): self
@@ -197,24 +238,37 @@ class Block
 
     /**
      * Block constructor.
-     * @param Symfony\Component\Finder\SplFileInfo $file
-     * @param $type
+     * @param Symfony\Component\Finder\SplFileInfo|null $file
+     * @param string|null $type
      * @param $source
      * @param $name
      * @param string $renderNamespace
      *   Mainly for packages, but this will get the preview/render view file from that namespace.
+     * @param InlineRepeater $inlineRepeater used when registering dynamic repeaters.
      * @throws \Exception
      */
-    public function __construct($file, $type, $source, $name = null, ?string $renderNamespace = null)
-    {
+    public function __construct(
+        $file,
+        $type,
+        $source,
+        $name = null,
+        ?string $renderNamespace = null,
+        ?string $componentClass = null,
+        ?InlineRepeater $inlineRepeater = null
+    ) {
         $this->file = $file;
 
         $this->type = $type;
 
         $this->source = $source;
 
-        // @change: This now holds the full file path instead of just the fileName.
-        $this->fileName = $this->file ? $this->file->getPathName() : 'Custom vue file';
+        $this->componentClass = $componentClass;
+
+        $this->inlineRepeater = $inlineRepeater;
+
+        if (! $this->componentClass) {
+            $this->fileName = $this->file ? $this->file->getPathName() : 'Custom vue file';
+        }
 
         $this->renderNamespace = $renderNamespace;
 
@@ -228,7 +282,9 @@ class Block
             $this->type = self::TYPE_REPEATER;
         }
 
-        $this->parse();
+        if (! $inlineRepeater) {
+            $this->parse();
+        }
     }
 
     /**
@@ -315,7 +371,7 @@ class Block
      */
     public function parse()
     {
-        $contents = $this->file ? file_get_contents((string) $this->file->getPathName()) : '';
+        $contents = $this->file ? file_get_contents((string)$this->file->getPathName()) : '';
 
         $this->title = $this->parseProperty('title', $contents, $this->name);
         $this->trigger = $this->parseProperty(
@@ -324,11 +380,16 @@ class Block
             $this->name,
             $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.add-item') : null
         );
-        $this->selectTrigger = $this->parseProperty('SelectTrigger', $contents, $this->name, $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.select-existing') : null);
-        $this->max = (int) $this->parseProperty('max', $contents, $this->name, 999);
+        $this->selectTrigger = $this->parseProperty(
+            'SelectTrigger',
+            $contents,
+            $this->name,
+            $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.select-existing') : null
+        );
+        $this->max = (int)$this->parseProperty('max', $contents, $this->name, 999);
         $this->group = $this->parseProperty('group', $contents, $this->name, 'app');
         $this->icon = $this->parseProperty('icon', $contents, $this->name, 'text');
-        $this->compiled = (bool) $this->parseProperty('compiled', $contents, $this->name, false);
+        $this->compiled = (bool)$this->parseProperty('compiled', $contents, $this->name, false);
         $this->component = $this->parseProperty('component', $contents, $this->name, "a17-block-{$this->name}");
         $this->isNewFormat = $this->isNewFormat($contents);
         $this->contents = $contents;
@@ -343,7 +404,7 @@ class Block
 
         $this->parseMixedProperty('titleField', $contents, $this->name, function ($value, $options) {
             $this->titleField = $value;
-            $this->hideTitlePrefix = (bool) ($options['hidePrefix'] ?? false);
+            $this->hideTitlePrefix = (bool)($options['hidePrefix'] ?? false);
         });
 
         return $this;
@@ -523,8 +584,16 @@ class Block
             }
         }
 
+        if ($property === 'title' && $this->componentClass) {
+            return $this->componentClass::getBlockTitle();
+        }
+
         if ($property !== 'title') {
             return $default;
+        }
+
+        if ($this->{$property} !== null) {
+            return $this->{$property};
         }
 
         // Title is mandatory
@@ -561,12 +630,18 @@ class Block
     public function renderForm()
     {
         View::share('TwillUntilConsumed', ['renderForBlocks' => true]);
-        $block = BladeCompiler::render(
-            $this->contents,
-            [
-                'renderForBlocks' => true,
-            ] + $this->getFormData()
-        );
+        if ($this->componentClass) {
+            $block = (new $this->componentClass())->renderForm();
+        } elseif ($this->inlineRepeater) {
+            $block = $this->inlineRepeater->renderForm();
+        } else {
+            $block = BladeCompiler::render(
+                $this->contents,
+                [
+                    'renderForBlocks' => true,
+                ] + $this->getFormData()
+            );
+        }
         View::share('TwillUntilConsumed', []);
 
         return $block;
@@ -590,6 +665,11 @@ class Block
     public function setRenderData(RenderData $renderData): void
     {
         $this->renderData = $renderData;
+    }
+
+    public function block(): ?\A17\Twill\Models\Block
+    {
+        return $this->renderData?->block;
     }
 
     public function renderView(

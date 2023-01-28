@@ -131,12 +131,13 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
-  import { DraggableMixin, EditorMixin } from '@/mixins/index'
   import draggable from 'vuedraggable'
+  import { mapGetters,mapState } from 'vuex'
+
   import BlockEditorItem from '@/components/blocks/BlockEditorItem.vue'
-  import BlocksList from '@/components/blocks/BlocksList'
   import BlockEditorModel from '@/components/blocks/BlockEditorModel'
+  import BlocksList from '@/components/blocks/BlocksList'
+  import { DraggableMixin, EditorMixin } from '@/mixins/index'
 
   export default {
     name: 'A17Blocks',

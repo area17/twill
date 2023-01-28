@@ -29,6 +29,7 @@
     $editModalTitle = ($createWithoutModal ?? false) ? twillTrans('twill::lang.modal.create.title') : null;
     $item = isset($item) ? $item : null;
 
+    // TODO: cache and move out of view
     if (config('twill.enabled.permissions-management')) {
         $users = app()->make('A17\Twill\Repositories\UserRepository')->published()->notSuperAdmin()->get();
         $groups = app()->make('A17\Twill\Repositories\GroupRepository')->get()->map(function ($group) {
@@ -45,8 +46,8 @@
     <div class="form" v-sticky data-sticky-id="navbar" data-sticky-offset="0" data-sticky-topoffset="12">
         <div class="navbar navbar--sticky" data-sticky-top="navbar">
             @php
-                $additionalFieldsets = $additionalFieldsets ?? [];
-                if(!$disableContentFieldset) {
+                $additionalFieldsets = $additionalFieldsets ?? $formBuilder->getAdditionalFieldsets();
+                if(!$disableContentFieldset && $formBuilder->hasFieldsInBaseFieldset()) {
                     array_unshift($additionalFieldsets, [
                         'fieldset' => 'content',
                         'label' => $contentFieldsetLabel ?? twillTrans('twill::lang.form.content')
@@ -70,8 +71,10 @@
                 <div slot="actions">
                     <a17-langswitcher
                         :all-published="{{ json_encode(!$controlLanguagesPublication) }}"></a17-langswitcher>
-                    <a17-button v-if="editor" type="button" variant="editor" size="small" @click="openEditor(-1)">
-                        <span v-svg symbol="editor"></span>{{ twillTrans('twill::lang.form.editor') }}
+                    <a17-button v-if="editor" type="button" variant="editor" size="small"
+                                @click="openEditor(-1)">
+                        <span v-svg
+                              symbol="editor"></span>{{ twillTrans('twill::lang.form.editor') }}
                     </a17-button>
                 </div>
             </a17-sticky-nav>
@@ -80,50 +83,64 @@
               @else v-on:submit.prevent="submitForm" @endif>
             <input type="hidden" name="_token" value="{{ csrf_token() }}">
             <div class="container">
-                <div class="wrapper wrapper--reverse" v-sticky data-sticky-id="publisher" data-sticky-offset="80">
+                <div class="wrapper wrapper--reverse" v-sticky data-sticky-id="publisher"
+                     data-sticky-offset="80">
                     <aside class="col col--aside">
                         <div class="publisher" data-sticky-target="publisher">
                             <a17-publisher
                                 {!! !empty($publishDateDisplayFormat) ? "date-display-format='{$publishDateDisplayFormat}'" : '' !!} {!! !empty($publishDateFormat) ? "date-format='{$publishDateFormat}'" : '' !!} {!! !empty($publishDate24Hr) && $publishDate24Hr ? ':date_24h="true"' : '' !!} :show-languages="{{ json_encode($controlLanguagesPublication) }}">
                                 @yield('publisherRows')
                             </a17-publisher>
-                            <a17-page-nav placeholder="Go to page" previous-url="{{ $parentPreviousUrl ?? '' }}"
+                            <a17-page-nav placeholder="Go to page"
+                                          previous-url="{{ $parentPreviousUrl ?? '' }}"
                                           next-url="{{ $parentNextUrl ?? '' }}"></a17-page-nav>
-                            @hasSection('sideFieldset')
-                                <a17-fieldset title="{{ $sideFieldsetLabel ?? 'Options' }}" id="options">
-                                    @yield('sideFieldset')
-                                </a17-fieldset>
+
+                            @if ($formBuilder->hasSideForm())
+                                {!! $formBuilder->renderSideForm() !!}
+                            @else
+                                @hasSection('sideFieldset')
+                                    <x-twill::formFieldset
+                                        id="options"
+                                        title="{{ $sideFieldsetLabel ?? 'Options' }}"
+                                    >
+                                        @yield('sideFieldset')
+                                    </x-twill::formFieldset>
+                                @endif
+                                @yield('sideFieldsets')
                             @endif
-                            @yield('sideFieldsets')
                         </div>
                     </aside>
                     <section class="col col--primary" data-sticky-top="publisher">
-                        @unless($disableContentFieldset)
-                            <a17-fieldset title="{{ $contentFieldsetLabel ?? twillTrans('twill::lang.form.content') }}"
-                                          id="content">
-                                @if (isset($renderFields) && $renderFields->isNotEmpty())
-                                    @foreach($renderFields as $field)
-                                        {!! $field->render() !!}
-                                    @endforeach
-                                @else
+                        @if ($formBuilder->hasForm())
+                            {!! $formBuilder->renderBaseForm() !!}
+                        @else
+                            @unless($disableContentFieldset)
+                                <x-twill::formFieldset
+                                    id="content"
+                                    title="{{ $contentFieldsetLabel ?? twillTrans('twill::lang.form.content') }}"
+                                >
                                     @yield('contentFields')
-                                @endif
-                            </a17-fieldset>
-                        @endunless
+                                </x-twill::formFieldset>
+                            @endunless
+
+                            @yield('fieldsets')
+                        @endif
 
                         @if(\A17\Twill\Facades\TwillPermissions::levelIs(\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM))
                             @if($showPermissionFieldset ?? null)
                                 @can('manage-item', isset($item) ? $item : null)
-                                    <a17-fieldset title="User Permissions" id="permissions">
-                                        <x-twill::select-permissions :items-in-selects-tables="$users" label-key="name"
-                                                                     name-pattern="user_%id%_permission"
-                                                                     :list-user="true"/>
-                                    </a17-fieldset>
+                                    <x-twill::formFieldset id="permissions"
+                                                           title="User Permissions"
+                                                           :open="false">
+                                        <x-twill::select-permissions
+                                            :items-in-selects-tables="$users"
+                                            label-key="name"
+                                            name-pattern="user_%id%_permission"
+                                            :list-user="true"/>
+                                    </x-twill::formFieldset>
                                 @endcan
                             @endif
                         @endif
-
-                        @yield('fieldsets')
                     </section>
                 </div>
             </div>
@@ -141,7 +158,8 @@
     <a17-previewer ref="preview"></a17-previewer>
     <a17-dialog ref="warningContentEditor" modal-title="{{ twillTrans('twill::lang.form.dialogs.delete.title') }}"
                 confirm-label="{{ twillTrans('twill::lang.form.dialogs.delete.confirm') }}">
-        <p class="modal--tiny-title"><strong>{{ twillTrans('twill::lang.form.dialogs.delete.delete-content') }}</strong>
+        <p class="modal--tiny-title">
+            <strong>{{ twillTrans('twill::lang.form.dialogs.delete.delete-content') }}</strong>
         </p>
         <p>{!! twillTrans('twill::lang.form.dialogs.delete.confirmation') !!}</p>
     </a17-dialog>
@@ -156,7 +174,6 @@
     availableBlocks: {},
     blocks: {},
     blockPreviewUrl: '{{ $blockPreviewUrl ?? '' }}',
-    availableRepeaters: {!! $availableRepeaters ?? '{}' !!},
     repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
     fields: [],
     editor: {{ $editor ? 'true' : 'false' }},

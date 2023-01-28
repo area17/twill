@@ -4,7 +4,7 @@ namespace A17\Twill\Tests\Integration;
 
 class SubdomainRoutingTest extends TestCase
 {
-    public $example = 'tests-subdomain-routing';
+    public ?string $example = 'tests-subdomain-routing';
 
     public function testDummy(): void
     {

@@ -66,13 +66,13 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-  import { FORM } from '@/store/mutations'
-
   import draggable from 'vuedraggable'
-  import draggableMixin from '@/mixins/draggable'
+  import { mapState } from 'vuex'
+
   import BlockEditorItem from '@/components/blocks/BlockEditorItem.vue'
   import A17StandaloneBrowser from "@/components/StandaloneBrowser.vue"
+  import draggableMixin from '@/mixins/draggable'
+  import { FORM } from '@/store/mutations'
 
   export default {
     name: 'A17Repeater',
@@ -171,6 +171,12 @@
       })
     },
     methods: {
+      setOpened: function () {
+        const allClosed = this.$refs.blockList && this.$refs.blockList.every((block) => !block.visible)
+        if (allClosed) {
+          this.opened = false
+        }
+      },
       addBlock: function () {
         this.$store.commit(FORM.ADD_FORM_BLOCK, { type: this.type, name: this.name })
 
@@ -185,7 +191,7 @@
         this.$store.commit(FORM.DUPLICATE_FORM_BLOCK, {
           type: this.type,
           name: this.name,
-          index: index
+          index
         })
 
         this.$nextTick(() => {
@@ -196,7 +202,7 @@
         this.$store.commit(FORM.DELETE_FORM_BLOCK, {
           type: this.type,
           name: this.name,
-          index: index
+          index
         })
       },
       collapseAllBlocks: function () {
@@ -215,8 +221,13 @@
       }
     },
     mounted: function () {
-      this.$nextTick(() => {
-        this.collapseAllBlocks()
+      // if there are blocks, these should be all collapse by default
+      this.$nextTick(function () {
+        if (this.$refs.blockList && this.blocks && this.blocks.length < 4) {
+          this.$refs.blockList.forEach((block) => block.toggleExpand())
+        }
+
+        this.setOpened()
       })
     }
   }

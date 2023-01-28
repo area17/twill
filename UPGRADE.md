@@ -18,6 +18,7 @@ We provide an automated upgrade path using the commands explaned below. This wil
 - Moving the twill views to the new namespace
 - Moving the twill routes to the new location
 - Fixing (most) compatibility issues.
+- Using the new TwillRoutes facade for ::module and ::singleton instead of a Route macro.
 
 ### Run the upgrade:
 
@@ -44,6 +45,10 @@ strict using:
 
 Previously `withVideo` was true by default, if you relied on this you have to update these media fields to
 `'withVideo' => true`.
+
+### SVG's are now no longer passing thorough glide
+
+These are now rendered directly, you can change this by updating config `twill.glide.original_media_for_extensions` to an empty array `[]`
 
 ### media/file library
 

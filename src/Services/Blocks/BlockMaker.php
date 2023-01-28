@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Blocks;
 
+use A17\Twill\Facades\TwillBlocks;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
@@ -44,7 +45,7 @@ class BlockMaker
      */
     public function getBlockCollection()
     {
-        return app(BlockCollection::class);
+        return TwillBlocks::getBlockCollection();
     }
 
     /**
@@ -358,7 +359,6 @@ class BlockMaker
 
                 return $file->getFilename() === $icon ? $file->getPathName() : null;
             }, null);
-
         }, null);
     }
 

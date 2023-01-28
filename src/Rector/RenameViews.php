@@ -17,7 +17,8 @@ class RenameViews extends LaravelAwareRectorRule
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Change usages of admin. views', [
+            'Change usages of admin. views',
+            [
                 new CodeSample(
                     'view("admin.blocks.text");',
                     'view("twill.blocks.text");'

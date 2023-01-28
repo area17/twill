@@ -42,7 +42,7 @@ class GenerateDocsCommand extends Command
      */
     public static ?string $currentFile = null;
 
-    public function handle()
+    public function handle(): void
     {
         config()->set('torchlight.token', env('TORCHLIGHT_API_TOKEN'));
         config()->set('torchlight.theme', 'nord');
@@ -98,18 +98,22 @@ class GenerateDocsCommand extends Command
         $sorted = Arr::sort($unsorted, function (string $item) {
             $parts = explode('/', Str::after($item, '/'));
 
-            $index = '';
+            $index = 0;
 
+            $weight = 3;
             foreach ($parts as $part) {
                 if (Str::contains($part, '_')) {
-                    $index .= (int)Str::before($part, '_');
-                } else {
-                    $index .= 99;
-                }
-            }
+                    $number = (int)Str::before($part, '_');
 
-            for ($i = 0; $i < (5 - count($parts)); $i++) {
-                $index .= 99;
+                    $index += $number;
+                    if ($weight === 3) {
+                        $index *= 100;
+                    }
+                } else {
+                    $index += 1;
+                }
+
+                $weight--;
             }
 
             return $index;
@@ -165,11 +169,19 @@ class GenerateDocsCommand extends Command
                 // Remove the first item as that is the content dir.
                 unset($structure[0]);
 
+                $documentString = (string)$document;
+
+                // Remove the title as it is rendered manually.
+                if (Str::startsWith($documentString, '<h1>')) {
+                    $documentString = Str::after($documentString, '</h1>');
+                }
+
                 $treeData = [
                     'title' => $title,
                     'url' => $url,
                     'relativePath' => $this->withoutNumbers($relativePath),
-                    'content' => (string)$document,
+                    'githubLink' => 'https://github.com/area17/twill/tree/3.x/docs/' . $relativePath,
+                    'content' => $documentString,
                     'toc' => $tocRendered,
                 ];
 
@@ -182,6 +194,7 @@ class GenerateDocsCommand extends Command
                         );
                     }
                 } else {
+                    $treeData['parent'] = Str::beforeLast($url, '/') . '/index.html';
                     Arr::set(
                         $navTree,
                         implode('.items.', $structure) . '.items.' . Str::replace(
@@ -210,7 +223,7 @@ class GenerateDocsCommand extends Command
         }
 
         // Check for changes in the _templates folder.
-        if (!$hasChange) {
+        if (!$hasChange || $this->option('fresh')) {
             foreach ($disk->allFiles('_templates') as $templatesPath) {
                 if (
                     isset($navTree['last_updated']) &&

@@ -49,26 +49,26 @@ Files::make()
 :::#tab:::
 :::#tabs:::
 
-| Option      | Description                               | Type/values    | Default value |
-|:------------|:------------------------------------------|:---------------|:--------------|
-| name        | Name of the field                         | string         |               |
-| label       | Label of the field                        | string         |               |
-| itemLabel   | Label used for the `Add` button           | string         |               |
-| max         | Max number of attached items              | integer        | 1             |
-| fieldNote   | Hint message displayed above the field    | string         |               |
-| note        | Hint message displayed in the field       | string         |               |
-| buttonOnTop | Displays the `Add` button above the files | true<br/>false | false         |
+| Option      | Description                               | Type/values | Default value |
+|:------------|:------------------------------------------|:------------|:--------------|
+| name        | Name of the field                         | string      |               |
+| label       | Label of the field                        | string      |               |
+| itemLabel   | Label used for the `Add` button           | string      |               |
+| max         | Max number of attached items              | integer     | 1             |
+| fieldNote   | Hint message displayed above the field    | string      |               |
+| note        | Hint message displayed in the field       | string      |               |
+| buttonOnTop | Displays the `Add` button above the files | boolean     | false         |
 
 Similar to the media formField, to make the file field work, you have to include the `HasFiles` trait in your
-module's [Model](/crud-modules/models.html), and include `HandleFiles` trait in your
-module's [Repository](/crud-modules/repositories.html). At last, add the `filesParams` configuration array in your
+module's [Model](../3_modules/4_models.md), and include `HandleFiles` trait in your
+module's [Repository](../3_modules/5_repositories.md). At last, add the `filesParams` configuration array in your
 model.
 
 ```php
 public $filesParams = ['file_role', ...]; // a list of file roles
 ```
 
-Learn more at [Model](/crud-modules/models.html), [Repository](/crud-modules/repositories.html).
+Learn more at [Model](../3_modules/4_models.md), [Repository](../3_modules/5_repositories.md).
 
 If you are using the file formField in a block, you have to define the `files` key in `config/twill.php`. Add it
 under `block_editor` key and at the same level as `crops` key:

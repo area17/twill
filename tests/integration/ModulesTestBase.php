@@ -7,7 +7,6 @@ use App\Models\Category;
 use App\Models\Translations\AuthorTranslation;
 use App\Models\Translations\CategoryTranslation;
 use Illuminate\Support\Str;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 abstract class ModulesTestBase extends TestCase
 {
@@ -49,7 +48,7 @@ abstract class ModulesTestBase extends TestCase
 
     public $category;
 
-    public $example = 'tests-modules';
+    public ?string $example = 'tests-modules';
 
     public function setUp(): void
     {
@@ -58,7 +57,7 @@ abstract class ModulesTestBase extends TestCase
         $this->actingAs($this->superAdmin, 'twill_users');
     }
 
-    protected function assertSomethingWrongHappened()
+    protected function assertSomethingWrongHappened(): void
     {
         $this->assertSee('Something wrong happened!');
     }
@@ -170,7 +169,7 @@ abstract class ModulesTestBase extends TestCase
 
         $this->assertNotNull($this->translation);
 
-        $this->assertCount(3, $this->author->slugs);
+        $this->assertCount(2, $this->author->slugs);
 
         return $this->author;
     }
@@ -444,7 +443,7 @@ abstract class ModulesTestBase extends TestCase
 
         $this->assertNotNull($this->translation);
 
-        $this->assertCount(3, $this->category->slugs);
+        $this->assertCount(2, $this->category->slugs);
 
         return $this->category;
     }

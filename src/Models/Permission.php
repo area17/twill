@@ -16,32 +16,29 @@ class Permission extends BaseModel
     /**
      * Constant that represents a list of permissions that belongs to the global scope.
      *
-     * @var string
      * @see Permission::available($scope)
      */
-    const SCOPE_GLOBAL = 'global';
+    public const SCOPE_GLOBAL = 'global';
 
     /**
      * Constant that represents a list of permissions that belongs to the module scope.
      *
-     * @var string
      * @see Permission::available($scope)
      */
-    const SCOPE_MODULE = 'module';
+    public const SCOPE_MODULE = 'module';
 
     /**
      * Constant that represents a list of permissions that belongs to the module item scope.
      *
-     * @var string
      * @see Permission::available($scope)
      */
-    const SCOPE_ITEM = 'item';
+    public const SCOPE_ITEM = 'item';
 
     protected $fillable = [
         'name',
         'permissionable_type',
         'permissionable_id',
-        'is_default'
+        'is_default',
     ];
 
     protected $appends = ['permissionable_module'];
@@ -64,13 +61,13 @@ class Permission extends BaseModel
                     'edit-user-groups',
                     'manage-modules',
                     'access-media-library',
-                    'edit-media-library'
+                    'edit-media-library',
                 ];
             case self::SCOPE_MODULE:
                 return array_merge(
                     [
                         'view-module',
-                        'edit-module'
+                        'edit-module',
                     ],
                     (TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM) ? ['manage-module'] : [])
                 );
@@ -78,7 +75,7 @@ class Permission extends BaseModel
                 return [
                     'view-item',
                     'edit-item',
-                    'manage-item'
+                    'manage-item',
                 ];
         }
     }
@@ -184,7 +181,7 @@ class Permission extends BaseModel
      */
     public function scopeOfItem(Builder $query, BaseModel $item)
     {
-        $permissionableSubmodule = self::permissionableModules()->filter(function($module) use ($item){
+        $permissionableSubmodule = self::permissionableModules()->filter(function ($module) use ($item) {
             return strpos($module, '.') && explode('.', $module)[1] === getModuleNameByModel($item);
         })->first();
 
@@ -235,5 +232,4 @@ class Permission extends BaseModel
     {
         return getModuleNameByModel($this->permissionable_type);
     }
-
 }

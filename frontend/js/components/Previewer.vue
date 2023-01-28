@@ -60,10 +60,9 @@
 
   import { mapState } from 'vuex'
 
-  import { REVISION, FORM, NOTIFICATION } from '@/store/mutations'
-  import ACTIONS from '@/store/actions'
-
   import A17PreviewerFrame from '@/components/PreviewerFrame.vue'
+  import ACTIONS from '@/store/actions'
+  import { FORM, NOTIFICATION,REVISION } from '@/store/mutations'
   import a17VueFilters from '@/utils/filters.js'
 
   export default {

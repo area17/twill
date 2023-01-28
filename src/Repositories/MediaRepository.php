@@ -46,5 +46,4 @@ class MediaRepository extends ModuleRepository
 
         return $fields;
     }
-
 }

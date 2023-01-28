@@ -39,11 +39,13 @@ class SettingRepository extends ModuleRepository
         if (config('twill.media_library.translated_form_fields', false)) {
             $medias = $settings->reduce(function ($carry, TwillModelContract $setting) {
                 foreach (getLocales() as $locale) {
-                    if (!empty(parent::getFormFields($setting)['medias'][$locale]) && !empty(
-                        parent::getFormFields(
-                            $setting
-                        )['medias'][$locale][$setting->key]
-                        )) {
+                    if (
+                        !empty(parent::getFormFields($setting)['medias'][$locale]) && !empty(
+                            parent::getFormFields(
+                                $setting
+                            )['medias'][$locale][$setting->key]
+                        )
+                    ) {
                         $carry[$locale][$setting->key] = parent::getFormFields(
                             $setting
                         )['medias'][$locale][$setting->key];
@@ -61,12 +63,12 @@ class SettingRepository extends ModuleRepository
         return $settings->mapWithKeys(function ($setting) {
                 $settingValue = [];
 
-                foreach ($setting->translations as $translation) {
-                    $settingValue[$translation->locale] = $translation->value;
-                }
+            foreach ($setting->translations as $translation) {
+                $settingValue[$translation->locale] = $translation->value;
+            }
 
                 return [$setting->key => count(getLocales()) > 1 ? $settingValue : $setting->value];
-            })->toArray() + ['medias' => $medias];
+        })->toArray() + ['medias' => $medias];
     }
 
     /**
@@ -146,5 +148,4 @@ class SettingRepository extends ModuleRepository
     {
         return $this->config->get('twill.settings.crops')[$role];
     }
-
 }

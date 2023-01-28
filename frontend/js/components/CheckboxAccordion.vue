@@ -7,9 +7,10 @@
 </template>
 
 <script>
-  import a17Accordion from './Accordion.vue'
   import VisibilityMixin from '@/mixins/toggleVisibility'
   import { LANGUAGE } from '@/store/mutations'
+
+  import a17Accordion from './Accordion.vue'
 
   export default {
     name: 'A17Checkboxaccordion',

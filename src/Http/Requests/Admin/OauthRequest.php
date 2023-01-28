@@ -6,7 +6,6 @@ use Illuminate\Validation\Rule;
 
 class OauthRequest extends Request
 {
-
     protected $redirectRoute = 'twill.login.form';
 
 
@@ -22,7 +21,6 @@ class OauthRequest extends Request
         $data['provider'] = $this->input('provider', $this->route('provider'));
 
         return $data;
-
     }
 
     /**
@@ -36,10 +34,8 @@ class OauthRequest extends Request
         return [
             'provider' => [
                 'required',
-                Rule::in(config('twill.oauth.providers', []))
+                Rule::in(config('twill.oauth.providers', [])),
             ],
         ];
-
     }
-
 }

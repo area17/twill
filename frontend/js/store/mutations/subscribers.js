@@ -1,7 +1,7 @@
-import * as FORM from '@/store/mutations/form'
-import * as MEDIA_LIBRARY from '@/store/mutations/media-library'
-import * as LANGUAGE from '@/store/mutations/language'
 import * as BROWSER from '@/store/mutations/browser'
+import * as FORM from '@/store/mutations/form'
+import * as LANGUAGE from '@/store/mutations/language'
+import * as MEDIA_LIBRARY from '@/store/mutations/media-library'
 
 /* Mutations that must trigger a change in the form need to be listed here */
 export const FORM_MUTATIONS_TO_SUBSCRIBE = [

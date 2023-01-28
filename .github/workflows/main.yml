@@ -44,9 +44,23 @@ jobs:
       - name: Execute tests
         run: vendor/bin/phpstan
 
+      - name: Check code style
+        run: vendor/bin/phpcs
+
   test:
-    timeout-minutes: 15
+    name: PHP ${{ matrix.php }} - LARAVEL ${{ matrix.laravel }}
+    timeout-minutes: 30
     runs-on: ${{ matrix.os }}
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: twill_testing_3x
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     strategy:
       fail-fast: false
       matrix:
@@ -56,7 +70,6 @@ jobs:
         include:
           - laravel: 9.*
             testbench: 7.*
-    name: PHP ${{ matrix.php }} - LARAVEL ${{ matrix.laravel }}
 
     steps:
       - name: Checkout code
@@ -66,7 +79,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo, mysql
           coverage: xdebug
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -114,8 +127,10 @@ jobs:
       - name: Upgrade Chrome Driver
         run: ./vendor/bin/testbench dusk:chrome-driver --detect
 
-      - name: Execute tests
-        run: vendor/bin/testbench package:test
+      - name: Execute all tests
+        run: vendor/bin/phpunit
+        env:
+          DB_PORT: ${{ job.services.mysql.ports['3306'] }}
 
       - uses: codecov/codecov-action@v2
         with:

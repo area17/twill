@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
  * @mixin \A17\Twill\Models\Model
+ * @mixin \A17\Twill\Models\Behaviors\HasSlug
  *
- * @property-read int $id
+ * @property int $id
  *
  * @todo: Check if we can make it mixin some eloquent methods as well?
  */

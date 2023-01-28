@@ -1,6 +1,8 @@
 import Vue from 'vue'
-import { BROWSER } from '../mutations'
+
 import ACTIONS from '@/store/actions'
+
+import { BROWSER } from '../mutations'
 
 const state = {
   connector: null,

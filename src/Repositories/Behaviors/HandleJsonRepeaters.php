@@ -69,13 +69,7 @@ trait HandleJsonRepeaters
         return $fields;
     }
 
-    /**
-     * @param array $fields
-     * @param string $repeaterName
-     * @param array $serializedData
-     * @return array
-     */
-    public function getJsonRepeater($fields, $repeaterName, $serializedData)
+    public function getJsonRepeater(array $fields, string $repeaterName, array $serializedData): array
     {
         $repeatersFields = [];
         $repeatersBrowsers = [];
@@ -86,12 +80,20 @@ trait HandleJsonRepeaters
         foreach ($serializedData as $index => $repeaterItem) {
             $id = $repeaterItem['id'] ?? $index;
 
+            $repeater = $repeatersList[$repeaterName] ?? $repeatersList['dynamic-repeater-' . $repeaterName] ?? null;
+
+            if (!$repeater) {
+                // There is no repeater found. This can be due to code removal but a database left-over.
+                // In that case, we cannot do anything so we simply return the fields.
+                return $fields;
+            }
+
             $repeaters[] = [
                 'id' => $id,
-                'type' => $repeatersList[$repeaterName]->component,
-                'title' => $repeatersList[$repeaterName]->title,
-                'titleField' => $repeatersList[$repeaterName]->titleField,
-                'hideTitlePrefix' => $repeatersList[$repeaterName]->hideTitlePrefix,
+                'type' => $repeater->component,
+                'title' => $repeater->title,
+                'titleField' => $repeater->titleField,
+                'hideTitlePrefix' => $repeater->hideTitlePrefix,
             ];
 
             if (isset($repeaterItem['browsers'])) {

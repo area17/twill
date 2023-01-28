@@ -6,7 +6,7 @@ use A17\Twill\Services\Forms\Option;
 use A17\Twill\Services\Forms\Options;
 use A17\Twill\View\Components\Fields\Radios;
 
-class RadiosFieldTest extends ComponentWithOptionsTestBase
+class RadiosFieldTest extends ComponentTestBase
 {
     public string $component = Radios::class;
     public array $data = [

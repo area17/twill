@@ -18,7 +18,9 @@ use Illuminate\Database\Eloquent\Builder;
 
 class UserRepository extends ModuleRepository
 {
-    use HandleMedias, HandleOauth, HandleUserPermissions;
+    use HandleMedias;
+    use HandleOauth;
+    use HandleUserPermissions;
 
     protected Config $config;
 
@@ -35,7 +37,7 @@ class UserRepository extends ModuleRepository
         AuthFactory $authFactory
     ) {
         $userModel = twillModel('user');
-        $this->model = new $userModel;
+        $this->model = new $userModel();
         $this->passwordBrokerManager = $passwordBrokerManager;
         $this->authFactory = $authFactory;
         $this->config = $config;
@@ -78,7 +80,8 @@ class UserRepository extends ModuleRepository
 
         if (TwillPermissions::enabled()) {
             foreach ($browserFields as $index => $browserField) {
-                if ($browserField['id'] === Group::getEveryoneGroup()->id &&
+                if (
+                    $browserField['id'] === Group::getEveryoneGroup()->id &&
                     $browserField['name'] === Group::getEveryoneGroup()->name
                 ) {
                     $browserFields[$index]['edit'] = false;
@@ -101,15 +104,18 @@ class UserRepository extends ModuleRepository
         $editor = $this->authFactory->guard('twill_users')->user();
         $with2faSettings = $this->config->get('twill.enabled.users-2fa', false) && $editor?->id === $user->id;
 
-        if ($with2faSettings
+        if (
+            $with2faSettings
             && $user->google_2fa_enabled
             && !($fields['google_2fa_enabled'] ?? false)
         ) {
             $fields['google_2fa_secret'] = null;
         }
 
-        if ($this->config->get('twill.enabled.users-2fa', false)
-            && ($fields['force-2fa-disable-challenge'] ?? false)) {
+        if (
+            $this->config->get('twill.enabled.users-2fa', false)
+            && ($fields['force-2fa-disable-challenge'] ?? false)
+        ) {
             $user->google_2fa_enabled = false;
             $user->google_2fa_secret = null;
         }
@@ -147,7 +153,8 @@ class UserRepository extends ModuleRepository
 
     private function sendWelcomeEmail(User $user): void
     {
-        if (empty($user->password)
+        if (
+            empty($user->password)
             && $user->published
             && !$this->db
                 ->table($this->config->get('twill.password_resets_table', 'twill_password_resets'))
@@ -159,5 +166,4 @@ class UserRepository extends ModuleRepository
             );
         }
     }
-
 }

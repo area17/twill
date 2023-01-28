@@ -2,30 +2,48 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\hasMaxlength;
-use A17\Twill\Services\Forms\Fields\Traits\hasOnChange;
-use A17\Twill\Services\Forms\Fields\Traits\hasPlaceholder;
-use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
+use A17\Twill\Services\Forms\Fields\Helpers\TiptapWrapper;
+use A17\Twill\Services\Forms\Fields\Traits\HasMaxlength;
+use A17\Twill\Services\Forms\Fields\Traits\HasOnChange;
+use A17\Twill\Services\Forms\Fields\Traits\HasPlaceholder;
+use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
-/**
- * @todo: Split this? Text, Textarea, Number, ...?
- */
 class Wysiwyg extends BaseFormField
 {
-    use isTranslatable;
-    use hasMaxlength;
-    use hasPlaceholder;
-    use hasOnChange;
+    use IsTranslatable;
+    use HasMaxlength;
+    use HasPlaceholder;
+    use HasOnChange;
 
     public bool $hideCounter = false;
 
     public bool $editSource = false;
 
-    public ?array $toolbarOptions = null;
+    public ?array $toolbarOptions = [
+        ['header' => [2, 3, 4, 5, 6, false]],
+        'bold',
+        'italic',
+        'underline',
+        'strike',
+        'blockquote',
+        "code-block",
+        'ordered',
+        'bullet',
+        'hr',
+        'code',
+        'link',
+        'clean',
+        'table',
+    ];
+
+    /**
+     * @var TiptapWrapper[]
+     */
+    protected array $tiptapWrappers = [];
 
     public ?array $options = null;
 
-    public string $type = 'quill';
+    public string $type = 'tiptap';
 
     public bool $limitHeight = false;
 
@@ -34,6 +52,8 @@ class Wysiwyg extends BaseFormField
     public string $customTheme = 'github';
 
     public ?array $customOptions = null;
+
+    public ?array $browserModules;
 
     public static function make(): static
     {
@@ -133,4 +153,56 @@ class Wysiwyg extends BaseFormField
         return $this;
     }
 
+    /**
+     * Add wrappers that can be used in the editor.
+     */
+    public function addTiptapWrapper(TiptapWrapper $wrapper): static
+    {
+        $this->tiptapWrappers[$wrapper->className] = $wrapper;
+
+        return $this;
+    }
+
+    protected function getToolbarOptions(): array
+    {
+        $base = $this->toolbarOptions;
+        if ($this->tiptapWrappers !== []) {
+            $wrapperList = [];
+            foreach ($this->tiptapWrappers as $wrapper) {
+                $wrapperList[] = $wrapper->toArray();
+            }
+            $base[] = [
+                'wrappers' => $wrapperList
+            ];
+        }
+
+        return $base;
+    }
+
+    /**
+     * The browser module(s) that can be used to select existing content.
+     */
+    public function browserModules(?array $modules = null): static
+    {
+        if (count($modules) === 1 && ! isset($modules[0])) {
+            $this->browserModules[] = [
+                'name' => getModuleNameByModel(array_pop($modules))
+            ];
+        } else {
+            foreach ($modules as $module) {
+                if (isset($module['name'])) {
+                    $this->browserModules[] = [
+                        'name' => getModuleNameByModel($module['name']),
+                        'label' => $module['label']
+                    ];
+                } else {
+                    $this->browserModules[] = [
+                        'name' => getModuleNameByModel($module),
+                    ];
+                }
+            }
+        }
+
+        return $this;
+    }
 }

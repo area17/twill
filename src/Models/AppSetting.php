@@ -24,6 +24,8 @@ class AppSetting extends Model
         'published' => true,
     ];
 
+    private bool $didRegisterSettingsBlocks = false;
+
     /**
      * @return array|array<int,string>
      */
@@ -31,13 +33,13 @@ class AppSetting extends Model
     {
         $directory = resource_path('views/twill/settings/' . $this->getSettingGroup()->getName());
 
-        if (! is_dir($directory)) {
+        if (!is_dir($directory)) {
             throw new SettingsDirectoryMissingException($directory);
         }
 
         $finalList = [];
         foreach (scandir($directory) as $file) {
-            if (str_starts_with($file, '.') || ! str_ends_with($file, '.blade.php')) {
+            if (str_starts_with($file, '.') || !str_ends_with($file, '.blade.php')) {
                 continue;
             }
 
@@ -54,6 +56,10 @@ class AppSetting extends Model
 
     public function registerSettingBlocks(): void
     {
+        if ($this->didRegisterSettingsBlocks) {
+            return;
+        }
+
         $moduleName = lcfirst(Str::plural(Str::afterLast(static::class, '\\')));
 
         $directory = resource_path('views' . DIRECTORY_SEPARATOR . 'twill' . DIRECTORY_SEPARATOR . 'settings' . DIRECTORY_SEPARATOR . $this->getSettingGroup()->getName());

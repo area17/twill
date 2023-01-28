@@ -4,11 +4,13 @@
  * Save all the fields of the form. Submit the form. Display errors.
  */
 
-import api from '../api/form'
-import { getFormData, getFormFields, getModalFormFields } from '@/utils/getFormData.js'
-import { FORM, NOTIFICATION, LANGUAGE, ATTRIBUTES, PUBLICATION, REVISION } from '../mutations'
-import ACTIONS from '@/store/actions'
 import cloneDeep from 'lodash/cloneDeep'
+
+import ACTIONS from '@/store/actions'
+import { getFormData, getFormFields, getModalFormFields } from '@/utils/getFormData.js'
+
+import api from '../api/form'
+import { ATTRIBUTES, FORM, LANGUAGE, NOTIFICATION, PUBLICATION, REVISION } from '../mutations'
 
 const getFieldIndex = (stateKey, field) => {
   return stateKey.findIndex(f => f.name === field.name)

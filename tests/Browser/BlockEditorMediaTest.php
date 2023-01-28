@@ -43,8 +43,7 @@ HTML;
 
     public function testMediaCropsForNewBlocks(): void
     {
-        $class = null;
-        $this->tweakApplication(function () use (&$class) {
+        $this->tweakApplication(function () {
             $pathToStore = 'app/public/uploads/uuid';
             if (!Media::whereUuid('uuid/area17.png')->exists()) {
                 if (!file_exists(storage_path($pathToStore))) {
@@ -61,7 +60,7 @@ HTML;
                 ])->save();
             }
 
-            $class = \A17\Twill\Tests\Integration\Anonymous\AnonymousModule::make('commands', app())
+            \A17\Twill\Tests\Integration\Anonymous\AnonymousModule::make('commands', app())
                 ->withLinkInPrimaryNavigation()
                 ->withFields([
                     'title' => [],

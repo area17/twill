@@ -38,11 +38,12 @@
 
 <script>
   import debounce from 'lodash/debounce'
-  import randKeyMixin from '@/mixins/randKey'
+
+  import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue'
+  import AttributesMixin from '@/mixins/addAttributes'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
-  import AttributesMixin from '@/mixins/addAttributes'
-  import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue'
+  import randKeyMixin from '@/mixins/randKey'
   // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
   // import vSelect from 'vue-select' // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
   export default {
@@ -172,8 +173,11 @@
           } else {
             this.value = this.options.find(o => {
               // Try to always compare to the same type. But we only check for a numeric value. Because it can only be
-              // a string or a number for now.
+              // a string or a number (int or float) for now.
               if (typeof o.value === 'number') {
+                if (o.value % 1 !== 0) {
+                  return o.value === parseFloat(value)
+                }
                 return o.value === parseInt(value)
               }
               return o.value === String(value)

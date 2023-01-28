@@ -6,7 +6,7 @@ use A17\Twill\Services\Forms\Option;
 use A17\Twill\Services\Forms\Options;
 use A17\Twill\View\Components\Fields\Checkboxes;
 
-class CheckboxesFieldTest extends ComponentWithOptionsTestBase
+class CheckboxesFieldTest extends ComponentTestBase
 {
     public string $component = Checkboxes::class;
     public array $data = [

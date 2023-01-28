@@ -8,10 +8,11 @@
 </template>
 
 <script>
-  import { NOTIFICATION, FORM } from '@/store/mutations'
-  import ACTIONS from '@/store/actions'
-  import a17ModalValidationButtons from './ModalValidationButtons.vue'
   import retrySubmitMixin from '@/mixins/retrySubmit'
+  import ACTIONS from '@/store/actions'
+  import { FORM,NOTIFICATION } from '@/store/mutations'
+
+  import a17ModalValidationButtons from './ModalValidationButtons.vue'
 
   export default {
     name: 'A17ModalAdd',

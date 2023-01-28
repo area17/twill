@@ -1,0 +1,135 @@
+@layer components {
+  .markdown {
+    @apply f-body text-black;
+    padding-bottom: 60px;
+  }
+
+  .markdown h1 {
+    @apply f-h1;
+  }
+
+  .markdown h2 {
+    @apply f-h2 mt-68;
+    scroll-margin-top: 80px;
+  }
+
+  .markdown h3 {
+    @apply f-h3 mt-52;
+  }
+
+  .markdown h4 {
+    @apply f-h4 mt-20 font-bold;
+  }
+
+  .markdown p {
+    @apply f-body;
+  }
+
+  .markdown .markdown blockquote + p,
+  .markdown ul + p,
+  .markdown ol + p {
+    @apply mt-20;
+  }
+
+  .markdown h2 + *,
+  .markdown h3 + * {
+    @apply mt-20;
+  }
+
+  .markdown p,
+  .markdown ul,
+  .markdown ol {
+    @apply mt-20;
+    font-variant-numeric: lining-nums;
+  }
+
+  .markdown > *:first-child {
+    margin-top: 0;
+  }
+
+  .markdown strong {
+    font-weight: 500;
+  }
+
+  .markdown p a,
+  .markdown li a {
+    @apply underline;
+  }
+
+  a {
+    @apply underline;
+  }
+
+  .markdown p a {
+    color: var(--purple);
+    text-decoration: none;
+  }
+
+  .markdown p a:hover {
+    text-decoration: underline;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    position: relative;
+  }
+
+  .markdown ul {
+    margin-left: 1.2em;
+    list-style-type: disc;
+  }
+
+  .markdown ol {
+    margin-left: 1.2em;
+    list-style-type: dot;
+  }
+
+  h1:hover .heading-permalink,
+  h2:hover .heading-permalink,
+  h3:hover .heading-permalink {
+    opacity: 1;
+  }
+  .heading-permalink {
+    position: absolute;
+    opacity: 0;
+    font-weight: 400;
+    transform: translateX(calc(-100%));
+    padding-right: 10px;
+    color: var(--purple);
+    text-decoration: none !important;
+    scroll-margin-top: calc(80px + 32px);
+  }
+
+  .heading-permalink:hover {
+    text-decoration: none;
+  }
+
+  table {
+    @apply mt-20;
+  }
+
+  thead tr {
+    font-weight: 500;
+  }
+
+  tr {
+    text-align: left;
+  }
+
+  th,
+  td {
+    text-align: left;
+    padding: 16px 8px;
+  }
+
+  td,
+  th {
+    border: 1px solid #dfe2e5;
+  }
+
+  tr:nth-child(2n) {
+    background-color: #f6f8fa;
+  }
+}

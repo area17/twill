@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Commands\Traits;
 
+use Illuminate\Support\Str;
+
 /**
  * @method void publishConfig;
  */
@@ -10,6 +12,37 @@ trait HandlesPresets
     protected function presetExists(string $preset): bool
     {
         return file_exists($this->getExamplesStoragePath($preset)) && is_dir($this->getExamplesStoragePath($preset));
+    }
+
+    protected function generateExampleFromGit(string $preset): void
+    {
+        $basePath = base_path();
+        $status = shell_exec('cd ' . $basePath . ' && git status --short');
+
+        $targetDir = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', '..', 'examples', $preset, '']);
+
+        if (is_dir($targetDir)) {
+            $this->rrmdir($targetDir);
+        }
+
+        $lines = explode(PHP_EOL, $status);
+
+        $files = [];
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+
+            if ($line !== '') {
+                [$action, $file] = explode(' ', $line);
+
+                $files[] = [
+                    'from' => base_path($file),
+                    'to' => $targetDir . $file,
+                ];
+            }
+        }
+
+        $this->copyPresetFiles($files);
     }
 
     protected function installPresetFiles(string $preset, bool $fromTests = false, ?string $basePath = null): void
@@ -88,7 +121,52 @@ trait HandlesPresets
                 }
             }
 
-            copy($file['from'], $file['to']);
+            if (str_ends_with($file['from'], DIRECTORY_SEPARATOR)) {
+                $this->recurseCopy($file['from'], $file['to']);
+            } else {
+                copy($file['from'], $file['to']);
+            }
+        }
+    }
+
+    /**
+     * @see https://www.php.net/manual/en/function.copy.php#91010
+     */
+    private function recurseCopy(string $from, string $to): void
+    {
+        $dir = opendir($from);
+        if (!is_dir($to)) {
+            mkdir($to);
+        }
+        while (false !== ($file = readdir($dir))) {
+            if (($file !== '.') && ($file !== '..')) {
+                if (is_dir($from . '/' . $file)) {
+                    $this->recurseCopy($from . '/' . $file, $to . '/' . $file);
+                } else {
+                    copy($from . '/' . $file, $to . '/' . $file);
+                }
+            }
+        }
+        closedir($dir);
+    }
+
+    /**
+     * @see https://www.php.net/manual/en/function.rmdir.php#98622
+     */
+    private function rrmdir($dir): void
+    {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object !== "." && $object !== "..") {
+                    if (filetype($dir . "/" . $object) === "dir") {
+                        $this->rrmdir($dir . "/" . $object);
+                    } else {
+                        unlink($dir . "/" . $object);
+                    }
+                }
+            }
+            rmdir($dir);
         }
     }
 

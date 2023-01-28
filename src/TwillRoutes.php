@@ -18,7 +18,19 @@ class TwillRoutes
 
     public function getModuleRouteFromRegistry(string $module): string
     {
-        return $this->registry[$module];
+        if (isset($this->registry[$module])) {
+            return $this->registry[$module];
+        }
+
+        // Find and cache a match.
+        /** @var $route \Illuminate\Support\Facades\Route */
+        foreach (app('router')->getRoutes()->getRoutes() as $route) {
+            if (isset($route->action['twill']['slug']) && $route->action['twill']['slug'] === $module) {
+                return $route->action['twill']['customRoutePrefix'];
+            }
+        }
+
+        return '';
     }
 
     /**
@@ -117,11 +129,19 @@ class TwillRoutes
             ];
 
             if (in_array($route, ['browser', 'tags'])) {
-                Route::get($routeSlug, $mapping);
+                $route = Route::get($routeSlug, $mapping);
+                $route->action['twill'] = [
+                    'customRoutePrefix' => $customRoutePrefix,
+                    'slug' => $slug,
+                ];
             }
 
             if ($route === 'restoreRevision') {
-                Route::get($routeSlug . '/{id}', $mapping);
+                $route = Route::get($routeSlug . '/{id}', $mapping);
+                $route->action['twill'] = [
+                    'customRoutePrefix' => $customRoutePrefix,
+                    'slug' => $slug,
+                ];
             }
 
             if (
@@ -132,11 +152,19 @@ class TwillRoutes
                     'forceDelete',
                 ])
             ) {
-                Route::put($routeSlug, $mapping);
+                $route = Route::put($routeSlug, $mapping);
+                $route->action['twill'] = [
+                    'customRoutePrefix' => $customRoutePrefix,
+                    'slug' => $slug,
+                ];
             }
 
             if ($route === 'duplicate' || $route === 'preview') {
-                Route::put($routeSlug . '/{id}', $mapping);
+                $route = Route::put($routeSlug . '/{id}', $mapping);
+                $route->action['twill'] = [
+                    'customRoutePrefix' => $customRoutePrefix,
+                    'slug' => $slug,
+                ];
             }
 
             if (
@@ -149,19 +177,27 @@ class TwillRoutes
                     'bulkForceDelete',
                 ])
             ) {
-                Route::post($routeSlug, $mapping);
+                $route = Route::post($routeSlug, $mapping);
+                $route->action['twill'] = [
+                    'customRoutePrefix' => $customRoutePrefix,
+                    'slug' => $slug,
+                ];
             }
         }
 
         if ($resource) {
             Route::group(
                 ['as' => $resourceCustomGroupPrefix],
-                function () use ($slug, $className, $resource_options) {
-                    Route::resource(
+                function () use ($slug, $className, $resource_options, $customRoutePrefix) {
+                    $route = Route::resource(
                         $slug,
                         "{$className}Controller",
                         $resource_options
                     );
+                    $route->action['twill'] = [
+                        'customRoutePrefix' => $customRoutePrefix,
+                        'slug' => $slug,
+                    ];
                 }
             );
         }
@@ -290,5 +326,73 @@ class TwillRoutes
                 !$capsule->packageCapsule
             );
         }
+    }
+
+    public function singleton(
+        string $slug,
+        array $options = [],
+        array $resource_options = [],
+        bool $resource = true
+    ): void {
+        $pluralSlug = Str::plural($slug);
+        $modelName = Str::studly($slug);
+
+        $this->module($pluralSlug, $options, $resource_options, $resource);
+
+        $lastRouteGroupName = RouteServiceProvider::getLastRouteGroupName();
+
+        $groupPrefix = RouteServiceProvider::getGroupPrefix();
+
+        // Check if name will be a duplicate, and prevent if needed/allowed
+        if (RouteServiceProvider::shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)) {
+            $singletonRouteName = "{$groupPrefix}.{$slug}";
+        } else {
+            $singletonRouteName = $slug;
+        }
+
+        Route::get($slug, $modelName . 'Controller@editSingleton')->name($singletonRouteName);
+    }
+
+    public function module(
+        string $slug,
+        array $options = [],
+        array $resource_options = [],
+        bool $resource = true
+    ): void {
+        $this->buildModuleRoutes($slug, $options, $resource_options, $resource);
+    }
+
+    public function moduleShowWithPreview(
+        string $moduleName,
+        string $routePrefix = null,
+        string $controllerName = null
+    ): void {
+        if ($routePrefix === null) {
+            $routePrefix = $moduleName;
+        }
+
+        if ($controllerName === null) {
+            $controllerName = ucfirst(Str::plural($moduleName));
+        }
+
+        $routePrefix = empty($routePrefix)
+            ? '/'
+            : (Str::startsWith($routePrefix, '/')
+                ? $routePrefix
+                : '/' . $routePrefix);
+        $routePrefix = Str::endsWith($routePrefix, '/')
+            ? $routePrefix
+            : $routePrefix . '/';
+
+        Route::name($moduleName . '.show')->get(
+            $routePrefix . '{slug}',
+            $controllerName . 'Controller@show'
+        );
+        Route::name($moduleName . '.preview')
+            ->get(
+                '/admin-preview' . $routePrefix . '{slug}',
+                $controllerName . 'Controller@show'
+            )
+            ->middleware(['web', 'twill_auth:twill_users', 'can:list']);
     }
 }

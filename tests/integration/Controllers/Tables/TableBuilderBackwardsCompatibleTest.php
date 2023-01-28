@@ -36,11 +36,12 @@ class TableBuilderBackwardsCompatibleTest extends ModulesTestBase
             [
                 'name' => 'published',
                 'label' => 'Published',
-                'visible' => false,
+                'visible' => true,
                 'optional' => true,
                 'sortable' => true,
                 'html' => false,
                 'specificType' => null,
+                'shrink' => false,
             ],
             [
                 'name' => 'cover',
@@ -51,6 +52,7 @@ class TableBuilderBackwardsCompatibleTest extends ModulesTestBase
                 'html' => false,
                 'specificType' => 'thumbnail',
                 'variation' => 'square',
+                'shrink' => true,
             ],
             [
                 'name' => 'title',
@@ -60,15 +62,17 @@ class TableBuilderBackwardsCompatibleTest extends ModulesTestBase
                 'sortable' => false,
                 'html' => false,
                 'specificType' => null,
+                'shrink' => false,
             ],
             [
                 'name' => 'languages',
                 'label' => 'Languages',
-                'visible' => false,
+                'visible' => true,
                 'optional' => true,
                 'sortable' => false,
                 'html' => false,
                 'specificType' => null,
+                'shrink' => false,
             ],
         ], $indexData['tableColumns']);
     }
