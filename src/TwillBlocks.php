@@ -318,7 +318,6 @@ class TwillBlocks
                     $this->cropConfigs = array_merge($this->cropConfigs, $crops);
                 }
             }
-
         }
 
         return $this->cropConfigs;
