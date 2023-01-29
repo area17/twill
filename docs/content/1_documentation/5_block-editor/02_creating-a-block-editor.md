@@ -100,6 +100,31 @@ public static function getBlockIcon(): string
 }
 ```
 
+#### Crops
+
+Usually we would define image crop's in the block_editor config, but with block components you can define
+them inline in your component like this:
+
+```php
+public static function getCrops(): array
+{
+    return [
+        'content_image' => [
+            'default' => [
+                [
+                    'name' => 'default',
+                    'ratio' => 16 / 9,
+                    'minValues' => [
+                        'width' => 100,
+                        'height' => 100,
+                    ],
+                ],
+            ]
+        ]
+    ];
+}
+```
+
 #### Validation
 
 As with default blocks, you can also [validate](./08_validating-blocks.md) fields:
