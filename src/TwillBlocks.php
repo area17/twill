@@ -4,7 +4,6 @@ namespace A17\Twill;
 
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\BlockCollection;
-use A17\Twill\Services\Forms\Fields\BaseFormField;
 use A17\Twill\Services\Forms\InlineRepeater;
 use A17\Twill\View\Components\Blocks\TwillBlockComponent;
 use Illuminate\Support\Collection;
@@ -52,7 +51,9 @@ class TwillBlocks
     /**
      * @return A17\Twill\Services\Blocks\BlockCollection
      */
-    private $blockCollection;
+    private ?BlockCollection $blockCollection = null;
+
+    private array $cropConfigs = [];
 
     /**
      * Registers a blocks directory.
@@ -296,5 +297,29 @@ class TwillBlocks
             ->map(function ($file) use ($source, $type, $renderNamespace) {
                 return Block::make($file, $type, $source, null, $renderNamespace);
             });
+    }
+
+    /**
+     * Gets all the crop configs, also those of component blocks.
+     */
+    public function getAllCropConfigs(): array
+    {
+        if (! $this->cropConfigs) {
+            $this->cropConfigs = config()->get('twill.block_editor.crops');
+
+            /** @var Block $block */
+            foreach ($this->getBlockCollection() as $block) {
+                if (! $block->componentClass) {
+                    continue;
+                }
+
+                $crops = $block->componentClass::getCrops();
+                if ($crops !== []) {
+                    $this->cropConfigs = array_merge($this->cropConfigs, $crops);
+                }
+            }
+        }
+
+        return $this->cropConfigs;
     }
 }
