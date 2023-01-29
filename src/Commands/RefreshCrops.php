@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Models\Media;
 use Carbon\Carbon;
 use Illuminate\Database\DatabaseManager;
@@ -107,7 +108,7 @@ class RefreshCrops extends Command
 
         $mediasParams = app($this->modelName)->getMediasParams();
         if (empty($mediasParams)) {
-            $mediasParams = config('twill.block_editor.crops');
+            $mediasParams = TwillBlocks::getAllCropConfigs();
         }
 
         if (! isset($mediasParams[$this->roleName])) {

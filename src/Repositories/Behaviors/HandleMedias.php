@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Media;
 use Illuminate\Support\Arr;
@@ -80,7 +81,7 @@ trait HandleMedias
 
                 if (
                     array_key_exists($role, $this->model->getMediasParams())
-                    || array_key_exists($role, config('twill.block_editor.crops', []))
+                    || array_key_exists($role, TwillBlocks::getAllCropConfigs())
                     || array_key_exists($role, config('twill.settings.crops', []))
                 ) {
                     Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {

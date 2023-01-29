@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Helpers;
 
+use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Models\Behaviors\HasBlocks;
 use A17\Twill\Models\Block as A17Block;
 use A17\Twill\Models\Contracts\TwillModelContract;
@@ -194,7 +195,7 @@ class BlockRenderer
 
                 $locale = $locale ?? config('app.locale');
 
-                $crops = config('twill.block_editor.crops');
+                $crops = TwillBlocks::getAllCropConfigs();
 
                 if (array_key_exists($role, $crops)) {
                     Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {

@@ -47,6 +47,11 @@ abstract class TwillBlockComponent extends Component
         return $this->block->translatedInput($fieldName);
     }
 
+    public static function getCrops(): array
+    {
+        return [];
+    }
+
     /**
      * This string should contain no special characters or spaces.
      *
