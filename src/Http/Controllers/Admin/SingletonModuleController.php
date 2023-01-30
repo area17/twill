@@ -39,7 +39,7 @@ abstract class SingletonModuleController extends ModuleController
 
         $controllerForm = $this->getForm($item);
 
-        if ($controllerForm->isNotEmpty()) {
+        if ($controllerForm->hasForm()) {
             $view = 'twill::layouts.form';
         } else {
             $view = "twill.{$this->moduleName}.form";

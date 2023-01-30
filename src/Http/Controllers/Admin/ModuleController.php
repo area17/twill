@@ -1144,7 +1144,7 @@ abstract class ModuleController extends Controller
 
         $controllerForm = $this->getForm($item);
 
-        if ($controllerForm->isNotEmpty()) {
+        if ($controllerForm->hasForm()) {
             $view = 'twill::layouts.form';
         } else {
             $view = Collection::make([
