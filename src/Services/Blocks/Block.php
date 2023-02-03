@@ -10,9 +10,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
-/**
- * @todo(3.x): This is not really a service, and we should move this to another location.
- */
 class Block
 {
     public const SOURCE_APP = 'app';
@@ -191,7 +188,7 @@ class Block
 
     public function newInstance(): self
     {
-        return new self(
+        return new static(
             $this->file,
             $this->type,
             $this->source,

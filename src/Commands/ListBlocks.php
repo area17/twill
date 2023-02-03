@@ -4,7 +4,6 @@ namespace A17\Twill\Commands;
 
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Services\Blocks\Block;
-use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -50,10 +49,7 @@ class ListBlocks extends Command
         );
     }
 
-    /**
-     * @return Block[]
-     */
-    protected function generateHeaders()
+    protected function generateHeaders(): array
     {
         return [
             'Title',
@@ -71,6 +67,7 @@ class ListBlocks extends Command
             'File',
             'Component',
             'Max',
+            'Block class',
         ];
     }
 
@@ -106,6 +103,8 @@ class ListBlocks extends Command
 
             // We do not render this.
             unset($data['rules'], $data['rulesForTranslatedFields']);
+
+            $data['block class'] = $block::class !== 'A17\Twill\Services\Blocks\Block' ? get_class($block) : 'default';
 
             $list[] = $data;
         }
