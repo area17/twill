@@ -55,6 +55,8 @@ return [
     ],
     'repeaters' => [],
 
+    'core_icons' => dirname(__DIR__) . '/frontend/icons',
+
     'directories' => [
         'source' => [
             'blocks' => [

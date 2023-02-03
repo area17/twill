@@ -2,6 +2,20 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.0.0-rc4
+
+This is the fourth release candidate for Twill 3!
+
+### Features
+
+- Block crops can now be defined from block components [`#2115`](https://github.com/area17/twill/pull/2115)
+- `twill:update` will now ask to run migrations [`#2107`](https://github.com/area17/twill/pull/2107)
+
+### Bugfixes
+
+- Fixes various issues related to blocks [`#2124`](https://github.com/area17/twill/pull/2124)
+- Allows fieldset only forms [`#2117`](https://github.com/area17/twill/pull/2117)
+
 ## 3.0.0-rc3
 
 This is the third (and should be last) release candidate for Twill 3!
