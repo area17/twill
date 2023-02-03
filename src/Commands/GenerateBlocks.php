@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Console\Command;
@@ -69,7 +70,7 @@ class GenerateBlocks extends Command
 
         $this->info(self::SCANNING_BLOCKS);
 
-        $blocks = new BlockCollection();
+        $blocks = TwillBlocks::getBlockCollection();
         $blocks
             ->collect()
             ->where('compiled', true)

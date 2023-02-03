@@ -6,6 +6,7 @@ use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Services\Forms\InlineRepeater;
 use A17\Twill\View\Components\Blocks\TwillBlockComponent;
 use Exception;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
@@ -153,6 +154,7 @@ class Block
             componentClass: $componentClass
         );
 
+        $class->title = $componentClass::getBlockTitle();
         $class->rulesForTranslatedFields = (new $componentClass())->getTranslatableValidationRules();
         $class->rules = (new $componentClass())->getValidationRules();
 
@@ -287,11 +289,7 @@ class Block
         }
     }
 
-    /**
-     * @param $source
-     * @return $this
-     */
-    public function setSource($source)
+    public function setSource(string $source): self
     {
         $this->source = $source;
 
@@ -308,18 +306,13 @@ class Block
      *
      * This function is not aware of the context. If you need to know the current module you have to figure that out
      * yourself by for example parsing the route.
-     *
-     * @return array
      */
     public function getFormData(): array
     {
         return [];
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    public function toList()
+    public function toList(): Collection
     {
         return collect([
             'title' => $this->title,
@@ -342,10 +335,7 @@ class Block
         ]);
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    public function toShortList()
+    public function toShortList(): Collection
     {
         return collect([
             'title' => $this->title,
@@ -356,22 +346,17 @@ class Block
         ]);
     }
 
-    /**
-     * @param $name
-     * @return string
-     */
-    public function makeName($name)
+    public function makeName(string $name): string
     {
         return Str::kebab($name);
     }
 
     /**
-     * @return $this
      * @throws \Exception
      */
-    public function parse()
+    public function parse(): self
     {
-        $contents = $this->file ? file_get_contents((string)$this->file->getPathName()) : '';
+        $contents = $this->file ? file_get_contents($this->file->getPathName()) : '';
 
         $this->title = $this->parseProperty('title', $contents, $this->name);
         $this->trigger = $this->parseProperty(
@@ -620,7 +605,7 @@ class Block
      */
     public function getFileName()
     {
-        return $this->file ? $this->file->getFileName() : 'Custom Vue file';
+        return $this->file ? $this->file->getFileName() : $this->componentClass;
     }
 
     /**
