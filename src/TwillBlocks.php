@@ -143,7 +143,6 @@ class TwillBlocks
     {
         if (! isset($this->blockCollection)) {
             $this->blockCollection = new BlockCollection();
-            $this->loadLegacyBlocks();
         }
 
         // Consume the repeatersDirectories. We act a bit dumb here by not taking into account duplicates
@@ -217,21 +216,6 @@ class TwillBlocks
         }
 
         return $this->blockCollection;
-    }
-
-    public function loadLegacyBlocks(): void
-    {
-        once(function () {
-            $this->getBlockCollection()->addBlocksFromConfig(
-                collect(config('twill.block_editor.repeaters')),
-                Block::TYPE_REPEATER
-            );
-
-            $this->getBlockCollection()->addBlocksFromConfig(
-                collect(config('twill.block_editor.blocks')),
-                Block::TYPE_REPEATER
-            );
-        });
     }
 
     public function registerManualBlock(string $blockClass): void
