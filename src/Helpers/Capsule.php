@@ -75,6 +75,8 @@ class Capsule
     public function registerViews(): void
     {
         View::addLocation(Str::replaceLast(DIRECTORY_SEPARATOR . $this->name, '', $this->path));
+
+        $this->registerBlocksAndRepeatersViewPaths();
     }
 
     public function loadMigrations(): void
@@ -367,5 +369,23 @@ class Capsule
     public function getType(): string
     {
         return '';
+    }
+
+    public function registerBlocksAndRepeatersViewPaths(): void
+    {
+        $resourcePath = $this->getConfig()['views_path'] ?? 'resources/views/admin';
+
+        foreach(['blocks', 'repeaters'] as $type) {
+            if (file_exists($path = "{$this->path}/$resourcePath/$type")) {
+                $paths = config("twill.block_editor.directories.source.$type");
+
+                $paths[] = [
+                    'path' => $path,
+                    'source' => 'capsule::'.$this->name
+                ];
+
+                config(["twill.block_editor.directories.source.$type" => $paths]);
+            }
+        }
     }
 }
