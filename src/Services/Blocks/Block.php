@@ -246,7 +246,7 @@ class Block
      * @param InlineRepeater $inlineRepeater used when registering dynamic repeaters.
      * @throws \Exception
      */
-    public function __construct(
+    final public function __construct(
         $file,
         $type,
         $source,
