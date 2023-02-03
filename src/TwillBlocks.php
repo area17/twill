@@ -17,6 +17,7 @@ class TwillBlocks
      * @var string
      */
     public const DIRECTORY_TYPE_VENDOR = 'vendor';
+    public const DIRECTORY_TYPE_APP = 'app';
 
     /**
      * @var array<string, array>

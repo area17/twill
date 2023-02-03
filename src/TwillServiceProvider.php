@@ -131,7 +131,7 @@ class TwillServiceProvider extends ServiceProvider
         foreach (config('twill.block_editor.directories.source.blocks') as $value) {
             TwillBlocks::$blockDirectories[$value['path']] = [
                 'source' => $value['source'],
-                'type' => 'app',
+                'type' => TwillBlocks::DIRECTORY_TYPE_APP,
                 'renderNamespace' => null
             ];
         }
@@ -139,7 +139,7 @@ class TwillServiceProvider extends ServiceProvider
         foreach (config('twill.block_editor.directories.source.repeaters') as $value) {
             TwillBlocks::$repeatersDirectories[$value['path']] = [
                 'source' => $value['source'],
-                'type' => 'app',
+                'type' => TwillBlocks::DIRECTORY_TYPE_APP,
                 'renderNamespace' => null
             ];
         }
