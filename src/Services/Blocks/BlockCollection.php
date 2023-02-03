@@ -2,9 +2,7 @@
 
 namespace A17\Twill\Services\Blocks;
 
-use A17\Twill\Facades\TwillBlocks;
 use Exception;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Finder\SplFileInfo;
@@ -12,24 +10,6 @@ use Symfony\Component\Finder\SplFileInfo;
 class BlockCollection extends Collection
 {
     protected Collection $paths;
-
-//    protected Filesystem $fileSystem;
-
-//    private Collection $missingDirectories;
-
-//    /**
-//     * @param mixed $items
-//     */
-//    public function __construct($items = [])
-//    {
-//        parent::__construct($items);
-//
-//        $this->fileSystem = app(Filesystem::class);
-//
-//        $this->missingDirectories = collect();
-//
-//        $this->load();
-//    }
 
     /**
      * @return Collection<Block>
