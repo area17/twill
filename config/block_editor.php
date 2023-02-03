@@ -80,7 +80,7 @@ return [
             ],
 
             'icons' => [
-                base_path('vendor/area17/twill/frontend/icons'),
+                dirname(__DIR__) . '/frontend/icons',
                 resource_path('views/twill/icons'),
             ],
         ],

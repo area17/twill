@@ -8,10 +8,7 @@ class BlockCollection extends Collection
 {
     protected Collection $paths;
 
-    /**
-     * @return Collection<Block>
-     */
-    public function findByName(string $search, array $sources = []): Collection
+    public function findByName(string $search, array $sources = []): ?Block
     {
         return $this->collect()
             ->filter(function ($block) use ($search, $sources) {

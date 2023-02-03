@@ -27,18 +27,16 @@ class MakeBlockTest extends TestCase
 
     public function testCanExecuteModuleCommand()
     {
-        $pendingCommand = $this->artisan($command = 'twill:make:block', [
+        $pendingCommand = $this->artisan('twill:make:block', [
             'name' => 'SuperQuote',
             'base' => 'quote',
             'icon' => 'text',
-        ])->expectsConfirmation('Should we also generate a view file for rendering the block?', 'no');
+        ])
+            ->expectsConfirmation('Should we also generate a view file for rendering the block?', 'no')
+            ->doesntExpectOutputToContain('Icon \'text\' doesn\'t exists.');
 
-        $this->getCommand($command)
-            ->getBlockMaker()
-            ->getBlockCollection()
-            ->load();
-
-        $this->assertExitCodeIsGood($pendingCommand->run());
+        $pendingCommand->run();
+        $pendingCommand->assertOk();
 
         $this->assertFileExists(
             config('twill.block_editor.directories.destination.blocks') .
@@ -53,11 +51,6 @@ class MakeBlockTest extends TestCase
             'base' => 'carousel',
             'icon' => 'text',
         ])->expectsConfirmation('Should we also generate a view file for rendering the block?', 'no');
-
-        $this->getCommand($command)
-            ->getBlockMaker()
-            ->getBlockCollection()
-            ->load();
 
         $this->assertExitCodeIsGood($pendingCommand->run());
 
@@ -80,11 +73,6 @@ class MakeBlockTest extends TestCase
             'icon' => 'text',
         ])->expectsConfirmation('Should we also generate a view file for rendering the block?', 'no');
 
-        $this->getCommand($command)
-            ->getBlockMaker()
-            ->getBlockCollection()
-            ->load();
-
         $this->assertExitCodeIsNotGood($pendingCommand->run());
     }
 
@@ -95,11 +83,6 @@ class MakeBlockTest extends TestCase
             'base' => 'quote',
             'icon' => 'missing-icon',
         ])->expectsConfirmation('Should we also generate a view file for rendering the block?', 'no');
-
-        $this->getCommand($command)
-            ->getBlockMaker()
-            ->getBlockCollection()
-            ->load();
 
         $this->assertExitCodeIsNotGood($pendingCommand->run());
     }
@@ -112,11 +95,6 @@ class MakeBlockTest extends TestCase
             'icon' => 'text',
         ])->expectsConfirmation('Should we also generate a view file for rendering the block?', 'no');
 
-        $this->getCommand($command)
-            ->getBlockMaker()
-            ->getBlockCollection()
-            ->load();
-
         $this->assertExitCodeIsGood($pendingCommand->run());
 
         $pendingCommand = $this->artisan($command = 'twill:make:block', [
@@ -124,11 +102,6 @@ class MakeBlockTest extends TestCase
             'base' => 'quote',
             'icon' => 'text',
         ])->expectsConfirmation('Should we also generate a view file for rendering the block?', 'no');
-
-        $this->getCommand($command)
-            ->getBlockMaker()
-            ->getBlockCollection()
-            ->load();
 
         $this->assertExitCodeIsNotGood($pendingCommand->run());
     }
