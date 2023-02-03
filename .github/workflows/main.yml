@@ -69,7 +69,7 @@ jobs:
         laravel: [9.*, 10.*]
         exclude:
           - php: 8.0
-          - laravel: 10.*
+            laravel: 10.*
         include:
           - laravel: 9.*
             testbench: 7.*
