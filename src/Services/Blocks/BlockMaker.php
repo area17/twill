@@ -41,14 +41,6 @@ class BlockMaker
     }
 
     /**
-     * @return \A17\Twill\Services\Blocks\BlockCollection
-     */
-    public function getBlockCollection()
-    {
-        return TwillBlocks::getBlockCollection();
-    }
-
-    /**
      * Make a new block.
      *
      * @param $blockName
@@ -328,7 +320,7 @@ class BlockMaker
      */
     public function getBlockByName($block, $sources = [])
     {
-        return $this->getBlockCollection()->findByName($block, $sources);
+        return TwillBlocks::getBlockCollection()->findByName($block, $sources);
     }
 
     /**
@@ -433,7 +425,7 @@ class BlockMaker
         $blockBase,
         $blockString
     ) {
-        $baseRepeater = $this->getBlockCollection()->findByName($repeaterName);
+        $baseRepeater = TwillBlocks::getBlockCollection()->findByName($repeaterName);
 
         return [
             'baseRepeater' => $baseRepeater,

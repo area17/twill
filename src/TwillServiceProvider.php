@@ -128,6 +128,22 @@ class TwillServiceProvider extends ServiceProvider
             base_path('app/View/Components/Twill/Blocks')
         );
 
+        foreach (config('twill.block_editor.directories.source.blocks') as $value) {
+            TwillBlocks::$blockDirectories[$value['path']] = [
+                'source' => $value['source'],
+                'type' => TwillBlocks::DIRECTORY_TYPE_APP,
+                'renderNamespace' => null
+            ];
+        }
+
+        foreach (config('twill.block_editor.directories.source.repeaters') as $value) {
+            TwillBlocks::$repeatersDirectories[$value['path']] = [
+                'source' => $value['source'],
+                'type' => TwillBlocks::DIRECTORY_TYPE_APP,
+                'renderNamespace' => null
+            ];
+        }
+
         Relation::morphMap([
             'users' => User::class,
             'media' => Media::class,

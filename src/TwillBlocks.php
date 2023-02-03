@@ -17,14 +17,15 @@ class TwillBlocks
      * @var string
      */
     public const DIRECTORY_TYPE_VENDOR = 'vendor';
+    public const DIRECTORY_TYPE_APP = 'app';
 
     /**
-     * @var array<string, string>
+     * @var array<string, array>
      */
     public static $blockDirectories = [];
 
     /**
-     * @var array<string, string>
+     * @var array<string, array>
      */
     public static $repeatersDirectories = [];
 
@@ -178,17 +179,19 @@ class TwillBlocks
 
 
         foreach (self::$componentBlockNamespaces as $namespace => $path) {
-            $disk = Storage::build([
-                'driver' => 'local',
-                'root' => $path,
-            ]);
+            if (file_exists($path)) {
+                $disk = Storage::build([
+                    'driver' => 'local',
+                    'root' => $path,
+                ]);
 
-            foreach ($disk->allFiles() as $file) {
-                $class = $namespace . '\\' . Str::replace('/', '\\', Str::before($file, '.'));
-                if (is_subclass_of($class, TwillBlockComponent::class)) {
-                    $this->blockCollection->add(
-                        Block::forComponent($class)
-                    );
+                foreach ($disk->allFiles() as $file) {
+                    $class = $namespace . '\\' . Str::replace('/', '\\', Str::before($file, '.'));
+                    if (is_subclass_of($class, TwillBlockComponent::class)) {
+                        $this->blockCollection->add(
+                            Block::forComponent($class)
+                        );
+                    }
                 }
             }
 

@@ -50,13 +50,9 @@ class ListBlocksTest extends TestCase
     public function execute($parameters = [])
     {
         $pendingCommand = $this->artisan(
-            $command = 'twill:list:blocks',
+            'twill:list:blocks',
             $parameters
         );
-
-        $this->getCommand($command)
-            ->getBlockCollection()
-            ->load();
 
         $this->assertExitCodeIsGood($pendingCommand->run());
     }
