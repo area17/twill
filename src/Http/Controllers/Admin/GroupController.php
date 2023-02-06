@@ -4,6 +4,8 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Contracts\TwillModelContract;
+use A17\Twill\Services\Listings\Columns\Text;
+use A17\Twill\Services\Listings\TableColumns;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use A17\Twill\Models\Permission;
@@ -39,44 +41,38 @@ class GroupController extends ModuleController
         parent::__construct($app, $request);
         $this->middleware('can:edit-user-groups');
 
+        $this->disablePublish();
+
         TwillPermissions::showUserSecondaryNavigation();
     }
 
-    protected $indexColumns = [
-        'name' => [
-            'title' => 'Name',
-            'field' => 'name',
-            'sort' => true,
-        ],
-        'created_at' => [
-            'title' => 'Date created',
-            'field' => 'created_at',
-            'sort' => true,
-        ],
-        'users' => [
-            'title' => 'Users',
-            'field' => 'users_count',
-            'html' => true,
-        ],
-    ];
-
-    protected function getIndexOption($option, $item = null)
+    protected function getIndexTableColumns(): TableColumns
     {
-        if (in_array($option, ['publish', 'bulkEdit', 'create'])) {
+        return TableColumns::make([
+            Text::make()->field('name')->sortable()->title('Name')->linkToEdit(),
+            Text::make()->field('created_at')->sortable()->title('Date created'),
+            Text::make()->field('users_count')->sortable()->title('Users'),
+        ]);
+    }
+
+
+    protected function getIndexOption($option, $item = null): mixed
+    {
+        if (in_array($option, ['bulkEdit', 'create'])) {
             return auth('twill_users')->user()->can('edit-user-groups');
         }
 
         return parent::getIndexOption($option);
     }
 
-    protected function formData($request)
+    protected function formData($request): array
     {
         return [
             'permissionModules' => Permission::permissionableParentModuleItems(),
         ];
     }
 
-    protected function indexItemData($item)
+    protected function indexItemData($item): array
     {
         $canEdit = auth('twill_users')->user()->can('edit-user-groups') && ($item->canEdit ?? true);
 
@@ -93,7 +89,7 @@ class GroupController extends ModuleController
     {
         // Exclude everyone group from browsers
         return parent::getBrowserItems($scopes)->filter(function ($item) {
-            return !$item->isEveryoneGroup();
+            return ! $item->isEveryoneGroup();
         })->values();
     }
 
