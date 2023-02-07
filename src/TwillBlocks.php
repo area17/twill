@@ -14,12 +14,6 @@ use Illuminate\Support\Str;
 class TwillBlocks
 {
     /**
-     * @var string
-     */
-    public const DIRECTORY_TYPE_VENDOR = 'vendor';
-    public const DIRECTORY_TYPE_APP = 'app';
-
-    /**
      * @var array<string, array>
      */
     public static $blockDirectories = [];
@@ -68,11 +62,11 @@ class TwillBlocks
         if (! isset(self::$blockDirectories[$path])) {
             if (isset($this->blockCollection)) {
                 $this->getBlockCollection()->merge(
-                    $this->readBlocksFromDirectory($path, self::DIRECTORY_TYPE_VENDOR, Block::TYPE_BLOCK)
+                    $this->readBlocksFromDirectory($path, Block::SOURCE_VENDOR, Block::TYPE_BLOCK)
                 );
             } else {
                 self::$blockDirectories[$path] = [
-                    'type' => self::DIRECTORY_TYPE_VENDOR,
+                    'source' => Block::SOURCE_VENDOR,
                     'renderNamespace' => $renderNamespace,
                 ];
             }
@@ -125,11 +119,11 @@ class TwillBlocks
         if (! isset(self::$repeatersDirectories[$path])) {
             if (isset($this->blockCollection)) {
                 $this->getBlockCollection()->merge(
-                    $this->readBlocksFromDirectory($path, self::DIRECTORY_TYPE_VENDOR, Block::TYPE_REPEATER)
+                    $this->readBlocksFromDirectory($path, Block::SOURCE_VENDOR, Block::TYPE_REPEATER)
                 );
             } else {
                 self::$repeatersDirectories[$path] = [
-                    'type' => self::DIRECTORY_TYPE_VENDOR,
+                    'source' => Block::SOURCE_VENDOR,
                     'renderNamespace' => $renderNamespace,
                 ];
             }
@@ -151,7 +145,7 @@ class TwillBlocks
             foreach (
                 $this->readBlocksFromDirectory(
                     $repeaterDir,
-                    $data['type'],
+                    $data['source'],
                     Block::TYPE_REPEATER,
                     $data['renderNamespace']
                 ) as $repeater
@@ -166,7 +160,7 @@ class TwillBlocks
             foreach (
                 $this->readBlocksFromDirectory(
                     $blockDir,
-                    $data['type'],
+                    $data['source'],
                     Block::TYPE_BLOCK,
                     $data['renderNamespace']
                 ) as $block
@@ -214,6 +208,14 @@ class TwillBlocks
                 self::$loadedDynamicRepeaters[$name] = true;
             }
         }
+
+        // remove duplicate Twill blocks
+        $appBlocks = $this->blockCollection->where('source', '!=', Block::SOURCE_TWILL);
+        $this->blockCollection = $this->blockCollection->filter(function ($item) use ($appBlocks) {
+            return ! $appBlocks->contains(function ($block) use ($item) {
+                return $item->source === Block::SOURCE_TWILL && $item->name === $block->name;
+            });
+        });
 
         return $this->blockCollection;
     }

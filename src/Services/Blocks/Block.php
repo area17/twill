@@ -18,6 +18,8 @@ class Block
 
     public const SOURCE_CUSTOM = 'custom';
 
+    public const SOURCE_VENDOR = 'vendor';
+
     public const TYPE_BLOCK = 'block';
 
     public const TYPE_SETTINGS = 'settings';
