@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
  * @mixin \A17\Twill\Models\Model
- * @mixin \A17\Twill\Models\Behaviors\HasSlug
  *
  * @property int $id
  *
