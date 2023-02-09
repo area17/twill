@@ -9,7 +9,7 @@ trait Unpackable
     /**
      * Shows the option in a grid.
      */
-    public function unpack(bool $unpack = true): self
+    public function unpack(bool $unpack = true): static
     {
         $this->unpack = $unpack;
 
@@ -19,7 +19,7 @@ trait Unpackable
     /**
      * The amount of column to show the option in (when using unpack).
      */
-    public function columns(int $columns = 1): self
+    public function columns(int $columns = 1): static
     {
         $this->columns = $columns;
 

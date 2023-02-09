@@ -54,7 +54,7 @@ class BelongsToFilter extends BasicFilter
     /**
      * The relation field to use, this is usually something like "partner".
      */
-    public function field(string $fieldName): self
+    public function field(string $fieldName): static
     {
         $this->field = $fieldName;
 
@@ -75,7 +75,7 @@ class BelongsToFilter extends BasicFilter
     /**
      * The model of the relation target, if field is `partner` this would be `Partner::class`.
      */
-    public function model(string $model): self
+    public function model(string $model): static
     {
         $this->model = $model;
 
@@ -94,7 +94,7 @@ class BelongsToFilter extends BasicFilter
     /**
      * The field name that we use for displaying the item label.
      */
-    public function valueLabelField(string $valueLabelField): self
+    public function valueLabelField(string $valueLabelField): static
     {
         $this->valueLabelField = $valueLabelField;
 

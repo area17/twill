@@ -9,9 +9,10 @@ trait HasMaxlength
     /**
      * Sets the max character length.
      */
-    public function maxLength(string $maxlength): self
+    public function maxLength(string $maxlength): static
     {
         $this->maxlength = $maxlength;
+
         return $this;
     }
 }

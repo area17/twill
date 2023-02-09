@@ -9,7 +9,7 @@ trait CanHaveButtonOnTop
     /**
      * Shows the browse button above instead of below the list of items.
      */
-    public function buttonOnTop(bool $buttonOnTop = true): self
+    public function buttonOnTop(bool $buttonOnTop = true): static
     {
         $this->buttonOnTop = $buttonOnTop;
 

@@ -18,7 +18,7 @@ abstract class TwillBaseFilter
     {
     }
 
-    public static function make(): self
+    public static function make(): static
     {
         return new static();
     }
@@ -26,7 +26,7 @@ abstract class TwillBaseFilter
     /**
      * Set a label to use for the filter.
      */
-    public function label(string $label): self
+    public function label(string $label): static
     {
         $this->label = $label;
 
@@ -41,7 +41,7 @@ abstract class TwillBaseFilter
     /**
      * Set the query string to use in the url
      */
-    public function queryString(string $queryString): self
+    public function queryString(string $queryString): static
     {
         $this->queryString = $queryString;
 
@@ -61,7 +61,7 @@ abstract class TwillBaseFilter
     /**
      * When passing a boolean, the filter will only be enabled when it is true.
      */
-    public function onlyEnableWhen(bool $enable = true): self
+    public function onlyEnableWhen(bool $enable = true): static
     {
         $this->enabled = $enable;
 
@@ -71,7 +71,7 @@ abstract class TwillBaseFilter
     /**
      * When passing a boolean, the filter will be disabled when it is true.
      */
-    public function disable(bool $disable = true): self
+    public function disable(bool $disable = true): static
     {
         $this->enabled = !$disable;
 
@@ -81,7 +81,7 @@ abstract class TwillBaseFilter
     /**
      * The closure to apply the filter.
      */
-    public function apply(\Closure $closure): self
+    public function apply(\Closure $closure): static
     {
         $this->apply = $closure;
 

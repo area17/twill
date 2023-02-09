@@ -9,7 +9,7 @@ trait HasBorder
     /**
      * Adds a border around the options.
      */
-    public function border(bool $border = true): self
+    public function border(bool $border = true): static
     {
         $this->border = $border;
 
