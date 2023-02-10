@@ -332,7 +332,7 @@ class Capsule
 
     public function registerNavigation(): void
     {
-        if (!$this->automaticNavigation) {
+        if (! $this->automaticNavigation) {
             return;
         }
 
@@ -380,13 +380,13 @@ class Capsule
     {
         $resourcePath = $this->getConfig()['views_path'] ?? 'resources/views/admin';
 
-        foreach(['blocks', 'repeaters'] as $type) {
+        foreach (['blocks', 'repeaters'] as $type) {
             if (file_exists($path = "{$this->path}/$resourcePath/$type")) {
                 $paths = config("twill.block_editor.directories.source.$type");
 
                 $paths[] = [
                     'path' => $path,
-                    'source' => 'capsule::'.$this->name
+                    'source' => 'capsule::' . $this->name
                 ];
 
                 config(["twill.block_editor.directories.source.$type" => $paths]);
