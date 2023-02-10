@@ -186,7 +186,7 @@ class Block
         return new self($file, $type, $source, $name, $renderNamespace);
     }
 
-    public function newInstance(): self
+    public function newInstance(): static
     {
         return new static(
             $this->file,

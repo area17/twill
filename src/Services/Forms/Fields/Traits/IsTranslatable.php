@@ -9,9 +9,10 @@ trait IsTranslatable
     /**
      * Makes the field translatable.
      */
-    public function translatable(bool $translatable = true): self
+    public function translatable(bool $translatable = true): static
     {
         $this->translated = $translatable;
+
         return $this;
     }
 }

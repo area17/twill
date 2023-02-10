@@ -9,7 +9,7 @@ trait HasMin
     /**
      * Sets the minimum amount of items.
      */
-    public function min(int $min): self
+    public function min(int $min): static
     {
         $this->min = $min;
 

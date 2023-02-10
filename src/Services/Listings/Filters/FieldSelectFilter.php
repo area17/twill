@@ -57,7 +57,7 @@ class FieldSelectFilter extends BasicFilter
         return $options;
     }
 
-    public function field(string $fieldName): self
+    public function field(string $fieldName): static
     {
         $this->field = $fieldName;
 
@@ -71,7 +71,7 @@ class FieldSelectFilter extends BasicFilter
     /**
      * This adds the "Without value" option if there are result with "null" value.
      */
-    public function withWithoutValueOption(bool $withoutValueOption = true): self
+    public function withWithoutValueOption(bool $withoutValueOption = true): static
     {
         $this->addWithoutValueOption = $withoutValueOption;
 

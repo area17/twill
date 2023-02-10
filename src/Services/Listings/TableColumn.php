@@ -77,7 +77,7 @@ abstract class TableColumn
     /**
      * Sets the title of the column.
      */
-    public function title(?string $title): self
+    public function title(?string $title): static
     {
         $this->title = $title;
         return $this;
@@ -86,7 +86,7 @@ abstract class TableColumn
     /**
      * When enabled the column is sortable by clicking on the header.
      */
-    public function sortable(bool $sortable = true): self
+    public function sortable(bool $sortable = true): static
     {
         $this->sortable = $sortable;
         return $this;
@@ -95,7 +95,7 @@ abstract class TableColumn
     /**
      * When enabled this will be the default column the list is sorted by.
      */
-    public function sortByDefault(bool $defaultSort = true, string $direction = 'ASC'): self
+    public function sortByDefault(bool $defaultSort = true, string $direction = 'ASC'): static
     {
         $this->defaultSort = $defaultSort;
         $this->defaultSortDirection = $direction;
@@ -118,7 +118,7 @@ abstract class TableColumn
     /**
      * Makes the column optional, when set it can be hidden using the gear icon above the listing.
      */
-    public function optional(bool $optional = true): self
+    public function optional(bool $optional = true): static
     {
         $this->optional = $optional;
         return $this;
@@ -127,7 +127,7 @@ abstract class TableColumn
     /**
      * To be used with ->optional, but it will be hidden by default.
      */
-    public function hide(bool $visible = false): self
+    public function hide(bool $visible = false): static
     {
         $this->visible = $visible;
         return $this;
@@ -136,7 +136,7 @@ abstract class TableColumn
     /**
      * When enabled the content will be rendered as html.
      */
-    public function renderHtml(bool $html = true): self
+    public function renderHtml(bool $html = true): static
     {
         $this->html = $html;
         return $this;
@@ -145,13 +145,13 @@ abstract class TableColumn
     /**
      * Links the column content to a fixed url or url via the closure.
      */
-    public function linkCell(Closure|string $link): self
+    public function linkCell(Closure|string $link): static
     {
         $this->link = $link;
         return $this;
     }
 
-    public function linkToEdit(bool $linkToEdit = true): self
+    public function linkToEdit(bool $linkToEdit = true): static
     {
         $this->linkToEdit = $linkToEdit;
 
@@ -166,7 +166,7 @@ abstract class TableColumn
     /**
      * A separate sortKey if different from the field name.
      */
-    public function sortKey(?string $sortKey): self
+    public function sortKey(?string $sortKey): static
     {
         $this->sortKey = $sortKey;
         return $this;
@@ -185,7 +185,7 @@ abstract class TableColumn
      * Please note that when you are having a belongsToMany you have to carefully write your
      * join because otherwise you may end up with duplicate rows.
      */
-    public function order(\Closure $sortFunction): self
+    public function order(\Closure $sortFunction): static
     {
         $this->sortFunction = $sortFunction;
         return $this;
@@ -201,7 +201,7 @@ abstract class TableColumn
      *
      * You can use this to display for example a view or formatted date.
      */
-    public function customRender(Closure $renderFunction): self
+    public function customRender(Closure $renderFunction): static
     {
         $this->render = $renderFunction;
         return $this;

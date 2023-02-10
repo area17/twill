@@ -16,7 +16,7 @@ class NestedData extends TableColumn
         return $item;
     }
 
-    public function sortable(bool $sortable = true): TableColumn
+    public function sortable(bool $sortable = true): static
     {
         if ($sortable && $this->sortFunction === null) {
             $this->order(function (Builder $builder, string $direction) {

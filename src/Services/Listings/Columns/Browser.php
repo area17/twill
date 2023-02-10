@@ -10,7 +10,7 @@ class Browser extends TableColumn
 {
     private ?string $browser = null;
 
-    public function browser(string $browser): self
+    public function browser(string $browser): static
     {
         $this->browser = $browser;
         return $this;

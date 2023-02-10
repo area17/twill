@@ -9,9 +9,10 @@ trait HasPlaceholder
     /**
      * Sets the placeholder of the field.
      */
-    public function placeholder(string $placeholder): self
+    public function placeholder(string $placeholder): static
     {
         $this->placeholder = $placeholder;
+
         return $this;
     }
 }

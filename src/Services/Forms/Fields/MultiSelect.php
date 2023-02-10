@@ -47,49 +47,49 @@ class MultiSelect extends BaseFormField
     /**
      * If the options should be searchable.
      */
-    public function searchable(bool $searchable = true): self
+    public function searchable(bool $searchable = true): static
     {
         $this->searchable = $searchable;
 
         return $this;
     }
 
-    public function canAddNew(bool $canAddNew = true): self
+    public function canAddNew(bool $canAddNew = true): static
     {
         $this->addNew = $canAddNew;
 
         return $this;
     }
 
-    public function moduleName(string $moduleName): self
+    public function moduleName(string $moduleName): static
     {
         $this->moduleName = $moduleName;
 
         return $this;
     }
 
-    public function storeUrl(string $storeUrl): self
+    public function storeUrl(string $storeUrl): static
     {
         $this->storeUrl = $storeUrl;
 
         return $this;
     }
 
-    public function taggable(bool $taggable = true): self
+    public function taggable(bool $taggable = true): static
     {
         $this->taggable = $taggable;
 
         return $this;
     }
 
-    public function pushTags(bool $pushTags = true): self
+    public function pushTags(bool $pushTags = true): static
     {
         $this->pushTags = $pushTags;
 
         return $this;
     }
 
-    public function endpoint(string $endpoint): self
+    public function endpoint(string $endpoint): static
     {
         $this->endpoint = $endpoint;
 

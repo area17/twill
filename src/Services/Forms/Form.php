@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Services\Forms;
 
-use Illuminate\Support\Collection;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Collection;
 
 class Form extends Collection implements CanHaveSubfields
 {
@@ -13,14 +13,14 @@ class Form extends Collection implements CanHaveSubfields
     private bool $isCreate = false;
     private bool $forBlocks = false;
 
-    public function withFieldSets(Fieldsets $fieldsets): self
+    public function withFieldSets(Fieldsets $fieldsets): static
     {
         $this->fieldsets = $fieldsets;
 
         return $this;
     }
 
-    public function addFieldset(Fieldset $fieldset): self
+    public function addFieldset(Fieldset $fieldset): static
     {
         if (! $this->fieldsets) {
             $this->fieldsets = Fieldsets::make();
@@ -31,7 +31,7 @@ class Form extends Collection implements CanHaveSubfields
         return $this;
     }
 
-    public function toFrontend(?Form $sideFieldSets = null, bool $isCreate = false): self
+    public function toFrontend(?Form $sideFieldSets = null, bool $isCreate = false): static
     {
         $this->sideForm = $sideFieldSets;
 
@@ -81,7 +81,7 @@ class Form extends Collection implements CanHaveSubfields
         return $this->forBlocks;
     }
 
-    public function renderForBlocks(bool $renderForBlocks = true): self
+    public function renderForBlocks(bool $renderForBlocks = true): static
     {
         $this->forBlocks = $renderForBlocks;
 
