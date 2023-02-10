@@ -199,8 +199,8 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
         }
 
         return Str::replace(
-            ['/{preview}'],
-            [''],
+            ['/{preview}', '{language}'],
+            ['', app()->getLocale()],
             rtrim($controller->getPermalinkBaseUrl(), '/') . '/' . $this->getSlug()
         );
     }
