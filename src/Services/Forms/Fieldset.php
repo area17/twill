@@ -37,7 +37,7 @@ class Fieldset implements CanHaveSubfields
     /**
      * Set the id of the field.
      */
-    public function id(string $id): self
+    public function id(string $id): static
     {
         $this->id = $id;
 
@@ -47,7 +47,7 @@ class Fieldset implements CanHaveSubfields
     /**
      * Marks the fielset as open.
      */
-    public function open(bool $open = true): self
+    public function open(bool $open = true): static
     {
         $this->open = $open;
 
@@ -57,7 +57,7 @@ class Fieldset implements CanHaveSubfields
     /**
      * Marks the fielset as closed.
      */
-    public function closed(): self
+    public function closed(): static
     {
         $this->open = false;
 
@@ -67,7 +67,7 @@ class Fieldset implements CanHaveSubfields
     /**
      * Set the form fields of the fieldset.
      */
-    public function fields(array $fields): self
+    public function fields(array $fields): static
     {
         $this->fields = collect($fields);
 

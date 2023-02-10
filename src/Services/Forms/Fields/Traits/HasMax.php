@@ -9,7 +9,7 @@ trait HasMax
     /**
      * Sets the max amount of items.
      */
-    public function max(int $max): self
+    public function max(int $max): static
     {
         $this->max = $max;
 

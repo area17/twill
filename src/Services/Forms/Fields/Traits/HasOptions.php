@@ -14,7 +14,7 @@ trait HasOptions
     /**
      * List of options to display in the field.
      */
-    public function options(Options $options): self
+    public function options(Options $options): static
     {
         $this->options = $options;
 
@@ -24,7 +24,7 @@ trait HasOptions
     /**
      * Adds a single option.
      */
-    public function addOption(Option $option): self
+    public function addOption(Option $option): static
     {
         if ($this->options === null) {
             $this->options = Options::make();

@@ -13,7 +13,7 @@ trait HasOnChange
     /**
      * The field to act on.
      */
-    public function ref(string $ref): self
+    public function ref(string $ref): static
     {
         $this->ref = $ref;
 
@@ -23,7 +23,7 @@ trait HasOnChange
     /**
      * Javascript to execute on change.
      */
-    public function onChange(string $onChange): self
+    public function onChange(string $onChange): static
     {
         $this->onChange = $onChange;
 
@@ -33,7 +33,7 @@ trait HasOnChange
     /**
      * Attribute to change.
      */
-    public function onChangeAttribute(string $onChangeAttribute): self
+    public function onChangeAttribute(string $onChangeAttribute): static
     {
         $this->onChangeAttribute = $onChangeAttribute;
 

@@ -9,7 +9,7 @@ trait CanReorder
     /**
      * Disables the reordering of items.
      */
-    public function disableReorder(bool $disableReorder = true): self
+    public function disableReorder(bool $disableReorder = true): static
     {
         $this->reorder = !$disableReorder;
 

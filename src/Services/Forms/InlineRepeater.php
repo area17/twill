@@ -99,7 +99,7 @@ class InlineRepeater implements CanHaveSubfields
      * NOTE: You cannot have the same repeater twice in a form or page.
      * NOTE: If you have a repeater with a this name already, that one will be used instead.
      */
-    public function name(string $name): self
+    public function name(string $name): static
     {
         $this->name = $name;
 
@@ -113,7 +113,7 @@ class InlineRepeater implements CanHaveSubfields
     /**
      * Set the form fields of the repeater.
      */
-    public function fields(array $fields): self
+    public function fields(array $fields): static
     {
         $this->fields = collect($fields);
 

@@ -9,7 +9,7 @@ trait Inlineable
     /**
      * Shows the option inline.
      */
-    public function inline(bool $inline = true): self
+    public function inline(bool $inline = true): static
     {
         $this->inline = $inline;
 

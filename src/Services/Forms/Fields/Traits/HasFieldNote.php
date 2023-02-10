@@ -9,9 +9,10 @@ trait HasFieldNote
     /**
      * Adds a note.
      */
-    public function fieldNote(string $fieldNote): self
+    public function fieldNote(string $fieldNote): static
     {
         $this->fieldNote = $fieldNote;
+
         return $this;
     }
 }

@@ -13,7 +13,7 @@ class QuickFilter extends TwillBaseFilter
     /**
      * The callback that will tell the filter how many results there are.
      */
-    public function amount(\Closure $callback): self
+    public function amount(\Closure $callback): static
     {
         $this->amount = $callback;
 
@@ -25,7 +25,7 @@ class QuickFilter extends TwillBaseFilter
         return $this->isDefaultQuickFilter;
     }
 
-    public function default(): self
+    public function default(): static
     {
         $this->isDefaultQuickFilter = true;
 
@@ -35,7 +35,7 @@ class QuickFilter extends TwillBaseFilter
     /**
      * The scope to apply.
      */
-    public function scope(string $scope): self
+    public function scope(string $scope): static
     {
         $this->scope = $scope;
 

@@ -18,6 +18,8 @@ class Block
 
     public const SOURCE_CUSTOM = 'custom';
 
+    public const SOURCE_VENDOR = 'vendor';
+
     public const TYPE_BLOCK = 'block';
 
     public const TYPE_SETTINGS = 'settings';
@@ -186,7 +188,7 @@ class Block
         return new self($file, $type, $source, $name, $renderNamespace);
     }
 
-    public function newInstance(): self
+    public function newInstance(): static
     {
         return new static(
             $this->file,

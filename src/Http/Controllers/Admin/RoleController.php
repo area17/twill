@@ -5,6 +5,8 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Permission;
+use A17\Twill\Services\Listings\Columns\Text;
+use A17\Twill\Services\Listings\TableColumns;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -41,26 +43,19 @@ class RoleController extends ModuleController
         parent::__construct($app, $request);
         $this->middleware('can:edit-user-roles');
 
+        $this->disablePublish();
+
         TwillPermissions::showUserSecondaryNavigation();
     }
 
-    protected $indexColumns = [
-        'name' => [
-            'title' => 'Name',
-            'field' => 'name',
-            'sort' => true,
-        ],
-        'created_at' => [
-            'title' => 'Date created',
-            'field' => 'created_at',
-            'sort' => true
-        ],
-        'users' => [
-            'title' => 'Users',
-            'field' => 'users_count',
-            'html' => true
-        ]
-    ];
+    protected function getIndexTableColumns(): TableColumns
+    {
+        return TableColumns::make([
+            Text::make()->field('name')->sortable()->title('Name')->linkToEdit(),
+            Text::make()->field('created_at')->sortable()->title('Date created'),
+            Text::make()->field('users_count')->sortable()->title('Users'),
+        ]);
+    }
 
     protected function getIndexItems($scopes = [], $forcePagination = false)
     {
@@ -71,21 +66,21 @@ class RoleController extends ModuleController
 
     protected function getIndexOption($option, $item = null)
     {
-        if (in_array($option, ['publish', 'bulkEdit', 'create'])) {
+        if (in_array($option, ['bulkEdit', 'create'])) {
             return auth('twill_users')->user()->can('edit-user-roles');
         }
 
         return parent::getIndexOption($option);
     }
 
-    protected function formData($request)
+    protected function formData($request): array
     {
         return [
             'permission_modules' => Permission::permissionableParentModuleItems(),
         ];
     }
 
-    protected function indexItemData($item)
+    protected function indexItemData($item): array
     {
         $canEdit = auth('twill_users')->user()->can('edit-user-roles') && ($item->canEdit ?? true);
 
