@@ -98,6 +98,6 @@ class MultiSelect extends BaseFormField
 
     protected function getAdditionalConstructorArguments(): array
     {
-        return ['options' => $this->options ?? []];
+        return ['options' => $this->getOptions()];
     }
 }
