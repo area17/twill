@@ -10,11 +10,17 @@ This is the fourth release candidate for Twill 3!
 
 - Block crops can now be defined from block components [`#2115`](https://github.com/area17/twill/pull/2115)
 - `twill:update` will now ask to run migrations [`#2107`](https://github.com/area17/twill/pull/2107)
+- `Select::make()->options()` now takes a closure as well [`#2143`](https://github.com/area17/twill/pull/2143)
 
 ### Bugfixes
 
 - Fixes various issues related to blocks [`#2124`](https://github.com/area17/twill/pull/2124)
 - Allows fieldset only forms [`#2117`](https://github.com/area17/twill/pull/2117)
+- GetFullUrl for link browser now replace language as well [`#2142`](https://github.com/area17/twill/pull/2142)
+- Fixes return types of forms so they work properly in ide's [`#2140`](https://github.com/area17/twill/pull/2140)
+- Fixes a bug which would render the wrong form if block name would overlap with internal
+  names [`#2135`](https://github.com/area17/twill/pull/2135)
+- Fixes an issue which caused table actions to no longer work [`#2129`](https://github.com/area17/twill/pull/2129)
 
 ## 3.0.0-rc3
 
