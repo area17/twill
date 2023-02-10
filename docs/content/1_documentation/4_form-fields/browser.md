@@ -116,6 +116,38 @@ class ArticleRepository extends ModuleRepository
 @stop
 ```
 
+## Multiple browser fields referring to the same module
+
+In some cases you may want to have 2 browser fields pointing to the same module. As by default the array elements
+in `$relatedBrowsers` expect the module name and field name to match we can work around this. 
+
+With the following form:
+
+```php
+$form->add(
+    Browser::make()->modules([Page::class])->name('page_1'),
+);
+
+$form->add(
+    Browser::make()->modules([Page::class])->name('page_2'),
+);
+```
+
+We can setup `$relatedBrowsers` like this:
+
+```php
+protected $relatedBrowsers = [
+    'page_1' => [
+        'moduleName' => 'pages',
+        'relation' => 'page_1'
+    ],
+    'page_2' => [
+        'moduleName' => 'pages',
+        'relation' => 'page_2'
+    ]
+];
+```
+
 ## Multiple modules as related items
 
 You can use the same approach to handle polymorphic relationships through Twill's `related` table.
