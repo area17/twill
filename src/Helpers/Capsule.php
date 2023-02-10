@@ -332,7 +332,7 @@ class Capsule
 
     public function registerNavigation(): void
     {
-        if (!$this->automaticNavigation) {
+        if (! $this->automaticNavigation) {
             return;
         }
 
