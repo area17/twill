@@ -39,27 +39,46 @@
 
             @if (!empty($tree[$currentSegment]['items'] ?? []))
                 <ul class="core-list mt-30">
+                    @php
+                        $index = 0;
+                    @endphp
                     @foreach ($tree[$currentSegment]['items'] ?? [] as $item)
-                        @php $open = \Illuminate\Support\Str::betweenFirst(ltrim($item['url'], '/'), '/', '/') === \Illuminate\Support\Str::betweenFirst(ltrim($url, '/'), '/', '/'); @endphp
-                        <li class="relative mt-12" x-data="{ open: {{ $open ? 'true' : 'false' }} }">
-                            <div class="flex">
-                                <a class="inline pl-3.5 before:pointer-events-none before:absolute before:-left-1 before:top-1/2 before:h-1.5 before:w-1.5 before:-translate-y-1/2 before:rounded-full text-slate-500 before:hidden before:bg-slate-300 hover:text-slate-600 hover:before:block no-underline hover:text-purple @if ($open) text-purple font-medium no-underline @endif"
-                                    href="{{ $item['url'] ?? '#' }}">{{ $item['title'] ?? '' }}</a>
+                        @php
+                            $open = \Illuminate\Support\Str::betweenFirst(ltrim($item['url'], '/'), '/', '/') === \Illuminate\Support\Str::betweenFirst(ltrim($url, '/'), '/', '/');
+                            $index++;
+                        @endphp
+                        <li
+                            class="relative mt-12"
+                            x-data="{ open: {{ $open ? 'true' : 'false' }} }"
+                            :class="open ? 'is-open' : ''"
+                            >
+
+                            <div class="flex items-center">
+                                <a class="inline no-underline hover:text-purple
+                                    @if ($open) text-purple font-medium no-underline @endif"
+                                    href="{{ $item['url'] ?? '#' }}">
+                                        {{ $item['title'] ?? '' }}
+                                </a>
+
                                 @if (!empty($item['items'] ?? []))
-                                    <div
-                                        class="flex-1 cursor-pointer px-5 items-center flex"
-                                        x-on:click="open = !open">
-                                    </div>
+                                    <button class="accordion-trigger" x-on:click="open = !open" aria-label="expand"></button>
                                 @endif
                             </div>
                             @if (!empty($item['items'] ?? []))
-                                <ul class="@if ($open) block @else hidden @endif ml-24 mt-12"
-                                    x-bind:class="{ 'hidden': !open }">
+                                <ul class="overflow-hidden pl-[12px] {{!$open ? 'max-h-0' : ''}}"
+                                    x-ref="container{{$index}}"
+                                    x-bind:style="open ? 'max-height: ' + $refs.container{{$index}}.scrollHeight + 'px' : ''"
+                                    x-init="$nextTick(() => {
+                                        $refs.container{{$index}}.classList.add('duration-700')
+                                        if({{$open ? 'true' : 'false'}}){
+                                            $refs.container{{$index}}.classList.add('max-h-0')
+                                        }
+                                     })">
                                     @foreach ($item['items'] ?? [] as $item)
                                         @php $active = $url === $item['url']; @endphp
-                                        <li class="relative mt-8">
+                                        <li class="relative pt-8">
                                             <a
-                                              class="block w-full pl-3.5 before:pointer-events-none text-black no-underline hover:text-purple @if($active) font-medium text-purple @endif"
+                                              class="text-[.95em] text-black no-underline hover:text-purple @if($active) font-medium text-purple @endif"
                                               href="{{ $item['url'] ?? '#' }}">
                                               {{ $item['title'] ?? '' }}
                                             </a>
