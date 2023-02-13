@@ -30,8 +30,8 @@
   <div class="container">
     <div class="cols-container ">
       <x-twilldocs::sidebar :tree="$tree" :currentSegment="$currentSegment" :url="$url"/>
-      <div class="content w-full lg:w-9-cols xxl:w-8-cols mt-68">
-        <div class="markdown lg:w-7-cols xxl:w-6-cols mx-auto">
+      <div class="content w-full lg:w-9-cols mt-68">
+        <div class="markdown lg:w-7-cols mx-auto">
           @if (isset($tree[$currentSegment]))
             <div class="print:!hidden" x-transition x-bind:class="{ hidden: !open }"></div>
           @endif
