@@ -86,7 +86,7 @@ class Capsule
             $migrator->path($this->getMigrationsPath());
         };
 
-        App()->afterResolving('migrator', $callback);
+        app()->afterResolving('migrator', $callback);
 
         if (app()->resolved('migrator')) {
             $callback(App::make('migrator'));
@@ -95,7 +95,7 @@ class Capsule
 
     public function registerRoutes(): void
     {
-        TwillRoutes::registerCapsuleRoutes(App::get('router'), $this);
+        TwillRoutes::registerCapsuleRoutes($this);
     }
 
     public function loadTranslations(): void
@@ -104,7 +104,7 @@ class Capsule
             $translator->addNamespace($this->getLanguagesPath(), 'twill:capsules:' . $this->getModule());
         };
 
-        App()->afterResolving('translator', $callback);
+        app()->afterResolving('translator', $callback);
 
         if (app()->resolved('translator')) {
             $callback(App::make('translator'));
