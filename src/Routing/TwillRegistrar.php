@@ -201,7 +201,7 @@ class TwillRegistrar
         Arr::forget($options, ['only', 'except']);
 
         $this->router->group(
-            ['as' => $prefix],
+            $prefix ? ['as' => $prefix . '.'] : [],
             function () use ($name, $controller, $methods, $options, $collection) {
                 $routes = $this->router
                     ->resource($name, $controller, $options)
