@@ -39,6 +39,10 @@ class User extends AuthenticatableContract
         'deleted_at',
     ];
 
+    protected $cast = [
+        'deleted_at' => 'date',
+    ];
+
     protected $hidden = ['password', 'remember_token', 'google_2fa_secret'];
     public $checkboxes = ['published'];
 

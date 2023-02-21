@@ -121,4 +121,26 @@ abstract class Model extends BaseModel implements TaggableInterface
             'tag_id'
         );
     }
+
+    /**
+     * Get the attributes that should be converted to dates.
+     *
+     * @return array
+     */
+    public function getDates()
+    {
+        $dates = parent::getDates();
+
+        if(app()->version() < '10') {
+            return $dates;
+        }
+
+        $deletedAt = $this->getDeletedAtColumn();
+
+        if(!in_array($deletedAt, $dates)) {
+            $dates[] = $deletedAt;
+        }
+
+        return $dates;
+    }
 }
