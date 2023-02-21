@@ -83,6 +83,8 @@ jobs:
             laravel: 8.*
           - dbal: ^2.12
             laravel: 9.*
+          - dbal: ^2.12
+            laravel: 10.*
 
 
     name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.os }}
