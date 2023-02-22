@@ -460,9 +460,11 @@ class ModulesAuthorsTest extends ModulesTestBase
         $author = Author::first();
 
         $this->assertEquals($author->getDates(), [
-            "created_at",
-            "updated_at",
-            "deleted_at",
+            'created_at',
+            'updated_at',
+            'deleted_at',
+            'test_date_dates',
+            'test_date_casts',
         ]);
     }
 }

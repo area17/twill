@@ -144,9 +144,9 @@ abstract class Model extends BaseModel implements TaggableInterface
                 return $k === 'date' || $k === 'datetime';
             });
 
-            $dates = array_merge($dates, $casts);
+            $dates = array_merge($dates, array_keys($casts));
         }
 
-        return array_unique($dates);;
+        return array_unique(array_values($dates));
     }
 }
