@@ -5,6 +5,7 @@ namespace A17\Twill\Tests\Integration;
 use App\Models\Author;
 use App\Models\Category;
 use App\Models\Revisions\AuthorRevision;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -459,12 +460,16 @@ class ModulesAuthorsTest extends ModulesTestBase
 
         $author = Author::first();
 
-        $this->assertEquals($author->getDates(), [
+        $dates = array_values(Arr::sort($author->getDates()));
+
+        $shouldBe = array_values(Arr::sort([
             'created_at',
             'updated_at',
             'deleted_at',
             'test_date_dates',
             'test_date_casts',
-        ]);
+        ]));
+
+        $this->assertEquals($dates, $shouldBe);
     }
 }
