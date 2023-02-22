@@ -4,11 +4,12 @@ namespace A17\Twill\Tests\Integration;
 
 use App\Models\Author;
 use App\Models\Category;
-use App\Models\Revisions\AuthorRevision;
+use A17\Twill\Models\User;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
+use App\Models\Revisions\AuthorRevision;
 
 class ModulesAuthorsTest extends ModulesTestBase
 {
@@ -462,7 +463,7 @@ class ModulesAuthorsTest extends ModulesTestBase
 
         $dates = array_values(Arr::sort($author->getDates()));
 
-        $shouldBe = array_values(Arr::sort([
+        $expected = array_values(Arr::sort([
             'created_at',
             'updated_at',
             'deleted_at',
@@ -470,6 +471,18 @@ class ModulesAuthorsTest extends ModulesTestBase
             'test_date_casts',
         ]));
 
-        $this->assertEquals($dates, $shouldBe);
+        $this->assertEquals($dates, $expected);
+
+        $user = User::where('email', $this->superAdmin()->email)->first();
+
+        $dates = array_values(Arr::sort($user->getDates()));
+
+        $expected = array_values(Arr::sort([
+            'created_at',
+            'updated_at',
+            'deleted_at',
+        ]));
+
+        $this->assertEquals($expected, $dates);
     }
 }

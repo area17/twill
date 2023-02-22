@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Models\Behaviors\HasDates;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -9,6 +10,8 @@ use A17\Twill\Services\MediaLibrary\ImageService;
 
 class Media extends Model
 {
+    use HasDates;
+
     public $timestamps = true;
 
     protected $fillable = [
