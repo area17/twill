@@ -135,12 +135,18 @@ abstract class Model extends BaseModel implements TaggableInterface
             return $dates;
         }
 
-        $deletedAt = $this->getDeletedAtColumn();
-
-        if(!in_array($deletedAt, $dates)) {
-            $dates[] = $deletedAt;
+        if (property_exists($this, 'dates')) {
+            $dates = array_merge($dates, $this->dates);
         }
 
-        return $dates;
+        if (property_exists($this, 'casts')) {
+            $casts = array_filter($this->casts, function($k) {
+                return $k === 'date' || $k === 'datetime';
+            });
+
+            $dates = array_merge($dates, $casts);
+        }
+
+        return array_unique($dates);;
     }
 }
