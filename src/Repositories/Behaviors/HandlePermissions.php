@@ -4,6 +4,7 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Enums\PermissionLevel;
 use A17\Twill\Facades\TwillPermissions;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
 use A17\Twill\Models\Permission;
@@ -13,7 +14,7 @@ trait HandlePermissions
     /**
      * Retrieve user-item permissions fields
      *
-     * @param Model $object
+     * @param TwillModelContract $object
      * @param array $fields
      * @return array
      */
