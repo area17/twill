@@ -202,11 +202,6 @@
           block: this.blocks[index],
           id: Date.now() + Math.floor(Math.random() * 1000)
         })
-        // this.$store.commit(FORM.DUPLICATE_FORM_BLOCK, {
-        //   type: this.type,
-        //   name: this.name,
-        //   index
-        // })
 
         this.$nextTick(() => {
           this.checkExpandBlocks()
