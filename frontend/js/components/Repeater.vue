@@ -4,12 +4,12 @@
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
           <a17-blockeditor-item
-            ref="blockList"
-            :block="block"
-            :index="index"
-            :withHandle="draggable"
-            :size="blockSize"
-            :opened="opened"
+              ref="blockList"
+              :block="block"
+              :index="index"
+              :withHandle="draggable"
+              :size="blockSize"
+              :opened="opened"
           >
             <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"
                         v-if="hasRemainingBlocks">
@@ -35,18 +35,18 @@
     </draggable>
     <div class="content__trigger">
       <a17-button
-        v-if="hasRemainingBlocks && blockType.trigger && allowCreate"
-        :class="triggerClass"
-        :variant="triggerVariant"
-        @click="addBlock()"
+          v-if="hasRemainingBlocks && blockType.trigger && allowCreate"
+          :class="triggerClass"
+          :variant="triggerVariant"
+          @click="addBlock()"
       >
         {{ blockType.trigger }}
       </a17-button>
       <a17-button
-        v-if="hasRemainingBlocks && browser"
-        :class="triggerClass"
-        :variant="triggerVariant"
-        @click="openBrowser()"
+          v-if="hasRemainingBlocks && browser"
+          :class="triggerClass"
+          :variant="triggerVariant"
+          @click="openBrowser()"
       >
         {{ blockType.selectTrigger }}
       </a17-button>
@@ -55,25 +55,25 @@
       </div>
     </div>
     <a17-standalone-browser
-      v-if="browserIsOpen"
-      :endpoint="browser"
-      :for-repeater="true"
-      @selected="addRepeatersFromSelection"
-      ref="localbrowser"
-      @close="browserIsOpen = false"
-      :max="max"
+        v-if="browserIsOpen"
+        :endpoint="browser"
+        :for-repeater="true"
+        @selected="addRepeatersFromSelection"
+        ref="localbrowser"
+        @close="browserIsOpen = false"
+        :max="max"
     />
   </div>
 </template>
 
 <script>
   import draggable from 'vuedraggable'
-  import {mapState} from 'vuex'
+  import { mapState } from 'vuex'
 
   import BlockEditorItem from '@/components/blocks/BlockEditorItem.vue'
   import A17StandaloneBrowser from "@/components/StandaloneBrowser.vue"
   import draggableMixin from '@/mixins/draggable'
-  import {FORM} from '@/store/mutations'
+  import { FORM } from '@/store/mutations'
   import ACTIONS from "@/store/actions";
 
   export default {
@@ -180,7 +180,7 @@
         }
       },
       addBlock: function () {
-        this.$store.commit(FORM.ADD_FORM_BLOCK, {type: this.type, name: this.name})
+        this.$store.commit(FORM.ADD_FORM_BLOCK, { type: this.type, name: this.name })
 
         this.$nextTick(() => {
           this.checkExpandBlocks()
