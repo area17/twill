@@ -1,69 +1,69 @@
 <template>
-    <div class="content">
-        <draggable class="content__content" v-model="blocks" :options="dragOptions">
-            <transition-group name="draggable_list" tag='div'>
-                <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
-                    <a17-blockeditor-item
-                            ref="blockList"
-                            :block="block"
-                            :index="index"
-                            :withHandle="draggable"
-                            :size="blockSize"
-                            :opened="opened"
-                    >
-                        <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"
-                                    v-if="hasRemainingBlocks">
-                            <span v-svg symbol="add"></span>
-                        </a17-button>
-                        <div slot="dropdown-action">
-                            <button type="button" @click="collapseAllBlocks()" v-if="opened">
-                                {{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}
-                            </button>
-                            <button v-else type="button" @click="expandAllBlocks()">
-                                {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
-                            </button>
-                            <button type="button" @click="duplicateBlock(index)" v-if="hasRemainingBlocks">
-                                {{ $trans('fields.block-editor.clone-block', 'Clone block') }}
-                            </button>
-                            <button type="button" @click="deleteBlock(index)">
-                                {{ $trans('fields.block-editor.delete', 'Delete') }}
-                            </button>
-                        </div>
-                    </a17-blockeditor-item>
-                </div>
-            </transition-group>
-        </draggable>
-        <div class="content__trigger">
-            <a17-button
-                    v-if="hasRemainingBlocks && blockType.trigger && allowCreate"
-                    :class="triggerClass"
-                    :variant="triggerVariant"
-                    @click="addBlock()"
-            >
-                {{ blockType.trigger }}
+  <div class="content">
+    <draggable class="content__content" v-model="blocks" :options="dragOptions">
+      <transition-group name="draggable_list" tag='div'>
+        <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
+          <a17-blockeditor-item
+            ref="blockList"
+            :block="block"
+            :index="index"
+            :withHandle="draggable"
+            :size="blockSize"
+            :opened="opened"
+          >
+            <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"
+                        v-if="hasRemainingBlocks">
+              <span v-svg symbol="add"></span>
             </a17-button>
-            <a17-button
-                    v-if="hasRemainingBlocks && browser"
-                    :class="triggerClass"
-                    :variant="triggerVariant"
-                    @click="openBrowser()"
-            >
-                {{ blockType.selectTrigger }}
-            </a17-button>
-            <div class="content__note f--note f--small">
-                <slot></slot>
+            <div slot="dropdown-action">
+              <button type="button" @click="collapseAllBlocks()" v-if="opened">
+                {{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}
+              </button>
+              <button v-else type="button" @click="expandAllBlocks()">
+                {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
+              </button>
+              <button type="button" @click="duplicateBlock(index)" v-if="hasRemainingBlocks">
+                {{ $trans('fields.block-editor.clone-block', 'Clone block') }}
+              </button>
+              <button type="button" @click="deleteBlock(index)">
+                {{ $trans('fields.block-editor.delete', 'Delete') }}
+              </button>
             </div>
+          </a17-blockeditor-item>
         </div>
-        <a17-standalone-browser
-                v-if="browserIsOpen"
-                :endpoint="browser"
-                :for-repeater="true"
-                @selected="addRepeatersFromSelection"
-                ref="localbrowser"
-                @close="browserIsOpen = false"
-                :max="max"
-        />
+      </transition-group>
+    </draggable>
+    <div class="content__trigger">
+      <a17-button
+        v-if="hasRemainingBlocks && blockType.trigger && allowCreate"
+        :class="triggerClass"
+        :variant="triggerVariant"
+        @click="addBlock()"
+      >
+        {{ blockType.trigger }}
+      </a17-button>
+      <a17-button
+        v-if="hasRemainingBlocks && browser"
+        :class="triggerClass"
+        :variant="triggerVariant"
+        @click="openBrowser()"
+      >
+        {{ blockType.selectTrigger }}
+      </a17-button>
+      <div class="content__note f--note f--small">
+        <slot></slot>
+      </div>
     </div>
+    <a17-standalone-browser
+      v-if="browserIsOpen"
+      :endpoint="browser"
+      :for-repeater="true"
+      @selected="addRepeatersFromSelection"
+      ref="localbrowser"
+      @close="browserIsOpen = false"
+      :max="max"
+    />
+  </div>
 </template>
 
 <script>
