@@ -155,9 +155,10 @@ const actions = {
     const fields = [...getters.fieldsByBlockId(block.id)]
     const fieldCopies = []
     fields.forEach(field => {
+      console.log(field)
       fieldCopies.push({
         name: field.name.replace(block.id, clone.id),
-        value: Object.assign({}, field.value)
+        value: JSON.parse(JSON.stringify(field.value))
       })
     })
 
@@ -182,7 +183,7 @@ const actions = {
         fields.forEach(field => {
           fieldCopies.push({
             name: field.name.replace(block.id, id),
-            value: Object.assign({}, field.value)
+            value: JSON.parse(JSON.stringify(field.value))
           })
         })
       })
