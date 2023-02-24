@@ -1,78 +1,80 @@
 <template>
-  <div class="content">
-    <draggable class="content__content" v-model="blocks" :options="dragOptions">
-      <transition-group name="draggable_list" tag='div'>
-        <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
-          <a17-blockeditor-item
-            ref="blockList"
-            :block="block"
-            :index="index"
-            :withHandle="draggable"
-            :size="blockSize"
-            :opened="opened"
-          >
-            <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)" v-if="hasRemainingBlocks">
-              <span v-svg symbol="add"></span>
+    <div class="content">
+        <draggable class="content__content" v-model="blocks" :options="dragOptions">
+            <transition-group name="draggable_list" tag='div'>
+                <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
+                    <a17-blockeditor-item
+                            ref="blockList"
+                            :block="block"
+                            :index="index"
+                            :withHandle="draggable"
+                            :size="blockSize"
+                            :opened="opened"
+                    >
+                        <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"
+                                    v-if="hasRemainingBlocks">
+                            <span v-svg symbol="add"></span>
+                        </a17-button>
+                        <div slot="dropdown-action">
+                            <button type="button" @click="collapseAllBlocks()" v-if="opened">
+                                {{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}
+                            </button>
+                            <button v-else type="button" @click="expandAllBlocks()">
+                                {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
+                            </button>
+                            <button type="button" @click="duplicateBlock(index)" v-if="hasRemainingBlocks">
+                                {{ $trans('fields.block-editor.clone-block', 'Clone block') }}
+                            </button>
+                            <button type="button" @click="deleteBlock(index)">
+                                {{ $trans('fields.block-editor.delete', 'Delete') }}
+                            </button>
+                        </div>
+                    </a17-blockeditor-item>
+                </div>
+            </transition-group>
+        </draggable>
+        <div class="content__trigger">
+            <a17-button
+                    v-if="hasRemainingBlocks && blockType.trigger && allowCreate"
+                    :class="triggerClass"
+                    :variant="triggerVariant"
+                    @click="addBlock()"
+            >
+                {{ blockType.trigger }}
             </a17-button>
-            <div slot="dropdown-action">
-              <button type="button" @click="collapseAllBlocks()" v-if="opened">
-                {{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}
-              </button>
-              <button v-else type="button" @click="expandAllBlocks()">
-                {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
-              </button>
-              <button type="button" @click="duplicateBlock(index)" v-if="hasRemainingBlocks">
-                {{ $trans('fields.block-editor.clone-block', 'Clone block') }}
-              </button>
-              <button type="button" @click="deleteBlock(index)">
-                {{ $trans('fields.block-editor.delete', 'Delete') }}
-              </button>
+            <a17-button
+                    v-if="hasRemainingBlocks && browser"
+                    :class="triggerClass"
+                    :variant="triggerVariant"
+                    @click="openBrowser()"
+            >
+                {{ blockType.selectTrigger }}
+            </a17-button>
+            <div class="content__note f--note f--small">
+                <slot></slot>
             </div>
-          </a17-blockeditor-item>
         </div>
-      </transition-group>
-    </draggable>
-    <div class="content__trigger">
-      <a17-button
-        v-if="hasRemainingBlocks && blockType.trigger && allowCreate"
-        :class="triggerClass"
-        :variant="triggerVariant"
-        @click="addBlock()"
-      >
-        {{ blockType.trigger }}
-      </a17-button>
-      <a17-button
-          v-if="hasRemainingBlocks && browser"
-          :class="triggerClass"
-          :variant="triggerVariant"
-          @click="openBrowser()"
-      >
-        {{ blockType.selectTrigger }}
-      </a17-button>
-      <div class="content__note f--note f--small">
-        <slot></slot>
-      </div>
+        <a17-standalone-browser
+                v-if="browserIsOpen"
+                :endpoint="browser"
+                :for-repeater="true"
+                @selected="addRepeatersFromSelection"
+                ref="localbrowser"
+                @close="browserIsOpen = false"
+                :max="max"
+        />
     </div>
-    <a17-standalone-browser
-        v-if="browserIsOpen"
-        :endpoint="browser"
-        :for-repeater="true"
-        @selected="addRepeatersFromSelection"
-        ref="localbrowser"
-        @close="browserIsOpen = false"
-        :max="max"
-    />
-  </div>
 </template>
 
 <script>
   import draggable from 'vuedraggable'
-  import { mapState } from 'vuex'
+  import {mapState} from 'vuex'
 
   import BlockEditorItem from '@/components/blocks/BlockEditorItem.vue'
   import A17StandaloneBrowser from "@/components/StandaloneBrowser.vue"
   import draggableMixin from '@/mixins/draggable'
-  import { FORM } from '@/store/mutations'
+  import {FORM} from '@/store/mutations'
+  import ACTIONS from "@/store/actions";
 
   export default {
     name: 'A17Repeater',
@@ -178,21 +180,33 @@
         }
       },
       addBlock: function () {
-        this.$store.commit(FORM.ADD_FORM_BLOCK, { type: this.type, name: this.name })
+        this.$store.commit(FORM.ADD_FORM_BLOCK, {type: this.type, name: this.name})
 
         this.$nextTick(() => {
           this.checkExpandBlocks()
         })
       },
-      addRepeatersFromSelection(selected) {
-        this.$store.commit(FORM.ADD_REPEATER_FROM_SELECTION, { type: this.type, name: this.name, selection: selected, relation: this.relation })
-      },
-      duplicateBlock: function (index) {
-        this.$store.commit(FORM.DUPLICATE_FORM_BLOCK, {
+      addRepeatersFromSelection (selected) {
+        this.$store.commit(FORM.ADD_REPEATER_FROM_SELECTION, {
           type: this.type,
           name: this.name,
-          index
+          selection: selected,
+          relation: this.relation
         })
+      },
+      duplicateBlock: function (index) {
+        this.$store.dispatch(ACTIONS.DUPLICATE_REPEATER, {
+          editorName: this.name,
+          index,
+          futureIndex: index + 1,
+          block: this.blocks[index],
+          id: Date.now() + Math.floor(Math.random() * 1000)
+        })
+        // this.$store.commit(FORM.DUPLICATE_FORM_BLOCK, {
+        //   type: this.type,
+        //   name: this.name,
+        //   index
+        // })
 
         this.$nextTick(() => {
           this.checkExpandBlocks()

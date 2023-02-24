@@ -4,6 +4,9 @@
 export const MOVE_BLOCK_TO_EDITOR = 'moveBlockToEditor'
 export const DUPLICATE_BLOCK = 'duplicateBlock'
 
+/* Repeaters */
+export const DUPLICATE_REPEATER = 'duplicateRepeater'
+
 /* Buckets */
 export const GET_BUCKETS = 'getBucketsData'
 export const SAVE_BUCKETS = 'saveBuckets'
@@ -70,5 +73,6 @@ export default {
   GET_REVISION,
   GET_CURRENT,
   MOVE_BLOCK_TO_EDITOR,
-  DUPLICATE_BLOCK
+  DUPLICATE_BLOCK,
+  DUPLICATE_REPEATER
 }
