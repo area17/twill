@@ -15,9 +15,11 @@ trait HasOptions
     /**
      * List of options to display in the field.
      */
-    public function options(Options|Closure $options): static
+    public function options(Options|Closure|array $options): static
     {
-        $this->options = $options;
+        $this->options = is_array($options)
+            ? Options::fromArray($options)
+            : $options;
 
         return $this;
     }
