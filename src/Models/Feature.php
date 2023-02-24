@@ -31,7 +31,7 @@ class Feature extends BaseModel
     {
         return self::forBucket($bucketKey)->get()->map(function (Feature $feature) {
             return $feature->featured;
-        });
+        })->filter();
     }
 
     public function getTable(): string
