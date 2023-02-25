@@ -3,6 +3,7 @@
 use A17\Twill\Models\Permission;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
+use A17\Twill\Exceptions\ModuleNotFoundException;
 
 if (! function_exists('getAllModules')) {
     function getAllModules()
@@ -29,9 +30,17 @@ if (! function_exists('getAllModules')) {
 if (! function_exists('getModelByModuleName')) {
     function getModelByModuleName($moduleName)
     {
+        try {
+            $capsule = \A17\Twill\Facades\TwillCapsules::getCapsuleForModule($moduleName);
+
+            return $capsule->getModel();
+        } catch (\A17\Twill\Exceptions\NoCapsuleFoundException $e) {
+        }
+
         $model = config('twill.namespace') . '\\Models\\' . Str::studly(Str::singular($moduleName));
+
         if (! class_exists($model)) {
-            throw new Exception($model . ' not existed');
+            throw new Exception($model . ' does not exist');
         }
 
         return $model;
@@ -62,7 +71,7 @@ if (! function_exists('getModelRepository')) {
         $repository = config('twill.namespace') . '\\Repositories\\' . ucfirst($model) . 'Repository';
 
         if (! class_exists($repository)) {
-            throw new Exception($repository . ' not found');
+            throw new ModuleNotFoundException($repository . ' not found');
         }
 
         return app($repository);
