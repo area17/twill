@@ -1,9 +1,11 @@
 <?php
 
+use Illuminate\Support\Str;
 use A17\Twill\Models\Permission;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Str;
+use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Exceptions\ModuleNotFoundException;
+use A17\Twill\Exceptions\NoCapsuleFoundException;
 
 if (! function_exists('getAllModules')) {
     function getAllModules()
@@ -31,10 +33,10 @@ if (! function_exists('getModelByModuleName')) {
     function getModelByModuleName($moduleName)
     {
         try {
-            $capsule = \A17\Twill\Facades\TwillCapsules::getCapsuleForModule($moduleName);
+            $capsule = TwillCapsules::getCapsuleForModule($moduleName);
 
             return $capsule->getModel();
-        } catch (\A17\Twill\Exceptions\NoCapsuleFoundException $e) {
+        } catch (NoCapsuleFoundException $e) {
         }
 
         $model = config('twill.namespace') . '\\Models\\' . Str::studly(Str::singular($moduleName));
