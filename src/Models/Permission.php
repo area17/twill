@@ -3,6 +3,7 @@
 namespace A17\Twill\Models;
 
 use A17\Twill\Enums\PermissionLevel;
+use A17\Twill\Exceptions\ModuleNotFoundException;
 use A17\Twill\Facades\TwillPermissions;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\User;
@@ -103,7 +104,11 @@ class Permission extends BaseModel
         return self::permissionableModules()->filter(function ($module) {
             return !strpos($module, '.');
         })->mapWithKeys(function ($module) {
-            return [$module => getRepositoryByModuleName($module)->get([], [], [], -1)];
+            try {
+                return [$module => getRepositoryByModuleName($module)->get([], [], [], -1)];
+            } catch (ModuleNotFoundException $e) {
+                return [];
+            }
         });
     }
 
