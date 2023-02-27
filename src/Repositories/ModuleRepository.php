@@ -766,6 +766,9 @@ abstract class ModuleRepository
         $items = $fields[$relationship];
 
         if (blank($items)) {
+            // let's just delete all the items
+            $object->$relationship()->sync([]);
+
             return;
         }
 
@@ -800,6 +803,7 @@ abstract class ModuleRepository
             $object->$relationship()->sync($fields[$relationship]);
         }
     }
+
 
     /**
      * @param \Illuminate\Database\Query\Builder $query
