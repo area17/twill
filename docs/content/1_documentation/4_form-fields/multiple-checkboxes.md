@@ -10,7 +10,7 @@ Checkboxes::make()
     ->name('sectors')
     ->options(
         Options::make([
-            Option::make('key', 'value'),
+            Option::make('value', 'label'),
             ...
         ])
     );

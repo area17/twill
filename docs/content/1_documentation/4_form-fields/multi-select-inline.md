@@ -10,7 +10,7 @@ MultiSelect::make()
     ->inline()
     ->options(
         Options::make([
-            Option::make('key', 'value'),
+            Option::make('value', 'label'),
             ...
         ])
     );
