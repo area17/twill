@@ -596,6 +596,10 @@ class AnonymousModule
             $casts[$field] = 'array';
         }
 
+        foreach (collect($this->fields)->where('type', 'dateTime')->keys() as $field) {
+            $casts[$field] = 'datetime';
+        }
+
         $fillable = array_keys($this->fields);
 
         foreach (array_keys($this->belongsTo) as $base) {
@@ -607,13 +611,6 @@ class AnonymousModule
         $class->addProperty('table', $this->namePlural);
         $class->addProperty('translationForeignKey', Str::singular($this->namePlural) . '_id');
         $class->addProperty('translationModel', $this->modelTranslationClass);
-        $class->addProperty(
-            'dates',
-            collect($this->fields)
-                ->where('type', 'dateTime')
-                ->keys()
-                ->all()
-        );
 
         $class->addProperty(
             'translatedAttributes',
