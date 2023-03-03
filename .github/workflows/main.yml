@@ -39,6 +39,7 @@ jobs:
       - name: Install dependencies
         run: |
           composer require "laravel/framework:9.*" "doctrine/dbal:^3.0" --no-interaction --no-update
+          composer install
 
       - name: Execute tests
         run: vendor/bin/phpstan
@@ -106,8 +107,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:^3.0" --no-interaction --no-update -vvv
-          composer install --prefer-dist --no-interaction --no-plugins -vvv
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:^3.0" --no-interaction --no-update
+          composer install --prefer-dist --no-interaction --no-plugins
 
       - name: Setup Node.js
         uses: actions/setup-node@v1
