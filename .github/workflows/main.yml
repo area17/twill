@@ -66,10 +66,12 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         php: [8.2, 8.1, 8.0]
-        laravel: [9.*]
+        laravel: [9.*, 10.*]
         include:
           - laravel: 9.*
             testbench: 7.*
+          - laravel: 10.*
+            testbench: 8.*
 
     steps:
       - name: Checkout code
