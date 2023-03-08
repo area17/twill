@@ -194,6 +194,7 @@ return [
             'empty-text' => 'Aucun fichier sélectionné',
             'files-selected' => 'fichiers sélectionnés',
             'tags' => 'Tags',
+            'uploaded-at' => 'Téléchargé le',
         ],
         'title' => 'Galerie de médias',
         'update' => 'Mettre a jour',
