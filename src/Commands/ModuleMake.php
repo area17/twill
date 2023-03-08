@@ -30,6 +30,7 @@ class ModuleMake extends Command
         {--P|hasPosition}
         {--R|hasRevisions}
         {--N|hasNesting}
+        {--dontAsk}
         {--all}';
 
     /**
@@ -860,6 +861,10 @@ class ModuleMake extends Command
     {
         if (! $this->hasOption($option)) {
             return false;
+        }
+
+        if ($this->option('dontAsk')) {
+            return $this->option($option);
         }
 
         if ($this->option($option) || $this->option('all')) {
