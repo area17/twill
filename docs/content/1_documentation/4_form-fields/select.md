@@ -10,8 +10,8 @@ Select::make()
     ->name('sectors')
     ->options(
         Options::make([
-            Option::make('key', 'value'),
-            Option::make('key', 'value', selectable: false),
+            Option::make('value', 'label'),
+            Option::make('value', 'label', selectable: false),
             ...
         ])
     );
