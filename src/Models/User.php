@@ -40,6 +40,9 @@ class User extends AuthenticatableContract implements TwillModelContract
     protected $casts = [
         'is_superadmin' => 'boolean',
         'published' => 'boolean',
+        'deleted_at' => 'datetime',
+        'registered_at' => 'datetime',
+        'last_login_at' => 'datetime',
     ];
 
     protected $fillable = [
@@ -53,12 +56,6 @@ class User extends AuthenticatableContract implements TwillModelContract
         'google_2fa_enabled',
         'google_2fa_secret',
         'language',
-    ];
-
-    protected $dates = [
-        'deleted_at',
-        'registered_at',
-        'last_login_at',
     ];
 
     protected $hidden = ['password', 'remember_token', 'google_2fa_secret'];

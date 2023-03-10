@@ -39,7 +39,7 @@ jobs:
       - name: Install dependencies
         run: |
           composer require "laravel/framework:9.*" "doctrine/dbal:^3.0" --no-interaction --no-update
-          composer update --prefer-stable --prefer-dist --no-interaction
+          composer install
 
       - name: Execute tests
         run: vendor/bin/phpstan
@@ -66,12 +66,22 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         php: [8.2, 8.1, 8.0]
-        laravel: [9.*]
+        laravel: [9.*, 10.*]
+        exclude:
+          - laravel: 10.*
+            php: 8.0
         include:
           - laravel: 9.*
             testbench: 7.*
+          - laravel: 10.*
+            testbench: 8.*
 
     steps:
+      - name: Set timezone?
+        uses: szenius/set-timezone@v1.0
+        with:
+          timezoneLinux: "Europe/Paris"
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -102,8 +112,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:^3.0" --no-interaction --no-update -vvv
-          composer install --prefer-dist --no-interaction --no-plugins -vvv
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:^3.0" --no-interaction --no-update
+          composer install --prefer-dist --no-interaction --no-plugins
 
       - name: Setup Node.js
         uses: actions/setup-node@v1
