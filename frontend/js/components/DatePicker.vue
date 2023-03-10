@@ -1,9 +1,12 @@
 <template>
-  <a17-inputframe :name="name" :error="error" :note="note" :label="label" :label-for="uniqId" class="datePicker" :class="{ 'datePicker--static' : staticMode, 'datePicker--mobile' : isMobile }" :required="required">
+  <a17-inputframe :name="name" :error="error" :note="note" :label="label" :label-for="uniqId" class="datePicker"
+                  :class="{ 'datePicker--static' : staticMode, 'datePicker--mobile' : isMobile }" :required="required">
     <div class="datePicker__group" :ref="refs.flatPicker">
       <div class="form__field datePicker__field">
-        <input type="text" :name="name" :id="uniqId" :required="required" :placeholder="placeHolder" data-input @blur="onBlur" v-model="date" :disabled="disabled">
-        <a href="#" v-if="clear" class="datePicker__reset" :class="{ 'datePicker__reset--cleared' : !date }" @click.prevent="onClear"><span v-svg symbol="close_icon"></span></a>
+        <input type="text" :name="name" :id="uniqId" :required="required" :placeholder="placeHolder" data-input
+               @blur="onBlur" v-model="date" :disabled="disabled">
+        <a href="#" v-if="clear" class="datePicker__reset" :class="{ 'datePicker__reset--cleared' : !date }"
+           @click.prevent="onClear"><span v-svg symbol="close_icon"></span></a>
       </div>
     </div>
   </a17-inputframe>
@@ -18,7 +21,7 @@
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
   import randKeyMixin from '@/mixins/randKey'
-  import { getCurrentLocale, isCurrentLocale24HrFormatted,locales } from '@/utils/locale'
+  import { getCurrentLocale, isCurrentLocale24HrFormatted, locales } from '@/utils/locale'
 
   export default {
     name: 'A17DatePicker',
@@ -164,18 +167,16 @@
             setTimeout(function () {
               self.flatPicker.set('maxDate', self.maxDate) // in case maxDate changed since last open
               self.flatPicker.set('minDate', self.minDate) // in case minDate changed since last open
+              self.$emit('open', self.date)
             }, 10)
 
-            self.$emit('open', self.date)
           },
           onClose: function (selectedDates, dateStr, instance) {
-            self.$nextTick(function () { // wait for the datepicker to properly update the UI
-              self.$emit('input', self.date)
-              self.$emit('close', self.date)
+            self.$emit('input', dateStr)
+            self.$emit('close', dateStr)
 
-              // see formStore mixin
-              self.saveIntoStore()
-            })
+            // see formStore mixin
+            self.saveIntoStore()
           }
         }
 
@@ -230,19 +231,19 @@
   }
 
   .datePicker__reset {
-    $button-reset__width:45px - 13px - 14px;
-    display:block;
+    $button-reset__width: 45px - 13px - 14px;
+    display: block;
     width: $button-reset__width;
     flex: 0 0 $button-reset__width;
     height: $button-reset__width;
-    overflow:hidden;
+    overflow: hidden;
     color: $color__background;
-    background:$color__icons;
-    border-radius:#{calc($button-reset__width / 2)};
-    margin-top:13px;
-    margin-right:13px;
-    line-height:$button-reset__width;
-    text-align:center;
+    background: $color__icons;
+    border-radius: #{calc($button-reset__width / 2)};
+    margin-top: 13px;
+    margin-right: 13px;
+    line-height: $button-reset__width;
+    text-align: center;
     transition: opacity 0.2s ease;
 
     .icon {
@@ -254,32 +255,33 @@
 
     &:hover,
     &:focus {
-      background:$color__fborder--active;
+      background: $color__fborder--active;
     }
   }
 
   .datePicker__reset.datePicker__reset--cleared {
-    opacity:0;
-    pointer-events:none;
+    opacity: 0;
+    pointer-events: none;
   }
 
   /* Static variant (but not in the mobile version) */
   .datePicker--static:not(.datePicker--mobile) {
     .form__field {
-      height:0;
-      position:static;
-      overflow:visible;
-      border:0 none;
+      height: 0;
+      position: static;
+      overflow: visible;
+      border: 0 none;
     }
+
     .datePicker__reset {
-      position:absolute;
-      right:0;
-      top:0;
+      position: absolute;
+      right: 0;
+      top: 0;
     }
   }
 
   .flatpickr-wrapper {
-    display:block;
+    display: block;
   }
 </style>
 
