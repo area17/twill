@@ -77,6 +77,11 @@ jobs:
             testbench: 8.*
 
     steps:
+      - name: Set timezone?
+        uses: szenius/set-timezone@v1.0
+        with:
+          timezoneLinux: "Europe/Paris"
+
       - name: Checkout code
         uses: actions/checkout@v2
 
