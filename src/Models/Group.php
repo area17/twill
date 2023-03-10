@@ -26,14 +26,11 @@ class Group extends BaseModel implements TwillModelContract
         'subdomains_access',
     ];
 
-    protected $dates = [
-        'deleted_at',
-    ];
-
     public $checkboxes = ['published'];
 
     protected $casts = [
         'subdomains_access' => 'array',
+        'deleted_at' => 'datetime'
     ];
 
     /**

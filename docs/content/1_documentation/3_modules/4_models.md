@@ -106,8 +106,8 @@ to allow content scheduling.
 In addition to them being fillable you also need to add the following casts:
 
 ```php
-public $dates = [
-    'publish_start_date',
-    'publish_end_date'
+public $casts = [
+    'publish_start_date' => 'datetime',
+    'publish_end_date' => 'datetime'
 ];
 ```

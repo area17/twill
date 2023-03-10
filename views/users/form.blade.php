@@ -243,7 +243,7 @@
             user_name: '{{ $item->name }}',
             registered_at: '{{ $item->isActivated() ? $item->registered_at->format('d M Y') : "Pending ({$item->created_at->format('d M Y')})" }}',
             last_login_at: '{{ $item->isActivated() && $item->last_login_at ? $item->last_login_at->format('d M Y, H:i') : null }}',
-            resend_registration_link: '{{ !$item->isActivated() ? route('twill.users.resend.registrationEmail', ['user' => $item]) : null }}',
+            resend_registration_link: '{{ $item->isPublished() && !$item->isActivated() ? route('twill.users.resend.registrationEmail', ['user' => $item]) : null }}',
             is_activated: {{ json_encode($item->isActivated()) }}
             }
         @endcan
