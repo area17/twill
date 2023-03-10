@@ -62,6 +62,13 @@ The `renderBlocks` method now has the mapping as first argument.
 The `renderBlocks` method now by default will NOT render the nested repeaters below the block. If you relied on this
 you now need to update to `renderBlocks([], true)`
 
+### scopeForBucket replaced with getForBucket in featured
+
+In Twill 2 scopeForBucket would return a collection of featured items. However, as the name illustrates, this
+is not a scope.
+
+In Twill 3 `scopeForBucket` is an actual scope and `getForBucket` is a helper to get the items directly.
+
 ### Crops
 
 Model crops are now a global config, if you do not need model specific crops you can manage them globally from your
