@@ -271,6 +271,9 @@ trait HandleBlocks
         $childBlocksList = Collection::make();
 
         foreach ($parentBlockFields['blocks'] ?? [] as $childKey => $childBlocks) {
+            if (strpos($childKey, '|')) {
+                continue;
+            }
             foreach ($childBlocks as $index => $childBlock) {
                 $childBlock = $this->buildBlock($childBlock, $object, $childBlock['is_repeater'] ?? true);
                 $this->validateBlockArray($childBlock, $childBlock['instance'], true);

@@ -115,6 +115,17 @@ const mutations = {
     clone.twillUi.isNew = true
 
     state.repeaters[blockInfos.name].splice(blockInfos.index + 1, 0, clone)
+
+    // Clone the fields as well.
+    const fields = [...getters.fieldsByBlockId(blockInfos.id)]
+    const fieldCopies = []
+    fields.forEach(field => {
+      fieldCopies.push({
+        name: field.name.replace(blockInfos.id, clone.id),
+        value: field.value
+      })
+    })
+    this.commit(FORM.ADD_FORM_FIELDS, fieldCopies)
   },
   [FORM.REORDER_FORM_BLOCKS] (state, newValues) {
     const newBlocks = {}
@@ -127,6 +138,32 @@ const mutations = {
 }
 
 const actions = {
+  async [ACTIONS.DUPLICATE_REPEATER] ({ state, commit, getters }, { editorName, block, index, id }) {
+    const clone = Object.assign({}, state.repeaters[editorName][index])
+    clone.id = id
+
+    // Metadata for rendering
+    clone.twillUi = {}
+    clone.twillUi.isNew = true
+
+    const duplicates = {}
+    duplicates[editorName] = [...state.repeaters[editorName]];
+    duplicates[editorName].splice(index + 1, 0, clone)
+
+
+    // Clone the fields as well.
+    const fields = [...getters.fieldsByBlockId(block.id)]
+    const fieldCopies = []
+    fields.forEach(field => {
+      fieldCopies.push({
+        name: field.name.replace(block.id, clone.id),
+        value: JSON.parse(JSON.stringify(field.value))
+      })
+    })
+
+    commit(FORM.ADD_FORM_FIELDS, fieldCopies)
+    commit(FORM.ADD_REPEATERS, { repeaters: duplicates })
+  },
   async [ACTIONS.DUPLICATE_BLOCK] ({ commit, getters }, { block, id }) {
     // copy repeaters and update with the provided id
     const repeaters = { ...getters.repeatersByBlockId(block.id) }
@@ -145,7 +182,7 @@ const actions = {
         fields.forEach(field => {
           fieldCopies.push({
             name: field.name.replace(block.id, id),
-            value: field.value
+            value: JSON.parse(JSON.stringify(field.value))
           })
         })
       })
