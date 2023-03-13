@@ -40,11 +40,19 @@ abstract class SingletonModuleController extends ModuleController
 
     private function seed(): void
     {
-        $seederName = '\\Database\\Seeders\\' . $this->getModelName() . 'Seeder';
-        if (!class_exists($seederName)) {
-            throw new \Exception("$seederName is missing");
+        $seederName = $this->getModelName() . 'Seeder';
+        $seederNamespace = '\\Database\\Seeders\\';
+
+        if (!class_exists($seederNamespace . $seederName)) {
+            $seederNamespace = TwillCapsules::getCapsuleForModel($this->modelName)->getSeedsNamespace() . '\\';
         }
-        $seeder = new $seederName();
+
+        $seederClass = $seederNamespace . $seederName;
+
+        if (!class_exists($seederClass)) {
+            throw new \Exception("$seederClass is missing");
+        }
+        $seeder = new $seederClass();
         $seeder->run();
     }
 
