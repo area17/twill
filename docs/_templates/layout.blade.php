@@ -30,7 +30,7 @@
   <div class="container">
     <div class="cols-container ">
       <x-twilldocs::sidebar :tree="$tree" :currentSegment="$currentSegment" :url="$url"/>
-      <div class="content w-full lg:w-9-cols mt-68">
+      <div class="content w-full lg:w-9-cols xxl:w-7-cols mt-68">
         <div class="markdown lg:w-7-cols mx-auto">
           @if (isset($tree[$currentSegment]))
             <div class="print:!hidden" x-transition x-bind:class="{ hidden: !open }"></div>
@@ -48,7 +48,7 @@
         </div>
       </div>
 
-      @if ($toc)
+        @if ($toc)
             <div class="chapters-nav-fixed hidden xxl:block xxl:w-2-cols top-[80px] sticky h-screen-minus-header overflow-auto">
                 <h2 id="quick-reference" class="sr-only">Quick chapter reference</h2>
                 {!! $toc !!}
