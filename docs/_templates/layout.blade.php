@@ -48,12 +48,12 @@
         </div>
       </div>
 
-        @if ($toc)
-            <div class="chapters-nav-fixed hidden xxl:block xxl:w-2-cols top-[80px] sticky h-screen-minus-header overflow-auto">
-                <h2 id="quick-reference" class="sr-only">Quick chapter reference</h2>
-                {!! $toc !!}
-            </div>
-          @endif
+      @if ($toc)
+        <div class="chapters-nav-fixed hidden xxl:block xxl:w-2-cols top-[80px] sticky h-screen-minus-header overflow-auto">
+            <h2 id="quick-reference" class="sr-only">Quick chapter reference</h2>
+            {!! $toc !!}
+        </div>
+      @endif
     </div>
   </div>
 </div>
