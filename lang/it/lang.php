@@ -222,11 +222,11 @@ return [
             'error' => 'Gli elementi :modelTitle non sono stati distrutti. Qualcosa è andato storto!',
         ],
         'delete' => [
-            'success' => 'L\'elemento :modelTitle è spostato nel cestino!',
+            'success' => 'L\'elemento :modelTitle è stato spostato nel cestino!',
             'error' => 'L\'elemento :modelTitle non è stato spostato nel cestino. Qualcosa è andato storto!',
         ],
         'bulk-delete' => [
-            'success' => 'Gli elementi :modelTitle spostati nel cestino!',
+            'success' => 'Gli elementi :modelTitle sono stati spostati nel cestino!',
             'error' => 'Gli elementi :modelTitle non sono stati spostati nel cestino. Qualcosa è andato storto!',
         ],
         'duplicate' => [
