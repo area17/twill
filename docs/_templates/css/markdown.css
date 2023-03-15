@@ -65,7 +65,7 @@
   }
 
   .markdown p a {
-    color: var(--purple);
+    @apply text-link;
     text-decoration: none;
   }
 
@@ -96,12 +96,12 @@
     opacity: 1;
   }
   .heading-permalink {
+    @apply text-link;
     position: absolute;
     opacity: 0;
     font-weight: 400;
     transform: translateX(calc(-100%));
     padding-right: 10px;
-    color: var(--purple);
     text-decoration: none !important;
     scroll-margin-top: calc(80px + 32px);
   }

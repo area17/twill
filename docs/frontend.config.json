@@ -89,11 +89,16 @@
     },
     "border": {
       "primary": "grey",
+      "warn": "yellow",
+      "danger": "red",
+      "tip": "purple-light",
       "tag": "purple"
     },
     "text": {
       "title": "black",
       "primary": "black",
+      "inverse": "white",
+      "link": "purple",
       "warn": "yellow",
       "danger": "red",
       "tip": "purple",
@@ -102,9 +107,12 @@
     },
     "background": {
       "primary": "white",
+      "secondary": "grey",
+      "inverse": "black",
       "warn": "yellow-light",
       "danger": "red-light",
-      "tip": "purple-light"
+      "tip": "purple-light",
+      "code": "grey"
     }
   },
   "typography": {
