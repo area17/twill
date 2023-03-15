@@ -332,6 +332,7 @@ return [
         'media-library' => 'Libreria Media',
         'settings' => 'Impostazioni',
         'close-menu' => 'Chiudi menu',
+        'profile' => 'Profilo',
         'open-live-site' => 'Apri stato pubblicazione',
     ],
     'notifications' => [
