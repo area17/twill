@@ -1,5 +1,5 @@
 <nav
-    class="sidebar w-3-cols xxl:max-w-240 bg-white sticky top-[80px] h-screen-minus-header pr-32 border-r-[1px] border-grey overflow-x-hidden overflow-y-auto"
+    class="sidebar w-3-cols xl:w-240 bg-white sticky top-[80px] h-screen-minus-header pr-16 pb-16 border-r border-grey overflow-x-hidden overflow-y-auto"
     x-bind:inert="if (isMobile) {
     if (openNav) {
         return false
