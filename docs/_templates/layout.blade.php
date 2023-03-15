@@ -28,32 +28,54 @@
   <x-twilldocs::header/>
 
   <div class="container">
-    <div class="flex flex-row flex-nowrap justify-between">
-      <x-twilldocs::sidebar :tree="$tree" :currentSegment="$currentSegment" :url="$url"/>
-      <div class="content w-full lg:w-9-cols xl:w-6-cols lg:max-w-740 xl:mx-auto mt-68 markdown">
-        {{-- <div class="markdown lg:w-6-cols xl:w-full mx-auto"> --}}
-          @if (isset($tree[$currentSegment]))
-            <div class="print:!hidden" x-transition x-bind:class="{ hidden: !open }"></div>
-          @endif
 
-          <h1>{{$title}}</h1>
-          @if ($toc)
-            <div class="chapters-nav xl:hidden">
-              {!! $toc !!}
-            </div>
-          @endif
-          {!! $content !!}
+    @if ($currentSegment === 'documentation' || $currentSegment === 'guides')
+      <div class="flex flex-row flex-nowrap justify-between">
+        <x-twilldocs::sidebar :tree="$tree" :currentSegment="$currentSegment" :url="$url"/>
+        <div class="content markdown w-full lg:w-9-cols xl:w-6-cols lg:max-w-740 xl:mx-auto mt-68">
+          {{-- <div class="markdown lg:w-6-cols xl:w-full mx-auto"> --}}
+            @if (isset($tree[$currentSegment]))
+              <div class="print:!hidden" x-transition x-bind:class="{ hidden: !open }"></div>
+            @endif
 
-          <x-twilldocs::contentFooter :currentSegment="$currentSegment" :url="$url" :githubLink="$githubLink" :tree="$tree" />
-        {{-- </div> --}}
-      </div>
+            <h1>{{$title}}</h1>
+            @if ($toc)
+              <div class="chapters-nav xl:hidden">
+                {!! $toc !!}
+              </div>
+            @endif
+            {!! $content !!}
 
-      @if ($toc)
+            <x-twilldocs::contentFooter :currentSegment="$currentSegment" :url="$url" :githubLink="$githubLink" :tree="$tree" />
+          {{-- </div> --}}
+        </div>
+
         <div class="chapters-nav-fixed hidden xl:block xl:w-240 top-[80px] sticky h-screen-minus-header overflow-auto">
+          @if ($toc)
             <h2 id="quick-reference" class="sr-only">Quick chapter reference</h2>
             {!! $toc !!}
+          @endif
+        </div>
+      @elseif (strpos($url, 'index.html'))
+        {{-- home, blogs index --}}
+        <div class="content markdown mt-68">
+          <h1>{{$title}}</h1>
+          {!! $content !!}
+        </div>
+      @elseif ($currentSegment === 'blogs')
+        <div class="flex flex-row flex-nowrap">
+            <div class="content markdown w-full lg:w-9-cols xl:w-6-cols lg:max-w-740 lg:mx-auto mt-68">
+              <h1>{{$title}}</h1>
+              {!! $content !!}
+            </div>
+        </div>
+      @else
+        <div class="content markdown mt-68">
+          <h1>{{$title}}</h1>
+          {!! $content !!}
         </div>
       @endif
+
     </div>
   </div>
 </div>
