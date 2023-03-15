@@ -1,3 +1,3 @@
-<div class="card border border-grey">
+<div class="card">
     {{$slot}}
 </div>

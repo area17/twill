@@ -1,11 +1,15 @@
 @layer components {
   .markdown {
-    @apply f-body text-black;
+    @apply f-body text-primary;
     padding-bottom: 60px;
   }
 
   .markdown h1 {
     @apply f-h1;
+  }
+
+  body[class*="page--blogs"]:not([class~="page--blogs-index"]) .markdown h1 {
+    @apply f-headline;
   }
 
   .markdown h2 {
