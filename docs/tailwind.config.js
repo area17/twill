@@ -1,5 +1,6 @@
 const {
   Setup,
+  ApplyColorVariables,
   GridGap,
   ColorTokens,
   SpacingTokens,
@@ -26,7 +27,18 @@ module.exports = {
     spacing: SpacingTokens(feConfig.spacing.tokens),
     spacingGroups: feConfig.spacing.groups,
     colors: feConfig.color.tokens,
-    borderColor: feConfig.color.tokens,
+    borderColor: ApplyColorVariables(
+        feConfig.color.tokens,
+        feConfig.color.border
+    ),
+    textColor: ApplyColorVariables(
+        feConfig.color.tokens,
+        feConfig.color.text
+    ),
+    backgroundColor: ApplyColorVariables(
+        feConfig.color.tokens,
+        feConfig.color.background
+    ),
     extend: {
       spacing: {
         header: '80px'
@@ -54,6 +66,7 @@ module.exports = {
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
     Setup,
+    ApplyColorVariables,
     GridGap,
     Typography,
     Spacing,

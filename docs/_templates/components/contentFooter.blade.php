@@ -52,7 +52,7 @@ foreach($tree[$currentSegment]['items'] ?? [] as $item) {
         Edit this page on Github
     </a>
 
-    <div class="flex border-t-[1px] border-grey mt-32">
+    <div class="flex border-t-[1px] border-primary mt-32">
         @if ($prev)
             <a class="no-underline hover:text-purple mt-15" href="{{$prev['url']}}">
                 ← {{$prev['title']}}

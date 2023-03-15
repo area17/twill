@@ -1,23 +1,34 @@
-.card {
-  @apply relative p-32 md:pr-64 rounded border border-grey aspect-square;
-}
+@layer components {
+  .card {
+    @apply relative p-28 pb-80 md:pr-64 rounded border border-primary aspect-square;
+  }
 
-.card p {
-  @apply !mt-0;
-}
+  .card p {
+    @apply !mt-0;
+  }
 
-.card a {
-  @apply f-h2 block mb-16;
-  text-decoration: none !important;
-  font-weight: 600;
-}
+  .card a {
+    @apply f-h2 block mb-16;
+    text-decoration: none !important;
+    font-weight: 600;
+  }
 
-.card a::before {
-  content: '';
-  @apply inset-0;
-  background-color: red;
-}
+  .card a::before {
+    content: '';
+    @apply inset-0;
+    background-color: red;
+  }
 
-.card a:hover {
-  @apply text-purple;
+  .card a:hover {
+    @apply text-primary;
+  }
+
+
+  .card em {
+    @apply f-ui-1 inline-block text-tag border border-tag absolute left-28 bottom-28 not-italic px-8 py-4;
+  }
+
+  .card strong {
+    @apply f-ui-1 absolute right-28 bottom-28 font-normal py-5;
+  }
 }

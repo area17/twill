@@ -46,16 +46,16 @@
 
   "spacing": {
     "tokens": {
-        "scaler": 4,
-        "max": 240,
-        "arbritraries": {
-            "10": 10,
-            "15": 15,
-            "18": 18,
-            "30": 30,
-            "37": 37,
-            "740": 740
-        }
+      "scaler": 4,
+      "max": 240,
+      "arbritraries": {
+        "10": 10,
+        "15": 15,
+        "18": 18,
+        "30": 30,
+        "37": 37,
+        "740": 740
+      }
     },
     "groups": {
       "outer-1": {
@@ -87,18 +87,20 @@
       "purple-light": "rgba(121, 60, 184, 0.1)",
       "grey-dark": "#7F7F7F"
     },
-    "borderColor": {
-      "primary": "#EAECEF"
+    "border": {
+      "primary": "grey",
+      "tag": "purple"
     },
-    "textColor": {
+    "text": {
       "title": "black",
       "primary": "black",
       "warn": "yellow",
       "danger": "red",
       "tip": "purple",
+      "tag": "purple",
       "disabled": "grey-dark"
     },
-    "backgroundColor": {
+    "background": {
       "primary": "white",
       "warn": "yellow-light",
       "danger": "red-light",
@@ -110,6 +112,23 @@
       "sans": "\"Inter\", sans-serif"
     },
     "typesets": {
+      "headline": {
+        "xs": {
+          "font-family": "var(--sans)",
+          "font-weight": "500",
+          "font-size": "40",
+          "line-height": "1",
+          "font-smoothing": "true"
+        },
+        "md": {
+          "font-size": "52"
+        },
+        "lg": {
+          "font-size": "70",
+          "line-height": "1.2",
+          "letter-spacing": "-0.05em"
+        }
+      },
       "h1": {
         "xs": {
           "font-family": "var(--sans)",
@@ -161,6 +180,15 @@
           "font-weight": "400",
           "font-size": "14",
           "line-height": "1",
+          "font-smoothing": "true"
+        }
+      },
+      "ui-1": {
+        "xs": {
+          "font-family": "var(--sans)",
+          "font-weight": "400",
+          "font-size": "14",
+          "line-height": "1.18",
           "font-smoothing": "true"
         }
       },
