@@ -1,5 +1,6 @@
 const {
   Setup,
+  GridGap,
   ColorTokens,
   SpacingTokens,
   Spacing,
@@ -53,6 +54,7 @@ module.exports = {
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
     Setup,
+    GridGap,
     Typography,
     Spacing,
     Layout,
