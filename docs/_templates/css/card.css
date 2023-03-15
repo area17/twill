@@ -1,25 +1,23 @@
 .card {
-  border-radius: 4px;
-  border: 1px solid var(--grey);
-  padding: 21px 27px;
-  min-height: 60px;
-  margin-top: 20px;
+  @apply relative p-32 md:pr-64 rounded border border-grey aspect-square;
 }
 
 .card p {
-  margin-top: 16px;
+  @apply !mt-0;
 }
 
 .card a {
-  @apply f-h4;
+  @apply f-h2 block mb-16;
   text-decoration: none !important;
   font-weight: 600;
 }
 
-.card a:hover {
-  @apply text-purple;
+.card a::before {
+  content: '';
+  @apply inset-0;
+  background-color: red;
 }
 
-.card p:first-child {
-  margin-top: 0;
+.card a:hover {
+  @apply text-purple;
 }
