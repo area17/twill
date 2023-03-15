@@ -14,12 +14,12 @@ trait HandleDates
 
     public function prepareFieldsBeforeSaveHandleDates(?TwillModelContract $object, array $fields): array
     {
-        foreach ($this->model->getDates() as $f) {
-            if (isset($fields[$f])) {
-                if (!empty($fields[$f])) {
-                    $fields = $this->prepareDatesField($fields, $f);
+        foreach ($fields as $name => $fieldData) {
+            if ($this->model->hasCast($name, ['date', 'datetime'])) {
+                if (!empty($fields[$name])) {
+                    $fields = $this->prepareDatesField($fields, $name);
                 } else {
-                    $fields[$f] = null;
+                    $fields[$name] = null;
                 }
             }
         }

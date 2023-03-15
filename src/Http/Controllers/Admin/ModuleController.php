@@ -2287,7 +2287,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param Request $item
+     * @param TwillModelContract $item
      * @return array
      */
     protected function previewData($item)
