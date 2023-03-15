@@ -1,6 +1,6 @@
 @layer components {
   .chapters-nav {
-    margin-top: 32px;
+    @apply mt-32;
   }
 
   .chapters-nav li {
@@ -21,7 +21,7 @@
   }
 
   .chapters-nav-fixed {
-    @apply pt-68;
+    @apply pt-68 pb-16;
   }
 
   .chapters-nav-fixed li {
@@ -34,18 +34,16 @@
   }
 
   .chapters-nav-fixed > ul {
-    border: 1px solid var(--grey);
-    padding: 16px;
+    @apply p-16 border border-grey;
   }
 
   .chapters-nav-fixed > ul > li {
-    margin-top: 16px;
+    @apply mt-16;
   }
 
   .chapters-nav ul ul,
   .chapters-nav-fixed ul ul {
-    margin-top: 8px;
-    padding-left: 16px;
+    @apply mt-8 pl-16;
   }
 
   .chapters-nav-fixed a {
