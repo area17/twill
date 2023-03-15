@@ -1,6 +1,6 @@
 @layer components {
   code:not(.torchlight) {
-    background: var(--grey);
+    @apply bg-code;
     padding: 3px 3px;
     border-radius: 6px;
   }
