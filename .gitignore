@@ -26,3 +26,4 @@ composer.lock
 dist
 dist-backup
 .env
+mike.md
