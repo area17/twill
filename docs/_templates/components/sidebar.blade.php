@@ -78,11 +78,7 @@
                                         @php $active = $url === $item['url']; @endphp
                                         <li class="relative pt-8">
                                             <a
-<<<<<<< HEAD
-                                              class="text-[.95em] text-black no-underline hover:text-purple @if($active) font-medium text-purple @endif"
-=======
                                               class="block w-full pl-3.5 before:pointer-events-none text-primary no-underline hover:text-purple @if($active) font-medium text-purple @endif"
->>>>>>> 36cae5c2 (refactor to use named tokens for colours, style blog landing)
                                               href="{{ $item['url'] ?? '#' }}">
                                               {{ $item['title'] ?? '' }}
                                             </a>
