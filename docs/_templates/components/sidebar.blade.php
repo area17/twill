@@ -1,5 +1,5 @@
 <nav
-    class="sidebar w-3-cols xl:w-240 bg-white sticky top-[80px] h-screen-minus-header pr-32 pb-16 border-r border-primary overflow-x-hidden overflow-y-auto"
+    class="sidebar w-3-cols xl:w-240 bg-primary sticky top-80 h-screen-minus-header pr-32 pb-16 border-r border-primary overflow-x-hidden overflow-y-auto"
     x-bind:inert="if (isMobile) {
     if (openNav) {
         return false
@@ -54,8 +54,8 @@
                             >
 
                             <div class="flex items-center">
-                                <a class="inline no-underline hover:text-purple
-                                    @if ($open) text-purple font-medium no-underline @endif"
+                                <a class="inline no-underline hover:text-link
+                                    @if ($open) text-link font-medium no-underline @endif"
                                     href="{{ $item['url'] ?? '#' }}">
                                         {{ $item['title'] ?? '' }}
                                 </a>
@@ -78,7 +78,7 @@
                                         @php $active = $url === $item['url']; @endphp
                                         <li class="relative pt-8">
                                             <a
-                                              class="block w-full pl-3.5 before:pointer-events-none text-primary no-underline hover:text-purple @if($active) font-medium text-purple @endif"
+                                              class="block w-full pl-3.5 before:pointer-events-none text-primary no-underline hover:text-link @if($active) font-medium text-link @endif"
                                               href="{{ $item['url'] ?? '#' }}">
                                               {{ $item['title'] ?? '' }}
                                             </a>

@@ -33,7 +33,7 @@
       <div class="flex flex-row flex-nowrap justify-between">
         <x-twilldocs::sidebar :tree="$tree" :currentSegment="$currentSegment" :url="$url"/>
         <div class="content markdown w-full lg:w-9-cols xl:w-6-cols lg:max-w-740 xl:mx-auto mt-68">
-          {{-- <div class="markdown lg:w-6-cols xl:w-full mx-auto"> --}}
+            {{-- documentation and guides --}}
             @if (isset($tree[$currentSegment]))
               <div class="print:!hidden" x-transition x-bind:class="{ hidden: !open }"></div>
             @endif
@@ -47,10 +47,9 @@
             {!! $content !!}
 
             <x-twilldocs::contentFooter :currentSegment="$currentSegment" :url="$url" :githubLink="$githubLink" :tree="$tree" />
-          {{-- </div> --}}
         </div>
 
-        <div class="chapters-nav-fixed hidden xl:block xl:w-240 top-[80px] sticky h-screen-minus-header overflow-auto">
+        <div class="chapters-nav-fixed hidden xl:block xl:w-240 top-80 sticky h-screen-minus-header overflow-auto">
           @if ($toc)
             <h2 id="quick-reference" class="sr-only">Quick chapter reference</h2>
             {!! $toc !!}
@@ -70,6 +69,7 @@
             </div>
         </div>
       @else
+        {{-- capture for any other page type --}}
         <div class="content markdown mt-68">
           <h1>{{$title}}</h1>
           {!! $content !!}
@@ -80,7 +80,7 @@
   </div>
 </div>
 
-{{-- <x-twilldocs::devTools /> --}}
+<x-twilldocs::devTools />
 
 <script src="/js/nav.js"></script>
 

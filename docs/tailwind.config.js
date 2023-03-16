@@ -27,24 +27,15 @@ module.exports = {
     spacing: SpacingTokens(feConfig.spacing.tokens),
     spacingGroups: feConfig.spacing.groups,
     colors: feConfig.color.tokens,
-    borderColor: ApplyColorVariables(
-        feConfig.color.tokens,
-        feConfig.color.border
-    ),
-    textColor: ApplyColorVariables(
-        feConfig.color.tokens,
-        feConfig.color.text
-    ),
-    backgroundColor: ApplyColorVariables(
-        feConfig.color.tokens,
-        feConfig.color.background
-    ),
+    borderColor: ApplyColorVariables(feConfig.color.tokens, feConfig.color.border),
+    textColor: ApplyColorVariables(feConfig.color.tokens, feConfig.color.text),
+    backgroundColor: ApplyColorVariables(feConfig.color.tokens, feConfig.color.background),
     extend: {
       spacing: {
         header: '80px'
       },
       minHeight: {
-        'screen-minus-header': 'calc(100vh - 80px)'
+        'screen-minus-header': 'calc(100vh - 5rem)'
       },
       maxWidth: {
         '240': '15rem',
@@ -52,7 +43,7 @@ module.exports = {
       },
       height: {
         header: '80px',
-        'screen-minus-header': 'calc(100vh - 80px)'
+        'screen-minus-header': 'calc(100vh - 5rem)'
       },
       zIndex: {
         header: '10'

@@ -1,11 +1,11 @@
 @layer components {
   .markdown {
     @apply f-body text-primary;
-    padding-bottom: 60px;
+
   }
 
   .markdown h1 {
-    @apply f-h1;
+    @apply f-h1 mt-68;
   }
 
   body[class*="page--blogs"]:not([class~="page--blogs-index"]) .markdown h1 {
@@ -14,7 +14,7 @@
 
   .markdown h2 {
     @apply f-h2 mt-68;
-    scroll-margin-top: 80px;
+    scroll-margin-top: 5rem;
   }
 
   .markdown h3 {
@@ -47,12 +47,8 @@
     font-variant-numeric: lining-nums;
   }
 
-  .markdown > *:first-child {
-    margin-top: 0;
-  }
-
   .markdown strong {
-    font-weight: 500;
+    @apply font-medium;
   }
 
   .markdown p a,
@@ -64,13 +60,12 @@
     @apply underline;
   }
 
-  .markdown p a {
-    color: var(--purple);
-    text-decoration: none;
+  .markdown a {
+    @apply text-link no-underline;
   }
 
-  .markdown p a:hover {
-    text-decoration: underline;
+  .markdown a:hover {
+    @apply underline;
   }
 
   h1,
@@ -96,14 +91,12 @@
     opacity: 1;
   }
   .heading-permalink {
+    @apply text-link font-medium pr-10;
     position: absolute;
     opacity: 0;
-    font-weight: 400;
     transform: translateX(calc(-100%));
-    padding-right: 10px;
-    color: var(--purple);
     text-decoration: none !important;
-    scroll-margin-top: calc(80px + 32px);
+    scroll-margin-top: 7rem;
   }
 
   .heading-permalink:hover {
@@ -115,25 +108,39 @@
   }
 
   thead tr {
-    font-weight: 500;
+    @apply font-medium;
   }
 
   tr {
-    text-align: left;
+    @apply text-left;
   }
 
   th,
   td {
-    text-align: left;
-    padding: 16px 8px;
+    @apply py-16 px-8 text-left;
   }
 
   td,
   th {
-    border: 1px solid #dfe2e5;
+    @apply border border-primary;
   }
 
   tr:nth-child(2n) {
-    background-color: #f6f8fa;
+    @apply bg-secondary;
+  }
+
+  /* content block specific */
+  .content.markdown {
+    @apply pb-60;
+  }
+
+  .content.markdown > *:first-child {
+    @apply mt-0;
+  }
+
+  /* content block specific */
+  .file.markdown > *,
+  .file.markdown > *:first-child {
+    @apply mt-0;
   }
 }

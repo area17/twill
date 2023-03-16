@@ -5,10 +5,9 @@
                     :class="{
                         // 'rounded-r-lg': {{$loop->last ? 'true' : 'false'}},
                         // 'rounded-l-lg': {{$loop->first ? 'true' : 'false'}},
-                        '!bg-white !text-primary border-purple border-[2px] pointer-events-none': activeTab === '{{$item}}'
+                        '!bg-tab-active !text-tab-active !border-tab-active pointer-events-none': activeTab === '{{$item}}'
                         }"
-                    class="f-body text-white bg-black px-20 py-4 rounded-[4px] mr-20 font-bold"
-            >
+                    class="f-body text-tab bg-tab px-20 py-4 border-[2px] border-tab rounded mr-20 font-bold hover:bg-tab-hover">
                 {{$item}}
             </button>
         @endforeach
