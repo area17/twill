@@ -5,9 +5,9 @@
                     :class="{
                         // 'rounded-r-lg': {{$loop->last ? 'true' : 'false'}},
                         // 'rounded-l-lg': {{$loop->first ? 'true' : 'false'}},
-                        '!bg-primary !text-primary border-tip border-[2px] pointer-events-none': activeTab === '{{$item}}'
+                        '!bg-white !text-primary border-purple border-[2px] pointer-events-none': activeTab === '{{$item}}'
                         }"
-                    class="f-body text-inverse bg-inverse px-20 py-4 rounded-[4px] mr-20 font-bold"
+                    class="f-body text-white bg-black px-20 py-4 rounded-[4px] mr-20 font-bold"
             >
                 {{$item}}
             </button>

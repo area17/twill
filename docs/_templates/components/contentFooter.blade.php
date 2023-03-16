@@ -45,7 +45,7 @@ foreach($tree[$currentSegment]['items'] ?? [] as $item) {
 <div class="mt-68">
 
     <a
-        class="text-tip no-underline hover:underline"
+        class="text-purple no-underline hover:underline"
         href="{{$githubLink}}"
         ref="noopener noreferrer"
         target="_blank">
@@ -54,12 +54,12 @@ foreach($tree[$currentSegment]['items'] ?? [] as $item) {
 
     <div class="flex border-t-[1px] border-primary mt-32">
         @if ($prev)
-            <a class="no-underline hover:text-tip mt-15" href="{{$prev['url']}}">
+            <a class="no-underline hover:text-purple mt-15" href="{{$prev['url']}}">
                 ← {{$prev['title']}}
             </a>
         @endif
         @if ($next)
-            <a class="ml-auto no-underline hover:text-tip mt-15" href="{{$next['url']}}">
+            <a class="ml-auto no-underline hover:text-purple mt-15" href="{{$next['url']}}">
                 {{$next['title']}} →
             </a>
         @endif
