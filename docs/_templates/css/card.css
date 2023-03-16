@@ -15,8 +15,7 @@
 
   .card a::before {
     content: '';
-    @apply inset-0;
-    background-color: red;
+    @apply absolute inset-0;
   }
 
   .card a:hover {
