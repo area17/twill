@@ -32,7 +32,7 @@
       <div class="content markdown mt-68">
         <h1>{{$title}}</h1>
         {!! $content !!}
-        <x-twilldocs::grid--guides :tree="$tree" :currentSegment="$currentSegment" :url="$url"/>
+        <x-twilldocs::grid-auto-generated :tree="$tree" :currentSegment="$currentSegment" :url="$url" type="guides" />
       </div>
     @elseif ($currentSegment === 'documentation' || $currentSegment === 'guides')
       <div class="flex flex-row flex-nowrap justify-between">
@@ -61,12 +61,13 @@
           @endif
         </div>
       @elseif (strpos($url, 'index.html'))
-        {{-- home, blogs index --}}
+        {{-- home --}}
         <div class="content markdown mt-68">
           <h1>{{$title}}</h1>
           {!! $content !!}
         </div>
       @elseif ($currentSegment === 'blogs')
+        {{-- blog details --}}
         <div class="flex flex-row flex-nowrap">
             <div class="content markdown w-full lg:w-9-cols xl:w-6-cols lg:max-w-740 lg:mx-auto mt-68">
               <h1>{{$title}}</h1>
