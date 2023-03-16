@@ -17,7 +17,7 @@
   }
 
   .chapters-nav a:hover {
-    @apply !text-link;
+    color: var(--purple) !important;
   }
 
   .chapters-nav-fixed {
@@ -34,7 +34,7 @@
   }
 
   .chapters-nav-fixed > ul {
-    @apply p-16 border border-primary;
+    @apply p-16 border border-grey;
   }
 
   .chapters-nav-fixed > ul > li {
