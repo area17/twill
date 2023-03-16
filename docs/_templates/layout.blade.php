@@ -26,10 +26,15 @@
 @php $currentSegment = \Illuminate\Support\Str::before(ltrim($url, '/'), '/'); @endphp
 <div class="min-h-screen-minus-header">
   <x-twilldocs::header/>
-
   <div class="container">
-
-    @if ($currentSegment === 'documentation' || $currentSegment === 'guides')
+    @if ($currentSegment === 'guides' && strpos($url, 'index.html') && !strpos($url, 'guides/page-builder-with-blade'))
+      {{-- guides index --}}
+      <div class="content markdown mt-68">
+        <h1>{{$title}}</h1>
+        {!! $content !!}
+        <x-twilldocs::grid--guides :tree="$tree" :currentSegment="$currentSegment" :url="$url"/>
+      </div>
+    @elseif ($currentSegment === 'documentation' || $currentSegment === 'guides')
       <div class="flex flex-row flex-nowrap justify-between">
         <x-twilldocs::sidebar :tree="$tree" :currentSegment="$currentSegment" :url="$url"/>
         <div class="content markdown w-full lg:w-9-cols xl:w-6-cols lg:max-w-740 xl:mx-auto mt-68">
