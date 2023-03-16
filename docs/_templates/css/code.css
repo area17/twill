@@ -1,8 +1,7 @@
 @layer components {
   code:not(.torchlight) {
-    background: var(--grey);
-    padding: 3px 3px;
-    border-radius: 6px;
+    @apply bg-code p-3;
+    border-radius: 0.375rem;
   }
   /* Hide the default markers, as we provide our own */
   .torchlight details > summary::marker,
@@ -66,7 +65,7 @@
   }
 
   .torchlight.has-focus-lines:hover .line:not(.line-focus) {
-    filter: blur(0px);
+    filter: blur(0);
     opacity: 1;
   }
 

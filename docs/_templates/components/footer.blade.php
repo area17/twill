@@ -6,6 +6,6 @@
         <x-twilldocs::githubBtn />
     </div>
 
-    <div class="border-t-[1px] border-primary h-[300px] mt-24">
+    <div class="border-t border-primary h-300 mt-24">
     </div>
 </footer>
