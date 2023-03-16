@@ -15,8 +15,8 @@
             @if ($prefix) prefix: '{{ $prefix }}', @endif
             @if ($mask) mask: '{{ $mask }}', @endif
             @if ($inModal) inModal: true, @endif
-            @if ($min) min: {{$min}}, @endif
-            @if ($max) max: {{$max}}, @endif
+            @isset ($min) min: {{$min}}, @endisset
+            @isset ($max) max: {{$max}}, @endisset
             @if ($step) step: {{$step}}, @endif
             @if ($default)
                 initialValue: '{{ $default }}',
@@ -44,8 +44,8 @@
         @if ($prefix) prefix="{{ $prefix }}" @endif
         @if ($mask) mask="{{ $mask }}" @endif
         @if ($inModal) :in-modal="true" @endif
-        @if ($min) :min="{{$min}}" @endif
-        @if ($max) :max="{{$max}}" @endif
+        @isset ($min) :min="{{$min}}" @endisset
+        @isset ($max) :max="{{$max}}" @endisset
         @if ($step) step="{{$step}}" @endif
         @if ($default)
             :initial-value="'{{ $default }}'"
