@@ -2,12 +2,17 @@
 
 namespace A17\Twill\Services\Forms;
 
+use A17\Twill\Services\Forms\Contracts\CanHaveSubfields;
+use A17\Twill\Services\Forms\Contracts\CanRenderForBlocks;
+use A17\Twill\Services\Forms\Traits\RenderForBlocks;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\View as ViewFacade;
 
-class Columns implements CanHaveSubfields
+class Columns implements CanHaveSubfields, CanRenderForBlocks
 {
+    use RenderForBlocks;
+
     protected function __construct(
         public ?Collection $left = null,
         public ?Collection $middle = null,
@@ -43,6 +48,12 @@ class Columns implements CanHaveSubfields
 
     public function render(): View
     {
+        if ($this->forBlocks()) {
+            $this->left?->each(fn(CanRenderForBlocks $field) => $field->renderForBlocks());
+            $this->right?->each(fn(CanRenderForBlocks $field) => $field->renderForBlocks());
+            $this->middle?->each(fn(CanRenderForBlocks $field) => $field->renderForBlocks());
+        }
+
         return ViewFacade::make('twill::partials.form.utils._columns', [
             'left' => null,
             'middle' => null,
