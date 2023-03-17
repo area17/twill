@@ -4,6 +4,7 @@ namespace A17\Twill\Services\Forms;
 
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Services\Blocks\Block;
+use A17\Twill\Services\Forms\Contracts\CanHaveSubfields;
 use A17\Twill\Services\Forms\Fields\Repeater;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
