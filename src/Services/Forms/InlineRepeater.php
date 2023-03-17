@@ -5,13 +5,17 @@ namespace A17\Twill\Services\Forms;
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Forms\Contracts\CanHaveSubfields;
+use A17\Twill\Services\Forms\Contracts\CanRenderForBlocks;
 use A17\Twill\Services\Forms\Fields\Repeater;
+use A17\Twill\Services\Forms\Traits\RenderForBlocks;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-class InlineRepeater implements CanHaveSubfields
+class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
 {
+    use RenderForBlocks;
+
     protected function __construct(
         private ?string $name = null,
         private ?string $trigger = null,
