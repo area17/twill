@@ -1,6 +1,6 @@
 <?php
 
-namespace A17\Twill\Services\Forms\Contracts;
+namespace A17\Twill\Services\Forms;
 
 interface CanHaveSubfields
 {

@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Services\Forms;
 
-use A17\Twill\Services\Forms\Contracts\CanHaveSubfields;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 
