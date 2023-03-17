@@ -3,15 +3,11 @@
 namespace A17\Twill\Services\Forms;
 
 use A17\Twill\Services\Forms\Contracts\CanHaveSubfields;
-use A17\Twill\Services\Forms\Contracts\CanRenderForBlocks;
-use A17\Twill\Services\Forms\Traits\RenderForBlocks;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
-class Fieldset implements CanHaveSubfields, CanRenderForBlocks
+class Fieldset implements CanHaveSubfields
 {
-    use RenderForBlocks;
-
     protected function __construct(
         public ?string $title = null,
         public ?Collection $fields = null,
