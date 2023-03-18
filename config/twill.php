@@ -129,22 +129,20 @@ return [
     | Twill default tables naming configuration
     |--------------------------------------------------------------------------
     |
-    | TODO: In Twill 3.0, all tables will be prefixed by `twill_`.
-    |
      */
-    'users_table' => 'twill_users',
+    'blocks_table' => 'twill_blocks',
+    'features_table' => 'twill_features',
+    'fileables_table' => 'twill_fileables',
+    'files_table' => 'twill_files',
+    'mediables_table' => 'twill_mediables',
+    'medias_table' => 'twill_medias',
     'password_resets_table' => 'twill_password_resets',
+    'related_table' => 'twill_related',
+    'settings_table' => 'twill_settings',
+    'tagged_table' => 'twill_tagged',
+    'tags_table' => 'twill_tags',
     'users_oauth_table' => 'twill_users_oauth',
-    'blocks_table' => 'blocks',
-    'features_table' => 'features',
-    'settings_table' => 'settings',
-    'medias_table' => 'medias',
-    'mediables_table' => 'mediables',
-    'files_table' => 'files',
-    'fileables_table' => 'fileables',
-    'related_table' => 'related',
-    'tags_table' => 'tags',
-    'tagged_table' => 'tagged',
+    'users_table' => 'twill_users',
 
     /*
     |--------------------------------------------------------------------------
