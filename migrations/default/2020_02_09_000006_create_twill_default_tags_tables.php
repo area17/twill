@@ -13,7 +13,7 @@ class CreateTwillDefaultTagsTables extends Migration
      */
     public function up()
     {
-        $twillTaggedTable = config('twill.tagged_table', 'tagged');
+        $twillTaggedTable = config('twill.tagged_table', 'twill_tagged');
 
         if (!Schema::hasTable($twillTaggedTable)) {
             Schema::create($twillTaggedTable, function (Blueprint $table) {
