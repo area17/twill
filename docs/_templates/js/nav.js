@@ -1,5 +1,5 @@
 // active scroll nav behavior
-const ACTIVE_CLASS = 'text-purple'
+const ACTIVE_CLASS = 'text-link'
 const LIST_ACTIVE = 'is-active'
 const INACTIVE_CLASS = 'text-black'
 const nav = document.querySelector('.chapters-nav-fixed')
@@ -33,12 +33,13 @@ if (nav) {
     // OR if undefined, return the first item
     let currentActiveIndex = current[current.length - 1]
       ? current[current.length - 1]
-      : `#${chapterItems[0].querySelector('a').getAttribute('id')}`
+      : chapterItems .length > 0 ? `#${chapterItems[0].querySelector('a').getAttribute('id')}` : -1
     return currentActiveIndex
   }
 
   const setActiveNav = pos => {
     const active = _getActiveHref(chapterItems, pos)
+    console.log(active);
     navItems.forEach(elem => {
       const linkEl = elem.querySelector('a')
       const listEl = elem
@@ -54,7 +55,7 @@ if (nav) {
     const activeElem = nav.querySelector('.is-active')
     // check the sum of all these parents are ul - then it was a nested child
     if (
-      activeElem.parentElement.parentElement.parentElement.nodeName === 'UL'
+      activeElem && activeElem.parentElement.parentElement.parentElement.nodeName === 'UL'
     ) {
       activeElem.parentElement.parentElement
         .querySelector('a')
