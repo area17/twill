@@ -1,3 +1,7 @@
+@php
+  $feConfig = file_get_contents("./../frontend.config.json");
+  $feConfig = json_decode($feConfig, true);
+@endphp
 <!doctype html>
 <html lang="en">
 
@@ -15,9 +19,9 @@
 
 <body
   class="overflow-x-hidden page--{{ Str::slug(Str::replace(['/', '.html'], ['-', ''], $url)) }}"
-  x-data="{ isMobile: (window.innerWidth < 1024) ? true : false, openNav: false }"
+  x-data="{ isMobile: (window.innerWidth < {{ intval($feConfig['structure']['breakpoints']['lg']) }}) ? true : false, openNav: false }"
   x-bind:class="{ isMobile: isMobile ? true : false, openNav: openNav ? true : false }"
-  x-on:resize.window="isMobile = (window.innerWidth < 1024) ? true : false"
+  x-on:resize.window="isMobile = (window.innerWidth < {{ intval($feConfig['structure']['breakpoints']['lg']) }}) ? true : false"
   x-on:keyup.escape="if(isMobile && openNav){
         openNav = false;
         $nextTick(() => $refs.openMenu.focus())
