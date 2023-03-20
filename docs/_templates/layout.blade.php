@@ -36,13 +36,20 @@
       <div class="content markdown mt-68">
         <h1>{{$title}}</h1>
         {!! $content !!}
-        <x-twilldocs::grid-auto-generated :tree="$tree" :currentSegment="$currentSegment" :url="$url" type="guides" />
+        <x-twilldocs::grid-auto-generated :tree="$tree" :currentSegment="$currentSegment" :url="$url" />
+      </div>
+    @elseif ($currentSegment === 'blogs' && strpos($url, 'index.html'))
+      {{-- blog index --}}
+      <div class="content markdown mt-68">
+        <h1>{{$title}}</h1>
+        {!! $content !!}
+        <x-twilldocs::grid-auto-generated :tree="$tree" :currentSegment="$currentSegment" :url="$url" />
       </div>
     @elseif ($currentSegment === 'documentation' || $currentSegment === 'guides')
       <div class="flex flex-row flex-nowrap justify-between">
         <x-twilldocs::sidebar :tree="$tree" :currentSegment="$currentSegment" :url="$url"/>
         <div class="content markdown w-full lg:w-9-cols xl:w-6-cols lg:max-w-740 xl:mx-auto mt-68">
-            {{-- documentation and guides --}}
+            {{-- documentation and guide details --}}
             @if (isset($tree[$currentSegment]))
               <div class="print:!hidden" x-transition x-bind:class="{ hidden: !open }"></div>
             @endif
