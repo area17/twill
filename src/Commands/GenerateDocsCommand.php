@@ -176,6 +176,13 @@ class GenerateDocsCommand extends Command
                     $documentString = Str::after($documentString, '</h1>');
                 }
 
+                // Grab metadata
+                $metadata = [];
+                $metadataJsonPath = preg_replace('/.md$/i', ".json", $relativePath);
+                if ($disk->exists($metadataJsonPath) && $md = json_decode($disk->get($metadataJsonPath), true)) {
+                    $metadata = $md;
+                }
+
                 $treeData = [
                     'title' => $title,
                     'url' => $url,
@@ -183,6 +190,7 @@ class GenerateDocsCommand extends Command
                     'githubLink' => 'https://github.com/area17/twill/tree/3.x/docs/' . $relativePath,
                     'content' => $documentString,
                     'toc' => $tocRendered,
+                    'metadata' => $metadata,
                 ];
 
                 if (Str::contains($relativePath, 'index.md')) {
