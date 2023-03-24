@@ -23,7 +23,7 @@ trait HasRelated
     /**
      * Returns the related items for a browser field.
      */
-    public function getRelated(string $browserName): \Illuminate\Database\Eloquent\Collection
+    public function getRelated(string $browserName): Collection
     {
         if (! isset($this->relatedCache[$browserName]) || $this->relatedCache[$browserName] === null) {
             $this->loadRelated($browserName);
