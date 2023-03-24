@@ -45,7 +45,7 @@ class PageController extends BaseModuleController
 }
 ```
 
-We set our `permalinkBase` to nothing, this defaults to the name of our model which is `pages`
+We set our `permalinkBase` to an empty string instead of letting it default to the name of our model which is `pages`.
 
 Then we add `withoutLanguageInPermalink` to tell the controller to not use the language permalink.
 
