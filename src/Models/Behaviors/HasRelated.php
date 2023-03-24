@@ -65,7 +65,7 @@ trait HasRelated
      *
      * @param array<int, TwillModelContract> $items
      */
-    public function saveRelated(array $items, string $browserName): void
+    public function saveRelated(array|Collection $items, string $browserName): void
     {
         /** @var Collection<int, RelatedItem> $itemsToProcess */
         $itemsToProcess = $this->relatedItems()->where('browser_name', $browserName)->get();
