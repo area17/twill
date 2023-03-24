@@ -80,7 +80,7 @@ Now that we know what a module is and how we can generate one. We can go ahead a
 
 `php artisan twill:make:module pages`
 
-You will be prompted to answer some questions and while we could have use the options to configure these, it is good to
+You will be prompted to answer some questions and while we could have used the options to configure these, it is good to
 see what the options are with a bit more explanation.
 
 For this module we will answer:
@@ -140,7 +140,7 @@ many routes for your module, these are then used by the cms, controllers and req
 The second step, we have to do ourself. So let's open `app/Providers/AppServiceProvider.php`.
 
 We will not go into detail about what a service provider is, for that you can check the 
-[official documentation](https://laravel.com/docs/9.x/providers).
+[official documentation](https://laravel.com/docs/10.x/providers).
 
 In our `boot` method we will add the suggested snippet:
 
@@ -192,7 +192,7 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-`TwillNavigation` is a [Facade](https://laravel.com/docs/9.x/facades#main-content) that Twill provides to manage the
+`TwillNavigation` is a [Facade](https://laravel.com/docs/10.x/facades#main-content) that Twill provides to manage the
 administration menu.
 
 `NavigationLink` is a blade component, but with some additional methods. This is used to render the actual link.
