@@ -81,12 +81,10 @@ trait HasRelated
 
             // This needs to be a strict "null" comparison, as it would otherwise pass on key 0.
             if ($firstMatchKey !== null) {
-                // There is an existing entry for which we update the position.
-                if ($itemsToProcess[$firstMatchKey]->position !== ($position + 1)) {
-                    RelatedItem::where('browser_name', $browserName)
-                        ->where('related_type', $item['endpointType'])
-                        ->where('related_id', $item['id'])
-                        ->update(['position' => $position + 1]);
+                $match = $itemsToProcess[$firstMatchKey];
+                $match->position = $position + 1;
+                if ($match->isDirty('position')) {
+                    $match->save();
                 }
             } else {
                 RelatedItem::create([
@@ -103,14 +101,7 @@ trait HasRelated
             $itemsToProcess->offsetUnset($firstMatchKey);
         }
 
-
-        // Cleanup the remaining items.
-        foreach ($itemsToProcess as $item) {
-            RelatedItem::where('browser_name', $browserName)
-                ->where('related_type', $item['related_type'])
-                ->where('related_id', $item['related_id'])
-                ->delete();
-        }
+        RelatedItem::whereIn('id', $itemsToProcess->pluck('id')->toArray())->delete();
     }
 
     public function clearRelated(string $browserName): void

@@ -8,8 +8,6 @@ class RelatedItem extends BaseModel
 {
     protected $guarded = [];
 
-    protected $primaryKey;
-
     public $incrementing = false;
 
     public $timestamps = false;
