@@ -3,7 +3,6 @@
          bootstrap="tests/bootstrap.php" colors="true" convertErrorsToExceptions="true"
          convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false"
          stopOnError="false" stopOnFailure="false" verbose="true"
-         enforceTimeLimit="true"
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
     <coverage processUncoveredFiles="true">
         <include>
