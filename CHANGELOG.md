@@ -468,7 +468,6 @@ It is now possible to automatically save and retrieve multiple form fields in a 
 [`5564e488`](https://github.com/area17/twill/commit/5564e48801d97e28c350c2250b0b3f36efa54444)/[`#452`](https://github.com/area17/twill/pull/452)/[`657e83cf`](https://github.com/area17/twill/commit/657e83cf7191f44a81a6051c04ff9a9c62cac8e1)/[`#501`](https://github.com/area17/twill/pull/501)/[`b48793af`](https://github.com/area17/twill/commit/b48793af5ea9ef8e3e54761f58402786a54881ba)/[`#541`](https://github.com/area17/twill/pull/541)/[`74926425`](https://github.com/area17/twill/commit/7492642564e65e84646e3d9f930227bdc2400540)/[`6437a073`](https://github.com/area17/twill/commit/6437a0732ff1983196ab716395d18677cab3bc45)/[`84176e44`](https://github.com/area17/twill/commit/84176e448e47d63339bf2ffa3ac9224f3ca5dc42)
 
 #### Azure uploads
-
 A new `endpoint_type` to support Azure storage of all uploads, exactly like when working with S3.
 
 [`#424`](https://github.com/area17/twill/pull/424)/[`2129c084`](https://github.com/area17/twill/commit/2129c084bd5cdf14a0617006d0332090f8f9af9c)/[`#443`](https://github.com/area17/twill/pull/443)/[`d81a5b94`](https://github.com/area17/twill/commit/d81a5b9439661a1c9449f3d25a6bc1946706788a)/[`b7a89f38`](https://github.com/area17/twill/commit/b7a89f3830a25e682a996e25176d10f6ac23059d)/[`4bf2e133`](https://github.com/area17/twill/commit/4bf2e133e9841b12f92f955ab0440fed0769f202)
