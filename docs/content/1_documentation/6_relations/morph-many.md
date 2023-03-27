@@ -1,6 +1,6 @@
 # One to Many (Polymorphic)
 
-[One to Many (Polymorphic)](https://laravel.com/docs/9.x/eloquent-relationships#one-to-many-polymorphic-relations) can
+[One to Many (Polymorphic)](https://laravel.com/docs/10.x/eloquent-relationships#one-to-many-polymorphic-relations) can
 be used to refer to a model that may
 not necessarily always be the same.
 
@@ -42,7 +42,7 @@ targeting.
 
 Now that our migration is in place we can move onward to our model setup. Here we will follow the
 documentation Laravel
-again [model structure](https://laravel.com/docs/9.x/eloquent-relationships#one-to-many-polymorphic-model-structure).
+again [model structure](https://laravel.com/docs/10.x/eloquent-relationships#one-to-many-polymorphic-model-structure).
 
 :::filename:::
 `app/Models/Comment.php`

@@ -76,7 +76,7 @@ At this point when you go into the admin panel you can add a new task, saving ho
 
 To make our data save we have to update our model and repository.
 
-In our model we will add a [cast](https://laravel.com/docs/9.x/eloquent-mutators#attribute-casting),
+In our model we will add a [cast](https://laravel.com/docs/10.x/eloquent-mutators#attribute-casting),
 and while we are there we can also make the `tasks` fillable.
 
 :::filename:::

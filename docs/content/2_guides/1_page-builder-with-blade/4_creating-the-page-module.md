@@ -25,7 +25,7 @@ to create them.
 Creating these files manually would be, painful. Their naming conventions would need to match, the base content would
 need to be set, that is a lot of work!
 
-Luckily, Twill comes with a few useful [artisan](https://laravel.com/docs/9.x/artisan) commands. (Artisan is the command
+Luckily, Twill comes with a few useful [artisan](https://laravel.com/docs/10.x/artisan) commands. (Artisan is the command
 line toolkit of Laravel. You used this before to install Twill itself.)
 
 While there are many commands that you can run, we will focus on just one at the moment.

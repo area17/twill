@@ -12,7 +12,7 @@ Objectives:
 
 Requirements:
 
-* [Laravel Breeze for user authentication](https://laravel.com/docs/8.x/starter-kits#laravel-breeze)
+* [Laravel Breeze for user authentication](https://laravel.com/docs/10.x/starter-kits#laravel-breeze)
 
 ## Create the profiles module
 

@@ -9,7 +9,7 @@ As Twill 3's release is nearing, let's do an overview of the main new features t
 
 ## Blade components for forms
 
-In modern Laravel developments, it is almost certain that you have used [Blade](https://laravel.com/docs/9.x/blade),
+In modern Laravel developments, it is almost certain that you have used [Blade](https://laravel.com/docs/10.x/blade),
 Laravel's core templating engine.
 
 Blade components are a great way to abstract html snippets and some logic into separate files. When used correctly it

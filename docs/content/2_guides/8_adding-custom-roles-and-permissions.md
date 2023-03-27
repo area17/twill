@@ -419,7 +419,7 @@ may need to add or adjust custom permissions on other modules to preserve the co
 #### Explore Laravel documentation
 
 We barely scratched the surface in terms of what is possible with gates within a Laravel project. You can learn more
-in [Laravel's Autorization documentation](https://laravel.com/docs/8.x/authorization)
+in [Laravel's Autorization documentation](https://laravel.com/docs/10.x/authorization)
 
 #### Explore Twill internals
 

@@ -9,7 +9,7 @@ If you have any questions about a step, let us know on our Discord and we will t
 
 ## Install Laravel
 
-For the installation of Laravel, we will use some steps from the [official documentation](https://laravel.com/docs/9.x).
+For the installation of Laravel, we will use some steps from the [official documentation](https://laravel.com/docs/10.x).
 
 The official documentation is a goldmine of knowledge, if you ever have trouble understanding a concept, make sure to
 check it out!
@@ -41,7 +41,7 @@ While you are there, make sure that `APP_URL` matches your local url. For exampl
 
 `APP_URL=http://laravel-twill.test`
 
-If you do not have MySQL setup, you can use [SQLite](https://laravel.com/docs/9.x#databases-and-migrations) as well.
+If you do not have MySQL setup, you can use [SQLite](https://laravel.com/docs/10.x#databases-and-migrations) as well.
 
 As mentioned before, the Laravel documentation is far more extensive about the setup procedure, if this guide went too quick, make sure to give those a read.
 
