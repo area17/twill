@@ -96,6 +96,7 @@
       "warn": "yellow",
       "danger": "red",
       "tip": "purple",
+      "link": "purple",
       "disabled": "grey-dark"
     },
     "backgroundColor": {

@@ -1,4 +1,5 @@
 const {
+  ApplyColorVariables,
   Setup,
   ColorTokens,
   SpacingTokens,
@@ -25,7 +26,18 @@ module.exports = {
     spacing: SpacingTokens(feConfig.spacing.tokens),
     spacingGroups: feConfig.spacing.groups,
     colors: feConfig.color.tokens,
-    borderColor: feConfig.color.tokens,
+    borderColor: {
+      ...feConfig.color.tokens,
+      ...ApplyColorVariables(feConfig.color.tokens, feConfig.color.borderColor),
+    },
+    textColor: {
+      ...feConfig.color.tokens,
+      ...ApplyColorVariables(feConfig.color.tokens, feConfig.color.textColor),
+    },
+    backgroundColor: {
+      ...feConfig.color.tokens,
+      ...ApplyColorVariables(feConfig.color.tokens, feConfig.color.backgroundColor),
+    },
     extend: {
       spacing: {
         header: '80px'
