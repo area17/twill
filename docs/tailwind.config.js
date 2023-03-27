@@ -22,6 +22,10 @@ module.exports = {
     innerGutters: feConfig.structure.gutters.inner,
     outerGutters: feConfig.structure.gutters.outer,
     columnCount: feConfig.structure.columns,
+    fontFamily: {
+      sans: '"Inter", sans-serif',
+      mono: '"JetBrains Mono", monospace'
+    },
     fontFamilies: feConfig.typography.families,
     typesets: feConfig.typography.typesets,
     spacing: SpacingTokens(feConfig.spacing.tokens),
