@@ -3,7 +3,7 @@
 As mentioned in the introduction, a Twill package is at its core the same as a regular Laravel package.
 
 If you are new to Laravel package development you can read more about it in the
-[Laravel documentation](https://laravel.com/docs/9.x/packages).
+[Laravel documentation](https://laravel.com/docs/10.x/packages).
 
 ## Generating your first Twill package
 
