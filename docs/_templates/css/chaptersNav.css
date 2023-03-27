@@ -12,12 +12,12 @@
   }
 
   .chapters-nav a {
-    @apply no-underline f-body-2 font-medium;
+    @apply no-underline f-body-2 font-medium text-primary;
     text-decoration: none !important;
   }
 
   .chapters-nav a:hover {
-    color: var(--purple) !important;
+    @apply !text-link;
   }
 
   .chapters-nav-fixed {
@@ -34,7 +34,7 @@
   }
 
   .chapters-nav-fixed > ul {
-    @apply p-16 border border-grey;
+    @apply p-16 border border-primary;
   }
 
   .chapters-nav-fixed > ul > li {
