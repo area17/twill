@@ -69,7 +69,7 @@ class Glide implements ImageServiceInterface
         $this->server = ServerFactory::create([
             'response' => new LaravelResponseFactory($this->request),
             'source' => $this->config->get('twill.glide.source'),
-            'source_path_prefix' => $this->config->get('twill.glide.source_path_prefix', ''),
+            'source_path_prefix' => $this->config->get('twill.glide.source_path_prefix'),
             'cache' => $this->config->get('twill.glide.cache'),
             'cache_path_prefix' => $this->config->get('twill.glide.cache_path_prefix'),
             'base_url' => $baseUrl,
