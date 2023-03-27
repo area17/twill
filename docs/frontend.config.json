@@ -124,6 +124,7 @@
       "info": "blue-light",
       "filename": "grey",
       "githubBtn": "black",
+      "githubBtnHover": "purple",
       "tab": "black",
       "tab-hover": "#333",
       "tab-active": "white",
