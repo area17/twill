@@ -1,4 +1,4 @@
-# Block Editor Overview
+# Block Editor
 
 The block editor is a dynamic, drag and drop interface giving users a lot of flexibility in adding and changing content
 for a given entry.
