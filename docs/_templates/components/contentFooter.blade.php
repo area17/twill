@@ -46,7 +46,7 @@ foreach($tree[$currentSegment]['items'] ?? [] as $item) {
 
     <p>
         <a
-            class="text-link no-underline hover:underline"
+            class="text-link !no-underline"
             href="{{$githubLink}}"
             ref="noopener noreferrer"
             target="_blank">
