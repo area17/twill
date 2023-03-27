@@ -43,7 +43,7 @@ While you are there, make sure that `APP_URL` matches your local url. For exampl
 
 If you do not have MySQL setup, you can use [SQLite](https://laravel.com/docs/9.x#databases-and-migrations) as well.
 
-As mentioned before, the Laravel documentation is far more extensive about the setup procedure, if this guide went to
+As mentioned before, the Laravel documentation is far more extensive about the setup procedure, if this guide went too
 quick, make sure to give those a read.
 
 ### Initialize GIT
