@@ -9,6 +9,7 @@
             <x-twilldocs::navLink url="https://discord.gg/cnWk7EFv8R" label="Chat" />
             <x-twilldocs::navLink url="https://twill.io/blog" label="Blog" />
             <x-twilldocs::navLink url="https://twill.io/docs" label="Docs" />
+            <div id="docsearch"></div>
             <x-twilldocs::githubBtn />
             <x-twilldocs::menuBtn />
         </div>

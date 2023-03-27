@@ -92,7 +92,8 @@
       "blue-light": "rgb(30, 58, 138, 0.1)",
       "grey-dark": "#7F7F7F",
       "gray-100": "#111",
-      "gray-200": "#222"
+      "gray-200": "#222",
+      "docsearch-primary-color": "#793CB8"
     },
     "border": {
       "primary": "grey",

@@ -12,8 +12,10 @@
   <title>{{ $title }}</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://89hnjpxalf-dsn.algolia.net" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
   <link href="/style.css" rel="stylesheet">
   <script src="//unpkg.com/alpinejs" defer></script>
 </head>
@@ -102,8 +104,9 @@
 
 <x-twilldocs::devTools />
 
+<script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
 <script src="/js/nav.js"></script>
-
+<script src="/js/search.js"></script>
 </body>
 
 </html>

@@ -63,3 +63,32 @@
   margin: 0 auto;
   margin-top: 68px;
 }
+
+.DocSearch-Button {
+  border-radius: 4px;
+  @apply border border-solid border-primary ml-0;
+}
+
+@media (max-width: 768px) {
+  .DocSearch-Button {
+    border: none;
+  }
+}
+
+.DocSearch-Input {
+  background-color: transparent;
+}
+
+.DocSearch-Input:focus {
+  box-shadow: none;
+}
+
+.DocSearch-Button-Placeholder {
+  @apply f-body-2;
+}
+
+@media (min-width: 769px) {
+  .DocSearch-Modal {
+    @apply mt-header;
+  }
+}
