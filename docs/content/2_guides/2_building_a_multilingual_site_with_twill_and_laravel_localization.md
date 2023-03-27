@@ -1,4 +1,4 @@
-# Building a multilingual site with Twill and Laravel Localization
+# Building a multilingual site with Laravel Localization
 
 This is a step by step recipe for installing and configuring
 the [Laravel Localization](https://github.com/mcamara/laravel-localization) package in a Twill project.

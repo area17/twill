@@ -1,4 +1,4 @@
-# Vue.js Workflow - Creating custom components, form fields and blocks in Twill
+# Creating custom Vue.js components, form fields and blocks
 
 Objectives:
 

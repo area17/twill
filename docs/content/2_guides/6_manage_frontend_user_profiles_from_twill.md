@@ -1,4 +1,4 @@
-# Manage frontend user profiles from Twill
+# Managing frontend user profiles from Twill
 
 This is a simple solution to allow site administrators to manage
 frontend user profiles from the CMS. It can be used as a starting point

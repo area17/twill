@@ -1,4 +1,4 @@
-# Json repeaters
+# Using JSON repeaters
 
 Usually repeaters are used for creating related models. However, in some cases you just want
 repeated data on the module you are working on without having to create a new model.
