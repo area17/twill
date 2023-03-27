@@ -364,30 +364,10 @@ Now that we have the necessary data in our blade file, we can write the markup.
 
 We will change the contents of `resources/views/components/menu.php` to this:
 
-```blade
-<nav class="p-4">
-    <ul class="pl-4">
-        @foreach($links as $link)
-            <li>
-                <a href="{{route('frontend.page', [$link->getRelated('page')->first()->slug])}}">
-                    {{$link->title}}
-                </a>
-
-                @if ($link->children->isNotEmpty())
-                    <ul class="pl-4">
-                        @foreach($link->children as $link)
-                            <li>
-                                <a href="{{route('frontend.page', [$link->getRelated('page')->first()->slug])}}">
-                                    {{$link->title}}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
-            </li>
-        @endforeach
-    </ul>
-</nav>
+```phptorch
+{
+  "file": "../../../../examples/basic-page-builder/resources/views/components/menu.blade.php"
+}
 ```
 
 We add just a minimal amount of styling as we will not spend too much time on that during this guide. But this will
