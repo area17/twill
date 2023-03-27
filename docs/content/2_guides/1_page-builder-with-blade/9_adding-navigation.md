@@ -360,7 +360,7 @@ This will expose the `$links` variable to the blade file that we will now write.
 
 ### Tree rendering markup
 
-Now that we have the neccisary data in our blade file, we can write the markup.
+Now that we have the necessary data in our blade file, we can write the markup.
 
 We will change the contents of `resources/views/components/menu.php` to this:
 
