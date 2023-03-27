@@ -545,7 +545,6 @@ You can also provide a custom  `block_single_layout`  per subdomain by creating 
 > 
 
 #### Tiptap WYSIWYG
-
 ![tiptap](https://twill.io/docs/changelogs_media/tables.png)
 In order to provide HTML tables support in the WYSIWYG form field, we've integrated the [Tiptap editor](https://tiptap.scrumpy.io/) with Twill. You can use it by using the new `type` option of the `wysiwyg` form field, with the `tiptap` value. You can then enable the `table` button in your `toolbarOptions`.
 
