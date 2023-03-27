@@ -1,4 +1,4 @@
-# Adding custom user roles and permissions on Twill
+# Adding custom user roles and permissions on Twill 2
 
 Objectives:
 
