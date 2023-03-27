@@ -208,7 +208,7 @@ return [
             'empty-text' => 'No file selected',
             'files-selected' => 'files selected',
             'tags' => 'Tags',
-            'uploaded-at' => 'Uploaded at',
+            'uploaded-at' => 'Uploaded on',
         ],
         'title' => 'Media Library',
         'update' => 'Update',
