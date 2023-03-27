@@ -49,52 +49,54 @@
     @elseif ($currentSegment === 'documentation' || $currentSegment === 'guides')
       <div class="flex flex-row flex-nowrap justify-between">
         <x-twilldocs::sidebar :tree="$tree" :currentSegment="$currentSegment" :url="$url"/>
-        <div class="content markdown w-full lg:w-9-cols xl:w-6-cols lg:max-w-740 xl:mx-auto mt-68">
-            {{-- documentation and guide details --}}
-            @if (isset($tree[$currentSegment]))
-              <div class="print:!hidden" x-transition x-bind:class="{ hidden: !open }"></div>
-            @endif
+        <div class="content markdown w-full lg:w-9-cols xl:w-6-cols lg:max-w-740 xl:mx-auto">
+          {{-- documentation and guide details --}}
+          @if (isset($tree[$currentSegment]))
+            <div class="print:!hidden" x-transition x-bind:class="{ hidden: !open }"></div>
+          @endif
 
-            <h1>{{$title}}</h1>
-            @if ($toc)
-              <div class="chapters-nav xl:hidden">
-                {!! $toc !!}
-              </div>
-            @endif
-            {!! $content !!}
+          <h1>{{$title}}</h1>
+          @if ($toc)
+            <div class="chapters-nav border border-primary p-24 xl:hidden">
+              <h2  id="quick-reference"  class="!f-doc-title !mt-0">Content</h2>
+              {!! $toc !!}
+            </div>
+          @endif
+          {!! $content !!}
 
-            <x-twilldocs::contentFooter :currentSegment="$currentSegment" :url="$url" :githubLink="$githubLink" :tree="$tree" />
+          <x-twilldocs::contentFooter :currentSegment="$currentSegment" :url="$url" :githubLink="$githubLink" :tree="$tree" />
         </div>
 
         <div class="chapters-nav-fixed hidden xl:block xl:w-240 top-80 sticky h-screen-minus-header overflow-auto">
           @if ($toc)
-            <h2 id="quick-reference" class="sr-only">Quick chapter reference</h2>
-            {!! $toc !!}
+            <div class="border border-primary p-24">
+              <h2  id="quick-reference" class="f-doc-title">Content</h2>
+              {!! $toc !!}
+            </div>
           @endif
         </div>
-      @elseif (strpos($url, 'index.html'))
-        {{-- home --}}
-        <div class="content markdown mt-68">
+      </div>
+    @elseif (strpos($url, 'index.html'))
+      {{-- home --}}
+      <div class="content markdown mt-68">
+        <h1>{{$title}}</h1>
+        {!! $content !!}
+      </div>
+    @elseif ($currentSegment === 'blogs')
+      {{-- blog details --}}
+      <div class="flex flex-row flex-nowrap">
+        <div class="content markdown w-full lg:w-9-cols xl:w-6-cols lg:max-w-740 lg:mx-auto mt-68">
           <h1>{{$title}}</h1>
           {!! $content !!}
         </div>
-      @elseif ($currentSegment === 'blogs')
-        {{-- blog details --}}
-        <div class="flex flex-row flex-nowrap">
-            <div class="content markdown w-full lg:w-9-cols xl:w-6-cols lg:max-w-740 lg:mx-auto mt-68">
-              <h1>{{$title}}</h1>
-              {!! $content !!}
-            </div>
-        </div>
-      @else
-        {{-- capture for any other page type --}}
-        <div class="content markdown mt-68">
-          <h1>{{$title}}</h1>
-          {!! $content !!}
-        </div>
-      @endif
-
-    </div>
+      </div>
+    @else
+      {{-- capture for any other page type --}}
+      <div class="content markdown mt-68">
+        <h1>{{$title}}</h1>
+        {!! $content !!}
+      </div>
+    @endif
   </div>
 </div>
 

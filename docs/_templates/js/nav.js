@@ -25,7 +25,9 @@ if (nav) {
 
       // if we are past the accepted height of the header push that item to an array
       if (top < pos + headerHeight + 40) {
-        current.push(`#${el.querySelector('a').getAttribute('id')}`)
+        if (el.querySelector('a')){
+          current.push(`#${el.querySelector('a').getAttribute('id')}`)
+        }
       }
     })
 
@@ -33,7 +35,7 @@ if (nav) {
     // OR if undefined, return the first item
     let currentActiveIndex = current[current.length - 1]
       ? current[current.length - 1]
-      : chapterItems .length > 0 ? `#${chapterItems[0].querySelector('a').getAttribute('id')}` : -1
+      : chapterItems .length > 0 ? (chapterItems[0].querySelector('a') ? `#${chapterItems[0].querySelector('a').getAttribute('id')}` : -1) : -1
     return currentActiveIndex
   }
 

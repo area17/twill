@@ -207,6 +207,15 @@
           "font-smoothing": "true"
         }
       },
+      "sidebar": {
+        "xs": {
+          "font-family": "var(--sans)",
+          "font-weight": "400",
+          "font-size": "16",
+          "line-height": "1.5",
+          "font-smoothing": "true"
+        }
+      },
       "ui-1": {
         "xs": {
           "font-family": "var(--sans)",
@@ -219,7 +228,7 @@
       "doc-title": {
         "xs": {
           "font-family": "var(--sans)",
-          "font-weight": "500",
+          "font-weight": "600",
           "font-size": "18",
           "line-height": "1.11",
           "font-smoothing": "true"
