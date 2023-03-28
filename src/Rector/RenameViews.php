@@ -10,10 +10,6 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 class RenameViews extends LaravelAwareRectorRule
 {
-    public static $ROUTES;
-
-    public $baseDir;
-
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
@@ -29,33 +25,37 @@ class RenameViews extends LaravelAwareRectorRule
 
     public function getNodeTypes(): array
     {
-        return [Node\Expr\FuncCall::class, Node\Expr\StaticCall::class];
+        return [
+            Node\Expr\FuncCall::class,
+            Node\Expr\StaticCall::class,
+        ];
     }
 
+    /**
+     * @param Node\Expr\FuncCall|Node\Expr\StaticCall $node
+     */
     public function refactor(Node $node)
     {
-        $isViewCall = false;
-        if ($node instanceof Node\Expr\StaticCall) {
-            if ($node->name->name === 'make') {
-                $isViewCall = $node->class->getLast() === 'View';
-            }
-        } elseif ($node instanceof Node\Expr\FuncCall) {
-            if ($node->name->parts ?? false) {
-                $isViewCall = $node->name->parts[0] === 'view';
-            }
+        if ($node instanceof Node\Expr\StaticCall
+            && ($node->class->getLast() !== 'View' || $node->name->name !== 'make')) {
+            return null;
         }
 
-        if ($isViewCall && isset($node->getArgs()[0]) && $node->getArgs()[0] ?? false) {
-            /** @var \PhpParser\Node\Arg $arg */
-            $arg = $node->getArgs()[0];
-            if (isset($arg->value->value) && Str::startsWith($arg->value->value, 'admin.')) {
-                $node->args[0] = new Node\Arg(
-                    BuilderHelpers::normalizeValue(Str::replaceFirst('admin.', 'twill.', $arg->value->value))
-                );
-                return $node;
-            }
+        if ($node instanceof Node\Expr\FuncCall
+            && $node->name->getLast() !== 'view') {
+            return null;
         }
 
-        return null;
+        if (!($arg = $node->getArgs()[0] ?? null)
+            || !property_exists($arg->value, 'value')
+            || !Str::startsWith($arg->value->value, 'admin.')) {
+            return null;
+        }
+
+        $node->args[0] = new Node\Arg(BuilderHelpers::normalizeValue(
+            Str::replaceFirst('admin.', 'twill.', $arg->value->value),
+        ));
+
+        return $node;
     }
 }

@@ -26,7 +26,7 @@ class CreateTwillDefaultTagsTables extends Migration
         }
 
 
-        $twillTagsTable = config('twill.tags_table', 'tags');
+        $twillTagsTable = config('twill.tags_table', 'twill_tags');
 
         if (!Schema::hasTable($twillTagsTable)) {
             Schema::create($twillTagsTable, function (Blueprint $table) {
@@ -46,7 +46,7 @@ class CreateTwillDefaultTagsTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('twill.tags_table', 'tags'));
-        Schema::dropIfExists(config('twill.tagged_table', 'tagged'));
+        Schema::dropIfExists(config('twill.tags_table', 'twill_tags'));
+        Schema::dropIfExists(config('twill.tagged_table', 'twill_tagged'));
     }
 }

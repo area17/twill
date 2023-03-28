@@ -11,9 +11,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 class RenameRoutes extends LaravelAwareRectorRule
 {
-    public static $ROUTES;
-
-    public $baseDir;
+    protected array $routes;
 
     public function getRuleDefinition(): RuleDefinition
     {
@@ -30,52 +28,50 @@ class RenameRoutes extends LaravelAwareRectorRule
 
     public function getNodeTypes(): array
     {
-        return [Node\Expr\FuncCall::class, Node\Expr\StaticCall::class];
+        return [
+            Node\Expr\FuncCall::class,
+            Node\Expr\StaticCall::class,
+        ];
     }
 
+    /**
+     * @param Node\Expr\FuncCall|Node\Expr\StaticCall $node
+     */
     public function refactor(Node $node)
     {
-        $isRouteCall = false;
-        if ($node instanceof Node\Expr\StaticCall) {
-            $isRouteCall = $node->name->name === 'route';
-        } elseif ($node instanceof Node\Expr\FuncCall) {
-            if ($node->name->parts ?? false) {
-                $isRouteCall = $node->name->parts[0] === 'route';
-            }
+        if ($node instanceof Node\Expr\StaticCall
+            && $node->name->name !== 'route') {
+            return null;
         }
 
-        if ($isRouteCall) {
-            $routes = $this->loadRoutes();
-
-            if ($node->getArgs()[0] ?? false) {
-                $arg = $node->getArgs()[0];
-                if (isset($arg->value->value) && array_key_exists($arg->value->value, $routes)) {
-                    $node->args[0] = new Node\Arg(BuilderHelpers::normalizeValue($routes[$arg->value->value]));
-                    return $node;
-                }
-            }
+        if ($node instanceof Node\Expr\FuncCall
+            && $node->name->getLast() !== 'route') {
+            return null;
         }
 
-        return null;
+        $this->routes ??= $this->loadRoutes();
+        if (!($arg = $node->getArgs()[0] ?? null)
+            || !property_exists($arg->value, 'value')
+            || !array_key_exists($arg->value->value, $this->routes)) {
+            return null;
+        }
+
+        $node->args[0] = new Node\Arg(BuilderHelpers::normalizeValue(
+            $this->routes[$arg->value->value]),
+        );
+
+        return $node;
     }
 
     private function loadRoutes(): array
     {
-        if (self::$ROUTES === null) {
-            // Get all twill routes so we can process them properly.
-            $this->getLaravel();
-            $routes = Route::getRoutes();
-
-            $twillRouteList = [];
-            foreach ($routes->getRoutes() as $route) {
-                if (Str::startsWith($route->getName(), 'twill.')) {
-                    $twillRouteList[Str::replaceFirst('twill.', 'admin.', $route->getName())] = $route->getName();
-                }
+        foreach (Route::getRoutes()->getRoutes() as $route) {
+            if (Str::startsWith($route->getName(), 'twill.')) {
+                $legacyName = Str::replaceFirst('twill.', 'admin.', $route->getName());
+                $routes[$legacyName] = $route->getName();
             }
-
-            self::$ROUTES = $twillRouteList;
         }
 
-        return self::$ROUTES;
+        return $routes ?? [];
     }
 }
