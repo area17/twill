@@ -27,11 +27,15 @@ module.exports = {
     colors: feConfig.color.tokens,
     borderColor: feConfig.color.tokens,
     extend: {
-      spaing: {
+      spacing: {
         header: '80px'
       },
       minHeight: {
         'screen-minus-header': 'calc(100vh - 80px)'
+      },
+      maxWidth: {
+        '240': '15rem',
+        '740': '46.25rem',
       },
       height: {
         header: '80px',

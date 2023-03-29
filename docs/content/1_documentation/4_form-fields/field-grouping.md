@@ -63,7 +63,7 @@ class Blog extends Model {
 To store the fields you want into the json we have to update the repository:
 
 ```php
-protected $fieldsGroups = [
+protected array $fieldsGroups = [
     'external_link' => [
         'link_target',
         'link_url',
@@ -72,8 +72,8 @@ protected $fieldsGroups = [
 ];
 
 # The below can be setup optionally, documented below.
-public $fieldsGroupsFormFieldNamesAutoPrefix = false;
-public $fieldsGroupsFormFieldNameSeparator = '_';
+public bool $fieldsGroupsFormFieldNamesAutoPrefix = false;
+public string $fieldsGroupsFormFieldNameSeparator = '_';
 ```
 
 Finally in our model form we can add the fields:
@@ -103,8 +103,8 @@ Finally in our model form we can add the fields:
 In the repository file you can setup the following parameters:
 
 ```php
-public $fieldsGroupsFormFieldNamesAutoPrefix = true;
-public $fieldsGroupsFormFieldNameSeparator = '.'; // Default is _
+public bool $fieldsGroupsFormFieldNamesAutoPrefix = true;
+public string $fieldsGroupsFormFieldNameSeparator = '-'; // Default is _
 ```
 
 This will automatically group/ungroup these fields based on the separator:

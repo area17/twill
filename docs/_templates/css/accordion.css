@@ -1,0 +1,12 @@
+.accordion-trigger {
+  width: 0px;
+  height: 0px;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid #ccc;
+  margin-left: 8px;
+}
+
+.is-open .accordion-trigger {
+  transform: rotate(90deg);
+}
