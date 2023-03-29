@@ -74,7 +74,7 @@ jobs:
           - laravel: 9.*
             testbench: 7.*
             # This needs to be reverted to 10.* before release.
-          - laravel: 10.3.*
+          - laravel: 10.*
             testbench: 8.*
 
     steps:
