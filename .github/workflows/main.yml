@@ -73,7 +73,6 @@ jobs:
         include:
           - laravel: 9.*
             testbench: 7.*
-            # This needs to be reverted to 10.* before release.
           - laravel: 10.*
             testbench: 8.*
 
