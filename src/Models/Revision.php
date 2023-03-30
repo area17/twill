@@ -2,11 +2,14 @@
 
 namespace A17\Twill\Models;
 
-use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Support\Str;
+use A17\Twill\Models\Behaviors\HasDates;
+use Illuminate\Database\Eloquent\Model as BaseModel;
 
 abstract class Revision extends BaseModel
 {
+    use HasDates;
+
     public $timestamps = true;
 
     protected $with = ['user'];
