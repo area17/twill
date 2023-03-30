@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateTwillDefaultRelatedTable extends Migration
 {
-    public static bool $isFirstMigration = false;
     /**
      * Run the migrations.
      *
@@ -14,7 +13,6 @@ class CreateTwillDefaultRelatedTable extends Migration
      */
     public function up()
     {
-        self::$isFirstMigration = true;
         $twillRelatedTable = config('twill.related_table', 'twill_related');
 
         if (!Schema::hasTable($twillRelatedTable)) {
