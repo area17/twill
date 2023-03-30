@@ -2,37 +2,34 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\RelatedItem;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 trait HasRelated
 {
-    protected $relatedCache;
+    protected array $relatedCache;
 
     /**
      * Defines the one-to-many relationship for related items.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function relatedItems()
+    public function relatedItems(): MorphMany
     {
         return $this->morphMany(RelatedItem::class, 'subject')->orderBy('position');
     }
 
     /**
      * Returns the related items for a browser field.
-     *
-     * @param string $browser_name
-     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getRelated($browser_name)
+    public function getRelated(string $browserName): Collection
     {
-        if (!isset($this->relatedCache[$browser_name]) || $this->relatedCache[$browser_name] === null) {
-            $this->loadRelated($browser_name);
+        if (! isset($this->relatedCache[$browserName]) || $this->relatedCache[$browserName] === null) {
+            $this->loadRelated($browserName);
         }
 
-        return $this->relatedCache[$browser_name];
+        return $this->relatedCache[$browserName];
     }
 
     public function getFirstRelated(string $browserName): mixed
@@ -42,18 +39,15 @@ trait HasRelated
 
     /**
      * Eager load related items for a browser field.
-     *
-     * @param string $browser_name
-     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function loadRelated($browser_name)
+    public function loadRelated(string $browserName): Collection
     {
-        if (!isset($this->relatedItems)) {
+        if (! isset($this->relatedItems)) {
             $this->load('relatedItems');
         }
 
-        return $this->relatedCache[$browser_name] = $this->relatedItems
-            ->where('browser_name', $browser_name)
+        return $this->relatedCache[$browserName] = $this->relatedItems
+            ->where('browser_name', $browserName)
             ->map(function ($item) {
                 /** @var \A17\Twill\Models\Model $model */
                 if ($model = $item->related) {
@@ -69,32 +63,48 @@ trait HasRelated
     /**
      * Attach items to the model for a browser field.
      *
-     * @param array $items
-     * @param string $browser_name
-     * @return void
+     * @param array<int, TwillModelContract> $items
      */
-    public function saveRelated($items, $browser_name)
+    public function saveRelated(array|Collection $items, string $browserName): void
     {
-        $this->clearRelated($browser_name);
+        /** @var Collection<int, RelatedItem> $itemsToProcess */
+        $itemsToProcess = $this->relatedItems()->where('browser_name', $browserName)->get();
 
-        $position = 1;
+        foreach ($items as $position => $item) {
+            $firstMatchKey = $itemsToProcess
+                ->where('related_id', $item['id'])
+                ->where('related_type', $item['endpointType'])
+                ->where('browser_name', $browserName)
+                // We should only have one item always as you cannot select the same items twice.
+                ->keys()
+                ->first();
 
-        Collection::make($items)->map(function ($item) {
-            return Arr::only($item, ['endpointType', 'id']);
-        })->each(function ($values) use ($browser_name, &$position) {
-            RelatedItem::create([
-                'subject_id' => $this->getKey(),
-                'subject_type' => $this->getMorphClass(),
-                'related_id' => $values['id'],
-                'related_type' => $values['endpointType'],
-                'browser_name' => $browser_name,
-                'position' => $position,
-            ]);
-            $position++;
-        });
+            // This needs to be a strict "null" comparison, as it would otherwise pass on key 0.
+            if ($firstMatchKey !== null) {
+                $match = $itemsToProcess[$firstMatchKey];
+                $match->position = $position + 1;
+                if ($match->isDirty('position')) {
+                    $match->save();
+                }
+            } else {
+                RelatedItem::create([
+                    'subject_id' => $this->getKey(),
+                    'subject_type' => $this->getMorphClass(),
+                    'related_id' => $item['id'],
+                    'related_type' => $item['endpointType'],
+                    'browser_name' => $browserName,
+                    'position' => $position + 1,
+                ]);
+            }
+
+            // Unset the item, this way we have only items to delete left.
+            $itemsToProcess->offsetUnset($firstMatchKey);
+        }
+
+        RelatedItem::whereIn('id', $itemsToProcess->pluck('id')->toArray())->delete();
     }
 
-    public function clearRelated($browserName): void
+    public function clearRelated(string $browserName): void
     {
         RelatedItem::where([
             'browser_name' => $browserName,
