@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Models\Behaviors\HasDates;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\HasOauth;
@@ -19,7 +20,7 @@ use PragmaRX\Google2FAQRCode\Google2FA;
 
 class User extends AuthenticatableContract
 {
-    use Authenticatable, Authorizable, HasMedias, Notifiable, HasPresenter, HasOauth, SoftDeletes, IsTranslatable;
+    use Authenticatable, Authorizable, HasMedias, Notifiable, HasPresenter, HasOauth, SoftDeletes, IsTranslatable, HasDates;
 
     public $timestamps = true;
 
@@ -37,6 +38,10 @@ class User extends AuthenticatableContract
 
     protected $dates = [
         'deleted_at',
+    ];
+
+    protected $cast = [
+        'deleted_at' => 'date',
     ];
 
     protected $hidden = ['password', 'remember_token', 'google_2fa_secret'];
