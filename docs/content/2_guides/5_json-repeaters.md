@@ -1,4 +1,4 @@
-# Json repeaters
+# Using JSON repeaters
 
 Usually repeaters are used for creating related models. However, in some cases you just want
 repeated data on the module you are working on without having to create a new model.
@@ -76,7 +76,7 @@ At this point when you go into the admin panel you can add a new task, saving ho
 
 To make our data save we have to update our model and repository.
 
-In our model we will add a [cast](https://laravel.com/docs/9.x/eloquent-mutators#attribute-casting),
+In our model we will add a [cast](https://laravel.com/docs/10.x/eloquent-mutators#attribute-casting),
 and while we are there we can also make the `tasks` fillable.
 
 :::filename:::

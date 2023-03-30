@@ -50,7 +50,7 @@ Then, define your buckets configuration:
 
 You can allow mixing modules in a single bucket by adding more modules to the `bucketables` array.
 Each `bucketable` should have
-its [model morph map](https://laravel.com/docs/9.x/eloquent-relationships#polymorphic-relationships) defined because
+its [model morph map](https://laravel.com/docs/10.x/eloquent-relationships#polymorphic-relationships) defined because
 features are stored in a polymorphic table.
 In your AppServiceProvider, you can do it like the following:
 

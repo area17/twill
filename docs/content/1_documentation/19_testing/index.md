@@ -22,7 +22,7 @@ Finally you can generate a first test using:
 
 ### More
 
-[See Laravel documentation for more details](https://laravel.com/docs/9.x/dusk)
+[See Laravel documentation for more details](https://laravel.com/docs/10.x/dusk)
 
 ## Authenticating
 

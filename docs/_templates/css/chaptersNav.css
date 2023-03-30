@@ -3,8 +3,12 @@
     @apply mt-32;
   }
 
+.chapters-nav ul {
+  @apply ml-0;
+}
+
   .chapters-nav li {
-    @apply mt-8;
+    @apply mt-12 list-none;
   }
 
   .chapters-nav li:first-child {
@@ -25,7 +29,7 @@
   }
 
   .chapters-nav-fixed li {
-    @apply mt-8;
+    @apply mt-12;
     line-height: 1.2;
   }
 
@@ -34,19 +38,23 @@
   }
 
   .chapters-nav-fixed > ul {
-    @apply p-16 border border-primary;
+    @apply p-20 border border-primary;
   }
 
-  .chapters-nav-fixed > ul > li {
-    @apply mt-16;
+  .chapters-nav-fixed > div > ul > li {
+    @apply mt-12;
   }
 
   .chapters-nav ul ul,
   .chapters-nav-fixed ul ul {
-    @apply mt-8 pl-16;
+    @apply mt-12 pl-24;
   }
 
   .chapters-nav-fixed a {
     @apply no-underline f-body-2 font-medium;
+  }
+
+  .chapters-nav-fixed a:hover {
+    @apply text-link;
   }
 }

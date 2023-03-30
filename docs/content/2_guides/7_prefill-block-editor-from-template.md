@@ -1,4 +1,4 @@
-# Prefill a block editor from a selection of templates
+# Prefilling a block editor from a selection of templates
 
 Objectives:
 

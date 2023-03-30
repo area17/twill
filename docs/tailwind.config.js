@@ -1,6 +1,7 @@
 const {
   ApplyColorVariables,
   Setup,
+  GridGap,
   ColorTokens,
   SpacingTokens,
   Spacing,
@@ -21,6 +22,10 @@ module.exports = {
     innerGutters: feConfig.structure.gutters.inner,
     outerGutters: feConfig.structure.gutters.outer,
     columnCount: feConfig.structure.columns,
+    fontFamily: {
+      sans: '"Inter", sans-serif',
+      mono: '"JetBrains Mono", monospace'
+    },
     fontFamilies: feConfig.typography.families,
     typesets: feConfig.typography.typesets,
     spacing: SpacingTokens(feConfig.spacing.tokens),
@@ -43,7 +48,7 @@ module.exports = {
         header: '80px'
       },
       minHeight: {
-        'screen-minus-header': 'calc(100vh - 80px)'
+        'screen-minus-header': 'calc(100vh - 5rem)'
       },
       maxWidth: {
         '240': '15rem',
@@ -51,7 +56,7 @@ module.exports = {
       },
       height: {
         header: '80px',
-        'screen-minus-header': 'calc(100vh - 80px)'
+        'screen-minus-header': 'calc(100vh - 5rem)'
       },
       zIndex: {
         header: '10'
@@ -65,6 +70,8 @@ module.exports = {
     require('@tailwindcss/forms'),
     require('@tailwindcss/typography'),
     Setup,
+    ApplyColorVariables,
+    GridGap,
     Typography,
     Spacing,
     Layout,
