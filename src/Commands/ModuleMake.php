@@ -385,15 +385,12 @@ class ModuleMake extends Command
         // If the file does not exist, or it is empty, we explain how to use the navigation builder.
         $navigationFileExists = File::exists($navigationFile);
 
-        if ($navigationFileExists) {
-            // Che file is empty.
-            $navigation = require($navigationFile);
-            if (empty($navigation)) {
-                // Instructions here.
-                $this->warn('To add a navigation entry add the following to your AppServiceProvider BOOT method.');
+        if (! $navigationFileExists || ($navigation = require ($navigationFile) && empty($navigation))) {
+            // Instructions here.
+            $this->warn('To add a navigation entry add the following to your AppServiceProvider BOOT method.');
 
-                if ($value['module'] ?? false) {
-                    $message = <<<PHP
+            if ($value['module'] ?? false) {
+                $message = <<<PHP
 use A17\Twill\Facades\TwillNavigation;
 use A17\Twill\View\Components\Navigation\NavigationLink;
 
@@ -401,8 +398,8 @@ TwillNavigation::addLink(
     NavigationLink::make()->forModule('$key')
 );
 PHP;
-                } elseif ($value['singleton'] ?? false) {
-                    $message = <<<PHP
+            } elseif ($value['singleton'] ?? false) {
+                $message = <<<PHP
 use A17\Twill\Facades\TwillNavigation;
 use A17\Twill\View\Components\Navigation\NavigationLink;
 
@@ -410,12 +407,9 @@ TwillNavigation::addLink(
     NavigationLink::make()->forSingleton('$key')
 );
 PHP;
-                }
-                $this->line('**************************');
-                $this->info($message ?? '');
-                $this->line('**************************');
-                return;
             }
+            $this->box($message ?? '');
+            return;
         }
 
         $navigation[$key] = $value;
@@ -455,14 +449,11 @@ PHP;
         $contentLines = explode(PHP_EOL, $content);
         $contentLines = array_filter($contentLines);
 
-        $maxLength = max(array_map('strlen', $contentLines));
-
-        $this->info("┌" . str_repeat('─', $maxLength + 2) . '┐');
+        $this->line('-----');
         foreach ($contentLines as $line) {
-            $padded = Str::padRight($line, $maxLength);
-            $this->info("│ $padded │");
+            $this->info($line);
         }
-        $this->info("└" . str_repeat('─', $maxLength + 2) . '┘');
+        $this->line('-----');
     }
 
     /**
@@ -623,14 +614,14 @@ PHP;
         }
 
         $activeModelTraitsString = empty($activeModelTraits) ? '' : 'use ' . rtrim(
-            implode(', ', $activeModelTraits),
-            ', '
-        ) . ';';
+                implode(', ', $activeModelTraits),
+                ', '
+            ) . ';';
 
         $activeModelTraitsImports = empty($activeModelTraits) ? '' : "use A17\Twill\Models\Behaviors\\" . implode(
-            ";\nuse A17\Twill\Models\Behaviors\\",
-            $activeModelTraits
-        ) . ';';
+                ";\nuse A17\Twill\Models\Behaviors\\",
+                $activeModelTraits
+            ) . ';';
 
         $activeModelImplements = $this->sortable ? 'implements Sortable' : '';
 
@@ -691,8 +682,8 @@ PHP;
         $repositoriesDir = $this->isCapsule ? $this->capsule->getRepositoriesDir() : 'Repositories';
 
         $modelClass = $this->isCapsule ? $this->capsule->getModel() : config(
-            'twill.namespace'
-        ) . "\Models\\{$modelName}";
+                'twill.namespace'
+            ) . "\Models\\{$modelName}";
 
         $this->makeTwillDirectory($repositoriesDir);
 
@@ -709,14 +700,14 @@ PHP;
         $activeRepositoryTraits = array_filter($activeRepositoryTraits);
 
         $activeRepositoryTraitsString = empty($activeRepositoryTraits) ? '' : 'use ' . (empty($activeRepositoryTraits) ? '' : rtrim(
-            implode(', ', $activeRepositoryTraits),
-            ', '
-        ) . ';');
+                    implode(', ', $activeRepositoryTraits),
+                    ', '
+                ) . ';');
 
         $activeRepositoryTraitsImports = empty($activeRepositoryTraits) ? '' : "use A17\Twill\Repositories\Behaviors\\" . implode(
-            ";\nuse A17\Twill\Repositories\Behaviors\\",
-            $activeRepositoryTraits
-        ) . ';';
+                ";\nuse A17\Twill\Repositories\Behaviors\\",
+                $activeRepositoryTraits
+            ) . ';';
 
         $stub = str_replace(
             [
