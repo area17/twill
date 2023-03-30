@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        if (!CreateTwillDefaultRelatedTable::$isFirstMigration) {
-            Schema::table('related', function (Blueprint $table) {
+        if (! Schema::hasColumn(config('twill.related_table', 'twill_related'), 'id')) {
+            Schema::table(config('twill.related_table', 'twill_related'), function (Blueprint $table) {
                 // We cannot add id's to existing table with sqlite.
                 // For our tests to continue to work, we added this migration in the source file for the original
                 // database creation.
