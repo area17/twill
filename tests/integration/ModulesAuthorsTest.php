@@ -4,9 +4,12 @@ namespace A17\Twill\Tests\Integration;
 
 use App\Models\Author;
 use App\Models\Category;
-use App\Models\Revisions\AuthorRevision;
-use Illuminate\Support\Facades\Schema;
+use A17\Twill\Models\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Schema;
+use App\Models\Revisions\AuthorRevision;
 
 class ModulesAuthorsTest extends ModulesTestBase
 {
@@ -428,5 +431,58 @@ class ModulesAuthorsTest extends ModulesTestBase
 
         $this->assertEquals($slugEn . '-2', $item2->slug);
         $this->assertEquals($slugFr . '-2', $item2->getSlug('fr'));
+    }
+
+    public function testCanCastDates()
+    {
+        $this->createAuthor();
+
+        $author = Author::first();
+
+        $author->deleted_at = '2020-01-01';
+        $this->assertInstanceOf(Carbon::class, $author->deleted_at);
+
+        if (app()->version() >= '10') {
+            $author->test_date_casts = '2020-01-02';
+            $this->assertInstanceOf(Carbon::class, $author->test_date_casts);
+        } else {
+            $author->test_date_dates = '2020-01-02';
+            $this->assertInstanceOf(Carbon::class, $author->test_date_dates);
+        }
+
+        $author->not_a_date = '2020-01-02';
+        $this->assertIsString($author->not_a_date);
+        $this->assertEquals('2020-01-02', $author->not_a_date);
+    }
+
+    public function testCanGetDates()
+    {
+        $this->createAuthor();
+
+        $author = Author::first();
+
+        $dates = array_values(Arr::sort($author->getDates()));
+
+        $expected = array_values(Arr::sort([
+            'created_at',
+            'updated_at',
+            'deleted_at',
+            'test_date_dates',
+            'test_date_casts',
+        ]));
+
+        $this->assertEquals($dates, $expected);
+
+        $user = User::where('email', $this->superAdmin()->email)->first();
+
+        $dates = array_values(Arr::sort($user->getDates()));
+
+        $expected = array_values(Arr::sort([
+            'created_at',
+            'updated_at',
+            'deleted_at',
+        ]));
+
+        $this->assertEquals($expected, $dates);
     }
 }
