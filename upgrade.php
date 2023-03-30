@@ -58,7 +58,8 @@ shell_exec("composer require rector/rector:^0.14 --dev");
 
 echo "Running rector upgrade:";
 shell_exec("./vendor/bin/rector process --clear-cache --config=vendor/area17/twill/rector-upgrade-compatibility.php");
-shell_exec('composer dump');
 shell_exec("./vendor/bin/rector process --clear-cache --config=vendor/area17/twill/rector-upgrade-routes-views.php");
+shell_exec("./vendor/bin/rector process --clear-cache --config=vendor/area17/twill/rector-upgrade-twill-config.php");
+echo PHP_EOL;
 
 exit(0);
