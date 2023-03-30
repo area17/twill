@@ -2,12 +2,16 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
+use A17\Twill\Services\Forms\Contracts\CanRenderForBlocks;
+use A17\Twill\Services\Forms\Traits\RenderForBlocks;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 use ReflectionClass;
 
-abstract class BaseFormField
+abstract class BaseFormField implements CanRenderForBlocks
 {
+    use RenderForBlocks;
+
     /**
      * @var \A17\Twill\View\Components\Fields\TwillFormComponent
      */
