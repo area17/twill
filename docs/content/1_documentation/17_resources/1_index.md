@@ -2,8 +2,8 @@
 
 #### Other Useful Packages
 
-- [laravel/scout](https://laravel.com/docs/5.3/scout) provide full text search on your Eloquent models.
-- [laravel/passport](https://laravel.com/docs/5.3/passport) makes API authentication a breeze.
+- [laravel/scout](https://laravel.com/docs/10.x/scout) provide full text search on your Eloquent models.
+- [laravel/passport](https://laravel.com/docs/10.x/passport) makes API authentication a breeze.
 - [spatie/laravel-fractal](https://github.com/spatie/laravel-fractal) is a nice and easy integration
   with [Fractal](http://fractal.thephpleague.com) to create APIs.
 - [laravel/socialite](https://github.com/laravel/socialite) provides an expressive, fluent interface to OAuth

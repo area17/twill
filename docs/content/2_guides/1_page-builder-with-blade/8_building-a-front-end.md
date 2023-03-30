@@ -15,8 +15,8 @@ So, let's get started!
 
 ## Route and controller
 
-In Laravel a common approach is to use a combination of [routes](https://laravel.com/docs/9.x/routing) and
-[controllers](https://laravel.com/docs/9.x/controllers) to build a front-end.
+In Laravel a common approach is to use a combination of [routes](https://laravel.com/docs/10.x/routing) and
+[controllers](https://laravel.com/docs/10.x/controllers) to build a front-end.
 
 Routes are responsible for making the connection between the url in the browser and a controller.
 
@@ -74,7 +74,7 @@ class PageDisplayController extends Controller
 }
 ```
 
-We added a show method, that takes a slug as argument. Inside we [dd](https://laravel.com/docs/9.x/helpers#method-dd)
+We added a show method, that takes a slug as argument. Inside we [dd](https://laravel.com/docs/10.x/helpers#method-dd)
 the slug. `dd()` is short for Die and Dump. It takes the argument(s), prints them (pretty) and then kills the process.
 It is useful to quickly figure something out or check if something is working.
 

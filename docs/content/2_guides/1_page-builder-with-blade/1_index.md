@@ -1,4 +1,4 @@
-# Building a page builder with Blade
+# Building a simple page builder with Laravel Blade
 
 So, you want to learn how to build a basic page builder with a Blade front-end. Ideal for a quick basic content website
 with flexible content.

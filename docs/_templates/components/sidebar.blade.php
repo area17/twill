@@ -1,5 +1,5 @@
 <nav
-    class="sidebar w-3-cols xl:w-240 bg-white sticky top-[80px] h-screen-minus-header pr-16 pb-16 border-r border-grey overflow-x-hidden overflow-y-auto"
+    class="sidebar w-3-cols xl:w-240 bg-primary sticky top-80 h-screen-minus-header pr-32 pb-16 border-r border-primary overflow-x-hidden overflow-y-auto"
     x-bind:inert="if (isMobile) {
     if (openNav) {
         return false
@@ -38,7 +38,7 @@
             </h2>
 
             @if (!empty($tree[$currentSegment]['items'] ?? []))
-                <ul class="core-list mt-30">
+                <ul class="core-list mt-30 f-sidebar subpixel-antialiased">
                     @php
                         $index = 0;
                     @endphp
@@ -51,13 +51,13 @@
                             class="relative mt-12"
                             x-data="{ open: {{ $open ? 'true' : 'false' }} }"
                             :class="open ? 'is-open' : ''"
-                            >
+                        >
 
                             <div class="flex items-center">
-                                <a class="inline no-underline hover:text-purple
-                                    @if ($open) text-purple font-medium no-underline @endif"
-                                    href="{{ $item['url'] ?? '#' }}">
-                                        {{ $item['title'] ?? '' }}
+                                <a class="inline no-underline hover:text-link
+                                    @if ($open) text-link font-medium no-underline @endif"
+                                   href="{{ $item['url'] ?? '#' }}">
+                                    {{ $item['title'] ?? '' }}
                                 </a>
 
                                 @if (!empty($item['items'] ?? []))
@@ -76,11 +76,15 @@
                                      })">
                                     @foreach ($item['items'] ?? [] as $item)
                                         @php $active = $url === $item['url']; @endphp
-                                        <li class="relative pt-8">
+                                        <li class="relative pt-12">
                                             <a
-                                              class="text-[.95em] text-black no-underline hover:text-purple @if($active) font-medium text-purple @endif"
-                                              href="{{ $item['url'] ?? '#' }}">
-                                              {{ $item['title'] ?? '' }}
+                                                @class([
+                                                    'block w-full pl-3.5 before:pointer-events-none no-underline',
+                                                    'text-primary hover:text-link' => !$active,
+                                                    'text-link font-medium' => $active,
+                                                ])
+                                                href="{{ $item['url'] ?? '#' }}">
+                                                {{ $item['title'] ?? '' }}
                                             </a>
                                         </li>
                                     @endforeach

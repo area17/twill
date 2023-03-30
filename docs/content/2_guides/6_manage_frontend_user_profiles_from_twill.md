@@ -1,4 +1,4 @@
-# Manage frontend user profiles from Twill
+# Managing frontend user profiles from Twill
 
 This is a simple solution to allow site administrators to manage
 frontend user profiles from the CMS. It can be used as a starting point
@@ -12,7 +12,7 @@ Objectives:
 
 Requirements:
 
-* [Laravel Breeze for user authentication](https://laravel.com/docs/8.x/starter-kits#laravel-breeze)
+* [Laravel Breeze for user authentication](https://laravel.com/docs/10.x/starter-kits#laravel-breeze)
 
 ## Create the profiles module
 

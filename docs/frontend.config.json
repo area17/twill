@@ -43,19 +43,22 @@
       }
     }
   },
-
   "spacing": {
     "tokens": {
-        "scaler": 4,
-        "max": 240,
-        "arbritraries": {
-            "10": 10,
-            "15": 15,
-            "18": 18,
-            "30": 30,
-            "37": 37,
-            "740": 740
-        }
+      "scaler": 4,
+      "max": 240,
+      "arbritraries": {
+        "3": 3,
+        "5": 5,
+        "6": 6,
+        "10": 10,
+        "15": 15,
+        "18": 18,
+        "30": 30,
+        "37": 37,
+        "300": 300,
+        "740": 740
+      }
     },
     "groups": {
       "outer-1": {
@@ -82,27 +85,51 @@
       "grey": "#EAECEF",
       "yellow": "#B29402",
       "red": "#FF0000",
+      "blue": "rgb(30, 58, 138)",
       "yellow-light": "rgba(255, 245, 0, 0.15)",
       "red-light": "rgba(255, 0, 0, 0.1)",
       "purple-light": "rgba(121, 60, 184, 0.1)",
-      "grey-dark": "#7F7F7F"
+      "blue-light": "rgb(30, 58, 138, 0.1)",
+      "grey-dark": "#7F7F7F",
+      "gray-100": "#111",
+      "gray-200": "#222",
+      "docsearch-primary-color": "#793CB8"
     },
-    "borderColor": {
-      "primary": "#EAECEF"
+    "border": {
+      "primary": "grey",
+      "tag": "purple",
+      "filename": "purple",
+      "tab": "black",
+      "tab-active": "purple"
     },
-    "textColor": {
+    "text": {
       "title": "black",
       "primary": "black",
       "warn": "yellow",
       "danger": "red",
+      "link": "purple",
       "tip": "purple",
-      "disabled": "grey-dark"
+      "tag": "purple",
+      "disabled": "grey-dark",
+      "info": "blue",
+      "githubBtn": "white",
+      "tab": "white",
+      "tab-active": "purple"
     },
-    "backgroundColor": {
+    "background": {
       "primary": "white",
+      "secondary": "grey",
       "warn": "yellow-light",
       "danger": "red-light",
-      "tip": "purple-light"
+      "tip": "purple-light",
+      "info": "blue-light",
+      "filename": "grey",
+      "githubBtn": "black",
+      "githubBtnHover": "purple",
+      "tab": "black",
+      "tab-hover": "#333",
+      "tab-active": "white",
+      "code": "grey"
     }
   },
   "typography": {
@@ -110,6 +137,23 @@
       "sans": "\"Inter\", sans-serif"
     },
     "typesets": {
+      "headline": {
+        "xs": {
+          "font-family": "var(--sans)",
+          "font-weight": "500",
+          "font-size": "40",
+          "line-height": "1",
+          "font-smoothing": "true"
+        },
+        "md": {
+          "font-size": "52"
+        },
+        "lg": {
+          "font-size": "70",
+          "line-height": "1.2",
+          "letter-spacing": "-0.05em"
+        }
+      },
       "h1": {
         "xs": {
           "font-family": "var(--sans)",
@@ -164,10 +208,28 @@
           "font-smoothing": "true"
         }
       },
+      "sidebar": {
+        "xs": {
+          "font-family": "var(--sans)",
+          "font-weight": "400",
+          "font-size": "16",
+          "line-height": "1.5",
+          "font-smoothing": "true"
+        }
+      },
+      "ui-1": {
+        "xs": {
+          "font-family": "var(--sans)",
+          "font-weight": "400",
+          "font-size": "14",
+          "line-height": "1.18",
+          "font-smoothing": "true"
+        }
+      },
       "doc-title": {
         "xs": {
           "font-family": "var(--sans)",
-          "font-weight": "500",
+          "font-weight": "600",
           "font-size": "18",
           "line-height": "1.11",
           "font-smoothing": "true"
