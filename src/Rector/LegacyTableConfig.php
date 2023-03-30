@@ -45,8 +45,10 @@ class LegacyTableConfig extends LaravelAwareRectorRule
 
         // Remove tables already present in the config.
         foreach ($node->expr->items as $item) {
-            if ($item?->key instanceof Node\Scalar\String_
-                && array_key_exists($item?->key->value, $tables)) {
+            if (
+                $item?->key instanceof Node\Scalar\String_
+                && array_key_exists($item?->key->value, $tables)
+            ) {
                 unset($tables[$item?->key->value]);
             }
         }

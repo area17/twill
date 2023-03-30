@@ -39,26 +39,32 @@ class RenameRoutes extends LaravelAwareRectorRule
      */
     public function refactor(Node $node)
     {
-        if ($node instanceof Node\Expr\StaticCall
-            && $node->name->name !== 'route') {
+        if (
+            $node instanceof Node\Expr\StaticCall
+            && $node->name->name !== 'route'
+        ) {
             return null;
         }
 
-        if ($node instanceof Node\Expr\FuncCall
-            && $node->name->getLast() !== 'route') {
+        if (
+            $node instanceof Node\Expr\FuncCall
+            && $node->name->getLast() !== 'route'
+        ) {
             return null;
         }
 
         $this->routes ??= $this->loadRoutes();
-        if (!($arg = $node->getArgs()[0] ?? null)
-            || !property_exists($arg->value, 'value')
-            || !array_key_exists($arg->value->value, $this->routes)) {
+        if (
+            ! ($arg = $node->getArgs()[0] ?? null)
+            || ! property_exists($arg->value, 'value')
+            || ! array_key_exists($arg->value->value, $this->routes)
+        ) {
             return null;
         }
 
         $node->args[0] = new Node\Arg(BuilderHelpers::normalizeValue(
-            $this->routes[$arg->value->value]),
-        );
+            $this->routes[$arg->value->value]
+        ));
 
         return $node;
     }

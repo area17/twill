@@ -36,19 +36,25 @@ class RenameViews extends LaravelAwareRectorRule
      */
     public function refactor(Node $node)
     {
-        if ($node instanceof Node\Expr\StaticCall
-            && ($node->class->getLast() !== 'View' || $node->name->name !== 'make')) {
+        if (
+            $node instanceof Node\Expr\StaticCall
+            && ($node->class->getLast() !== 'View' || $node->name->name !== 'make')
+        ) {
             return null;
         }
 
-        if ($node instanceof Node\Expr\FuncCall
-            && $node->name->getLast() !== 'view') {
+        if (
+            $node instanceof Node\Expr\FuncCall
+            && $node->name->getLast() !== 'view'
+        ) {
             return null;
         }
 
-        if (!($arg = $node->getArgs()[0] ?? null)
+        if (
+            !($arg = $node->getArgs()[0] ?? null)
             || !property_exists($arg->value, 'value')
-            || !Str::startsWith($arg->value->value, 'admin.')) {
+            || !Str::startsWith($arg->value->value, 'admin.')
+        ) {
             return null;
         }
 
