@@ -385,7 +385,7 @@ class ModuleMake extends Command
         // If the file does not exist, or it is empty, we explain how to use the navigation builder.
         $navigationFileExists = File::exists($navigationFile);
 
-        if (! $navigationFileExists || ($navigation = require ($navigationFile) && empty($navigation))) {
+        if (! $navigationFileExists || (($navigation = require($navigationFile)) && empty($navigation))) {
             // Instructions here.
             $this->warn('To add a navigation entry add the following to your AppServiceProvider BOOT method.');
 
