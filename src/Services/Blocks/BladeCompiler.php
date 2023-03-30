@@ -2,11 +2,9 @@
 
 namespace A17\Twill\Services\Blocks;
 
-use Exception;
 use Throwable;
 use Illuminate\View\Factory;
 use Illuminate\Support\Facades\Blade;
-use Symfony\Component\Debug\Exception\FatalThrowableError;
 
 class BladeCompiler
 {
@@ -24,7 +22,7 @@ class BladeCompiler
     /**
      * @param string $php
      * @param array $data
-     * @throws \Symfony\Component\Debug\Exception\FatalThrowableError
+     * @throws \Throwable
      */
     protected static function compile(string $php, array $data)
     {
@@ -34,16 +32,11 @@ class BladeCompiler
             extract(self::absorbApplicationEnvironment($data), EXTR_SKIP);
 
             eval('?' . '>' . $php);
-        } catch (Exception $e) {
-            while (ob_get_level() > $obLevel) {
-                ob_end_clean();
-            }
-            throw $e;
         } catch (Throwable $e) {
             while (ob_get_level() > $obLevel) {
                 ob_end_clean();
             }
-            throw new FatalThrowableError($e);
+            throw $e;
         }
     }
 
@@ -71,7 +64,7 @@ class BladeCompiler
      * @param $string
      * @param $data
      * @return false|string
-     * @throws \Symfony\Component\Debug\Exception\FatalThrowableError
+     * @throws \Throwable
      */
     public static function render($string, $data)
     {

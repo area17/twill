@@ -1,14 +1,15 @@
 <?php
-/*
-|--------------------------------------------------------------------------
-| 5 Steps to Contribute a New Twill Localization at Ease
-|--------------------------------------------------------------------------
-| 1. Find the "lang.csv" under "lang" directory.
-| 2. Import the csv file into a blank Google Sheet.
-| 3. Each column is a language, enter the translation for a column. (tips: feel free to freeze rows and columns).
-| 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
-| 5. Run the command "php artisan twill:lang" to sync all lang files.
- */
+    /*
+    |--------------------------------------------------------------------------
+    | 5 Steps to Contribute a New Twill Localization at Ease
+    |--------------------------------------------------------------------------
+    | 1. Find the "lang.csv" under "lang" directory.
+    | 2. Import the csv file into a blank Google Sheet.
+    | 3. Each column is a language, enter the translation for a column. (tips: feel free to freeze rows and columns).
+    | 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
+    | 5. Run the command "php artisan twill:lang" to sync all lang files.
+    */
+
 
 return [
     'auth' => [
@@ -41,6 +42,11 @@ return [
         'my-drafts' => 'My drafts',
         'search-placeholder' => 'Search everything...',
         'statitics' => 'Statistics',
+        'search' => [
+            'loading' => 'Loading…',
+            'no-result' => 'No results found.',
+            'last-edit' => 'Last edited',
+        ],
         'activities' => [
             'created' => 'Created',
             'updated' => 'Updated',
@@ -48,6 +54,8 @@ return [
             'published' => 'Published',
             'featured' => 'Featured',
             'unfeatured' => 'Unfeatured',
+            'restored' => 'Restored',
+            'deleted' => 'Deleted',
         ],
         'activity-row' => [
             'edit' => 'Edit',
@@ -76,7 +84,6 @@ return [
     'fields' => [
         'block-editor' => [
             'add-content' => 'Add content',
-            'add-item' => 'Add item',
             'collapse-all' => 'Collapse all',
             'create-another' => 'Create another',
             'delete' => 'Delete',
@@ -84,6 +91,8 @@ return [
             'loading' => 'Loading',
             'open-in-editor' => 'Open in editor',
             'preview' => 'Preview',
+            'add-item' => 'Add item',
+            'clone-block' => 'Clone block',
         ],
         'browser' => [
             'add-label' => 'Add',
@@ -110,6 +119,9 @@ return [
             'edit-close' => 'Close info',
             'edit-info' => 'Edit info',
             'original-dimensions' => 'Original',
+            'alt-text' => 'Alt Text',
+            'caption' => 'Caption',
+            'video-url' => 'Video URL (optional)',
         ],
     ],
     'filter' => [
@@ -169,8 +181,8 @@ return [
             'destroy' => 'Destroy',
             'duplicate' => 'Duplicate',
             'edit' => 'Edit',
-            'feature' => 'Feature',
             'publish' => 'Publish',
+            'feature' => 'Feature',
             'restore' => 'Restore',
             'unfeature' => 'Unfeature',
             'unpublish' => 'Unpublish',
@@ -186,6 +198,60 @@ return [
         'listing-empty-message' => 'There is no item here yet.',
         'paginate' => [
             'rows-per-page' => 'Rows per page:',
+        ],
+        'bulk-selected-item' => 'item selected',
+        'bulk-selected-items' => 'items selected',
+        'reorder' => [
+            'success' => ':modelTitle order changed!',
+            'error' => ':modelTitle order was not changed. Something wrong happened!',
+        ],
+        'restore' => [
+            'success' => ':modelTitle restored!',
+            'error' => ':modelTitle was not restored. Something wrong happened!',
+        ],
+        'bulk-restore' => [
+            'success' => ':modelTitle items restored!',
+            'error' => ':modelTitle items were not restored. Something wrong happened!',
+        ],
+        'force-delete' => [
+            'success' => ':modelTitle destroyed!',
+            'error' => ':modelTitle was not destroyed. Something wrong happened!',
+        ],
+        'bulk-force-delete' => [
+            'success' => ':modelTitle items destroyed!',
+            'error' => ':modelTitle items were not destroyed. Something wrong happened!',
+        ],
+        'delete' => [
+            'success' => ':modelTitle moved to trash!',
+            'error' => ':modelTitle was not moved to trash. Something wrong happened!',
+        ],
+        'bulk-delete' => [
+            'success' => ':modelTitle items moved to trash!',
+            'error' => ':modelTitle items were not moved to trash. Something wrong happened!',
+        ],
+        'duplicate' => [
+            'success' => ':modelTitle duplicated with Success!',
+            'error' => ':modelTitle was not duplicated. Something wrong happened!',
+        ],
+        'publish' => [
+            'unpublished' => ':modelTitle unpublished!',
+            'published' => ':modelTitle published!',
+            'error' => ':modelTitle was not published. Something wrong happened!',
+        ],
+        'featured' => [
+            'unfeatured' => ':modelTitle unfeatured!',
+            'featured' => ':modelTitle featured!',
+            'error' => ':modelTitle was not featured. Something wrong happened!',
+        ],
+        'bulk-featured' => [
+            'unfeatured' => ':modelTitle items unfeatured!',
+            'featured' => ':modelTitle items featured!',
+            'error' => ':modelTitle items were not featured. Something wrong happened!',
+        ],
+        'bulk-publish' => [
+            'unpublished' => ':modelTitle items unpublished!',
+            'published' => ':modelTitle items published!',
+            'error' => ':modelTitle items were not published. Something wrong happened!',
         ],
     ],
     'main' => [
@@ -213,6 +279,36 @@ return [
         'title' => 'Media Library',
         'update' => 'Update',
         'unused-filter-label' => 'Show unused only',
+        'no-tags-found' => 'Sorry, no tags found.',
+        'dialogs' => [
+            'delete' => [
+                'delete-media-title' => 'Delete media',
+                'delete-media-desc' => 'Are you sure ?<br />This change can\'t be undone.',
+                'delete-media-confirm' => 'Delete',
+                'title' => 'Are you sure ?',
+                'allow-delete-multiple-medias' => 'Some files are used and can\'t be deleted. Do you want to delete the others ?',
+                'allow-delete-one-media' => 'This file is used and can\'t be deleted. Do you want to delete the others ?',
+                'dont-allow-delete-multiple-medias' => 'This files are used and can\'t be deleted.',
+                'dont-allow-delete-one-media' => 'This file is used and can\'t be deleted.',
+            ],
+            'replace' => [
+                'replace-media-title' => 'Replace media',
+                'replace-media-desc' => 'Are you sure ?<br />This change can\'t be undone.',
+                'replace-media-confirm' => 'Replace',
+            ],
+        ],
+        'types' => [
+            'single' => [
+                'image' => 'image',
+                'video' => 'video',
+                'file' => 'file',
+            ],
+            'multiple' => [
+                'image' => 'images',
+                'video' => 'videos',
+                'file' => 'files',
+            ],
+        ],
     ],
     'modal' => [
         'create' => [
@@ -237,21 +333,19 @@ return [
         'media-library' => 'Media Library',
         'settings' => 'Settings',
         'close-menu' => 'Close menu',
-    ],
-    'settings' => [
-        'update' => 'Update',
-        'cancel' => 'Cancel',
-        'fieldset-label' => 'Edit settings',
+        'open-live-site' => 'Open live site',
     ],
     'notifications' => [
         'reset' => [
             'action' => 'Reset password',
             'content' => 'You are receiving this email because we received a password reset. If you did not request a password reset, no further action is required.',
+            'subject' => ':appName | Reset password',
         ],
         'welcome' => [
             'action' => 'Choose your own password',
             'content' => 'You are receiving this email because an account was created for you on :name.',
             'title' => 'Welcome',
+            'subject' => ':appName | Welcome',
         ],
     ],
     'overlay' => [
@@ -268,6 +362,7 @@ return [
         'single-view' => 'Single view',
         'title' => 'Preview changes',
         'unsaved' => 'Previewing with your unsaved changes',
+        'drag-and-drop' => 'Drag and drop content from the left navigation',
     ],
     'publisher' => [
         'cancel' => 'Cancel',
@@ -279,6 +374,8 @@ return [
         'last-edit' => 'Last edited',
         'preview' => 'Preview changes',
         'publish' => 'Publish',
+        'scheduled' => 'Scheduled',
+        'expired' => 'Expired',
         'publish-close' => 'Publish and close',
         'publish-new' => 'Publish and create new',
         'published-on' => 'Published on',
@@ -290,6 +387,11 @@ return [
         'restore-live-new' => 'Restore as published and create new',
         'restore-message' => 'You are currently editing an older revision of this content (saved by :user on :date). Make changes if needed and click restore to save a new revision.',
         'restore-success' => 'Revision restored.',
+        'draft-revision' => 'Save as draft revision',
+        'draft-revision-close' => 'Save as draft revision and close',
+        'draft-revision-new' => 'Save as draft revision and create new',
+        'draft-revisions-available' => 'You are currently viewing the published version of this content. There are newer draft revisions available.',
+        'editing-draft-revision' => 'You are currently editing a draft revision of this content. Make changes if needed and click Save as revision or Publish.',
         'revisions' => 'Revisions',
         'save' => 'Save as draft',
         'save-close' => 'Save as draft and close',
@@ -303,6 +405,7 @@ return [
         'parent-page' => 'Parent page',
         'review-status' => 'Review status',
         'visibility' => 'Visibility',
+        'unsaved-changes' => 'There are unsaved changes',
     ],
     'select' => [
         'empty-text' => 'Sorry, no matching options.',
@@ -343,5 +446,10 @@ return [
         'update-disabled-user-and-create-new' => 'Update disabled user and create new',
         'user-image' => 'Image',
         'users' => 'Users',
+    ],
+    'settings' => [
+        'update' => 'Update',
+        'cancel' => 'Cancel',
+        'fieldset-label' => 'Edit settings',
     ],
 ];

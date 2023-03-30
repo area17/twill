@@ -6,6 +6,7 @@ use A17\Twill\Models\Enums\UserRole;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use PragmaRX\Google2FAQRCode\Google2FA;
@@ -240,5 +241,11 @@ class UserController extends ModuleController
         return [
             'edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null,
         ];
+    }
+
+    public function getSubmitOptions(Model $item): ?array
+    {
+        // Use options from form template
+        return null;
     }
 }

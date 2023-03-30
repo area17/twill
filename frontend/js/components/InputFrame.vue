@@ -65,6 +65,7 @@
     display:block;
     color:$color__text;
     margin-bottom:10px;
+    word-wrap:break-word;
     position:relative;
   }
 

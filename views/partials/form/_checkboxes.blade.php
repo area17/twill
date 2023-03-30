@@ -8,6 +8,8 @@
 
     $note = $note ?? false;
     $inline = $inline ?? false;
+    $border = $border ?? false;
+    $columns = $columns ?? 0;
 
     // do not use for now, but this will allow you to create a new option directly from the form
     $addNew = $addNew ?? false;
@@ -21,7 +23,9 @@
     @include('twill::partials.form.utils._field_name')
     :options="{{ json_encode($options) }}"
     :grid="false"
+    :columns="{{ $columns }}"
     :inline='{{ $inline ? 'true' : 'false' }}'
+    :border='{{ $border ? 'true' : 'false' }}'
     @if ($min ?? false) :min="{{ $min }}" @endif
     @if ($max ?? false) :max="{{ $max }}" @endif
     @if ($inModal) :in-modal="true" @endif

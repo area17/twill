@@ -15,6 +15,7 @@ use Psr\Log\LoggerInterface as Logger;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Analytics\Period;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class DashboardController extends Controller
 {
@@ -122,13 +123,20 @@ class DashboardController extends Controller
                     $author = 'Admin';
                 }
 
+                $date = null;
+                if ($item->updated_at) {
+                    $date = $item->updated_at->toIso8601String();
+                } elseif ($item->created_at) {
+                    $date = $item->created_at->toIso8601String();
+                }
+
                 return [
                     'id' => $item->id,
                     'href' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $item->id),
                     'thumbnail' => method_exists($item, 'defaultCmsImage') ? $item->defaultCmsImage(['w' => 100, 'h' => 100]) : null,
                     'published' => $item->published,
-                    'activity' => 'Last edited',
-                    'date' => $item->updated_at->toIso8601String(),
+                    'activity' => twillTrans('twill::lang.dashboard.search.last-edit'),
+                    'date' => $date,
                     'title' => $item->titleInDashboard ?? $item->title,
                     'author' => $author,
                     'type' => ucfirst($module['label_singular'] ?? Str::singular($module['name'])),
@@ -140,11 +148,41 @@ class DashboardController extends Controller
     /**
      * @return array
      */
+    private function getEnabledActivities()
+    {
+        $modules = $this->config->get('twill.dashboard.modules');
+        $listActivities = [];
+
+        foreach ($modules as $moduleClass => $moduleConfiguration) {
+            $moduleClassToCheck = Relation::getMorphedModel($moduleClass) ?? $moduleClass;
+            if (! empty($moduleConfiguration['activity'])) {
+                if (! class_exists($moduleClassToCheck)) {
+                    //  Try to load it from the morph map.
+                    throw new \Exception(
+                        "Class $moduleClassToCheck specified in twill.dashboard configuration does not exists."
+                    );
+                }
+                $listActivities[] = $moduleClass;
+            }
+        }
+
+        return $listActivities;
+    }
+
+    /**
+     * @return array
+     */
     private function getAllActivities()
     {
-        return Activity::take(20)->latest()->get()->map(function ($activity) {
-            return $this->formatActivity($activity);
-        })->filter()->values();
+        return Activity::whereIn('subject_type', $this->getEnabledActivities())
+            ->take(20)
+            ->latest()
+            ->get()
+            ->map(function ($activity) {
+                return $this->formatActivity($activity);
+            })
+            ->filter()
+            ->values();
     }
 
     /**
@@ -152,9 +190,16 @@ class DashboardController extends Controller
      */
     private function getLoggedInUserActivities()
     {
-        return Activity::where('causer_id', $this->authFactory->guard('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity) {
-            return $this->formatActivity($activity);
-        })->filter()->values();
+        return Activity::whereIn('subject_type', $this->getEnabledActivities())
+            ->where('causer_id', $this->authFactory->guard('twill_users')->user()->id)
+            ->take(20)
+            ->latest()
+            ->get()
+            ->map(function ($activity) {
+                return $this->formatActivity($activity);
+            })
+            ->filter()
+            ->values();
     }
 
     /**
@@ -177,9 +222,9 @@ class DashboardController extends Controller
             'id' => $activity->id,
             'type' => ucfirst($dashboardModule['label_singular'] ?? Str::singular($dashboardModule['name'])),
             'date' => $activity->created_at->toIso8601String(),
-            'author' => $activity->causer->name ?? twillTrans('twill::lang.dashboard.unkown-author'),
+            'author' => $activity->causer->name ?? twillTrans('twill::lang.dashboard.unknown-author'),
             'name' => $activity->subject->titleInDashboard ?? $activity->subject->title,
-            'activity' => twillTrans('twill::lang.dashboard.activities.'.$activity->description),
+            'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description),
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
         ] : []) + (!$activity->subject->trashed() ? [
@@ -215,12 +260,38 @@ class DashboardController extends Controller
             ];
         })->reverse()->values();
 
+        $dummyData = null;
+        if ($statsByDate->isEmpty()) {
+            $dummyData = [
+                [
+                    'label' => 'Users',
+                    'figure' => 0,
+                    'insight' => '0% Bounce rate',
+                    'trend' => __('None'),
+                    'data' => [0 => 0],
+                    'url' => 'https://analytics.google.com/analytics/web',
+                ],
+                [
+                    'label' => 'Pageviews',
+                    'figure' => 0,
+                    'insight' => '0 Pages / Session',
+                    'trend' => __('None'),
+                    'data' => [0 => 0],
+                    'url' => 'https://analytics.google.com/analytics/web',
+                ],
+            ];
+        }
+
         return Collection::make([
             'today',
             'yesterday',
             'week',
             'month',
-        ])->mapWithKeys(function ($period) use ($statsByDate) {
+        ])->mapWithKeys(function ($period) use ($statsByDate, $dummyData) {
+            if ($dummyData) {
+                return [$period => $dummyData];
+            }
+
             $stats = $this->getPeriodStats($period, $statsByDate);
             return [
                 $period => [
@@ -247,7 +318,7 @@ class DashboardController extends Controller
 
     /**
      * @param string $period
-     * @param \Illuminate\Database\Query\Builder $statsByDate
+     * @param \Illuminate\Support\Collection $statsByDate
      * @return array
      */
     private function getPeriodStats($period, $statsByDate)
@@ -366,7 +437,8 @@ class DashboardController extends Controller
                 'label' => ucfirst($moduleOptions['label']),
                 'singular' => ucfirst($moduleOptions['singular']),
                 'number' => $moduleOptions['count'] ? $repository->getCountByStatusSlug(
-                    'all', $module['countScope'] ?? []
+                    'all',
+                    $module['countScope'] ?? []
                 ) : null,
                 'url' => moduleRoute(
                     $module['name'],

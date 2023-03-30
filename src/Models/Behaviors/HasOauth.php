@@ -7,6 +7,9 @@ use A17\Twill\Models\UserOauth;
 trait HasOauth
 {
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function providers()
     {
 
@@ -14,6 +17,11 @@ trait HasOauth
 
     }
 
+    /**
+     * @param \Laravel\Socialite\Contracts\User $oauthUser
+     * @param string $provider Socialite provider
+     * @return \Illuminate\Database\Eloquent\Model|false
+     */
     public function linkProvider($oauthUser, $provider)
     {
 

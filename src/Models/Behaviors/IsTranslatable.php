@@ -4,6 +4,12 @@ namespace A17\Twill\Models\Behaviors;
 
 trait IsTranslatable
 {
+    /**
+     * Checks if this model is translatable.
+     *
+     * @param array|string|null $columns Optionally limit the check to a set of columns.
+     * @return bool
+     */
     public function isTranslatable($columns = null)
     {
         // Model must have the trait

@@ -14,7 +14,7 @@ return [
     'source' => env('GLIDE_SOURCE', storage_path('app/public/' . config('twill.media_library.local_path'))),
     'cache' => env('GLIDE_CACHE', storage_path('app')),
     'cache_path_prefix' => env('GLIDE_CACHE_PATH_PREFIX', 'glide_cache'),
-    'base_url' => env('GLIDE_BASE_URL', null),
+    'base_url' => env('GLIDE_BASE_URL', config('app.url')),
     'base_path' => env('GLIDE_BASE_PATH', 'img'),
     'use_signed_urls' => env('GLIDE_USE_SIGNED_URLS', false),
     'sign_key' => env('GLIDE_SIGN_KEY'),
@@ -41,4 +41,5 @@ return [
         'dpr' => '1',
     ],
     'presets' => [],
+    'original_media_for_extensions' => [],
 ];

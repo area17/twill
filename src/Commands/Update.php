@@ -16,7 +16,8 @@ class Update extends Command
     public function handle()
     {
         $this->publishAssets();
-        $this->call('cache:clear');
+        $this->call('twill:flush-manifest');
+        $this->call('view:clear');
     }
 
     /**

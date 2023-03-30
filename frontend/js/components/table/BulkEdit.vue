@@ -2,7 +2,9 @@
   <div class="bulkEditor">
     <div class="bulkEditor__inner" v-if="bulkIds.length">
       <div class="container">
-        <p class="bulkEditor__infos">{{ bulkIds.length }} item{{ bulkIds.length > 1 ? 's' : '' }} selected</p>
+        <p class="bulkEditor__infos">
+          {{ bulkIds.length }} {{ bulkIds.length > 1 ? $trans('listing.bulk-selected-items') : $trans('listing.bulk-selected-item') }}
+        </p>
         <div class="bulkEditor__dropdown">
           <a17-dropdown ref="bulkActionsDown" position="bottom-left" width="full" :offset="0">
             <a17-button variant="dropdown" size="small" @click="$refs.bulkActionsDown.toggle()">{{ $trans('listing.bulk-actions') }}</a17-button>

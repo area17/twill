@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Storage;
 
 class MediaLibraryController extends ModuleController implements SignUploadListener
 {
@@ -175,11 +174,11 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
         $disk = $this->config->get('twill.media_library.disk');
 
-        $request->file('qqfile')->storeAs($fileDirectory, $filename, $disk);
+        $uploadedFile = $request->file('qqfile');
 
-        $filePath = Storage::disk($disk)->path($fileDirectory . '/' . $filename);
+        list($w, $h) = getimagesize($uploadedFile->path());
 
-        list($w, $h) = getimagesize($filePath);
+        $uploadedFile->storeAs($fileDirectory, $filename, $disk);
 
         $fields = [
             'uuid' => $uuid,
@@ -339,6 +338,6 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
      */
     private function shouldReplaceMedia($id)
     {
-        return isset($id) ? $this->repository->whereId($id)->exists() : false;
+        return is_numeric($id) ? $this->repository->whereId($id)->exists() : false;
     }
 }

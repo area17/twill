@@ -16,16 +16,20 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
 {
     use CopyBlocks;
 
-    const DATABASE_MEMORY = ':memory:';
-    const DEFAULT_PASSWORD = 'secret';
-    const DEFAULT_LOCALE = 'en_US';
-    const DB_CONNECTION = 'sqlite';
+    public const DATABASE_MEMORY = ':memory:';
+
+    public const DEFAULT_PASSWORD = 'secret';
+
+    public const DEFAULT_LOCALE = 'en_US';
+
+    public const DB_CONNECTION = 'sqlite';
 
     /**
      * @var \Faker\Generator
@@ -98,7 +102,7 @@ abstract class TestCase extends OrchestraTestCase
     protected function makeAllTwillPaths(): void
     {
         collect($this->paths)->each(function ($directory) {
-            if (!file_exists($directory = twill_path($directory))) {
+            if (! file_exists($directory = twill_path($directory))) {
                 $this->files->makeDirectory($directory, 0755, true);
             }
         });
@@ -120,6 +124,8 @@ abstract class TestCase extends OrchestraTestCase
         $this->instantiateFaker();
 
         $this->copyBlocks();
+
+        $this->copyTestFiles();
 
         $this->installTwill();
     }
@@ -280,6 +286,7 @@ abstract class TestCase extends OrchestraTestCase
             RouteServiceProvider::class,
             TwillServiceProvider::class,
             ValidationServiceProvider::class,
+            NestedSetServiceProvider::class,
         ];
     }
 
@@ -346,7 +353,7 @@ abstract class TestCase extends OrchestraTestCase
     public function superAdmin($force = false)
     {
         return $this->superAdmin =
-        !$this->superAdmin || $force
+        ! $this->superAdmin || $force
         ? $this->makeNewSuperAdmin()
         : $this->superAdmin;
     }
@@ -364,6 +371,13 @@ abstract class TestCase extends OrchestraTestCase
         $this->deleteAllTwillPaths();
 
         $this->makeAllTwillPaths();
+    }
+
+    public function copyTestFiles(): void
+    {
+        if (isset($this->allFiles)) {
+            $this->copyFiles($this->allFiles);
+        }
     }
 
     /**
@@ -533,7 +547,7 @@ abstract class TestCase extends OrchestraTestCase
     /**
      * Freeze time.
      */
-    public function freezeTime()
+    public function freezeTime($callback = null)
     {
         Carbon::setTestNow($this->now = Carbon::now());
     }
@@ -551,13 +565,11 @@ abstract class TestCase extends OrchestraTestCase
 
                 $destination = $this->makeFileName($destination, $source);
 
-                if (!$this->files->exists($directory = dirname($destination))) {
+                if (! $this->files->exists($directory = dirname($destination))) {
                     $this->files->makeDirectory($directory, 0755, true);
                 }
 
                 $this->files->copy($source, $destination);
-
-                usleep(1000 * 100); // 100ms
             });
         });
     }
@@ -571,11 +583,11 @@ abstract class TestCase extends OrchestraTestCase
                 File::deleteDirectory($file);
             }
 
-            if (!is_dir($file) && file_exists($file)) {
+            if (! is_dir($file) && file_exists($file)) {
                 unlink($file);
             }
 
-            if (!Str::endsWith($file, '.php')) {
+            if (! Str::endsWith($file, '.php')) {
                 File::makeDirectory($file, 0755, true);
             }
         });
@@ -618,7 +630,7 @@ abstract class TestCase extends OrchestraTestCase
 
         $extension = pathinfo($file, PATHINFO_EXTENSION);
 
-        if (filled($source) && !Str::endsWith($file, ".{$extension}")) {
+        if (filled($source) && ! Str::endsWith($file, ".{$extension}")) {
             $file = $file . basename($source);
         }
 
@@ -662,11 +674,11 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * Skip test if running on Travis
+     * Skip test if running on Travis.
      */
     public function skipOnTravis()
     {
-        if (!is_null(env('TRAVIS_PHP_VERSION'))) {
+        if (! is_null(env('TRAVIS_PHP_VERSION'))) {
             $this->markTestSkipped('This test cannot be executed on Travis');
         }
     }

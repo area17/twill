@@ -7,6 +7,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use League\Glide\Responses\LaravelResponseFactory;
 use League\Glide\ServerFactory;
 use League\Glide\Signatures\SignatureFactory;
@@ -66,6 +67,10 @@ class Glide implements ImageServiceInterface
             ltrim($this->config->get('twill.glide.base_path'), '/'),
         ]);
 
+        if (!empty($baseUrlHost) && !Str::startsWith($baseUrl, ['http://', 'https://'])) {
+            $baseUrl = $this->request->getScheme() . '://' . $baseUrl;
+        }
+
         $this->server = ServerFactory::create([
             'response' => new LaravelResponseFactory($this->request),
             'source' => $this->config->get('twill.glide.source'),
@@ -103,13 +108,9 @@ class Glide implements ImageServiceInterface
     public function getUrl($id, array $params = [])
     {
         $defaultParams = config('twill.glide.default_params');
-        $addParamsToSvgs = config('twill.glide.add_params_to_svgs', false);
 
-        if (!$addParamsToSvgs && Str::endsWith($id, '.svg')) {
-            return $this->urlBuilder->getUrl($id);
-        }
-
-        return $this->urlBuilder->getUrl($id, array_replace($defaultParams, $params));
+        return $this->getOriginalMediaUrl($id) ??
+            $this->urlBuilder->getUrl($id, array_replace($defaultParams, $params));
     }
 
     /**
@@ -198,7 +199,7 @@ class Glide implements ImageServiceInterface
      */
     public function getRawUrl($id)
     {
-        return $this->urlBuilder->getUrl($id);
+        return $this->getOriginalMediaUrl($id) ?? $this->urlBuilder->getUrl($id);
     }
 
     /**
@@ -266,11 +267,25 @@ class Glide implements ImageServiceInterface
             $fpY = number_format($fpY, 0, ".", "");
             $fpZ = number_format($fpZ, 4, ".", "");
 
-            $params = ['fit' => 'crop-' . $fpX . '-' . $fpY . '-' . $fpZ];
-
-            return $params;
+            return ['fit' => 'crop-' . $fpX . '-' . $fpY . '-' . $fpZ];
         }
 
         return [];
+    }
+
+    /**
+     * @param string $id
+     * @return string
+     */
+    private function getOriginalMediaUrl($id)
+    {
+        $originalMediaForExtensions = $this->config->get('twill.glide.original_media_for_extensions');
+        $addParamsToSvgs = $this->config->get('twill.glide.add_params_to_svgs', false);
+
+        if ((Str::endsWith($id, '.svg') && $addParamsToSvgs) || !Str::endsWith($id, $originalMediaForExtensions)) {
+            return null;
+        }
+
+        return Storage::disk(config('twill.media_library.disk'))->url($id);
     }
 }

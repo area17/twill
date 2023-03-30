@@ -2,10 +2,14 @@
 
 namespace A17\Twill\Models;
 
+use Illuminate\Support\Str;
+use A17\Twill\Models\Behaviors\HasDates;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
 abstract class Revision extends BaseModel
 {
+    use HasDates;
+
     public $timestamps = true;
 
     protected $with = ['user'];
@@ -34,5 +38,14 @@ abstract class Revision extends BaseModel
     public function getByUserAttribute()
     {
         return isset($this->user) ? $this->user->name : 'System';
+    }
+
+    public function isDraft(): bool
+    {
+        $data = json_decode($this->payload, true);
+
+        $cmsSaveType = $data['cmsSaveType'] ?? '';
+
+        return Str::startsWith($cmsSaveType, 'draft-revision');
     }
 }

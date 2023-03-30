@@ -1,27 +1,36 @@
 <template>
   <div class="locale">
     <template v-if="languages && languages.length && languages.length > 0">
-    <div class="locale__item" v-for="language in languages" :key="language.value">
-      <component v-bind:is="`${type}`" :data-lang="language.value"
-        v-bind="attributesPerLang(language.value)"
-        :name="`${attributes.name}[${language.value}]`"
-        :fieldName="attributes.name"
-        :locale="language"
-        @localize="updateLocale"
-        @change="updateValue(language.value, ...arguments)"
-        @blur="$emit('blur')"
-        @focus="$emit('focus')"
-      ><slot></slot></component>
-    </div>
+      <div class="locale__item" v-for="language in languages" :key="language.value">
+        <component
+            v-bind:is="`${type}`"
+            v-if="language.value === currentLocale.value || isCustomForm || keepInDom"
+            :data-lang="language.value"
+            v-bind="attributesPerLang(language.value)"
+            :name="`${attributes.name}[${language.value}]`"
+            :fieldName="attributes.name"
+            :locale="language"
+            ref="field"
+            @localize="updateLocale"
+            @change="updateValue(language.value, ...arguments)"
+            @blur="$emit('blur')"
+            @focus="$emit('focus')"
+        >
+          <slot></slot>
+        </component>
+      </div>
     </template>
     <template v-else>
       <component v-bind:is="`${type}`"
-        :name="attributes.name"
-        v-bind="attributesNoLang()"
-        @change="updateValue(false, ...arguments)"
-        @blur="$emit('blur')"
-        @focus="$emit('focus')"
-      ><slot></slot></component>
+                 :name="attributes.name"
+                 ref="field"
+                 v-bind="attributesNoLang()"
+                 @change="updateValue(false, ...arguments)"
+                 @blur="$emit('blur')"
+                 @focus="$emit('focus')"
+      >
+        <slot></slot>
+      </component>
     </template>
   </div>
 </template>
@@ -38,6 +47,10 @@
       type: {
         type: String,
         default: 'text'
+      },
+      keepInDom: {
+        type: Boolean,
+        default: false
       },
       attributes: {
         type: Object,
@@ -63,6 +76,14 @@
         currentLocale: state => state.language.active,
         languages: state => state.language.all
       })
+    },
+    data () {
+      return {
+        isCustomForm: false
+      }
+    },
+    mounted () {
+      this.isCustomForm = this.$root.$refs.customForm !== undefined
     },
     methods: {
       attributesPerLang: function (lang) {

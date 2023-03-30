@@ -19,6 +19,9 @@ export default {
       type: String,
       default: 'large' // large, small
     },
+    fixedErrorKey: {
+      type: String
+    },
     note: {
       type: String,
       default: ''
@@ -26,6 +29,9 @@ export default {
   },
   computed: {
     errorKey () {
+      if (this.fixedErrorKey) {
+        return this.hasLocale ? (this.fixedErrorKey.replace('[', '.').replace(']', '')) : this.fixedErrorKey
+      }
       return this.hasLocale ? (this.name.replace('[', '.').replace(']', '')) : this.name
     },
     errorLocales () {
@@ -35,9 +41,15 @@ export default {
 
       const locales = []
 
+      const supportedLanguages = this.$store.state.language.all.map(lang => lang.value)
+
       Object.keys(this.$store.state.form.errors).forEach((error) => {
         if (error.substr(0, error.indexOf('.')) === errorKeyWithoutLocale) {
-          locales.push(error.substr(error.indexOf('.') + 1, error.length))
+          const cleaned = error.substr(error.indexOf('.') + 1, error.length)
+
+          if (supportedLanguages.includes(cleaned)) {
+            locales.push(cleaned)
+          }
         }
       }, [])
 

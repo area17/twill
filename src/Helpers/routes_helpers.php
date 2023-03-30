@@ -12,14 +12,14 @@ if (!function_exists('moduleRoute')) {
      * @param bool $absolute
      * @return string
      */
-    function moduleRoute($moduleName, $prefix, $action, $parameters = [], $absolute = true)
+    function moduleRoute($moduleName, $prefix, $action = '', $parameters = [], $absolute = true)
     {
         // Fix module name case
         $moduleName = Str::camel($moduleName);
 
         // Nested module, pass in current parameters for deeply nested modules
         if (Str::contains($moduleName, '.')) {
-            $parameters = array_merge(Route::current()->parameters(), $parameters);
+            $parameters = array_merge(Route::current()->parameters(), (array) $parameters);
         }
 
         // Create base route name
@@ -31,11 +31,13 @@ if (!function_exists('moduleRoute')) {
             ($prefix !== $moduleName &&
                 !Str::endsWith($prefix, '.' . $moduleName))
         ) {
-            $routeName .= "{$moduleName}.";
+            $routeName .= "{$moduleName}";
         }
 
+        $glue = Str::endsWith($routeName, '.') ? '' : '.';
+
         //  Add the action name
-        $routeName .= $action;
+        $routeName .= $action ? "{$glue}{$action}" : '';
 
         // Build the route
         return route($routeName, $parameters, $absolute);
@@ -52,17 +54,19 @@ if (!function_exists('getNavigationUrl')) {
     function getNavigationUrl($element, $key, $prefix = null)
     {
         $isModule = $element['module'] ?? false;
+        $isSingleton = $element['singleton'] ?? false;
 
         if ($isModule) {
             $action = $element['route'] ?? 'index';
             return moduleRoute($key, $prefix, $action);
+        } elseif ($isSingleton) {
+            return moduleRoute($key, $prefix);
         } elseif ($element['raw'] ?? false) {
             return !empty($element['route']) ? $element['route'] : '#';
         }
 
         return !empty($element['route']) ? route($element['route'], $element['params'] ?? []) : '#';
     }
-
 }
 
 if (!function_exists('isActiveNavigation')) {

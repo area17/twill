@@ -30,8 +30,11 @@ const WebpackAssetsManifest = require('webpack-assets-manifest')
 const WebpackNotifierPlugin = require('webpack-notifier')
 
 const srcDirectory = 'frontend'
-const outputDir = 'dist'
+const partialsDirectory = '../views/partials'
+const outputDir = isProd ? 'dist' : (process.env.TWILL_DEV_ASSETS_PATH || 'dist')
 const assetsDir = process.env.TWILL_ASSETS_DIR || 'assets/admin'
+// Only works with laravel valet.
+const useHttps = process.env.TWILL_DEV_MODE_SSH ? process.env.TWILL_DEV_MODE_SSH === 'true' : false
 
 const pages = {
   'main-buckets': `${srcDirectory}/js/main-buckets.js`,
@@ -46,9 +49,7 @@ const svgConfig = (suffix = null) => {
 
   return {
     output: {
-      filename: isProd
-        ? `${assetsDir}/icons/icons${suffix}.[contenthash].svg`
-        : `${assetsDir}/icons/icons${suffix}.svg`,
+      filename: `${partialsDirectory}/icons/icons${suffix}-svg.blade.php`,
       chunk: {
         name: `icons${suffix}`
       }
@@ -68,22 +69,30 @@ const svgConfig = (suffix = null) => {
   }
 }
 
-let plugins = [
-  new CleanWebpackPlugin(),
-  new SVGSpritemapPlugin(`${srcDirectory}/icons/**/*.svg`, svgConfig()),
-  new SVGSpritemapPlugin(`${srcDirectory}/icons-files/**/*.svg`, svgConfig('files')),
-  new SVGSpritemapPlugin(`${srcDirectory}/icons-wysiwyg/**/*.svg`, svgConfig('wysiwyg')),
-  new WebpackAssetsManifest({
-    output: `${assetsDir}/twill-manifest.json`,
-    publicPath: true,
-    customize (entry, original, manifest, asset) {
-      const search = new RegExp(`${assetsDir.replace(/\//gm, '\/')}\/(css|fonts|js|icons)\/`, 'gm')
-      return {
-        key: entry.key.replace(search, '')
-      }
+const plugins = [ new CleanWebpackPlugin() ]
+
+// Default icons and optionnal custom admin icons
+// Warning : user need to make sure each SVG files are named uniquely
+const iconDirectories = [`${srcDirectory}/icons/**/*.svg`];
+if (fs.existsSync(`${srcDirectory}/icons-custom`) && fs.readdirSync(`${srcDirectory}/icons-custom`).length !== 0) {
+  iconDirectories.push(`${srcDirectory}/icons-custom/**/*.svg`);
+}
+plugins.push(new SVGSpritemapPlugin(iconDirectories, svgConfig()))
+// File format icons
+plugins.push(new SVGSpritemapPlugin(`${srcDirectory}/icons-files/**/*.svg`, svgConfig('files')))
+// Wysiwyg icons
+plugins.push(new SVGSpritemapPlugin(`${srcDirectory}/icons-wysiwyg/**/*.svg`, svgConfig('wysiwyg')))
+
+plugins.push(new WebpackAssetsManifest({
+  output: `${assetsDir}/twill-manifest.json`,
+  publicPath: true,
+  customize (entry, original, manifest, asset) {
+    const search = new RegExp(`${assetsDir.replace(/\//gm, '\/')}\/(css|fonts|js|icons)\/`, 'gm')
+    return {
+      key: entry.key.replace(search, '')
     }
-  })
-]
+  }
+}))
 
 if (!isProd) {
   plugins.push(new WebpackNotifierPlugin({
@@ -118,6 +127,7 @@ const config = {
   pages,
   devServer: {
     hot: true,
+    https: useHttps,
     disableHostCheck: true,
     headers: {
       "Access-Control-Allow-Origin": "*"
@@ -151,6 +161,19 @@ const config = {
       config.plugins.delete(`preload-${page}`)
       config.plugins.delete(`prefetch-${page}`)
     })
+  }
+}
+
+if (useHttps) {
+  const homeDir = process.env.HOME;
+  const host = process.env.APP_URL.split('//')[1] ?? process.env.APP_URL;
+
+  // This takes the ssh certificates from your `valet secure` domain so that browsers (Looking at safari) stop
+  // complaining about it.
+  config.devServer.host = host;
+  config.devServer.https = {
+    key: fs.readFileSync(path.resolve(homeDir, `.config/valet/Certificates/${host}.key`)),
+    cert: fs.readFileSync(path.resolve(homeDir, `.config/valet/Certificates/${host}.crt`)),
   }
 }
 

@@ -12,7 +12,6 @@ use A17\Twill\Models\Behaviors\HasRevisions;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Model;
 use App\Models\Slugs\AuthorSlug;
-use App\Models\Revisions\AuthorRevision;
 
 class Author extends Model implements Sortable
 {
@@ -39,6 +38,12 @@ class Author extends Model implements Sortable
 
     protected $casts = [
         'featured' => 'boolean',
+        'test_date_casts' => 'date',
+    ];
+
+    protected $dates = [
+        'deleted_at',
+        'test_date_dates',
     ];
 
     // uncomment and modify this as needed if you use the HasTranslation trait
@@ -77,8 +82,8 @@ class Author extends Model implements Sortable
         return $this->hasMany(AuthorSlug::class);
     }
 
-    public function revisions()
+    public function categories()
     {
-        return $this->hasMany(AuthorRevision::class);
+        return $this->belongsToMany(Category::class);
     }
 }

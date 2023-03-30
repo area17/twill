@@ -2,9 +2,10 @@
   <span>
     <!--Todo: check formatDateLabel logic-->
     <span v-if="formatDateLabel.length > 0"
-      class="tablecell__datePub"
-      :class="{ 's--expired' : formatDateLabel === textExpired }">
+          class="tablecell__datePub"
+          :class="{ 's--expired' : formatDateLabel === textExpired }">
       {{ startDate | formatDatatableDate }}
+      <template v-if="endDate">- {{ endDate | formatDatatableDate }}</template>
       <br>
       <span>{{ formatDateLabel }}</span>
     </span>
@@ -27,14 +28,10 @@
   export default {
     name: 'A17TableCellDates',
     mixins: [TableCellMixin],
-    props: {
-      textExpired: {
-        type: String,
-        default: 'Expired'
-      },
-      textScheduled: {
-        type: String,
-        default: 'Scheduled'
+    data () {
+      return {
+        textExpired: this.$trans('publisher.expired'),
+        textScheduled: this.$trans('publisher.scheduled')
       }
     },
     computed: {

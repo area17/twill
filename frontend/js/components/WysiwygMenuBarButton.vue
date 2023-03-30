@@ -35,8 +35,25 @@
   }
 </script>
 
+<style lang="scss">
+  // This icon is not part of the sizes above.
+  .icon--wysiwyg_hr,
+  .icon--wysiwyg_hr svg {
+    width: 14px;
+    height: 14px;
+  }
+</style>
+
 <style lang="scss" scoped>
-  @import '~styles/setup/icons-wysiwyg';
+  @import '~svg-spritemap-webpack-plugin/svg-sprite-icons-wysiwyg';
+
+  @each $name, $icon in $icons-wysiwyg-sizes {
+    .icon--#{$name},
+    .icon--#{$name} svg {
+      width: map_get($icon, 'width');
+      height: map_get($icon, 'height');
+    }
+  }
 
   .wysiwyg__menubar-button {
     width: 24px;

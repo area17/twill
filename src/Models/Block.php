@@ -22,6 +22,7 @@ class Block extends BaseModel
         'type',
         'child_key',
         'parent_id',
+        'editor_name',
     ];
 
     protected $casts = [
@@ -30,6 +31,13 @@ class Block extends BaseModel
 
     protected $with = ['medias'];
 
+    public function scopeEditor($query, $name = 'default')
+    {
+        return $name === 'default' ?
+            $query->where('editor_name', $name)->orWhereNull('editor_name') :
+            $query->where('editor_name', $name);
+    }
+
     public function blockable()
     {
         return $this->morphTo();
@@ -37,7 +45,11 @@ class Block extends BaseModel
 
     public function children()
     {
-        return $this->hasMany('A17\Twill\Models\Block', 'parent_id');
+        return $this->hasMany('A17\Twill\Models\Block', 'parent_id')
+            ->orderBy(
+                $this->getTable() . '.position',
+                'asc'
+            );
     }
 
     public function input($name)
@@ -50,7 +62,7 @@ class Block extends BaseModel
         $value = $this->content[$name] ?? null;
 
         $locale = $forceLocale ?? (
-            config('translatable.use_property_fallback', false) && (!array_key_exists(app()->getLocale(), $value ?? []))
+            config('translatable.use_property_fallback', false) && (!array_key_exists(app()->getLocale(), array_filter($value??[]) ?? []))
             ? config('translatable.fallback_locale')
             : app()->getLocale()
         );

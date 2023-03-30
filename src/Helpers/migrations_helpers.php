@@ -26,7 +26,7 @@ if (!function_exists('twillIntegerMethod')) {
     }
 }
 
-if (!function_exists('createDefaultFields')) {
+if (!function_exists('createDefaultTableFields')) {
     /**
      * @param \Illuminate\Database\Schema\Blueprint $table
      * @param bool $softDeletes

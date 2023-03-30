@@ -4,13 +4,31 @@ namespace A17\Twill\Repositories\Behaviors;
 
 trait HandleTags
 {
+    /**
+     * @param \A17\Twill\Models\Model $object
+     * @param array $fields
+     * @return void
+     */
     public function afterSaveHandleTags($object, $fields)
     {
+        if (isset($fields['tags']) && is_array($fields['tags'])) {
+            $fields['tags'] = implode(',', $fields['tags']);
+        }
+
+        if (preg_match("/\p{Han}+/u", $fields['tags'] ?? '')) {
+            $object->setSlugGenerator(function ($slug) {
+                return mb_strtolower(
+                    trim(preg_replace('/([?]|\p{P}|\s)+/u', '-', $slug))
+                );
+            });
+        } else {
+            $object->setSlugGenerator('Illuminate\Support\Str::slug');
+        }
+
         if (!isset($fields['bulk_tags']) && !isset($fields['previous_common_tags'])) {
             if (!$this->shouldIgnoreFieldBeforeSave('tags')) {
                 $object->setTags($fields['tags'] ?? []);
             }
-
         } else {
             if (!$this->shouldIgnoreFieldBeforeSave('bulk_tags')) {
                 $previousCommonTags = $fields['previous_common_tags']->pluck('name')->toArray();
@@ -36,6 +54,11 @@ trait HandleTags
         return $this->model->allTags()->orderBy('count', 'desc');
     }
 
+    /**
+     * @param string $query
+     * @param array $ids
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getTags($query = '', $ids = [])
     {
         $tagQuery = $this->getTagsQuery();
@@ -55,6 +78,9 @@ trait HandleTags
         return $tagQuery->get();
     }
 
+    /**
+     * @return \Illuminate\Support\Collection
+     */
     public function getTagsList()
     {
         return $this->getTagsQuery()->where('count', '>', 0)->select('name', 'id')->get()->map(function ($tag) {
@@ -64,5 +90,4 @@ trait HandleTags
             ];
         });
     }
-
 }

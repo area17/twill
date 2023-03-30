@@ -6,7 +6,9 @@
         <div class="singleselector__outer">
           <div class="singleselector__item"
                v-for="(radio, index) in fullOptions"
-               :key="index">
+               :key="index"
+               :style="itemStyle"
+          >
             <input class="singleselector__radio" type="radio" :value="radio.value" :name="name + '[' + randKey + ']'" :id="uniqId(radio.value, index)" :disabled="radio.disabled || disabled" :class="{'singleselector__radio--checked': radio.value == selectedValue }">
             <label class="singleselector__label" :for="uniqId(radio.value, index)" @click.prevent="changeRadio(radio.value)">{{ radio.label }}</label>
             <span class="singleselector__bg"></span>
@@ -47,7 +49,15 @@
         type: Boolean,
         default: true
       },
+      columns: {
+        type: Number,
+        default: 0
+      },
       inline: {
+        type: Boolean,
+        default: false
+      },
+      border: {
         type: Boolean,
         default: false
       },
@@ -69,10 +79,27 @@
     },
     computed: {
       gridClasses: function () {
+        if (this.columns >= 1) {
+          return [
+            'singleselector--columns',
+            this.grid ? 'singleselector--grid' : ''
+          ]
+        }
+
         return [
           this.grid ? 'singleselector--grid' : '',
-          this.inline ? 'singleselector--inline' : ''
+          this.inline ? 'singleselector--inline' : '',
+          this.border ? 'singleselector--border' : ''
         ]
+      },
+      itemStyle: function () {
+        if (this.columns >= 1) {
+          return {
+            width: `${100 / this.columns}%`
+          }
+        }
+
+        return {}
       },
       selectedValue: {
         get: function () {
@@ -112,7 +139,6 @@
 </script>
 
 <style lang="scss" scoped>
-
   .singleselector {
     color:$color__text;
   }
@@ -219,8 +245,9 @@
     border-color: $color__fborder--active;
   }
 
-  /* grid version */
-  .singleselector--grid {
+  /* grid + columns shared styles */
+  .singleselector--grid,
+  .singleselector--columns {
     border:1px solid $color__border;
     background-clip: padding-box;
     box-sizing: border-box;
@@ -279,7 +306,10 @@
       top: 50%;
       margin-top:-9px;
     }
+  }
 
+  /* grid version */
+  .singleselector--grid {
     .singleselector__bg {
       display:block;
       position:absolute;
@@ -294,45 +324,74 @@
 
     // .singleselector__radio:checked + .singleselector__label::before,
     .singleselector__radio--checked + .singleselector__label::before {
-      border-color: $color__blue;
-      background-color: $color__blue;
+      border-color: $color__fborder--active;
+      background-color: $color__fborder--active;
     }
 
     // .singleselector__radio:focus:checked + .singleselector__label::before,
     .singleselector__radio--checked:focus + .singleselector__label::before {
-      border-color: $color__blue;
+      border-color: $color__fborder--active;
     }
   }
 
-  /* Grid in editor */
-  .s--in-editor .singleselector--grid .singleselector__item {
-      width:100%;
-
-      @include breakpoint('small') {
-        width:100%
-      }
-
-      @include breakpoint('medium') {
-        width:100%
-      }
-
-      @include breakpoint('large') {
-        width:100%
-      }
-
-      @include breakpoint('large+') {
-        width:100%
-      }
+  /* grid or columns in editor */
+  .s--in-editor .singleselector--grid .singleselector__item,
+  .s--in-editor .singleselector--columns .singleselector__item {
+    width: 100% !important; // override inline styles, if any (@see itemStyle)
   }
 
   /* inline version */
   .singleselector--inline .singleselector__outer {
-    display:flex;
-    flex-flow: row wrap;
-    overflow:hidden;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow: hidden;
   }
 
   .singleselector--inline .singleselector__item {
     margin-right:20px;
+  }
+
+  /* border version */
+  .singleselector--border {
+    border: 1px solid $color__border;
+    background-clip: padding-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 2px;
+    padding: 7px 15px;
+  }
+
+  .singleselector--border.singleselector--inline {
+    padding: 0 15px;
+
+    .singleselector__outer {
+      box-sizing: border-box;
+      overflow: hidden;
+      margin-bottom: -1px;
+      margin-right: -1px;
+    }
+
+    .singleselector__item {
+      padding: 0;
+      height: 50%;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .singleselector__label {
+      padding-left: 25px;
+      height: 50px;
+      line-height: 50px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .singleselector__label::before,
+    .singleselector__label::after {
+      top: 50%;
+      margin-top: -9px;
+    }
   }
 </style>

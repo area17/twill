@@ -49,6 +49,12 @@ class AuthorController extends ModuleController
             'title' => 'Birth day',
             'sort' => true,
         ],
+
+        'categories' => [
+            'relationship' => 'categories',
+            'field' => 'title',
+            'title' => 'Categories',
+        ],
     ];
 
     protected $titleColumnKey = 'name';
@@ -58,6 +64,8 @@ class AuthorController extends ModuleController
         parent::__construct($app, $request);
 
         $this->indexOptions['editInModal'] = env('EDIT_IN_MODAL', false);
+
+        $this->enableDraftRevisions = env('ENABLE_DRAFT_REVISIONS', false);
     }
 
     public function getIndexOptions()

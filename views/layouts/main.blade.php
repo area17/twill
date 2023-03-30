@@ -4,17 +4,7 @@
         @include('twill::partials.head')
     </head>
     <body class="env env--{{ app()->environment() }} @yield('appTypeClass')">
-        <div class="svg-sprite">
-            @if(config('twill.dev_mode', false))
-                {!! file_get_contents(twillAsset('icons.svg')) !!}
-                {!! file_get_contents(twillAsset('icons-files.svg')) !!}
-                {!! file_get_contents(twillAsset('icons-wysiwyg.svg')) !!}
-            @else
-                {!! File::exists(public_path(twillAsset('icons.svg'))) ? File::get(public_path(twillAsset('icons.svg'))) : '' !!}
-                {!! File::exists(public_path(twillAsset('icons-files.svg'))) ? File::get(public_path(twillAsset('icons-files.svg'))) : '' !!}
-                {!! File::exists(public_path(twillAsset('icons-wysiwyg.svg'))) ? File::get(public_path(twillAsset('icons-wysiwyg.svg'))) : '' !!}
-            @endif
-        </div>
+        @include('twill::partials.icons.svg-sprite')
         @if(config('twill.enabled.search', false))
             @partialView(($moduleName ?? null), 'navigation._overlay_navigation', ['search' => true])
         @else
@@ -59,13 +49,13 @@
                                           :authorized="{{ json_encode(auth('twill_users')->user()->can('upload')) }}" :extra-metadatas="{{ json_encode(array_values(config('twill.media_library.extra_metadatas_fields', []))) }}"
                                           :translatable-metadatas="{{ json_encode(array_values(config('twill.media_library.translatable_metadatas_fields', []))) }}"
                         ></a17-medialibrary>
-                        <a17-dialog ref="deleteWarningMediaLibrary" modal-title="Delete media" confirm-label="Delete">
-                            <p class="modal--tiny-title"><strong>Delete media</strong></p>
-                            <p>Are you sure ?<br />This change can't be undone.</p>
+                        <a17-dialog ref="deleteWarningMediaLibrary" modal-title="{{ twillTrans("twill::lang.media-library.dialogs.delete.delete-media-title") }}" confirm-label="{{ twillTrans("twill::lang.media-library.dialogs.delete.delete-media-confirm") }}">
+                            <p class="modal--tiny-title"><strong>{{ twillTrans("twill::lang.media-library.dialogs.delete.delete-media-title") }}</strong></p>
+                            <p>{!! twillTrans("twill::lang.media-library.dialogs.delete.delete-media-desc") !!}</p>
                         </a17-dialog>
-                        <a17-dialog ref="replaceWarningMediaLibrary" modal-title="Replace media" confirm-label="Replace">
-                            <p class="modal--tiny-title"><strong>Replace media</strong></p>
-                            <p>Are you sure ?<br />This change can't be undone.</p>
+                        <a17-dialog ref="replaceWarningMediaLibrary" modal-title="{{ twillTrans("twill::lang.media-library.dialogs.replace.replace-media-title") }}" confirm-label="{{ twillTrans("twill::lang.media-library.dialogs.replace.replace-media-confirm") }}">
+                            <p class="modal--tiny-title"><strong>{{ twillTrans("twill::lang.media-library.dialogs.replace.replace-media-title") }}</strong></p>
+                            <p>{!! twillTrans("twill::lang.media-library.dialogs.replace.replace-media-desc") !!}</p>
                         </a17-dialog>
                     @endif
                     <a17-notif variant="success"></a17-notif>
@@ -81,14 +71,26 @@
                 @include('twill::partials.footer')
             </section>
         </div>
+
+        <form style="display: none" method="POST" action="{{ route('admin.logout') }}" data-logout-form>
+            @csrf
+        </form>
+
         <script>
             window['{{ config('twill.js_namespace') }}'] = {};
             window['{{ config('twill.js_namespace') }}'].version = '{{ config('twill.version') }}';
             window['{{ config('twill.js_namespace') }}'].twillLocalization = {!! json_encode($twillLocalization) !!};
             window['{{ config('twill.js_namespace') }}'].STORE = {};
             window['{{ config('twill.js_namespace') }}'].STORE.form = {};
+            window['{{ config('twill.js_namespace') }}'].STORE.config = {
+                publishDateDisplayFormat: '{{config('twill.publish_date_display_format')}}',
+            };
             window['{{ config('twill.js_namespace') }}'].STORE.medias = {};
             window['{{ config('twill.js_namespace') }}'].STORE.medias.types = [];
+            window['{{ config('twill.js_namespace') }}'].STORE.medias.config = {
+                useWysiwyg: {{ config('twill.media_library.media_caption_use_wysiwyg') ? 'true' : 'false' }},
+                wysiwygOptions: {!! json_encode(config('twill.media_library.media_caption_wysiwyg_options')) !!}
+            };
             window['{{ config('twill.js_namespace') }}'].STORE.languages = {!! json_encode(getLanguagesForVueStore($form_fields ?? [], $translate ?? false)) !!};
 
             @if (config('twill.enabled.media-library'))

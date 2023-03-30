@@ -4,6 +4,7 @@
       <slot></slot>
       <a17-modal-validation
         :mode="mode"
+        ref="validation"
         :is-disable="createMode"
         :active-publish-state="withPublicationToggle"
         :is-publish="published"
@@ -21,9 +22,11 @@
   import { NOTIFICATION, FORM, DATATABLE, LANGUAGE } from '@/store/mutations'
   import ACTIONS from '@/store/actions'
   import a17ModalValidationButtons from './ModalValidationButtons.vue'
+  import retrySubmitMixin from '@/mixins/retrySubmit'
 
   export default {
     name: 'A17ModalCreate',
+    mixins: [retrySubmitMixin],
     props: {
       formCreate: {
         type: String,
@@ -66,11 +69,19 @@
       ...mapState({
         action: state => state.modalEdition.action,
         mode: state => state.modalEdition.mode,
-        columns: state => state.datatable.columns
+        columns: state => state.datatable.columns,
+        language: state => state.language.active
       }),
       ...mapGetters([
         'fieldValueByName'
       ])
+    },
+    watch: {
+      language () {
+        if (this.$refs.validation) {
+          this.$refs.validation.addListeners()
+        }
+      }
     },
     methods: {
       open: function () {
@@ -80,7 +91,15 @@
 
         this.$refs.modal.open()
       },
-      submit: function (event) {
+      submit: function () {
+        if (this.isSubmitPrevented) {
+          this.shouldRetrySubmitWhenAllowed = true
+          return
+        }
+
+        if (this._isSubmitting) return
+        this._isSubmitting = true
+
         const self = this
 
         this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
@@ -104,6 +123,10 @@
             self.$store.commit(NOTIFICATION.SET_NOTIF, {
               message: 'Your submission could not be validated, please fix and retry',
               variant: 'error'
+            })
+          }).finally(() => {
+            self.$nextTick(function () {
+              self._isSubmitting = false
             })
           })
         })

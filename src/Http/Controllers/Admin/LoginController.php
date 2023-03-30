@@ -114,9 +114,9 @@ class LoginController extends Controller
     {
         $this->guard()->logout();
 
-        $request->session()->flush();
+        $request->session()->invalidate();
 
-        $request->session()->regenerate();
+        $request->session()->regenerateToken();
 
         return $this->redirector->to(route('admin.login'));
     }
@@ -275,5 +275,16 @@ class LoginController extends Controller
         } else {
             return $this->sendFailedLoginResponse($request);
         }
+    }
+
+    /**
+     * @param Request $request
+     * @return array
+     *
+     * This method checks to make sure the user is published.
+     */
+    protected function credentials($request)
+    {
+        return array_merge($request->only($this->username(), 'password'), ['published' => 1]);
     }
 }

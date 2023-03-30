@@ -18,11 +18,11 @@ Twill follows [Semantic Versioning](https://semver.org/). Major releases are rel
 When referencing Twill from your application, you should always use a version constraint such as `^2.0`, since major releases of Twill do include breaking changes.
 
 # Which branch?
-All bug fixes should be sent to the latest stable branch (`2.x`). Bug fixes should never be sent to the `master` branch unless they fix features that exist only in the upcoming release.
+All bug fixes should be sent to the latest stable branch (`2.x`). Bug fixes should never be sent to the `main` branch unless they fix features that exist only in the upcoming release.
 
 Minor features that are fully backwards compatible with the current Twill release may be sent to the latest stable branch (`2.x`).
 
-Major new features should always be sent to the `master` branch, which contains the upcoming Twill release.
+Major new features should always be sent to the `main` branch, which contains the upcoming Twill release.
 
 Please send coherent history — make sure each individual commit in your pull request is meaningful. If you had to make a lot of intermediate commits while developing, please [squash them](http://www.git-scm.com/book/en/v2/Git-Tools-Rewriting-History#Changing-Multiple-Commit-Messages) before submitting.
 

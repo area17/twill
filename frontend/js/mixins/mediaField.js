@@ -20,6 +20,10 @@ export default {
       type: Number,
       default: 0
     },
+    note: {
+      type: String,
+      default: ''
+    },
     // current crop context put in store. eg: slideshow, cover...
     cropContext: {
       type: String,

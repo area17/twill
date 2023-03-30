@@ -12,6 +12,8 @@ class IconsController extends Controller
 {
     public function __construct(Filesystem $files, BlockMaker $blockMaker)
     {
+        parent::__construct();
+
         $this->files = $files;
         $this->blockMaker = $blockMaker;
     }

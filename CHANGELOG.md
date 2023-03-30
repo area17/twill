@@ -2,6 +2,492 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.12.4 (2023-01-04)
+
+- Revert listAll change as it may conflict with method overrides.
+
+## 2.12.3 (2023-01-03)
+
+- Restore laravel 5.8 support.
+
+## 2.12.2 (2022-12-20)
+
+### Bugfixes
+
+- Fix long dynamic titles not showing inside fieldsets [`#2014`](https://github.com/area17/twill/pull/2014)
+- Fix issue where tags could not save [`#1993`](https://github.com/area17/twill/pull/1993)
+
+## 2.12.1 (2022-12-06)
+
+### Bugfixes
+
+- Fix long dynamic titles overflow on Block items [`#1975`](https://github.com/area17/twill/pull/1975)
+
+## 2.12.0 (2022-11-30)
+
+### Breaking change
+
+- Route::singleton is now Route::twillSingleton [`#1961`](https://github.com/area17/twill/issues/1961)
+
+### Features
+
+- Checkboxes can now have notes [`#1354`](https://github.com/area17/twill/issues/1354)
+- Blocks in the editor can now be cloned [`#1748`](https://github.com/area17/twill/pull/1748)
+
+### Bugfixes
+
+- Various bug fixes
+
+## 2.11.0 (2022-11-09)
+
+### Features
+
+- When displaying a field with html after the block name, this is now stripped and cleaned [`#1843`](https://github.com/area17/twill/pull/1843)
+
+### Other
+
+- Added support for laravel/ui 4.x and fixes an issue with Laravel 9 aws adapter [`#1900`](https://github.com/area17/twill/pull/1900)
+
+## 2.10.0 (2022-10-18)
+
+### Features
+
+- Add command to allow developers to flush only the twill-manifest.json from cache [`#1859`](https://github.com/area17/twill/pull/1859)
+- Adds a ArrayContains support to connected fields [`#1848`](https://github.com/area17/twill/pull/1848)
+- The preview function now allows more interaction [`#1561`](https://github.com/area17/twill/pull/1561)
+- Adds disabled support to translated media and slideshow [`#1845`](https://github.com/area17/twill/pull/1845)
+
+### Bugfixes
+
+- Avoids additional queries when getting blocks [`#1790`](https://github.com/area17/twill/pull/1790)
+- Fixed an issue where translation fallback would not work for blocks [`#1754`](https://github.com/area17/twill/pull/1754)
+
+## 2.9.1 (2022-09-30)
+
+### Fixes
+
+- Fixes an issue that would allow unpublished users to continue to login [`#1833`](https://github.com/area17/twill/pull/1833)
+- Fixes an issue that where custom icons were not picked up by the build process [`#1825`](https://github.com/area17/twill/pull/1825)
+
+## 2.9.0 (2022-09-13)
+
+### Features
+
+- Submit options are now configurable using the getSubmitOptions [`#1719`](https://github.com/area17/twill/pull/1719)
+- Using enableDraftRevisions you can now have drafts on top of published versions [`#1725`](https://github.com/area17/twill/pull/1725)
+
+### Fixes
+
+- When having many blocks, the list is now srollable [`#1464`](https://github.com/area17/twill/pull/1464)
+- Improved support for custom icons [`#1732`](https://github.com/area17/twill/pull/1732)
+- Fixes a js error that occurred when cloning repeaters [`#1734`](https://github.com/area17/twill/pull/1734)
+- Resolved an issue where slug models could not be found if directories were nested [`#1738`](https://github.com/area17/twill/pull/1738)
+- Fixed slugs in nested modules to not rely on random sort anymore [`#1743`](https://github.com/area17/twill/pull/1743)
+- Fixed an issue where the activities dashboard could show less entries [`#1764`](https://github.com/area17/twill/pull/1764)
+- Fixed an issue that could cause undefined errors when using subdomain routing [`#1779`](https://github.com/area17/twill/pull/1779)
+- Optimized a query in HasRelated [`#1789`](https://github.com/area17/twill/pull/1789)
+
+### Docs
+
+Various small documentation updates.
+
+## 2.8.8 (2022-06-27)
+
+###  Features
+
+- `->pivot` is now available when using getRelated (to get the position) [`#1687`](https://github.com/area17/twill/pull/1687)
+- When updating a model via the repository, the updated model is now returned [`#1706`](https://github.com/area17/twill/pull/1706)
+
+### Fixes
+
+- Fixed no-cache header  [`#1695`](https://github.com/area17/twill/pull/1695)
+- Fixed divider icon not showing [`#1699`](https://github.com/area17/twill/pull/1699)
+- Fixed Path separators for windows in capsules [`#1702`](https://github.com/area17/twill/pull/1702)
+
+## 2.8.7 (2022-06-10)
+
+### Features
+
+- Added `divider` (<hr>) support to the Quill toolbar [`#1679`](https://github.com/area17/twill/pull/1679)
+
+### Fixes
+
+- Fixed issue that would cause Twill ui to crash when using Quill [`#1680`](https://github.com/area17/twill/pull/1680)
+- Fixed some backwards compatability issues with older Laravel versions [`#1684`](https://github.com/area17/twill/pull/1684)
+- Fixed issue with browsers in the block editor [`#1689`](https://github.com/area17/twill/pull/1689)
+
+
+## 2.8.6 (2022-06-03)
+
+### Fixes
+
+- Fixed an issue that would not cleanup removed browser items in blocks [`#1675`](https://github.com/area17/twill/pull/1675)
+- Fixed an issue that would not display fields translatable in the edit modal window [`#1676`](https://github.com/area17/twill/pull/1676)
+
+## 2.8.5 (2022-05-27)
+
+### Fixes
+
+- Reverts change in build folder location
+
+## 2.8.4 (2022-05-25)
+
+### Fixes
+
+- Fixed console error when editing block with media in the block editor [`#1659`](https://github.com/area17/twill/pull/1659)
+
+## 2.8.3 (2022-05-19)
+
+### Fixes
+
+- Media fields can now be validated in blocks [`#1648`](https://github.com/area17/twill/pull/1648)
+- Internal links in quill are no longer set to target \_blank [`#1649`](https://github.com/area17/twill/pull/1649)
+- Improved restoring support for nested modules [`#1590`](https://github.com/area17/twill/pull/1590)
+
+## 2.8.2 (2022-05-06)
+
+### Fixes
+
+- Make site link translatable [`#1617`](https://github.com/area17/twill/pull/1617)
+- Fix SQL error on twill:refresh-crops command [`#1618`](https://github.com/area17/twill/pull/1618)
+- Fix locale if intl extension is missing. [`#1620`](https://github.com/area17/twill/pull/1620)
+- Fix usage of quotes in placeholder [`#1621`](https://github.com/area17/twill/pull/1621)
+- Fix visual issue with long notes on media [`#1612`](https://github.com/area17/twill/pull/1612)
+- Change search to allow less then 3 characters [`#1613`](https://github.com/area17/twill/pull/1613)
+- Add polyfill for doesntContain to ensure Laravel 7 compatability [`#1635`](https://github.com/area17/twill/pull/1635)
+
+## 2.8.1 (2022-04-26)
+
+### Fixes
+
+- Fixes an error when using translated validation rules in Laravel 9 [`#1611`](https://github.com/area17/twill/pull/1611)
+- Avoids a 500 error if glide base url is set to an empty string [`#1603`](https://github.com/area17/twill/pull/1603)
+- Fixes an issue where repeaters and blocks would not expand on create/duplicate [`#1608`](https://github.com/area17/twill/pull/1608)
+
+## 2.8.0 (2022-04-19)
+
+### Added
+
+No new features were added in the final release. Please check rc and beta tags to see a full
+list of new features and fixes.
+
+### Fixed
+
+- Improved language label display [`#1592`](https://github.com/area17/twill/pull/1592)
+- Fixed regression in translatable settings [`#1598`](https://github.com/area17/twill/pull/1598)
+- Fixed capsule database path [`#1583`](https://github.com/area17/twill/pull/1583)
+- Fixed activity log morph size [`#1565`](https://github.com/area17/twill/pull/1565)
+
+### Docs
+
+- Added repeater guide [`#1576`](https://github.com/area17/twill/pull/1576)
+
+## 2.8.0-rc.2 (2022-04-08)
+
+### Added
+
+- Added option to disable repeater sorting [`#1541`](https://github.com/area17/twill/pull/1541)
+- Added support for connectedBrowserField when using browsers [`#1400`](https://github.com/area17/twill/pull/1400)
+
+### Fixed
+
+- Changed activity log morph size to bigInt [`#1565`](https://github.com/area17/twill/pull/1565)
+- Fixed leftover array accessor on capsule object [`#1574`](https://github.com/area17/twill/pull/1574)
+- Fixed small visual issue with long labels [`#1566`](https://github.com/area17/twill/pull/1566)
+- Fixed MorphMany saving [`#1460`](https://github.com/area17/twill/pull/1460)
+
+### Docs
+
+- Small improvement to the install documentations [`#1569`](https://github.com/area17/twill/pull/1569)
+
+## 2.8.0-rc.1 (2022-04-01)
+
+### Added
+
+- Allows media fields to use wysiwyg [`#1540`](https://github.com/area17/twill/pull/1540)
+
+### Fixed
+
+- Reverted change that throws exception when crops are missing [`#1535`](https://github.com/area17/twill/pull/1535)
+- Fixed issue that would cause undefined index when using octane [`#1549`](https://github.com/area17/twill/pull/1549)
+- Fixed bug in singleton generator when using plural name [`#1551`](https://github.com/area17/twill/pull/1551)
+- Fixed regression for resources in capsules and packages [`#1552`](https://github.com/area17/twill/pull/1552)
+- Fixed Glide url without scheme [`#1545`](https://github.com/area17/twill/pull/1545)
+
+### Docs
+
+- Improved custom page documentation [`#1548`](https://github.com/area17/twill/pull/1548)
+- Improved config documentation [`#1537`](https://github.com/area17/twill/pull/1537)
+- Added documentation on how to use custom icons [`#1538`](https://github.com/area17/twill/pull/1538)
+
+## 2.8.0-beta.2 (2022-03-15)
+
+### Added
+
+- Twill composer packages [`#1446`](https://github.com/area17/twill/pull/1446)
+- Url field type [`#1514`](https://github.com/area17/twill/pull/1514)
+- Browsers are now supported by connected fields [`#1399`](https://github.com/area17/twill/pull/1399)
+
+### Fixed
+
+- Fixed regression with repeaters in updated block system [`#1518`](https://github.com/area17/twill/pull/1518)
+- Fixes visual issue when using limitHeight on a wysiwyg field [`#1509`](https://github.com/area17/twill/pull/1509)
+- When refreshing crops, block crops are now included [`#1517`](https://github.com/area17/twill/pull/1517)
+
+## 2.8.0-beta.1 (2022-03-03)
+
+### Added
+
+- Laravel 9 support [`#1243`](https://github.com/area17/twill/pull/1243)
+- Added Twill block classes to support block render data, validation and more [`#1421`](https://github.com/area17/twill/pull/1421)
+- Repeaters and blocks are now updated instead of recreated [`#1431`](https://github.com/area17/twill/pull/1431)
+- Improved translatable fields validations [`1411`](https://github.com/area17/twill/pull/1411)
+
+
+### Fixed
+
+- Update Refresh Crops command to take in consideration the MorphMap [`#1485`](https://github.com/area17/twill/pull/1485)
+- Get image size from uploaded file instead of stored file [`#1412`](https://github.com/area17/twill/pull/1412)
+- Fix unauthenticated user 500 error when using custom error handler [`#1449`](https://github.com/area17/twill/pull/1449)
+- Fix exception for missing repository in related browser [`#1405`](https://github.com/area17/twill/pull/1405)
+- Do not show changed dialog when content is identical [`#1359`](https://github.com/area17/twill/pull/1359)
+- Improved performance when many fields/languages are used [`#1350`](https://github.com/area17/twill/pull/1350)
+
+### Documentation
+
+- Added more guides [`#1473`](https://github.com/area17/twill/pull/1473)
+
+## 2.7.0 (2022-02-25)
+
+### Added
+
+- When in debug mode and a crop is missing an exception will be shown [`#1351`](https://github.com/area17/twill/issues/1351)
+- When admin account creation failed, and error is now shown [`#1114`](https://github.com/area17/twill/issues/1114)
+- Add an option to set `$controlLanguagesPublication` in the listing layout that can be used to disable language
+publication controll in the create modal [`#1468`](https://github.com/area17/twill/pull/1468)
+- You can now control the revision label from the revisionsArray method on the model [`#1467`](https://github.com/area17/twill/pull/1467)
+- Validations can now be created for repeaters [`#1156`](https://github.com/area17/twill/issues/1156)
+- Max amount of repeaters can now be set from the field rather than the repeater itself [`#1433`](https://github.com/area17/twill/issues/1433)
+- Added an option to automatically seed singletons [`#1456`](https://github.com/area17/twill/pull/1456)
+
+### Fixed
+
+- Fixed regression where slugs were not checked if unique [`#1381`](https://github.com/area17/twill/discussions/1381)
+- Repeater Collapse All only works once [`#1330`](https://github.com/area17/twill/issues/1330)
+- Ensure correct button messages when skipping modal on new content creation [`#1324`](https://github.com/area17/twill/issues/1324)
+- Allow media to be deleted when used model is removed [`#1160`](https://github.com/area17/twill/issues/1160)
+- Ensure default values are set for radios in the vuex store [`#1100`](https://github.com/area17/twill/issues/1100)
+- Ensure LQIP data is always available [`#1352`](https://github.com/area17/twill/issues/1352)
+- Add typecasting to select dropdown for settings support [`#1203`](https://github.com/area17/twill/issues/1203)
+- Move development specific autoload components [`#1391`](https://github.com/area17/twill/pull/1391)
+- Repeaters no longer expand when adding a new item [`#1461`](https://github.com/area17/twill/pull/1461)
+- Notes are now rendered in media fields [`#1443`](https://github.com/area17/twill/pull/1443)
+- When updated_at is empty, it now falls back to the created_at timestamp [`#766`](https://github.com/area17/twill/issues/766)
+- When cloning a block, the new block is dereferenced from the original [`#1410`](https://github.com/area17/twill/pull/1410)
+- Improved content scheduling [`#1307`](https://github.com/area17/twill/issues/1307)
+- Fixed 500 error if google analytics data is empty [`#1470`](https://github.com/area17/twill/pull/1470)
+- Fixed not all Translations were loaded within editInModal [`#1469`](https://github.com/area17/twill/pull/1469)
+- Improved missing "disabled" implementations for various fields [`#836`](https://github.com/area17/twill/issues/836)
+
+### Documentation
+
+- Added documentation for permalinks [`#903`](https://github.com/area17/twill/issues/903) [`#1092`](https://github.com/area17/twill/pull/1092)
+- Added documentation for custom media metadata [`#1031`](https://github.com/area17/twill/issues/1031)
+- Added documentation for singleton modules [`#1231`](https://github.com/area17/twill/issues/1231)
+- Added guide on how to customize the create modal [`#1436`](https://github.com/area17/twill/pull/1438)
+- Improved documentation for field grouping [`#1214`](https://github.com/area17/twill/issues/1214)
+- Added documentation for side fieldsets [`#1420`](https://github.com/area17/twill/pull/1420)
+- Added documentation for the tags field [`#1375`](https://github.com/area17/twill/pull/1375)
+
+### Translations
+
+- Added Arabic translations [`#1323`](https://github.com/area17/twill/pull/1323)
+- Added Bosnian translations [`#1374`](https://github.com/area17/twill/pull/1374)
+- Updated czech translations [`#1466`](https://github.com/area17/twill/pull/1466)
+
+## 2.6.0 (2021-12-21)
+
+### Added
+
+- Artisan command `twill:make:singleton` to generate single-record modules [`#1178`](https://github.com/area17/twill/pull/1178)
+- Option `--hasNesting` to generate self-nested modules [`#1140`](https://github.com/area17/twill/pull/1140) [`#1222`](https://github.com/area17/twill/pull/1222)
+- Artisan command `twill:refresh-crops` to generate missing crops [`#1289`](https://github.com/area17/twill/pull/1289) [`8b1e4f6d`](https://github.com/area17/twill/commit/8b1e4f6d)
+- TwicPics image service [`#1217`](https://github.com/area17/twill/pull/1217) [`ce15c4a5`](https://github.com/area17/twill/commit/ce15c4a5)
+- Turkish language support [`#1134`](https://github.com/area17/twill/pull/1134)
+- Support for translated permalinks in the title editor [`#1092`](https://github.com/area17/twill/pull/1092)
+- Support for capsule service providers [`#1212`](https://github.com/area17/twill/pull/1212)
+- Auto detect latitude-longitude value in location field [`#1275`](https://github.com/area17/twill/pull/1275) [`#1170`](https://github.com/area17/twill/pull/1170)
+- Adds the ability to display an indexColumn selected from a relatedBrowser [`#1302`](https://github.com/area17/twill/pull/1302)
+
+### Fixed
+
+- 🚨 Fix CSRF vulnerability in logout method [`#1240`](https://github.com/area17/twill/pull/1240) [`29041f07`](https://github.com/area17/twill/commit/29041f07)
+- Support attribute casting on model and translations with JSON field groups [`#1151`](https://github.com/area17/twill/pull/1151)
+- Support dynamic repeater titles with JSON repeaters [`#1171`](https://github.com/area17/twill/pull/1171)
+- Fix admin HTTP exception views detection [`#1213`](https://github.com/area17/twill/pull/1213)
+- Prevent conflicts with built-in Vue component names [`#1164`](https://github.com/area17/twill/pull/1164)
+- Add fallback to capsule model in permalink base [`#1216`](https://github.com/area17/twill/pull/1216)
+- Add `doctrine/dbal` 3.0 support [`#1226`](https://github.com/area17/twill/pull/1226)
+- Ensure capsule autoloading when config is cached [`#1242`](https://github.com/area17/twill/pull/1242)
+- Fix edit link feature regression in Quill WYSIWYG [`#1270`](https://github.com/area17/twill/pull/1270)
+- Remove references to deprecated Symfony class [`#1269`](https://github.com/area17/twill/pull/1269)
+- Prevent undefined route errors in IconsController [`#1268`](https://github.com/area17/twill/pull/1268)
+- Fix typo in `twill:capsule:install` command [`#1290`](https://github.com/area17/twill/pull/1290)
+- Initialize undefined crops in cropper UI using first available ratio [`#1258`](https://github.com/area17/twill/pull/1258)
+- Fix `byKey()` setting query when passing `section` argument [`#1303`](https://github.com/area17/twill/pull/1303)
+- Remove duplicate test stub class [`#1311`](https://github.com/area17/twill/pull/1311)
+- Fix destroy action on single nested items [`#1304`](https://github.com/area17/twill/pull/1304)
+- Prevent multiple AJAX requests in Block Editor previews [`#1282`](https://github.com/area17/twill/pull/1282)
+- Fix singleton routing for primary and secondary navigation support [`#1325`](https://github.com/area17/twill/pull/1325)
+- Use case insensitive like operator in filterHandleTranslations for PostgresSQL support [`#1322`](https://github.com/area17/twill/pull/1322)
+
+### Improved
+
+- Update routes mapping order to allow overrides [`#1133`](https://github.com/area17/twill/pull/1133)
+- Handle many-to-many relations in index columns [`#1174`](https://github.com/area17/twill/pull/1174)
+- Add `capsule_repository_prefix` configuration [`#1209`](https://github.com/area17/twill/pull/1209)
+- Support custom port in `dev_mode_url` configuration [`#1163`](https://github.com/area17/twill/pull/1163)
+- Support additional table actions in module listing [`#1202`](https://github.com/area17/twill/pull/1202)
+- Show red input count only if above 90% capacity [`#1237`](https://github.com/area17/twill/pull/1237)
+- Collapse repeater blocks on page load [`#1296`](https://github.com/area17/twill/pull/1296)
+- Update nested module count pluralisation [`#1251`](https://github.com/area17/twill/pull/1251)
+- Support `titleKey` parameter in `relatedBrowsers` configuration [`#1301`](https://github.com/area17/twill/pull/1301)
+- Update `HasSlug` to use Eloquent instead of DB facade [`#1309`](https://github.com/area17/twill/pull/1309)
+- Update german translations [`#1235`](https://github.com/area17/twill/pull/1235)
+- Update italian translations [`#1312`](https://github.com/area17/twill/pull/1312)
+- Update docblock annotations [`#1167`](https://github.com/area17/twill/pull/1167/files)
+- Update documentation [`#1165`](https://github.com/area17/twill/pull/1165) [`#1244`](https://github.com/area17/twill/pull/1244) [`#1236`](https://github.com/area17/twill/pull/1236)
+- Add pagination and a few more quality of life updates to the documentation [`#1131`](https://github.com/area17/twill/pull/1131)
+
+### Chores
+
+- Update npm dependencies in documentation [`377e5e0`](https://github.com/area17/twill/commit/377e5e0b27916861caa448ef899ea0e3fbeff648)
+- Bump axios from 0.21.1 to 0.21.2 [`#1327`](https://github.com/area17/twill/pull/1327)
+
+
+## 2.5.3 (2021-11-26)
+
+### Fixed
+
+- 🚨 Fix CSRF vulnerability in logout method [`6ced7fd8`](https://github.com/area17/twill/commit/6ced7fd8) [`7477f4a3`](https://github.com/area17/twill/commit/7477f4a3) [`01150269`](https://github.com/area17/twill/commit/01150269) [`5cded9fc`](https://github.com/area17/twill/commit/5cded9fc) [`ac770b87`](https://github.com/area17/twill/commit/ac770b87)
+
+
+## 2.5.2 (2021-09-16)
+
+### Fixed
+
+- 🚨 Fix XSS security vulnerability [#1157](https://github.com/area17/twill/pull/1157) [`2dd77b15`](https://github.com/area17/twill/commit/2dd77b15)
+- Hydrate related browsers on preview [#1130](https://github.com/area17/twill/pull/1130)
+- Use configured namespace when generating model class in repository [`80e1b590`](https://github.com/area17/twill/commit/80e1b590)
+- Translation key typo on the dashboard [`c630d0d1`](https://github.com/area17/twill/commit/c630d0d1)
+
+### Improved
+
+- Call `view:clear` when updating assets with `twill:update` [`c5b96010`](https://github.com/area17/twill/commit/c5b96010)
+- Add security policy file [`55b2dfd63`](https://github.com/area17/twill/commit/55b2dfd63)
+
+
+## 2.5.1 (2021-09-02)
+
+### Fixed
+
+- Twill custom error views and ability to extend its exceptions handler [`312b44`](https://github.com/area17/twill/commit/312b446cc6f4826bf6f9d703e02fb6b96bbb2a9f)[`c16d2e`](https://github.com/area17/twill/commit/c16d2e9374dbe5c225a97910e5b228a549b887de)
+
+
+## 2.5.0 (2021-09-01)
+
+### Added
+
+- **Block editor updates**
+  - Ability to use multiple `block_editor` fields [`#918`](https://github.com/area17/twill/pull/918)
+  - Dynamic block/repeater titles [`#1096`](https://github.com/area17/twill/pull/1096)
+  - Update content editor sidebar layout and add new icons [`#1072`](https://github.com/area17/twill/pull/1072)
+  - Update default button variant for inner repeaters [`#1073`](https://github.com/area17/twill/pull/1073)
+- **Form fields updates**
+  - Border option for 'radios' and 'checkbox'/'checkboxes' field [`a0376466`](https://github.com/area17/twill/commit/a0376466) [`04261d61`](https://github.com/area17/twill/commit/04261d61) [`1eda5f0b`](https://github.com/area17/twill/commit/1eda5f0b) [`93aeb570`](https://github.com/area17/twill/commit/93aeb570)
+  - Columns option for 'radios', 'select', 'checkboxes' and 'multi_select' fields [`9fedcf47`](https://github.com/area17/twill/commit/9fedcf47) [`ee1f6681`](https://github.com/area17/twill/commit/ee1f6681) [`cad812c2`](https://github.com/area17/twill/commit/cad812c2)
+  - Time picker form field [`42d1880a`](https://github.com/area17/twill/commit/42d1880adccdc0092188f099a4ec3b1a6d954745) [`969e800c`](https://github.com/area17/twill/commit/969e800c)
+  - Option to make multi select searchable [`bbead399`](https://github.com/area17/twill/commit/bbead399d28a6ed295694e00a317d154fff62799)
+  - Automatic input direction for RTL languages [`e8a60d0f`](https://github.com/area17/twill/commit/e8a60d0f) [`318834c8`](https://github.com/area17/twill/commit/318834c8) [`2b183493`](https://github.com/area17/twill/commit/2b183493)
+  - Click-to-place on the Location field's map [`e48245aa`](https://github.com/area17/twill/commit/e48245aa)
+  - Support inverse HasOne relationship for BelongsTo browsers [`d1b67fa7`](https://github.com/area17/twill/commit/d1b67fa7) [`f1e6efc1`](https://github.com/area17/twill/commit/f1e6efc1) [`4f791c66`](https://github.com/area17/twill/commit/4f791c66)
+- **Capsules updates**
+  - Autoloading system for Capsules [`cec70d03`](https://github.com/area17/twill/commit/cec70d0390bbe6c383983042cd7bf0268e15fc50)
+  - Translations files for Capsules [`8f06ea53`](https://github.com/area17/twill/commit/8f06ea53928c3f83735b2068efbc13e91ecf5e76)
+- **General updates**
+  - SVG support with Glide [`#985`](https://github.com/area17/twill/pull/985)
+  - Configurable admin routes prefix [`5e5b5a81`](https://github.com/area17/twill/commit/5e5b5a81)
+  - Allow configuring password broker and enable throttle [`b421561a`](https://github.com/area17/twill/commit/b421561a)
+  - Ukrainian language [`c2c08603`](https://github.com/area17/twill/commit/c2c08603)
+  - Watch for custom blocks & components in development [`#1107`](https://github.com/area17/twill/pull/1107)
+  - Allow setting `dev_assets_path` from `.env` [`814ade6b`](https://github.com/area17/twill/commit/814ade6b063d9e8ccc4e38d5f0e3ac907922325c)
+
+
+### Fixed
+- Prevent submitting a form before saving an input into the store [`#1030`](https://github.com/area17/twill/pull/1030)
+- Prevent multiple submit events in add/create modals [`3dfb0c8f`](https://github.com/area17/twill/commit/3dfb0c8fe0e410e81d922facc1b2465aeb784c44) [`cb38ba53`](https://github.com/area17/twill/commit/cb38ba53f71bed61ec09b955b9d738306163afde) [`40248552`](https://github.com/area17/twill/commit/402485521520682bf9cfe1e5dcee0974ca8fe540)
+- Fix incorrect position of link edit options in wysiwyg editor when height limit is set [`f8276462`](https://github.com/area17/twill/commit/f8276462)
+- Ensure pasting content in quill do not make editor scroll to the top [`07f7aa00`](https://github.com/area17/twill/commit/07f7aa00)[`51302a15`](https://github.com/area17/twill/commit/51302a15)
+- Safari form submit issue in Filter component [`29a1f227`](https://github.com/area17/twill/commit/29a1f227) [`91390ac2`](https://github.com/area17/twill/commit/91390ac2)
+- Support revisions preview and restore with belongsTo browsers [`#984`](https://github.com/area17/twill/pull/984) [`#1085`](https://github.com/area17/twill/pull/1085)
+- Toggle media library unused checkbox on clear only if active [`d73ff3eb`](https://github.com/area17/twill/commit/d73ff3ebfe77657f505d158e9431e392f29886b1)
+- Order files by fileable id [`d7df01bf`](https://github.com/area17/twill/commit/d7df01bfcbf1cfe646b0259de020a3aa1f5de600)
+- Register capsules routes before Twill internal routes [`c1acb981`](https://github.com/area17/twill/commit/c1acb981b3ef2a9e12d835db99dfd1a9b9429abe)
+- Issues when extending Twill's exceptions handler [`itca7a650e`](https://github.com/area17/twill/commit/itca7a650e)
+- Support multi-country locales on Translatable [`c5b341d4`](https://github.com/area17/twill/commit/c5b341d4) [`5d9c9953`](https://github.com/area17/twill/commit/5d9c9953)
+- Fix Exception Handler broken for Laravel 8 [`569ce2e6`](https://github.com/area17/twill/commit/569ce2e6) [`ce58aae5`](https://github.com/area17/twill/commit/ce58aae5) [`76890ffa`](https://github.com/area17/twill/commit/76890ffa)
+
+
+### Improved
+
+- Update browser documentation [`b7e288db`](https://github.com/area17/twill/commit/b7e288db743d7d8756f43422b86dde0a6f274376) [`bd9f7aeb`](https://github.com/area17/twill/commit/bd9f7aebdfa809ccc630faa117db7be021d50a1c) [`1f9127b8`](https://github.com/area17/twill/commit/1f9127b8fcc5ea6fde4268184c87d22ca289f1e6) [`71a505f9`](https://github.com/area17/twill/commit/71a505f96957a8134257c7cbe81db28757e2f425) [`4e04639d`](https://github.com/area17/twill/commit/4e04639dbab64cba7eb4ce81914e9433286c3d7f)
+- Update repeater field documentation [`f32ddc1a`](https://github.com/area17/twill/commit/f32ddc1a2d98cf9ec5ae83e937550bc8a2b91771) [`8f58d422`](https://github.com/area17/twill/commit/8f58d422ab80a94aeb4ce96e9134c9c63701a083) [`03dcfbd8`](https://github.com/area17/twill/commit/03dcfbd88818e7ce56e1b5985c305e5852efc8fd) [`22dfaa49`](https://github.com/area17/twill/commit/22dfaa49bd47cb5c54c0747dbacd2ed09350b2ee) [`f252727d`](https://github.com/area17/twill/commit/f252727d6bc213642ef1d06050ecc31ccabe9132)
+- Add HandleRelatedBrowsers to ModuleRepository [`4c3db071`](https://github.com/area17/twill/commit/4c3db071a4655cfb0cf5d4f5911521a3ccc255c8)
+- Update french lang file [`9517ff44`](https://github.com/area17/twill/commit/9517ff4443fa512a36b3b7e9ac4a34b0e6bf4013)
+- Display publishable languages labels using the currently set locale [`e4dcfe3d`](https://github.com/area17/twill/commit/e4dcfe3d8dba5eb5f26de473e43ee7c421179a91)
+- Move icon svg files to blade files [`cf73e2fe`](https://github.com/area17/twill/commit/cf73e2fe995210285753bc1632a0d84341591b6d)
+- Update model stub default crops [`9ab7977c`](https://github.com/area17/twill/commit/9ab7977c9b1ca76e46b563955d048885544c6623) [`4ccca727`](https://github.com/area17/twill/commit/4ccca727d7ee766d627b3efe2ef0a96b32d9d618)
+- Add an axios global error handler to warn on session expired [`c626a143`](https://github.com/area17/twill/commit/c626a143) [`ed6164dc`](https://github.com/area17/twill/commit/ed6164dc) [`3c78c933`](https://github.com/area17/twill/commit/3c78c933)
+- Prevent console errors when using custom admin pages [`e1f606d6`](https://github.com/area17/twill/commit/e1f606d6)
+- Missing lang keys [`e408fa77`](https://github.com/area17/twill/commit/e408fa77) [`14f7212c`](https://github.com/area17/twill/commit/14f7212c)
+- Table aliases in Eloquent scopes [`1d98f3b8`](https://github.com/area17/twill/commit/1d98f3b8) [`c37d5654`](https://github.com/area17/twill/commit/c37d5654)
+- Remove permalink field in modal if module has no slugs [`cfaabe47`](https://github.com/area17/twill/commit/cfaabe47) [`c0649443`](https://github.com/area17/twill/commit/c0649443) [`7bcd3d85`](https://github.com/area17/twill/commit/7bcd3d85)
+- Tests suite for browsers [`7c0bad69`](https://github.com/area17/twill/commit/7c0bad69) [`d529cb48`](https://github.com/area17/twill/commit/d529cb48) [`2a862e0c`](https://github.com/area17/twill/commit/2a862e0c) [`01fb29e0`](https://github.com/area17/twill/commit/01fb29e0) [`f15034fa`](https://github.com/area17/twill/commit/f15034fa) [`99dde9c4`](https://github.com/area17/twill/commit/99dde9c4) [`3d45a04b`](https://github.com/area17/twill/commit/3d45a04b) [`2b6cefcd`](https://github.com/area17/twill/commit/2b6cefcd) [`d7e83e60`](https://github.com/area17/twill/commit/d7e83e60) [`54517646`](https://github.com/area17/twill/commit/54517646) [`8aa2ca60`](https://github.com/area17/twill/commit/8aa2ca60) [`9c408428`](https://github.com/area17/twill/commit/9c408428) [`deeaf4e3`](https://github.com/area17/twill/commit/deeaf4e3) [`9ee6a91f`](https://github.com/area17/twill/commit/9ee6a91f)
+- Complete German translations [`7c6c94e2`](https://github.com/area17/twill/commit/7c6c94e2) [`66126b45`](https://github.com/area17/twill/commit/66126b45) [`279e0b5e`](https://github.com/area17/twill/commit/279e0b5e) [`8e982618`](https://github.com/area17/twill/commit/8e982618) [`8de83a16`](https://github.com/area17/twill/commit/8de83a16) [`a26ac6d4`](https://github.com/area17/twill/commit/a26ac6d4) [`bd69cac5`](https://github.com/area17/twill/commit/bd69cac5) [`93e347d9`](https://github.com/area17/twill/commit/93e347d9) [`65bb2d3c`](https://github.com/area17/twill/commit/65bb2d3c) [`d8b7fc93`](https://github.com/area17/twill/commit/d8b7fc93) [`1187482a`](https://github.com/area17/twill/commit/1187482a)
+- Make bulk-publish notice translatable [`585c1e3d`](https://github.com/area17/twill/commit/585c1e3d)
+
+### Chores
+
+- Add and improve existing DocBlocks [`17390bb6`](https://github.com/area17/twill/commit/17390bb6f5c5f14f92d97ec5a7881f5e5dq382a45) [`55027c07`](https://github.com/area17/twill/commit/55027c07473168bc7c70e9bcad019521fd148d62) [`579cc87e`](https://github.com/area17/twill/commit/579cc87edc6ac7c9c259df9f1f66c5a86de9f897) [`978ba592`](https://github.com/area17/twill/commit/978ba592bfb9e6a738cce921e320f3c4bcce3fc8) [`5770a424`](https://github.com/area17/twill/commit/5770a424d8715ea5772e93a609349b9461b9bd0a) [`55c29db8`](https://github.com/area17/twill/commit/55c29db85a3a29f6cb05e39ac4dd845fe9e9fe0b) [`aa072490`](https://github.com/area17/twill/commit/aa0724903c88157326c5630e7597c45653deddbe) [`fb0ef006`](https://github.com/area17/twill/commit/fb0ef006155941a1ed8921d5d03b4f1da5232afe) [`f12bc787`](https://github.com/area17/twill/commit/f12bc787bb794aba6ad0946c3bc723f8b5f3c5ba) [`7f24d980`](https://github.com/area17/twill/commit/7f24d980e4b30c9e01bdb60f9315daf1e655d8b3) [`e7409b8d`](https://github.com/area17/twill/commit/e7409b8dd62194a224bcb281708011eb0e05feb6) [`aa80d1ad`](https://github.com/area17/twill/commit/aa80d1ad272de0560308b28f83cbabeda00f1062) [`2e2d5342`](https://github.com/area17/twill/commit/2e2d534250cb72a3819e636b5160670c55b17bd1) [`e2b9f027`](https://github.com/area17/twill/commit/e2b9f02711fc097ec74bcf8b33c87829c5f21625) [`a2a43657`](https://github.com/area17/twill/commit/a2a43657d81b42b0821946ef6b8e027c3564fdd5) [`4151d123`](https://github.com/area17/twill/commit/4151d123c9fc42ac66f185b224debf4263bcdfa0) [`3adddbed`](https://github.com/area17/twill/commit/3adddbedf35cae8f11ba69275d08ba5d1c9d4ead) [`36a695ce`](https://github.com/area17/twill/commit/36a695ce3af35fe486be0b03b5007d2a2f0b7520) [`3bafed88`](https://github.com/area17/twill/commit/3bafed88527324b49b7dac92f9331204a9fc54a7) [`28c6e23e`](https://github.com/area17/twill/commit/28c6e23e51b4c0aaa1451d63e0145e379d551a8d) [`371fb3bd`](https://github.com/area17/twill/commit/371fb3bd11f2c96d8008e7638ef845e029a9957e) [`2f1767ed`](https://github.com/area17/twill/commit/2f1767ed87a1ec2e54b617126d307cad2760b2e0) [`e8609825`](https://github.com/area17/twill/commit/e86098256e2174d71553d07b2fb24f87b3d03058) [`1664edb8`](https://github.com/area17/twill/commit/1664edb8787a1f1de25fcb656d20808e03e468ae)
+- Fix npm dependencies security vulnerabilities [`39fb3471`](https://github.com/area17/twill/commit/39fb34712fb34624271b12dd79da5793a5968a12) [`ef9dd22a`](https://github.com/area17/twill/commit/ef9dd22a893b7065afd79590587a2af2a4d66a5e) [`304e16b1`](https://github.com/area17/twill/commit/304e16b1b702b99bbf57422cdf825e0f97089963) [`8ea82edd`](https://github.com/area17/twill/commit/8ea82edd) [`f28f8e68`](https://github.com/area17/twill/commit/f28f8e68) [`b42ef685`](https://github.com/area17/twill/commit/b42ef685)
+- Allow Google2FA-QRCode 2.0 to add support for chillerlan php-qrcode [`30f296a8`](https://github.com/area17/twill/commit/30f296a8) [`53067b1a`](https://github.com/area17/twill/commit/53067b1a) [`6e19e7bb`](https://github.com/area17/twill/commit/6e19e7bb) [`ee61209d`](https://github.com/area17/twill/commit/ee61209d) [`b7a892d9`](https://github.com/area17/twill/commit/b7a892d9) [`5b3640a5`](https://github.com/area17/twill/commit/5b3640a5) [`eed1476b`](https://github.com/area17/twill/commit/eed1476b) [`174a684e`](https://github.com/area17/twill/commit/174a684e) [`#1074`](https://github.com/area17/twill/pull/1074)
+
+## 2.4.0 (2021-06-15)
+
+### Added
+
+- Add support for browsers using HasRelated behavior [`580faa47`](https://github.com/area17/twill/commit/580faa474057a816dfaf7d873b3eba6c728872c0)
+- Allow `dev_mode` to be set in `.env` [`95874a1a`](https://github.com/area17/twill/commit/95874a1a8c7169b7062647b41b0391c8ce8c09f0)
+- Add custom subject to notifications [`f137b213`](https://github.com/area17/twill/commit/f137b2133aaa2b8e8dee3c68a440b444c959efcf)
+
+### Fixed
+
+- 🚨 Fix logout security vulnerability [`e84abd4f`](https://github.com/area17/twill/commit/e84abd4fbbe27f08bf94e020dd27bdba622014da)
+- Update capsule provider booting and registration (fixing view:cache) [`5a086a32`](https://github.com/area17/twill/commit/5a086a32d04e3889731ce547aa6b673e883ab1ce)
+- Save wysiwyg sourcecode value into store on change [`83d3eb62`](https://github.com/area17/twill/commit/83d3eb621984a5b26e165d044d53cbcb094999f6) [`8d9a3d21`](https://github.com/area17/twill/commit/8d9a3d21422271621807d6073bdbfdb41fc1277e) [`c4911046`](https://github.com/area17/twill/commit/c4911046d1d8964e83176005fa9ec1bee33c512c) [`4aebb3e3`](https://github.com/area17/twill/commit/4aebb3e3a76c09613af3ee660585a63bbff45914)
+
+### Improved
+
+- Move some hard coded texts to lang file [`20534801`](https://github.com/area17/twill/commit/205348017eb516effade55aaabcf9fd3650f8821)
+- Adds docs with examples for conditional fields [`33717de7`](https://github.com/area17/twill/commit/33717de7927203a6ab4af9d5e7464da99591f457) [`908fb63f`](https://github.com/area17/twill/commit/908fb63fb850aa51e52c9e8a530010192298a7c4) [`05aef80c`](https://github.com/area17/twill/commit/05aef80c11cca915954c9d3d908352476912915b)
+- Fix typo in multi select inline example [`8abefe1c`](https://github.com/area17/twill/commit/8abefe1c372543d641b6fb63aeac1a8122c428b9)
+
+## 2.3.1 (2021-06-05)
+
+### Fixed
+
+- Media library upload regressions (hotfix) [#959](https://github.com/area17/twill/pull/959)
+
 ## 2.3.0 (2021-06-03)
 
 ### Added
@@ -165,8 +651,8 @@ All notable changes to `twill` will be documented in this file.
     - Provide a group with `@twillPropGroup` or `@twillBlockGroup` or `@twillRepeaterGroup` (defaults to `app`)
     - Provide a repeater trigger label with `@twillPropTrigger` or `@twillRepeaterTrigger`
     - Provide a repeater max items with `@twillPropMax` or `@twillRepeaterMax`
-    - Define a block or repeater as compiled with `@twillPropCompiled` or `@twillBlockCompiled` or `@twillRepeaterCompiled` 
-    - Define a block or repeater component with `@twillPropComponent` or `@twillBlockComponent` or `@twillRepeaterComponent` 
+    - Define a block or repeater as compiled with `@twillPropCompiled` or `@twillBlockCompiled` or `@twillRepeaterCompiled`
+    - Define a block or repeater component with `@twillPropComponent` or `@twillBlockComponent` or `@twillRepeaterComponent`
     - Example:
       ```php
       @twillBlockTitle('Body text')
@@ -188,7 +674,7 @@ All notable changes to `twill` will be documented in this file.
         - `-t|--twill` for Twill blocks/repeaters only
       - `php artisan twill:list:icons`, which lists all icons available
       - `php artisan twill:make:module`, equivalent to the now deprecated `twill:module` which will be removed in Twill 3.0.
-- **Resolve npm modules from root app** (#617) [`360d82c1`](https://github.com/area17/twill/commit/360d82c13daed5a921d5c324d3af7dd2a6945531)  
+- **Resolve npm modules from root app** (#617) [`360d82c1`](https://github.com/area17/twill/commit/360d82c13daed5a921d5c324d3af7dd2a6945531)
   - This change allows requiring node modules from the root project folder. Previously, custom Vue components could only use npm packages installed by Twill itself. With this change, any npm package from the main app can be required. We do this by adding the root `npm_modules` folder to webpack’s module resolver.
 - **Add a new option to skip the add new modal to create records** (#642) [`1ec1f428`](https://github.com/area17/twill/commit/1ec1f428f47b8fee89b0606d6b644041b9fc35d6)
   - This change allows users to create full records by landing directly on the form when adding new records
@@ -200,7 +686,7 @@ All notable changes to `twill` will be documented in this file.
   - filesizeMax, on the files field, to prevent selecting a file which filesize is above provided value in mb
   - widthMin, on the medias field, to prevent selecting an image which width is below provided value in px
   - heightMin, on the medias field, to prevent selecting an image which height is below provided value in px
-- Added new option to display filenames of images in the media library grid (#658) [`2034b6e7`](https://github.com/area17/twill/commit/2034b6e7d37c5a6803d3e2ee79d6e53cbdfa115c) 
+- Added new option to display filenames of images in the media library grid (#658) [`2034b6e7`](https://github.com/area17/twill/commit/2034b6e7d37c5a6803d3e2ee79d6e53cbdfa115c)
 - Add confirmation modal option to checkbox and radio form fields (#687) [`41261c18`](https://github.com/area17/twill/commit/41261c18c2e91d5b362cc4029f7aa020693eb962)  [`b152cdd9`](https://github.com/area17/twill/commit/b152cdd90590d0f8ba3bf5d9b49e8c03001accdc) [`fe6ec3d0`](https://github.com/area17/twill/commit/fe6ec3d0bc3b52064324d5a0ea92f310064f67f8)
 - Allow user to filter by unused images or files in the media library (#688) [`a52349a9`](https://github.com/area17/twill/commit/a52349a9ed2632fe1f43e6b640c4c867314c24e2) [`261941fc`](https://github.com/area17/twill/commit/261941fc143e4380c46fa0c976bc271bafb7ad97)
 - Add admin title tag suffix to config (#680) [`3aefcdc3`](https://github.com/area17/twill/commit/3aefcdc3101f9f7bdec51fc61186bed48f4cba1a)
@@ -303,7 +789,7 @@ All notable changes to `twill` will be documented in this file.
 
 ## 2.0.0 (2020-03-06)
 
-We're really excited to release Twill 2.0 after a few months of focus to really set the project up for success. We've responded to the community pain points, supporting both Laravel 6 and 7, removing the need to build blocks and assets, improving documentation, introducing automated testing, and many more updates and bug fixes you can read more about below. 
+We're really excited to release Twill 2.0 after a few months of focus to really set the project up for success. We've responded to the community pain points, supporting both Laravel 6 and 7, removing the need to build blocks and assets, improving documentation, introducing automated testing, and many more updates and bug fixes you can read more about below.
 
 We were also very positively surprised by the number and quality of external contributions. Twill now has [42](https://github.com/area17/twill/graphs/contributors) contributors, twice as much as our previous release, and community members are starting to provide excellent support to other developers from their experience working with it. Thanks a lot to everyone involved! Twill also surpassed [20k](https://packagist.org/packages/area17/twill/stats) installs recently!
 
@@ -317,7 +803,7 @@ We hope you enjoy this release, it is quite a big one. We're already excited abo
 
 First, update your `composer.json` file by using: `"area17/twill": "^2.0"`.
 
-Run `composer update` in your project and then, run Twill's own update command: `php artisan twill:update`. This will force update your published Twill assets. You can delete the old ones from your repository. 
+Run `composer update` in your project and then, run Twill's own update command: `php artisan twill:update`. This will force update your published Twill assets. You can delete the old ones from your repository.
 
 If you're worrying about your custom blocks disappearing from the build, you should not! Blocks are now rendered at runtime, without you having to compile them from Blade to Vue components or wait for Twill to rebuild its assets anymore! Check out our changelog below to learn more.
 
@@ -364,7 +850,7 @@ In the process, we've also migrated from Laravel Mix to the latest version of Vu
 
 If you are currently using custom Vue blocks (as in, you edited the `template`, `script` or `style` section of a generated block Vue file), you will still need to rebuild Twill assets as you used to, but we have a 2 new Artisan commands to help you and we recommend to use them instead of our previous versions' npm scripts:
 
- - `php artisan twill:build`, which will build Twill's assets with your custom blocks, located in the `twill.block_editor.custom_vue_blocks_resource_path` new configurable path (with defaults to `assets/js/blocks`, like in previous versions). 
+ - `php artisan twill:build`, which will build Twill's assets with your custom blocks, located in the `twill.block_editor.custom_vue_blocks_resource_path` new configurable path (with defaults to `assets/js/blocks`, like in previous versions).
  - `php artisan twill:dev`, which will start a local server that watches for changes in Twill's frontend directory. You need to set `'dev_mode' => true` in your `config/twill.php` file when using this command. This is especially helpful for Twill's contributors, but can also be useful if you use a lot of custom components in your application.
 
 Both commands take a `--noInstall` option to avoid running `npm ci` before every build.
@@ -397,9 +883,9 @@ Finally, to help custom workflows, maintainers and contributors, we made everyth
 
 #### Database migrations loading strategy
 
-As recommended by [Laravel's documentation](https://laravel.com/docs/7.x/packages#migrations), we've decided to load Twill's database migrations without publishing them. This will allow more flexibility in the future and it avoids polluting the host application migrations folder. 
+As recommended by [Laravel's documentation](https://laravel.com/docs/7.x/packages#migrations), we've decided to load Twill's database migrations without publishing them. This will allow more flexibility in the future and it avoids polluting the host application migrations folder.
 
-A boolean config key has been introduced to control this new behavior: `twill.load_default_migrations`. It defaults to `true` starting with Twill 2.0. 
+A boolean config key has been introduced to control this new behavior: `twill.load_default_migrations`. It defaults to `true` starting with Twill 2.0.
 
 Even if you are migrating from a Twill 1.x application, you should not have to worry about running those new migrations as they have been modified to always check for existence (or inexistence) of tables and columns before doing anything. If you want to maintain migrations yourself, feel free to disable this option and use Twill's `migrations` folder as a source of truth to update yours.
 
@@ -437,9 +923,9 @@ Twill now automatically takes care of your translations models `fillable` by reu
 #### Smarter CLI
 ![cli](https://twill.io/docs/changelogs_media/cli.png)
 
-Twill's `module` command now offers available options through a series of questions and then generates model and migration files content dynamically depending on provided options, removing previous versions comments, providing a greatly improved developer experience. 
+Twill's `module` command now offers available options through a series of questions and then generates model and migration files content dynamically depending on provided options, removing previous versions comments, providing a greatly improved developer experience.
 
-You can use the new  `--all` option to enable all traits without any prompt. When providing no option, the prompt defaults to yes for all options. When providing one or multiple options, the prompt defaults to no for all other options. 
+You can use the new  `--all` option to enable all traits without any prompt. When providing no option, the prompt defaults to yes for all options. When providing one or multiple options, the prompt defaults to no for all other options.
 
 It is possible to use artisan's `--no-interaction` option to skip the prompt.
 
@@ -542,7 +1028,7 @@ Subdomain configuration nesting also applies to the dashboard  `modules`  key.
 You can also provide a custom  `block_single_layout`  per subdomain by creating a Blade file under  `resources/views/subdomain/layouts/blocks`.
 
 [`a4bdf225`](https://github.com/area17/twill/commit/a4bdf225259fa3b3f25d9d6127acc1dcb8d52693)/[`5f2d642b`](https://github.com/area17/twill/commit/5f2d642b8966251a9ecc3829aae0b2007d17ffbb)/[`ffdbe75a`](https://github.com/area17/twill/commit/ffdbe75ae2f347e35f0302448c3c254a8e45ac03)
-> 
+>
 
 #### Tiptap WYSIWYG
 ![tiptap](https://twill.io/docs/changelogs_media/tables.png)
@@ -709,9 +1195,9 @@ Laravel 6 upcoming release was [announced](https://laravel-news.com/laravel-v6-a
 
 Taylor Otwell also explained why v6 instead of v5.9 since the next release is not a paradigm shift for the framework: Laravel is adopting [semantic versioning](https://semver.org/) (`major.minor.patch`) and for simplicity, we will make that shift as well.
 
-Right now, Laravel and Twill are following [romantic versioning](http://blog.legacyteam.info/2015/12/romver-romantic-versioning/) (`paradigm.major.minor`). This is why Twill 1.2.2 is not just about patches but new features and improvements too. 
+Right now, Laravel and Twill are following [romantic versioning](http://blog.legacyteam.info/2015/12/romver-romantic-versioning/) (`paradigm.major.minor`). This is why Twill 1.2.2 is not just about patches but new features and improvements too.
 
-Moving forward, once Laravel 6 is released, a release with breaking changes will be considered major, which would mean Twill 2.0.0 right now. A release with new features would be 1.3.0, and patches would be 1.2.3. 
+Moving forward, once Laravel 6 is released, a release with breaking changes will be considered major, which would mean Twill 2.0.0 right now. A release with new features would be 1.3.0, and patches would be 1.2.3.
 
 You can start using Composer's [caret version range](https://getcomposer.org/doc/articles/versions.md#caret-version-range-) (`^1.2.2`) now if you'd like to benefit from new features without fearing breaking changes on your next `composer update`! If you'd rather stick to a stricter way of requiring Twill versions (fair enough, we do that in Twill's npm dependencies for your own safety), you will have to update your `composer.json` file to get new features rather than patches only.
 
@@ -756,7 +1242,7 @@ You can start using Composer's [caret version range](https://getcomposer.org/doc
 - Use morphClass consistently in browsers (4ec38c2b)
 - Use module controller defined scopes when counting by status (56a2d3aa)
 - Code quality (replace helpers and facades by dependency injection when possible or fully qualified facades) (6f449ac2, 89687c1f, 9554a0cd, b0a3297c, 358ca416, 86192a16, 21068eb3, d443309d, 05bdfa2a, 80a0f919, 5acb7f1f, 49b2c664, 7625fb33, 1dea3d93, 6972435b, d597f713, 1de922b6, 37b4fd2a, 6092fba0, 6fe254a8, 5044c8ef, f9e2b5cd, c9ef6b52, bcc77308, 2b3f6d3f, df3650a0, a6106b7e, 6b5c49ac, d80ef94c, c889c116, 4f80c83d, 6f4e9c92)
- 
+
 ### Chore
 - Update composer dependencies (e1dfc11e)
 - Update npm dependencies (06184c0b)
@@ -825,7 +1311,7 @@ You can start using Composer's [caret version range](https://getcomposer.org/doc
 
 It's been an exciting first few months for Twill, and along the way, we've been listening to your [feedback](http://github.com/area17/twill/issues). Today, we're excited to release Twill 1.2 with easier setup, improved documentation, and several improvements. We also happily welcomed our first external contribution from @yanhao-li and a lot of research on extensibility from @IllyaMoskvin!
 
-[Breaking changes](#changed) have been kept to a minimum and we've provided configuration variables for backward compatibility. 
+[Breaking changes](#changed) have been kept to a minimum and we've provided configuration variables for backward compatibility.
 
 Reminder: Twill's versioning scheme maintains the following convention: `paradigm.major.minor`, exactly like Laravel. Fun fact: this is called [Romantic Versioning](http://blog.legacyteam.info/2015/12/romver-romantic-versioning/)! When referencing Twill from your application, you should always use a version constraint such as `1.2.*`, since major releases of Twill do include breaking changes.
 
@@ -841,7 +1327,7 @@ Reminder: Twill's versioning scheme maintains the following convention: `paradig
   - Revisions and previewing
   - Dashboard
   - Global search setup
-  - Settings sections 
+  - Settings sections
   - Imgix sources setup
 - Default CMS global search implementation (edac38ae, b234170)
 - My drafts module in dashboard (70d89aa1)
@@ -938,7 +1424,7 @@ Reminder: Twill's versioning scheme maintains the following convention: `paradig
 
 - Media field cropped thumbnail: prevent CORS errors entirely (!68)
 - Cropper component refactor (!68)
- 
+
 ### Changed
 
 - First hint of renaming introducing Twill credit in footer (b84a5f6c)
@@ -957,10 +1443,10 @@ Reminder: Twill's versioning scheme maintains the following convention: `paradig
 - Drop laravel-mix requirement on host projects (!66)
 ```
 This is to avoid conflicts with arbitrary npm setups in hosts projects
-(like a project running on Webpack 4, which is not compatible with Laravel Mix as of April 2018). 
-Provided NPM scripts have been modified to use a simple copy command. 
-This means the CMS build is fully independent from the project build. 
-It also gives up a slight performance boost in HMR mode when developing. 
+(like a project running on Webpack 4, which is not compatible with Laravel Mix as of April 2018).
+Provided NPM scripts have been modified to use a simple copy command.
+This means the CMS build is fully independent from the project build.
+It also gives up a slight performance boost in HMR mode when developing.
 ```
 
 - Media field cropped information (2f802d8)
@@ -1016,9 +1502,9 @@ It also gives up a slight performance boost in HMR mode when developing.
 
 - Support direct S3 upload to non-default (us-east-1) S3 regions (!58)
 - Block editor option to render childs in previews (64756f0)
- 
+
 ### Improved
- 
+
 - Frontend build configuration slimming down non-vendor admin assets by around 40% (auto-vendorize imports from node-modules) (!57)
 - Refactor external js/css loader into a reusable util (d177d0ec)
 

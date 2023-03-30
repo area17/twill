@@ -133,10 +133,10 @@
           name: this.name,
           index: index
         })
+      },
+      destroyValue: function () {
+        this.deleteAll()
       }
-    },
-    beforeDestroy: function () {
-      this.deleteAll()
     }
   }
 </script>

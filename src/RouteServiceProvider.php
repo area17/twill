@@ -2,14 +2,13 @@
 
 namespace A17\Twill;
 
-use A17\Twill\Services\Capsules\Manager;
 use A17\Twill\Http\Controllers\Front\GlideController;
+use A17\Twill\Http\Middleware\Authenticate;
 use A17\Twill\Http\Middleware\Impersonate;
 use A17\Twill\Http\Middleware\Localization;
 use A17\Twill\Http\Middleware\RedirectIfAuthenticated;
 use A17\Twill\Http\Middleware\SupportSubdomainRouting;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
-use A17\Twill\Services\Routing\HasRoutes;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Arr;
@@ -18,8 +17,6 @@ use Illuminate\Support\Str;
 
 class RouteServiceProvider extends ServiceProvider
 {
-    use HasRoutes;
-
     protected $namespace = 'A17\Twill\Http\Controllers';
 
     /**
@@ -29,8 +26,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerRouteMiddlewares($this->app->get('router'));
         $this->registerMacros();
+        $this->registerRouteMiddlewares($this->app->get('router'));
+        $this->app->bind(TwillRoutes::class);
         parent::boot();
     }
 
@@ -40,23 +38,21 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map(Router $router)
     {
-        $this->registerRoutePatterns();
-
-        $this->mapHostRoutes(
-            $router,
-            $this->getRouteGroupOptions(),
-            $this->getRouteMiddleware(),
-            $this->supportSubdomainRouting()
-        );
+        \A17\Twill\Facades\TwillRoutes::registerRoutePatterns();
 
         $this->mapInternalRoutes(
             $router,
-            $this->getRouteGroupOptions(),
-            $this->getRouteMiddleware(),
-            $this->supportSubdomainRouting()
+            \A17\Twill\Facades\TwillRoutes::getRouteGroupOptions(),
+            \A17\Twill\Facades\TwillRoutes::getRouteMiddleware(),
+            \A17\Twill\Facades\TwillRoutes::supportSubdomainRouting()
         );
 
-        $this->registerCapsulesRoutes($router);
+        $this->mapHostRoutes(
+            $router,
+            \A17\Twill\Facades\TwillRoutes::getRouteGroupOptions(),
+            \A17\Twill\Facades\TwillRoutes::getRouteMiddleware(),
+            \A17\Twill\Facades\TwillRoutes::supportSubdomainRouting()
+        );
     }
 
     private function mapHostRoutes(
@@ -66,13 +62,14 @@ class RouteServiceProvider extends ServiceProvider
         $supportSubdomainRouting,
         $namespace = null
     ) {
-        $this->registerRoutes(
+        \A17\Twill\Facades\TwillRoutes::registerRoutes(
             $router,
             $groupOptions,
             $middlewares,
             $supportSubdomainRouting,
             config('twill.namespace', 'App') . '\Http\Controllers\Admin',
-            base_path('routes/admin.php')
+            base_path('routes/admin.php'),
+            true
         );
     }
 
@@ -128,8 +125,7 @@ class RouteServiceProvider extends ServiceProvider
                 if ($supportSubdomainRouting) {
                     $router->group(
                         [
-                            'domain' =>
-                            config('twill.admin_app_subdomain', 'admin') .
+                            'domain' => config('twill.admin_app_subdomain', 'admin') .
                             '.{subdomain}.' .
                             config('app.url'),
                         ],
@@ -191,10 +187,7 @@ class RouteServiceProvider extends ServiceProvider
             SupportSubdomainRouting::class
         );
         Route::aliasMiddleware('impersonate', Impersonate::class);
-        Route::aliasMiddleware(
-            'twill_auth',
-            \Illuminate\Auth\Middleware\Authenticate::class
-        );
+        Route::aliasMiddleware('twill_auth', Authenticate::class);
         Route::aliasMiddleware('twill_guest', RedirectIfAuthenticated::class);
         Route::aliasMiddleware(
             'validateBackHistory',
@@ -290,36 +283,12 @@ class RouteServiceProvider extends ServiceProvider
                 );
             }
 
-            // Get the current route groups
-            $routeGroups = Route::getGroupStack() ?? [];
+            $lastRouteGroupName = RouteServiceProvider::getLastRouteGroupName();
 
-            // Get the name prefix of the last group
-            $lastRouteGroupName = end($routeGroups)['as'] ?? '';
-
-            $groupPrefix = trim(
-                str_replace('/', '.', Route::getLastGroupPrefix()),
-                '.'
-            );
-
-            if (!empty(config('twill.admin_app_path'))) {
-                $groupPrefix = ltrim(
-                    str_replace(
-                        config('twill.admin_app_path'),
-                        '',
-                        $groupPrefix
-                    ),
-                    '.'
-                );
-            }
+            $groupPrefix = RouteServiceProvider::getGroupPrefix();
 
             // Check if name will be a duplicate, and prevent if needed/allowed
-            if (!empty($groupPrefix) &&
-                (
-                    blank($lastRouteGroupName) ||
-                    config('twill.allow_duplicates_on_route_names', true) ||
-                    (!Str::endsWith($lastRouteGroupName, ".{$groupPrefix}."))
-                )
-            ) {
+            if (RouteServiceProvider::shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)) {
                 $customRoutePrefix = "{$groupPrefix}.{$slug}";
                 $resourceCustomGroupPrefix = "{$groupPrefix}.";
             } else {
@@ -390,5 +359,67 @@ class RouteServiceProvider extends ServiceProvider
                 );
             }
         });
+
+        Route::macro('twillSingleton', function (
+            $slug,
+            $options = [],
+            $resource_options = [],
+            $resource = true
+        ) {
+            $pluralSlug = Str::plural($slug);
+            $modelName = Str::studly($slug);
+
+            Route::module($pluralSlug, $options, $resource_options, $resource);
+
+            $lastRouteGroupName = RouteServiceProvider::getLastRouteGroupName();
+
+            $groupPrefix = RouteServiceProvider::getGroupPrefix();
+
+            // Check if name will be a duplicate, and prevent if needed/allowed
+            if (RouteServiceProvider::shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)) {
+                $singletonRouteName = "{$groupPrefix}.{$slug}";
+            } else {
+                $singletonRouteName = $slug;
+            }
+
+            Route::get($slug, $modelName . 'Controller@editSingleton')->name($singletonRouteName);
+        });
+    }
+
+    public static function shouldPrefixRouteName($groupPrefix, $lastRouteGroupName)
+    {
+        return ! empty($groupPrefix) && (blank($lastRouteGroupName) ||
+            config('twill.allow_duplicates_on_route_names', true) ||
+            (! Str::endsWith($lastRouteGroupName, ".{$groupPrefix}.")));
+    }
+
+    public static function getLastRouteGroupName()
+    {
+        // Get the current route groups
+        $routeGroups = Route::getGroupStack() ?? [];
+
+        // Get the name prefix of the last group
+        return end($routeGroups)['as'] ?? '';
+    }
+
+    public static function getGroupPrefix()
+    {
+        $groupPrefix = trim(
+            str_replace('/', '.', Route::getLastGroupPrefix()),
+            '.'
+        );
+
+        if (! empty(config('twill.admin_app_path'))) {
+            $groupPrefix = ltrim(
+                str_replace(
+                    config('twill.admin_app_path'),
+                    '',
+                    $groupPrefix
+                ),
+                '.'
+            );
+        }
+
+        return $groupPrefix;
     }
 }

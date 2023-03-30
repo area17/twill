@@ -39,7 +39,7 @@
         <a17-vselect v-if="!fieldsRemovedFromBulkEditing.includes('tags')" :label="$trans('media-library.sidebar.tags')"
                      :key="firstMedia.id + '-' + medias.length" name="tags" :multiple="true"
                      :selected="hasMultipleMedias ? sharedTags : firstMedia.tags" :searchable="true"
-                     emptyText="Sorry, no tags found." :taggable="true" :pushTags="true" size="small"
+                     :emptyText="$trans('media-library.no-tags-found', 'Sorry, no tags found.')" :taggable="true" :pushTags="true" size="small"
                      :endpoint="type.tagsEndpoint" @change="save" maxHeight="175px"/>
         <span
           v-if="extraMetadatas.length && isImage && hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes('tags')"
@@ -57,19 +57,33 @@
 
           <a17-locale type="a17-textfield" v-if="isImage && translatableMetadatas.includes('alt_text')"
                       :attributes="{ label: $trans('media-library.sidebar.alt-text', 'Alt text'), name: 'alt_text', type: 'text', size: 'small' }"
+                      :keepInDom="true"
                       :initialValues="altValues" @focus="focus" @blur="blur"></a17-locale>
           <a17-textfield v-else-if="isImage" :label="$trans('media-library.sidebar.alt-text', 'Alt text')" name="alt_text"
                          :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur"/>
 
-          <a17-locale type="a17-textfield" v-if="isImage && translatableMetadatas.includes('caption')"
-                      :attributes="{ type: 'textarea', rows: 1, label: $trans('media-library.sidebar.caption', 'Caption'), name: 'caption', size: 'small' }"
-                      :initialValues="captionValues" @focus="focus" @blur="blur"></a17-locale>
-          <a17-textfield v-else-if="isImage" type="textarea" :rows="1" size="small" :label="$trans('media-library.sidebar.caption', 'Caption')" name="caption"
-                         :initialValue="firstMedia.metadatas.default.caption" @focus="focus" @blur="blur"/>
+          <template v-if="useWysiwyg">
+            <a17-locale type="a17-wysiwyg" v-if="isImage && translatableMetadatas.includes('caption')"
+                        :attributes="{ options: wysiwygOptions, label: $trans('media-library.sidebar.caption', 'Caption'), name: 'caption', size: 'small' }"
+                        :keepInDom="true"
+                        :initialValues="captionValues" @focus="focus" @blur="blur"></a17-locale>
+            <a17-wysiwyg v-else-if="isImage" type="textarea" :rows="1" size="small" :label="$trans('media-library.sidebar.caption', 'Caption')" name="caption"
+                           :options="wysiwygOptions"
+                           :initialValue="firstMedia.metadatas.default.caption" @focus="focus" @blur="blur"/>
+          </template>
+          <template v-else>
+            <a17-locale type="a17-textfield" v-if="isImage && translatableMetadatas.includes('caption')"
+                        :attributes="{ type: 'textarea', rows: 1, label: $trans('media-library.sidebar.caption', 'Caption'), name: 'caption', size: 'small' }"
+                        :keepInDom="true"
+                        :initialValues="captionValues" @focus="focus" @blur="blur"></a17-locale>
+            <a17-textfield v-else-if="isImage" type="textarea" :rows="1" size="small" :label="$trans('media-library.sidebar.caption', 'Caption')" name="caption"
+                           :initialValue="firstMedia.metadatas.default.caption" @focus="focus" @blur="blur"/>
+          </template>
 
           <template v-for="field in singleOnlyMetadatas">
             <a17-locale type="a17-textfield" v-bind:key="field.name"
                         v-if="isImage && (field.type === 'text' || !field.type) && translatableMetadatas.includes(field.name)"
+                        :keepInDom="true"
                         :attributes="{ label: field.label, name: field.name, type: 'textarea', rows: 1, size: 'small' }"
                         :initialValues="firstMedia.metadatas.default[field.name]" @focus="focus" @blur="blur"/>
             <a17-textfield v-bind:key="field.name" v-else-if="isImage && (field.type === 'text' || !field.type)"
@@ -87,6 +101,7 @@
         <template v-for="field in singleAndMultipleMetadatas">
           <a17-locale type="a17-textfield" v-bind:key="field.name"
                       v-if="isImage && (field.type === 'text' || !field.type)&& ((hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)) || hasSingleMedia) && translatableMetadatas.includes(field.name)"
+                      :keepInDom="true"
                       :attributes="{ label: field.label, name: field.name, type: 'textarea', rows: 1, size: 'small' }"
                       :initialValues="sharedMetadata(field.name, 'object')" @focus="focus" @blur="blur"/>
           <a17-textfield v-bind:key="field.name"
@@ -109,7 +124,7 @@
     </template>
 
     <a17-modal class="modal--tiny modal--form modal--withintro" ref="warningDelete" title="Warning Delete">
-      <p class="modal--tiny-title"><strong>Are you sure ?</strong></p>
+      <p class="modal--tiny-title"><strong>{{ $trans('media-library.dialogs.delete.title', 'Are you sure ?') }}</strong></p>
       <p>{{ warningDeleteMessage }}</p>
       <a17-inputframe>
         <a17-button variant="validate" @click="deleteSelectedMedias">Delete ({{ mediasIdsToDelete.length }})
@@ -231,8 +246,19 @@
         }))
       },
       warningDeleteMessage: function () {
-        const prefix = this.hasMultipleMedias ? this.allowDelete ? 'Some files are' : 'This files are' : 'This file is'
-        return this.allowDelete ? prefix + ' used and can\'t be deleted. Do you want to delete the others ?' : prefix + ' used and can\'t be deleted.'
+        if (this.allowDelete) {
+          if (this.hasMultipleMedias) {
+            return this.$trans('media-library.dialogs.delete.allow-delete-multiple-medias', 'Some files are used and can\'t be deleted. Do you want to delete the others ?')
+          } else {
+            return this.$trans('media-library.dialogs.delete.allow-delete-one-media', 'This file is used and can\'t be deleted. Do you want to delete the others ?')
+          }
+        } else {
+          if (this.hasMultipleMedias) {
+            return this.$trans('media-library.dialogs.delete.dont-allow-delete-multiple-medias', 'This files are used and can\'t be deleted.')
+          } else {
+            return this.$trans('media-library.dialogs.delete.dont-allow-delete-one-media', 'This file is used and can\'t be deleted.')
+          }
+        }
       },
       containerClasses: function () {
         return {
@@ -247,7 +273,9 @@
         return this.extraMetadatas.filter(m => !m.multiple || (m.multiple && this.translatableMetadatas.includes(m.name)))
       },
       ...mapState({
-        mediasLoading: state => state.mediaLibrary.loading
+        mediasLoading: state => state.mediaLibrary.loading,
+        useWysiwyg: state => state.mediaLibrary.config.useWysiwyg,
+        wysiwygOptions: state => state.mediaLibrary.config.wysiwygOptions
       })
     },
     methods: {

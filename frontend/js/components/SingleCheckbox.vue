@@ -1,9 +1,12 @@
 <template>
   <a17-inputframe :error="error" :note="note" :name="name">
-    <div class="singleCheckbox">
+    <div class="singleCheckbox" :class="wrapperClasses">
       <span class="checkbox">
         <input type="checkbox" class="checkbox__input" :class="checkboxClasses" value="true" :name="name + '[' + randKey + ']'" :id="uniqId" :disabled="disabled" :checked="checkedValue">
-        <label class="checkbox__label" :for="uniqId" @click.prevent="changeCheckbox">{{ label }} <span class="checkbox__icon"><span v-svg symbol="check"></span></span></label>
+        <label class="checkbox__label" :for="uniqId" @click.prevent="changeCheckbox">{{ label }}
+          <span class="checkbox__icon"><span v-svg symbol="check"></span></span>
+          <span class="f--small checkbox__note" v-if="note">{{ note }}</span>
+        </label>
       </span>
     </div>
     <template v-if="requireConfirmation">
@@ -40,6 +43,10 @@
       disabled: {
         type: Boolean,
         default: false
+      },
+      border: {
+        type: Boolean,
+        default: false
       }
     },
     data: function () {
@@ -50,6 +57,11 @@
     computed: {
       uniqId: function () {
         return this.name + '_' + this.randKey
+      },
+      wrapperClasses: function () {
+        return [
+          this.border ? 'singleCheckbox--border' : ''
+        ]
       },
       checkboxClasses: function () {
         return [
@@ -88,10 +100,17 @@
 </script>
 
 <style lang="scss" scoped>
+  $checkboxSize: 15px;
 
   .checkbox {
     color:$color__text;
     min-width:30px;
+  }
+
+  .checkbox__note {
+    display: block;
+    margin-top: 4px;
+    color: $color__text--light;
   }
 
   .checkbox__input {
@@ -110,7 +129,7 @@
   .checkbox__label {
     display: block;
     position: relative;
-    padding-left: 15px + 10px;
+    padding-left: calc(#{$checkboxSize} + 12px);
     color: $color__f--text;
     cursor: pointer;
   }
@@ -120,8 +139,8 @@
     position: absolute;
     left: 0;
     top: 2px;
-    width: 15px;
-    height: 15px;
+    width: $checkboxSize;
+    height: $checkboxSize;
     border-radius: 2px;
     transition: all .2s linear;
   }
@@ -156,7 +175,10 @@
   .checkbox__label:hover,
   .checkbox__input:hover   + .checkbox__label,
   .checkbox__input--checked + .checkbox__label {
-    color:$color__text;
+    color: $color__text;
+    .checkbox__note {
+      color: $color__text--light;
+    }
   }
 
   // .checkbox__input:checked + .checkbox__label .checkbox__icon,
@@ -197,6 +219,31 @@
     // .checkbox__input:checked + .checkbox__label .checkbox__icon,
     .checkbox__input--checked + .checkbox__label .checkbox__icon {
       opacity: 0;
+    }
+  }
+
+  /* border version */
+  .singleCheckbox--border {
+    border: 1px solid $color__border;
+    background-clip: padding-box;
+    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 2px;
+    padding: 0 15px;
+
+    .checkbox__label {
+      padding-left: calc(#{$checkboxSize} + 12px);
+      height: 50px;
+      line-height: 50px;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .checkbox__label::before,
+    .checkbox__icon {
+      top: 50%;
+      margin-top: -9px;
     }
   }
 </style>

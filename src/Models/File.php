@@ -2,11 +2,14 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Models\Behaviors\HasDates;
 use FileService;
 use Illuminate\Support\Facades\DB;
 
 class File extends Model
 {
+    use HasDates;
+
     public $timestamps = true;
 
     protected $fillable = [

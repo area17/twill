@@ -7,13 +7,13 @@
             <div class="media__imgCentered" :style="cropThumbnailStyle">
               <img v-if="cropSrc && showImg" :src="cropSrc" ref="mediaImg" :class="cropThumbnailClass"/>
             </div>
-            <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)">
+            <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)" v-if="!disabled">
               <span class="media__edit--button"><span v-svg symbol="edit"></span></span>
             </div>
           </div>
         </div>
 
-        <ul class="media__metadatas">
+        <ul class="media__metadatas" v-if="!disabled">
           <li class="media__name" @click="openMediaLibrary(1, mediaKey, index)"><strong :title="media.name">{{
             media.name }}</strong></li>
           <li class="f--small" v-if="media.size">File size: {{ media.size | uppercase }}</li>
@@ -33,7 +33,7 @@
         </ul>
 
         <!--Actions-->
-        <a17-buttonbar class="media__actions">
+        <a17-buttonbar class="media__actions" v-if="!disabled">
           <a :href="media.original" download><span v-svg symbol="download"></span></a>
           <button type="button" @click="openCropMedia" v-if="activeCrop"><span v-svg symbol="crop"></span></button>
           <button type="button" @click="deleteMediaClick"><span v-svg symbol="trash"></span></button>
@@ -61,14 +61,19 @@
 
       <!-- Metadatas options -->
       <div class="media__metadatas--options" :class="{ 's--active' : metadatas.active }" v-if="hasMedia && withAddInfo">
-        <a17-mediametadata :name='metadataName' label="Alt Text" id="altText" :media="media" :maxlength="altTextMaxLength" @change="updateMetadata"/>
-        <a17-mediametadata v-if="withCaption" :name='metadataName' label="Caption" id="caption" :media="media" :maxlength="captionMaxLength" @change="updateMetadata"/>
-        <a17-mediametadata v-if="withVideoUrl" :name='metadataName' label="Video URL (optional)" id="video" :media="media" @change="updateMetadata"/>
+        <a17-mediametadata :name='metadataName' :label="$trans('fields.medias.alt-text', 'Alt Text')" id="altText" :media="media" :maxlength="altTextMaxLength" @change="updateMetadata"/>
+
+        <a17-mediametadata v-if="withCaption" :wysiwyg="useWysiwyg" :wysiwyg-options="wysiwygOptions" type='text' :name='metadataName' :label="$trans('fields.medias.caption', 'Caption')" id="caption" :media="media" :maxlength="captionMaxLength" @change="updateMetadata"/>
+
+        <a17-mediametadata v-if="withVideoUrl" :name='metadataName' :label="$trans('fields.medias.video-url', 'Video URL (optional)')" id="video" :media="media" @change="updateMetadata"/>
+
         <template v-for="field in extraMetadatas">
           <a17-mediametadata v-if="extraMetadatas.length > 0"
                              :key="field.name"
                              :type="field.type"
                              :name='metadataName'
+                             :wysiwyg='field.wysiwyg || false'
+                             :wysiwyg-options='field.wysiwygOptions || wysiwygOptions'
                              :label="field.label"
                              :id="field.name"
                              :media="media"
@@ -189,6 +194,10 @@
     },
     filters: a17VueFilters,
     computed: {
+      ...mapState({
+        useWysiwyg: state => state.mediaLibrary.config.useWysiwyg,
+        wysiwygOptions: state => state.mediaLibrary.config.wysiwygOptions
+      }),
       cropThumbnailStyle: function () {
         if (this.showImg) return {}
         if (!this.hasMedia) return {}
@@ -514,6 +523,10 @@
       metadatasInfos: function () {
         this.metadatas.active = !this.metadatas.active
         this.metadatas.text = this.metadatas.active ? this.metadatas.textClose : this.metadatas.textOpen
+      },
+      destroyValue: function () {
+        if (this.isSlide) return // for Slideshows : the medias are deleted when the slideshow component is destroyed (so no need to do it here)
+        if (!this.isDestroyed) this.deleteMedia()
       }
     },
     beforeMount: function () {
@@ -523,10 +536,6 @@
       if (this.hasMediaChanged) {
         this.init()
       }
-    },
-    beforeDestroy: function () {
-      if (this.isSlide) return // for Slideshows : the medias are deleted when the slideshow component is destroyed (so no need to do it here)
-      if (!this.isDestroyed) this.deleteMedia()
     }
   }
 </script>

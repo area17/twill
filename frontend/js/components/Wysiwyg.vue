@@ -4,19 +4,23 @@
     <div class="wysiwyg__outer" :class="textfieldClasses">
       <input :name="name" type="hidden" v-model="value"/>
       <template v-if="editSource">
-        <div class="wysiwyg" :class="textfieldClasses" v-show="!activeSource">
-          <div class="wysiwyg__editor" :class="{ 'wysiwyg__editor--limitHeight' : limitHeight }" ref="editor"></div>
+        <div class="wysiwyg" :class="textfieldClasses" v-show="!activeSource" :dir="dirLocale">
+          <div class="wysiwyg__editor" :class="{ 'wysiwyg__editor--limitHeight' : limitHeight }" ref="editorcontainer">
+            <div class="wysiwyg__editor-inner" ref="editor"></div>
+          </div>
           <span v-if="shouldShowCounter" class="wysiwyg__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
-        <div class="form__field form__field--textarea" v-show="activeSource">
-          <textarea :placeholder="placeholder" :autofocus="autofocus" v-model="value"
+        <div class="form__field form__field--textarea" v-show="activeSource" :dir="dirLocale">
+          <textarea :placeholder="placeholder" :autofocus="autofocus" v-model="value" @change="updateSourcecode"
                     :style="textareaHeight"></textarea>
         </div>
         <a17-button variant="ghost" @click="toggleSourcecode" class="wysiwyg__button">Source code</a17-button>
       </template>
       <template v-else>
-        <div class="wysiwyg" :class="textfieldClasses">
-          <div class="wysiwyg__editor" :class="{ 'wysiwyg__editor--limitHeight' : limitHeight }" ref="editor"></div>
+        <div class="wysiwyg" :class="textfieldClasses" :dir="dirLocale">
+          <div class="wysiwyg__editor" :class="{ 'wysiwyg__editor--limitHeight' : limitHeight }" ref="editorcontainer">
+            <div class="wysiwyg__editor-inner" ref="editor"></div>
+          </div>
           <span v-if="shouldShowCounter" class="wysiwyg__limit f--tiny" :class="limitClasses">{{ counter }}</span>
         </div>
       </template>
@@ -91,6 +95,7 @@
       },
       textfieldClasses: function () {
         return {
+          'wysiwyg__outer--limitHeight': this.limitHeight,
           's--disabled': this.disabled,
           's--focus': this.focused
         }
@@ -103,7 +108,7 @@
       },
       limitClasses: function () {
         return {
-          'wysiwyg__limit--red': this.counter < 10
+          'wysiwyg__limit--red': this.counter < (this.maxlength * 0.1)
         }
       },
       ...mapState({
@@ -119,6 +124,7 @@
         activeSource: false,
         quill: null,
         counter: 0,
+        localOptions: {},
         defaultModules: {
           toolbar: ['bold', 'italic', 'underline', 'link'],
           // Complete Toolbar example :
@@ -151,9 +157,9 @@
       }
     },
     methods: {
-      initQuill () {
+      initQuill (options) {
         // init Quill
-        this.quill = new QuillConfiguration.Quill(this.$refs.editor, this.options)
+        this.quill = new QuillConfiguration.Quill(this.$refs.editor, options)
 
         // set editor content
         if (this.value) this.updateEditor(this.value)
@@ -202,6 +208,12 @@
           }
         }
 
+        // set Quill direction
+        if (this.dirLocale === 'rtl') {
+          this.quill.format('direction', 'rtl')
+          this.quill.format('align', 'right')
+        }
+
         // check text length
         if (this.hasMaxlength && this.showCounter) {
           this.updateCounter(this.getTextLength())
@@ -209,6 +221,14 @@
 
         // emit ready
         this.$emit('ready', this.quill)
+      },
+      insertDivider () {
+        const range = this.quill.getSelection(true)
+        if (range) {
+          this.quill.insertText(range.index, '\n')
+          this.quill.insertEmbed(range.index + 1, 'divider', true)
+          this.quill.setSelection(range.index + 2)
+        }
       },
       anchorHandler (value) {
         if (value === true) {
@@ -233,13 +253,21 @@
           this.updateEditor(newValue)
         }
       },
-      textUpdate: debounce(function () {
-        this.saveIntoStore() // see formStore mixin
+      textUpdate: function () {
+        this.preventSubmit()
+        this._textUpdateInternal()
+      },
+      _textUpdateInternal: debounce(function () {
+        this.saveIntoStore()
+        this.allowSubmit()
       }, 600),
       toggleSourcecode: function () {
         this.editorHeight = (Math.max(50, this.$refs.editor.clientHeight) + this.toolbarHeight - 1) + 'px'
         this.activeSource = !this.activeSource
 
+        this.updateSourcecode()
+      },
+      updateSourcecode: function () {
         // set editor content
         this.updateEditor(this.value)
         this.saveIntoStore() // see formStore mixin
@@ -257,21 +285,27 @@
     mounted: function () {
       if (this.quill) return
 
+      const localOptions = JSON.parse(JSON.stringify(this.options))
+
       /* global hljs */
-      this.options.theme = this.options.theme || 'snow'
-      this.options.boundary = this.options.boundary || document.body
-      this.options.modules = this.options.modules || this.defaultModules
+      localOptions.theme = localOptions.theme || 'snow'
+      localOptions.boundary = localOptions.boundary || document.body
+      localOptions.modules = localOptions.modules || this.defaultModules
       const toolbar = {
-        container: this.options.modules.toolbar !== undefined ? this.options.modules.toolbar : this.defaultModules.toolbar,
+        container: localOptions.modules.toolbar !== undefined ? localOptions.modules.toolbar : this.defaultModules.toolbar,
         handlers: {}
       }
-      this.options.modules.clipboard = this.options.modules.clipboard !== undefined ? this.options.modules.clipboard : this.defaultModules.clipboard
-      this.options.modules.keyboard = this.options.modules.keyboard !== undefined ? this.options.modules.keyboard : this.defaultModules.keyboard
-      this.options.modules.syntax = this.options.modules.syntax !== undefined && this.options.modules.syntax ? { highlight: text => hljs.highlightAuto(text).value } : this.defaultModules.syntax
-      this.options.placeholder = this.options.placeholder || this.placeholder
-      this.options.readOnly = this.options.readOnly !== undefined ? this.options.readOnly : this.readonly
-      this.options.formats = QuillConfiguration.getFormats(this.options.modules.toolbar) // Formats are based on current toolbar configuration
-      this.options.scrollingContainer = null
+      localOptions.modules.clipboard = localOptions.modules.clipboard !== undefined ? localOptions.modules.clipboard : this.defaultModules.clipboard
+      localOptions.modules.keyboard = localOptions.modules.keyboard !== undefined ? localOptions.modules.keyboard : this.defaultModules.keyboard
+      localOptions.modules.syntax = localOptions.modules.syntax !== undefined && localOptions.modules.syntax ? { highlight: text => hljs.highlightAuto(text).value } : this.defaultModules.syntax
+      localOptions.placeholder = localOptions.placeholder || this.placeholder
+      localOptions.readOnly = localOptions.readOnly !== undefined ? localOptions.readOnly : this.readonly
+      localOptions.formats = QuillConfiguration.getFormats(localOptions.modules.toolbar) // Formats are based on current toolbar configuration
+      localOptions.bounds = this.$refs.editor
+
+      // Ensure pasting content do not make editor scroll to the top
+      // @see https://github.com/quilljs/quill/issues/1374#issuecomment-545112021
+      localOptions.scrollingContainer = 'html'
 
       // register custom handlers
       // register anchor toolbar handler
@@ -279,15 +313,21 @@
         toolbar.handlers.anchor = this.anchorHandler
       }
 
-      this.options.modules.toolbar = toolbar
+      if (toolbar.container.includes('divider')) {
+        toolbar.handlers.divider = this.insertDivider
+      }
 
-      if (this.options.modules.syntax && typeof hljs === 'undefined') {
+      localOptions.modules.toolbar = toolbar
+
+      this.localOptions = localOptions
+
+      if (localOptions.modules.syntax && typeof hljs === 'undefined') {
         const id = 'highlight-js-script'
         loadScript(id, HIGHLIGHT, 'text/javascript').then(() => {
-          this.initQuill()
+          this.initQuill(localOptions)
         })
       } else {
-        this.initQuill()
+        this.initQuill(localOptions)
       }
     },
     beforeDestroy () {
@@ -301,13 +341,36 @@
     margin-top: 20px;
   }
 
+  .wysiwyg__outer--limitHeight {
+    .wysiwyg {
+      position: relative;
+      overflow: hidden;
+    }
+  }
+
   .wysiwyg__editor--limitHeight {
     max-height: calc(100vh - 250px);
     overflow-y: scroll;
+    min-height: 142px;
+    border: 1px solid $color__fborder;
+    border-top: none;
+    scroll-behavior: smooth;
+    margin-top: 52px;
+    .input--error & {
+      border-color: $color__error;
+      border-top: none;
+    }
+    .s--focus & {
+      border-color: $color__fborder--hover;
+      border-top: none;
+    }
   }
 </style>
 <style lang="scss">
   /* Not scoped style here because we want to overwrite default style of the wysiwig */
+  .ql-divider {
+    overflow: hidden;
+  }
 
   $height_input: 45px;
   .wysiwyg__limit {
@@ -324,6 +387,13 @@
   .wysiwyg__limit--red {
     color: red;
   }
+
+  /* RTL Direction */
+  .wysiwyg[dir='rtl'] .wysiwyg__limit {
+    left:15px;
+    right:auto;
+  }
+
 </style>
 <style lang="scss">
   /* Not scoped style here because we want to overwrite default style of the wysiwig */
@@ -333,6 +403,14 @@
       border-top-right-radius: 2px;
       background-color: $color__f--bg;
       font-family: inherit;
+    }
+
+    .wysiwyg__editor--limitHeight .ql-toolbar {
+      z-index: 1;
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
     }
 
     .ql-editor.ql-blank::before {
@@ -351,11 +429,21 @@
       min-height: 15px * 6;
       caret-color: $color__action;
       color: $color__text--forms;
+      overflow: visible;
 
       &:hover,
       &:focus {
         background: $color__background;
       }
+    }
+
+    *[dir='rtl'] .ql-editor {
+      direction: rtl;
+      text-align: right;
+    }
+
+    .wysiwyg__editor--limitHeight .ql-editor {
+      min-height: 15px * 10;
     }
 
     /* Default content styling */
@@ -433,6 +521,13 @@
 
     .ql-container.ql-snow {
       border-color: $color__fborder;
+      .wysiwyg__editor--limitHeight {
+        border: none;
+      }
+    }
+
+    .wysiwyg__editor--limitHeight .ql-container.ql-snow {
+      border: none;
     }
 
     .input--error {
@@ -443,6 +538,10 @@
 
       .ql-container.ql-snow {
         border-color: $color__error;
+      }
+
+      .wysiwyg__editor--limitHeight .ql-container.ql-snow {
+        border: none;
       }
     }
 
@@ -455,6 +554,10 @@
       .ql-container.ql-snow {
         border-color: $color__fborder--hover;
       }
+
+      .wysiwyg__editor--limitHeight .ql-container.ql-snow {
+        border: none;
+      }
     }
 
     .ql-snow a {
@@ -463,6 +566,12 @@
 
     .ql-editor .ql-anchor {
       text-decoration: underline $color__link;
+    }
+
+    // Ensure pasting content do not make editor scroll to the top
+    // @see https://github.com/quilljs/quill/issues/1374#issuecomment-545112021
+    .ql-clipboard {
+      position: fixed;
     }
 
     .ql-snow.ql-toolbar {

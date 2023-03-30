@@ -30,22 +30,15 @@ class ListBlocks extends Command
     protected $description = 'List all available Twill blocks';
 
     /**
-     * Blocks collection.
-     *
-     * @var BlockCollection
+     * @return BlockCollection
      */
-    protected $blockCollection;
-
-    public function __construct(BlockCollection $blockCollection)
-    {
-        parent::__construct();
-
-        $this->blockCollection = $blockCollection;
+    public function getBlockCollection() {
+        return app(BlockCollection::class);
     }
 
     protected function displayMissingDirectories(): void
     {
-        $this->blockCollection
+        $this->getBlockCollection()
             ->getMissingDirectories()
             ->each(function ($directory) {
                 $this->error("Directory not found: {$directory}");
@@ -53,18 +46,26 @@ class ListBlocks extends Command
     }
 
     /**
-     * @param \Illuminate\Support\Collection $blockCollection
-     * @return mixed
+     * @return Block[]
      */
-    protected function generateHeaders($blockCollection)
+    protected function generateHeaders()
     {
-        return $blockCollection
-            ->first()
-            ->keys()
-            ->map(function ($key) {
-                return Str::studly($key);
-            })
-            ->toArray();
+        return [
+            'Title',
+            'TitleField',
+            'HideTitlePrefix',
+            'Trigger',
+            'Name',
+            'Group',
+            'Type',
+            'Icon',
+            'Compiled',
+            'Source',
+            'NewFormat',
+            'File',
+            'Component',
+            'Max',
+        ];
     }
 
     /**
@@ -79,32 +80,33 @@ class ListBlocks extends Command
 
         $typeFiltered = $this->option('blocks') || $this->option('repeaters');
 
-        return $this->blockCollection
-            ->collect()
+        $filteredList = $this->getBlockCollection()
             ->reject(function (Block $block) use ($sourceFiltered) {
-                return $sourceFiltered && !$this->option($block->source);
+                return $sourceFiltered && ! $this->option($block->source);
             })
             ->reject(function (Block $block) use ($typeFiltered) {
                 return $this->dontPassTextFilter($block) ||
                     ($typeFiltered &&
-                    !$this->option(Str::plural($block->type)));
-            })
-            ->map(function (Block $block) {
-                return $this->colorize(
-                    $this->option('short') ? $block->toShortList() : $block->toList()
-                );
-            })
-            ->sortBy(function ($block) {
-                return [$block['group'], $block['title']];
+                    ! $this->option(Str::plural($block->type)));
+            })->sortBy(function (Block $block) {
+                return [$block->group, $block->title];
             });
-    }
 
-    /**
-     * @return \A17\Twill\Services\Blocks\BlockCollection
-     */
-    public function getBlockCollection()
-    {
-        return $this->blockCollection;
+        $list = [];
+
+        /** @var Block $block */
+        foreach ($filteredList as $block) {
+            $data = $this->colorize(
+                $this->option('short') ? $block->toShortList() : $block->toList()
+            );
+
+            // We do not render this.
+            unset($data['rules'], $data['rulesForTranslatedFields']);
+
+            $list[] = $data;
+        }
+
+        return collect($list);
     }
 
     /**
@@ -125,7 +127,7 @@ class ListBlocks extends Command
         }
 
         $this->table(
-            $this->generateHeaders($blockCollection),
+            $this->generateHeaders(),
             $blockCollection->toArray()
         );
     }
@@ -150,9 +152,13 @@ class ListBlocks extends Command
     public function dontPassTextFilter(Block $block)
     {
         if (filled($filter = $this->argument('filter'))) {
-            return !$block
+            return ! $block
                 ->toList()
                 ->reduce(function ($keep, $element) use ($filter) {
+                    if (is_array($element)) {
+                        return false;
+                    }
+
                     return $keep ||
                     Str::contains(
                         Str::lower($element),

@@ -3,20 +3,47 @@
     <draggable class="content__content" v-model="blocks" :options="dragOptions">
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
-          <a17-block :block="block" :index="index" :size="blockSize" :opened="opened" @open="setOpened">
-            <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"  v-if="hasRemainingBlocks"><span v-svg symbol="add"></span></a17-button>
+          <a17-blockeditor-item
+            ref="blockList"
+            :block="block"
+            :index="index"
+            :withHandle="draggable"
+            :size="blockSize"
+            :opened="opened"
+          >
+            <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)" v-if="hasRemainingBlocks">
+              <span v-svg symbol="add"></span>
+            </a17-button>
             <div slot="dropdown-action">
-              <button type="button" @click="collapseAllBlocks()">Collapse All</button>
-              <button type="button" @click="deleteBlock(index)">Delete</button>
-              <button type="button" @click="duplicateBlock(index)" v-if="hasRemainingBlocks">Duplicate</button>
+              <button type="button" @click="collapseAllBlocks()" v-if="opened">
+                {{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}
+              </button>
+              <button v-else type="button" @click="expandAllBlocks()">
+                {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
+              </button>
+              <button type="button" @click="duplicateBlock(index)" v-if="hasRemainingBlocks">
+                {{ $trans('fields.block-editor.clone-block', 'Clone block') }}
+              </button>
+              <button type="button" @click="deleteBlock(index)">
+                {{ $trans('fields.block-editor.delete', 'Delete') }}
+              </button>
             </div>
-          </a17-block>
+          </a17-blockeditor-item>
         </div>
       </transition-group>
     </draggable>
     <div class="content__trigger">
-      <a17-button :class="triggerClass" :variant="triggerVariant" :size="triggerSize" @click="addBlock()" v-if="hasRemainingBlocks && blockType.trigger">{{ blockType.trigger }}</a17-button>
-      <div class="content__note f--note f--small"><slot></slot></div>
+      <a17-button
+        v-if="hasRemainingBlocks && blockType.trigger"
+        :class="triggerClass"
+        :variant="triggerVariant"
+        @click="addBlock()"
+      >
+        {{ blockType.trigger }}
+      </a17-button>
+      <div class="content__note f--note f--small">
+        <slot></slot>
+      </div>
     </div>
   </div>
 </template>
@@ -27,12 +54,12 @@
 
   import draggable from 'vuedraggable'
   import draggableMixin from '@/mixins/draggable'
-  import Block from '@/components/blocks/Block.vue'
+  import BlockEditorItem from '@/components/blocks/BlockEditorItem.vue'
 
   export default {
     name: 'A17Repeater',
     components: {
-      'a17-block': Block,
+      'a17-blockeditor-item': BlockEditorItem,
       draggable
     },
     mixins: [draggableMixin],
@@ -44,6 +71,15 @@
       name: {
         type: String,
         required: true
+      },
+      buttonAsLink: {
+        type: Boolean,
+        default: false
+      },
+      max: {
+        type: [Number, null],
+        required: false,
+        default: null
       }
     },
     data: function () {
@@ -54,10 +90,10 @@
     },
     computed: {
       triggerVariant: function () {
-        return this.inContentEditor ? 'aslink' : 'action'
-      },
-      triggerSize: function () {
-        return this.inContentEditor ? 'small' : ''
+        if (this.buttonAsLink) {
+          return 'aslink'
+        }
+        return this.inContentEditor ? 'outline' : 'action'
       },
       triggerClass: function () {
         return this.inContentEditor ? 'content__button' : ''
@@ -69,7 +105,13 @@
         return typeof this.$parent.repeaterName !== 'undefined'
       },
       hasRemainingBlocks: function () {
-        return !this.blockType.hasOwnProperty('max') || (this.blockType.max > this.blocks.length)
+        let max = null
+        if (this.max && this.max > 0) {
+          max = this.max
+        } else if (this.blockType.hasOwnProperty('max')) {
+          max = this.blockType.max
+        }
+        return !max || (max > this.blocks.length)
       },
       blockType: function () {
         return this.availableBlocks[this.type] ? this.availableBlocks[this.type] : {}
@@ -96,19 +138,22 @@
       })
     },
     methods: {
-      setOpened: function (value) {
-        this.opened = value
-      },
       addBlock: function () {
-        this.opened = true
         this.$store.commit(FORM.ADD_FORM_BLOCK, { type: this.type, name: this.name })
+
+        this.$nextTick(() => {
+          this.checkExpandBlocks()
+        })
       },
       duplicateBlock: function (index) {
-        this.opened = true
         this.$store.commit(FORM.DUPLICATE_FORM_BLOCK, {
           type: this.type,
           name: this.name,
           index: index
+        })
+
+        this.$nextTick(() => {
+          this.checkExpandBlocks()
         })
       },
       deleteBlock: function (index) {
@@ -120,13 +165,19 @@
       },
       collapseAllBlocks: function () {
         this.opened = false
+      },
+      expandAllBlocks: function () {
+        this.opened = true
+      },
+      checkExpandBlocks () {
+        if (this.$refs.blockList[this.$refs.blockList.length - 1] !== undefined) {
+          this.$refs.blockList[this.$refs.blockList.length - 1].toggleExpand()
+        }
       }
     },
     mounted: function () {
-      const self = this
-      // if there are blocks, these should be all collapse by default
-      this.$nextTick(function () {
-        if (self.savedBlocks.length > 0) self.collapseAllBlocks()
+      this.$nextTick(() => {
+        this.collapseAllBlocks()
       })
     }
   }
@@ -135,43 +186,46 @@
 <style lang="scss" scoped>
 
   .content {
-    margin-top:20px; // margin-top:35px;
+    margin-top: 20px; // margin-top:35px;
   }
 
   .content__content {
-    margin-bottom:20px;
+    margin-bottom: 20px;
 
     + .dropdown {
-      display:inline-block;
+      display: inline-block;
     }
   }
 
   .content__item {
-    border:1px solid $color__border;
-    border-top:0 none;
+    border: 1px solid $color__border;
+    border-top: 0 none;
 
     &.sortable-ghost {
-      opacity:0.5;
+      opacity: 0.5;
     }
   }
 
   .content__item:first-child {
-    border-top:1px solid $color__border;
+    border-top: 1px solid $color__border;
   }
 
   .content__trigger {
-    display:flex;
+    display: flex;
   }
 
   .content__button {
-    display:block;
-    width:100%;
-    text-align:center;
-    margin-top:-5px;
+    margin-top: -5px;
+  }
+
+  .button--aslink {
+    display: block;
+    width: 100%;
+    text-align: center;
   }
 
   .content__note {
-    flex-grow:1;
-    text-align:right;
+    flex-grow: 1;
+    text-align: right;
   }
 </style>

@@ -2,59 +2,14 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use App\Models\Author;
+use A17\Twill\Facades\TwillCapsules;
+use A17\Twill\Facades\TwillRoutes;
 use Illuminate\Support\Str;
-use A17\Twill\AuthServiceProvider;
-use A17\Twill\TwillServiceProvider;
-use A17\Twill\RouteServiceProvider;
-use Illuminate\Support\Facades\Route;
-use A17\Twill\CapsulesServiceProvider;
-use App\Models\Revisions\AuthorRevision;
 use Illuminate\Support\Facades\Schema;
-use A17\Twill\ValidationServiceProvider;
-use A17\Twill\Services\Routing\HasRoutes;
-use A17\Twill\Services\Capsules\HasCapsules;
 use Illuminate\Routing\Router;
 
 class CapsulesTest extends TestCase
 {
-    use HasCapsules, HasRoutes;
-
-    protected $allFiles = [
-        '{$stubs}/capsules/posts/database/migrations/2020_08_14_205624_create_posts_tables.php' =>
-            '{$app}/Twill/Capsules/Posts/database/migrations/2020_08_14_205624_create_posts_tables.php',
-
-        '{$stubs}/capsules/posts/app/Http/Requests/PostRequest.php' =>
-            '{$app}/Twill/Capsules/Posts/app/Http/Requests/PostRequest.php',
-
-        '{$stubs}/capsules/posts/app/Http/Controllers/PostController.php' =>
-            '{$app}/Twill/Capsules/Posts/app/Http/Controllers/PostController.php',
-
-        '{$stubs}/capsules/posts/app/Data/Repositories/PostRepository.php' =>
-            '{$app}/Twill/Capsules/Posts/app/Data/Repositories/PostRepository.php',
-
-        '{$stubs}/capsules/posts/app/Data/Models/PostTranslation.php' =>
-            '{$app}/Twill/Capsules/Posts/app/Data/Models/PostTranslation.php',
-
-        '{$stubs}/capsules/posts/app/Data/Models/PostSlug.php' =>
-            '{$app}/Twill/Capsules/Posts/app/Data/Models/PostSlug.php',
-
-        '{$stubs}/capsules/posts/app/Data/Models/Post.php' =>
-            '{$app}/Twill/Capsules/Posts/app/Data/Models/Post.php',
-
-        '{$stubs}/capsules/posts/app/Data/Models/PostRevision.php' =>
-            '{$app}/Twill/Capsules/Posts/app/Data/Models/PostRevision.php',
-
-        '{$stubs}/capsules/posts/resources/views/admin/form.blade.php' =>
-            '{$app}/Twill/Capsules/Posts/resources/views/admin/form.blade.php',
-
-        '{$stubs}/capsules/posts/resources/views/admin/create.blade.php' =>
-            '{$app}/Twill/Capsules/Posts/resources/views/admin/create.blade.php',
-
-        '{$stubs}/capsules/posts/routes/admin.php' =>
-            '{$app}/Twill/Capsules/Posts/routes/admin.php',
-    ];
-
     protected $capsules = [
         'posts',
         'artists',
@@ -80,13 +35,11 @@ class CapsulesTest extends TestCase
 
         parent::setUp();
 
-        $this->manager = app('twill.capsules.manager');
-
         $this->login();
 
         app()->setLocale('en');
 
-        $this->makeCapsule($this->capsuleName);
+        $this->makeCapsule();
     }
 
     public function loadConfig($file = null)
@@ -285,10 +238,9 @@ class CapsulesTest extends TestCase
     {
         $this->artisan("twill:make:capsule {$this->capsuleName} --all --force");
 
-        $this->registerCapsuleRoutes(
+        TwillRoutes::registerCapsuleRoutes(
             app(Router::class),
-            $this->getCapsuleByModule($this->capsuleName),
-            $this->manager
+            TwillCapsules::getCapsuleForModule($this->capsuleName)
         );
 
         $this->migrate();

@@ -2,12 +2,10 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
-use A17\Twill\Services\Blocks\BlockCollection;
+use A17\Twill\Facades\TwillBlocks;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 
 /**
- *
  * Save repeaters in a json column instead of a new model.
  *
  * This trait is not intended to replace main repeaters but to give a quick
@@ -21,16 +19,13 @@ use Illuminate\Support\Str;
  *
  * Supported: Input, WYSIWYG, textarea, browsers.
  * Not supported: Medias, Files, repeaters.
- *
  */
-
 trait HandleJsonRepeaters
 {
-
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\Model|null $object
      * @param array $fields
-     * @return string[]
+     * @return array
      */
     public function prepareFieldsBeforeSaveHandleJsonRepeaters($object, $fields)
     {
@@ -44,15 +39,14 @@ trait HandleJsonRepeaters
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\Model|null $object
      * @param array $fields
-     * @return string[]
+     * @return array
      */
     public function getFormFieldsHandleJsonRepeaters($object, $fields)
     {
-
         foreach ($this->jsonRepeaters as $repeater) {
-            if (isset($fields[$repeater]) && !empty($fields[$repeater])) {
+            if (isset($fields[$repeater]) && ! empty($fields[$repeater])) {
                 $fields = $this->getJsonRepeater($fields, $repeater, $fields[$repeater]);
             }
         }
@@ -60,19 +54,29 @@ trait HandleJsonRepeaters
         return $fields;
     }
 
+    /**
+     * @param array $fields
+     * @param string $repeaterName
+     * @param array $serializedData
+     * @return array
+     */
     public function getJsonRepeater($fields, $repeaterName, $serializedData)
     {
         $repeatersFields = [];
         $repeatersBrowsers = [];
-        $repeatersList = app(BlockCollection::class)->getRepeaterList()->keyBy('name');
+        /** @var \A17\Twill\Services\Blocks\Block[] $repeatersList */
+        $repeatersList = TwillBlocks::getRepeaters()->keyBy('name');
+        $repeaters = [];
 
         foreach ($serializedData as $index => $repeaterItem) {
             $id = $repeaterItem['id'] ?? $index;
 
             $repeaters[] = [
                 'id' => $id,
-                'type' => $repeatersList[$repeaterName]['component'],
-                'title' => $repeatersList[$repeaterName]['title'],
+                'type' => $repeatersList[$repeaterName]->component,
+                'title' => $repeatersList[$repeaterName]->title,
+                'titleField' => $repeatersList[$repeaterName]->titleField,
+                'hideTitlePrefix' => $repeatersList[$repeaterName]->hideTitlePrefix,
             ];
 
             if (isset($repeaterItem['browsers'])) {
@@ -83,9 +87,9 @@ trait HandleJsonRepeaters
 
             $itemFields = Arr::except($repeaterItem, ['id', 'repeaters', 'files', 'medias', 'browsers', 'blocks']);
 
-            foreach ($itemFields as $index => $value) {
+            foreach ($itemFields as $itemFieldIndex => $value) {
                 $repeatersFields[] = [
-                    'name' => "blocks[$id][$index]",
+                    'name' => "blocks[$id][$itemFieldIndex]",
                     'value' => $value,
                 ];
             }
@@ -97,5 +101,4 @@ trait HandleJsonRepeaters
 
         return $fields;
     }
-
 }

@@ -7,6 +7,7 @@
 import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
 import { MEDIA_LIBRARY } from '../mutations'
+import ACTIONS from '@/store/actions'
 
 const state = {
   /**
@@ -65,6 +66,11 @@ const state = {
    */
   selected: window[process.env.VUE_APP_NAME].STORE.medias.selected || {},
   /**
+   * An object of configs
+   * @type {Object.<string,Object>}
+   */
+  config: window[process.env.VUE_APP_NAME].STORE.medias.config || { useWysiwyg: false, wysiwygOptions: {} },
+  /**
    * An array of current uploading medias. When upload is ended, array is reset
    * @type {Array}
    */
@@ -82,7 +88,14 @@ const state = {
 }
 
 // getters
-const getters = {}
+const getters = {
+  mediasByBlockId: (state) => (id) => {
+    const ids = Object.keys(state.selected).filter(key => key.startsWith(`blocks[${id}]`))
+    const medias = {}
+    ids.forEach(id => (medias[id] = state.selected[id]))
+    return medias
+  }
+}
 
 const mutations = {
   [MEDIA_LIBRARY.UPDATE_MEDIA_TYPE_TOTAL] (state, type) {
@@ -265,11 +278,27 @@ const mutations = {
 
     const newMedia = addCrop(cloneDeep(media))
     Vue.set(state.selected[key], index, newMedia)
+  },
+  [MEDIA_LIBRARY.ADD_MEDIAS] (state, { medias }) {
+    state.selected = Object.assign({}, state.selected, medias)
+  }
+}
+
+const actions = {
+  async [ACTIONS.DUPLICATE_BLOCK] ({ commit, getters }, { block, id }) {
+    // copy medias and update with the provided id
+    const medias = { ...getters.mediasByBlockId(block.id) }
+    const mediaIds = Object.keys(medias)
+    const duplicates = {}
+    mediaIds.forEach(mediaId => (duplicates[mediaId.replace(block.id, id)] = [...medias[mediaId]]))
+
+    commit(MEDIA_LIBRARY.ADD_MEDIAS, { medias: duplicates })
   }
 }
 
 export default {
   state,
   getters,
-  mutations
+  mutations,
+  actions
 }

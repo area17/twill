@@ -114,6 +114,10 @@
       + .repeater {
         margin-top:20px;
       }
+
+      + .blocks + hr {
+        margin-top:20px;
+      }
     }
   }
 
