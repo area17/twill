@@ -4,22 +4,22 @@
 
 Twill `3.x` is compatible with Laravel version `9.x`, running on PHP 8.0 and above. As a dependency to your
 own application, Twill shares Laravel's
-[server requirements](https://laravel.com/docs/9.x/deployment#server-requirements).
+[server requirements](https://laravel.com/docs/10.x/deployment#server-requirements).
 
 ## Development
 
 For development, those requirements are satisfied by the following first-party solutions:
 
-- [Sail](https://laravel.com/docs/9.x/sail) (All platforms)
-- [Homestead](https://laravel.com/docs/9.x/homestead) (All platforms)
-- [Valet](https://laravel.com/docs/9.x/valet) (macOS)
+- [Sail](https://laravel.com/docs/10.x/sail) (All platforms)
+- [Homestead](https://laravel.com/docs/10.x/homestead) (All platforms)
+- [Valet](https://laravel.com/docs/10.x/valet) (macOS)
 
 ## Production
 
 For production deployments, we recommend:
 
 - [Forge](https://forge.laravel.com)
-- [Envoyer](https://envoyer.io) or [Envoy](https://laravel.com/docs/9.x/envoy)
+- [Envoyer](https://envoyer.io) or [Envoy](https://laravel.com/docs/10.x/envoy)
 
 Of course, any other Laravel compatible server configuration and deployment strategy will be supported.
 

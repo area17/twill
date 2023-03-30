@@ -18,7 +18,7 @@ Updating Twill between minor version (ex 3.0 to 3.1) should rarely require manua
 backwards compatability.
 :::#alert:::
 
-# Major updates
+## Major updates
 
 For major updates we try our best to provide a seamless upgrade experience, but we cannot always handle every case.
 

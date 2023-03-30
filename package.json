@@ -47,7 +47,7 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
-    "@area17/a17-tailwind-plugins": "^3.7.0",
+    "@area17/a17-tailwind-plugins": "^3.7.2",
     "@babel/eslint-parser": "^7.17.0",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/typography": "^0.5.8",

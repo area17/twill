@@ -1,6 +1,6 @@
 # BelongsToMany with pivot data
 
-[BelongsToMany](https://laravel.com/docs/9.x/eloquent-relationships#many-to-many) is a great way to make one model refer
+[BelongsToMany](https://laravel.com/docs/10.x/eloquent-relationships#many-to-many) is a great way to make one model refer
 to many others.
 
 Examples could be:
@@ -10,7 +10,7 @@ Examples could be:
 - A project having multiple contributors
 
 In addition to that we could
-use [pivot](https://laravel.com/docs/9.x/eloquent-relationships#retrieving-intermediate-table-columns)
+use [pivot](https://laravel.com/docs/10.x/eloquent-relationships#retrieving-intermediate-table-columns)
 data to further extend this relation, to complete the examples above:
 
 - Each product in the order can have an order specific price

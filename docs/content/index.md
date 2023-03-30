@@ -1,26 +1,20 @@
-# Twill
+# Welcome to Twill CMS
 
 :::grid:::
 
 :::card:::
-
-[Blogs](3_blogs/index.md)
-
-Read about our progress, in-depth technical articles and more!
-:::#card:::
-
-:::card:::
-
 [Documentation](1_documentation/index.md)
-
-Documentation about Twill!
+Dive into our Documentation section to explore every aspect of Twill CMS. From getting started to advanced functionalities, this section covers step-by-step instructions, configuration options, and detailed explanations to help you make the most of Twill CMS.
 :::#card:::
 
 :::card:::
+[Blog](3_blogs/index.md)
+Stay informed with the latest updates, feature releases, and best practices from the Twill CMS team. Our Blog section provides insights, case studies, and behind-the-scenes stories that will help you understand Twill CMS better.
+:::#card:::
 
+:::card:::
 [Guides](2_guides/index.md)
-
-Up and running in no time with these awesome guides!
+Explore our collection of practical guides to help you effectively use Twill CMS. These resources cater to developers of all skill levels. Dive in, learn, and contribute to our open-source community!
 :::#card:::
 
 :::#grid:::

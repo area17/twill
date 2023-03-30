@@ -42,27 +42,35 @@ foreach($tree[$currentSegment]['items'] ?? [] as $item) {
 }
 @endphp
 
-<div class="mt-68">
+<footer class="mt-68">
 
-    <a
-        class="text-purple no-underline hover:underline"
-        href="{{$githubLink}}"
-        ref="noopener noreferrer"
-        target="_blank">
-        Edit this page on Github
-    </a>
+    <p>
+        <a
+            class="text-link !no-underline"
+            href="{{$githubLink}}"
+            ref="noopener noreferrer"
+            target="_blank">
+            Edit this page on Github
+        </a>
+    </p>
 
-    <div class="flex border-t-[1px] border-grey mt-32">
+    <nav class="border-t border-primary mt-32 pt-16">
+        <ul class="flex flex-row !list-none !ml-0">
         @if ($prev)
-            <a class="no-underline hover:text-purple mt-15" href="{{$prev['url']}}">
-                ← {{$prev['title']}}
-            </a>
+            <li>
+                <a class="!no-underline hover:text-primary group" href="{{$prev['url']}}">
+                    <span class="relative inline-block transition-transform group-hover:-translate-x-4">←</span> {{$prev['title']}}
+                </a>
+            </li>
         @endif
         @if ($next)
-            <a class="ml-auto no-underline hover:text-purple mt-15" href="{{$next['url']}}">
-                {{$next['title']}} →
-            </a>
+            <li class="ml-auto">
+                <a class="!no-underline hover:text-primary mt-15 group" href="{{$next['url']}}">
+                    {{$next['title']}} <span class="relative inline-block transition-transform group-hover:translate-x-4">→</span>
+                </a>
+            </li>
         @endif
-    </div>
+        </ul>
+    </nav>
 
-</div>
+</footer>
