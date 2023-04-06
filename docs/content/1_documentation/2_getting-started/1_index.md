@@ -2,7 +2,7 @@
 
 ## Environment requirements
 
-Twill `3.x` is compatible with Laravel version `9.x`, running on PHP 8.0 and above. As a dependency to your
+Twill `3.x` is compatible with Laravel versions above `9.x`, running on PHP 8.0 and above. As a dependency to your
 own application, Twill shares Laravel's
 [server requirements](https://laravel.com/docs/10.x/deployment#server-requirements).
 
