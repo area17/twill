@@ -52,7 +52,7 @@ export const buildBlock = (block, rootState) => {
     browsers: gatherSelected(rootState.browser.selected, block),
     // gather repeater blocks from the repeater store module
     blocks: Object.assign({}, ...Object.keys(rootState.repeaters.repeaters).filter(repeaterKey => {
-      return repeaterKey.startsWith('blocks-' + block.id)
+      return repeaterKey.startsWith('blocks-' + block.id + '_')
     }).map(repeaterKey => {
       return {
         [repeaterKey.replace('blocks-' + block.id + '_', '')]: rootState.repeaters.repeaters[repeaterKey].map(repeaterItem => {
