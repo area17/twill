@@ -1,6 +1,6 @@
 const {
-  Setup,
   ApplyColorVariables,
+  Setup,
   GridGap,
   ColorTokens,
   SpacingTokens,
@@ -31,9 +31,18 @@ module.exports = {
     spacing: SpacingTokens(feConfig.spacing.tokens),
     spacingGroups: feConfig.spacing.groups,
     colors: feConfig.color.tokens,
-    borderColor: ApplyColorVariables(feConfig.color.tokens, feConfig.color.border),
-    textColor: ApplyColorVariables(feConfig.color.tokens, feConfig.color.text),
-    backgroundColor: ApplyColorVariables(feConfig.color.tokens, feConfig.color.background),
+    borderColor: {
+      ...feConfig.color.tokens,
+      ...ApplyColorVariables(feConfig.color.tokens, feConfig.color.borderColor),
+    },
+    textColor: {
+      ...feConfig.color.tokens,
+      ...ApplyColorVariables(feConfig.color.tokens, feConfig.color.textColor),
+    },
+    backgroundColor: {
+      ...feConfig.color.tokens,
+      ...ApplyColorVariables(feConfig.color.tokens, feConfig.color.backgroundColor),
+    },
     extend: {
       spacing: {
         header: '80px'

@@ -21,7 +21,7 @@ kit to quickly get started.
 
 :::alert:::
 The [basic page builder guide](../../2_guides/1_page-builder-with-blade/1_index.md) is a step by step guide on how to
-create exactly that what is in this example!
+create what is in this example!
 :::#alert:::
 
 The starter kit setup is a basic page builder. It comes with:
@@ -32,17 +32,7 @@ The starter kit setup is a basic page builder. It comes with:
 - A navigation module
 - A frontpage setting
 
-This starter kit requires `kalnoy/nestedset` so install that first:
-
-```bash
-composer require kalnoy/nestedset
-```
-
-The install command is the same as above. Except that you pass the parameter `basic-page-builder` to install it.
-
-```bash
-php artisan twill:install basic-page-builder
-```
+See [`examples/basic-page-builder`](https://github.com/area17/twill/tree/3.x/examples/basic-page-builder) for instructions on setting up the starter kit.
 
 ## Manual new site
 
