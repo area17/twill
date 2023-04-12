@@ -34,7 +34,7 @@ ADMIN_APP_URL=https://admin.${APP_DOMAIN}
 ADMIN_APP_PATH=/
 ```
 
-The [Laravel documentation](https://laravel.com/docs/9.x) is far more extensive about the setup procedure, if this guide went too quick, make sure to give those a read.
+The [Laravel documentation](https://laravel.com/docs/10.x) is far more extensive about the setup procedure, if this guide went too quick, make sure to give those a read.
 
 ## Twill and this example
 

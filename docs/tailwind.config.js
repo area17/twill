@@ -33,15 +33,15 @@ module.exports = {
     colors: feConfig.color.tokens,
     borderColor: {
       ...feConfig.color.tokens,
-      ...ApplyColorVariables(feConfig.color.tokens, feConfig.color.borderColor),
+      ...ApplyColorVariables(feConfig.color.tokens, feConfig.color.border),
     },
     textColor: {
       ...feConfig.color.tokens,
-      ...ApplyColorVariables(feConfig.color.tokens, feConfig.color.textColor),
+      ...ApplyColorVariables(feConfig.color.tokens, feConfig.color.text),
     },
     backgroundColor: {
       ...feConfig.color.tokens,
-      ...ApplyColorVariables(feConfig.color.tokens, feConfig.color.backgroundColor),
+      ...ApplyColorVariables(feConfig.color.tokens, feConfig.color.background),
     },
     extend: {
       spacing: {

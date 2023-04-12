@@ -169,7 +169,7 @@ created, you will notice, there is no way for us to refer to one of our pages! L
 
 ## Adding a browser field
 
-We will use a simple Twill managed [browser field](../../1_documentation/4_form-fields/browser.md). A browser field is
+We will use a simple Twill managed [browser field](../../1_docs/4_form-fields/browser.md). A browser field is
 an easy way to make a connection to another model.
 
 In this case, every menu link will have a link to a page so that we know what we should link to.

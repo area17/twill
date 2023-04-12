@@ -1,7 +1,6 @@
 // active scroll nav behavior
 const ACTIVE_CLASS = 'text-link'
 const LIST_ACTIVE = 'is-active'
-const INACTIVE_CLASS = 'text-black'
 const nav = document.querySelector('.chapters-nav-fixed')
 const headerHeight = 80
 
@@ -15,7 +14,7 @@ if (nav) {
 
   // helper function to get the correct titles href
   const _getActiveHref = (titles, pos) => {
-    let current = []
+    const current = []
     titles.forEach(el => {
       // get height to top of page from title
       const offset = el.getBoundingClientRect()
@@ -33,15 +32,14 @@ if (nav) {
 
     // pluck the last (most recent) item from that array and serve that :)
     // OR if undefined, return the first item
-    let currentActiveIndex = current[current.length - 1]
+    return current[current.length - 1]
       ? current[current.length - 1]
-      : chapterItems .length > 0 ? (chapterItems[0].querySelector('a') ? `#${chapterItems[0].querySelector('a').getAttribute('id')}` : -1) : -1
-    return currentActiveIndex
+      : chapterItems.length > 0 ? (chapterItems[0].querySelector('a') ? `#${chapterItems[0].querySelector('a').getAttribute('id')}` : -1) : -1
   }
 
   const setActiveNav = pos => {
     const active = _getActiveHref(chapterItems, pos)
-    console.log(active);
+
     navItems.forEach(elem => {
       const linkEl = elem.querySelector('a')
       const listEl = elem

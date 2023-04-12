@@ -37,8 +37,8 @@
     margin-top: 0;
   }
 
-  .chapters-nav-fixed > ul {
-    @apply p-20 border border-primary;
+  .chapters-nav-fixed > div > ul {
+    @apply pt-20;
   }
 
   .chapters-nav-fixed > div > ul > li {

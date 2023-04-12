@@ -16,6 +16,7 @@ return [
     | If using the 'local' endpoint type, define a 'local_path' to store files.
     | Supported image services:
     | - 'A17\Twill\Services\MediaLibrary\Imgix'
+    | - 'A17\Twill\Services\MediaLibrary\TwicPics'
     | - 'A17\Twill\Services\MediaLibrary\Local'
     |
      */
