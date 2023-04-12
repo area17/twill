@@ -91,6 +91,7 @@
                                   @btn:click="editor.chain().focus().setCode().run()"/>
 
             <wysiwyg-menu-bar-btn icon="table"
+                                  v-if="toolbar.table"
                                   @btn:click="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()"/>
             <wysiwyg-menu-bar-btn icon="undo"
                                   :disabled="!editor.can().undo()"
@@ -351,7 +352,7 @@
     methods: {
       updateEditor: function (newValue) {
         if (this.editor) {
-          this.editor.setContent(newValue)
+          this.editor.commands.setContent(newValue)
         }
       },
       updateFromStore: function (newValue) {

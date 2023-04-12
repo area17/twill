@@ -520,6 +520,7 @@ trait HandleBlocks
 
             $repository = app()->make(BlockRepository::class);
             $repository->afterDuplicate($block, $newBlock);
+            $this->afterDuplicateHandleBlocks($block, $newBlock);
         }
     }
 
