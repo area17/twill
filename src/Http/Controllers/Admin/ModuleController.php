@@ -1457,7 +1457,7 @@ abstract class ModuleController extends Controller
                     Str::singular($this->moduleName) => $newItem->id,
                 ];
             }
-            
+
             return Response::json([
                 'message' => twillTrans('twill::lang.listing.duplicate.success', ['modelTitle' => $this->modelTitle]),
                 'variant' => FlashLevel::SUCCESS,
