@@ -5,7 +5,7 @@
 </head>
 <body>
 <div>
-    Example preview. See <a href="https://twill.io/docs/crud-modules/revisions-and-previewing.html">documentation.</a>
+    Example preview. See <a href="https://twillcms.com/docs/modules/revisions-and-previewing.html">documentation.</a>
     <br />
     {{ $item->title }}
     <br />

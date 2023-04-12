@@ -353,7 +353,7 @@ class ModuleMake extends Command
 
         if ($this->hasOption('parentModel') && $this->option('parentModel')) {
             $this->warn(
-                'Please see: https://twill.io/docs/crud-modules/nested-modules.html#parent-child-modules for further instruction on nested modules.'
+                'Please see: https://twillcms.com/docs/modules/nested-modules.html#content-parent-child-modules for further instruction on nested modules.'
             );
         }
 

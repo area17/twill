@@ -13,12 +13,12 @@
   <link rel="mask-icon" href="/dist/images/favicons/safari-pinned-tab.svg?v=3" color="#000000">
   <meta name="msapplication-TileColor" content="#ffffff">
   <meta name="theme-color" content="#000000">
-  <meta property="og:image" content="https://twill.io/dist/images/social_share.png" />
+  <meta property="og:image" content="https://twillcms.com/dist/images/social_share.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
 
-  <meta name="twitter:image" content="https://twill.io/dist/images/social_share.png">
-  <meta itemprop="image" content="https://twill.io/dist/images/social_share.png">
+  <meta name="twitter:image" content="https://twillcms.com/dist/images/social_share.png">
+  <meta itemprop="image" content="https://twillcms.com/dist/images/social_share.png">
 
   <!-- Facebook / Open Graph globals -->
   <meta property="og:type" content="website" />
@@ -28,7 +28,7 @@
   <!-- Twitter globals -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@twillcms" />
-  <meta name="twitter:domain" content="twill.io" />
+  <meta name="twitter:domain" content="twillcms.com" />
   <meta name="twitter:creator" content="@twillcms" />
 
   <!-- Main Favicon -->
@@ -54,14 +54,14 @@
 </head>
 
 <!-- Google tag (gtag.js) -->
-{{--<script async src="https://www.googletagmanager.com/gtag/js?id=G-EE0Y26M81B"></script>--}}
-{{--<script>--}}
-{{--    window.dataLayer = window.dataLayer || [];--}}
-{{--    function gtag(){dataLayer.push(arguments);}--}}
-{{--    gtag('js', new Date());--}}
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-EE0Y26M81B"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-{{--    gtag('config', 'G-EE0Y26M81B');--}}
-{{--</script>--}}
+    gtag('config', 'G-EE0Y26M81B');
+</script>
 
 <body
   class="overflow-x-hidden page--{{ Str::slug(Str::replace(['/', '.html'], ['-', ''], $url)) }}"
