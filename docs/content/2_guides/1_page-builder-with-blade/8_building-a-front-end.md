@@ -173,5 +173,5 @@ from the repository! `item` in the data array corresponds to `$item` in our blad
 And that is it, we can now display all the pages by using the slug in the url!
 
 Now, we cannot tell our site visitors to guess the urls. Perhaps we need to 
-[add some navigation](9_adding_navigation.md)?
+[add some navigation](9_adding-navigation.md)?
 
