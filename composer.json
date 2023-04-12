@@ -19,8 +19,8 @@
   ],
   "support": {
     "issues": "https://github.com/area17/twill/issues/",
-    "docs": "https://twill.io/docs",
-    "chat": "https://discord.link/twill"
+    "docs": "https://twill.io/docs/",
+    "chat": "https://discord.gg/cnWk7EFv8R"
   },
   "require": {
     "php": "^8.0",

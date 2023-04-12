@@ -32,13 +32,13 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.0
+          php-version: 8.2
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
           coverage: none
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:9.*" "doctrine/dbal:^3.0" --no-interaction --no-update
+          composer require "laravel/framework:10.*" "doctrine/dbal:^3.0" --no-interaction --no-update
           composer install
 
       - name: Execute tests
