@@ -8,7 +8,7 @@
     @apply f-h1 mt-68;
   }
 
-  body[class*="page--blogs"]:not([class~="page--blogs-index"]) .markdown h1 {
+  body[class*="page--blog"]:not([class~="page--blog-index"]) .markdown h1 {
     @apply f-headline;
   }
 
@@ -22,6 +22,10 @@
   }
 
   .markdown h4 {
+    @apply f-h4 mt-20 font-bold;
+  }
+
+  .markdown h5 {
     @apply f-h4 mt-20 font-bold;
   }
 

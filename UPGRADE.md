@@ -13,19 +13,21 @@ app/Http/Controllers/Admin -> app/Http/Controllers/Twill
 app/Http/Requests/Admin -> app/Http/Requests/Twill
 ```
 
-We provide an automated upgrade path using the commands explaned below. This will take care of:
+Twill database table names are also updated to be prefixed by `twill_`.
+
+We provide an automated upgrade path using the commands explained below. This will take care of:
 - Namespace changes in your project
 - Moving the twill views to the new namespace
 - Moving the twill routes to the new location
-- Fixing (most) compatibility issues.
-- Using the new TwillRoutes facade for ::module and ::singleton instead of a Route macro.
+- Fixing (most) compatibility issues
+- Using the new TwillRoutes facade for ::module and ::singleton instead of a Route macro
+- Updating your twill configuration to specify that you're using non prefixed database table names.
 
 ### Run the upgrade:
 
-> ### Always make sure your git state is clean before attempting an update so you can roll back.
+> ### Always make sure your git state is clean before attempting an upgrade so you can roll back.
 
-Prepare the directories.
-```
+```bash
 php ./vendor/area17/twill/upgrade.php
 ```
 
@@ -33,8 +35,7 @@ php ./vendor/area17/twill/upgrade.php
 
 ### Changes in admin app url/path
 
-The admin url is now by default /admin instead of a subdomain. Please consult the docs to change this to a subdomain if 
-you were relying on that.
+The admin url is now by default /admin instead of a subdomain. Please read the docs to change this to a [subdomain](https://twill.io/docs) if  you were relying on that.
 
 On top of that, this is now more "loose" and does not require the exact url. However, you can set it back to being
 strict using:

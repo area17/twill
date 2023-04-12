@@ -6,7 +6,7 @@ with a front-end.
 We made one, we made a menu, but when you visit `/`, the root of your domain, you will still see the standard Laravel
 landing page.
 
-Let's fix that with a [setting](../../1_documentation/11_settings-sections/index.md)!
+Let's fix that with a [setting](../../1_docs/8_settings-sections/index.md)!
 
 ## Adding a settings section
 

@@ -6,7 +6,7 @@
             <a class="card__link" href="{{ $item['url'] }}">{{ $item['title'] }}</a>
             @isset($item["metadata"]["summary"])<span class="card__summary">{{ $item["metadata"]["summary"] }}</span>@endisset
             @isset($item["metadata"]["tag"])<em class="card__tag">{{ $item["metadata"]["tag"] }}</em>@endisset
-            @isset($item["metadata"]["date"])<stemrong class="card__date">{{ $item["metadata"]["date"] }}</em>@endisset
+            @isset($item["metadata"]["date"])<em class="card__date">{{ $item["metadata"]["date"] }}</em>@endisset
         </p>
     </div>
     @endforeach
