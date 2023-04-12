@@ -25,14 +25,7 @@ If you do not have a local environment, you can use `php artisan serve` to run L
 
 You will need a MySQL or SQLite database set up for this example.
 
-Open up the `.env` file in the root of the project, fill in the database details and add some application and admin details ready for Twill:
-
-```
-APP_DOMAIN=laravel-twill.test
-APP_URL=http://${APP_DOMAIN}
-ADMIN_APP_URL=https://admin.${APP_DOMAIN}
-ADMIN_APP_PATH=/
-```
+Open up the `.env` file in the root of the project, and fill in your database details. 
 
 The [Laravel documentation](https://laravel.com/docs/10.x) is far more extensive about the setup procedure, if this guide went too quick, make sure to give those a read.
 
@@ -41,7 +34,7 @@ The [Laravel documentation](https://laravel.com/docs/10.x) is far more extensive
 Lets require Twill:
 
 ```
-composer require area17/twill:3.x
+composer require area17/twill:"^3.0"
 ```
 
 And then, install this example:

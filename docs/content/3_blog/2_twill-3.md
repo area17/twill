@@ -2,7 +2,7 @@
 
 The priorities for Twill 3.0 were clear. As Twill is a developer focused CMS framework, we wanted to create an even better developer experience and improve our documentation. 
 
-After 3 alpha releases, 2 beta releases and 4 release candidates, we're proud to share that Twill 3.0 is now stable. Thanks to all our contributors and testers over the past year, we couldn't have done it with them!
+After 3 alpha releases, 2 beta releases and 4 release candidates, we're proud to share that Twill 3.0 is now stable.  Thanks to all community members that helped us refine it and major kudos to [Rob Harings](https://github.com/haringsrob) for the herculean effort over the past year!
 
 ![Twill 3.0 logo](assets/twill_cms_three_logo.png)
 
@@ -71,11 +71,8 @@ Twill 3.0 provides the option to generate preview and frontend view files for no
 ## Semi-automated and documented upgrade path based on Rector
 Twill 3.0 offers a seamless [upgrade process from Twill 2](../1_docs/2_getting-started/6_upgrading.md), using Rector to automate many steps and providing detailed documentation for smoother transitions.
 
-## PHP 8+ support
-Twill 3.0 fully supports PHP 8+, bringing performance improvements, enhanced security, up-to-date language features, and improved typing.
-
-## Node 18 and Vue 2.7 support
-The updated version includes support for Node 18 and Vue 2.7, ensuring improved security and compatibility with the latest versions of our frontend dependencies.
+## PHP 8+ only
+Twill 3.0 fully embraces PHP 8, bringing performance improvements, enhanced security, up-to-date language features, and improved typing.
 
 ## Massive test coverage bump
 Twill 3.0 significantly increases its test coverage, now including end-to-end testing of the user experience using Laravel Dusk.
