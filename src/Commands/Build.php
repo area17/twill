@@ -2,72 +2,64 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\Commands\Traits\ExecutesInTwillDir;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
 class Build extends Command
 {
+    use ExecutesInTwillDir;
+
     /**
      * The name and signature of the console command.
      *
      * @var string
+     *
+     * forTesting is only for when the test suite needs to run (on ci) as there are no build dependencies there.
+     * This will result in a git diff.
      */
-    protected $signature = 'twill:build {--noInstall} {--hot} {--watch} {--copyOnly}';
+    protected $signature = 'twill:build {--install} {--hot} {--watch} {--copyOnly} {--customComponentsSource=} {--forTesting}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = "Build Twill assets with custom Vue components/blocks";
+    protected $description = 'Build Twill assets with custom Vue components/blocks';
 
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
-
-    /**
-     * @param Filesystem $filesystem
-     */
-    public function __construct(Filesystem $filesystem)
+    public function __construct(public Filesystem $filesystem)
     {
         parent::__construct();
-
-        $this->filesystem = $filesystem;
     }
 
     /*
      * Executes the console command.
-     *
-     * @return mixed
      */
-    public function handle()
+    public function handle(): void
     {
-        if ($this->option("copyOnly")) {
-            return $this->copyCustoms();
+        if ($this->option('copyOnly')) {
+            $this->copyCustoms();
+
+            return;
         }
 
-        return $this->fullBuild();
+        $this->fullBuild();
     }
 
-    /*
-     * @return void
-     */
-    private function fullBuild()
+    private function fullBuild(): void
     {
         $progressBar = $this->output->createProgressBar(5);
-        $progressBar->setFormat("%current%/%max% [%bar%] %message%");
+        $progressBar->setFormat('%current%/%max% [%bar%] %message%');
 
-        $npmInstall = !$this->option('noInstall');
+        // Check if the node_modules folder is missing, if it is not there we enforce the installation.
+        $npmInstall = !file_exists(__DIR__ . '/../../node_modules') || $this->option('install');
 
-        $progressBar->setMessage(($npmInstall ? "Installing" : "Reusing") . " npm dependencies...\n\n");
+        $progressBar->setMessage(($npmInstall ? 'Installing' : 'Reusing') . " npm dependencies...\n\n");
 
         $progressBar->start();
 
         if ($npmInstall) {
             $this->runProcessInTwill(['npm', 'ci']);
-        } else {
-            sleep(1);
         }
 
         $this->info('');
@@ -78,11 +70,16 @@ class Build extends Command
         sleep(1);
 
         $this->info('');
-        $progressBar->setMessage("Copying custom components...\n\n");
+        if (!$this->option('customComponentsSource')) {
+            $progressBar->setMessage("Copying custom components...\n\n");
+        } else {
+            $progressBar->setMessage("Loading components from custom directory...\n\n");
+        }
         $progressBar->advance();
 
-        $this->copyIcons();
         $this->copyComponents();
+        $progressBar->setMessage("Copying icons...\n\n");
+        $this->copyIcons();
         sleep(1);
 
         $this->copyVendorComponents();
@@ -92,47 +89,67 @@ class Build extends Command
         $progressBar->setMessage("Building assets...\n\n");
         $progressBar->advance();
 
+        $env = [];
+        if ($this->option('customComponentsSource')) {
+            $progressBar->setMessage("Using custom components from {$this->option('customComponentsSource')} ...\n\n");
+            if (str_contains($this->option('customComponentsSource'), '..')) {
+                $this->error('customComponentsSource must be an absolute path');
+                exit(1);
+            }
+            $env = ['VUE_APP_CUSTOM_COMPONENTS_PATH' => $this->option('customComponentsSource')];
+        }
+
         if ($this->option('hot')) {
             $this->startWatcher(resource_path('assets/js/**/*.vue'), 'php artisan twill:build --copyOnly');
-            $this->runProcessInTwill(['npm', 'run', 'serve', '--', "--port={$this->getDevPort()}"], true);
+            $this->runProcessInTwill(
+                command: ['npm', 'run', 'serve', '--', "--port={$this->getDevPort()}"],
+                disableTimeout: true,
+                env: $env
+            );
         } elseif ($this->option('watch')) {
             $this->startWatcher(resource_path('assets/js/**/*.vue'), 'php artisan twill:build --copyOnly');
-            $this->runProcessInTwill(['npm', 'run', 'watch'], true);
+            $this->runProcessInTwill(
+                command: ['npm', 'run', 'watch'],
+                disableTimeout: true,
+                env: $env
+            );
         } else {
-            $this->runProcessInTwill(['npm', 'run', 'build']);
+            $this->runProcessInTwill(
+                command: ['npm', 'run', 'build'],
+                env: $env
+            );
 
             $this->info('');
             $progressBar->setMessage("Publishing assets...\n\n");
             $progressBar->advance();
-            $this->call('twill:update');
+
+            $this->call('twill:update', ['--fromBuild' => true]);
 
             $this->info('');
-            $progressBar->setMessage("Done.");
+            $progressBar->setMessage('Done.');
             $progressBar->finish();
+        }
+
+        if ($this->option('forTesting')) {
+            $this->executeInTwillDir('rm -Rf twill-assets/assets && cp -Rf dist/assets twill-assets/assets');
         }
     }
 
-    /**
-     * @return string
-     */
-    private function getDevPort()
+    private function getDevPort(): string
     {
-        preg_match('/^.*:(\d+)/', config('twill.dev_mode_url'), $matches);
+        preg_match('#^.*:(\d+)#', config('twill.dev_mode_url'), $matches);
 
         return $matches[1] ?? '8080';
     }
 
-    /**
-     * @return void
-     */
-    private function startWatcher($pattern, $command)
+    private function startWatcher(string $pattern, string $command): void
     {
         if (empty($this->filesystem->glob($pattern))) {
             return;
         }
 
         $chokidarPath = base_path(config('twill.vendor_path')) . '/node_modules/.bin/chokidar';
-        $chokidarCommand = [$chokidarPath, $pattern, "-c", $command];
+        $chokidarCommand = [$chokidarPath, $pattern, '-c', $command];
 
         if ($this->filesystem->exists($chokidarPath)) {
             $process = new Process($chokidarCommand, base_path());
@@ -141,26 +158,25 @@ class Build extends Command
 
             try {
                 $process->start();
-            } catch (\Exception $e) {
-                $this->warn("Could not start the chokidar watcher ({$e->getMessage()})\n");
+            } catch (\Exception $exception) {
+                $this->warn("Could not start the chokidar watcher ({$exception->getMessage()})\n");
             }
         } else {
             $this->warn(
                 "The `chokidar-cli` package was not found. It is required to watch custom blocks & components in development. You can install it by running:\n"
             );
             $this->warn("    php artisan twill:dev\n");
-            $this->warn("without the `--noInstall` option.\n");
+            $this->warn("with the `--install` option.\n");
             sleep(2);
         }
     }
 
-    /**
-     * @return void
-     */
-    private function runProcessInTwill(array $command, $disableTimeout = false)
+    private function runProcessInTwill(array $command, bool $disableTimeout = false, array $env = []): void
     {
         $process = new Process($command, base_path(config('twill.vendor_path')));
         $process->setTty(Process::isTtySupported());
+
+        $process->setEnv($env);
 
         if ($disableTimeout) {
             $process->setTimeout(null);
@@ -171,21 +187,15 @@ class Build extends Command
         $process->mustRun();
     }
 
-    /*
-     * @return void
-     */
-    private function copyCustoms()
+    private function copyCustoms(): void
     {
-        $this->info("Copying custom blocks & components...");
+        $this->info('Copying custom blocks & components...');
         $this->copyBlocks();
         $this->copyComponents();
-        $this->info("Done.");
+        $this->info('Done.');
     }
 
-    /**
-     * @return void
-     */
-    private function copyBlocks()
+    private function copyBlocks(): void
     {
         $localCustomBlocksPath = resource_path(
             config('twill.block_editor.custom_vue_blocks_resource_path', 'assets/js/blocks')
@@ -203,10 +213,7 @@ class Build extends Command
         }
     }
 
-    /**
-     * @return void
-     */
-    private function copyComponents()
+    private function copyComponents(): void
     {
         $localCustomComponentsPath = resource_path(
             config('twill.custom_components_resource_path', 'assets/js/components')
@@ -225,14 +232,10 @@ class Build extends Command
         }
     }
 
-    private function copyIcons()
+    private function copyIcons(): void
     {
         $targetDirectory = base_path('vendor/area17/twill/frontend/icons-custom');
-        $originalIcons = base_path('vendor/area17/twill/frontend/icons');
-
-        if (!file_exists($targetDirectory)) {
-            mkdir($targetDirectory);
-        }
+        $originalIcons = config('twill.block_editor.core_icons');
 
         foreach (config('twill.block_editor.directories.source.icons') as $iconDirectory) {
             // We do not want to process original icons.
@@ -246,10 +249,7 @@ class Build extends Command
         }
     }
 
-    /**
-     * @return void
-     */
-    private function copyVendorComponents()
+    private function copyVendorComponents(): void
     {
         $localVendorComponentsPath = resource_path(
             config('twill.vendor_components_resource_path', 'assets/vendor/js/components')

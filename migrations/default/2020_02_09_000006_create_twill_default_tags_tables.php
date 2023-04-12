@@ -13,11 +13,11 @@ class CreateTwillDefaultTagsTables extends Migration
      */
     public function up()
     {
-        $twillTaggedTable = config('twill.tagged_table', 'tagged');
+        $twillTaggedTable = config('twill.tagged_table', 'twill_tagged');
 
         if (!Schema::hasTable($twillTaggedTable)) {
             Schema::create($twillTaggedTable, function (Blueprint $table) {
-                $table->{twillIncrementsMethod()}('id');
+                $table->bigIncrements('id');
                 $table->string('taggable_type');
                 $table->integer('taggable_id')->unsigned();
                 $table->integer('tag_id')->unsigned();
@@ -26,11 +26,11 @@ class CreateTwillDefaultTagsTables extends Migration
         }
 
 
-        $twillTagsTable = config('twill.tags_table', 'tags');
+        $twillTagsTable = config('twill.tags_table', 'twill_tags');
 
         if (!Schema::hasTable($twillTagsTable)) {
             Schema::create($twillTagsTable, function (Blueprint $table) {
-                $table->{twillIncrementsMethod()}('id');
+                $table->bigIncrements('id');
                 $table->string('namespace');
                 $table->string('slug');
                 $table->string('name');
@@ -46,7 +46,7 @@ class CreateTwillDefaultTagsTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists(config('twill.tags_table', 'tags'));
-        Schema::dropIfExists(config('twill.tagged_table', 'tagged'));
+        Schema::dropIfExists(config('twill.tags_table', 'twill_tags'));
+        Schema::dropIfExists(config('twill.tagged_table', 'twill_tagged'));
     }
 }

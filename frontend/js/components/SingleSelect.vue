@@ -1,6 +1,6 @@
 <template>
-  <div class="multiselectorOuter">
-    <a17-inputframe :error="error" :note="note" :label="label" :name="name" :add-new="addNew">
+  <div :class="outerClasses">
+    <a17-inputframe :error="error" :note="note" :label="label" :name="name" :add-new="addNew" :variant="variantInput">
       <input type="hidden" :name="name" v-model="value" />
       <div class="singleselector" :class="gridClasses">
         <div class="singleselector__outer">
@@ -31,11 +31,11 @@
 </template>
 
 <script>
-  import randKeyMixin from '@/mixins/randKey'
-  import FormStoreMixin from '@/mixins/formStore'
-  import InputframeMixin from '@/mixins/inputFrame'
   import AttributesMixin from '@/mixins/addAttributes'
   import ConfirmationMixin from '@/mixins/confirmationMixin'
+  import FormStoreMixin from '@/mixins/formStore'
+  import InputframeMixin from '@/mixins/inputFrame'
+  import randKeyMixin from '@/mixins/randKey'
 
   export default {
     name: 'A17Singleselect',
@@ -54,6 +54,10 @@
         default: 0
       },
       inline: {
+        type: Boolean,
+        default: true
+      },
+      inTable: {
         type: Boolean,
         default: false
       },
@@ -78,6 +82,16 @@
       }
     },
     computed: {
+      variantInput: function () {
+        return [
+          this.inTable ? 'intable' : ''
+        ].join(' ')
+      },
+      outerClasses: function () {
+        return [
+          'multiselectorOuter'
+        ]
+      },
       gridClasses: function () {
         if (this.columns >= 1) {
           return [
@@ -139,7 +153,6 @@
 </script>
 
 <style lang="scss" scoped>
-
   .singleselector {
     color:$color__text;
   }
@@ -325,13 +338,13 @@
 
     // .singleselector__radio:checked + .singleselector__label::before,
     .singleselector__radio--checked + .singleselector__label::before {
-      border-color: $color__blue;
-      background-color: $color__blue;
+      border-color: $color__fborder--active;
+      background-color: $color__fborder--active;
     }
 
     // .singleselector__radio:focus:checked + .singleselector__label::before,
     .singleselector__radio--checked:focus + .singleselector__label::before {
-      border-color: $color__blue;
+      border-color: $color__fborder--active;
     }
   }
 

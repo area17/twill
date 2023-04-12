@@ -6,7 +6,18 @@ use MyCLabs\Enum\Enum;
 
 class UserRole extends Enum
 {
-    const VIEWONLY = 'View only';
-    const PUBLISHER = 'Publisher';
-    const ADMIN = 'Admin';
+    /**
+     * @var string
+     */
+    public const VIEWONLY = 'View only';
+
+    /**
+     * @var string
+     */
+    public const PUBLISHER = 'Publisher';
+
+    /**
+     * @var string
+     */
+    public const ADMIN = 'Admin';
 }

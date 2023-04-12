@@ -3,16 +3,21 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Behaviors\HasMedias;
-use Analytics;
+use A17\Twill\Repositories\ModuleRepository;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
 use Psr\Log\LoggerInterface as Logger;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Analytics\Analytics;
 use Spatie\Analytics\Exceptions\InvalidConfiguration;
 use Spatie\Analytics\Period;
 
@@ -61,16 +66,22 @@ class DashboardController extends Controller
 
     /**
      * Displays the Twill dashboard.
-     *
-     * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(): View|JsonResponse
     {
+        if (request()?->expectsJson()) {
+            if (request()?->input('mine')) {
+                return new JsonResponse($this->getLoggedInUserActivities());
+            }
+
+            return new JsonResponse($this->getAllActivities());
+        }
         $modules = Collection::make($this->config->get('twill.dashboard.modules'));
 
         return $this->viewFactory->make('twill::layouts.dashboard', [
             'allActivityData' => $this->getAllActivities(),
             'myActivityData' => $this->getLoggedInUserActivities(),
+            'ajaxBaseUrl' => request()?->url(),
             'tableColumns' => [
                 [
                     'name' => 'thumbnail',
@@ -100,16 +111,12 @@ class DashboardController extends Controller
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return Collection
-     */
-    public function search(Request $request)
+    public function search(Request $request): Collection
     {
         $modules = Collection::make($this->config->get('twill.dashboard.modules'));
 
         return $modules->filter(function ($module) {
-            return ($module['search'] ?? false);
+            return $module['search'] ?? false;
         })->map(function ($module) use ($request) {
             $repository = $this->getRepository($module['name'], $module['repository'] ?? null);
 
@@ -118,7 +125,7 @@ class DashboardController extends Controller
             return $found->map(function ($item) use ($module) {
                 try {
                     $author = $item->revisions()->latest()->first()->user->name ?? 'Admin';
-                } catch (\Exception $e) {
+                } catch (\Exception) {
                     $author = 'Admin';
                 }
 
@@ -144,35 +151,87 @@ class DashboardController extends Controller
         })->collapse()->values();
     }
 
-    /**
-     * @return array
-     */
-    private function getAllActivities()
+    private function getEnabledActivities(): array
     {
-        return Activity::take(20)->latest()->get()->map(function ($activity) {
-            return $this->formatActivity($activity);
-        })->filter()->values();
+        $modules = $this->config->get('twill.dashboard.modules');
+        $listActivities = [];
+
+        foreach ($modules as $moduleClass => $moduleConfiguration) {
+            $moduleClassToCheck = Relation::getMorphedModel($moduleClass) ?? $moduleClass;
+            if (! empty($moduleConfiguration['activity'])) {
+                if (! class_exists($moduleClassToCheck)) {
+                    //  Try to load it from the morph map.
+                    throw new \Exception(
+                        "Class $moduleClassToCheck specified in twill.dashboard configuration does not exists."
+                    );
+                }
+                $listActivities[] = $moduleClass;
+            }
+        }
+
+        if (config('twill.dashboard.auth_activity_log.login', false)) {
+            $listActivities[] = config('twill.dashboard.auth_activity_causer', 'users');
+        }
+
+        if (config('twill.dashboard.auth_activity_log.logout', false)) {
+            $listActivities[] = config('twill.dashboard.auth_activity_causer', 'users');
+        }
+
+        return $listActivities;
     }
 
-    /**
-     * @return array
-     */
-    private function getLoggedInUserActivities()
+    private function getAllActivities(): LengthAwarePaginator
     {
-        return Activity::where('causer_id', $this->authFactory->guard('twill_users')->user()->id)->take(20)->latest()->get()->map(function ($activity) {
+        $activity = Activity::whereIn('subject_type', $this->getEnabledActivities())
+            ->latest()
+            ->paginate(perPage: 20, pageName: 'all');
+
+        $list = $activity->map(function ($activity) {
             return $this->formatActivity($activity);
-        })->filter()->values();
+        })
+            ->filter()
+            ->values();
+
+        return new LengthAwarePaginator(
+            $list,
+            $activity->total(),
+            $activity->perPage(),
+            $activity->currentPage(),
+            ['path' => request()->path(), 'pageName' => 'all']
+        );
     }
 
-    /**
-     * @param \Spatie\Activitylog\Models\Activity $activity
-     * @return array|null
-     */
-    private function formatActivity($activity)
+    private function getLoggedInUserActivities(): LengthAwarePaginator
     {
+        $activity = Activity::whereIn('subject_type', $this->getEnabledActivities())
+            ->where('causer_id', $this->authFactory->guard('twill_users')->user()->id)
+            ->latest()
+            ->paginate(perPage: 20, pageName: 'mine');
+
+        $list = $activity->map(function ($activity) {
+            return $this->formatActivity($activity);
+        })
+            ->filter()
+            ->values();
+
+        return new LengthAwarePaginator(
+            $list,
+            $activity->total(),
+            $activity->perPage(),
+            $activity->currentPage(),
+            ['path' => request()->path(), 'pageName' => 'mine']
+        );
+    }
+
+    private function formatActivity(Activity $activity): ?array
+    {
+        if ($activity->subject_type === config('twill.auth_activity_causer', 'users')) {
+            return $this->formatAuthActivity($activity);
+        }
+
         $dashboardModule = $this->config->get('twill.dashboard.modules.' . $activity->subject_type);
 
-        if (!$dashboardModule || !$dashboardModule['activity'] ?? false) {
+        if (! $dashboardModule || ! $dashboardModule['activity'] ?? false) {
             return null;
         }
 
@@ -180,19 +239,42 @@ class DashboardController extends Controller
             return null;
         }
 
+        $parentRelationship = $dashboardModule['parentRelationship'] ?? null;
+        $parent = $activity->subject->$parentRelationship;
+
+        // @todo: Improve readability of what is happening here.
         return [
             'id' => $activity->id,
             'type' => ucfirst($dashboardModule['label_singular'] ?? Str::singular($dashboardModule['name'])),
             'date' => $activity->created_at->toIso8601String(),
             'author' => $activity->causer->name ?? twillTrans('twill::lang.dashboard.unknown-author'),
             'name' => $activity->subject->titleInDashboard ?? $activity->subject->title,
-            'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description),
+            'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description, $activity->properties->toArray()),
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
-        ] : []) + (!$activity->subject->trashed() ? [
-            'edit' => moduleRoute($dashboardModule['name'], $dashboardModule['routePrefix'] ?? null, 'edit', $activity->subject_id),
-        ] : []) + (!is_null($activity->subject->published) ? [
+        ] : []) + (! $activity->subject->trashed() ? [
+            'edit' => moduleRoute(
+                $dashboardModule['name'],
+                $dashboardModule['routePrefix'] ?? null,
+                'edit',
+                array_merge($parentRelationship ? [$parent->id] : [], [$activity->subject_id])
+            ),
+        ] : []) + (! is_null($activity->subject->published) ? [
             'published' => $activity->description === 'published' ? true : ($activity->description === 'unpublished' ? false : $activity->subject->published),
+        ] : []);
+    }
+
+    private function formatAuthActivity(Activity $activity): array
+    {
+        return [
+            'id' => $activity->id,
+            'type' => twillTrans('twill::lang.auth.auth-causer'),
+            'date' => $activity->created_at->toIso8601String(),
+            'author' => $activity->causer->name ?? twillTrans('twill::lang.dashboard.unknown-author'),
+            'name' => ucfirst($activity->description) ?? '',
+            'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description, $activity->properties->toArray()),
+        ] + (classHasTrait($activity->subject, HasMedias::class) ? [
+            'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
         ] : []);
     }
 
@@ -201,14 +283,17 @@ class DashboardController extends Controller
      */
     private function getFacts()
     {
+        /** @var Analytics $analytics */
+        $analytics = app(Analytics::class);
         try {
-            $response = Analytics::performQuery(
+            $response = $analytics->performQuery(
                 Period::days(60),
                 'ga:users,ga:pageviews,ga:bouncerate,ga:pageviewsPerSession',
                 ['dimensions' => 'ga:date']
             );
         } catch (InvalidConfiguration $exception) {
             $this->logger->error($exception);
+
             return [];
         }
 
@@ -229,7 +314,7 @@ class DashboardController extends Controller
                     'label' => 'Users',
                     'figure' => 0,
                     'insight' => '0% Bounce rate',
-                    'trend' => __('None'),
+                    'trend' => twillTrans('None'),
                     'data' => [0 => 0],
                     'url' => 'https://analytics.google.com/analytics/web',
                 ],
@@ -237,7 +322,7 @@ class DashboardController extends Controller
                     'label' => 'Pageviews',
                     'figure' => 0,
                     'insight' => '0 Pages / Session',
-                    'trend' => __('None'),
+                    'trend' => twillTrans('None'),
                     'data' => [0 => 0],
                     'url' => 'https://analytics.google.com/analytics/web',
                 ],
@@ -250,12 +335,12 @@ class DashboardController extends Controller
             'week',
             'month',
         ])->mapWithKeys(function ($period) use ($statsByDate, $dummyData) {
-
             if ($dummyData) {
                 return [$period => $dummyData];
             }
 
             $stats = $this->getPeriodStats($period, $statsByDate);
+
             return [
                 $period => [
                     [
@@ -363,6 +448,8 @@ class DashboardController extends Controller
                 }),
             ];
         }
+
+        return [];
     }
 
     /**
@@ -372,17 +459,13 @@ class DashboardController extends Controller
     private function formatStat($count)
     {
         if ($count >= 1000) {
-            return round($count / 1000, 1) . "k";
+            return round($count / 1000, 1) . 'k';
         }
 
         return $count;
     }
 
-    /**
-     * @param array $modules
-     * @return array
-     */
-    private function getShortcuts($modules)
+    private function getShortcuts(Collection $modules): Collection
     {
         return $modules->filter(function ($module) {
             return ($module['count'] ?? false) || ($module['create'] ?? false);
@@ -413,46 +496,36 @@ class DashboardController extends Controller
                     $module['routePrefix'] ?? null,
                     'index',
                     ['openCreate' => true]
-                ) : null
+                ) : null,
             ];
         })->values();
     }
 
-    /**
-     * @param array $modules
-     * @return array
-     */
-    private function getDrafts($modules)
+    private function getDrafts(Collection $modules): Collection
     {
         return $modules->filter(function ($module) {
-            return ($module['draft'] ?? false);
+            return $module['draft'] ?? false;
         })->map(function ($module) {
             $repository = $this->getRepository($module['name'], $module['repository'] ?? null);
 
             $query = $repository->draft()->limit(3)->latest();
 
             if ($repository->hasBehavior('revisions')) {
-                $drafts = $query->mine();
+                $query->mine();
             }
 
-            $drafts = $query->get();
-
-            return $drafts->map(function ($draft) use ($module) {
+            return $query->get()->map(function ($draft) use ($module) {
                 return [
                     'type' => ucfirst($module['label_singular'] ?? Str::singular($module['name'])),
                     'name' => $draft->titleInDashboard ?? $draft->title,
-                    'url' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $draft->id),
+                    'url' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', [$draft->id]),
                 ];
             });
         })->collapse()->values();
     }
 
-    /**
-     * @param string $module
-     * @return \A17\Twill\Repositories\ModuleRepository
-     */
-    private function getRepository($module, $forModule = null)
+    private function getRepository(string $module, string $forModule = null): ModuleRepository
     {
-        return $this->app->make($forModule ?: $this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($module)) . "Repository");
+        return $this->app->make($forModule ?? $this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($module)) . 'Repository');
     }
 }

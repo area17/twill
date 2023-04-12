@@ -6,10 +6,12 @@
  */
 
 import Vue from 'vue'
-import api from '../api/blocks'
-import { BLOCKS } from '../mutations'
+
 import ACTIONS from '@/store/actions'
 import { buildBlock, isBlockEmpty } from '@/utils/getFormData.js'
+
+import api from '../api/blocks'
+import { BLOCKS } from '../mutations'
 
 const state = {
   /**

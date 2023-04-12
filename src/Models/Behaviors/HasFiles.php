@@ -50,7 +50,7 @@ trait HasFiles
     public function file($role, $locale = null, $file = null)
     {
 
-        if (!$file) {
+        if ($file === null) {
             $file = $this->findFile($role, $locale);
         }
 
@@ -96,5 +96,4 @@ trait HasFiles
     {
         return $this->findFile($role, $locale);
     }
-
 }

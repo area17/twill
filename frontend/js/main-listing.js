@@ -15,6 +15,7 @@ import A17Notif from '@/plugins/A17Notif'
 import { mapState } from 'vuex'
 
 // components
+import a17Fieldset from '@/components/Fieldset.vue'
 import a17Datatable from '@/components/table/Datatable.vue'
 import a17NestedDatatable from '@/components/table/nested/NestedDatatable'
 import a17Filter from '@/components/Filter.vue'
@@ -52,6 +53,7 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
   store, // inject store to all children
   el: '#app',
   components: {
+    'a17-fieldset': a17Fieldset,
     'a17-filter': a17Filter,
     'a17-table-filters': a17TableFilters,
     'a17-datatable': a17Datatable,
@@ -91,7 +93,7 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
       Object.keys(this.$refs).filter(k => {
         return k.indexOf('filterDropdown[') === 0
       }).map(k => {
-        this.$refs[k].updateValue()
+        return this.$refs[k].updateValue()
       })
 
       this.reloadDatas()

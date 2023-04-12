@@ -21,8 +21,16 @@
             <td class="itemlist__cell itemlist__cell--btn" v-if="item.hasOwnProperty('id')">
               <a17-checkbox name="item_list" :value="item.endpointType + '_' + item.id" :initialValue="checkedItems" theme="bold" :disabled="item.disabled" />
             </td>
-            <td class="itemlist__cell itemlist__cell--thumb" v-if="item.hasOwnProperty('thumbnail')">
-              <img :src="item.thumbnail" />
+            <td :class="`itemlist__cell itemlist__cell--thumb ${item.endpointType === 'users' ? 'itemlist__cell--thumb-rounded' : ''}`" v-if="item.hasOwnProperty('thumbnail')">
+              <template v-if="item.endpointType === 'users'">
+                <a17-avatar
+                  :name="item.name"
+                  :thumbnail="item.thumbnail"
+                />
+              </template>
+              <template v-else>
+                <img :src="item.thumbnail" />
+              </template>
             </td>
             <td class="itemlist__cell itemlist__cell--name" v-if="item.hasOwnProperty('name')">
               <div v-if="item.hasOwnProperty('renderHtml')" v-html="item.name"></div>
@@ -49,8 +57,9 @@
 </template>
 
 <script>
-  import a17VueFilters from '@/utils/filters.js'
+  import A17Avatar from '@/components/Avatar.vue'
   import mediaItemsMixin from '@/mixins/mediaLibrary/mediaItems'
+  import a17VueFilters from '@/utils/filters.js'
 
   export default {
     name: 'A17Itemlist',
@@ -59,6 +68,9 @@
         type: Array,
         default: () => ['id']
       }
+    },
+    components: {
+      'a17-avatar': A17Avatar
     },
     mixins: [mediaItemsMixin],
     filters: a17VueFilters,
@@ -120,6 +132,9 @@
         return {
           width: items[index].progress ? items[index].progress + '%' : '0%'
         }
+      },
+      getFirstLetter (item) {
+        return item.name.charAt(0)
       }
     }
   }
@@ -201,6 +216,21 @@
     display: block;
   }
 
+  .itemlist__letter {
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    justify-content: center;
+    width: calc(100% - 2px);
+    height: calc(100% - 2px);
+    color: $color__background;
+    border-radius: 50%;
+    visibility: hidden;
+  }
+
   .itemlist__cell--btn {
     width:1px;
     // width:15px + 20px + 10px;
@@ -215,7 +245,8 @@
   // }
 
   .itemlist__cell--thumb {
-    width:50px;
+    position: relative;
+    width: 50px;
 
     img {
       display:block;
@@ -223,6 +254,11 @@
       height:auto;
       background: $color__border--light;
     }
+  }
+
+  .itemlist__cell--thumb-rounded {
+    width: 36px;
+    padding: 13px 0;
   }
 
   .itemlist__cell--loading {

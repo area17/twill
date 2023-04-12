@@ -326,11 +326,12 @@ return [
     ],
     'nav' => [
         'admin' => 'Admin',
-        'cms-users' => 'CMS-Benutzer',
+        'cms-users' => 'CMS Benutzer',
         'logout' => 'Abmelden',
         'media-library' => 'Medien',
         'settings' => 'Einstellungen',
         'close-menu' => 'Menü schließen',
+        'profile' => 'Profile',
     ],
     'notifications' => [
         'reset' => [

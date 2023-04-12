@@ -8,13 +8,17 @@ class {{controllerClassName}} extends BaseModuleController
 {
     protected $moduleName = '{{moduleName}}';
 
-    protected $indexOptions = [
-        {{permalinkOption}}
-        {{reorderOption}}
-    ];{{hasNesting}}
+    {{hasNesting}}
 
     protected $showOnlyParentItemsInBrowsers = true;
 
     protected $nestedItemsDepth = 1;
+
     {{/hasNesting}}
+
+    protected function setUpController(): void
+    {
+        {{permalinkOption}}
+        {{reorderOption}}
+    }
 }

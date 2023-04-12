@@ -31,15 +31,15 @@ class PasswordsTest extends TestCase
         ], 404);
 
         Notification::assertSentTo(
-            $user = User::where(
+            User::where(
                 'email',
-                $email = $this->superAdmin()->email
+                $this->superAdmin()->email
             )->first(),
             Reset::class
         );
 
         $resetUrl = route(
-            'admin.password.reset.form',
+            'twill.password.reset.form',
             Notification::token(),
             false
         );
@@ -77,7 +77,7 @@ class PasswordsTest extends TestCase
             'token' => Notification::token(),
         ]);
 
-        $this->assertSee('Your password has been reset!');
+        $this->assertSee('You don&#039;t have any activity yet.');
     }
 
     public function testCanExpireResetPasswordToken()

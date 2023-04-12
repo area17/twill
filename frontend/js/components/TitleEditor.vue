@@ -2,10 +2,26 @@
   <div class="titleEditor" :class="titleEditorClasses">
     <div class="titleEditor__preview">
       <h2 class="titleEditor__title" :class="{ 'titleEditor__title-only' : !permalink }">
-        <a v-if="editableTitle" @click.prevent="$refs.editModal.open()" href="#">
-          <span class="f--underlined--o">{{ title }}</span> <span v-svg symbol="edit"></span>
+        <a v-if="editableTitle" @click.prevent="$refs.editModal.open()" href="#" class="titleEditor__title-wrapper">
+          <a17-avatar
+            v-if="thumbnail"
+            :name="title"
+            :thumbnail="thumbnail"
+          />
+          <span class="titleEditor__title">
+            <span class="f--underlined--o">{{ title }}</span> <span v-svg symbol="edit"></span>
+          </span>
         </a>
-        <span v-else>{{ customTitle ? customTitle : title }}</span>
+        <span v-else class="titleEditor__title-wrapper">
+          <a17-avatar
+            v-if="thumbnail"
+            :name="title"
+            :thumbnail="thumbnail"
+          />
+          <span class="titleEditor__title">
+            {{ customTitle ? customTitle : title }}
+          </span>
+        </span>
       </h2>
       <a v-if="(permalink || customPermalink) && !showModal" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small">
         <span class="f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
@@ -26,18 +42,20 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
-  import a17VueFilters from '@/utils/filters.js'
+  import { mapGetters,mapState } from 'vuex'
+
+  import A17Avatar from '@/components/Avatar.vue'
   import langManager from '@/components/LangManager.vue'
   import a17ModalValidationButtons from '@/components/modals/ModalValidationButtons.vue'
-
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
+  import a17VueFilters from '@/utils/filters.js'
 
   export default {
     name: 'A17TitleEditor',
     mixins: [InputframeMixin, LocaleMixin],
     components: {
+      'a17-avatar': A17Avatar,
       'a17-modal-validation': a17ModalValidationButtons,
       'a17-langmanager': langManager
     },
@@ -51,6 +69,10 @@
       warningMessage: {
         type: String,
         default: 'Missing title'
+      },
+      thumbnail: {
+        type: String,
+        default: ''
       },
       showModal: {
         type: Boolean,
@@ -177,6 +199,16 @@
 
     .stickyNav.sticky__fixedTop & {
       line-height: 35px;
+    }
+  }
+
+  .titleEditor__title-wrapper {
+    display: inline-flex;
+    align-content: center;
+    align-items: center;
+
+    > .avatar {
+      margin-right: 10px;
     }
   }
 

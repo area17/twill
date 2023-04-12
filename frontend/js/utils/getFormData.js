@@ -31,10 +31,34 @@ export const stripOutBlockNamespace = (name, id) => {
   return nameWithoutBlock.match(/]/gi).length > 1 ? nameWithoutBlock.replace(']', '') : nameWithoutBlock.slice(0, -1)
 }
 
-export const buildBlock = (block, rootState) => {
+export const buildBlock = (block, rootState, isRepeater = false) => {
+  const repeaterIds = Object.keys(rootState.repeaters.repeaters);
+  const repeaters = Object.assign({}, ...repeaterIds.filter(repeaterKey => {
+    return repeaterKey.startsWith('blocks-' + block.id + '|')
+  })
+    .map(repeaterKey => {
+      return {
+        [repeaterKey.replace('blocks-' + block.id + '|', '')]: rootState.repeaters.repeaters[repeaterKey].map(repeaterItem => {
+          return buildBlock(repeaterItem, rootState, true)
+        })
+      }
+    }))
+
+  const blockIds = Object.keys(rootState.blocks.blocks);
+  const blocks = Object.assign({}, ...blockIds.filter(blockKey => {
+    return blockKey.startsWith('blocks-' + block.id)
+  }).map(blockKey => {
+    return {
+      [blockKey.replace('blocks-' + block.id + '|', '')]: rootState.blocks.blocks[blockKey].map(repeaterItem => {
+        return buildBlock(repeaterItem, rootState)
+      })
+    }
+  }))
+
   return {
     id: block.id,
     type: block.type,
+    is_repeater: isRepeater,
     editor_name: block.name,
     // retrieve all fields for this block and clean up field names
     content: rootState.form.fields.filter((field) => {
@@ -51,15 +75,7 @@ export const buildBlock = (block, rootState) => {
     medias: gatherSelected(rootState.mediaLibrary.selected, block),
     browsers: gatherSelected(rootState.browser.selected, block),
     // gather repeater blocks from the repeater store module
-    blocks: Object.assign({}, ...Object.keys(rootState.repeaters.repeaters).filter(repeaterKey => {
-      return repeaterKey.startsWith('blocks-' + block.id)
-    }).map(repeaterKey => {
-      return {
-        [repeaterKey.replace('blocks-' + block.id + '_', '')]: rootState.repeaters.repeaters[repeaterKey].map(repeaterItem => {
-          return buildBlock(repeaterItem, rootState)
-        })
-      }
-    }))
+    blocks: { ...repeaters, ...blocks }
   }
 }
 
@@ -85,6 +101,8 @@ export const gatherRepeaters = (rootState) => {
 
         // and lastly we want to keep the id to update existing items
         fields.id = repeaterItem.id
+        // If the repeater has a target id we are referencing an existing item.
+        fields.repeater_target_id = repeaterItem.repeater_target_id ?? null
 
         return Object.assign(repeaterBlock, fields)
       })
@@ -94,7 +112,10 @@ export const gatherRepeaters = (rootState) => {
 
 export const gatherBlocks = (rootState) => {
   const used = { ...rootState.blocks.blocks }
-  return Object.keys(used).map(name => {
+
+  return Object.keys(used).filter(blockKey => {
+    return !blockKey.startsWith('blocks-')
+  }).map(name => {
     return used[name].map(block => {
       block.name = name
       return buildBlock(block, rootState)

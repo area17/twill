@@ -6,6 +6,7 @@ use A17\Twill\Models\User;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -25,8 +26,9 @@ class ResetPasswordController extends Controller
     | explore this trait and override any methods you wish to tweak.
     |
      */
-
-    use ResetsPasswords;
+    use ResetsPasswords {
+        sendResetResponse as traitSendResetResponse;
+    }
 
     /**
      * @var Redirector
@@ -78,6 +80,22 @@ class ResetPasswordController extends Controller
         return Password::broker('twill_users');
     }
 
+    protected function sendResetResponse(Request $request, $response)
+    {
+        $user = User::where('email', $request->input('email'))->first();
+        if (!$user->isActivated()) {
+            $user->registered_at = Carbon::now();
+            $user->save();
+        }
+
+        if ($user->require_new_password) {
+            $user->require_new_password = false;
+            $user->save();
+        }
+
+        return $this->traitSendResetResponse($request, $response);
+    }
+
     /**
      * @param Request $request
      * @param string|null $token
@@ -96,7 +114,7 @@ class ResetPasswordController extends Controller
             ]);
         }
 
-        return $this->redirector->to(route('admin.password.reset.link'))->withErrors([
+        return $this->redirector->to(route('twill.password.reset.link'))->withErrors([
             'token' => 'Your password reset token has expired or could not be found, please retry.',
         ]);
     }
@@ -119,7 +137,7 @@ class ResetPasswordController extends Controller
             ]);
         }
 
-        return $this->redirector->to(route('admin.password.reset.link'))->withErrors([
+        return $this->redirector->to(route('twill.password.reset.link'))->withErrors([
             'token' => 'Your password reset token has expired or could not be found, please retry.',
         ]);
     }

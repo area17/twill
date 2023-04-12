@@ -1,0 +1,60 @@
+@layer components {
+  .chapters-nav {
+    @apply mt-32;
+  }
+
+.chapters-nav ul {
+  @apply ml-0;
+}
+
+  .chapters-nav li {
+    @apply mt-12 list-none;
+  }
+
+  .chapters-nav li:first-child {
+    margin-top: 0;
+  }
+
+  .chapters-nav a {
+    @apply no-underline f-body-2 font-medium text-primary;
+    text-decoration: none !important;
+  }
+
+  .chapters-nav a:hover {
+    @apply !text-link;
+  }
+
+  .chapters-nav-fixed {
+    @apply pt-68 pb-16;
+  }
+
+  .chapters-nav-fixed li {
+    @apply mt-12;
+    line-height: 1.2;
+  }
+
+  .chapters-nav-fixed li:first-child {
+    margin-top: 0;
+  }
+
+  .chapters-nav-fixed > div > ul {
+    @apply pt-20;
+  }
+
+  .chapters-nav-fixed > div > ul > li {
+    @apply mt-12;
+  }
+
+  .chapters-nav ul ul,
+  .chapters-nav-fixed ul ul {
+    @apply mt-12 pl-24;
+  }
+
+  .chapters-nav-fixed a {
+    @apply no-underline f-body-2 font-medium;
+  }
+
+  .chapters-nav-fixed a:hover {
+    @apply text-link;
+  }
+}

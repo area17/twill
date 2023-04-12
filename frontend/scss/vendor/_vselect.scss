@@ -24,24 +24,33 @@ $multiSelectHeight: 45px;
       border-left: 2px solid rgba($color__icons,.8);
     }
 
-    .dropdown-menu {
+    .vs__dropdown-menu {
       border:0 none;
       padding:15px 0;
       border-top:1px solid $color__border--light;
       box-shadow:0 0px 8px rgba(0,0,0,0.3);
       border-radius: 2px;
 
-      li.no-options {
+      li.vs__no-options {
         color:$color__text--light;
         text-align:left;
         padding:0 15px;
       }
 
-      li {
-        > a {
-          padding:0 15px;
-          background:$color__background;
-          color:$color__text--light;
+      .vs__dropdown-option {
+        padding:0 15px;
+        background:$color__background;
+        color:$color__text--light;
+
+        &:hover,
+        &:focus {
+          color:$color__text;
+          background:$color__light;
+        }
+
+        &--highlight {
+          color:$color__text;
+          background:$color__light;
 
           &:hover,
           &:focus {
@@ -50,36 +59,21 @@ $multiSelectHeight: 45px;
           }
         }
 
-        &.highlight {
-          > a {
+        &--selected {
+          color:$color__text;
+          background:$color__background;
+
+          &:hover,
+          &:focus {
             color:$color__text;
             background:$color__light;
-
-            &:hover,
-            &:focus {
-              color:$color__text;
-              background:$color__light;
-            }
-          }
-        }
-
-        &.active {
-          > a {
-            color:$color__text;
-            background:$color__background;
-
-            &:hover,
-            &:focus {
-              color:$color__text;
-              background:$color__light;
-            }
           }
         }
       }
     }
   }
 
-  .v-select .dropdown-menu li > a {
+  .v-select .vs__dropdown-menu .vs__dropdown-option {
     height:$singleSelectHeight;
     line-height:$singleSelectHeight;
   }
@@ -95,7 +89,7 @@ $multiSelectHeight: 45px;
 
   /* Display an arrow in single mode */
   .vselect--single {
-    .dropdown-toggle {
+    .vs__dropdown-toggle {
       &::after {
         visibility: visible;
         content: "";
@@ -114,59 +108,105 @@ $multiSelectHeight: 45px;
       }
     }
 
-    .selected-tag {
-      cursor:pointer;
+    .vselect__field {
+      .vs__selected {
+        padding: 0;
+        cursor:pointer;
+      }
+
+      input {
+        padding: 0 !important;
+      }
+    }
+
+    .vs__actions {
+      padding-right: 0;
+      padding-left: 0;
+    }
+
+    .vs__selected-options {
+      padding: 0 15px;
+    }
+
+    .vs__search {
+      padding-right: 0;
+      border: 0;
+    }
+
+  }
+
+  .vselect--single .vs--disabled.v-select {
+    background: var(--vs-state-disabled-bg);
+    .vs__dropdown-toggle {
+      background: none;
     }
   }
 
-  .loading .vselect--single .dropdown-toggle::after {
+  .loading .vselect--single .vs__dropdown-toggle::after {
     opacity:0;
   }
 
   .vselect__field {
-    .dropdown-toggle {
+    .vs__dropdown-toggle {
       border-radius:2px;
       background:$color__background;
       overflow: hidden;
       cursor:pointer;
     }
 
-    .selected-tag {
+    .vs__selected {
       border:0 none;
       background:transparent;
       border-radius:0;
       padding:0 0 0 15px;
       margin:0;
       color:$color__f--text;
+      button {
+        position: absolute;
+        background-color: $color__black--35;
+        color: $color__f--text;
+        height: 18px;
+        width: 18px;
+        top: 50%;
+        right: 5px;
+        transform: translateY(-50%);
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+PHBhdGggZmlsbD0ibm9uZSIgc3Ryb2tlPSIjRTVFNUU1IiBkPSJNMiAybDYgNm0wLTZMMiA4Ii8+PC9zdmc+);
+        background-repeat: no-repeat;
+        background-position: 50%;
+        border-radius: 50%;
+      }
+      svg {
+        display: none;
+      }
     }
 
-    .dropdown {
+    .v-select {
       &.open,
       &:hover {
-        .dropdown-toggle {
+        .vs__dropdown-toggle {
           @include hoverState;
           border-bottom-left-radius: 2px;
           border-bottom-right-radius: 2px;
         }
 
-        .selected-tag {
+        .vs__selected {
           color:$color__text;
           opacity:1;
         }
       }
     }
 
-    .open-indicator {
+    .vs__open-indicator {
       display:none;
     }
   }
 
   .vselect__field {
-    .dropdown-toggle {
+    .vs__dropdown-toggle {
       height:$singleSelectHeight - 2px;
     }
 
-    .selected-tag {
+    .vs__selected {
       height:$singleSelectHeight - 2px;
       line-height:$singleSelectHeight - 2px;
       @include font-regular;
@@ -178,11 +218,11 @@ $multiSelectHeight: 45px;
   This is the style that should be used in Regular Forms
   */
   .vselect--large .vselect__field {
-    .dropdown-toggle {
+    .vs__dropdown-toggle {
       height:$singleLargeSelectHeight;
     }
 
-    .selected-tag {
+    .vs__selected {
       height:$singleLargeSelectHeight;
       line-height:$singleLargeSelectHeight;
     }
@@ -195,7 +235,7 @@ $multiSelectHeight: 45px;
   }
 
   .vselect--single {
-    .selected-tag {
+    .vs__selected {
       pointer-events:none;
     }
   }
@@ -207,6 +247,7 @@ $multiSelectHeight: 45px;
       opacity: 1;
       min-width: 200px;
       margin: 0;
+      pointer-events: none;
     }
 
     &.vselect--has-value .v-select.unsearchable input[type="search"] {
@@ -215,7 +256,7 @@ $multiSelectHeight: 45px;
       margin: 0;
     }
 
-    .v-select.unsearchable > .dropdown-toggle > .selected-tag + input[type="search"] {
+    .v-select.unsearchable > .vs__dropdown-toggle > .vs__selected + input[type="search"] {
       width: 1px;
       margin: 0;
     }
@@ -223,16 +264,17 @@ $multiSelectHeight: 45px;
 
   /* Fix width UI : https://github.com/sagalbot/vue-select/issues/225 */
   .v-select {
-    .dropdown {
-      .dropdown-menu {
+    .vs__dropdown {
+      .vs__dropdown-menu {
         min-width: initial;
       }
     }
-    .dropdown-toggle {
+
+    .vs__dropdown-toggle {
       display: flex;
       flex-wrap: no-wrap;
 
-      .selected-tag {
+      .vs__selected {
         position: relative !important;
       }
 
@@ -248,10 +290,10 @@ $multiSelectHeight: 45px;
   Variant : multiple mode ON
   */
   .vselect--multiple {
-    .dropdown-toggle {
+    .vs__dropdown-toggle {
       min-height:$multiSelectHeight;
       height:auto;
-      padding-bottom:7px;
+      padding-bottom:0px;
       @include defaultState;
       flex-wrap: wrap;
 
@@ -260,7 +302,7 @@ $multiSelectHeight: 45px;
       }
     }
 
-    .open .dropdown-toggle {
+    .open .vs__dropdown-toggle {
       @include hoverState;
     }
 
@@ -270,7 +312,7 @@ $multiSelectHeight: 45px;
       margin-top:7px;
     }
 
-    .selected-tag {
+    .vs__selected {
       border-radius:15px;
       background:$color__border;
       padding:0 #{5px + 18px + 10px} 0 15px;
@@ -311,6 +353,16 @@ $multiSelectHeight: 45px;
     }
   }
 
+  .v-select.disabled {
+    .selected-tag {
+      padding-right: 15px;
+
+      .close {
+        display: none;
+      }
+    }
+  }
+
   /*
   Variant : Small variant for multiple vselect
   used for tags in the media library
@@ -330,12 +382,12 @@ $multiSelectHeight: 45px;
       margin-right: 1px;
     }
 
-    .dropdown-menu li.no-options {
+    .vs__dropdown-menu li.vs__no-options {
       font-size: 13px;
     }
 
     &.vselect--multiple {
-      .selected-tag {
+      .vs__selected {
         height: 21px;
         line-height: 21px;
         font-size: 15px;
@@ -363,7 +415,7 @@ $multiSelectHeight: 45px;
         margin-top:7px;
       }
 
-      .dropdown-toggle {
+      .vs__dropdown-toggle {
         min-height:$singleSelectHeight;
       }
     }
@@ -371,7 +423,7 @@ $multiSelectHeight: 45px;
 
   /* Error states */
   .input--error {
-    .v-select .dropdown-toggle {
+    .v-select .vs__dropdown-toggle {
       border-color:$color__error;
 
       &:hover,

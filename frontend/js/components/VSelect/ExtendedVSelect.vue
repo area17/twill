@@ -1,5 +1,7 @@
 <script>
 // ExtendedVSelect.vue
+  import 'vue-select/dist/vue-select.css'
+
   import vSelect from 'vue-select'
 
   export default {
@@ -41,34 +43,7 @@
         return false
       }
     },
-    watch: {
-      search () {
-        this.onSearch(this.search, this.toggleLoading)
-        this.$emit('search', this.search, this.toggleLoading)
-      }
-    },
     methods: {
-      /**
-       * Toggle the visibility of the dropdown menu.
-       * @param  {Event} e
-       * @return {void}
-       */
-      toggleDropdown (e) {
-        if (!this.disabled) {
-          if (e.target === this.$refs.openIndicator ||
-            e.target === this.$refs.search ||
-            e.target === this.$refs.toggle ||
-            e.target === this.$refs.selectedOptions ||
-            e.target === this.$el) {
-            if (this.open) {
-              this.$refs.search.blur() // dropdown will close on blur
-            } else {
-              this.open = true
-              this.$refs.search.focus()
-            }
-          }
-        }
-      },
       /**
        * Delete the value on Delete keypress when there is no
        * text in the search input, & there's tags to delete
@@ -87,6 +62,9 @@
        * https://github.com/sagalbot/vue-select/commit/8a601c0ac3311adb89bc6e31b8cf215b1343d93c
        */
       isOptionSelected (option) {
+        if (this.valueAsArray === undefined) {
+          return false;
+        }
         return this.valueAsArray.some(value => {
           if (typeof value === 'object') {
             return this.optionObjectComparator(value, option)
@@ -96,7 +74,7 @@
       }
     },
     mounted () {
-      if (this.taggable) this.onSearch(this.search, this.toggleLoading)
+      if (this.taggable) this.$emit('search', this.search, this.toggleLoading)
     }
   }
 </script>

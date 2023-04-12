@@ -23,7 +23,7 @@ class Controller extends BaseController
             App::singleton(ExceptionHandler::class, TwillHandler::class);
         }
 
-        $this->seo = new Seo;
+        $this->seo = new Seo();
 
         $this->seo->title = Config::get('twill.seo.site_title');
         $this->seo->description = Config::get('twill.seo.site_desc');

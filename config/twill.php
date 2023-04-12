@@ -20,8 +20,18 @@ return [
     | This value is the URL of your admin application.
     |
      */
-    'admin_app_url' => env('ADMIN_APP_URL', 'admin.' . env('APP_URL')),
-    'admin_app_path' => env('ADMIN_APP_PATH', ''),
+    'admin_app_url' => env('ADMIN_APP_URL', null),
+    'admin_app_path' => ltrim(env('ADMIN_APP_PATH', env('ADMIN_APP_URL', null) ? '' : 'admin'), '/'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application strict url handeling
+    |--------------------------------------------------------------------------
+    |
+    | Setting this value to true will enable strict domain handling.
+    |
+     */
+    'admin_app_strict' => env('ADMIN_APP_STRICT', false),
 
     /*
    |--------------------------------------------------------------------------
@@ -31,7 +41,7 @@ return [
    | This value is added to the admin route names of your Admin application.
    |
     */
-    'admin_route_name_prefix' => env('ADMIN_ROUTE_NAME_PREFIX', 'admin.'),
+    'admin_route_name_prefix' => env('ADMIN_ROUTE_NAME_PREFIX', 'twill.'),
 
     /*
     |--------------------------------------------------------------------------
@@ -41,7 +51,7 @@ return [
     | This value is added to the title tag of your Admin application.
     |
      */
-    'admin_app_title_suffix' => env('ADMIN_APP_TITLE_SUFFIX', 'Admin'),
+    'admin_app_title_suffix' => env('ADMIN_APP_TITLE_SUFFIX', 'Twill'),
 
     /*
     |--------------------------------------------------------------------------
@@ -119,22 +129,20 @@ return [
     | Twill default tables naming configuration
     |--------------------------------------------------------------------------
     |
-    | TODO: In Twill 3.0, all tables will be prefixed by `twill_`.
-    |
      */
-    'users_table' => 'twill_users',
+    'blocks_table' => 'twill_blocks',
+    'features_table' => 'twill_features',
+    'fileables_table' => 'twill_fileables',
+    'files_table' => 'twill_files',
+    'mediables_table' => 'twill_mediables',
+    'medias_table' => 'twill_medias',
     'password_resets_table' => 'twill_password_resets',
+    'related_table' => 'twill_related',
+    'settings_table' => 'twill_settings',
+    'tagged_table' => 'twill_tagged',
+    'tags_table' => 'twill_tags',
     'users_oauth_table' => 'twill_users_oauth',
-    'blocks_table' => 'blocks',
-    'features_table' => 'features',
-    'settings_table' => 'settings',
-    'medias_table' => 'medias',
-    'mediables_table' => 'mediables',
-    'files_table' => 'files',
-    'fileables_table' => 'fileables',
-    'related_table' => 'related',
-    'tags_table' => 'tags',
-    'tagged_table' => 'tagged',
+    'users_table' => 'twill_users',
 
     /*
     |--------------------------------------------------------------------------
@@ -168,6 +176,8 @@ return [
 
     'google_maps_api_key' => env('GOOGLE_MAPS_API_KEY'),
 
+    'custom_auth_service_provider' => false,
+
     /*
     |--------------------------------------------------------------------------
     | Twill FE Application configuration
@@ -177,7 +187,7 @@ return [
     'js_namespace' => 'TWILL',
     'dev_mode' => env('TWILL_DEV_MODE', false),
     'dev_mode_url' => env('TWILL_DEV_MODE_URL', 'http://localhost:8080'),
-    'public_directory' => env('TWILL_ASSETS_DIR', 'assets/admin'),
+    'public_directory' => env('TWILL_ASSETS_DIR', 'assets/twill'),
     'manifest_file' => 'twill-manifest.json',
     'vendor_path' => 'vendor/area17/twill',
     'custom_components_resource_path' => 'assets/js/components',
@@ -208,7 +218,7 @@ return [
         'ru',
         'tr',
         'bs',
-        'ar'
+        'ar',
     ],
 
     /*
@@ -216,7 +226,53 @@ return [
     | When a singleton is not seeded, you can use this flag to automatically seed it.
     |--------------------------------------------------------------------------
     */
-    'auto_seed_singletons' => false,
+    'auto_seed_singletons' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | The default crops that can be used in models. These can be extended by
+    | a model specific $mediasParams property, or by overriding the getMediasParams
+    | method.
+    |--------------------------------------------------------------------------
+    */
+    'default_crops' => [
+        'cover' => [
+            'default' => [
+                [
+                    'name' => 'default',
+                    'ratio' => 16 / 9,
+                ],
+            ],
+            'mobile' => [
+                [
+                    'name' => 'mobile',
+                    'ratio' => 1,
+                ],
+            ],
+            'flexible' => [
+                [
+                    'name' => 'free',
+                    'ratio' => 0,
+                ],
+                [
+                    'name' => 'landscape',
+                    'ratio' => 16 / 9,
+                ],
+                [
+                    'name' => 'portrait',
+                    'ratio' => 3 / 5,
+                ],
+            ],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | This parameter will enable some debug views:
+    | - Shows an error if a view is missing in the editor/front-end
+    |--------------------------------------------------------------------------
+    */
+    'debug' => env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------

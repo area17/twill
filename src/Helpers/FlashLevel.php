@@ -6,8 +6,8 @@ use MyCLabs\Enum\Enum;
 
 class FlashLevel extends Enum
 {
-    const SUCCESS = 'success';
-    const ERROR = 'error';
-    const WARNING = 'caution';
-    const INFO = 'help';
+    public const SUCCESS = 'success';
+    public const ERROR = 'error';
+    public const WARNING = 'caution';
+    public const INFO = 'help';
 }

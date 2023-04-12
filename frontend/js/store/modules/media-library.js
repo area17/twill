@@ -4,10 +4,12 @@
  * Set options for the Media Library and all the medias attached into the form
  */
 
-import Vue from 'vue'
 import cloneDeep from 'lodash/cloneDeep'
-import { MEDIA_LIBRARY } from '../mutations'
+import Vue from 'vue'
+
 import ACTIONS from '@/store/actions'
+
+import { MEDIA_LIBRARY } from '../mutations'
 
 const state = {
   /**

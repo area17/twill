@@ -28,10 +28,19 @@
     },
     computed: {
       textfieldClasses: function () {
-        return {
-          'input--error': this.error,
-          'input--small': this.size === 'small'
+        const classes = [
+          this.size === 'small' ? 'input--small' : '',
+          this.error ? 'input--error' : '',
+          'input-wrapper-' + (this.name || this.labelFor)
+        ]
+
+        if (this.variant) {
+          this.variant.split(' ').forEach((val) => {
+            classes.push(`input--${val}`)
+          })
         }
+
+        return classes
       }
     },
     methods: {
@@ -121,8 +130,22 @@
     }
   }
 
-  /* small variant */
+  /* Variant input in table */
+  .input--intable {
+    margin-top:0;
 
+    @include breakpoint('large+') {
+      display: flex;
+      align-items: center;
+
+      .input__label {
+        flex-grow: 1;
+        margin-bottom:0;
+      }
+    }
+  }
+
+  /* small variant */
   .input--small {
     margin-top:16px;
 

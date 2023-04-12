@@ -2,71 +2,19 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use App\Http\Controllers\Admin\NodeController;
+use App\Http\Controllers\Twill\NodeController;
 use App\Models\Node;
 use App\Repositories\NodeRepository;
 
-class NestedModuleTest extends TestCase
+class NestedModuleTest extends NestedModuleTestBase
 {
-    protected $allFiles = [
-       '{$stubs}/nested_module/2021_09_16_230238_create_nodes_tables.php' => '{$database}/migrations/',
-       '{$stubs}/nested_module/Node.php' => '{$app}/Models/',
-       '{$stubs}/nested_module/NodeController.php' => '{$app}/Http/Controllers/Admin/',
-       '{$stubs}/nested_module/NodeRepository.php' => '{$app}/Repositories/',
-       '{$stubs}/nested_module/NodeRequest.php' => '{$app}/Http/Requests/Admin/',
-       '{$stubs}/nested_module/form.blade.php' => '{$resources}/views/admin/books/form.blade.php',
-       '{$stubs}/nested_module/admin.php' => '{$base}/routes/admin.php',
-    ];
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->copyFiles($this->allFiles);
-
-        $this->migrate();
-
-        $this->login();
-    }
-
-    public function createNodes($titles)
-    {
-        return collect($titles)->map(function ($name) {
-            return app(NodeRepository::class)->create([
-                'title' => $name,
-                'published' => true,
-            ]);
-        });
-    }
-
-    public function arrangeNodes($parents, $children)
-    {
-        $data = $parents->map(function ($item) {
-            return ['id' => $item->id, 'children' => []];
-        })->all();
-
-        // All children are attached to the first parent
-        $data[0]['children'] = $children->map(function ($item) {
-            return ['id' => $item->id, 'children' => []];
-        })->all();
-
-        return $data;
-    }
-
-    // FIXME — this is needed for the new admin routes to take effect in the next test,
-    // because files are copied in `setUp()` after the app is initialized.
-    public function testDummy()
-    {
-        $this->assertTrue(true);
-    }
-
-    public function testReorderNestedModuleItems()
+    public function testReorderNestedModuleItems(): void
     {
         // Given some Node items
         $parents = $this->createNodes(['One', 'Two', 'Three']);
         $children = $this->createNodes(['A', 'B', 'C']);
         $this->assertEquals(6, Node::count());
-        $this->assertEquals(0, Node::where(['parent_id', null])->count());
+        $this->assertEquals(6, Node::where('parent_id', null)->count());
 
         // When they are arranged in a parent-child relationship
         $data = $this->arrangeNodes($parents, $children);
@@ -78,7 +26,7 @@ class NestedModuleTest extends TestCase
         $this->assertEquals(0, $parents[2]->refresh()->children()->count());
     }
 
-    public function testNestedModuleBrowseParents()
+    public function testNestedModuleBrowseParents(): void
     {
         NodeController::$forceShowOnlyParentItemsInBrowsers = true;
 
@@ -94,10 +42,10 @@ class NestedModuleTest extends TestCase
         $result = json_decode($this->content(), true);
 
         // Then only parents are returned
-        $this->assertEquals(3, count($result['data']));
+        $this->assertCount(3, $result['data']);
     }
 
-    public function testNestedModuleBrowseParentsAndChildren()
+    public function testNestedModuleBrowseParentsAndChildren(): void
     {
         NodeController::$forceShowOnlyParentItemsInBrowsers = false;
 
@@ -113,10 +61,10 @@ class NestedModuleTest extends TestCase
         $result = json_decode($this->content(), true);
 
         // Then all items are returned
-        $this->assertEquals(6, count($result['data']));
+        $this->assertCount(6, $result['data']);
     }
 
-    public function testAncestorsSlugCreationOrder()
+    public function testAncestorsSlugCreationOrder(): void
     {
         $repository = app(NodeRepository::class);
         $childlvl2 = $repository->create(

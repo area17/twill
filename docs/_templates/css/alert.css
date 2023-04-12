@@ -1,0 +1,17 @@
+@layer components {
+  .alert.bg-tip .markdown a {
+    @apply text-tip;
+  }
+
+  .alert.bg-warn .markdown a {
+    @apply text-primary;
+  }
+
+  .alert.bg-info .markdown a {
+    @apply text-info;
+  }
+
+  .alert.bg-danger .markdown a {
+    @apply text-danger;
+  }
+}

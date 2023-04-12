@@ -88,7 +88,7 @@ class FeaturedController extends Controller
             'bucketSourceTitle' => $featuredSection['sourceHeaderTitle'] ?? null,
             'bucketsSectionIntro' => $featuredSection['sectionIntroText'] ?? null,
             'restricted' => $featuredSection['restricted'] ?? true,
-            'saveUrl' => $urlGenerator->route("admin.$routePrefix.$featuredSectionKey.save"),
+            'saveUrl' => $urlGenerator->route("twill.$routePrefix.$featuredSectionKey.save"),
         ]);
     }
 
@@ -197,7 +197,6 @@ class FeaturedController extends Controller
                     ] : []);
                 })->toArray();
             });
-
         });
 
         return $featuredSources;

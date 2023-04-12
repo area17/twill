@@ -2,11 +2,14 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\Commands\Traits\ExecutesInTwillDir;
 use A17\Twill\TwillServiceProvider;
 use Illuminate\Support\Facades\Artisan;
 
 class Release extends Command
 {
+    use ExecutesInTwillDir;
+
     protected $signature = 'twill:release {version}';
 
     protected $description = 'Create a new twill version tag';
@@ -75,21 +78,12 @@ class Release extends Command
      * @param string $version
      * @return void
      */
-    private function checkChangelogContainsVersion($version) {
+    private function checkChangelogContainsVersion($version)
+    {
         if (!str_contains(file_get_contents($this->getTwillDir('CHANGELOG.md')), "## $version")) {
             $this->error('The changelog is currently missing the version you are trying to tag.');
             exit(1);
         }
-    }
-
-    /**
-     * @param string $command
-     * @return false|string|null
-     */
-    private function executeInTwillDir($command)
-    {
-        $twillDir = $this->getTwillDir();
-        return shell_exec("cd $twillDir && $command");
     }
 
     /**
@@ -172,14 +166,4 @@ class Release extends Command
             exit(1);
         }
     }
-
-    /**
-     * @param string $path
-     * @return string
-     */
-    private function getTwillDir($path = '')
-    {
-        return __DIR__ . '/../../' . $path;
-    }
-
 }

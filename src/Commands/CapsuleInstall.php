@@ -29,7 +29,6 @@ class CapsuleInstall extends Command
      *
      * @var string
      */
-
     protected $description = 'Install a Twill Capsule';
 
     protected $repositoryUri;
@@ -43,9 +42,8 @@ class CapsuleInstall extends Command
 
     protected $repositoryUrl;
 
-    /**
-     * @return string
-     */
+    protected string $namespace;
+
     private function getUnzippedPath(): string
     {
         return TwillCapsules::getProjectCapsulesPath() .
@@ -62,7 +60,7 @@ class CapsuleInstall extends Command
      */
     public function handle()
     {
-        if (!$this->checkParameters()) {
+        if (! $this->checkParameters()) {
             return 255;
         }
 
@@ -77,7 +75,7 @@ class CapsuleInstall extends Command
 
     protected function checkParameters()
     {
-        if (!$this->option('require') && !$this->option('copy')) {
+        if (! $this->option('require') && ! $this->option('copy')) {
             $this->error('Missing mandatory strategy: --require or --copy.');
 
             return false;
@@ -103,7 +101,7 @@ class CapsuleInstall extends Command
         } else {
             $capsule = Str::snake(Str::kebab($capsule));
 
-            if (!Str::contains($capsule, '/')) {
+            if (! Str::contains($capsule, '/')) {
                 $capsule = $this->getRepositoryPrefix() . "-$capsule";
             }
 
@@ -217,8 +215,8 @@ class CapsuleInstall extends Command
             $this->error('A capsule with this name already exists!');
 
             return false;
+        } catch (NoCapsuleFoundException $noCapsuleFoundException) {
         }
-        catch (NoCapsuleFoundException $e) {}
 
         if ($this->directoryExists()) {
             $this->error(
@@ -245,7 +243,7 @@ class CapsuleInstall extends Command
 
         $this->comment('');
 
-        if (!$installed) {
+        if (! $installed) {
             $this->error('Your capsule was not installed.');
         } else {
             $this->comment('Your capsule was installed successfully!');
@@ -266,7 +264,7 @@ class CapsuleInstall extends Command
 
     protected function download()
     {
-        if (!$this->cleanTempFile() || !$this->repositoryExists()) {
+        if (! $this->cleanTempFile() || ! $this->repositoryExists()) {
             return false;
         }
 
@@ -349,7 +347,7 @@ class CapsuleInstall extends Command
     {
         $return = shell_exec('which unzip');
 
-        return !empty($return);
+        return ! empty($return);
     }
 
     protected function unzipWithExtension($zip, $directory)
@@ -368,7 +366,7 @@ class CapsuleInstall extends Command
 
         unlink($zip);
 
-        if (!$success) {
+        if (! $success) {
             $this->error("Cound not read zip file: $zip");
 
             return false;
@@ -399,7 +397,7 @@ class CapsuleInstall extends Command
 
     public function makeDir($path)
     {
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             mkdir($path, 0775, true);
         }
     }

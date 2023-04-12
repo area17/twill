@@ -19,6 +19,22 @@ abstract class Request extends FormRequest
     }
 
     /**
+     * @return array
+     */
+    public function rulesForCreate()
+    {
+        return [];
+    }
+
+    /**
+     * @return array
+     */
+    public function rulesForUpdate()
+    {
+        return [];
+    }
+
+    /**
      * Gets the validation rules that apply to the request.
      *
      * @return array
@@ -26,20 +42,18 @@ abstract class Request extends FormRequest
     public function rules()
     {
         switch ($this->method()) {
-            case 'POST':{return $this->rulesForCreate();}
-            case 'PUT':{return $this->rulesForUpdate();}
-            default:break;
+            case 'POST':
+                return $this->rulesForCreate();
+            case 'PUT':
+                return $this->rulesForUpdate();
+            default:
+                break;
         }
 
         return [];
     }
 
-    /**
-     * Gets the validation rules that apply to the translated fields.
-     *
-     * @return array
-     */
-    protected function rulesForTranslatedFields($rules, $fields)
+    protected function rulesForTranslatedFields(array $existingRules, array $translatedFieldRules): array
     {
         $locales = getLocales();
         $localeActive = false;
@@ -48,7 +62,7 @@ abstract class Request extends FormRequest
             foreach ($locales as $locale) {
                 $language = Collection::make($this->request->all('languages'))->where('value', $locale)->first();
                 $currentLocaleActive = $language['published'] ?? false;
-                $rules = $this->updateRules($rules, $fields, $locale, $currentLocaleActive);
+                $existingRules = $this->updateRules($existingRules, $translatedFieldRules, $locale, $currentLocaleActive);
 
                 if ($currentLocaleActive) {
                     $localeActive = true;
@@ -57,10 +71,10 @@ abstract class Request extends FormRequest
         }
 
         if (! $localeActive) {
-            $rules = $this->updateRules($rules, $fields, reset($locales));
+            $existingRules = $this->updateRules($existingRules, $translatedFieldRules, reset($locales));
         }
 
-        return $rules;
+        return $existingRules;
     }
 
     /**

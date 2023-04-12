@@ -48,7 +48,7 @@
             <draggable v-if="bucket.children.length > 0" class="buckets__list buckets__draggable" :options="dragOptions"
                        @change="sortBucket($event, index)" :value="bucket.children" :tag="'table'">
               <transition-group name="fade_scale_list" tag='tbody'>
-                <a17-bucket-item v-for="child in bucket.children" :key="child.id" :item="child"
+                <a17-bucket-item v-for="(child, index) in bucket.children" :key="`${child.id}_${index}`" :item="child"
                                  :restricted="restricted" :draggable="bucket.children.length > 1"
                                  :singleBucket="singleBucket" :singleSource="singleSource" :bucket="bucket.id"
                                  :buckets="buckets" v-on:add-to-bucket="addToBucket"
@@ -77,19 +77,19 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
+  import draggable from 'vuedraggable'
+  import { mapGetters,mapState } from 'vuex'
 
-  import { BUCKETS } from '@/store/mutations'
+  import Fieldset from '@/components/Fieldset.vue'
+  import Filter from '@/components/Filter'
+  import Paginate from '@/components/table/Paginate'
+  import VSelect from '@/components/VSelect.vue'
+  import draggableMixin from '@/mixins/draggable'
   import ACTIONS from '@/store/actions'
+  import { BUCKETS } from '@/store/mutations'
 
   import BucketItem from './BucketItem.vue'
   import BucketSourceItem from './BucketSourceItem.vue'
-  import draggableMixin from '@/mixins/draggable'
-  import draggable from 'vuedraggable'
-  import Paginate from '@/components/table/Paginate'
-  import Fieldset from '@/components/Fieldset.vue'
-  import Filter from '@/components/Filter'
-  import VSelect from '@/components/VSelect.vue'
 
   export default {
     name: 'A17Buckets',
@@ -179,8 +179,8 @@
         this.currentItem = item
 
         const data = {
-          index: index,
-          item: item
+          index,
+          item
         }
 
         // Use -1 for an unlimited bucket
@@ -193,7 +193,7 @@
         } else if (this.overridableMax || this.overrideItem) {
           this.checkRestriced(item)
           this.$store.commit(BUCKETS.ADD_TO_BUCKET, data)
-          this.$store.commit(BUCKETS.DELETE_FROM_BUCKET, { index: index, itemIndex: 0 })
+          this.$store.commit(BUCKETS.DELETE_FROM_BUCKET, { index, itemIndex: 0 })
           this.overrideItem = false
         } else {
           this.$refs.overrideBucket.open()
@@ -209,7 +209,7 @@
 
         const data = {
           index: bucketIndex,
-          itemIndex: itemIndex
+          itemIndex
         }
         this.$store.commit(BUCKETS.DELETE_FROM_BUCKET, data)
       },
@@ -223,7 +223,7 @@
 
         const data = {
           index: bucketIndex,
-          itemIndex: itemIndex
+          itemIndex
         }
 
         this.$store.commit(BUCKETS.TOGGLE_FEATURED_IN_BUCKET, data)

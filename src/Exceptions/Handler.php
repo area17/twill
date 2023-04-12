@@ -2,9 +2,7 @@
 
 namespace A17\Twill\Exceptions;
 
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -15,18 +13,17 @@ class Handler extends ExceptionHandler
     /**
      * Get the view used to render HTTP exceptions.
      *
-     * @param  \Symfony\Component\HttpKernel\Exception\HttpExceptionInterface  $e
      * @return string
      */
     protected function getHttpExceptionView(HttpExceptionInterface $e)
     {
         $usesAdminPath = !empty(config('twill.admin_app_path'));
-        $adminAppUrl = config('twill.admin_app_url');
+        $adminAppUrl = config('twill.admin_app_url', config('app.url'));
 
         $isSubdomainAdmin = !$usesAdminPath && Str::contains(Request::url(), $adminAppUrl);
         $isSubdirectoryAdmin = $usesAdminPath && Str::startsWith(Request::path(), config('twill.admin_app_path'));
 
-        return $this->getTwillErrorView($e->getStatusCode(), !($isSubdomainAdmin || $isSubdirectoryAdmin));
+        return $this->getTwillErrorView($e->getStatusCode(), !$isSubdomainAdmin && !$isSubdirectoryAdmin);
     }
 
     /**
@@ -40,10 +37,10 @@ class Handler extends ExceptionHandler
         if ($frontend) {
             $view = config('twill.frontend.views_path') . ".errors.$statusCode";
 
-            return view()->exists($view)? $view : "errors::{$statusCode}";
+            return view()->exists($view) ? $view : "errors::{$statusCode}";
         }
 
-        $view = "admin.errors.$statusCode";
+        $view = "twill.errors.$statusCode";
 
         return view()->exists($view) ? $view : "twill::errors.$statusCode";
     }

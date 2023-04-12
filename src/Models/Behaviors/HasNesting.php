@@ -32,21 +32,17 @@ trait HasNesting
 
     /**
      * Returns the combined slug for all ancestors of this item.
-     *
-     * @param string|null $locale
-     * @return string
      */
-    public function getAncestorsSlug($locale = null)
+    public function getAncestorsSlug(?string $locale = null): string
     {
-        return collect($this->ancestors->sortByDesc('position') ?? [])
-            ->map(function ($i) use ($locale) { return $i->getSlug($locale); })
+        return $this->getAncestors()->reverse()
+            ->map(function ($i) use ($locale) {
+                return $i->getSlug($locale);
+            })
             ->implode('/');
     }
 
-    /**
-     * @return string
-     */
-    public function getAncestorsSlugAttribute()
+    public function getAncestorsSlugAttribute(): string
     {
         return $this->getAncestorsSlug();
     }
@@ -64,12 +60,10 @@ trait HasNesting
                     $nodeModel->position = $nodeArray['position'];
                     $nodeModel->saveAsRoot();
                 }
-            } else {
-                if ($nodeModel->position !== $nodeArray['position'] || $nodeModel->parent_id !== $nodeArray['parent_id']) {
-                    $nodeModel->position = $nodeArray['position'];
-                    $nodeModel->parent_id = $nodeArray['parent_id'];
-                    $nodeModel->save();
-                }
+            } elseif ($nodeModel->position !== $nodeArray['position'] || $nodeModel->parent_id !== $nodeArray['parent_id']) {
+                $nodeModel->position = $nodeArray['position'];
+                $nodeModel->parent_id = $nodeArray['parent_id'];
+                $nodeModel->save();
             }
         }
     }

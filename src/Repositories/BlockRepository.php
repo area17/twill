@@ -2,47 +2,37 @@
 
 namespace A17\Twill\Repositories;
 
-use A17\Twill\Models\Behaviors\HasFiles;
-use A17\Twill\Models\Behaviors\HasMedias;
-use A17\Twill\Models\Block;
-use A17\Twill\Models\RelatedItem;
+use A17\Twill\Facades\TwillBlocks;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Services\Blocks\Block as BlockConfig;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Collection;
-use Log;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use ReflectionException;
-use Schema;
 
 class BlockRepository extends ModuleRepository
 {
-    use HandleMedias, HandleFiles;
+    use HandleMedias;
+    use HandleFiles;
 
-    /**
-     * @var Config
-     */
-    protected $config;
+    protected Config $config;
 
-    /**
-     * @param Block $model
-     */
-    public function __construct(Block $model, Config $config)
+    public function __construct(Config $config)
     {
-        $this->model = $model;
+        $blockModel = twillModel('block');
+        $this->model = new $blockModel();
         $this->config = $config;
     }
 
-    /**
-     * @param string $role
-     * @return array
-     */
-    public function getCrops($role)
+    public function getCrops(string $role): array
     {
-        return $this->config->get('twill.block_editor.crops')[$role];
+        return TwillBlocks::getAllCropConfigs()[$role];
     }
 
-    public function hydrate($object, $fields)
+    public function hydrate(TwillModelContract $model, array $fields): TwillModelContract
     {
         if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
             $relatedItems = Collection::make();
@@ -50,44 +40,42 @@ class BlockRepository extends ModuleRepository
             Collection::make($fields['browsers'])->each(function ($items, $browserName) use (&$relatedItems) {
                 Collection::make($items)->each(function ($item) use ($browserName, &$relatedItems) {
                     try {
+                        // @todo: Repository could be null.
                         $repository = $this->getModelRepository($item['endpointType'] ?? $browserName);
-                        $relatedItems->push((object) [
-                            'related' => $repository->getById($item['id']),
-                            'browser_name' => $browserName,
-                        ]);
-
-                    } catch (ReflectionException $e) {
-                        Log::error($e);
+                        $relatedItems->push(
+                            (object) [
+                                'related' => $repository->getById($item['id']),
+                                'browser_name' => $browserName,
+                            ]
+                        );
+                    } catch (ReflectionException $reflectionException) {
+                        Log::error($reflectionException);
                     }
                 });
             });
 
-            $object->setRelation('relatedItems', $relatedItems);
+            $model->setRelation('relatedItems', $relatedItems);
         }
 
-        return parent::hydrate($object, $fields);
+        return parent::hydrate($model, $fields);
     }
 
-    /**
-     * @param HasMedias|HasFiles $object
-     * @return void
-     */
-    public function afterSave($object, $fields)
+    public function afterSave(TwillModelContract $model, array $fields): void
     {
         if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
+            $model->clearAllRelated();
+
             if (isset($fields['browsers'])) {
-                Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($object) {
-                    $object->saveRelated($items, $browserName);
+                Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($model) {
+                    $model->saveRelated($items, $browserName);
                 });
-            } else {
-                $object->clearAllRelated();
             }
         }
 
-        parent::afterSave($object, $fields);
+        parent::afterSave($model, $fields);
     }
 
-    public function afterDelete($object)
+    public function afterDelete(TwillModelContract $object): void
     {
         $object->medias()->sync([]);
         $object->files()->sync([]);
@@ -97,12 +85,7 @@ class BlockRepository extends ModuleRepository
         }
     }
 
-    /**
-     * @param array $block
-     * @param bool $repeater
-     * @return array
-     */
-    public function buildFromCmsArray($block, $repeater = false)
+    public function buildFromCmsArray(array $block, bool $repeater = false): array
     {
         $blockInstance = BlockConfig::getForComponent($block['type'], $repeater);
 
@@ -110,9 +93,9 @@ class BlockRepository extends ModuleRepository
 
         $block['instance'] = $blockInstance;
 
-        $block['content'] = empty($block['content']) ? new \stdClass : (object) $block['content'];
+        $block['content'] = empty($block['content']) ? new \stdClass() : (object) $block['content'];
 
-        if ($block['browsers']) {
+        if ($block['browsers'] ?? null) {
             $browsers = Collection::make($block['browsers'])->map(function ($items) {
                 return Collection::make($items)->pluck('id');
             })->toArray();

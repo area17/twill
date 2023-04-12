@@ -123,6 +123,7 @@ return [
         'logout' => 'Sair',
         'media-library' => 'Biblioteca de mídias',
         'settings' => 'Configurações',
+        'profile' => 'Profile',
     ],
     'publisher' => [
         'cancel' => 'Cancelar',

@@ -1,5 +1,6 @@
 includes:
   - ./vendor/nunomaduro/larastan/extension.neon
+  - phpstan-baseline.neon
 
 parameters:
 
@@ -10,15 +11,24 @@ parameters:
     - tests
 
   # 8 is the highest level
+  # Todo: Increment when feeling brave.
   level: 1
 
-  autoload_directories:
-    - migrations
-
-  autoload_files:
-    - tests/helpers.php
+  databaseMigrationsPath:
+    - migrations/default
+    - migrations/optional
 
   ignoreErrors:
+    # See: https://github.com/nunomaduro/larastan/issues/1080
+    - '#Access to an undefined property A17\\Twill\\Models\\(\w*)::\$(\w*)#'
 
-  excludes_analyse:
-    - tests/stubs/*
+  excludePaths:
+    - tests/*
+    # Fixed with new capsule manager.
+    - src/Services/Capsules/HasCapsules.php
+    # Fatal errors due to socialite and key missing.
+    - src/Http/Controllers/Admin/LoginController.php
+    - src/Models/User.php
+    # Not needed
+    - src/Rector/*
+    - src/DuskServiceProvider.php

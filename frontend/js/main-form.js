@@ -11,10 +11,10 @@ import search from '@/main-search'
 import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
 // Page Components
+import a17Fieldset from '@/components/Fieldset.vue'
 import a17StickyNav from '@/components/StickyNav.vue'
 import a17TitleEditor from '@/components/TitleEditor.vue'
 import a17Langswitcher from '@/components/LangSwitcher.vue'
-import a17Fieldset from '@/components/Fieldset.vue'
 import a17Publisher from '@/components/Publisher.vue'
 import a17PageNav from '@/components/PageNav.vue'
 import a17Blocks from '@/components/blocks/Blocks.vue'
@@ -52,13 +52,15 @@ import browser from '@/store/modules/browser'
 import repeaters from '@/store/modules/repeaters'
 import parents from '@/store/modules/parents'
 import attributes from '@/store/modules/attributes'
+import permissions from '@/store/modules/permissions'
 
 // mixins
 import formatPermalink from '@/mixins/formatPermalink'
-import editorMixin from '@/mixins/editor.js'
-import BlockMixin from '@/mixins/block'
+import editorMixin from '@/mixins/editor'
 import retrySubmitMixin from '@/mixins/retrySubmit'
-import _ from 'lodash'
+import cloneDeep from 'lodash/cloneDeep'
+import isEqual from 'lodash/isEqual'
+import sortBy from 'lodash/sortBy'
 
 // configuration
 Vue.use(A17Config)
@@ -73,6 +75,7 @@ store.registerModule('browser', browser)
 store.registerModule('repeaters', repeaters)
 store.registerModule('parents', parents)
 store.registerModule('attributes', attributes)
+store.registerModule('permissions', permissions)
 
 // Form components
 Vue.component('a17-fieldset', a17Fieldset)
@@ -103,50 +106,6 @@ Vue.component('a17-editor', a17Editor)
 
 // Add attributes
 Vue.component('a17-modal-add', a17ModalAdd)
-
-// Blocks
-const registerBlockComponent = (name, component) => {
-  return !Vue.options.components[name]
-    ? Vue.component(name, component)
-    : false
-}
-
-if (typeof window[process.env.VUE_APP_NAME].TWILL_BLOCKS_COMPONENTS !== 'undefined') {
-  window[process.env.VUE_APP_NAME].TWILL_BLOCKS_COMPONENTS.map(componentName => {
-    return registerBlockComponent(componentName, {
-      template: '#' + componentName,
-      mixins: [BlockMixin]
-    })
-  })
-}
-
-const extractComponentNameFromContextKey = (contextKey) => `a17-${contextKey.match(/\w+/)[0].replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\s+/g, '-').toLowerCase()}`
-
-const importedCustomBlocks = require.context('@/components/blocks/customs/', false, /\.(js|vue)$/i)
-importedCustomBlocks.keys().map(block => {
-  const componentName = extractComponentNameFromContextKey(block.replace(/customs\//, ''))
-  return registerBlockComponent(componentName, importedCustomBlocks(block).default)
-})
-
-const importedTwillBlocks = require.context('@/components/blocks/', false, /\.(js|vue)$/i)
-importedTwillBlocks.keys().map(block => {
-  const componentName = extractComponentNameFromContextKey(block)
-  return registerBlockComponent(componentName, importedTwillBlocks(block).default)
-})
-
-// Custom form components
-const importedComponents = require.context('@/components/customs/', true, /\.(js|vue)$/i)
-importedComponents.keys().map(block => {
-  const componentName = extractComponentNameFromContextKey(block)
-  return Vue.component(componentName, importedComponents(block).default)
-})
-
-// Vendor form components
-const importedVendorComponents = require.context('@/components/customs-vendor/', true, /\.(js|vue)$/i)
-importedVendorComponents.keys().map(block => {
-  const componentName = extractComponentNameFromContextKey(block)
-  return Vue.component(componentName, importedVendorComponents(block).default)
-})
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
@@ -220,19 +179,19 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
       const sortArrays = module === 'form' && (prop === 'fields' || prop === 'modalFields')
       // Store the original form state, we will compare against this. It is important to sort it the same way as when
       // we are comparing so that order changes in the fields dont matter.
-      const originalForm = this.sortObjectArraysDeep(_.cloneDeep(this.$store.state[module][prop]), sortArrays)
+      const originalForm = this.sortObjectArraysDeep(cloneDeep(this.$store.state[module][prop]), sortArrays)
       this.$store.watch((state) => {
         return state[module][prop]
       }, (newForm) => {
-        const compareTo = this.sortObjectArraysDeep(_.cloneDeep(newForm), sortArrays)
-        this.isFormUpdated = !_.isEqual(originalForm, compareTo)
+        const compareTo = this.sortObjectArraysDeep(cloneDeep(newForm), sortArrays)
+        this.isFormUpdated = !isEqual(originalForm, compareTo)
         this.$store.commit(PUBLICATION.UPDATE_HAS_UNSAVED_CHANGES, this.isFormUpdated)
       }, {
         deep: true
       })
     },
     sortArrayByFirstKey (data) {
-      return _.sortBy(data, (o) => {
+      return sortBy(data, (o) => {
         if (typeof o === 'object') {
           const firstKey = Object.keys(o)[0]
           return o[firstKey]

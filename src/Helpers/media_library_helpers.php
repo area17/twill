@@ -48,7 +48,7 @@ if (!function_exists('bytesToHuman')) {
     {
         $units = ['B', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb'];
 
-        for ($i = 0; $bytes > 1024; $i++) {
+        for ($i = 0; $bytes > 1024; ++$i) {
             $bytes /= 1024;
         }
 
@@ -63,6 +63,9 @@ if (!function_exists('replaceAccents')) {
      */
     function replaceAccents($str)
     {
+        if (function_exists('mb_convert_encoding')) {
+            return mb_convert_encoding($str, 'ASCII', 'UTF-8');
+        }
         return iconv('UTF-8', 'ASCII//TRANSLIT', $str);
     }
 }
@@ -84,9 +87,9 @@ if (!function_exists('sanitizeFilename')) {
 
         $sanitizedFilename = str_replace(array_keys($invalid), array_values($invalid), $sanitizedFilename);
 
-        $sanitizedFilename = preg_replace('/[^A-Za-z0-9-\. ]/', '', $sanitizedFilename); // Remove all non-alphanumeric except .
-        $sanitizedFilename = preg_replace('/\.(?=.*\.)/', '', $sanitizedFilename); // Remove all but last .
-        $sanitizedFilename = preg_replace('/-+/', '-', $sanitizedFilename); // Replace any more than one - in a row
+        $sanitizedFilename = preg_replace('#[^A-Za-z0-9-\. ]#', '', $sanitizedFilename); // Remove all non-alphanumeric except .
+        $sanitizedFilename = preg_replace('#\.(?=.*\.)#', '', $sanitizedFilename); // Remove all but last .
+        $sanitizedFilename = preg_replace('#-+#', '-', $sanitizedFilename); // Replace any more than one - in a row
         $sanitizedFilename = str_replace('-.', '.', $sanitizedFilename); // Remove last - if at the end
         $sanitizedFilename = strtolower($sanitizedFilename); // Lowercase
 

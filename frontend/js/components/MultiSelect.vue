@@ -28,11 +28,12 @@
 
 <script>
   import isEqual from 'lodash/isEqual'
-  import randKeyMixin from '@/mixins/randKey'
-  import FormStoreMixin from '@/mixins/formStore'
-  import InputframeMixin from '@/mixins/inputFrame'
+
   import AttributesMixin from '@/mixins/addAttributes'
   import CheckboxMixin from '@/mixins/checkboxes'
+  import FormStoreMixin from '@/mixins/formStore'
+  import InputframeMixin from '@/mixins/inputFrame'
+  import randKeyMixin from '@/mixins/randKey'
 
   export default {
     name: 'A17Multiselect',
@@ -109,6 +110,7 @@
 </script>
 
 <style lang="scss" scoped>
+  $checkboxSize: 15px;
 
   .multiselector {
     color:$color__text;
@@ -149,8 +151,8 @@
     position:absolute;
     left: 0;
     top: 2px;
-    width: 15px;
-    height: 15px;
+    width: $checkboxSize;
+    height: $checkboxSize;
     border: 1px solid $color__fborder;
     background: $color__f--bg;
     border-radius: 2px;
@@ -259,8 +261,8 @@
 
     .multiselector__label {
       height:50px;
-      line-height:50px;
-      padding-left: 30px + 10px;
+      line-height: 50px;
+      padding-left: 30px + 12px;
       color: $color__text--light;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -290,13 +292,13 @@
 
     //.multiselector__checkbox:checked + .multiselector__label .multiselector__icon,
     .multiselector__checkbox--checked + .multiselector__label .multiselector__icon {
-      border-color: $color__ok;
-      background-color: $color__ok;
+      border-color: $color__fborder--active;
+      background-color: $color__fborder--active;
     }
 
     // .multiselector__checkbox:focus:checked + .multiselector__label .multiselector__icon,
     .multiselector__checkbox--checked:focus + .multiselector__label .multiselector__icon {
-      border-color: $color__ok;
+      border-color: $color__fborder--active;
     }
   }
 

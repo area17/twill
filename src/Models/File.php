@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Models;
 
-use FileService;
+use A17\Twill\Services\FileLibrary\FileService;
 use Illuminate\Support\Facades\DB;
 
 class File extends Model
@@ -22,12 +22,14 @@ class File extends Model
 
     public function canDeleteSafely()
     {
-        return DB::table(config('twill.fileables_table', 'twill_fileables'))->where('file_id', $this->id)->count() === 0;
+        return DB::table(config('twill.fileables_table', 'twill_fileables'))
+            ->where('file_id', $this->id)->doesntExist();
     }
 
-    public function scopeUnused ($query)
+    public function scopeUnused($query)
     {
-        $usedIds = DB::table(config('twill.fileables_table'))->get()->pluck('file_id');
+        $usedIds = DB::table(config('twill.fileables_table'))->pluck('file_id');
+
         return $query->whereNotIn('id', $usedIds->toArray())->get();
     }
 

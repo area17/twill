@@ -114,7 +114,7 @@ return [
     ],
     'listing' => [
         'add-new-button' => 'Добавить',
-        'bulk-clear' => 'Очстить',
+        'bulk-clear' => 'Очистить',
         'columns' => [
             'name' => 'Название',
             'published' => 'Опубликовано',
@@ -202,6 +202,7 @@ return [
         'media-library' => 'Медиа библиотека',
         'settings' => 'Настройки',
         'close-menu' => 'Закрыть меню',
+        'profile' => 'Profile',
     ],
     'notifications' => [
         'reset' => [

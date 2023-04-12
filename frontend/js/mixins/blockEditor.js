@@ -48,6 +48,10 @@ export default {
     moveBlock (index) {
       this.$emit('block:move', index)
     },
+    cloneBlock (fn) {
+      fn()
+      this.$emit('block:clone')
+    },
     deleteBlock (fn) {
       if (this.$root.$refs.warningContentEditor) {
         this.$root.$refs.warningContentEditor.open(() => {

@@ -3,26 +3,23 @@
 namespace A17\Twill\Models\Behaviors;
 
 use A17\Twill\Facades\TwillCapsules;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 trait HasRevisions
 {
     /**
      * Defines the one-to-many relationship for revisions.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function revisions()
+    public function revisions(): HasMany
     {
         return $this->hasMany($this->getRevisionModel())->orderBy('created_at', 'desc');
     }
 
     /**
      * Scope a query to only include the current user's revisions.
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeMine($query)
+    public function scopeMine(Builder $query): Builder
     {
         return $query->whereHas('revisions', function ($query) {
             $query->where('user_id', auth('twill_users')->user()->id);
@@ -31,10 +28,8 @@ trait HasRevisions
 
     /**
      * Returns an array of revisions for the CMS views.
-     *
-     * @return array
      */
-    public function revisionsArray()
+    public function revisionsArray(): array
     {
         $currentRevision = null;
 
@@ -54,12 +49,24 @@ trait HasRevisions
             ->toArray();
     }
 
-    protected function getRevisionModel()
+    /**
+     * Deletes revisions from specific collection position
+     * Used to keep max revision on specific Twill's module
+     */
+    public function deleteSpecificRevisions(int $maxRevisions): void
+    {
+        if (isset($this->limitRevisions) && $this->limitRevisions > 0) {
+            $maxRevisions = $this->limitRevisions;
+        }
+
+        $this->revisions()->get()->slice($maxRevisions)->each->delete();
+    }
+
+    protected function getRevisionModel(): string
     {
         $revision = config('twill.namespace') . "\Models\Revisions\\" . class_basename($this) . "Revision";
 
-        if (@class_exists($revision))
-        {
+        if (@class_exists($revision)) {
             return $revision;
         }
 

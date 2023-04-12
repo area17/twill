@@ -18,7 +18,7 @@
         @input="onInput"
         v-model="value"
       ></textarea>
-      <input v-if="type == 'number'"
+      <input v-if="type === 'number'"
         ref="input"
         type="number"
         :placeholder="placeholder"
@@ -31,11 +31,14 @@
         :autofocus="autofocus"
         :autocomplete="autocomplete"
         :value="value"
+        :min="min"
+        :max="max"
+        :step="step"
         @focus="onFocus"
         @blur="onBlur"
         @input="onInput"
       />
-      <input v-if="type == 'text'"
+      <input v-if="type === 'text'"
         ref="input"
         type="text"
         :placeholder="placeholder"
@@ -48,11 +51,12 @@
         :autofocus="autofocus"
         :autocomplete="autocomplete"
         :value="value"
+        :x-mask="mask"
         @focus="onFocus"
         @blur="onBlur"
         @input="onInput"
       />
-      <input v-if="type == 'email'"
+      <input v-if="type === 'email'"
         ref="input"
         type="email"
         :placeholder="placeholder"
@@ -70,7 +74,7 @@
         @blur="onBlur"
         @input="onInput"
       />
-      <input v-if="type == 'password'"
+      <input v-if="type === 'password'"
         ref="input"
         type="password"
         :placeholder="placeholder"
@@ -105,18 +109,19 @@
         @input="onInput"
       />
       <span class="input__limit f--tiny" :class="limitClasses" v-if="hasMaxlength">{{ counter }}</span>
+      <span :class="validityClasses" v-if="type === 'email'"></span>
     </div>
   </a17-inputframe>
 </template>
 
 <script>
-  import randKeyMixin from '@/mixins/randKey'
-  import InputMixin from '@/mixins/input'
+  import debounce from 'lodash/debounce'
+
   import FormStoreMixin from '@/mixins/formStore'
+  import InputMixin from '@/mixins/input'
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
-
-  import debounce from 'lodash/debounce'
+  import randKeyMixin from '@/mixins/randKey'
 
   export default {
     name: 'A17Textfield',
@@ -138,8 +143,24 @@
         type: Number,
         default: 0
       },
+      min: {
+        type: Number,
+        default: null
+      },
+      max: {
+        type: Number,
+        default: null
+      },
+      step: {
+        type: Number,
+        default: null
+      },
       initialValue: {
         default: ''
+      },
+      mask: {
+        type: String,
+        default: null
       },
       rows: {
         type: Number,
@@ -172,6 +193,13 @@
         return {
           'input__limit--red': this.counter < (this.maxlength * 0.1)
         }
+      },
+      validityClasses: function () {
+        return [
+          'input__validity',
+          this.isFieldValid === true ? 'input__validity--valid' : '',
+          this.isFieldValid === false ? 'input__validity--error' : ''
+        ]
       }
     },
     data: function () {
@@ -179,6 +207,7 @@
         value: this.initialValue,
         lastSavedValue: this.initialValue,
         focused: false,
+        isFieldValid: null,
         counter: 0
       }
     },
@@ -229,8 +258,10 @@
       _onInputInternal: debounce(function (event) {
         const newValue = event.target.value
         this.updateAndSaveValue(newValue)
+        this.checkFieldValidity(event.target)
 
         this.$emit('change', newValue)
+        this.$emit('input', newValue)
 
         this.allowSubmit()
       }, 250),
@@ -243,6 +274,27 @@
         if (clone) {
           const h = clone.scrollHeight
           this.$refs.input.style.minHeight = `${h + minH}px`
+        }
+      },
+      checkFieldValidity: function (el) {
+        // Switch based on the type of the field.
+        let pattern = null
+        let re = null
+
+        switch (el.type) {
+          case 'email':
+            // If user didn't type any character, return.
+            if (el.value.length < 1) {
+              this.isFieldValid = null
+              return
+            }
+
+            pattern = el.pattern
+            re = RegExp(pattern)
+
+            // Get pattern and test validity with regex.
+            this.isFieldValid = re.test(this.value)
+            break
         }
       }
     },
@@ -357,6 +409,26 @@
 
   .input__limit--red {
     color:red;
+  }
+
+  .input__validity {
+    position: absolute;
+    top: 17px;
+    right: 15px;
+    width: 10px;
+    height: 10px;
+    background-color: $color__tag--disabled;
+    border-radius: 50%;
+    user-select: none;
+    pointer-events: none;
+
+    &--valid {
+      background-color: $color__ok;
+    }
+
+    &--error {
+      background-color: $color__error;
+    }
   }
 
   .input__field--textarea {

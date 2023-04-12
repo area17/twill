@@ -2,110 +2,88 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use A17\Twill\AuthServiceProvider;
+use A17\Twill\Commands\Traits\HandlesPresets;
 use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
 use Carbon\Carbon;
+use Exception;
 use Faker\Factory as Faker;
+use Faker\Generator;
 use Illuminate\Contracts\Console\Kernel;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
+use Illuminate\Testing\TestResponse;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use Throwable;
 
 abstract class TestCase extends OrchestraTestCase
 {
     use CopyBlocks;
+    use HandlesPresets;
 
-    public const DATABASE_MEMORY = ':memory:';
+    public static bool $didInitialFreshMigration = false;
 
     public const DEFAULT_PASSWORD = 'secret';
 
     public const DEFAULT_LOCALE = 'en_US';
 
-    public const DB_CONNECTION = 'sqlite';
+    public Generator $faker;
+
+    public ?string $example = null;
+
+    public ?User $superAdmin = null;
+
+    public Carbon $now;
+
+    public int $recursiveCounter = 0;
+
+    public TestResponse $crawler;
 
     /**
-     * @var \Faker\Generator
+     * After a long debugging session I found that this flow is the most stable.
+     * Running the example installer in the setup would cause the files to be not on time when tests shift from
+     * one example to another.
      */
-    public $faker;
-
-    /**
-     * @var \A17\Twill\Tests\Integration\UserClass
-     */
-    public $superAdmin;
-
-    /**
-     * @var \Illuminate\Filesystem\Filesystem
-     */
-    public $files;
-
-    /**
-     * @var \Carbon\Carbon
-     */
-    public $now;
-
-    /**
-     * @var \Carbon\Carbon
-     */
-    public $recursiveCounter = 0;
-
-    /**
-     * @var \Illuminate\Foundation\Testing\TestResponse
-     */
-    public $crawler;
-
-    public $paths = [
-        '/../resources/views',
-        '/../resources/views/admin',
-        '/../resources/views/site',
-        'Http/Controllers/Admin',
-        'Http/Requests/Admin',
-        'Models/Revisions',
-        'Models/Slugs',
-        'Models/Translations',
-        'Repositories',
-        '/../resources/views/admin/authors',
-        '/../resources/views/admin/categories',
-        '/../resources/views/site/blocks',
-        '/../resources/views/site/layouts',
-    ];
-
-    public $toDelete = [
-        '{$database}/migrations/',
-        '{$base}/routes/admin.php',
-        '{$app}/Models',
-        '{$app}/Http',
-        '{$app}/Repositories/',
-        '{$resources}/views',
-        '{$database}/migrations',
-        '{$app}/Twill',
-        '{$routes}',
-        '{$config}/twill-navigation.php',
-    ];
-
-    protected function deleteAllTwillPaths(): void
+    public function createApplication(): Application
     {
-        collect($this->paths)->each(function ($directory) {
-            if (file_exists($directory = twill_path($directory))) {
-                $this->files->deleteDirectory($directory);
-            }
-        });
+        $app = $this->resolveApplication();
+
+        $this->resolveApplicationBindings($app);
+        $this->resolveApplicationExceptionHandler($app);
+        $this->resolveApplicationCore($app);
+        $this->resolveApplicationConfiguration($app);
+        $this->resolveApplicationHttpKernel($app);
+        $this->resolveApplicationConsoleKernel($app);
+        $this->resolveApplicationBootstrappers($app);
+
+        return $app;
     }
 
-    protected function makeAllTwillPaths(): void
+    public static function setUpBeforeClass(): void
     {
-        collect($this->paths)->each(function ($directory) {
-            if (! file_exists($directory = twill_path($directory))) {
-                $this->files->makeDirectory($directory, 0755, true);
-            }
-        });
+        cleanupTestState(self::applicationBasePath());
+        parent::setUpBeforeClass();
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
+        cleanupTestState(self::applicationBasePath());
+    }
+
+    protected function onNotSuccessfulTest(Throwable $t): void
+    {
+        // When a test fails it doesnt run teardown.
+        $this->tearDown();
+
+        parent::onNotSuccessfulTest($t);
     }
 
     /**
@@ -113,21 +91,50 @@ abstract class TestCase extends OrchestraTestCase
      */
     public function setUp(): void
     {
+        if ($this->example) {
+            $this->installPresetFiles(
+                $this->example,
+                true,
+                $this->getBasePath()
+            );
+        }
+
+        // Enforce the url for testing to be 'http://twill.test' for certain assertions.
+        // This is different from the one in phpunit.xml because that one is used for laravel dusk.
+        $_ENV['APP_URL'] = 'http://twill.test';
+        $_ENV['MEDIA_LIBRARY_LOCAL_PATH'] = "media-library";
+        $_ENV["FILE_LIBRARY_LOCAL_PATH"] = "file-library";
+        $_ENV["FILE_LIBRARY_ENDPOINT_TYPE"] = "local";
+        $_ENV["IMGIX_SOURCE_HOST"] = "";
+        $_ENV["IMGIX_USE_HTTPS"] = "";
+        $_ENV["IMGIX_USE_SIGNED_URLS"] = "";
+        $_ENV["IMGIX_SIGN_KEY"] = "";
+        $_ENV["GLIDE_SOURCE"] = $this->getBasePath() . "/storage/app/public/media-library";
+        $_ENV["GLIDE_CACHE"] = $this->getBasePath() . "/storage/app/twill/cache";
+        $_ENV["GLIDE_CACHE_PATH_PREFIX"] = "glide_cache";
+        $_ENV["GLIDE_BASE_URL"] = "http://twill.test";
+        $_ENV["GLIDE_BASE_PATH"] = "storage/media-library";
+        $_ENV["GLIDE_USE_SIGNED_URLS"] = "false";
+        $_ENV["GLIDE_SIGN_KEY"] = "";
+
         parent::setUp();
 
+        if (!self::$didInitialFreshMigration) {
+            $this->artisan('migrate:fresh');
+        }
+
         $this->loadConfig();
-
-        $this->freshDatabase();
-
-        $this->cleanDirectories();
 
         $this->instantiateFaker();
 
         $this->copyBlocks();
 
-        $this->copyTestFiles();
-
         $this->installTwill();
+
+        // Add database seeders to autoload as it is not in the orchestra base composer.
+        foreach (File::allFiles(base_path('/database/seeders')) as $file) {
+            include_once $file->getPathname();
+        }
     }
 
     /**
@@ -135,7 +142,7 @@ abstract class TestCase extends OrchestraTestCase
      *
      * @param $app
      */
-    public function configTwill($app)
+    public function configTwill($app): void
     {
         $app['config']->set('twill.admin_app_url', '');
         $app['config']->set('twill.admin_app_path', 'twill');
@@ -147,31 +154,11 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * Configure database.
-     *
-     * @param $app
-     */
-    protected function configureDatabase($app)
-    {
-        $app['config']->set(
-            'database.default',
-            $connection = env('DB_CONNECTION', self::DB_CONNECTION)
-        );
-
-        $app['config']->set('activitylog.database_connection', $connection);
-
-        $app['config']->set(
-            'database.connections.' . $connection . '.database',
-            env('DB_DATABASE', self::DATABASE_MEMORY)
-        );
-    }
-
-    /**
      * Configure storage path.
      *
      * @param $app
      */
-    public function configureStorage($app)
+    public function configureStorage($app): void
     {
         $app['config']->set(
             'logging.channels.single.path',
@@ -183,47 +170,10 @@ abstract class TestCase extends OrchestraTestCase
         }
     }
 
-    protected function loadModulesConfig($file = null)
-    {
-        if (blank($file) || Str::contains($file, 'twill.php')) {
-            $config = require $this->makeFileName(
-                $file ?? '{$stubs}/modules/authors/twill.php'
-            );
-
-            config(['twill' => $config + config('twill')]);
-        }
-
-        if (blank($file) || Str::contains($file, 'translatable.php')) {
-            $config = require $this->makeFileName(
-                $file ?? '{$stubs}/modules/authors/translatable.php'
-            );
-
-            config(['translatable' => $config]);
-        }
-    }
-
-    /**
-     * Create sqlite database, if needed.
-     *
-     * @param $database
-     */
-    protected function createDatabase($database): void
-    {
-        if ($database !== self::DATABASE_MEMORY) {
-            if (file_exists($database)) {
-                unlink($database);
-            }
-
-            touch($database);
-        }
-    }
-
     /**
      * Login the current SuperUser.
-     *
-     * @return \Illuminate\Foundation\Testing\TestResponse|void
      */
-    protected function login()
+    protected function login(): TestResponse
     {
         $this->request('/twill/login', 'POST', [
             'email' => $this->superAdmin()->email,
@@ -234,21 +184,22 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * Boot the TestCase.
-     *
-     * @param \Illuminate\Foundation\Application $app
+     * Login with the provided credentials.
      */
-    protected function boot($app)
+    protected function loginAs(string $email, string $password): TestResponse
     {
-        $this->files = $app->make(Filesystem::class);
+        $this->request('/twill/login', 'POST', [
+            'email' => $email,
+            'password' => $password,
+        ]);
 
-        $this->prepareLaravelDirectory();
+        return $this->crawler;
     }
 
     /**
      * Fake a super admin.
      */
-    public function makeNewSuperAdmin()
+    public function makeNewSuperAdmin(): User
     {
         $user = new User();
 
@@ -270,9 +221,6 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Get application package providers.
-     *
-     * @param \Illuminate\Foundation\Application $app
-     * @return array
      */
     protected function getPackageProviders($app)
     {
@@ -281,124 +229,52 @@ abstract class TestCase extends OrchestraTestCase
             require __DIR__ . '/../../vendor/autoload.php'
         );
 
-        return [
-            AuthServiceProvider::class,
+        $list = [
             RouteServiceProvider::class,
             TwillServiceProvider::class,
             ValidationServiceProvider::class,
             NestedSetServiceProvider::class,
         ];
+
+        if ($this->example && file_exists(app_path('Providers/AppServiceProvider.php'))) {
+//            $list[] = AppServiceProvider::class;
+        }
+
+        return $list;
     }
 
     /**
      * Define environment setup.
-     *
-     * @param \Illuminate\Foundation\Application $app
-     * @return void
      */
     protected function getEnvironmentSetUp($app)
     {
-        $this->freezeTime();
+        Carbon::setTestNow($this->now = Carbon::now());
 
         $this->configureStorage($app);
 
         $this->configTwill($app);
-
-        $this->configureDatabase($app);
-
-        $this->boot($app);
-
-        $this->setUpDatabase($app);
-    }
-
-    /**
-     * Setup up the database.
-     *
-     * @param \Illuminate\Foundation\Application $app
-     */
-    protected function setUpDatabase($app)
-    {
-        $connection = $app['config']['database.default'];
-
-        if (
-            $driver =
-            $app['config'][
-                'database.connections.' . $connection . '.driver'
-            ] === self::DB_CONNECTION
-        ) {
-            $this->createDatabase(
-                $app['config'][
-                    'database.connections.' . $connection . '.database'
-                ]
-            );
-        }
-    }
-
-    /**
-     * Our dd.
-     *
-     * @param $value
-     */
-    public function dd($value)
-    {
-        dd($value ?? $this->app[Kernel::class]->output());
     }
 
     /**
      * Get or make a super admin.
-     *
-     * @param $force
-     * @return \A17\Twill\Models\User|\A17\Twill\Tests\Integration\UserClass
      */
-    public function superAdmin($force = false)
+    public function superAdmin(bool $force = false): User
     {
         return $this->superAdmin =
-        ! $this->superAdmin || $force
-        ? $this->makeNewSuperAdmin()
-        : $this->superAdmin;
-    }
-
-    /**
-     * Clear and make needed directories in the Laravel directory.
-     */
-    protected function prepareLaravelDirectory()
-    {
-        array_map(
-            'unlink',
-            glob($this->getBasePath() . '/database/migrations/*')
-        );
-
-        $this->deleteAllTwillPaths();
-
-        $this->makeAllTwillPaths();
-    }
-
-    public function copyTestFiles(): void
-    {
-        if (isset($this->allFiles)) {
-            $this->copyFiles($this->allFiles);
-        }
+            ! $this->superAdmin || $force
+                ? $this->makeNewSuperAdmin()
+                : $this->superAdmin;
     }
 
     /**
      * Install Twill.
      */
-    public function installTwill()
+    public function installTwill(): void
     {
-        $this->truncateTwillUsers();
+        $this->artisan('twill:install --no-interaction');
+        $this->artisan('twill:superadmin ' . $this->superAdmin()->email . ' ' . $this->superAdmin()->password);
 
-        $this->artisan('twill:install')
-            ->expectsQuestion('Enter an email', $this->superAdmin()->email)
-            ->expectsQuestion('Enter a password', $this->superAdmin()->password)
-            ->expectsQuestion(
-                'Confirm the password',
-                $this->superAdmin()->password
-            );
-
-        $user = User::where(
-            'email',
-            $email = $this->superAdmin()->email
-        )->first();
+        $user = User::where('email', $this->superAdmin()->email)->first();
 
         $user->setAttribute(
             'unencrypted_password',
@@ -410,10 +286,8 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Delete a directory.
-     *
-     * @param string $param
      */
-    public function deleteDirectory(string $param)
+    public function deleteDirectory(string $param): void
     {
         if ($this->files->exists($param)) {
             $this->files->deleteDirectory($param);
@@ -422,11 +296,8 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Get a collection with all routes.
-     *
-     * @param null $method
-     * @return \Illuminate\Support\Collection
      */
-    public function getAllRoutes($method = null)
+    public function getAllRoutes(?string $method = null): Collection
     {
         $routes = Route::getRoutes();
 
@@ -435,60 +306,51 @@ abstract class TestCase extends OrchestraTestCase
         }
 
         return collect($routes)->filter(function ($route) {
-            return Str::startsWith($route->action['uses'], 'A17\Twill') ||
-            Str::startsWith($route->action['uses'], 'App\\');
+            return is_callable($route->action['uses']) || Str::startsWith($route->action['uses'], 'A17\Twill') ||
+                Str::startsWith($route->action['uses'], 'App\\');
         });
     }
 
     /**
      * Get a collection with all package uris.
-     *
-     * @return \Illuminate\Support\Collection
      */
-    public function getAllUris()
+    public function getAllUris(): Collection
     {
         return $this->getAllRoutes()
-            ->pluck('uri')
+            ->pluck('uri', 'action.as')
             ->sort()
             ->unique()
             ->values();
     }
 
+    public function getAllUrisWithName(): Collection
+    {
+        return $this->getAllRoutes()->map(function ($route, $index) {
+            return [$route->action['as'] ?? $index => $route->uri];
+        })->all();
+    }
+
     /**
      * Get a collection with all package uris.
-     *
-     * @return \Illuminate\Support\Collection
      */
-    public function getUriWithNames()
+    public function getUriWithNames(): Collection
     {
         return $this->getAllRoutes()->pluck('uri', 'action.as');
     }
 
     /**
      * Send request to an ajax route.
-     *
-     * @param $uri
-     * @param string $method
-     * @param array $parameters
-     * @param array $cookies
-     * @param array $files
-     * @param array $server
-     * @param null $content
-     * @param bool $followRedirects
-     * @param bool $allow500
-     *
-     * @return \Illuminate\Foundation\Testing\TestResponse
      */
     public function request(
-        $uri,
-        $method = 'GET',
-        $parameters = [],
-        $cookies = [],
-        $files = [],
-        $server = [],
-        $content = null,
-        $followRedirects = true
-    ) {
+        string $uri,
+        string $method = 'GET',
+        array $parameters = [],
+        array $cookies = [],
+        array $files = [],
+        array $server = [],
+        ?string $content = null,
+        bool $followRedirects = true
+    ): TestResponse {
         $request = $followRedirects ? $this->followingRedirects() : $this;
 
         return $this->crawler = $request->call(
@@ -502,28 +364,16 @@ abstract class TestCase extends OrchestraTestCase
         );
     }
 
-    /**
-     * Send request to an ajax route.
-     *
-     * @param $uri
-     * @param string $method
-     * @param array $parameters
-     * @param array $cookies
-     * @param array $files
-     * @param array $server
-     * @param null $content
-     * @return \Illuminate\Foundation\Testing\TestResponse
-     */
     public function ajax(
-        $uri,
-        $method = 'GET',
-        $parameters = [],
-        $cookies = [],
-        $files = [],
-        $server = [],
-        $content = null,
-        $followRedirects = false
-    ) {
+        string $uri,
+        string $method = 'GET',
+        array $parameters = [],
+        array $cookies = [],
+        array $files = [],
+        array $server = [],
+        ?string $content = null,
+        bool $followRedirects = true
+    ): TestResponse {
         $server = array_merge($server, [
             'HTTP_X-Requested-With' => 'XMLHttpRequest',
         ]);
@@ -545,62 +395,9 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * Freeze time.
-     */
-    public function freezeTime($callback = null)
-    {
-        Carbon::setTestNow($this->now = Carbon::now());
-    }
-
-    /**
-     * Copy all sources to destinations.
-     *
-     * @param array $files
-     */
-    public function copyFiles($files)
-    {
-        collect($files)->each(function ($destination, $source) {
-            collect($destination)->each(function ($destination) use ($source) {
-                $source = $this->makeFileName($source);
-
-                $destination = $this->makeFileName($destination, $source);
-
-                if (! $this->files->exists($directory = dirname($destination))) {
-                    $this->files->makeDirectory($directory, 0755, true);
-                }
-
-                $this->files->copy($source, $destination);
-            });
-        });
-    }
-
-    public function cleanDirectories()
-    {
-        collect($this->toDelete ?? [])->each(function ($directory) {
-            $file = $this->makeFileName($directory);
-
-            if (is_dir($file)) {
-                File::deleteDirectory($file);
-            }
-
-            if (! is_dir($file) && file_exists($file)) {
-                unlink($file);
-            }
-
-            if (! Str::endsWith($file, '.php')) {
-                File::makeDirectory($file, 0755, true);
-            }
-        });
-    }
-
-    /**
      * Replace placeholders to make a filename.
-     *
-     * @param string $file
-     * @param null $source
-     * @return mixed
      */
-    public function makeFileName($file, $source = null)
+    public function makeFileName(string $file, ?string $source = null): string
     {
         $file = str_replace(
             [
@@ -631,7 +428,7 @@ abstract class TestCase extends OrchestraTestCase
         $extension = pathinfo($file, PATHINFO_EXTENSION);
 
         if (filled($source) && ! Str::endsWith($file, ".{$extension}")) {
-            $file = $file . basename($source);
+            $file .= basename($source);
         }
 
         return $file;
@@ -639,20 +436,16 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Return the contents from current crawler response.
-     *
-     * @return false|string
      */
-    public function content()
+    public function content(): bool|string
     {
         return $this->crawler->getContent();
     }
 
     /**
      * Assert can see text.
-     *
-     * @param $text
      */
-    public function assertSee($text)
+    public function assertSee(?string $text): void
     {
         $this->assertStringContainsString(
             clean_file($text),
@@ -662,10 +455,8 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Assert cannot see text.
-     *
-     * @param $text
      */
-    public function assertDontSee($text)
+    public function assertDontSee(string $text): void
     {
         $this->assertStringNotContainsString(
             clean_file($text),
@@ -674,25 +465,13 @@ abstract class TestCase extends OrchestraTestCase
     }
 
     /**
-     * Skip test if running on Travis.
-     */
-    public function skipOnTravis()
-    {
-        if (! is_null(env('TRAVIS_PHP_VERSION'))) {
-            $this->markTestSkipped('This test cannot be executed on Travis');
-        }
-    }
-
-    /**
      * Assert a successful exit code.
-     *
-     * @param int $exitCode
-     * @throws \Exception
      */
-    public function assertExitCodeIsGood($exitCode)
+    public function assertExitCodeIsGood(int $exitCode): void
     {
+        $this->assertFalse($exitCode !== 0);
         if ($exitCode !== 0) {
-            throw new \Exception(
+            throw new Exception(
                 "Test ended with exit code {$exitCode}. Non-fatal errors possibly happened during tests."
             );
         }
@@ -700,26 +479,46 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Assert a failing exit code.
-     *
-     * @param int $exitCode
-     * @throws \Exception
      */
-    public function assertExitCodeIsNotGood($exitCode)
+    public function assertExitCodeIsNotGood(int $exitCode): void
     {
         if ($exitCode === 0) {
-            throw new \Exception(
+            throw new Exception(
                 "Test ended with exit code 0, but this wasn't supposed to happen!"
             );
         }
     }
 
-    public function getCommand($commandName)
+    public function getCommand(string $commandName): mixed
     {
         return $this->app->make(Kernel::class)->all()[$commandName];
     }
 
-    public function httpRequestAssert($url, $method = 'GET', $data = [], $expectedStatusCode = 200)
-    {
+    public function httpJsonRequestAssert(
+        string $url,
+        string $method = 'GET',
+        array $data = [],
+        int $expectedStatusCode = 200
+    ): TestResponse {
+        $response = $this->json(
+            $method,
+            $url,
+            $data
+        );
+
+        $this->assertLogStatusCode($response, $expectedStatusCode);
+
+        $response->assertStatus($expectedStatusCode);
+
+        return $response;
+    }
+
+    public function httpRequestAssert(
+        string $url,
+        string $method = 'GET',
+        array $data = [],
+        int $expectedStatusCode = 200
+    ): TestResponse {
         $response = $this->request(
             $url,
             $method,
@@ -733,41 +532,17 @@ abstract class TestCase extends OrchestraTestCase
         return $response;
     }
 
-    public function assertLogStatusCode($response, $expectedStatusCode = 200)
+    public function assertLogStatusCode(TestResponse $response, int $expectedStatusCode = 200): void
     {
-        if ($response->getStatusCode() != $expectedStatusCode) {
+        if ($response->getStatusCode() !== $expectedStatusCode) {
             var_dump('------------------- ORIGINAL RESPONSE');
             var_dump($response->getContent());
         }
     }
 
-    public function freshDatabase()
-    {
-        if (file_exists($file = env('DB_DATABASE'))) {
-            unlink($file);
-            touch($file);
-        }
-    }
-
-    protected function truncateTwillUsers(): void
-    {
-        try {
-            DB::table('twill_users')->truncate();
-        } catch (\Exception $exception) {
-        }
-    }
-
-    protected function assertNothingWrongHappened()
+    protected function assertNothingWrongHappened(): void
     {
         $this->assertDontSee('Something wrong happened!');
-    }
-
-    /**
-     * Migrate database.
-     */
-    public function migrate()
-    {
-        $this->artisan('migrate');
     }
 
     public function loadConfig()

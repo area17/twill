@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<ruleset name="PHP_CodeSniffer">
+    <description>Coding standard for Twill.</description>
+    <file>config</file>
+    <file>src</file>
+    <rule ref="PSR12"/>
+    <!-- There MUST NOT be a hard limit on line length:
+    https://www.php-fig.org/psr/psr-2/#:~:text=The%20soft%20limit%20on%20line,more%20than%2080%20characters%20each. -->
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="N"/>
+            <property name="absoluteLineLimit" value="M"/>
+        </properties>
+    </rule>
+    <rule ref="Squiz.Arrays.ArrayDeclaration.NoCommaAfterLast"/>
+    <rule ref="Internal.NoCodeFound">
+        <exclude-pattern>*.blade.php</exclude-pattern>
+    </rule>
+    <exclude-pattern>*.js</exclude-pattern>
+</ruleset>

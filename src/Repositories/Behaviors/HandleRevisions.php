@@ -2,26 +2,29 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Facades\TwillConfig;
 use A17\Twill\Models\Behaviors\HasRelated;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\RelatedItem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use A17\Twill\Jobs\CleanupRevisions;
 
 trait HandleRevisions
 {
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @return \A17\Twill\Models\Model
+     * The Laravel queue name to be used for the revision limiting.
      */
-    public function hydrateHandleRevisions($object, $fields)
+    protected string $revisionLimitJobQueue = 'default';
+
+    public function hydrateHandleRevisions(TwillModelContract $object, array $fields): TwillModelContract
     {
-        foreach($this->getRepeaters() as $repeater) {
+        foreach ($this->getRepeaters() as $repeater) {
             $this->hydrateRepeater($object, $fields, $repeater['relation'], $repeater['model']);
         }
 
-        foreach($this->getBrowsers() as $browser) {
+        foreach ($this->getBrowsers() as $browser) {
             $this->hydrateBrowser($object, $fields, $browser['relation'], $browser['positionAttribute'], $browser['model']);
         }
 
@@ -32,69 +35,49 @@ trait HandleRevisions
         return $object;
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @return array
-     */
-    public function beforeSaveHandleRevisions($object, $fields)
+    public function afterSaveOriginalDataHandleRevisions(TwillModelContract $object, array $fields): array
     {
         $this->createRevisionIfNeeded($object, $fields);
 
         return $fields;
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @return void
-     */
-    public function createRevisionIfNeeded($object, $fields)
+    public function createRevisionIfNeeded(TwillModelContract $object, array $fields): array
     {
         $lastRevisionPayload = json_decode($object->revisions->first()->payload ?? "{}", true);
 
-        if ($fields != $lastRevisionPayload) {
+        if ($fields !== $lastRevisionPayload) {
             $object->revisions()->create([
                 'payload' => json_encode($fields),
                 'user_id' => Auth::guard('twill_users')->user()->id ?? null,
             ]);
         }
+
+        if (isset($object->limitRevisions) || TwillConfig::getRevisionLimit()) {
+            CleanupRevisions::dispatch($object)
+                ->onQueue($this->revisionLimitJobQueue);
+        }
+
+        return $fields;
     }
 
-    /**
-     * @param int $id
-     * @param array $fields
-     * @return \A17\Twill\Models\Model
-     */
-    public function preview($id, $fields)
+    public function preview(int $id, array $fields): TwillModelContract
     {
         $object = $this->model->findOrFail($id);
 
         return $this->hydrateObject($object, $fields);
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @return \A17\Twill\Models\Model
-     */
-    protected function hydrateObject($object, $fields)
+    protected function hydrateObject(TwillModelContract $object, array $fields): TwillModelContract
     {
         $fields = $this->prepareFieldsBeforeSave($object, $fields);
 
         $object->fill(Arr::except($fields, $this->getReservedFields()));
 
-        $object = $this->hydrate($object, $fields);
-
-        return $object;
+        return $this->hydrate($object, $fields);
     }
 
-    /**
-     * @param int $id
-     * @param int $revisionId
-     * @return \A17\Twill\Models\Model
-     */
-    public function previewForRevision($id, $revisionId)
+    public function previewForRevision(int $id, int $revisionId): TwillModelContract
     {
         $object = $this->model->findOrFail($id);
 
@@ -106,16 +89,13 @@ trait HandleRevisions
         return $hydratedObject;
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relationship
-     * @param \A17\Twill\Models\Model|null $model
-     * @param string|null $customHydratedRelationship
-     * @return void
-     */
-    public function hydrateMultiSelect($object, $fields, $relationship, $model = null, $customHydratedRelationship = null)
-    {
+    public function hydrateMultiSelect(
+        TwillModelContract $object,
+        array $fields,
+        string $relationship,
+        null|string|TwillModelContract $model = null,
+        ?string $customHydratedRelationship = null
+    ): void {
         $fieldsHasElements = isset($fields[$relationship]) && !empty($fields[$relationship]);
         $relatedElements = $fieldsHasElements ? $fields[$relationship] : [];
 
@@ -130,29 +110,23 @@ trait HandleRevisions
         $object->setRelation($customHydratedRelationship ?? $relationship, $relatedElementsCollection);
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relationship
-     * @param string $positionAttribute
-     * @param \A17\Twill\Models\Model|null $model
-     * @return null
-     */
-    public function hydrateBrowser($object, $fields, $relationship, $positionAttribute = 'position', $model = null)
-    {
-        return $this->hydrateOrderedBelongsToMany($object, $fields, $relationship, $positionAttribute, $model);
+    public function hydrateBrowser(
+        TwillModelContract $object,
+        array $fields,
+        string $relationship,
+        string $positionAttribute = 'position',
+        null|TwillModelContract|string $model = null
+    ): void {
+        $this->hydrateOrderedBelongsToMany($object, $fields, $relationship, $positionAttribute, $model);
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relationship
-     * @param string $positionAttribute
-     * @param \A17\Twill\Models\Model|null $model
-     * @return void
-     */
-    public function hydrateOrderedBelongsToMany($object, $fields, $relationship, $positionAttribute = 'position', $model = null)
-    {
+    public function hydrateOrderedBelongsToMany(
+        TwillModelContract $object,
+        array $fields,
+        string $relationship,
+        string $positionAttribute = 'position',
+        null|TwillModelContract|string $model = null
+    ): void {
         $fieldsHasElements = isset($fields['browsers'][$relationship]) && !empty($fields['browsers'][$relationship]);
         $relatedElements = $fieldsHasElements ? $fields['browsers'][$relationship] : [];
 
@@ -172,12 +146,7 @@ trait HandleRevisions
         $object->setRelation($relationship, $relatedElementsCollection);
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @return void
-     */
-    public function hydrateRelatedBrowsers($object, $fields)
+    public function hydrateRelatedBrowsers(TwillModelContract $object, array $fields): void
     {
         $relatedBrowsers = $this->getRelatedBrowsers();
 
@@ -209,23 +178,20 @@ trait HandleRevisions
         $object->setRelation('relatedItems', $allRelatedItems);
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relationship
-     * @param \A17\Twill\Models\Model $model
-     * @param string|null $repeaterName
-     * @return void
-     */
-    public function hydrateRepeater($object, $fields, $relationship, $model, $repeaterName = null)
-    {
+    public function hydrateRepeater(
+        TwillModelContract $object,
+        array $fields,
+        string $relationship,
+        string $model,
+        ?string $repeaterName = null
+    ): void {
         if (!$repeaterName) {
             $repeaterName = $relationship;
         }
 
         $relationFields = $fields['repeaters'][$repeaterName] ?? [];
 
-        $relationRepository = $this->getModelRepository($relationship, $model);
+        $relationRepository = getModelRepository($relationship, $model);
 
         $repeaterCollection = Collection::make();
 
@@ -242,20 +208,13 @@ trait HandleRevisions
         $object->setRelation($relationship, $repeaterCollection);
     }
 
-    /**
-     * @return int
-     */
-    public function getCountForMine()
+    public function getCountForMine(): int
     {
         $query = $this->model->newQuery();
         return $this->filter($query, $this->countScope)->mine()->count();
     }
 
-    /**
-     * @param string $slug
-     * @return int|bool
-     */
-    public function getCountByStatusSlugHandleRevisions($slug)
+    public function getCountByStatusSlugHandleRevisions(string $slug): int|bool
     {
         if ($slug === 'mine') {
             return $this->getCountForMine();

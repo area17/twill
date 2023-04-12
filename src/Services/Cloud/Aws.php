@@ -4,23 +4,23 @@ namespace A17\Twill\Services\Cloud;
 
 use Aws\S3\S3Client;
 use Illuminate\Support\Str;
+use League\Flysystem\AwsS3V3\AwsS3V3Adapter;
 use League\Flysystem\Filesystem;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
 
 class Aws
 {
-    public function filesystemFactory($source)
+    public function filesystemFactory($source): Filesystem
     {
         $config = $this->getConfigFor($source);
 
         $client = new S3Client($config);
 
-        $adapter = new AwsS3Adapter($client, $config['bucket'], $config['root']);
+        $adapter = new AwsS3V3Adapter($client, $config['bucket'], $config['root']);
 
         return new Filesystem($adapter);
     }
 
-    public function getConfigFor($disk)
+    public function getConfigFor($disk): array
     {
         return [
             'credentials' => [

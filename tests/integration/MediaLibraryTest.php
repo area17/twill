@@ -2,12 +2,12 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use A17\Twill\Models\Media;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\DB;
+use A17\Twill\Tests\Integration\Behaviors\CreatesMedia;
 
 class MediaLibraryTest extends ModulesTestBase
 {
+    use CreatesMedia;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -15,7 +15,7 @@ class MediaLibraryTest extends ModulesTestBase
         $this->login();
     }
 
-    public function testCanListMedias()
+    public function testCanListMedias(): void
     {
         $this->ajax('/twill/media-library/medias', 'GET', [
             'page' => 1,
@@ -28,51 +28,12 @@ class MediaLibraryTest extends ModulesTestBase
         $this->assertJson($this->content());
     }
 
-    public function createMedia()
-    {
-        $this->login();
-
-        $data = [
-            'unique_folder_name' => ($folder = $this->faker->uuid),
-            'qquuid' => ($qquuid = $this->faker->uuid),
-            'qqfilename' => ($fileName =
-                'file-' . $this->faker->numberBetween(1000, 9999) . '.jpg'),
-            'qqtotalfilesize' => strlen(
-                $file = file_get_contents(stubs('images/area17.png'))
-            ),
-            'qqfile' => UploadedFile::fake()->image($fileName),
-        ];
-
-        $this->ajax('/twill/media-library/medias', 'POST', $data)->assertStatus(
-            200
-        );
-
-        $this->assertJson($this->content());
-
-        $media = Media::where('filename', $fileName)->first();
-
-        $this->assertEquals($fileName, $media->filename);
-
-        $this->assertEquals(
-            $this->now->format('Y-m-d H:i'),
-            $media->created_at->format('Y-m-d H:i')
-        );
-
-        $localPath = env('MEDIA_LIBRARY_LOCAL_PATH');
-
-        $this->assertFileExists(
-            storage_path("app/public/{$localPath}/{$folder}/{$fileName}")
-        );
-
-        return $media;
-    }
-
-    public function testCanUploadMedia()
+    public function testCanUploadMedia(): void
     {
         $this->createMedia();
     }
 
-    public function testCanSingleUpdateMedia()
+    public function testCanSingleUpdateMedia(): void
     {
         $media = $this->createMedia();
 
@@ -99,15 +60,15 @@ class MediaLibraryTest extends ModulesTestBase
         );
 
         $this->assertEquals(
+            ['avatar', 'photo'],
             $media->tags
                 ->pluck('slug')
                 ->sort()
-                ->toArray(),
-            ['avatar', 'photo']
+                ->toArray()
         );
     }
 
-    public function testCanUpdateInBulk()
+    public function testCanUpdateInBulk(): void
     {
         $medias = collect();
 
@@ -161,9 +122,9 @@ class MediaLibraryTest extends ModulesTestBase
         $this->assertFalse($media->delete());
 
         // Check we cannot remove it via the api.
-        $this->deleteJson(route('admin.media-library.medias.destroy', ['media' => $media]))->assertJson([
+        $this->deleteJson(route('twill.media-library.medias.destroy', ['media' => $media]))->assertJson([
             'message' => 'Media was not moved to trash. Something wrong happened!',
-            'variant' => 'error'
+            'variant' => 'error',
         ]);
 
         // Delete the author and make sure media is still used.
@@ -178,9 +139,9 @@ class MediaLibraryTest extends ModulesTestBase
         $this->assertFalse($media->delete());
 
         // Check we continue to be unable to remove.
-        $this->deleteJson(route('admin.media-library.medias.destroy', ['media' => $media]))->assertJson([
+        $this->deleteJson(route('twill.media-library.medias.destroy', ['media' => $media]))->assertJson([
             'message' => 'Media was not moved to trash. Something wrong happened!',
-            'variant' => 'error'
+            'variant' => 'error',
         ]);
 
         // Force Delete the author and make sure media is still used.
@@ -191,9 +152,9 @@ class MediaLibraryTest extends ModulesTestBase
         $this->assertTrue($media->refresh()->canDeleteSafely());
 
         // Finally delete the media.
-        $this->deleteJson(route('admin.media-library.medias.destroy', ['media' => $media]))->assertJson([
+        $this->deleteJson(route('twill.media-library.medias.destroy', ['media' => $media]))->assertJson([
             'message' => 'Media moved to trash!',
-            'variant' => 'success'
+            'variant' => 'success',
         ]);
 
         $this->assertEquals(0, $media->count());

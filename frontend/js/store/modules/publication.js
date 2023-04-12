@@ -13,6 +13,7 @@ const state = {
   endDate: window[process.env.VUE_APP_NAME].STORE.publication.endDate || null,
   visibility: window[process.env.VUE_APP_NAME].STORE.publication.visibility || false,
   reviewProcess: window[process.env.VUE_APP_NAME].STORE.publication.reviewProcess || [],
+  userInfo: window[process.env.VUE_APP_NAME].STORE.publication.userInfo || null,
   createWithoutModal: window[process.env.VUE_APP_NAME].STORE.publication.createWithoutModal || false,
   hasUnsavedChanges: false,
   saveType: undefined,

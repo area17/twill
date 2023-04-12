@@ -1,3 +1,0 @@
-<?php
-
-Route::module('posts');

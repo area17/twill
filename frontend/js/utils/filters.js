@@ -1,7 +1,7 @@
-import config from '@/store/modules/config'
 import dateFormat from 'date-fns/format'
 
-import { locales, getCurrentLocale, getTimeFormatForCurrentLocale } from '@/utils/locale'
+import config from '@/store/modules/config'
+import { getCurrentLocale, getTimeFormatForCurrentLocale,locales } from '@/utils/locale'
 
 function dateFormatLocale (date, format) {
   const locale = locales[getCurrentLocale()]

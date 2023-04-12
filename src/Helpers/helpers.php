@@ -17,6 +17,19 @@ if (! function_exists('dumpUsableSqlQuery')) {
     }
 }
 
+if (! function_exists('getLikeOperator')) {
+    function getLikeOperator(): string
+    {
+        return once(function () {
+            if (DB::connection()->getPDO()->getAttribute(\PDO::ATTR_DRIVER_NAME) === 'pgsql') {
+                return 'ILIKE';
+            }
+
+            return 'LIKE';
+        });
+    }
+}
+
 if (! function_exists('classUsesDeep')) {
     /**
      * @param mixed $class
@@ -40,7 +53,7 @@ if (! function_exists('classUsesDeep')) {
             $traitsToSearch = array_merge($newTraits, $traitsToSearch);
         }
 
-        foreach ($traits as $trait => $same) {
+        foreach (array_keys($traits) as $trait) {
             $traits = array_merge(class_uses($trait, $autoload), $traits);
         }
 
@@ -58,11 +71,7 @@ if (! function_exists('classHasTrait')) {
     {
         $traits = classUsesDeep($class);
 
-        if (in_array($trait, array_keys($traits))) {
-            return true;
-        }
-
-        return false;
+        return array_key_exists($trait, $traits);
     }
 }
 
@@ -105,7 +114,7 @@ if (! function_exists('twill_path')) {
         }
 
         // Split to separate root namespace
-        preg_match('/(\w*)\W?(.*)/', config('twill.namespace'), $namespaceParts);
+        preg_match('#(\w*)\W?(.*)#', config('twill.namespace'), $namespaceParts);
 
         $twillBase = app_path(
             fix_directory_separator(
@@ -172,6 +181,10 @@ if (! function_exists('twill_put_stub')) {
             $stub
         );
 
+        $dir = Str::beforeLast($path, DIRECTORY_SEPARATOR);
+
+        $fs->ensureDirectoryExists($dir);
+
         if (! $fs->exists($path)) {
             $fs->put($path, $stub);
         }
@@ -194,15 +207,27 @@ if (! function_exists('fix_directory_separator')) {
     }
 }
 
-if (! function_exists('generate_list_of_allowed_blocks')) {
+if (! function_exists('twillModel')) {
+    function twillModel($model): string
+    {
+        return config("twill.models.$model")
+            ?? abort(500, "helpers/twillModel: '$model' model is not configured");
+    }
+}
+
+if (! function_exists('generate_list_of_available_blocks')) {
     /**
      * @param array $blocks
      * @param array $groups
      * @return array
      */
-    function generate_list_of_available_blocks($blocks, $groups): array
+    function generate_list_of_available_blocks($blocks, $groups, bool $settingsOnly = false): array
     {
-        $blockList = TwillBlocks::getBlocks();
+        if ($settingsOnly) {
+            $blockList = TwillBlocks::getSettingsBlocks();
+        } else {
+            $blockList = TwillBlocks::getBlocks();
+        }
 
         $appBlocksList = $blockList->filter(function (Block $block) {
             return $block->source !== A17\Twill\Services\Blocks\Block::SOURCE_TWILL;

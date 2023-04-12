@@ -1,33 +1,6 @@
-@php
-    $name = $name ?? $moduleName;
-    $label = $label ?? 'Missing browser label';
-
-    $endpointsFromModules = isset($modules) ? collect($modules)->map(function ($module) {
-        return [
-            'label' => $module['label'] ?? ucfirst($module['name']),
-            'value' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'browser', $module['params'] ?? [], false)
-        ];
-    })->toArray() : null;
-
-    $endpoints = $endpoints ?? $endpointsFromModules ?? [];
-
-    $endpoint = $endpoint ?? (!empty($endpoints) ? null : moduleRoute($moduleName, $routePrefix ?? null, 'browser', $params ?? [], false));
-
-    $max = $max ?? 1;
-    $itemLabel = $itemLabel ?? strtolower($label);
-    $note = $note ?? 'Add' . ($max > 1 ? " up to $max ". $itemLabel : ' one ' . Str::singular($itemLabel));
-    $fieldNote = $fieldNote ?? '';
-    $sortable = $sortable ?? true;
-    $wide = $wide ?? false;
-    $buttonOnTop = $buttonOnTop ?? false;
-    $browserNote = $browserNote ?? '';
-    $disabled = $disabled ?? false;
-    $connectedBrowserField = $connectedBrowserField ?? false;
-@endphp
-
-<a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}" note="{{ $fieldNote }}" @if($renderForBlocks) :fixed-error-key="$parent.blockFieldName !== undefined ? $parent.blockFieldName('{{$name}}') : ''" @endif>
+<a17-inputframe label="{{ $label }}" name="browsers.{{ $name }}" note="{{ $fieldNote }}">
     <a17-browserfield
-        @include('twill::partials.form.utils._field_name')
+        {!! $formFieldName() !!}
         item-label="{{ $itemLabel }}"
         :max="{{ $max }}"
         :wide="{{ json_encode($wide) }}"

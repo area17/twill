@@ -17,10 +17,6 @@ class Disk implements FileServiceInterface
      */
     protected $config;
 
-    /**
-     * @param FilesystemManager $filesystemManager
-     * @param Config $config
-     */
     public function __construct(FilesystemManager $filesystemManager, Config $config)
     {
         $this->filesystemManager = $filesystemManager;

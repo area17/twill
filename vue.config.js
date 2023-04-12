@@ -5,14 +5,14 @@ const isProd = process.env.NODE_ENV === 'production'
 // Define global vue variables
 process.env.VUE_APP_NAME = process.env.VUE_APP_NAME || 'TWILL'
 
-// eslint-disable-next-line no-console
-console.log('\x1b[32m', `\n🔥 Building Twill assets in ${isProd ? 'production' : 'dev'} mode.`)
+process.env.VUE_APP_CUSTOM_COMPONENTS_PATH = process.env.VUE_APP_CUSTOM_COMPONENTS_PATH ?? '@/components/customs/'
 
-/**
- * For configuration
- * @see: https://github.com/johnagan/clean-webpack-plugin
- */
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+if (isProd) {
+  // eslint-disable-next-line no-console
+  console.log('\x1b[32m', `\n🔥 Building Twill assets in ${isProd ? 'production' : 'dev'} mode.`)
+  console.log('\nLoading components from: ' + process.env.VUE_APP_CUSTOM_COMPONENTS_PATH)
+}
+
 /**
  * For configuration
  * @see: https://github.com/cascornelissen/svg-spritemap-webpack-plugin
@@ -23,16 +23,11 @@ const SVGSpritemapPlugin = require('svg-spritemap-webpack-plugin')
  * @see: https://github.com/webdeveric/webpack-assets-manifest
  */
 const WebpackAssetsManifest = require('webpack-assets-manifest')
-/**
- * For configuration
- * @see: https://github.com/Turbo87/webpack-notifier
- */
-const WebpackNotifierPlugin = require('webpack-notifier')
 
 const srcDirectory = 'frontend'
 const partialsDirectory = '../views/partials'
 const outputDir = isProd ? 'dist' : (process.env.TWILL_DEV_ASSETS_PATH || 'dist')
-const assetsDir = process.env.TWILL_ASSETS_DIR || 'assets/admin'
+const assetsDir = process.env.TWILL_ASSETS_DIR || 'assets/twill'
 // Only works with laravel valet.
 const useHttps = process.env.TWILL_DEV_MODE_SSH ? process.env.TWILL_DEV_MODE_SSH === 'true' : false
 
@@ -69,30 +64,30 @@ const svgConfig = (suffix = null) => {
   }
 }
 
-let plugins = [
-  new CleanWebpackPlugin(),
-  new SVGSpritemapPlugin(`${srcDirectory}/icons/**/*.svg`, svgConfig()),
-  new SVGSpritemapPlugin(`${srcDirectory}/icons-custom/**/*.svg`, svgConfig('custom')),
-  new SVGSpritemapPlugin(`${srcDirectory}/icons-files/**/*.svg`, svgConfig('files')),
-  new SVGSpritemapPlugin(`${srcDirectory}/icons-wysiwyg/**/*.svg`, svgConfig('wysiwyg')),
-  new WebpackAssetsManifest({
-    output: `${assetsDir}/twill-manifest.json`,
-    publicPath: true,
-    customize (entry, original, manifest, asset) {
-      const search = new RegExp(`${assetsDir.replace(/\//gm, '\/')}\/(css|fonts|js|icons)\/`, 'gm')
-      return {
-        key: entry.key.replace(search, '')
-      }
-    }
-  })
-]
+const plugins = []
 
-if (!isProd) {
-  plugins.push(new WebpackNotifierPlugin({
-    title: 'Twill',
-    contentImage: path.join(__dirname, 'docs/.vuepress/public/favicon-180.png')
-  }))
+// Default icons and optionnal custom admin icons
+// Warning : user need to make sure each SVG files are named uniquely
+const iconDirectories = [`${srcDirectory}/icons/**/*.svg`];
+if (fs.existsSync(`${srcDirectory}/icons-custom`) && fs.readdirSync(`${srcDirectory}/icons-custom`).length !== 0) {
+  iconDirectories.push(`${srcDirectory}/icons-custom/**/*.svg`);
 }
+plugins.push(new SVGSpritemapPlugin(iconDirectories, svgConfig()))
+// File format icons
+plugins.push(new SVGSpritemapPlugin(`${srcDirectory}/icons-files/**/*.svg`, svgConfig('files')))
+// Wysiwyg icons
+plugins.push(new SVGSpritemapPlugin(`${srcDirectory}/icons-wysiwyg/**/*.svg`, svgConfig('wysiwyg')))
+
+plugins.push(new WebpackAssetsManifest({
+  output: `${assetsDir}/twill-manifest.json`,
+  publicPath: true,
+  customize (entry, original, manifest, asset) {
+    const search = new RegExp(`${assetsDir.replace(/\//gm, '\/')}\/(css|fonts|js|icons)\/`, 'gm')
+    return {
+      key: entry.key.replace(search, '')
+    }
+  }
+}))
 
 // Define npm module resolve order: 1. local (Twill), 2. root (App)
 const appModuleFolder = path.resolve(__dirname, '../../../node_modules') // vendor/area17/twill/
@@ -103,12 +98,13 @@ if (fs.existsSync(appModuleFolder)) {
 
 const config = {
   // Define base outputDir of build
-  outputDir: outputDir,
+  outputDir,
   // Define root asset directory
-  assetsDir: assetsDir,
+  assetsDir,
   // Remove sourcemaps for production
   productionSourceMap: false,
   css: {
+    extract: process.env.NODE_ENV === 'production' ? { ignoreOrder: true } : false,
     loaderOptions: {
       // define global settings imported in all components
       sass: {
@@ -121,39 +117,26 @@ const config = {
   devServer: {
     hot: true,
     https: useHttps,
-    disableHostCheck: true,
+    allowedHosts: 'all',
     headers: {
       "Access-Control-Allow-Origin": "*"
     }
   },
   runtimeCompiler: true,
   configureWebpack: {
+    performance: {
+      hints: false
+    },
+    devtool: false,
     resolve: {
       alias: {
-        'prosemirror-tables': path.join(__dirname, 'node_modules/prosemirror-tables/src/index.js'),
-        'prosemirror-state' : path.join(__dirname, 'node_modules/prosemirror-state/src/index.js'),
-        'prosemirror-view' : path.join(__dirname, 'node_modules/prosemirror-view/src/index.js'),
-        'prosemirror-transform' : path.join(__dirname, 'node_modules/prosemirror-transform/src/index.js')
+        'fonts':path.resolve(`${srcDirectory}/fonts`),
+        '@':path.resolve(`${srcDirectory}/js`),
+        'styles':path.resolve(`${srcDirectory}/scss`),
       },
       modules: resolveModules
     },
-    plugins,
-    performance: {
-      hints: false
-    }
-  },
-  chainWebpack: config => {
-    // Update default vue-cli aliases
-    config.resolve.alias.set('fonts', path.resolve(`${srcDirectory}/fonts`))
-    config.resolve.alias.set('@', path.resolve(`${srcDirectory}/js`))
-    config.resolve.alias.set('styles', path.resolve(`${srcDirectory}/scss`))
-
-    // Delete HTML related webpack plugins by page
-    Object.keys(pages).forEach(page => {
-      config.plugins.delete(`html-${page}`)
-      config.plugins.delete(`preload-${page}`)
-      config.plugins.delete(`prefetch-${page}`)
-    })
+    plugins
   }
 }
 

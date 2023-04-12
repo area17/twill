@@ -2,60 +2,61 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\Contracts\TwillModelContract;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+
 trait HandleSlugs
 {
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @return void
-     */
-    public function afterSaveHandleSlugs($object, $fields)
+    public function beforeSaveHandleSlugs(TwillModelContract $object, array $fields): void
     {
         if (property_exists($this->model, 'slugAttributes')) {
+            $object->twillSlugData = [];
             foreach (getLocales() as $locale) {
-                if (isset($fields['slug']) && isset($fields['slug'][$locale]) && !empty($fields['slug'][$locale])) {
-                    $object->disableLocaleSlugs($locale);
+                if (isset($fields['slug'][$locale]) && !empty($fields['slug'][$locale])) {
                     $currentSlug = [];
                     $currentSlug['slug'] = $fields['slug'][$locale];
                     $currentSlug['locale'] = $locale;
-                    $currentSlug['active'] = $this->model->isTranslatable() ? $object->translate($locale)->active : 1;
+                    $currentSlug['active'] = $this->model->isTranslatable() ? $object->translate($locale)->active : true;
                     $currentSlug = $this->getSlugParameters($object, $fields, $currentSlug);
-                    $object->updateOrNewSlug($currentSlug);
+                    $object->twillSlugData[] = $currentSlug;
+                } else {
+                    $slugParams = $this->model->slugAttributes;
+                    $slugData = [];
+
+                    foreach ($slugParams as $param) {
+                        $slugData[] = $fields[$param][$locale] ?? '';
+                    }
+
+                    if (!empty(Arr::join($slugData, '-'))) {
+                        $object->twillSlugData[] = [
+                            'slug' => Str::slug(Arr::join($slugData, '-')),
+                            'active' => $this->model->isTranslatable() ? $object->translate($locale)->active : 1,
+                            'locale' => $locale
+                        ];
+                    }
                 }
             }
         }
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @return void
-     */
-    public function afterDeleteHandleSlugs($object)
+    public function afterDeleteHandleSlugs(TwillModelContract $object): void
     {
         $object->slugs()->delete();
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @return void
-     */
-    public function afterRestoreHandleSlugs($object)
+    public function afterRestoreHandleSlugs(TwillModelContract $object): void
     {
         $object->slugs()->restore();
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @return array
-     */
-    public function getFormFieldsHandleSlugs($object, $fields)
+    public function getFormFieldsHandleSlugs(TwillModelContract $model, array $fields): array
     {
         unset($fields['slugs']);
 
-        if ($object->slugs != null) {
-            foreach ($object->slugs as $slug) {
-                if ($slug->active || $object->slugs->where('locale', $slug->locale)->where('active', true)->count() === 0) {
+        if ($model->slugs !== null) {
+            foreach ($model->slugs as $slug) {
+                if ($slug->active || $model->slugs->where('locale', $slug->locale)->where('active', true)->count() === 0) {
                     $fields['translations']['slug'][$slug->locale] = $slug->slug;
                 }
             }
@@ -64,13 +65,7 @@ trait HandleSlugs
         return $fields;
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param array $slug
-     * @return array
-     */
-    public function getSlugParameters($object, $fields, $slug)
+    public function getSlugParameters(TwillModelContract $object, array $fields, array $slug): array
     {
         $slugParams = $object->getSlugParams($slug['locale']);
 
@@ -85,14 +80,7 @@ trait HandleSlugs
         return $slug;
     }
 
-    /**
-     * @param string $slug
-     * @param array $with
-     * @param array $withCount
-     * @param array $scopes
-     * @return \A17\Twill\Models\Model|null
-     */
-    public function forSlug($slug, $with = [], $withCount = [], $scopes = [])
+    public function forSlug(string $slug, array $with = [], array $withCount = [], array $scopes = []): ?TwillModelContract
     {
         $query = $this->model->where($scopes)->scopes(['published', 'visible']);
 
@@ -108,8 +96,10 @@ trait HandleSlugs
             $item->redirect = true;
         }
 
-        if (!$item && config('translatable.use_property_fallback', false)
-        && config('translatable.fallback_locale') != config('app.locale')) {
+        if (
+            !$item && config('translatable.use_property_fallback', false)
+            && config('translatable.fallback_locale') != config('app.locale')
+        ) {
             $item = (clone $query)->orWhere(function ($query) {
                 return $query->withActiveTranslations(config('translatable.fallback_locale'));
             })->forFallbackLocaleSlug($slug)->first();
@@ -122,13 +112,7 @@ trait HandleSlugs
         return $item;
     }
 
-    /**
-     * @param string $slug
-     * @param array $with
-     * @param array $withCount
-     * @return \A17\Twill\Models\Model
-     */
-    public function forSlugPreview($slug, $with = [], $withCount = [])
+    public function forSlugPreview(string $slug, array $with = [], array $withCount = []): ?TwillModelContract
     {
         return $this->model->forInactiveSlug($slug)->with($with)->withCount($withCount)->first();
     }

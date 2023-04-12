@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Facades\TwillBlocks;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Media;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -25,7 +27,12 @@ trait HandleMedias
 
         $mediasFromFields->each(function ($media) use ($object, $mediasCollection) {
             $newMedia = Media::withTrashed()->find(is_array($media['id']) ? Arr::first($media['id']) : $media['id']);
-            $pivot = $newMedia->newPivot($object, Arr::except($media, ['id']), config('twill.mediables_table', 'twill_mediables'), true);
+            $pivot = $newMedia->newPivot(
+                $object,
+                Arr::except($media, ['id']),
+                config('twill.mediables_table', 'twill_mediables'),
+                true
+            );
             $newMedia->setRelation('pivot', $pivot);
             $mediasCollection->push($newMedia);
         });
@@ -63,20 +70,20 @@ trait HandleMedias
 
         if (isset($fields['medias'])) {
             foreach ($fields['medias'] as $role => $mediasForRole) {
-                if (config('twill.media_library.translated_form_fields', false)) {
-                    if (Str::contains($role, ['[', ']'])) {
-                        $start = strpos($role, '[') + 1;
-                        $finish = strpos($role, ']', $start);
-                        $locale = substr($role, $start, $finish - $start);
-                        $role = strtok($role, '[');
-                    }
+                if (config('twill.media_library.translated_form_fields', false) && Str::contains($role, ['[', ']'])) {
+                    $start = strpos($role, '[') + 1;
+                    $finish = strpos($role, ']', $start);
+                    $locale = substr($role, $start, $finish - $start);
+                    $role = strtok($role, '[');
                 }
 
                 $locale = $locale ?? config('app.locale');
 
-                if (in_array($role, array_keys($this->model->mediasParams ?? []))
-                    || in_array($role, array_keys(config('twill.block_editor.crops', [])))
-                    || in_array($role, array_keys(config('twill.settings.crops', [])))) {
+                if (
+                    array_key_exists($role, $this->model->getMediasParams())
+                    || array_key_exists($role, TwillBlocks::getAllCropConfigs())
+                    || array_key_exists($role, config('twill.settings.crops', []))
+                ) {
                     Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
                         if (isset($media['crops']) && !empty($media['crops'])) {
@@ -154,7 +161,7 @@ trait HandleMedias
     {
         $itemsForForm = [];
 
-        foreach ($medias->groupBy('id') as $id => $mediasById) {
+        foreach ($medias->groupBy('id') as $mediasById) {
             $item = $mediasById->first();
 
             $itemForForm = $item->toCmsArray();
@@ -184,6 +191,24 @@ trait HandleMedias
      */
     public function getCrops($role)
     {
-        return $this->model->mediasParams[$role];
+        return $this->model->getMediasParams()[$role];
+    }
+
+    public function afterDuplicateHandleMedias(TwillModelContract $original, TwillModelContract $newObject): void
+    {
+        foreach ($original->medias as $media) {
+            $newPushData = [
+                'crop' => $media->pivot->crop,
+                'role' => $media->pivot->role,
+                'ratio' => $media->pivot->ratio,
+                'crop_w' => $media->pivot->crop_w,
+                'crop_h' => $media->pivot->crop_h,
+                'crop_x' => $media->pivot->crop_x,
+                'crop_y' => $media->pivot->crop_y,
+                'metadatas' => $media->pivot->metadatas,
+            ];
+
+            $newObject->medias()->attach($media->id, $newPushData);
+        }
     }
 }

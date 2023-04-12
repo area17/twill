@@ -51,7 +51,7 @@
                     </aside>
                     <div class="col col--primary">
                         @endif
-                        <a17-activity-feed empty-message="{{ $emptyMessage }}"></a17-activity-feed>
+                        <a17-activity-feed empty-message="{{ $emptyMessage }}" ajax-base-url="{{$ajaxBaseUrl}}"></a17-activity-feed>
                         @if(($facts ?? false) || (!$drafts->isEmpty()))
                     </div>
                 </div>

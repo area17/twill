@@ -1,7 +1,7 @@
 <template>
   <div>
     <template v-if="!keepAlive">
-      <div v-if="open">
+      <div v-if="open" ref="fieldContainer">
         <slot></slot>
       </div>
     </template>
@@ -14,9 +14,9 @@
 </template>
 
 <script>
-  import isEqual from 'lodash/isEqual'
   import clone from 'lodash/clone'
-  import { mapState, mapGetters } from 'vuex'
+  import isEqual from 'lodash/isEqual'
+  import { mapGetters,mapState } from 'vuex'
 
   export default {
     name: 'A17ConnectorField',
@@ -35,6 +35,10 @@
       keepAlive: {
         type: Boolean,
         default: false
+      },
+      arrayContains: {
+        type: Boolean,
+        default: true
       },
       isValueEqual: { // requiredFieldValues must be equal (or different) to the stored value to show
         type: Boolean,
@@ -77,6 +81,34 @@
     },
     methods: {
       toggleVisibility: function (value) {
+
+        if (this.$refs.fieldContainer) {
+          this.$slots.default.forEach((child) => {
+            // Base input fields.
+            if (
+              child.componentInstance !== undefined &&
+              child.componentInstance.$refs &&
+              child.componentInstance.$refs.field
+            ) {
+              if (child.componentInstance.$refs.field[0]) {
+                child.componentInstance.$refs.field[0].destroyValue()
+              }
+            }
+            // Special fields such as browsers.
+            else if (
+              child.componentInstance !== undefined &&
+              child.componentInstance.$slots !== undefined &&
+              child.componentInstance.$slots.default !== undefined
+            ) {
+              child.componentInstance.$slots.default.forEach((subChild) => {
+                if (subChild.componentInstance && subChild.componentInstance.destroyValue) {
+                  subChild.componentInstance.destroyValue()
+                }
+              })
+            }
+          })
+        }
+
         if (this.isBrowser) {
           const browserLength = (value && value.length) ?? 0
           if (this.matchEmptyBrowser && (browserLength === 0)) {
@@ -90,6 +122,7 @@
 
         const newValue = clone(value)
         const newFieldValues = clone(this.requiredFieldValues)
+        const newFieldValuesArray = Array.isArray(newFieldValues) ? newFieldValues : [newFieldValues]
 
         // sort requiredFieldValues and value if is array, so the order of values is the same
         if (Array.isArray(newFieldValues)) newFieldValues.sort()
@@ -97,9 +130,21 @@
 
         // update visiblity
         if (this.isValueEqual) {
-          this.open = (Array.isArray(newFieldValues)) ? newFieldValues.indexOf(newValue) !== -1 : isEqual(newValue, newFieldValues)
+          if (Array.isArray(newValue)) {
+            this.open = this.arrayContains ? newFieldValuesArray.some((value) => {
+              return newValue.includes(value)
+            }) : this.open = JSON.stringify(newFieldValuesArray) === JSON.stringify(newValue)
+          } else {
+            this.open = (Array.isArray(newFieldValues)) ? newFieldValues.indexOf(newValue) !== -1 : isEqual(newValue, newFieldValues)
+          }
         } else {
-          this.open = (Array.isArray(newFieldValues)) ? newFieldValues.indexOf(newValue) === -1 : !isEqual(newValue, newFieldValues)
+          if (Array.isArray(newValue)) {
+            this.open = this.arrayContains ? newFieldValuesArray.every((value) => {
+              return !newValue.includes(value)
+            }) : this.open = JSON.stringify(newFieldValuesArray) !== JSON.stringify(newValue)
+          } else {
+            this.open = (Array.isArray(newFieldValues)) ? newFieldValues.indexOf(newValue) === -1 : !isEqual(newValue, newFieldValues)
+          }
         }
       }
     },

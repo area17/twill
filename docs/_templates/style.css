@@ -1,0 +1,94 @@
+@import './css/accordion.css';
+@import './css/alert.css';
+@import './css/markdown.css';
+@import './css/card.css';
+@import './css/link.css';
+@import './css/code.css';
+@import './css/chaptersNav.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+[x-cloak] {
+  display: none !important;
+}
+
+@supports (text-wrap: balance) {
+  h1 {
+    text-wrap: balance;
+  }
+}
+
+@screen lg {
+  h1 {
+    padding-right: 10%;
+  }
+
+  @supports (text-wrap: balance) {
+    h1 {
+      padding-right: 0;
+    }
+  }
+}
+
+.isMobile .sidebar {
+  left: -100%;
+  position: fixed;
+  top: 0;
+  margin-left: 0 !important;
+  z-index: 11;
+  height: 100%;
+  padding-top: 30px;
+  padding-left: 40px;
+  min-width: 300px;
+  width: 40%;
+  padding-bottom: 60px;
+  transition: all 0.4s;
+}
+
+.isMobile .sidebar > ul {
+  padding-bottom: 60px;
+}
+
+.isMobile.openNav .sidebar {
+  left: -10px;
+}
+
+.page--index .sidebar {
+  display: none;
+}
+
+.page--index .content {
+  margin: 0 auto;
+  margin-top: 68px;
+}
+
+.DocSearch-Button {
+  border-radius: 4px;
+  @apply border border-solid border-primary ml-0;
+}
+
+@media (max-width: 768px) {
+  .DocSearch-Button {
+    border: none;
+  }
+}
+
+.DocSearch-Input {
+  background-color: transparent;
+}
+
+.DocSearch-Input:focus {
+  box-shadow: none;
+}
+
+.DocSearch-Button-Placeholder {
+  @apply f-body-2;
+}
+
+@media (min-width: 769px) {
+  .DocSearch-Modal {
+    @apply mt-header;
+  }
+}

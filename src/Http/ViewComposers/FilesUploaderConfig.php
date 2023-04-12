@@ -24,11 +24,6 @@ class FilesUploaderConfig
      */
     protected $sessionStore;
 
-    /**
-     * @param UrlGenerator $urlGenerator
-     * @param Config $config
-     * @param SessionStore $sessionStore
-     */
     public function __construct(UrlGenerator $urlGenerator, Config $config, SessionStore $sessionStore)
     {
         $this->urlGenerator = $urlGenerator;
@@ -39,7 +34,6 @@ class FilesUploaderConfig
     /**
      * Binds data to the view.
      *
-     * @param View $view
      * @return void
      */
     public function compose(View $view)
@@ -52,7 +46,7 @@ class FilesUploaderConfig
         // the execution of the appropriate implementation
         $endpointByType = [
             'local' => function () {
-                return $this->urlGenerator->route('admin.file-library.files.store');
+                return $this->urlGenerator->route('twill.file-library.files.store');
             },
             's3' => function () use ($libraryDisk) {
                 return s3Endpoint($libraryDisk);
@@ -64,14 +58,14 @@ class FilesUploaderConfig
 
         $signatureEndpointByType = [
             'local' => null,
-            's3' => $this->urlGenerator->route('admin.file-library.sign-s3-upload'),
-            'azure' => $this->urlGenerator->route('admin.file-library.sign-azure-upload'),
+            's3' => $this->urlGenerator->route('twill.file-library.sign-s3-upload'),
+            'azure' => $this->urlGenerator->route('twill.file-library.sign-azure-upload'),
         ];
 
         $filesUploaderConfig = [
             'endpointType' => $endpointType,
             'endpoint' => $endpointByType[$endpointType](),
-            'successEndpoint' => $this->urlGenerator->route('admin.file-library.files.store'),
+            'successEndpoint' => $this->urlGenerator->route('twill.file-library.files.store'),
             'signatureEndpoint' => $signatureEndpointByType[$endpointType],
             'endpointBucket' => $this->config->get('filesystems.disks.' . $libraryDisk . '.bucket', 'none'),
             'endpointRegion' => $this->config->get('filesystems.disks.' . $libraryDisk . '.region', 'none'),
@@ -83,6 +77,6 @@ class FilesUploaderConfig
             'allowedExtensions' => $allowedExtensions,
         ];
 
-        $view->with(compact('filesUploaderConfig'));
+        $view->with(['filesUploaderConfig' => $filesUploaderConfig]);
     }
 }

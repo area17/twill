@@ -1,6 +1,7 @@
 import { mapGetters, mapState } from 'vuex'
-import { BLOCKS } from '@/store/mutations'
+
 import ACTIONS from '@/store/actions'
+import { BLOCKS } from '@/store/mutations'
 
 export default {
   props: {
@@ -11,7 +12,9 @@ export default {
   },
   computed: {
     availableBlocks () {
-      return this.getAvailableBlocks(this.editorName)
+      const splitted = this.editorName.split('|')
+      const editorName = splitted[splitted.length - 1]
+      return this.getAvailableBlocks(editorName)
     },
     savedBlocks () {
       return this.blocks(this.editorName)
@@ -36,7 +39,7 @@ export default {
     reorderBlocks (value) {
       this.$store.commit(BLOCKS.REORDER_BLOCKS, {
         editorName: this.editorName,
-        value: value
+        value
       })
     },
     addBlock (block, editorName, index = -1) {

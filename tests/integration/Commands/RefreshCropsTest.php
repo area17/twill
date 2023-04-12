@@ -2,11 +2,11 @@
 
 namespace A17\Twill\Tests\Integration\Commands;
 
+use A17\Twill\Repositories\MediaRepository;
+use A17\Twill\Tests\Integration\TestCase;
+use App\Repositories\AuthorRepository;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Carbon;
-use A17\Twill\Tests\Integration\TestCase;
-use A17\Twill\Repositories\MediaRepository;
-use App\Repositories\AuthorRepository;
 
 class RefreshCropsTest extends TestCase
 {
@@ -15,24 +15,11 @@ class RefreshCropsTest extends TestCase
      */
     protected $db;
 
-    protected $allFiles = [
-        '{$stubs}/modules/authors/Author.php' => '{$app}/Models/',
-        '{$stubs}/modules/authors/AuthorRepository.php' => '{$app}/Repositories/',
-        '{$stubs}/modules/authors/AuthorTranslation.php' => '{$app}/Models/Translations/',
-        '{$stubs}/modules/authors/AuthorSlug.php' => '{$app}/Models/Slugs/',
-        '{$stubs}/modules/authors/AuthorRevision.php' => '{$app}/Models/Revisions/',
-        '{$stubs}/modules/authors/2019_10_18_193753_create_authors_tables.php' => '{$database}/migrations/',
-    ];
+    public ?string $example = 'tests-modules';
 
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->copyFiles($this->allFiles);
-
-        $this->loadModulesConfig();
-
-        $this->migrate();
 
         $this->db = app(DatabaseManager::class);
     }
@@ -274,6 +261,7 @@ class RefreshCropsTest extends TestCase
             $media = $this->createMedia();
             $this->createMediable(['crop' => 'default', 'mediable_id' => $author->id, 'media_id' => $media->id]);
             $this->createMediable(['crop' => 'mobile', 'mediable_id' => $author->id, 'media_id' => $media->id]);
+
             return $author;
         });
 
@@ -282,6 +270,7 @@ class RefreshCropsTest extends TestCase
             $author = $this->createAuthor();
             $media = $this->createMedia();
             $this->createMediable(['crop' => 'default', 'mediable_id' => $author->id, 'media_id' => $media->id]);
+
             return $author;
         });
 
@@ -292,6 +281,7 @@ class RefreshCropsTest extends TestCase
             $this->createMediable(['crop' => 'default', 'mediable_id' => $author->id, 'media_id' => $media->id]);
             $this->createMediable(['crop' => 'mobile', 'mediable_id' => $author->id, 'media_id' => $media->id]);
             $this->createMediable(['crop' => 'unused', 'mediable_id' => $author->id, 'media_id' => $media->id]);
+
             return $author;
         });
 
@@ -314,6 +304,7 @@ class RefreshCropsTest extends TestCase
         $slideshow = collect([1, 2, 3, 4, 5])->map(function () use ($author) {
             $media = $this->createMedia();
             $this->createMediable(['crop' => 'default', 'mediable_id' => $author->id, 'media_id' => $media->id]);
+
             return $author;
         });
 
@@ -352,7 +343,7 @@ class RefreshCropsTest extends TestCase
 
         // generated default crop
         $imageData = $author2->imageAsArray('avatar', 'default');
-        $this->assertEquals(16/9, $imageData['width'] / $imageData['height']);
+        $this->assertEquals(16 / 9, $imageData['width'] / $imageData['height']);
     }
 
     public function testPreservesMetadataForGeneratedCrops()

@@ -14,6 +14,7 @@ class GeneratePackageCommand extends Command
     protected $signature = 'twill:make:package';
 
     protected $description = 'Make a new twill package';
+
     /**
      * @var string
      */
@@ -46,8 +47,8 @@ class GeneratePackageCommand extends Command
 
     public function handle(): void
     {
-        $this->packageName = $this->ask('What\'s the package name', 'twill-extension');
-        $this->packageVendor = $this->ask('What\'s the package vendor', 'area17');
+        $this->packageName = $this->ask("What's the package name", 'twill-extension');
+        $this->packageVendor = $this->ask("What's the package vendor", 'area17');
         $this->homepage = $this->ask(
             'The package homepage',
             'https://github.com/' . $this->packageVendor . '/' . $this->packageName

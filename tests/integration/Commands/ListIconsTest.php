@@ -9,17 +9,17 @@ class ListIconsTest extends TestCase
     protected $allFiles = [
         '{$tests}/../../frontend/icons/image.svg' => [
             '{$vendor}/area17/twill/frontend/icons/',
-            '{$resources}/views/admin/icons/',
+            '{$resources}/views/twill/icons/',
         ],
 
         '{$tests}/../../frontend/icons/video.svg' => [
             '{$vendor}/area17/twill/frontend/icons/',
-            '{$resources}/views/admin/icons/',
+            '{$resources}/views/twill/icons/',
         ],
 
         '{$tests}/../../frontend/icons/text.svg' => [
             '{$vendor}/area17/twill/frontend/icons/',
-            '{$resources}/views/admin/icons/',
+            '{$resources}/views/twill/icons/',
         ],
     ];
 
@@ -27,7 +27,7 @@ class ListIconsTest extends TestCase
     {
         parent::setUp();
 
-        $this->copyFiles($this->allFiles);
+        $this->copyFiles(collect($this->allFiles));
     }
 
     public function testCanListIcons()

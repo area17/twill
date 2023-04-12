@@ -3,6 +3,7 @@
     $inModal = $fieldsInModal ?? false;
     $isBrowser = $isBrowser ?? false;
     $matchEmptyBrowser = $matchEmptyBrowser ?? false;
+    $arrayContains = $arrayContains ?? true;
     $keepAlive = $keepAlive ?? false;
 
     if (! $isBrowser) {
@@ -16,6 +17,8 @@
     @if ($isEqual) :is-value-equal="true" @else :is-value-equal="false" @endif
     @if ($inModal) :in-modal="true" @endif
     @if ($keepAlive) :keep-alive="true" @endif
+
+    @if ($arrayContains) :array-contains="true" @else :array-contains="false" @endif
 
     @if ($isBrowser) :is-browser="true" @endif
     @if ($matchEmptyBrowser) :match-empty-browser="true" @endif

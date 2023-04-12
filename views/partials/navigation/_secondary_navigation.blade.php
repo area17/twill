@@ -1,17 +1,14 @@
-@if (!($disable_secondary_navigation ?? false) && isset($_primary_active_navigation) && isset(config('twill-navigation.' . $_global_active_navigation . '.primary_navigation.' . $_primary_active_navigation)['secondary_navigation']))
-    <nav class="navUnder">
+@if (!empty($links) || !empty(\A17\Twill\Facades\TwillNavigation::getSecondaryRequestLinks()))
+    <nav class="nav">
         <div class="container">
-            <ul class="navUnder__list">
-                @foreach(config('twill-navigation.'. $_global_active_navigation . '.primary_navigation.' . $_primary_active_navigation)['secondary_navigation'] as $secondary_navigation_key => $secondary_navigation_element)
-                    @can($secondary_navigation_element['can'] ?? 'list')
-                        @if(isActiveNavigation($secondary_navigation_element, $secondary_navigation_key, $_secondary_active_navigation))
-                            <li class="navUnder__item s--on">
-                        @else
-                            <li class="navUnder__item">
-                        @endif
-                                <a href="{{ getNavigationUrl($secondary_navigation_element, $secondary_navigation_key, $_global_active_navigation . '.' . $_primary_active_navigation) }}" @if (isset($secondary_navigation_element['target']) && $secondary_navigation_element['target'] == 'external') target="_blank" @endif>{{ $secondary_navigation_element['title'] }}</a>
-                            </li>
-                    @endcan
+            <ul class="nav__list">
+                @foreach (\A17\Twill\Facades\TwillNavigation::getSecondaryRequestLinks() as $navItem)
+                    @if ($navItem->shouldShow())
+                        {!! $navItem->render(class: 'nav__item') !!}
+                    @endif
+                @endforeach
+                @foreach ($links as $navItem)
+                    {!! $navItem->render(class: 'nav__item') !!}
                 @endforeach
             </ul>
         </div>

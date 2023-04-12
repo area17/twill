@@ -19,6 +19,9 @@
                               :block="block"
                               :index="blockIndex"
                               :opened="opened"
+                              :with-handle="!isSettings"
+                              :with-actions="!isSettings"
+                              :with-move-dropdown="isSettings"
                               @expand="setOpened"
                               v-if="availableBlocks.length">
                 <template v-for="availableBlock in availableBlocks">
@@ -49,7 +52,7 @@
                           {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
                   </button>
                   <button type="button"
-                          v-if="editor"
+                          v-if="editor && !editorName.includes('|')"
                           @click="openInEditor(edit, blockIndex, editorName)">
                           {{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}
                   </button>
@@ -78,7 +81,7 @@
         </transition-group>
       </draggable>
 
-      <div class="blocks__actions">
+      <div class="blocks__actions" v-if="!isSettings">
         <a17-dropdown ref="blocksDropdown"
                       position="top-center"
                       v-if="availableBlocks.length"
@@ -114,7 +117,7 @@
             </template>
           </div>
         </a17-dropdown>
-        <div class="blocks__secondaryActions">
+        <div class="blocks__secondaryActions" v-if="!editorName.includes('|')">
           <a href="#"
              class="f--link f--link-underlined--o"
              v-if="editor"
@@ -128,12 +131,13 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
-  import { DraggableMixin, EditorMixin } from '@/mixins/index'
   import draggable from 'vuedraggable'
+  import { mapGetters,mapState } from 'vuex'
+
   import BlockEditorItem from '@/components/blocks/BlockEditorItem.vue'
-  import BlocksList from '@/components/blocks/BlocksList'
   import BlockEditorModel from '@/components/blocks/BlockEditorModel'
+  import BlocksList from '@/components/blocks/BlocksList'
+  import { DraggableMixin, EditorMixin } from '@/mixins/index'
 
   export default {
     name: 'A17Blocks',
@@ -148,6 +152,10 @@
       trigger: {
         type: String,
         default: ''
+      },
+      isSettings: {
+        type: Boolean,
+        required: true
       },
       title: {
         type: String,
@@ -270,7 +278,7 @@
     mounted () {
       // if there are blocks, these should be all collapse by default
       this.$nextTick(function () {
-        if (this.blocks(this.editorName) && this.blocks(this.editorName).length < 4 && this.$refs.blockList) {
+        if (this.$refs.blockList && this.blocks(this.editorName) && this.blocks(this.editorName).length < 4) {
           this.$refs.blockList.forEach((block) => block.toggleExpand())
         }
 
