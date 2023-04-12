@@ -9,6 +9,7 @@
 />
 
 <x-twill::wysiwyg
+    type="quill"
     name="text"
     label="Text"
     placeholder="Text"
