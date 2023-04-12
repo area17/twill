@@ -25,7 +25,7 @@ class Wysiwyg extends TwillFormComponent
         public ?array $toolbarOptions = null,
         public ?int $maxlength = null,
         public ?array $options = null,
-        public string $type = 'quill',
+        public string $type = 'tiptap',
         public bool $limitHeight = false,
         public bool $syntax = false,
         public string $customTheme = 'github',
