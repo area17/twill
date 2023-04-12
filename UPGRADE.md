@@ -13,12 +13,15 @@ app/Http/Controllers/Admin -> app/Http/Controllers/Twill
 app/Http/Requests/Admin -> app/Http/Requests/Twill
 ```
 
+Twill database table names are also updated to be prefixed by `twill_`.
+
 We provide an automated upgrade path using the commands explained below. This will take care of:
 - Namespace changes in your project
 - Moving the twill views to the new namespace
 - Moving the twill routes to the new location
-- Fixing (most) compatibility issues.
-- Using the new TwillRoutes facade for ::module and ::singleton instead of a Route macro.
+- Fixing (most) compatibility issues
+- Using the new TwillRoutes facade for ::module and ::singleton instead of a Route macro
+- Updating your twill configuration to specify that you're using non prefixed database table names.
 
 ### Run the upgrade:
 
