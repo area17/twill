@@ -1,4 +1,4 @@
-<p align="center"><a href="https://twill.io" target="_blank"><img src="docs/_templates/assets/favicon_512.png" width="400"></a></p>
+<p align="center"><a href="https://twill.io" target="_blank"><img src="docs/_templates/assets/twill_cms_three_logo_white.png" width="400"></a></p>
 
 
 <p align="center">
