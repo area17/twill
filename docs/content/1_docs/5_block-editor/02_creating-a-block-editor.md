@@ -374,7 +374,7 @@ return [
 ];
 ```
 
-See also [Default Configuration](../11_default-configuration.md).
+See also [Default Configuration](./11_default-configuration.md).
 
 If the `resource_path('assets/admin/icons')` directory contains a `my-custom-icon.svg` file, you can use this icon in your block by using its basename: `@twillBlockIcon('my-custom-icon')`.
 
