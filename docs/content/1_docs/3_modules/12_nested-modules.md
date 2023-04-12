@@ -18,12 +18,6 @@ php artisan twill:make:module -N pages
 
 This will prefill some options and methods in your module's controller and use the supporting traits on your model and repository.
 
-This feature requires the `laravel-nestedset` package, which can be installed via composer:
-
-```
-composer require kalnoy/nestedset
-```
-
 ### Working with self-nested items
 
 A few accessors and methods are available to work with nested item slugs:

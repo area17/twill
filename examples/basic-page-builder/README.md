@@ -38,13 +38,7 @@ The [Laravel documentation](https://laravel.com/docs/10.x) is far more extensive
 
 ## Twill and this example
 
-This example requires `kalnoy/nestedset`, so install it with:
-
-```
-composer require kalnoy/nestedset
-```
-
-Now lets require Twill:
+Lets require Twill:
 
 ```
 composer require area17/twill:3.x

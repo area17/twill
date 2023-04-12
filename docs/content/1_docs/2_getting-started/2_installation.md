@@ -21,7 +21,7 @@ The starter kit setup is a basic page builder. It comes with:
 You can install it in a Laravel application using:
 
 ```bash
-composer require area17/twill:3.0 kalnoy/nestedset
+composer require area17/twill:"^3.0"
 ```
 
 :::alert=type.warning::: 

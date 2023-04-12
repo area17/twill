@@ -15,11 +15,7 @@ We can generate a self-nested module using:
 
 To all other questions we will answer **no**.
 
-Perfect. When the command is completed, you will see that we need to `composer require kalnoy/nestedset` so you can go
-ahead and run that command as well.
-
-[`kaloy/nestedset`](https://github.com/lazychaser/laravel-nestedset) is the package Twill uses internally to manage
-nested modules.
+Perfect.
 
 Once again, we add the NavigationLink as provided in our `app/Providers/AppServiceProvider.php`, but this time, we
 change the title to make a bit more sense.
