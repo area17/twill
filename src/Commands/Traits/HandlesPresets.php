@@ -210,27 +210,27 @@ trait HandlesPresets
         // get example's manifest.json
         $manifestPath = $presetDir . DIRECTORY_SEPARATOR . 'manifest.json';
 
-        if(file_exists($manifestPath)){
+        if (file_exists($manifestPath)) {
             $manifest = json_decode(file_get_contents($manifestPath), true);
 
             // check if it has an fe override
-            if(array_key_exists('feOverride', $manifest)){
+            if (array_key_exists('feOverride', $manifest)) {
                 $feOverride = $manifest['feOverride'];
 
                 // if yes get message and create prompt
-                if(array_key_exists('files', $feOverride)){
+                if (array_key_exists('files', $feOverride)) {
                     $message = "This preset will replace the following FE files if they exist: \n";
 
-                    foreach($feOverride['files'] as $file){
-                        $message .= "- ". $file ."\n";
+                    foreach ($feOverride['files'] as $file) {
+                        $message .= "- " . $file . "\n";
                     }
 
                     $message .= 'Do you want to replace these files?';
-                }
 
-                // if ignoring the fe files, get files array
-                if(!$this->confirm($message)){
-                    $ignore = $feOverride['files'];
+                    // if ignoring the fe files, get files array
+                    if (!$this->confirm($message)) {
+                        $ignore = $feOverride['files'];
+                    }
                 }
             }
         }
