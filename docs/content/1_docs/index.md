@@ -214,8 +214,8 @@ the [Creative Commons Attribution 4.0 International License](https://creativecom
 By using the Twill UI, you agree that any application which incorporates it shall prominently display the message “Made with Twill” in a legible manner in the footer of the admin console. This message must open a link to twillcms.com when clicked or touched. For permission to remove the attribution, contact us at [hello@twill.io](mailto:hello@twill.io).
 
 ## 2.x documentation
-Documentation for Twill versions below 3.0 is available for reference [here](/docs/2.x).
+Documentation for Twill versions below 3.0 is available for reference [here](https://twillcms.com/docs/2.x).
 
 ## 1.x documentation
-Documentation for Twill versions below 2.0 is available for reference [here](/docs/1.x).
+Documentation for Twill versions below 2.0 is available for reference [here](https://twillcms.com/docs/1.x).
 
