@@ -6,7 +6,12 @@ module.exports = {
     "./resources/**/*.vue",
   ],
   theme: {
-    extend: {},
+    extend: {
+        borderColor: {
+            primary: '#999',
+            secondary: '#ccc',
+        }
+    },
   },
   plugins: [
       require('@tailwindcss/typography'),

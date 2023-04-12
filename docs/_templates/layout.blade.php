@@ -9,7 +9,40 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ $title }}</title>
+  <title>{{ $seoTitle ?? ($title . ' — Twill CMS') }}</title>
+  <link rel="mask-icon" href="/dist/images/favicons/safari-pinned-tab.svg?v=3" color="#000000">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="theme-color" content="#000000">
+  <meta property="og:image" content="https://twill.io/dist/images/social_share.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+
+  <meta name="twitter:image" content="https://twill.io/dist/images/social_share.png">
+  <meta itemprop="image" content="https://twill.io/dist/images/social_share.png">
+
+  <!-- Facebook / Open Graph globals -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Twill" />
+  <meta property="og:author" content="https://www.facebook.com/twillcms/" />
+
+  <!-- Twitter globals -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@twillcms" />
+  <meta name="twitter:domain" content="twill.io" />
+  <meta name="twitter:creator" content="@twillcms" />
+
+  <!-- Main Favicon -->
+  <link rel="shortcut icon" href="/dist/images/favicons/favicon.ico">
+  <!-- Apple Touch Icons (ipad/iphone standard+retina) -->
+  <link rel="apple-touch-icon" href="/dist/images/favicons/favicon-192.png">
+  <!-- General use iOS/Android icon, auto-downscaled by devices. -->
+  <link rel="apple-touch-icon" type="image/png" href="/dist/images/favicons/favicon-192.png" sizes="192x192">
+  <!-- iPhone retina touch icon -->
+  <link rel="apple-touch-icon" type="image/png" href="/dist/images/favicons/favicon-180.png" sizes="180x180">
+  <!-- iPad home screen icons -->
+  <!-- Favicon Fallbacks for old browsers that don't read .ico -->
+  <link rel="icon" type="image/png" href="/dist/images/favicons/favicon-32.png" sizes="32x32">
+  <link rel="icon" type="image/png" href="/dist/images/favicons/favicon-16.png" sizes="16x16">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://89hnjpxalf-dsn.algolia.net" crossorigin />
@@ -19,6 +52,16 @@
   <link href="/style.css" rel="stylesheet">
   <script src="//unpkg.com/alpinejs" defer></script>
 </head>
+
+<!-- Google tag (gtag.js) -->
+{{--<script async src="https://www.googletagmanager.com/gtag/js?id=G-EE0Y26M81B"></script>--}}
+{{--<script>--}}
+{{--    window.dataLayer = window.dataLayer || [];--}}
+{{--    function gtag(){dataLayer.push(arguments);}--}}
+{{--    gtag('js', new Date());--}}
+
+{{--    gtag('config', 'G-EE0Y26M81B');--}}
+{{--</script>--}}
 
 <body
   class="overflow-x-hidden page--{{ Str::slug(Str::replace(['/', '.html'], ['-', ''], $url)) }}"
@@ -41,14 +84,14 @@
         {!! $content !!}
         <x-twilldocs::grid-auto-generated :tree="$tree" :currentSegment="$currentSegment" :url="$url" />
       </div>
-    @elseif ($currentSegment === 'blogs' && strpos($url, 'index.html'))
+    @elseif ($currentSegment === 'blog' && strpos($url, 'index.html'))
       {{-- blog index --}}
       <div class="content markdown mt-68">
         <h1>{{$title}}</h1>
         {!! $content !!}
         <x-twilldocs::grid-auto-generated :tree="$tree" :currentSegment="$currentSegment" :url="$url" />
       </div>
-    @elseif ($currentSegment === 'documentation' || $currentSegment === 'guides')
+    @elseif ($currentSegment === 'docs' || $currentSegment === 'guides')
       <div class="flex flex-row flex-nowrap justify-between">
         <x-twilldocs::sidebar :tree="$tree" :currentSegment="$currentSegment" :url="$url"/>
         <div class="content markdown w-full lg:w-9-cols xl:w-6-cols lg:max-w-740 xl:mx-auto">
@@ -84,7 +127,7 @@
         <h1>{{$title}}</h1>
         {!! $content !!}
       </div>
-    @elseif ($currentSegment === 'blogs')
+    @elseif ($currentSegment === 'blog')
       {{-- blog details --}}
       <div class="flex flex-row flex-nowrap">
         <div class="content markdown w-full lg:w-9-cols xl:w-6-cols lg:max-w-740 lg:mx-auto mt-68">

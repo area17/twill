@@ -41,7 +41,7 @@ Over the last 15 years, nearly every engineer at AREA 17 has contributed to Twil
 With contributions from Laurens van Heems, Fernando Petrelli, Gilbert Moufflet, Mubashar Iqbal, Pablo Barrios, Luis Lavena, and Mike Byrne.
 
 # Contributing
-We look forward to your contribution to make Twill the best it can be. You can find our contribution guidelines in the Twill [documentation](https://twill.io/docs#contribution-guide).
+We look forward to your contribution to make Twill the best it can be. You can find our contribution guidelines in the Twill [documentation](https://twill.io/docs/#content-contribution-guide).
 
 # Security vulnerabilities
 If you discover a security vulnerability within Twill, please email us at [security@twill.io](mailto:security@twill.io). All security vulnerabilities will be promptly addressed.

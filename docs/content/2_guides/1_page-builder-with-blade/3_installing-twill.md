@@ -4,7 +4,7 @@ Twill is a standard Laravel package, that means, we only have to require it (and
 
 So, before we get to the process of building our CMS, let's install Twill.
 
-We can do this using `composer require area17/twill:3.x`.
+We can do this using `composer require area17/twill:"^3.0"`.
 
 This will install Twill 3 alongside all other required packages.
 
@@ -12,25 +12,24 @@ This will install Twill 3 alongside all other required packages.
 
 With Twill, there are 2 main ways to make your cms available on your site.
 
-### Using a subdomain
-
-The default, which does not require additional configuration is to use a subdomain. Twill will be available using:
-
-`http://admin.YOURDOMAIN.com`, depending on your setup, this will be `http://admin.laravel-twill.test`
-
 ### Using a path
 
-Alternatively, or when you cannot use subdomains, you can use a path. To make that work, open up your `.env` file and
+The default, which does not require additional configuration is to use a path. Twill will be available using:
+
+`http://YOURDOMAIN.com/admin`, depending on your local setup, this could be `http://laravel-twill.test/admin`
+
+### Using a subdomain
+
+Alternatively, you can use a subdomain. To make that work, open up your `.env` file and
 add:
 
 ```
-ADMIN_APP_URL=laravel-twill.test
-ADMIN_APP_PATH=admin
+ADMIN_APP_URL=admin.laravel-twill.test
 ```
 
 Where `laravel-twill.test` is your domain.
 
-Once it is setup, you should be able to visit `http://laravel-twill.test/admin`
+Once it is setup, you should be able to visit `http://admin.laravel-twill.test/`
 
 ## Visit our cms
 
