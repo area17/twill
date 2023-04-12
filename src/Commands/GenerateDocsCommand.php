@@ -185,7 +185,7 @@ class GenerateDocsCommand extends Command
 
                 $treeData = [
                     'title' => $title,
-                    'seoTitle' => $relativePath === 'content/index.md' ? 'Twill CMS' : null,
+                    'seoTitle' => $relativePath === 'content/welcome.md' ? 'Twill CMS' : null,
                     'url' => $url,
                     'relativePath' => $this->withoutNumbers($relativePath),
                     'githubLink' => 'https://github.com/area17/twill/tree/3.x/docs/' . $relativePath,
@@ -194,7 +194,7 @@ class GenerateDocsCommand extends Command
                     'metadata' => $metadata,
                 ];
 
-                if (Str::contains($relativePath, 'index.md')) {
+                if (Str::contains($relativePath, 'index.md') || Str::contains($relativePath, 'welcome.md')) {
                     foreach ($treeData as $key => $value) {
                         Arr::set(
                             $navTree,
