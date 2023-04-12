@@ -1,5 +1,6 @@
 <?php
 
+use A17\Twill\Models\Contracts\TwillModelContract;
 use Illuminate\Support\Str;
 use A17\Twill\Models\Permission;
 use A17\Twill\Repositories\ModuleRepository;
@@ -37,7 +38,7 @@ if (!function_exists('getModelByModuleName')) {
 
         if (!class_exists($model)) {
             try {
-                $model = \A17\Twill\Facades\TwillCapsules::getCapsuleForModule($moduleName)->getModel();
+                $model = TwillCapsules::getCapsuleForModule($moduleName)->getModel();
             } catch (NoCapsuleFoundException) {
                 throw new Exception($model . ' not found');
             }
@@ -72,9 +73,9 @@ if (!function_exists('getModelRepository')) {
 
         if (!class_exists($repository)) {
             try {
-                $repository = \A17\Twill\Facades\TwillCapsules::getCapsuleForModel($model)->getRepositoryClass();
+                $repository = TwillCapsules::getCapsuleForModel($model)->getRepositoryClass();
             } catch (NoCapsuleFoundException) {
-                throw new Exception($repository . ' not found');
+                throw new ModuleNotFoundException($repository . ' not found');
             }
         }
 
@@ -83,7 +84,7 @@ if (!function_exists('getModelRepository')) {
 }
 
 if (!function_exists('getModelController')) {
-    function getModelController(\A17\Twill\Models\Contracts\TwillModelContract $model)
+    function getModelController(TwillModelContract $model)
     {
         $modelName = Str::afterLast($model::class, '\\');
 
@@ -91,7 +92,7 @@ if (!function_exists('getModelController')) {
 
         if (!class_exists($controller)) {
             try {
-                $controller = \A17\Twill\Facades\TwillCapsules::getCapsuleForModel($model)->getControllerClass();
+                $controller = TwillCapsules::getCapsuleForModel($model)->getControllerClass();
             } catch (NoCapsuleFoundException) {
                 throw new Exception($controller . ' not found');
             }
