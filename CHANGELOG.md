@@ -2,6 +2,47 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.0.0
+
+This is the final, stable release for Twill 3!
+
+### Breaking changes
+
+- Prefix tables with `twill_` by @aksiome
+- Set tiptap as default WYSIWYG type when using blade components
+
+### Added
+
+- Laravel 10 support by @haringsrob
+- Add `fromArray` to `options` by @aksiome
+- Float min, max and step props for numeric input by @iedex
+- Add `source_path_prefix` to Glide ServerFactory by @matteovg7
+- Allow using 0 as min or max for numeric input by @iedex
+
+### Fixed
+
+- Fix phpdocs by @joyceverheije
+- #2044|#1818: Improve repeater cloning. by @haringsrob
+- Resolve repeater duplication issue. by @haringsrob
+- Prevent erroring when permissions is not able to find disabled capsules by @antonioribeiro
+- #2177: Fix renderForBlocks for columns. by @haringsrob
+- Fix stretched image in browser field by @joyceverheije
+- Fix duplicate action redirect route for nested parent-child modules by @agnonym
+- Fix duplicate block duplicate with children by @agnonym
+- Fix source edit not updateing the editor (Tiptap) by @iedex
+- Fixing mistypes in ru localization by @Quarasique
+
+### Improved
+
+- Twill 3.0 docs updates
+- Enable resend email only when user is published by @joyceverheije
+- #2154: Use scope. by @haringsrob
+- 2179: Avoid recreating related items. by @haringsrob
+- Update Environment Requirements
+- Require kalnoy/nestedset as a non-dev dependency
+- Update node version in CI
+- Add database table names change to upgrade guide
+
 ## 3.0.0-rc4
 
 This is the fourth release candidate for Twill 3!
