@@ -145,7 +145,7 @@
   </div>
 </div>
 
-<x-twilldocs::devTools />
+{{--<x-twilldocs::devTools />--}}
 
 <script src="https://cdn.jsdelivr.net/npm/@docsearch/js@3"></script>
 <script src="/js/nav.js"></script>
