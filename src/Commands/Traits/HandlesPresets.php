@@ -61,7 +61,7 @@ trait HandlesPresets
         );
 
         // get any FE files that shouldn't be copied
-        $ignore = $this->getFEIgnoreFiles($preset);
+        $ignore = $fromTests ? [] : $this->getFEIgnoreFiles($preset);
         $files = [];
 
         foreach ($iterator as $file) {
