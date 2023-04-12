@@ -35,7 +35,7 @@ php ./vendor/area17/twill/upgrade.php
 
 ### Changes in admin app url/path
 
-The admin url is now by default /admin instead of a subdomain. Please read the docs to change this to a [subdomain](https://twill.io/docs) if  you were relying on that.
+The admin url is now by default /admin instead of a subdomain. Please read the docs to change this to a [subdomain](https://twillcms.com/docs/getting-started/installation.html#content-using-a-subdomain) if  you were relying on that.
 
 On top of that, this is now more "loose" and does not require the exact url. However, you can set it back to being
 strict using:
