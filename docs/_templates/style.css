@@ -1,78 +1,94 @@
+@import './css/accordion.css';
+@import './css/alert.css';
+@import './css/markdown.css';
+@import './css/card.css';
+@import './css/link.css';
+@import './css/code.css';
+@import './css/chaptersNav.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 [x-cloak] {
-    display: none !important;
+  display: none !important;
 }
 
-/* Hide the default markers, as we provide our own */
-.torchlight details > summary::marker,
-.torchlight details > summary::-webkit-details-marker {
-    display: none;
+@supports (text-wrap: balance) {
+  h1 {
+    text-wrap: balance;
+  }
 }
 
-.torchlight details .summary-caret::after {
-    pointer-events: none;
+@screen lg {
+  h1 {
+    padding-right: 10%;
+  }
+
+  @supports (text-wrap: balance) {
+    h1 {
+      padding-right: 0;
+    }
+  }
 }
 
-/* Add spaces to keep everything aligned */
-.torchlight .summary-caret-empty::after,
-.torchlight details .summary-caret-middle::after,
-.torchlight details .summary-caret-end::after {
-    content: " ";
+.isMobile .sidebar {
+  left: -100%;
+  position: fixed;
+  top: 0;
+  margin-left: 0 !important;
+  z-index: 11;
+  height: 100%;
+  padding-top: 30px;
+  padding-left: 40px;
+  min-width: 300px;
+  width: 40%;
+  padding-bottom: 60px;
+  transition: all 0.4s;
 }
 
-/* Show a minus sign when the block is open. */
-.torchlight details[open] .summary-caret-start::after {
-    content: "-";
+.isMobile .sidebar > ul {
+  padding-bottom: 60px;
 }
 
-/* And a plus sign when the block is closed. */
-.torchlight details:not([open]) .summary-caret-start::after {
-    content: "+";
+.isMobile.openNav .sidebar {
+  left: -10px;
 }
 
-/* Hide the [...] indicator when open. */
-.torchlight details[open] .summary-hide-when-open {
-    display: none;
+.page--index .sidebar {
+  display: none;
 }
 
-/* Show the [...] indicator when closed. */
-.torchlight details:not([open]) .summary-hide-when-open {
-    display: initial;
+.page--index .content {
+  margin: 0 auto;
+  margin-top: 68px;
 }
 
-pre {
-    background-color: #2e3440!important;
-    @apply my-4 rounded overflow-x-auto;
+.DocSearch-Button {
+  border-radius: 4px;
+  @apply border border-solid border-primary ml-0;
 }
 
-pre code.torchlight {
-    @apply block py-4 min-w-max;
+@media (max-width: 768px) {
+  .DocSearch-Button {
+    border: none;
+  }
 }
 
-pre code.torchlight .line {
-    @apply px-4;
+.DocSearch-Input {
+  background-color: transparent;
 }
 
-pre code.torchlight .line-number,
-pre code.torchlight .summary-caret {
-    @apply mr-4;
+.DocSearch-Input:focus {
+  box-shadow: none;
 }
 
-.torchlight.has-focus-lines .line:not(.line-focus) {
-    transition: filter 0.35s, opacity 0.35s;
-    filter: blur(.095rem);
-    opacity: .65;
+.DocSearch-Button-Placeholder {
+  @apply f-body-2;
 }
 
-.torchlight.has-focus-lines:hover .line:not(.line-focus) {
-    filter: blur(0px);
-    opacity: 1;
+@media (min-width: 769px) {
+  .DocSearch-Modal {
+    @apply mt-header;
+  }
 }
-
-.torchlight summary:focus {
-    outline: none;
-}
-

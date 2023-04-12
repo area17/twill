@@ -8,7 +8,8 @@ use Illuminate\Support\Str;
 
 class Setting extends Model
 {
-    use HasTranslation, HasMedias;
+    use HasTranslation;
+    use HasMedias;
 
     public $useTranslationFallback = true;
 

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class UserOauth extends BaseModel
 {
-
     protected $fillable = [
         'token',
         'provider',
@@ -27,5 +26,4 @@ class UserOauth extends BaseModel
     {
         $this->belongsTo(User::class, 'user_id');
     }
-
 }

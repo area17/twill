@@ -2,17 +2,17 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\hasBorder;
-use A17\Twill\Services\Forms\Fields\Traits\hasOptions;
-use A17\Twill\Services\Forms\Fields\Traits\inlineable;
-use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
+use A17\Twill\Services\Forms\Fields\Traits\HasBorder;
+use A17\Twill\Services\Forms\Fields\Traits\HasOptions;
+use A17\Twill\Services\Forms\Fields\Traits\Inlineable;
+use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 class Radios extends BaseFormField
 {
-    use isTranslatable;
-    use hasOptions;
-    use inlineable;
-    use hasBorder;
+    use IsTranslatable;
+    use HasOptions;
+    use Inlineable;
+    use HasBorder;
 
     public static function make(): static
     {

@@ -22,6 +22,7 @@
             @if ($editSource) editSource: true, @endif
             @if ($inModal) inModal: true, @endif
             @if ($limitHeight) limitHeight: true, @endif
+            @if ($endpoints) browserEndpoints: {!! e(json_encode($endpoints)) !!}, @endif
             @if ($default)
                 initialValue: '{{ $default }}',
                 hasDefaultStore: true,
@@ -43,6 +44,7 @@
             @if ($readOnly) readonly @endif
             @if ($editSource) :edit-source='true' @endif
             @if ($limitHeight) :limit-height='true' @endif
+            @if ($endpoints) :browser-endpoints='{!! json_encode($endpoints) !!}' @endif
             @if ($default)
             :initial-value="'{{ $default }}'"
             :has-default-store="true"

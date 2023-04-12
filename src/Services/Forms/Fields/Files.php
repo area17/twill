@@ -2,18 +2,18 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\canHaveButtonOnTop;
-use A17\Twill\Services\Forms\Fields\Traits\hasFieldNote;
-use A17\Twill\Services\Forms\Fields\Traits\hasMax;
-use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
+use A17\Twill\Services\Forms\Fields\Traits\CanHaveButtonOnTop;
+use A17\Twill\Services\Forms\Fields\Traits\HasFieldNote;
+use A17\Twill\Services\Forms\Fields\Traits\HasMax;
+use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 use Illuminate\Support\Str;
 
 class Files extends BaseFormField
 {
-    use isTranslatable;
-    use hasMax;
-    use hasFieldNote;
-    use canHaveButtonOnTop;
+    use IsTranslatable;
+    use HasMax;
+    use HasFieldNote;
+    use CanHaveButtonOnTop;
 
     protected ?string $itemLabel = null;
 
@@ -36,7 +36,7 @@ class Files extends BaseFormField
     /**
      * {@inheritDoc}
      */
-    public function label(string $label): BaseFormField
+    public function label(string $label): static
     {
         if (!$this->itemLabel) {
             $this->itemLabel = strtolower($label);
@@ -48,7 +48,7 @@ class Files extends BaseFormField
     /**
      * Default is 0 which is unlimited (depending on server config).
      */
-    public function filesizeMax(int $filesizeMax): self
+    public function filesizeMax(int $filesizeMax): static
     {
         $this->filesizeMax = $filesizeMax;
 
@@ -58,7 +58,7 @@ class Files extends BaseFormField
     /**
      * The label to display for items, defaults to the field label.
      */
-    public function itemLabel(string $itemLabel): self
+    public function itemLabel(string $itemLabel): static
     {
         $this->itemLabel = $itemLabel;
 

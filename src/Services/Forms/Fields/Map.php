@@ -2,11 +2,11 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
+use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 class Map extends BaseFormField
 {
-    use isTranslatable;
+    use IsTranslatable;
 
     protected bool $showMap = true;
 
@@ -27,7 +27,7 @@ class Map extends BaseFormField
     /**
      * Completely remove the map.
      */
-    public function hideMap(bool $hideMap = true): self
+    public function hideMap(bool $hideMap = true): static
     {
         $this->showMap = !$hideMap;
 
@@ -37,7 +37,7 @@ class Map extends BaseFormField
     /**
      * Show the map by default.
      */
-    public function openMap(bool $openMap = true): self
+    public function openMap(bool $openMap = true): static
     {
         $this->openMap = $openMap;
 
@@ -47,7 +47,7 @@ class Map extends BaseFormField
     /**
      * Stores extended data into the field like lat/lon.
      */
-    public function saveExtendedData(bool $saveExtendedData = true): self
+    public function saveExtendedData(bool $saveExtendedData = true): static
     {
         $this->saveExtendedData = $saveExtendedData;
 
@@ -57,7 +57,7 @@ class Map extends BaseFormField
     /**
      * Make the field try to automatically detect the latitude and longitude.
      */
-    public function autoDetectLatLang(bool $autoDetectLatLang = true): self
+    public function autoDetectLatLang(bool $autoDetectLatLang = true): static
     {
         $this->autoDetectLatLngValue = $autoDetectLatLang;
 

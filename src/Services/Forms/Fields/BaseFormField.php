@@ -2,12 +2,16 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
+use A17\Twill\Services\Forms\Contracts\CanRenderForBlocks;
+use A17\Twill\Services\Forms\Traits\RenderForBlocks;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 use ReflectionClass;
 
-abstract class BaseFormField
+abstract class BaseFormField implements CanRenderForBlocks
 {
+    use RenderForBlocks;
+
     /**
      * @var \A17\Twill\View\Components\Fields\TwillFormComponent
      */
@@ -18,6 +22,7 @@ abstract class BaseFormField
         protected ?string $note = null,
         protected ?bool $required = false,
         protected ?bool $disabled = false,
+        protected mixed $default = null,
         /**
          * A list of mandatory properties in order of their component
          * constructor.
@@ -35,9 +40,16 @@ abstract class BaseFormField
     {
         $this->name = $name;
 
-        if (!$this->label) {
+        if (! $this->label) {
             $this->label(Str::headline($name));
         }
+
+        return $this;
+    }
+
+    public function default(mixed $default): static
+    {
+        $this->default = $default;
 
         return $this;
     }
@@ -45,7 +57,7 @@ abstract class BaseFormField
     /**
      * Set the label of the field, you can use twillTrans('') Laravel translatable strings here.
      */
-    public function label(string $label): self
+    public function label(string $label): static
     {
         $this->label = $label;
 
@@ -55,7 +67,7 @@ abstract class BaseFormField
     /**
      * Add a note to the field to display on the form.
      */
-    public function note(string $note): self
+    public function note(string $note): static
     {
         $this->note = $note;
 
@@ -65,7 +77,7 @@ abstract class BaseFormField
     /**
      * Marks the field as mandatory, however you still need to add validation rules.
      */
-    public function required(bool $required = true): self
+    public function required(bool $required = true): static
     {
         $this->required = $required;
 
@@ -77,7 +89,7 @@ abstract class BaseFormField
      *
      * There might be some fields not supporting this.
      */
-    public function disabled(bool $disabled = true): self
+    public function disabled(bool $disabled = true): static
     {
         $this->disabled = $disabled;
 
@@ -102,7 +114,7 @@ abstract class BaseFormField
 
         if ($this->mandatoryProperties !== []) {
             foreach ($this->mandatoryProperties as $property) {
-                if (!$this->{$property}) {
+                if (! $this->{$property}) {
                     throw new \InvalidArgumentException(
                         "Missing required field property '$property' on " . $this::class
                     );

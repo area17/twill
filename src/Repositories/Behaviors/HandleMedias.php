@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Media;
 use Illuminate\Support\Arr;
@@ -78,9 +79,11 @@ trait HandleMedias
 
                 $locale = $locale ?? config('app.locale');
 
-                if (array_key_exists($role, $this->model->getMediasParams())
-                    || array_key_exists($role, config('twill.block_editor.crops', []))
-                    || array_key_exists($role, config('twill.settings.crops', []))) {
+                if (
+                    array_key_exists($role, $this->model->getMediasParams())
+                    || array_key_exists($role, TwillBlocks::getAllCropConfigs())
+                    || array_key_exists($role, config('twill.settings.crops', []))
+                ) {
                     Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
                         if (isset($media['crops']) && !empty($media['crops'])) {
@@ -191,7 +194,8 @@ trait HandleMedias
         return $this->model->getMediasParams()[$role];
     }
 
-    public function afterDuplicateHandleMedias(TwillModelContract $original, TwillModelContract $newObject): void {
+    public function afterDuplicateHandleMedias(TwillModelContract $original, TwillModelContract $newObject): void
+    {
         foreach ($original->medias as $media) {
             $newPushData = [
                 'crop' => $media->pivot->crop,

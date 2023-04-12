@@ -38,7 +38,7 @@ Sticky elements default style
 
   /* publisher.vue */
   .publisher {
-    z-index: $zindex__modal;
+    z-index: $zindex__overlay;
 
     &.sticky__fixed,
     &.sticky__fixedTop {

@@ -3,7 +3,6 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Exceptions\NoCapsuleFoundException;
-use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Helpers\FlashLevel;
@@ -12,7 +11,6 @@ use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Contracts\TwillSchedulableModel;
 use A17\Twill\Models\Group;
 use A17\Twill\Repositories\ModuleRepository;
-use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Breadcrumbs\Breadcrumbs;
 use A17\Twill\Services\Forms\Fields\BaseFormField;
 use A17\Twill\Services\Forms\Fields\BlockEditor;
@@ -37,8 +35,10 @@ use A17\Twill\Services\Listings\TableColumn;
 use A17\Twill\Services\Listings\TableColumns;
 use A17\Twill\Services\Listings\TableDataContext;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\View as IlluminateView;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
@@ -95,10 +95,7 @@ abstract class ModuleController extends Controller
      */
     protected $modelTitle;
 
-    /**
-     * @var \A17\Twill\Repositories\ModuleRepository
-     */
-    protected $repository;
+    protected ModuleRepository $repository;
 
     /**
      * @var \A17\Twill\Models\User
@@ -356,7 +353,7 @@ abstract class ModuleController extends Controller
      *
      * Do not modify this directly but use the method setSearchColumns().
      */
-    protected array $searchColumns = [];
+    protected ?array $searchColumns = null;
 
     /**
      * Default label translation keys that can be overridden in the labels array.
@@ -397,7 +394,15 @@ abstract class ModuleController extends Controller
             return $next($request);
         });
 
-        $this->searchColumns = [$this->titleColumnKey];
+        if (!$this instanceof AppSettingsController) {
+            $this->getForm($this->repository->getBaseModel())->registerDynamicRepeaters();
+            $this->getSideFieldsets($this->repository->getBaseModel())->registerDynamicRepeaters();
+        }
+
+        // When no searchColumns are set we default to the title column key.
+        if ($this->searchColumns === null) {
+            $this->searchColumns = [$this->titleColumnKey];
+        }
     }
 
     /**
@@ -963,7 +968,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\View\View|JsonResponse
+     * @return IlluminateView|JsonResponse
      */
     public function index(?int $parentModuleId = null): mixed
     {
@@ -990,11 +995,13 @@ abstract class ModuleController extends Controller
 
         $form = $this->getCreateForm();
 
-        if ($form->filter(function (BaseFormField $field) {
-            return $field instanceof BlockEditor ||
-                $field instanceof Repeater;
-        })
-            ->isNotEmpty()) {
+        if (
+            $form->filter(function (BaseFormField $field) {
+                return $field instanceof BlockEditor ||
+                    $field instanceof Repeater;
+            })
+                ->isNotEmpty()
+        ) {
             throw new \Exception('Create forms do not support repeaters and blocks');
         }
 
@@ -1011,7 +1018,7 @@ abstract class ModuleController extends Controller
         }
 
         return View::make($view, $indexData + ['repository' => $this->repository])
-            ->with('renderFields', $form);
+            ->with(['formBuilder' => $form->toFrontend(isCreate: true)]);
     }
 
     public function getCreateForm(): Form
@@ -1098,16 +1105,32 @@ abstract class ModuleController extends Controller
         return $this->redirectToForm($this->getParentModuleIdFromRequest($this->request) ?? $submoduleId ?? $id);
     }
 
-    public function edit(TwillModelContract|int $id): mixed
+    /**
+     * @return array{
+     *          item: TwillModelContract,
+     *          id: int
+     *     }
+     */
+    private function itemAndIdFromRequest(TwillModelContract|int $id): array
     {
         if ($id instanceof TwillModelContract) {
             $item = $id;
             $id = $item->id;
         } else {
             $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
-            $id = $this->request->route()->parameter($parameter, $id);
+            $id = (int) $this->request->route()->parameter($parameter, $id);
             $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
         }
+
+        return [
+            $item,
+            $id,
+        ];
+    }
+
+    public function edit(TwillModelContract|int $id): mixed
+    {
+        [$item, $id] = $this->itemAndIdFromRequest($id);
 
         $this->authorizeOption('edit', $item);
 
@@ -1121,7 +1144,7 @@ abstract class ModuleController extends Controller
 
         $controllerForm = $this->getForm($item);
 
-        if ($controllerForm->isNotEmpty()) {
+        if ($controllerForm->hasForm()) {
             $view = 'twill::layouts.form';
         } else {
             $view = Collection::make([
@@ -1142,18 +1165,13 @@ abstract class ModuleController extends Controller
         }
 
         return View::make($view, $this->form($id))->with(
-            'renderFields',
-            $controllerForm
+            ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($item))]
         );
     }
 
-    /**
-     * @param int $parentModuleId
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse|\Illuminate\View\View
-     */
-    public function create($parentModuleId = null)
+    public function create(int $parentModuleId = null): JsonResponse|RedirectResponse|IlluminateView
     {
-        if (!$this->getIndexOption('skipCreateModal')) {
+        if (! $this->getIndexOption('skipCreateModal')) {
             return Redirect::to(
                 moduleRoute(
                     $this->moduleName,
@@ -1169,6 +1187,9 @@ abstract class ModuleController extends Controller
         $this->submodule = isset($parentModuleId);
         $this->submoduleParentId = $parentModuleId;
 
+        $emptyModelInstance = $this->repository->newInstance();
+        $controllerForm = $this->getForm($emptyModelInstance);
+
         $view = Collection::make([
             "$this->viewPrefix.form",
             "twill::$this->moduleName.form",
@@ -1179,24 +1200,14 @@ abstract class ModuleController extends Controller
 
         View::share('form', $this->form(null));
 
-        return View::make($view, $this->form(null));
+        return View::make($view, $this->form(null))->with(
+            ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($emptyModelInstance), true)]
+        );
     }
 
-    /**
-     * @param int $id
-     * @param int|null $submoduleId
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function update(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
-        if ($id instanceof TwillModelContract) {
-            $item = $id;
-            $id = $item->id;
-        } else {
-            $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
-            $id = $this->request->route()->parameter($parameter, $id);
-            $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
-        }
+        [$item, $id] = $this->itemAndIdFromRequest($id);
 
         $this->authorizeOption('edit', $item);
 
@@ -1266,7 +1277,7 @@ abstract class ModuleController extends Controller
         return $this->respondWithSuccess(twillTrans('twill::lang.publisher.save-success'));
     }
 
-    protected function performUpdate($item)
+    protected function performUpdate($item): void
     {
         $formRequest = $this->validateFormRequest();
         $data = $formRequest->all();
@@ -1284,11 +1295,7 @@ abstract class ModuleController extends Controller
         }
     }
 
-    /**
-     * @param int $id
-     * @return \Illuminate\View\View
-     */
-    public function preview($id)
+    public function preview(int $id): IlluminateView
     {
         if ($this->request->has('revisionId')) {
             $item = $this->repository->previewForRevision($id, $this->request->get('revisionId'));
@@ -1302,8 +1309,8 @@ abstract class ModuleController extends Controller
         }
 
         $previewView = $this->previewView ?? (Config::get('twill.frontend.views_path', 'site') . '.' . Str::singular(
-                $this->moduleName
-            ));
+            $this->moduleName
+        ));
 
         return View::exists($previewView) ? View::make(
             $previewView,
@@ -1331,6 +1338,8 @@ abstract class ModuleController extends Controller
 
         $this->setBackLink();
 
+        $controllerForm = $this->getForm($item);
+
         $view = Collection::make([
             "$this->viewPrefix.form",
             "twill::$this->moduleName.form",
@@ -1353,7 +1362,9 @@ abstract class ModuleController extends Controller
 
         View::share('form', $this->form($id, $item));
 
-        return View::make($view, $this->form($id, $item));
+        return View::make($view, $this->form($id, $item))->with(
+            ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($item))]
+        );
     }
 
     public function publish(): JsonResponse
@@ -1364,9 +1375,11 @@ abstract class ModuleController extends Controller
                 'active' => 'bool|required',
             ]);
 
-            if ($this->repository->updateBasic($data['id'], [
-                'published' => !$data['active'],
-            ])) {
+            if (
+                $this->repository->updateBasic($data['id'], [
+                    'published' => ! $data['active'],
+                ])
+            ) {
                 activity()->performedOn(
                     $this->repository->getById($data['id'])
                 )->log(
@@ -1397,9 +1410,11 @@ abstract class ModuleController extends Controller
     public function bulkPublish(): JsonResponse
     {
         try {
-            if ($this->repository->updateBasic(explode(',', $this->request->get('ids')), [
-                'published' => $this->request->get('publish'),
-            ])) {
+            if (
+                $this->repository->updateBasic(explode(',', $this->request->get('ids')), [
+                    'published' => $this->request->get('publish'),
+                ])
+            ) {
                 $this->fireEvent();
                 if ($this->request->get('publish')) {
                     return $this->respondWithSuccess(
@@ -1422,14 +1437,7 @@ abstract class ModuleController extends Controller
 
     public function duplicate(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
-        if ($id instanceof TwillModelContract) {
-            $item = $id;
-            $id = $item->id;
-        } else {
-            $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
-            $id = $this->request->route()->parameter($parameter, $id);
-            $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
-        }
+        [$item, $id] = $this->itemAndIdFromRequest($id);
 
         if ($newItem = $this->repository->duplicate($id, $this->titleColumnKey)) {
             $this->fireEvent();
@@ -1454,14 +1462,7 @@ abstract class ModuleController extends Controller
 
     public function destroy(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
-        if ($id instanceof TwillModelContract) {
-            $item = $id;
-            $id = $item->id;
-        } else {
-            $parameter = Str::singular(Str::afterLast($this->moduleName, '.'));
-            $id = $this->request->route()->parameter($parameter, $id);
-            $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
-        }
+        [$item, $id] = $this->itemAndIdFromRequest($id);
 
         if ($this->repository->delete($id)) {
             $this->fireEvent();
@@ -1575,7 +1576,7 @@ abstract class ModuleController extends Controller
     {
         if (($id = $this->request->get('id'))) {
             $featuredField = $this->request->get('featureField') ?? $this->featureField;
-            $featured = !$this->request->get('active');
+            $featured = ! $this->request->get('active');
 
             if ($this->repository->isUniqueFeature()) {
                 if ($featured) {
@@ -1727,7 +1728,7 @@ abstract class ModuleController extends Controller
             }
         }
 
-        if ($this->breadcrumbs && !isset($indexDataWithoutFilters['breadcrumb'])) {
+        if ($this->breadcrumbs && ! isset($indexDataWithoutFilters['breadcrumb'])) {
             foreach ($this->breadcrumbs->getListingBreadcrumbs() as $breadcrumb) {
                 $indexDataWithoutFilters['breadcrumb'][] = $breadcrumb->toArray();
             }
@@ -1870,7 +1871,7 @@ abstract class ModuleController extends Controller
                 $queryString = Str::beforeLast($key, 'List');
 
                 if ($filterKey = ($this->filters[$queryString] ?? false)) {
-                    if (!$value instanceof Collection) {
+                    if (! $value instanceof Collection) {
                         $value = collect($value)->mapWithKeys(function ($valueLabel) {
                             return [$valueLabel['value'] => $valueLabel['label']];
                         });
@@ -2079,13 +2080,13 @@ abstract class ModuleController extends Controller
         $filters = json_decode($this->request->get('filter'), true) ?? [];
 
         foreach ($this->filtersDefaultOptions as $filterName => $defaultOption) {
-            if (!isset($filters[$filterName])) {
+            if (! isset($filters[$filterName])) {
                 $filters[$filterName] = $defaultOption;
             }
         }
 
         // Try to figure out which is the default filter. If there is no default filter, we will use the first one.
-        if (!isset($filters['status'])) {
+        if (! isset($filters['status'])) {
             /** @var QuickFilter $quickFilter */
             foreach ($this->quickFilters() as $quickFilter) {
                 if ($quickFilter->isDefault()) {
@@ -2094,7 +2095,7 @@ abstract class ModuleController extends Controller
                 }
             }
 
-            if (!isset($filters['status'])) {
+            if (! isset($filters['status'])) {
                 $filters['status'] = $this->quickFilters()->first()->getQueryString();
             }
         }
@@ -2102,7 +2103,7 @@ abstract class ModuleController extends Controller
         /** @var \A17\Twill\Services\Listings\Filters\BasicFilter $filter */
         foreach ($this->filters() as $filter) {
             if (
-                !isset($filters[$filter->getQueryString()]) &&
+                ! isset($filters[$filter->getQueryString()]) &&
                 $filter->getDefaultValue() &&
                 $filter->getDefaultValue() !== $filter::OPTION_ALL
             ) {
@@ -2119,7 +2120,7 @@ abstract class ModuleController extends Controller
         if ($this->request->has('sortKey') && $this->request->has('sortDir')) {
             if (($key = $this->request->get('sortKey')) === 'name') {
                 $sortKey = $this->titleColumnKey;
-            } elseif (!empty($key)) {
+            } elseif (! empty($key)) {
                 $sortKey = $key;
             }
 
@@ -2146,7 +2147,7 @@ abstract class ModuleController extends Controller
         $defaultOrders = [];
 
         // don't apply default orders if reorder is enabled
-        if (!$this->getIndexOption('reorder')) {
+        if (! $this->getIndexOption('reorder')) {
             // We override defaultOrder with our table columns.
             $this->getIndexTableColumns()->each(function (TableColumn $column) use (&$defaultOrders) {
                 if ($column->isDefaultSort()) {
@@ -2163,7 +2164,7 @@ abstract class ModuleController extends Controller
 
             // Add the defaults if they are not in the array yet.
             foreach ($this->defaultOrders ?? [] as $key => $value) {
-                if (!isset($defaultOrders[$key])) {
+                if (! isset($defaultOrders[$key])) {
                     $defaultOrders[$key] = $value;
                 }
             }
@@ -2174,9 +2175,9 @@ abstract class ModuleController extends Controller
 
     protected function form(?int $id, ?TwillModelContract $item = null): array
     {
-        if (!$item && $id) {
+        if (! $item && $id) {
             $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
-        } elseif (!$item && !$id) {
+        } elseif (! $item && ! $id) {
             $item = $this->repository->newInstance();
         }
 
@@ -2203,7 +2204,7 @@ abstract class ModuleController extends Controller
                 'translate' => $this->moduleHas('translations'),
                 'translateTitle' => $this->titleIsTranslatable(),
                 'permalink' => $this->getIndexOption('permalink', $item),
-                'createWithoutModal' => !$itemId && $this->getIndexOption('skipCreateModal'),
+                'createWithoutModal' => ! $itemId && $this->getIndexOption('skipCreateModal'),
                 'form_fields' => $this->repository->getFormFields($item),
                 'baseUrl' => $baseUrl,
                 'localizedPermalinkBase' => $localizedPermalinkBase,
@@ -2215,10 +2216,9 @@ abstract class ModuleController extends Controller
                     [$this->submoduleParentId]
                 ),
                 'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas(
-                        'blocks'
-                    ) && !$this->disableEditor,
+                    'blocks'
+                ) && ! $this->disableEditor,
                 'blockPreviewUrl' => Route::has('twill.blocks.preview') ? URL::route('twill.blocks.preview') : '#',
-                'availableRepeaters' => $this->getRepeaterList()->toJson(),
                 'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
                 'submitOptions' => $this->getSubmitOptions($item),
                 'groupUserMapping' => $this->getGroupUserMapping(),
@@ -2232,7 +2232,7 @@ abstract class ModuleController extends Controller
 
         $form = array_replace_recursive($data, $this->formData($this->request));
 
-        if ($this->breadcrumbs && !isset($form['breadcrumb'])) {
+        if ($this->breadcrumbs && ! isset($form['breadcrumb'])) {
             foreach ($this->breadcrumbs->getFormBreadcrumbs() as $breadcrumb) {
                 $form['breadcrumb'][] = $breadcrumb->toArray();
             }
@@ -2287,7 +2287,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param Request $item
+     * @param TwillModelContract $item
      * @return array
      */
     protected function previewData($item)
@@ -2363,14 +2363,14 @@ abstract class ModuleController extends Controller
                 $singularName = Str::singular($name);
                 $modelClass = config('twill.namespace') . '\\Models\\' . Str::studly($singularName);
 
-                if (!class_exists($modelClass)) {
+                if (! @class_exists($modelClass)) {
                     // First try to construct it based on the last.
                     $modelClass = config('twill.namespace') .
                         '\\Models\\' .
                         implode('', array_merge($prev + [99 => Str::studly($singularName)]));
 
                     // Last option is to search for a capsule model.
-                    if (!class_exists($modelClass)) {
+                    if (! class_exists($modelClass)) {
                         $modelClass = TwillCapsules::getCapsuleForModel($name)->getModel();
                     }
                 }
@@ -2444,7 +2444,7 @@ abstract class ModuleController extends Controller
     /**
      * @return string
      */
-    protected function getPermalinkBaseUrl()
+    public function getPermalinkBaseUrl()
     {
         $appUrl = Config::get('app.url');
 
@@ -2453,12 +2453,12 @@ abstract class ModuleController extends Controller
         }
 
         return $appUrl . '/'
-            . ((!$this->withoutLanguageInPermalink && $this->moduleHas('translations')) ? '{language}/' : '')
+            . ((! $this->withoutLanguageInPermalink && $this->moduleHas('translations')) ? '{language}/' : '')
             . ($this->moduleHas('revisions') ? '{preview}/' : '')
             . (empty($this->getLocalizedPermalinkBase()) ? ($this->permalinkBase ?? $this->getModulePermalinkBase()) : '')
-            . (((isset($this->permalinkBase) && empty($this->permalinkBase)) || !empty(
+            . (((isset($this->permalinkBase) && empty($this->permalinkBase)) || ! empty(
                 $this->getLocalizedPermalinkBase()
-                )) ? '' : '/');
+            )) ? '' : '/');
     }
 
     /**
@@ -2514,7 +2514,7 @@ abstract class ModuleController extends Controller
      */
     protected function setBackLink($back_link = null, $params = [])
     {
-        if (!isset($back_link)) {
+        if (! isset($back_link)) {
             if (($back_link = Session::get($this->getBackLinkSessionKey())) == null) {
                 $back_link = $this->request->headers->get('referer') ?? moduleRoute(
                     $this->moduleName,
@@ -2525,7 +2525,7 @@ abstract class ModuleController extends Controller
             }
         }
 
-        if (!Session::get($this->moduleName . '_retain')) {
+        if (! Session::get($this->moduleName . '_retain')) {
             Session::put($this->getBackLinkSessionKey(), $back_link);
         } else {
             Session::put($this->moduleName . '_retain', false);
@@ -2639,20 +2639,10 @@ abstract class ModuleController extends Controller
         if (TwillPermissions::enabled()) {
             $permissionModuleName = TwillPermissions::getPermissionModule(getModuleNameByModel($item));
 
-            return $permissionModuleName && !strpos($permissionModuleName, '.');
+            return $permissionModuleName && ! strpos($permissionModuleName, '.');
         }
 
         return false;
-    }
-
-    /**
-     * @return Collection|Block[]
-     */
-    public function getRepeaterList()
-    {
-        return TwillBlocks::getBlockCollection()->getRepeaters()->mapWithKeys(function (Block $repeater) {
-            return [$repeater->name => $repeater->toList()];
-        });
     }
 
     /**
@@ -2668,6 +2658,11 @@ abstract class ModuleController extends Controller
     }
 
     public function getForm(TwillModelContract $model): Form
+    {
+        return new Form();
+    }
+
+    public function getSideFieldsets(TwillModelContract $model): Form
     {
         return new Form();
     }

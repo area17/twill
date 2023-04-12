@@ -18,7 +18,7 @@
         :initialValue="startDate"
         :maxDate="endDate"
         :enableTime="true"
-        :allowInput="true"
+        :allowInput="false"
         :staticMode="true"
         @open="openStartCalendar"
         @close="closeCalendar"
@@ -32,7 +32,7 @@
         :initialValue="endDate"
         :minDate="startDate"
         :enableTime="true"
-        :allowInput="true"
+        :allowInput="false"
         :staticMode="true"
         @open="openEndCalendar"
         @close="closeCalendar"
@@ -44,14 +44,15 @@
 </template>
 
 <script>
+  import parseJson from 'date-fns/parse'
   import { mapState } from 'vuex'
+
+  import VisibilityMixin from '@/mixins/toggleVisibility'
   import { PUBLICATION } from '@/store/mutations'
   import a17VueFilters from '@/utils/filters.js'
   import { getTimeFormatForCurrentLocale, isCurrentLocale24HrFormatted } from '@/utils/locale'
 
   import a17Accordion from './Accordion.vue'
-  import VisibilityMixin from '@/mixins/toggleVisibility'
-  import parseJson from 'date-fns/parse'
 
   export default {
     name: 'A17Pubaccordion',

@@ -4,14 +4,15 @@
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
           <a17-blockeditor-item
-            ref="blockList"
-            :block="block"
-            :index="index"
-            :withHandle="draggable"
-            :size="blockSize"
-            :opened="opened"
+              ref="blockList"
+              :block="block"
+              :index="index"
+              :withHandle="draggable"
+              :size="blockSize"
+              :opened="opened"
           >
-            <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)" v-if="hasRemainingBlocks">
+            <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"
+                        v-if="hasRemainingBlocks">
               <span v-svg symbol="add"></span>
             </a17-button>
             <div slot="dropdown-action">
@@ -34,10 +35,10 @@
     </draggable>
     <div class="content__trigger">
       <a17-button
-        v-if="hasRemainingBlocks && blockType.trigger && allowCreate"
-        :class="triggerClass"
-        :variant="triggerVariant"
-        @click="addBlock()"
+          v-if="hasRemainingBlocks && blockType.trigger && allowCreate"
+          :class="triggerClass"
+          :variant="triggerVariant"
+          @click="addBlock()"
       >
         {{ blockType.trigger }}
       </a17-button>
@@ -66,13 +67,14 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-  import { FORM } from '@/store/mutations'
-
   import draggable from 'vuedraggable'
-  import draggableMixin from '@/mixins/draggable'
+  import { mapState } from 'vuex'
+
   import BlockEditorItem from '@/components/blocks/BlockEditorItem.vue'
   import A17StandaloneBrowser from "@/components/StandaloneBrowser.vue"
+  import draggableMixin from '@/mixins/draggable'
+  import { FORM } from '@/store/mutations'
+  import ACTIONS from "@/store/actions";
 
   export default {
     name: 'A17Repeater',
@@ -171,6 +173,12 @@
       })
     },
     methods: {
+      setOpened: function () {
+        const allClosed = this.$refs.blockList && this.$refs.blockList.every((block) => !block.visible)
+        if (allClosed) {
+          this.opened = false
+        }
+      },
       addBlock: function () {
         this.$store.commit(FORM.ADD_FORM_BLOCK, { type: this.type, name: this.name })
 
@@ -178,14 +186,21 @@
           this.checkExpandBlocks()
         })
       },
-      addRepeatersFromSelection(selected) {
-        this.$store.commit(FORM.ADD_REPEATER_FROM_SELECTION, { type: this.type, name: this.name, selection: selected, relation: this.relation })
-      },
-      duplicateBlock: function (index) {
-        this.$store.commit(FORM.DUPLICATE_FORM_BLOCK, {
+      addRepeatersFromSelection (selected) {
+        this.$store.commit(FORM.ADD_REPEATER_FROM_SELECTION, {
           type: this.type,
           name: this.name,
-          index: index
+          selection: selected,
+          relation: this.relation
+        })
+      },
+      duplicateBlock: function (index) {
+        this.$store.dispatch(ACTIONS.DUPLICATE_REPEATER, {
+          editorName: this.name,
+          index,
+          futureIndex: index + 1,
+          block: this.blocks[index],
+          id: Date.now() + Math.floor(Math.random() * 1000)
         })
 
         this.$nextTick(() => {
@@ -196,7 +211,7 @@
         this.$store.commit(FORM.DELETE_FORM_BLOCK, {
           type: this.type,
           name: this.name,
-          index: index
+          index
         })
       },
       collapseAllBlocks: function () {
@@ -215,8 +230,13 @@
       }
     },
     mounted: function () {
-      this.$nextTick(() => {
-        this.collapseAllBlocks()
+      // if there are blocks, these should be all collapse by default
+      this.$nextTick(function () {
+        if (this.$refs.blockList && this.blocks && this.blocks.length < 4) {
+          this.$refs.blockList.forEach((block) => block.toggleExpand())
+        }
+
+        this.setOpened()
       })
     }
   }

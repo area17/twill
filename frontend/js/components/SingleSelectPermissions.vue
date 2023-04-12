@@ -26,8 +26,10 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
+  import { mapGetters,mapState } from 'vuex'
+
   import { FORM } from '@/store/mutations'
+
   import a17Filter from './Filter.vue'
 
   export default {

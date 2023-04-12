@@ -29,21 +29,18 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-
   import 'quill/dist/quill.snow.css'
   import 'quill/dist/quill.bubble.css'
   import 'quill/dist/quill.core.css'
 
-  import QuillConfiguration from '@/libs/Quill/QuillConfiguration'
-
   import debounce from 'lodash/debounce'
+  import { mapState } from 'vuex'
 
-  import InputMixin from '@/mixins/input'
+  import QuillConfiguration from '@/libs/Quill/QuillConfiguration'
   import FormStoreMixin from '@/mixins/formStore'
+  import InputMixin from '@/mixins/input'
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
-
   import { loadScript } from '@/utils/loader'
 
   const HIGHLIGHT = '//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js'

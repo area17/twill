@@ -1,4 +1,4 @@
-<div class="border rounded-lg px-4 border-b-none -mb-8 flex items-center gap-4">
-    <div class="text-gray-500">File:</div>
-    <div class="flex-1">{{$slot}}</div>
+<div class="file markdown flex flex-row bg-filename p-20 mt-20 border-l-[2px] border-l-filename break-words overflow-scroll">
+    <p class="!font-bold mr-8">File:</p>
+    {{ $slot }}
 </div>

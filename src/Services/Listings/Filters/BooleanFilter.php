@@ -11,7 +11,7 @@ class BooleanFilter extends BasicFilter
     public const TRUE = 'yes';
     public const FALSE = 'no';
 
-    public static function make(): self
+    public static function make(): static
     {
         $filter = parent::make();
         $filter->options(
@@ -36,7 +36,7 @@ class BooleanFilter extends BasicFilter
         return $builder;
     }
 
-    public function field(string $fieldName): self
+    public function field(string $fieldName): static
     {
         $this->field = $fieldName;
 

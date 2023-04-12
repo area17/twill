@@ -2,6 +2,94 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.0.0-rc4
+
+This is the fourth release candidate for Twill 3!
+
+### Features
+
+- Block crops can now be defined from block components [`#2115`](https://github.com/area17/twill/pull/2115)
+- `twill:update` will now ask to run migrations [`#2107`](https://github.com/area17/twill/pull/2107)
+- `Select::make()->options()` now takes a closure as well [`#2143`](https://github.com/area17/twill/pull/2143)
+
+### Bugfixes
+
+- Fixes various issues related to blocks [`#2124`](https://github.com/area17/twill/pull/2124)
+- Allows fieldset only forms [`#2117`](https://github.com/area17/twill/pull/2117)
+- GetFullUrl for link browser now replace language as well [`#2142`](https://github.com/area17/twill/pull/2142)
+- Fixes return types of forms so they work properly in ide's [`#2140`](https://github.com/area17/twill/pull/2140)
+- Fixes a bug which would render the wrong form if block name would overlap with internal
+  names [`#2135`](https://github.com/area17/twill/pull/2135)
+- Fixes an issue which caused table actions to no longer work [`#2129`](https://github.com/area17/twill/pull/2129)
+
+## 3.0.0-rc3
+
+This is the third (and should be last) release candidate for Twill 3!
+
+### Notable changes
+
+- Twill now uses Tiptap wysiwyg editor by default. If you wish to use quill you will need to update fields to use that specifically. [`#2080`](https://github.com/area17/twill/pull/2080)
+
+### Features
+
+- Twill now uses Tiptap by default, Tiptap has been upgrade to version 2 and now has a link button that also supports browsers. [`#2080`](https://github.com/area17/twill/pull/2080)
+  - The default config for the editor has been exanded to all features it supports
+- The new settings are now translatable [`#2094`](https://github.com/area17/twill/pull/2094)
+- SkipCreateModal now supports the table builder correctly [`#2087`](https://github.com/area17/twill/pull/2087)
+- Adds the ability to show user activity on the dashboard [`#2063`](https://github.com/area17/twill/pull/2063)
+
+### Bugfixes
+
+- Fixed settings accessor when used with nested blocks or repeaters.
+- Fixed a check so that the media library button gets disabled correctly.
+- Fixes browser endpoints no longer crash when no edit url could be build.
+- Various fixes for block components.
+
+### Other
+
+- Vue/node has been upgrade to use all of the latest versions [`#2070`](https://github.com/area17/twill/pull/2070)
+
+## 3.0.0-rc2
+
+This is the second release candidate for Twill 3!
+
+### Features
+
+- From builder now supports inline fieldsets [`#2007`](https://github.com/area17/twill/pull/2007)
+- Blocks can now be defined as a blade component `php twill:make:componentBlock blockName` [`#2007`](https://github.com/area17/twill/pull/2007)
+
+### Bugfixes
+
+- Fixed an issue where media tags would not save [`#2051`](https://github.com/area17/twill/pull/2051)
+- Fixed an issue where conditional fields would not unset [`#2043`](https://github.com/area17/twill/pull/2043)
+- Vselect now properly handles floats [`#2048`](https://github.com/area17/twill/pull/2048)
+- Repeaters now properly collapse/expand [`#2037`](https://github.com/area17/twill/pull/2037)
+
+### Docs
+
+- Various docs updated [`#2052`](https://github.com/area17/twill/pull/2052)
+
+## 3.0.0-rc1
+
+The first release candidate for Twill 3!
+
+### Features
+
+- Form builder now supports fieldsets, side forms, columns and more [`#1963`](https://github.com/area17/twill/pull/1963)
+- Blocks can now be cloned from within the editor [`#1912`](https://github.com/area17/twill/pull/1912)
+- Developer experience: Added a feature that can auto-login on development environments [`#1904`](https://github.com/area17/twill/pull/1904)
+
+### Improvements
+
+- A new slug implementation to have more consisten slug creation [`#1897`](https://github.com/area17/twill/pull/1897)
+- Various styling fixes
+- Improved defaults such as svg support
+- Improved documentation styling and generator
+
+### Bugfixes
+
+- Many issues have been resolved in since beta2.
+
 ## 3.0.0-beta2
 
 This is a stabilization release to prepare a first stable release.

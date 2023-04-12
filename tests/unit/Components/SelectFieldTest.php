@@ -6,7 +6,7 @@ use A17\Twill\Services\Forms\Option;
 use A17\Twill\Services\Forms\Options;
 use A17\Twill\View\Components\Fields\Select;
 
-class SelectFieldTest extends ComponentWithOptionsTestBase
+class SelectFieldTest extends ComponentTestBase
 {
     public string $component = Select::class;
     public array $data = [

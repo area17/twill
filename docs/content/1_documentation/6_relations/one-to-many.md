@@ -1,6 +1,6 @@
 # One to Many
 
-[One to Many](https://laravel.com/docs/9.x/eloquent-relationships#one-to-many) can be used for having child models that
+[One to Many](https://laravel.com/docs/10.x/eloquent-relationships#one-to-many) can be used for having child models that
 are referred to by your main model.
 
 An example could be:
@@ -55,31 +55,26 @@ Now with the migration setup we can setup our relation in the `Project` model:
 }
 ```
 
-## Setup the repeater and form
+## Setup the repeater form
 
-To expose the relation in the ui, we will use a repeater.
+In our project form we can now create an inline repeater.
 
 :::filename:::
-`resources/views/twill/repeaters/link.blade.php`
+`app/Http/Controllers/Twill/ProjectController.php`
 :::#filename:::
 
 ```phptorch
 {
-  "file": "../../../../examples/portfolio/resources/views/twill/repeaters/link.blade.php",
-  "simple": true
-}
-```
-
-In our project form we can now refer to the repeater and allow editors to select.
-
-:::filename:::
-`resources/views/twill/projects/form.blade.php`
-:::#filename:::
-
-```phptorch
-{
-  "file": "../../../../examples/portfolio/resources/views/twill/projects/form.blade.php",
-  "simple": true
+  "file": "../../../../examples/portfolio/app/Http/Controllers/Twill/ProjectController.php",
+  "collapseAll": "",
+  "focusImports": ["A17\\Twill\\Services\\Forms\\InlineRepeater"],
+  "diffImports": ["A17\\Twill\\Services\\Forms\\InlineRepeater"],
+  "focusMethods": "getForm",
+  "diffInMethod": {
+    "method": "getForm",
+    "start": 23,
+    "end": 32
+  }
 }
 ```
 
@@ -99,13 +94,13 @@ As a final step we have to update the repository to map the repeater field to th
   "diffInMethod": [
       {
         "method": "afterSave",
-        "start": 10,
-        "end": 14
+        "start": 11,
+        "end": 15
       },
       {
         "method": "getFormFields",
-        "start": 11,
-        "end": 17
+        "start": 12,
+        "end": 18
       }
   ]
 }

@@ -46,6 +46,10 @@ strict using:
 Previously `withVideo` was true by default, if you relied on this you have to update these media fields to
 `'withVideo' => true`.
 
+### SVG's are now no longer passing thorough glide
+
+These are now rendered directly, you can change this by updating config `twill.glide.original_media_for_extensions` to an empty array `[]`
+
 ### media/file library
 
 The default for media and file libraries are now local and glide, if you relied on the default config for aws
@@ -57,6 +61,13 @@ The `renderBlocks` method now has the mapping as first argument.
 
 The `renderBlocks` method now by default will NOT render the nested repeaters below the block. If you relied on this
 you now need to update to `renderBlocks([], true)`
+
+### scopeForBucket replaced with getForBucket in featured
+
+In Twill 2 scopeForBucket would return a collection of featured items. However, as the name illustrates, this
+is not a scope.
+
+In Twill 3 `scopeForBucket` is an actual scope and `getForBucket` is a helper to get the items directly.
 
 ### Crops
 

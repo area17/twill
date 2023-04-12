@@ -26,12 +26,12 @@
     "php": "^8.0",
     "ext-json": "*",
     "ext-pdo": "*",
-    "astrotomic/laravel-translatable": "^11.5",
-    "cartalyst/tags": "^12.0",
+    "astrotomic/laravel-translatable": "^v11.12",
+    "cartalyst/tags": "^12.0|^13.0",
     "doctrine/dbal": "^3.0",
     "guzzlehttp/guzzle": "^7.0",
     "imgix/imgix-php": "^3.0",
-    "laravel/framework": "^9.0",
+    "laravel/framework": "^9.0|^10.0",
     "laravel/socialite": "^5.3",
     "laravel/ui": "^4.0",
     "league/flysystem-aws-s3-v3": "^3.0",
@@ -44,20 +44,21 @@
     "spatie/once": "^3.0"
   },
   "require-dev": {
+    "area17/phptorch": "dev-main",
     "chillerlan/php-qrcode": "~4.0",
     "friendsofphp/php-cs-fixer": "^3.0",
     "kalnoy/nestedset": "^6.0",
     "nette/php-generator": "v4.0.3",
     "nunomaduro/collision": "^6.0",
     "nunomaduro/larastan": "^2.0",
-    "orchestra/testbench": "^7.8",
-    "orchestra/testbench-dusk": "^7.8",
+    "orchestra/testbench": "^7.8|^8.0",
+    "orchestra/testbench-dusk": "^7.8|^8.0",
+    "phpunit/php-invoker": "^3.1",
     "phpunit/phpunit": "~9.0",
     "rector/rector": "^0.12.15",
     "spatie/invade": "^1.1",
     "squizlabs/php_codesniffer": "*",
-    "torchlight/torchlight-commonmark": "^0.5",
-    "area17/phptorch": "dev-main"
+    "torchlight/torchlight-commonmark": "^0.5"
   },
   "autoload": {
     "psr-4": {

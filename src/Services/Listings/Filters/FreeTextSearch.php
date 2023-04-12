@@ -31,14 +31,14 @@ class FreeTextSearch extends TwillBaseFilter
         return $builder;
     }
 
-    public function searchFor(string $searchString): self
+    public function searchFor(string $searchString): static
     {
         $this->searchString = $searchString;
 
         return $this;
     }
 
-    public function searchColumns(array $columns): self
+    public function searchColumns(array $columns): static
     {
         $this->searchColumns = $columns;
         return $this;

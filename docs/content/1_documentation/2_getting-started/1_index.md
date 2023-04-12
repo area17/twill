@@ -2,24 +2,27 @@
 
 ## Environment requirements
 
-Twill `3.x` is compatible with Laravel versions `8.x` to `9.x`, running on PHP 8.0 and above. As a dependency to your
+Twill `3.x` is compatible with Laravel versions above `9.x`, running on PHP 8.0 and above. As a dependency to your
 own application, Twill shares Laravel's
-[server requirements](https://laravel.com/docs/9.x/deployment#server-requirements).
+[server requirements](https://laravel.com/docs/10.x/deployment#server-requirements).
 
 ## Development
 
 For development, those requirements are satisfied by the following first-party solutions:
 
-- [Sail](https://laravel.com/docs/9.x/sail) (All platforms)
-- [Homestead](https://laravel.com/docs/9.x/homestead) (All platforms)
-- [Valet](https://laravel.com/docs/9.x/valet) (macOS)
+- [Sail](https://laravel.com/docs/10.x/sail) (All platforms)
+- [Homestead](https://laravel.com/docs/10.x/homestead) (All platforms)
+- [Valet](https://laravel.com/docs/10.x/valet) (macOS)
 
 ## Production
 
-For production deployments, we recommend:
+For production deployments, we can recommend:
 
 - [Forge](https://forge.laravel.com)
-- [Envoyer](https://envoyer.io) or [Envoy](https://laravel.com/docs/9.x/envoy)
+- [Vapor](https://vapor.laravel.com)
+- [Envoyer](https://envoyer.io)
+- [Envoy](https://laravel.com/docs/10.x/envoy)
+- [Deployer](https://deployer.org/)
 
 Of course, any other Laravel compatible server configuration and deployment strategy will be supported.
 
@@ -33,15 +36,15 @@ available since npm `5.7`.
 ## Database
 
 Twill's database migrations create `json` columns. Your database should support the `json` type. Twill has been
-developed and tested against MySQL (`>=5.7`) and PostgreSQL(`>=9.3`).
+developed and tested against MySQL (`>=5.7`) and PostgreSQL(`>=9.3`) databases.
 
 ## Summary
 
 |            | Supported versions | Recommended version |
 |:-----------|:------------------:|:-------------------:|
-| PHP        |       >= 8.0       | 8.1                 |
-| Laravel    |       >= 8.0       | 9.x                 |
-| npm        |       >= 5.7       | 6.13                |
-| MySQL      |       >= 5.7       | 5.7                 |
-| PostgreSQL |       >= 9.3       | 10                  |
+| PHP        |       >= 8.0       |         8.2         |
+| Laravel    |       >= 9.0       |        10.x         |
+| Node.js    |       >= 16        |        18.x         |
+| MySQL      |       >= 5.7       |         8.x         |
+| PostgreSQL |       >= 9.3       |        15.x         |
 

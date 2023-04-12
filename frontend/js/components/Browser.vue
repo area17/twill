@@ -39,11 +39,12 @@
 
 <script>
   import { mapState } from 'vuex'
+
   import { BROWSER } from '@/store/mutations'
+  import FormDataAsObj from '@/utils/formDataAsObj.js'
 
   import a17Filter from './Filter.vue'
   import a17ItemList from './ItemList.vue'
-  import FormDataAsObj from '@/utils/formDataAsObj.js'
 
   export default {
     name: 'A17Browser',

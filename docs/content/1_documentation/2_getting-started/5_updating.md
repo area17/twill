@@ -1,6 +1,6 @@
 # Updating
 
-To update between a minor version of Twill you can run the `php artisan twill:update` command. This will copy the 
+To update between a minor version of Twill you can run the `php artisan twill:update` command. This will copy the
 javascript and css assets over to your public folder.
 
 If you want to make it easy for you, you can add a post update action to your composer file to automate this every
@@ -18,7 +18,7 @@ Updating Twill between minor version (ex 3.0 to 3.1) should rarely require manua
 backwards compatability.
 :::#alert:::
 
-# Major updates
+## Major updates
 
 For major updates we try our best to provide a seamless upgrade experience, but we cannot always handle every case.
 

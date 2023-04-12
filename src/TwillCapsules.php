@@ -12,16 +12,17 @@ class TwillCapsules
     /**
      * @var \A17\Twill\Helpers\Capsule[]
      */
-    public $registeredCapsules = [];
+    public array $registeredCapsules = [];
 
     public function registerPackageCapsule(
         string $name,
         string $namespace,
         string $path,
         string $singular = null,
-        bool $enabled = true
+        bool $enabled = true,
+        bool $automaticNavigation = true
     ): Capsule {
-        $capsule = new Capsule($name, $namespace, $path, $singular, $enabled, true);
+        $capsule = new Capsule($name, $namespace, $path, $singular, $enabled, true, $automaticNavigation);
 
         $this->registerCapsule($capsule);
 
@@ -129,10 +130,10 @@ class TwillCapsules
         $namespace = Str::after($namespace, $capsuleNamespace . '\\');
 
         return $rootPath . DIRECTORY_SEPARATOR . $this->getProjectCapsulesSubdirectory() . str_replace(
-                '\\',
-                DIRECTORY_SEPARATOR,
-                $namespace
-            );
+            '\\',
+            DIRECTORY_SEPARATOR,
+            $namespace
+        );
     }
 
     public function getProjectCapsulesPath(): string

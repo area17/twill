@@ -119,7 +119,8 @@ trait HandleBrowsers
             }
 
             $object->save();
-        } elseif ($object->$relationship() instanceof HasOne ||
+        } elseif (
+            $object->$relationship() instanceof HasOne ||
             $object->$relationship() instanceof HasMany
         ) {
             $this->updateBelongsToInverseBrowser($object, $relationship, $relatedElements);
@@ -208,7 +209,7 @@ trait HandleBrowsers
                             ),
                             'endpointType' => $relatedElement->getMorphClass(),
                         ] + (classHasTrait($relatedElement, HasMedias::class) ? [
-                            'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
+                            'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100, 'fit' => 'crop']),
                         ] : []);
                 }
             )->toArray();
@@ -232,7 +233,7 @@ trait HandleBrowsers
                 ] + (empty($relatedElement->adminEditUrl) ? [] : [
                     'edit' => $relatedElement->adminEditUrl,
                 ]) + (classHasTrait($relatedElement, HasMedias::class) ? [
-                    'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
+                    'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100, 'fit' => 'crop']),
                 ] : []) : [];
         })->reject(function ($item) {
             return empty($item);

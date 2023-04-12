@@ -26,9 +26,9 @@ class Capsule
         public string $path,
         public ?string $singular = null,
         public bool $enabled = true,
-        public bool $packageCapsule = false
-    )
-    {
+        public bool $packageCapsule = false,
+        protected bool $automaticNavigation = true
+    ) {
         $this->boot();
     }
 
@@ -76,6 +76,8 @@ class Capsule
     public function registerViews(): void
     {
         View::addLocation(Str::replaceLast(DIRECTORY_SEPARATOR . $this->name, '', $this->path));
+
+        $this->registerBlocksAndRepeatersViewPaths();
     }
 
     public function loadMigrations(): void
@@ -153,7 +155,12 @@ class Capsule
         if (File::exists($this->path . DIRECTORY_SEPARATOR . 'Database')) {
             return $this->path . DIRECTORY_SEPARATOR . 'Database';
         }
-        return $this->path . DIRECTORY_SEPARATOR . 'database';
+
+        if (File::exists($this->path . DIRECTORY_SEPARATOR . 'database')) {
+            return $this->path . DIRECTORY_SEPARATOR . 'database';
+        }
+
+        return $this->path . DIRECTORY_SEPARATOR . 'Database';
     }
 
     public function getSeedsNamespace(): string
@@ -238,7 +245,7 @@ class Capsule
 
     public function getViewPrefix(): string
     {
-        if (!$this->cachedViewPrefix) {
+        if (! $this->cachedViewPrefix) {
             $name = Str::studly($this->name);
             // This is for backwards compatability.
             if (File::exists($this->getViewsPath() . DIRECTORY_SEPARATOR . 'twill')) {
@@ -325,6 +332,10 @@ class Capsule
 
     public function registerNavigation(): void
     {
+        if (! $this->automaticNavigation) {
+            return;
+        }
+
         $config = Config::get('twill-navigation', []);
 
         if ($config === []) {
@@ -363,5 +374,23 @@ class Capsule
     public function getType(): string
     {
         return '';
+    }
+
+    public function registerBlocksAndRepeatersViewPaths(): void
+    {
+        $resourcePath = $this->getConfig()['views_path'] ?? 'resources/views/admin';
+
+        foreach (['blocks', 'repeaters'] as $type) {
+            if (file_exists($path = "{$this->path}/$resourcePath/$type")) {
+                $paths = config("twill.block_editor.directories.source.$type");
+
+                $paths[] = [
+                    'path' => $path,
+                    'source' => 'capsule::' . $this->name
+                ];
+
+                config(["twill.block_editor.directories.source.$type" => $paths]);
+            }
+        }
     }
 }

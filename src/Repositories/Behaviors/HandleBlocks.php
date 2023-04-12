@@ -22,23 +22,14 @@ trait HandleBlocks
 
     private ?\Illuminate\Validation\Validator $blockValidator = null;
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param int $fakeBlockId
-     * @param int|null $parentId
-     * @param \Illuminate\Support\Collection|null $blocksFromFields
-     * @param \Illuminate\Support\Collection|null $mainCollection
-     * @return \A17\Twill\Models\Model|null
-     */
     public function hydrateHandleBlocks(
-        $object,
-        $fields,
-        &$fakeBlockId = 0,
-        $parentId = null,
-        $blocksFromFields = null,
-        $mainCollection = null
-    ) {
+        TwillModelContract $object,
+        array $fields,
+        int &$fakeBlockId = 0,
+        ?int $parentId = null,
+        ?Collection $blocksFromFields = null,
+        ?Collection $mainCollection = null
+    ): ?TwillModelContract {
         if ($this->shouldIgnoreFieldBeforeSave('blocks')) {
             return null;
         }
@@ -65,7 +56,7 @@ trait HandleBlocks
         return $object;
     }
 
-    protected function getChildrenBlocks($blocks, $blockRepository, $parentId, &$fakeBlockId, $mainCollection)
+    protected function getChildrenBlocks($blocks, $blockRepository, $parentId, &$fakeBlockId, $mainCollection): Collection
     {
         $childBlocksCollection = Collection::make();
 
@@ -280,6 +271,9 @@ trait HandleBlocks
         $childBlocksList = Collection::make();
 
         foreach ($parentBlockFields['blocks'] ?? [] as $childKey => $childBlocks) {
+            if (strpos($childKey, '|')) {
+                continue;
+            }
             foreach ($childBlocks as $index => $childBlock) {
                 $childBlock = $this->buildBlock($childBlock, $object, $childBlock['is_repeater'] ?? true);
                 $this->validateBlockArray($childBlock, $childBlock['instance'], true);

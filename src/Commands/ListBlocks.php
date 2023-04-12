@@ -2,8 +2,9 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Services\Blocks\Block;
-use A17\Twill\Services\Blocks\BlockCollection;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class ListBlocks extends Command
@@ -30,95 +31,11 @@ class ListBlocks extends Command
     protected $description = 'List all available Twill blocks';
 
     /**
-     * @return BlockCollection
-     */
-    public function getBlockCollection() {
-        return app(BlockCollection::class);
-    }
-
-    protected function displayMissingDirectories(): void
-    {
-        $this->getBlockCollection()
-            ->getMissingDirectories()
-            ->each(function ($directory) {
-                $this->error("Directory not found: {$directory}");
-            });
-    }
-
-    /**
-     * @return Block[]
-     */
-    protected function generateHeaders()
-    {
-        return [
-            'Title',
-            'TitleField',
-            'HideTitlePrefix',
-            'Trigger',
-            'Name',
-            'Group',
-            'Type',
-            'Icon',
-            'Compiled',
-            'Source',
-            'NewFormat',
-            'File',
-            'Component',
-            'Max',
-        ];
-    }
-
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    protected function getBlocks()
-    {
-        $sourceFiltered =
-        $this->option('twill') ||
-        $this->option('custom') ||
-        $this->option('app');
-
-        $typeFiltered = $this->option('blocks') || $this->option('repeaters');
-
-        $filteredList = $this->getBlockCollection()
-            ->reject(function (Block $block) use ($sourceFiltered) {
-                return $sourceFiltered && ! $this->option($block->source);
-            })
-            ->reject(function (Block $block) use ($typeFiltered) {
-                return $this->dontPassTextFilter($block) ||
-                    ($typeFiltered &&
-                    ! $this->option(Str::plural($block->type)));
-            })->sortBy(function (Block $block) {
-                return [$block->group, $block->title];
-            });
-
-        $list = [];
-
-        /** @var Block $block */
-        foreach ($filteredList as $block) {
-            $data = $this->colorize(
-                $this->option('short') ? $block->toShortList() : $block->toList()
-            );
-
-            // We do not render this.
-            unset($data['rules'], $data['rulesForTranslatedFields']);
-
-            $list[] = $data;
-        }
-
-        return collect($list);
-    }
-
-    /**
      * Executes the console command.
-     *
-     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $blockCollection = $this->getBlocks();
-
-        $this->displayMissingDirectories();
 
         if ($blockCollection->isEmpty()) {
             $this->error('No blocks found.');
@@ -130,6 +47,69 @@ class ListBlocks extends Command
             $this->generateHeaders(),
             $blockCollection->toArray()
         );
+    }
+
+    protected function generateHeaders(): array
+    {
+        return [
+            'Title',
+            'TitleField',
+            'HideTitlePrefix',
+            'Trigger',
+            'SelectTrigger',
+            'Name',
+            'Group',
+            'Type',
+            'Icon',
+            'Compiled',
+            'Source',
+            'NewFormat',
+            'File',
+            'Component',
+            'Max',
+            'Block class',
+        ];
+    }
+
+    protected function getBlocks(): Collection
+    {
+        $sourceFiltered =
+            $this->option('twill') ||
+            $this->option('custom') ||
+            $this->option('app');
+
+        $typeFiltered = $this->option('blocks') || $this->option('repeaters');
+
+        $filteredList = TwillBlocks::getBlockCollection()
+            ->reject(function (Block $block) use ($sourceFiltered) {
+                return $sourceFiltered && ! $this->option($block->source);
+            })
+            ->reject(function (Block $block) use ($typeFiltered) {
+                return $this->dontPassTextFilter($block) ||
+                    ($typeFiltered &&
+                        ! $this->option(Str::plural($block->type)));
+            })->sortBy(function (Block $block) {
+                return [$block->group, $block->title];
+            });
+
+        $list = [];
+
+
+        /** @var Block $block */
+        foreach ($filteredList as $block) {
+            $data = $this->colorize(
+                $this->option('short') ? $block->toShortList() : $block->toList()
+            );
+
+            // We do not render this.
+            unset($data['rules'], $data['rulesForTranslatedFields']);
+
+            $data['block class'] = $block::class !== 'A17\Twill\Services\Blocks\Block' ? get_class($block) : 'default';
+
+            $list[] = $data;
+        }
+
+        return collect($list);
     }
 
     /**
@@ -159,10 +139,10 @@ class ListBlocks extends Command
                     }
 
                     return $keep ||
-                    Str::contains(
-                        Str::lower($element),
-                        Str::lower($filter)
-                    );
+                        Str::contains(
+                            Str::lower($element),
+                            Str::lower($filter)
+                        );
                 }, false);
         }
 

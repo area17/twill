@@ -42,9 +42,10 @@ Repeater::make()
 Repeater fields can be used inside as well as outside the block editor.
 
 Inside the block editor, repeater blocks share the same model as regular blocks. By reading the section on
-the [block editor](/block-editor/) first, you will get a good overview of how to create and define repeater blocks for
+the [block editor](../5_block-editor) first, you will get a good overview of how to create and define repeater blocks
+for
 your project. No migration is needed when using repeater blocks. Refer to the section
-titled [Adding repeater fields to a block](/block-editor/adding-repeater-fields-to-a-block.html) for a detailed
+titled [Adding repeater fields to a block](../5_block-editor/03_adding-repeater-fields-to-a-block.md) for a detailed
 explanation.
 
 Outside the block editor, repeater fields are used to save `hasMany` or `morphMany` relationships.
@@ -114,7 +115,7 @@ class TeamMember extends Model
 ```
 
 - Update `TeamRepository`. Override the `afterSave` and `getFormFields` methods to process the repeater field:
-  - Note: For Polymorphic relationships, use `updateRepeaterMorphMany` in place of `updateRepeater`
+    - Note: For Polymorphic relationships, use `updateRepeaterMorphMany` in place of `updateRepeater`
 
 ```php
 class TeamRepository extends ModuleRepository

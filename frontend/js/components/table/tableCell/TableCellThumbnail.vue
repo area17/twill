@@ -18,8 +18,8 @@
 </template>
 
 <script>
-  import { TableCellMixin } from '@/mixins'
   import A17Avatar from '@/components/Avatar.vue'
+  import TableCellMixin from '@/mixins/tableCell'
 
   export default {
     name: 'A17TableCellThumbNail',

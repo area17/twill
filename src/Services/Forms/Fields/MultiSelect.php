@@ -2,27 +2,31 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\hasBorder;
-use A17\Twill\Services\Forms\Fields\Traits\hasMax;
-use A17\Twill\Services\Forms\Fields\Traits\hasMin;
-use A17\Twill\Services\Forms\Fields\Traits\hasOptions;
-use A17\Twill\Services\Forms\Fields\Traits\hasPlaceholder;
-use A17\Twill\Services\Forms\Fields\Traits\inlineable;
-use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
-use A17\Twill\Services\Forms\Fields\Traits\unpackable;
+use A17\Twill\Services\Forms\Fields\Traits\HasBorder;
+use A17\Twill\Services\Forms\Fields\Traits\HasMax;
+use A17\Twill\Services\Forms\Fields\Traits\HasMin;
+use A17\Twill\Services\Forms\Fields\Traits\HasOptions;
+use A17\Twill\Services\Forms\Fields\Traits\HasPlaceholder;
+use A17\Twill\Services\Forms\Fields\Traits\Inlineable;
+use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
+use A17\Twill\Services\Forms\Fields\Traits\Unpackable;
 
 class MultiSelect extends BaseFormField
 {
-    use isTranslatable;
-    use hasOptions;
-    use hasMax;
-    use hasMin;
-    use inlineable;
-    use unpackable;
-    use hasBorder;
-    use hasPlaceholder;
+    use IsTranslatable;
+    use HasOptions;
+    use HasMax;
+    use HasMin;
+    use Inlineable;
+    use Unpackable;
+    use HasBorder;
+    use HasPlaceholder;
 
     protected bool $searchable = false;
+
+    protected bool $pushTags = false;
+
+    protected bool $taggable = false;
 
     protected bool $addNew = false;
 
@@ -43,35 +47,49 @@ class MultiSelect extends BaseFormField
     /**
      * If the options should be searchable.
      */
-    public function searchable(bool $searchable = true): self
+    public function searchable(bool $searchable = true): static
     {
         $this->searchable = $searchable;
 
         return $this;
     }
 
-    public function canAddNew(bool $canAddNew = true): self
+    public function canAddNew(bool $canAddNew = true): static
     {
         $this->addNew = $canAddNew;
 
         return $this;
     }
 
-    public function moduleName(string $moduleName): self
+    public function moduleName(string $moduleName): static
     {
         $this->moduleName = $moduleName;
 
         return $this;
     }
 
-    public function storeUrl(string $storeUrl): self
+    public function storeUrl(string $storeUrl): static
     {
         $this->storeUrl = $storeUrl;
 
         return $this;
     }
 
-    public function endpoint(string $endpoint): self
+    public function taggable(bool $taggable = true): static
+    {
+        $this->taggable = $taggable;
+
+        return $this;
+    }
+
+    public function pushTags(bool $pushTags = true): static
+    {
+        $this->pushTags = $pushTags;
+
+        return $this;
+    }
+
+    public function endpoint(string $endpoint): static
     {
         $this->endpoint = $endpoint;
 
@@ -80,6 +98,6 @@ class MultiSelect extends BaseFormField
 
     protected function getAdditionalConstructorArguments(): array
     {
-        return ['options' => $this->options ?? []];
+        return ['options' => $this->getOptions()];
     }
 }

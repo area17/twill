@@ -42,19 +42,16 @@
 </template>
 
 <script>
-  import { DraggableMixin, BlockEditorMixin } from '@/mixins'
-
-  import A17EditorBlockPreview from '@/components/editor/EditorPreviewBlockItem'
-  import A17BlockEditorModel from '@/components/blocks/BlockEditorModel'
-  import A17Spinner from '@/components/Spinner.vue'
-
-  import { PREVIEW } from '@/store/mutations/index'
-  import ACTIONS from '@/store/actions/index'
-
-  import draggable from 'vuedraggable'
-  import tinyColor from 'tinycolor2'
-
   import debounce from 'lodash/debounce'
+  import tinyColor from 'tinycolor2'
+  import draggable from 'vuedraggable'
+
+  import A17BlockEditorModel from '@/components/blocks/BlockEditorModel'
+  import A17EditorBlockPreview from '@/components/editor/EditorPreviewBlockItem'
+  import A17Spinner from '@/components/Spinner.vue'
+  import { BlockEditorMixin,DraggableMixin } from '@/mixins'
+  import ACTIONS from '@/store/actions/index'
+  import { PREVIEW } from '@/store/mutations/index'
 
   export default {
     name: 'A17editorPreview',
@@ -109,7 +106,7 @@
         const index = Math.max(0, evt.newIndex)
         this.addAndEditBlock(add, edit, {
           block,
-          index: index
+          index
         })
 
         this._selectBlock(null, index)
@@ -178,7 +175,7 @@
         this.loading = true
         this.$store.dispatch(ACTIONS.GET_PREVIEW, {
           editorName: this.editorName,
-          index: index
+          index
         })
           .then(() => {
             this.$nextTick(() => {

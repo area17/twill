@@ -8,16 +8,19 @@ use Rector\Core\Rector\AbstractRector;
 
 abstract class LaravelAwareRectorRule extends AbstractRector implements ConfigurableRectorInterface
 {
-    public $baseDir;
+    protected Application $app;
 
     public function configure(array $configuration): void
     {
-        $this->baseDir = $configuration['path'] ?? getcwd();
+        $this->app ??= $this->bootstrapLaravel(
+            $configuration['path'] ?? getcwd(),
+        );
     }
 
-    protected function getLaravel(): Application
+    private function bootstrapLaravel(string $basePath): Application
     {
-        $app = new Application($this->baseDir);
+        $app = new Application($basePath);
+
         $app->singleton(
             \Illuminate\Contracts\Http\Kernel::class,
             \App\Http\Kernel::class

@@ -32,17 +32,20 @@ export const stripOutBlockNamespace = (name, id) => {
 }
 
 export const buildBlock = (block, rootState, isRepeater = false) => {
-  const repeaters = Object.assign({}, ...Object.keys(rootState.repeaters.repeaters).filter(repeaterKey => {
-    return repeaterKey.startsWith('blocks-' + block.id)
-  }).map(repeaterKey => {
-    return {
-      [repeaterKey.replace('blocks-' + block.id + '|', '')]: rootState.repeaters.repeaters[repeaterKey].map(repeaterItem => {
-        return buildBlock(repeaterItem, rootState, true)
-      })
-    }
-  }))
+  const repeaterIds = Object.keys(rootState.repeaters.repeaters);
+  const repeaters = Object.assign({}, ...repeaterIds.filter(repeaterKey => {
+    return repeaterKey.startsWith('blocks-' + block.id + '|')
+  })
+    .map(repeaterKey => {
+      return {
+        [repeaterKey.replace('blocks-' + block.id + '|', '')]: rootState.repeaters.repeaters[repeaterKey].map(repeaterItem => {
+          return buildBlock(repeaterItem, rootState, true)
+        })
+      }
+    }))
 
-  const blocks = Object.assign({}, ...Object.keys(rootState.blocks.blocks).filter(blockKey => {
+  const blockIds = Object.keys(rootState.blocks.blocks);
+  const blocks = Object.assign({}, ...blockIds.filter(blockKey => {
     return blockKey.startsWith('blocks-' + block.id)
   }).map(blockKey => {
     return {

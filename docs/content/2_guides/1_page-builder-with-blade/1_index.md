@@ -1,4 +1,4 @@
-# Building a page builder with Blade
+# Building a simple page builder with Laravel Blade
 
 So, you want to learn how to build a basic page builder with a Blade front-end. Ideal for a quick basic content website
 with flexible content.
@@ -11,4 +11,4 @@ In this guide we will:
 - A setting for setting the base title and logo
 - A front-end where all this comes together using Tailwindcss.
 
-So, let's get started and [install Laravel](/guides/page-builder-with-blade/install-laravel)
+So, let's get started and [install Laravel](./2_installing-laravel.md)

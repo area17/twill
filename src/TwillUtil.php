@@ -2,6 +2,7 @@
 
 namespace A17\Twill;
 
+use A17\Twill\Models\Contracts\TwillLinkableModel;
 use Illuminate\Support\Facades\Session;
 
 /**
@@ -51,6 +52,27 @@ class TwillUtil
     public function clearTempStore(): void
     {
         Session::remove(self::SESSION_FIELD);
+    }
+
+    public function parseInternalLinks(string $content): string
+    {
+        return preg_replace_callback(
+            '/(#twillInternalLink::(.*)#(\d))/',
+            function (array $data) {
+                if (isset($data[2], $data[3])) {
+                    $modelClass = $data[2];
+                    $id = $data[3];
+
+                    $model = $modelClass::published()->where('id', $id)->first();
+                    if ($model instanceof TwillLinkableModel) {
+                        return $model->getFullUrl();
+                    }
+
+                    return url($model->slug);
+                }
+            },
+            $content
+        );
     }
 
     private function getFromTempStore(string $key, int $frontendId): ?int

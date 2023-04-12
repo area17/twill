@@ -3,12 +3,14 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Http\Requests\Admin\OauthRequest;
+use A17\Twill\Models\User;
 use A17\Twill\Repositories\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\App;
@@ -110,11 +112,12 @@ class LoginController extends Controller
         return $this->viewFactory->make('twill::auth.2fa');
     }
 
-    /**
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
+        if (config('twill.dashboard.auth_activity_log.logout', false)) {
+            activity()->performedOn($this->guard()->user())->causedBy($this->guard()->user())->log('logout');
+        }
+
         $this->guard()->logout();
 
         $request->session()->invalidate();
@@ -133,7 +136,7 @@ class LoginController extends Controller
         return $this->afterAuthentication($request, $user);
     }
 
-    protected function afterAuthentication(Request $request, $user)
+    protected function afterAuthentication(Request $request, $user): RedirectResponse
     {
         if ($user->google_2fa_secret && $user->google_2fa_enabled) {
             $this->guard()->logout();
@@ -153,6 +156,10 @@ class LoginController extends Controller
             return $this->redirector->to(route('twill.password.reset.form', $token))->withErrors([
                 'error' => 'Your password needs to be reset before login',
             ]);
+        }
+
+        if (config('twill.dashboard.auth_activity_log.login', false)) {
+            activity()->performedOn($user)->causedBy($user)->log('login');
         }
 
         return $this->redirector->intended($this->redirectTo);

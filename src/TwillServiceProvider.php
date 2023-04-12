@@ -8,6 +8,7 @@ use A17\Twill\Commands\CapsuleInstall;
 use A17\Twill\Commands\CreateExampleCommand;
 use A17\Twill\Commands\CreateSuperAdmin;
 use A17\Twill\Commands\Dev;
+use A17\Twill\Commands\GenerateBlockComponent;
 use A17\Twill\Commands\GenerateBlocks;
 use A17\Twill\Commands\GenerateDocsCommand;
 use A17\Twill\Commands\ServeDocsCommand;
@@ -56,7 +57,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const VERSION = '3.0.0-beta2';
+    public const VERSION = '3.0.0-rc4';
 
     /**
      * Service providers to be registered.
@@ -121,6 +122,25 @@ class TwillServiceProvider extends ServiceProvider
         Blade::componentNamespace('A17\\Twill\\View\\Components\\Partials', 'twill.partials');
         Blade::componentNamespace('A17\\Twill\\View\\Components\\Layout', 'twill.layout');
         Blade::componentNamespace('A17\\Twill\\View\\Components\\Fields', 'twill');
+
+        \A17\Twill\Facades\TwillBlocks::registerComponentBlocks(
+            '\\App\\View\\Components\\Twill\\Blocks',
+            base_path('app/View/Components/Twill/Blocks')
+        );
+
+        foreach (config('twill.block_editor.directories.source.blocks') as $value) {
+            TwillBlocks::$blockDirectories[$value['path']] = [
+                'source' => $value['source'],
+                'renderNamespace' => null
+            ];
+        }
+
+        foreach (config('twill.block_editor.directories.source.repeaters') as $value) {
+            TwillBlocks::$repeatersDirectories[$value['path']] = [
+                'source' => $value['source'],
+                'renderNamespace' => null
+            ];
+        }
 
         Relation::morphMap([
             'users' => User::class,
@@ -356,6 +376,7 @@ class TwillServiceProvider extends ServiceProvider
             SetupDevTools::class,
             GeneratePackageCommand::class,
             TwillFlushManifest::class,
+            GenerateBlockComponent::class,
         ];
 
         if (app()->runningInConsole()) {
@@ -554,9 +575,7 @@ class TwillServiceProvider extends ServiceProvider
      */
     private function addViewComposers(): void
     {
-        if (config('twill.enabled.users-management')) {
-            View::composer(['twill.*', 'twill::*'], CurrentUser::class);
-        }
+        View::composer(['twill.*', 'twill::*'], CurrentUser::class);
 
         if (config('twill.enabled.media-library')) {
             View::composer('twill::layouts.main', MediasUploaderConfig::class);

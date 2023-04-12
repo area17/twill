@@ -5,6 +5,7 @@ namespace A17\Twill\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Collection;
 
 class Feature extends BaseModel
 {
@@ -23,7 +24,12 @@ class Feature extends BaseModel
 
     public function scopeForBucket(Builder $query, string $bucketKey): Builder
     {
-        return $query->where('bucket_key', $bucketKey)->get()->map(function ($feature) {
+        return $query->where('bucket_key', $bucketKey)->with('featured');
+    }
+
+    public static function getForBucket(string $bucketKey): Collection
+    {
+        return self::forBucket($bucketKey)->get()->map(function (Feature $feature) {
             return $feature->featured;
         })->filter();
     }
@@ -32,5 +38,4 @@ class Feature extends BaseModel
     {
         return config('twill.features_table', 'twill_features');
     }
-
 }

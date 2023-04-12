@@ -40,10 +40,11 @@
 </template>
 
 <script>
+  import FormDataAsObj from '@/utils/formDataAsObj.js'
+
   import a17Filter from './Filter.vue'
   import a17ItemList from './ItemList.vue'
   import a17Modal from './Modal.vue'
-  import FormDataAsObj from '@/utils/formDataAsObj.js'
 
   export default {
     name: 'A17StandaloneBrowser',
@@ -75,7 +76,13 @@
       },
       endpoint: {
         type: Object,
-        required: true
+        required: false,
+        default: null
+      },
+      endpointMultiple: {
+        type: Array,
+        required: false,
+        default: null
       },
       max: {
         type: Number,
@@ -92,12 +99,13 @@
         endpointName: null,
         browserTitle: 'Select', // @todo
         browserNote: null,
+        currentSource: null,
         selected: []
       }
     },
     computed: {
       currentEndpoint () {
-        return this.endpoints.find(endpoint => endpoint.value === this.endpoint.value)
+        return this.endpoints.find(endpoint => endpoint.value === this.currentSource)
       },
       multiSources () {
         return this.endpoints.length > 1
@@ -185,7 +193,7 @@
         const form = this.$refs.form
         const formdata = this.getFormData(form)
 
-        this.$http.get(this.endpoint.value, { params: formdata }).then((resp) => {
+        this.$http.get(this.currentEndpoint.value, { params: formdata }).then((resp) => {
           // add items here
           if (hardReload) {
             this.clearFullItems()
@@ -228,16 +236,23 @@
         this.closeModal()
       },
       changeBrowserSource (source) {
-        // @todo: Not supported for now.
-        // this.$store.commit(BROWSER.UPDATE_BROWSER_ENDPOINT, source)
+        this.currentSource = source.value;
         this.reloadList(true)
       }
     },
     mounted () {
       this.openModal();
-      this.endpoints = [
-        this.endpoint
-      ]
+      if (this.endpointMultiple) {
+        this.endpoints = this.endpointMultiple
+      }
+      else {
+        this.endpoints = [
+          this.endpoint
+        ]
+      }
+
+      this.currentSource = this.endpoints[0].value;
+
       // bind scroll on the feed
       this.reloadList()
     }

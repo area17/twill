@@ -7,8 +7,11 @@ use A17\Twill\Repositories\ModuleRepository;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
@@ -63,16 +66,22 @@ class DashboardController extends Controller
 
     /**
      * Displays the Twill dashboard.
-     *
-     * @return \Illuminate\View\View
      */
-    public function index()
+    public function index(): View|JsonResponse
     {
+        if (request()?->expectsJson()) {
+            if (request()?->input('mine')) {
+                return new JsonResponse($this->getLoggedInUserActivities());
+            }
+
+            return new JsonResponse($this->getAllActivities());
+        }
         $modules = Collection::make($this->config->get('twill.dashboard.modules'));
 
         return $this->viewFactory->make('twill::layouts.dashboard', [
             'allActivityData' => $this->getAllActivities(),
             'myActivityData' => $this->getLoggedInUserActivities(),
+            'ajaxBaseUrl' => request()?->url(),
             'tableColumns' => [
                 [
                     'name' => 'thumbnail',
@@ -102,11 +111,7 @@ class DashboardController extends Controller
         ]);
     }
 
-    /**
-     * @param Request $request
-     * @return Collection
-     */
-    public function search(Request $request)
+    public function search(Request $request): Collection
     {
         $modules = Collection::make($this->config->get('twill.dashboard.modules'));
 
@@ -164,42 +169,66 @@ class DashboardController extends Controller
             }
         }
 
+        if (config('twill.dashboard.auth_activity_log.login', false)) {
+            $listActivities[] = config('twill.dashboard.auth_activity_causer', 'users');
+        }
+
+        if (config('twill.dashboard.auth_activity_log.logout', false)) {
+            $listActivities[] = config('twill.dashboard.auth_activity_causer', 'users');
+        }
+
         return $listActivities;
     }
 
-    private function getAllActivities(): Collection
+    private function getAllActivities(): LengthAwarePaginator
     {
-        return Activity::whereIn('subject_type', $this->getEnabledActivities())
-            ->take(20)
+        $activity = Activity::whereIn('subject_type', $this->getEnabledActivities())
             ->latest()
-            ->get()
-            ->map(function ($activity) {
-                return $this->formatActivity($activity);
-            })
+            ->paginate(perPage: 20, pageName: 'all');
+
+        $list = $activity->map(function ($activity) {
+            return $this->formatActivity($activity);
+        })
             ->filter()
             ->values();
+
+        return new LengthAwarePaginator(
+            $list,
+            $activity->total(),
+            $activity->perPage(),
+            $activity->currentPage(),
+            ['path' => request()->path(), 'pageName' => 'all']
+        );
     }
 
-    private function getLoggedInUserActivities(): Collection
+    private function getLoggedInUserActivities(): LengthAwarePaginator
     {
-        return Activity::whereIn('subject_type', $this->getEnabledActivities())
+        $activity = Activity::whereIn('subject_type', $this->getEnabledActivities())
             ->where('causer_id', $this->authFactory->guard('twill_users')->user()->id)
-            ->take(20)
             ->latest()
-            ->get()
-            ->map(function ($activity) {
-                return $this->formatActivity($activity);
-            })
+            ->paginate(perPage: 20, pageName: 'mine');
+
+        $list = $activity->map(function ($activity) {
+            return $this->formatActivity($activity);
+        })
             ->filter()
             ->values();
+
+        return new LengthAwarePaginator(
+            $list,
+            $activity->total(),
+            $activity->perPage(),
+            $activity->currentPage(),
+            ['path' => request()->path(), 'pageName' => 'mine']
+        );
     }
 
-    /**
-     * @param \Spatie\Activitylog\Models\Activity $activity
-     * @return array|null
-     */
-    private function formatActivity($activity)
+    private function formatActivity(Activity $activity): ?array
     {
+        if ($activity->subject_type === config('twill.auth_activity_causer', 'users')) {
+            return $this->formatAuthActivity($activity);
+        }
+
         $dashboardModule = $this->config->get('twill.dashboard.modules.' . $activity->subject_type);
 
         if (! $dashboardModule || ! $dashboardModule['activity'] ?? false) {
@@ -220,18 +249,32 @@ class DashboardController extends Controller
             'date' => $activity->created_at->toIso8601String(),
             'author' => $activity->causer->name ?? twillTrans('twill::lang.dashboard.unknown-author'),
             'name' => $activity->subject->titleInDashboard ?? $activity->subject->title,
-            'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description),
+            'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description, $activity->properties->toArray()),
         ] + (classHasTrait($activity->subject, HasMedias::class) ? [
             'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
         ] : []) + (! $activity->subject->trashed() ? [
-            'edit' => $parent && $parentRelationship ? moduleRoute(
+            'edit' => moduleRoute(
                 $dashboardModule['name'],
                 $dashboardModule['routePrefix'] ?? null,
                 'edit',
                 array_merge($parentRelationship ? [$parent->id] : [], [$activity->subject_id])
-            ) : '',
+            ),
         ] : []) + (! is_null($activity->subject->published) ? [
             'published' => $activity->description === 'published' ? true : ($activity->description === 'unpublished' ? false : $activity->subject->published),
+        ] : []);
+    }
+
+    private function formatAuthActivity(Activity $activity): array
+    {
+        return [
+            'id' => $activity->id,
+            'type' => twillTrans('twill::lang.auth.auth-causer'),
+            'date' => $activity->created_at->toIso8601String(),
+            'author' => $activity->causer->name ?? twillTrans('twill::lang.dashboard.unknown-author'),
+            'name' => ucfirst($activity->description) ?? '',
+            'activity' => twillTrans('twill::lang.dashboard.activities.' . $activity->description, $activity->properties->toArray()),
+        ] + (classHasTrait($activity->subject, HasMedias::class) ? [
+            'thumbnail' => $activity->subject->defaultCmsImage(['w' => 100, 'h' => 100]),
         ] : []);
     }
 
@@ -468,17 +511,14 @@ class DashboardController extends Controller
             $query = $repository->draft()->limit(3)->latest();
 
             if ($repository->hasBehavior('revisions')) {
-                $drafts = $query->mine();
+                $query->mine();
             }
 
-            // @todo: ????
-            $drafts = $query->get();
-
-            return $drafts->map(function ($draft) use ($module) {
+            return $query->get()->map(function ($draft) use ($module) {
                 return [
                     'type' => ucfirst($module['label_singular'] ?? Str::singular($module['name'])),
                     'name' => $draft->titleInDashboard ?? $draft->title,
-                    'url' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $draft->id),
+                    'url' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', [$draft->id]),
                 ];
             });
         })->collapse()->values();

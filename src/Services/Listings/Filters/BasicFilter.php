@@ -21,7 +21,7 @@ class BasicFilter extends TwillBaseFilter
      *
      * This is usually something you do not want to run manually.
      */
-    public function withFilterValue(mixed $value): self
+    public function withFilterValue(mixed $value): static
     {
         $this->appliedValue = $value;
 
@@ -31,7 +31,7 @@ class BasicFilter extends TwillBaseFilter
     /**
      * This removes the "All" option.
      */
-    public function withoutIncludeAll(bool $removeIncludeAll = true): self
+    public function withoutIncludeAll(bool $removeIncludeAll = true): static
     {
         $this->includeAll = !$removeIncludeAll;
 
@@ -41,7 +41,7 @@ class BasicFilter extends TwillBaseFilter
     /**
      * Sets the options that can be used to select, it should be a key->value collection.
      */
-    public function options(Collection $options): self
+    public function options(Collection $options): static
     {
         $this->options = $options;
 
@@ -51,7 +51,7 @@ class BasicFilter extends TwillBaseFilter
     /**
      * Set the default value of the filter.
      */
-    public function default(mixed $default): self
+    public function default(mixed $default): static
     {
         $this->default = $default;
 

@@ -4,6 +4,7 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Enums\PermissionLevel;
 use A17\Twill\Facades\TwillPermissions;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Session;
 use A17\Twill\Models\Permission;
@@ -13,7 +14,7 @@ trait HandlePermissions
     /**
      * Retrieve user-item permissions fields
      *
-     * @param Model $object
+     * @param TwillModelContract $object
      * @param array $fields
      * @return array
      */
@@ -53,7 +54,7 @@ trait HandlePermissions
 
         // Group-Item permissions
         $userGroups = $user->groups()->where('is_everyone_group', false)->get();
-        foreach($userGroups as $group) {
+        foreach ($userGroups as $group) {
             if ($permission = $group->permissions()->ofItem($item)->first()) {
                 $allPermissionNames->push($permission->name);
             }
@@ -75,7 +76,9 @@ trait HandlePermissions
 
         $itemScopes = collect(Permission::available(Permission::SCOPE_ITEM))
             ->reverse()
-            ->mapWithKeys(function ($scope) { return [$scope => 0]; })
+            ->mapWithKeys(function ($scope) {
+                return [$scope => 0];
+            })
             ->toArray();
 
         foreach ($permissionNames as $name) {

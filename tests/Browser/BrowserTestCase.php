@@ -7,14 +7,13 @@ use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
+use App\Providers\AppServiceProvider;
 use Carbon\Carbon;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverDimension;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\DB;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Orchestra\Testbench\Dusk\TestCase;
-use Illuminate\Support\Facades\File;
 use Throwable;
 use Orchestra\Testbench\Dusk\Options as DuskOptions;
 use Facebook\WebDriver\Chrome\ChromeOptions;
@@ -41,12 +40,18 @@ class BrowserTestCase extends TestCase
             require __DIR__ . '/../../vendor/autoload.php'
         );
 
-        return [
+        $list = [
             RouteServiceProvider::class,
             TwillServiceProvider::class,
             ValidationServiceProvider::class,
             NestedSetServiceProvider::class,
         ];
+
+        if ($this->example && file_exists(app_path('Providers/AppServiceProvider.php'))) {
+            $list[] = AppServiceProvider::class;
+        }
+
+        return $list;
     }
 
     /**
@@ -80,38 +85,21 @@ class BrowserTestCase extends TestCase
         return rmdir($dir);
     }
 
+    public static function setUpBeforeClass(): void
+    {
+        cleanupTestState(self::applicationBasePath());
+        parent::setUpBeforeClass();
+    }
+
     public function tearDown(): void
     {
-        $toDelete = [
-            app_path('Http/Controllers/Twill'),
-            app_path('Http/Requests/Twill'),
-            app_path('Models'),
-            app_path('Repositories'),
-            app_path('Twill'),
-            resource_path('views/twill'),
-            resource_path('views/site'),
-            database_path('migrations'),
-            app_path('../routes/twill.php'),
-            config_path('twill.php'),
-            config_path('twill-navigation.php'),
-        ];
-
-        foreach ($toDelete as $path) {
-            if (is_dir($path)) {
-                File::deleteDirectory($path);
-            } elseif (file_exists($path)) {
-                unlink($path);
-            }
-        }
-
+        cleanupTestState(self::applicationBasePath());
         parent::tearDown();
     }
 
     protected function onNotSuccessfulTest(Throwable $t): void
     {
-        // When a test fails it doesnt run teardown.
-        $this->tearDown();
-
+        cleanupTestState(self::applicationBasePath());
         parent::onNotSuccessfulTest($t);
     }
 
@@ -236,7 +224,7 @@ class BrowserTestCase extends TestCase
             )
         );
 
-        $driver->manage()->window()->setSize(new WebDriverDimension(1440,900));
+        $driver->manage()->window()->setSize(new WebDriverDimension(1440, 900));
 
         return $driver;
     }

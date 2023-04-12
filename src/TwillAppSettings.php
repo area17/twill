@@ -4,7 +4,9 @@ namespace A17\Twill;
 
 use A17\Twill\Exceptions\Settings\SettingsGroupDoesNotExistException;
 use A17\Twill\Exceptions\Settings\SettingsSectionDoesNotExistException;
+use A17\Twill\Helpers\BlockRenderer;
 use A17\Twill\Models\Block;
+use A17\Twill\Services\Blocks\Block as BlockService;
 use A17\Twill\Services\Settings\SettingsGroup;
 
 class TwillAppSettings
@@ -12,11 +14,18 @@ class TwillAppSettings
     /**
      * @var SettingsGroup[]
      */
-    public static array $settingsGroups = [];
+    private array $settingsGroups = [];
 
     public function registerSettingsGroup(SettingsGroup $section): void
     {
-        self::$settingsGroups[$section->getName()] = $section;
+        $this->settingsGroups[$section->getName()] = $section;
+    }
+
+    public function registerSettingsGroups(SettingsGroup ...$sections): void
+    {
+        foreach ($sections as $section) {
+            $this->registerSettingsGroup($section);
+        }
     }
 
     /**
@@ -24,7 +33,7 @@ class TwillAppSettings
      */
     public function getAllGroups(): array
     {
-        return self::$settingsGroups;
+        return $this->settingsGroups;
     }
 
     /**
@@ -33,8 +42,8 @@ class TwillAppSettings
     public function getGroupsForNavigation(): array
     {
         return array_filter(
-            self::$settingsGroups,
-            fn(SettingsGroup $group) => !$group->shouldNotAutoRegisterInMenu() && $group->isAvailable()
+            $this->settingsGroups,
+            fn(SettingsGroup $group) => ! $group->shouldNotAutoRegisterInMenu() && $group->isAvailable()
         );
     }
 
@@ -62,6 +71,10 @@ class TwillAppSettings
             return $block->getRelated($key);
         }
 
+        if ($block->children->where('child_key', $key)->isNotEmpty()) {
+            return $block->children->where('child_key', $key);
+        }
+
         return $block->input($key);
     }
 
@@ -79,9 +92,9 @@ class TwillAppSettings
 
     public function getGroupForName(string $groupName): SettingsGroup
     {
-        $group = self::$settingsGroups[$groupName] ?? null;
+        $group = $this->settingsGroups[$groupName] ?? null;
 
-        if (!$group) {
+        if (! $group) {
             throw new SettingsGroupDoesNotExistException($groupName);
         }
 
@@ -92,7 +105,21 @@ class TwillAppSettings
     {
         $groupObject = $this->getGroupForGroupAndSectionName($group, $section);
 
-        return $groupObject->getSettingsModel()->blocks()->where('editor_name', $section)->firstOrFail();
+        return $groupObject->getSettingsModel()->blocks()
+            ->where('editor_name', $section)
+            ->where('parent_id', null)
+            ->firstOrFail();
+    }
+
+    public function getBlockServiceForGroupAndSection(string $group, string $section): BlockService
+    {
+        $groupObject = $this->getGroupForGroupAndSectionName($group, $section)->getSettingsModel();
+
+        $groupObject->registerSettingBlocks();
+
+        $block = $this->getGroupDataForSectionAndName($group, $section);
+
+        return BlockRenderer::getNestedBlocksForBlock($block, $groupObject, '');
     }
 
     /**
@@ -102,7 +129,7 @@ class TwillAppSettings
     {
         $groupObject = $this->getGroupForName($group);
 
-        if (!$groupObject->hasSection($section)) {
+        if (! $groupObject->hasSection($section)) {
             throw new SettingsSectionDoesNotExistException($groupObject, $section);
         }
 

@@ -32,6 +32,9 @@ class ListBlocksTest extends TestCase
         $this->execute([
             'filter' => 'text',
         ]);
+
+        // To avoid it being risky.
+        $this->assertTrue(true);
     }
 
     public function testWorksFineWithZeroBlocks()
@@ -39,18 +42,17 @@ class ListBlocksTest extends TestCase
         $this->execute([
             'filter' => 'there-are-no-blocks-here',
         ]);
+
+        // To avoid it being risky.
+        $this->assertTrue(true);
     }
 
     public function execute($parameters = [])
     {
         $pendingCommand = $this->artisan(
-            $command = 'twill:list:blocks',
+            'twill:list:blocks',
             $parameters
         );
-
-        $this->getCommand($command)
-            ->getBlockCollection()
-            ->load();
 
         $this->assertExitCodeIsGood($pendingCommand->run());
     }

@@ -25,3 +25,5 @@ composer.lock
 :memory:
 dist
 dist-backup
+.env
+mike.md

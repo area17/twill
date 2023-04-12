@@ -32,7 +32,7 @@ class Relation extends TableColumn
     /**
      * Set the relation that should be used.
      */
-    public function relation(string $relation): self
+    public function relation(string $relation): static
     {
         $this->relation = $relation;
         return $this;

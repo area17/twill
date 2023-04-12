@@ -13,13 +13,9 @@ use A17\Twill\Jobs\CleanupRevisions;
 
 trait HandleRevisions
 {
-
     /**
      * The Laravel queue name to be used for the revision limiting.
-     *
-     * @var string
      */
-
     protected string $revisionLimitJobQueue = 'default';
 
     public function hydrateHandleRevisions(TwillModelContract $object, array $fields): TwillModelContract
@@ -39,7 +35,7 @@ trait HandleRevisions
         return $object;
     }
 
-    public function afterSaveHandleRevisions(TwillModelContract $object, array $fields): array
+    public function afterSaveOriginalDataHandleRevisions(TwillModelContract $object, array $fields): array
     {
         $this->createRevisionIfNeeded($object, $fields);
 
@@ -78,9 +74,7 @@ trait HandleRevisions
 
         $object->fill(Arr::except($fields, $this->getReservedFields()));
 
-        $object = $this->hydrate($object, $fields);
-
-        return $object;
+        return $this->hydrate($object, $fields);
     }
 
     public function previewForRevision(int $id, int $revisionId): TwillModelContract
@@ -101,8 +95,7 @@ trait HandleRevisions
         string $relationship,
         null|string|TwillModelContract $model = null,
         ?string $customHydratedRelationship = null
-    ): void
-    {
+    ): void {
         $fieldsHasElements = isset($fields[$relationship]) && !empty($fields[$relationship]);
         $relatedElements = $fieldsHasElements ? $fields[$relationship] : [];
 
@@ -122,17 +115,18 @@ trait HandleRevisions
         array $fields,
         string $relationship,
         string $positionAttribute = 'position',
-        null|TwillModelContract|string $model = null): void
-    {
+        null|TwillModelContract|string $model = null
+    ): void {
         $this->hydrateOrderedBelongsToMany($object, $fields, $relationship, $positionAttribute, $model);
     }
 
-    public function hydrateOrderedBelongsToMany(TwillModelContract $object,
+    public function hydrateOrderedBelongsToMany(
+        TwillModelContract $object,
         array $fields,
         string $relationship,
         string $positionAttribute = 'position',
-        null|TwillModelContract|string $model = null): void
-    {
+        null|TwillModelContract|string $model = null
+    ): void {
         $fieldsHasElements = isset($fields['browsers'][$relationship]) && !empty($fields['browsers'][$relationship]);
         $relatedElements = $fieldsHasElements ? $fields['browsers'][$relationship] : [];
 
@@ -189,8 +183,8 @@ trait HandleRevisions
         array $fields,
         string $relationship,
         string $model,
-        ?string $repeaterName = null): void
-    {
+        ?string $repeaterName = null
+    ): void {
         if (!$repeaterName) {
             $repeaterName = $relationship;
         }

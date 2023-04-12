@@ -13,10 +13,7 @@ trait HasBlocks
      */
     public function blocks()
     {
-        return $this->morphMany(twillModel('block'), 'blockable')->orderBy(
-            config('twill.blocks_table', 'twill_blocks') . '.position',
-            'asc'
-        );
+        return $this->morphMany(twillModel('block'), 'blockable')->orderBy('position');
     }
 
     public function renderNamedBlocks($name = 'default', $blockViewMappings = [], $data = [])

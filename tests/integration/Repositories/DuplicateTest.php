@@ -111,13 +111,13 @@ class DuplicateTest extends TestCase
         $this->assertEquals('English title', $model->title);
         $this->assertCount(1, $model->blocks);
 
-        $this->assertCount(1, Block::get());
+        $this->assertCount(1, twillModel('block')::get());
 
         $duplicate = $module->getRepository()->duplicate($model->id);
 
         $this->assertCount(1, $model->repeaterdata);
         $this->assertCount(1, $duplicate->blocks);
-        $this->assertCount(2, Block::get());
+        $this->assertCount(2, twillModel('block')::get());
 
         $this->assertNotEquals($duplicate->blocks->first()->id, $model->blocks->first()->id);
     }
@@ -152,12 +152,12 @@ class DuplicateTest extends TestCase
         $this->assertCount(3, $model->medias);
         $this->assertCount(1, $model->images('cover'));
 
-        $this->assertEquals(3, DB::select('select count(*) from mediables')[0]->{'count(*)'});
+        $this->assertEquals(3, DB::table(config('twill.mediables_table', 'twill_mediables'))->count());
 
         $duplicate = $module->getRepository()->duplicate($model->id);
 
         $this->assertCount(3, $duplicate->medias);
         $this->assertCount(1, $duplicate->images('cover'));
-        $this->assertEquals(6, DB::select('select count(*) from mediables')[0]->{'count(*)'});
+        $this->assertEquals(6, DB::table(config('twill.mediables_table', 'twill_mediables'))->count());
     }
 }

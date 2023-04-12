@@ -45,7 +45,8 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
+  import { mapGetters,mapState } from 'vuex'
+
   import a17VueFilters from '@/utils/filters.js'
 
   export default {
@@ -175,7 +176,7 @@
 <style lang="scss" scoped>
   .block__content {
     display: none;
-    padding: 35px 15px;
+    padding: 15px;
     background: $color__background;
   }
 
@@ -224,7 +225,7 @@
     @include monospaced-figures('off'); // dont use monospaced figures here
     user-select: none;
     cursor: default;
-    margin-top: (50px - 26px) / 2;
+    margin-top: calc((50px - 26px) / 2);
   }
 
   .dropdown .block__counter {
@@ -244,7 +245,6 @@
   .block__title {
     text-overflow: ellipsis;
     font-weight: 600;
-    max-width: 45%;
     overflow: hidden;
     display: inline-block;
     white-space: nowrap;
@@ -255,6 +255,9 @@
 
   .block__toggle {
     flex-grow: 1;
+    display: flex;
+    max-width: 50%;
+    padding-right: 30px;
 
     .dropdown {
       display: inline-block;
@@ -269,8 +272,9 @@
   .block__actions {
     text-align: right;
     font-size: 0px;
-    padding-top: (50px - 26px) / 2;
-    padding-bottom: (50px - 26px) / 2;
+    padding-top: calc((50px - 26px) / 2);
+    padding-bottom: calc((50px - 26px) / 2);
+    margin-left: auto;
 
     > * {
       margin-left: 10px;

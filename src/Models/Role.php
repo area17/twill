@@ -16,7 +16,11 @@ use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Role extends BaseModel implements Sortable, TwillModelContract
 {
-    use HasMedias, SoftDeletes, HasPermissions, IsTranslatable, HasPosition;
+    use HasMedias;
+    use SoftDeletes;
+    use HasPermissions;
+    use IsTranslatable;
+    use HasPosition;
 
     public $timestamps = true;
 
@@ -27,14 +31,11 @@ class Role extends BaseModel implements Sortable, TwillModelContract
         'position',
     ];
 
-    protected $dates = [
-        'deleted_at',
-    ];
-
     public $checkboxes = ['published'];
 
     protected $casts = [
         'in_everyone_group' => 'boolean',
+        'deleted_at' => 'datetime'
     ];
 
     public function scopeAccessible($query): Builder

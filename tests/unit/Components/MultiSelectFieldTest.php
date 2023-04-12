@@ -6,7 +6,7 @@ use A17\Twill\Services\Forms\Option;
 use A17\Twill\Services\Forms\Options;
 use A17\Twill\View\Components\Fields\MultiSelect;
 
-class MultiSelectFieldTest extends ComponentWithOptionsTestBase
+class MultiSelectFieldTest extends ComponentTestBase
 {
     public string $component = MultiSelect::class;
     public array $data = [

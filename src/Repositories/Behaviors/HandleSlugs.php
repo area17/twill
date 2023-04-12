@@ -50,13 +50,13 @@ trait HandleSlugs
         $object->slugs()->restore();
     }
 
-    public function getFormFieldsHandleSlugs(TwillModelContract $object, array $fields): array
+    public function getFormFieldsHandleSlugs(TwillModelContract $model, array $fields): array
     {
         unset($fields['slugs']);
 
-        if ($object->slugs != null) {
-            foreach ($object->slugs as $slug) {
-                if ($slug->active || $object->slugs->where('locale', $slug->locale)->where('active', true)->count() === 0) {
+        if ($model->slugs !== null) {
+            foreach ($model->slugs as $slug) {
+                if ($slug->active || $model->slugs->where('locale', $slug->locale)->where('active', true)->count() === 0) {
                     $fields['translations']['slug'][$slug->locale] = $slug->slug;
                 }
             }
@@ -96,8 +96,10 @@ trait HandleSlugs
             $item->redirect = true;
         }
 
-        if (!$item && config('translatable.use_property_fallback', false)
-            && config('translatable.fallback_locale') != config('app.locale')) {
+        if (
+            !$item && config('translatable.use_property_fallback', false)
+            && config('translatable.fallback_locale') != config('app.locale')
+        ) {
             $item = (clone $query)->orWhere(function ($query) {
                 return $query->withActiveTranslations(config('translatable.fallback_locale'));
             })->forFallbackLocaleSlug($slug)->first();

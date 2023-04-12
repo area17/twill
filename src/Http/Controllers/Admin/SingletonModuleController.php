@@ -39,28 +39,35 @@ abstract class SingletonModuleController extends ModuleController
 
         $controllerForm = $this->getForm($item);
 
-        if ($controllerForm->isNotEmpty()) {
+        if ($controllerForm->hasForm()) {
             $view = 'twill::layouts.form';
         } else {
             $view = "twill.{$this->moduleName}.form";
         }
 
         View::share('form', $this->form($item->id));
-        return view($view, $this->form($item->id))
-            ->with(
-                'renderFields',
-                $controllerForm
-            );
+
+        return View::make($view, $this->form($item->id))->with(
+            ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($item))]
+        );
     }
 
     private function seed(): void
     {
-        $seederName = '\\Database\\Seeders\\' . $this->getModelName() . 'Seeder';
-        if (!class_exists($seederName)) {
-            throw new \Exception("$seederName is missing");
+        $seederName = $this->getModelName() . 'Seeder';
+        $seederNamespace = '\\Database\\Seeders\\';
+
+        if (!class_exists($seederNamespace . $seederName)) {
+            $seederNamespace = TwillCapsules::getCapsuleForModel($this->modelName)->getSeedsNamespace() . '\\';
         }
 
-        $seeder = new $seederName();
+        $seederClass = $seederNamespace . $seederName;
+
+        if (!class_exists($seederClass)) {
+            throw new \Exception("$seederClass is missing");
+        }
+
+        $seeder = new $seederClass();
         $seeder->run();
     }
 

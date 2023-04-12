@@ -21,6 +21,7 @@ class Image extends TableColumn
     {
         $column = parent::make();
         $column->specificType = 'thumbnail';
+        $column->shrink();
 
         return $column;
     }
@@ -28,7 +29,7 @@ class Image extends TableColumn
     /**
      * The image role that is defined in your model. Can be left out as it will take the first one available.
      */
-    public function role(?string $role): self
+    public function role(?string $role): static
     {
         $this->role = $role;
         return $this;
@@ -37,7 +38,7 @@ class Image extends TableColumn
     /**
      * A specific crop to use for the image. Can be left out as it will take the first one available.
      */
-    public function crop(?string $crop): self
+    public function crop(?string $crop): static
     {
         $this->crop = $crop;
         return $this;
@@ -46,7 +47,7 @@ class Image extends TableColumn
     /**
      * Optional array of media parameters for more control over the rendering.
      */
-    public function mediaParams(array $params): self
+    public function mediaParams(array $params): static
     {
         $this->mediaParams = $params;
         return $this;
@@ -55,7 +56,7 @@ class Image extends TableColumn
     /**
      * If enabled the image will be rounded instead of square.
      */
-    public function rounded(bool $rounded = true): self
+    public function rounded(bool $rounded = true): static
     {
         $this->rounded = $rounded;
         return $this;

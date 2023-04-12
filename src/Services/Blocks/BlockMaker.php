@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Blocks;
 
+use A17\Twill\Facades\TwillBlocks;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
@@ -37,14 +38,6 @@ class BlockMaker
         Filesystem $files
     ) {
         $this->files = $files;
-    }
-
-    /**
-     * @return \A17\Twill\Services\Blocks\BlockCollection
-     */
-    public function getBlockCollection()
-    {
-        return app(BlockCollection::class);
     }
 
     /**
@@ -327,7 +320,7 @@ class BlockMaker
      */
     public function getBlockByName($block, $sources = [])
     {
-        return $this->getBlockCollection()->findByName($block, $sources);
+        return TwillBlocks::getBlockCollection()->findByName($block, $sources);
     }
 
     /**
@@ -358,7 +351,6 @@ class BlockMaker
 
                 return $file->getFilename() === $icon ? $file->getPathName() : null;
             }, null);
-
         }, null);
     }
 
@@ -433,7 +425,7 @@ class BlockMaker
         $blockBase,
         $blockString
     ) {
-        $baseRepeater = $this->getBlockCollection()->findByName($repeaterName);
+        $baseRepeater = TwillBlocks::getBlockCollection()->findByName($repeaterName);
 
         return [
             'baseRepeater' => $baseRepeater,

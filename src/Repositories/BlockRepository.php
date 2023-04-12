@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories;
 
+use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
@@ -28,7 +29,7 @@ class BlockRepository extends ModuleRepository
 
     public function getCrops(string $role): array
     {
-        return $this->config->get('twill.block_editor.crops')[$role];
+        return TwillBlocks::getAllCropConfigs()[$role];
     }
 
     public function hydrate(TwillModelContract $model, array $fields): TwillModelContract
@@ -62,12 +63,12 @@ class BlockRepository extends ModuleRepository
     public function afterSave(TwillModelContract $model, array $fields): void
     {
         if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
+            $model->clearAllRelated();
+
             if (isset($fields['browsers'])) {
                 Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($model) {
                     $model->saveRelated($items, $browserName);
                 });
-            } else {
-                $model->clearAllRelated();
             }
         }
 

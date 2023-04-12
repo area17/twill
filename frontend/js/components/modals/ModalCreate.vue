@@ -18,11 +18,13 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
-  import { NOTIFICATION, FORM, DATATABLE, LANGUAGE } from '@/store/mutations'
-  import ACTIONS from '@/store/actions'
-  import a17ModalValidationButtons from './ModalValidationButtons.vue'
+  import { mapGetters,mapState } from 'vuex'
+
   import retrySubmitMixin from '@/mixins/retrySubmit'
+  import ACTIONS from '@/store/actions'
+  import { DATATABLE, FORM, LANGUAGE,NOTIFICATION } from '@/store/mutations'
+
+  import a17ModalValidationButtons from './ModalValidationButtons.vue'
 
   export default {
     name: 'A17ModalCreate',

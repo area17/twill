@@ -235,11 +235,7 @@ class Build extends Command
     private function copyIcons(): void
     {
         $targetDirectory = base_path('vendor/area17/twill/frontend/icons-custom');
-        $originalIcons = base_path('vendor/area17/twill/frontend/icons');
-
-        if (!file_exists($targetDirectory)) {
-            mkdir($targetDirectory);
-        }
+        $originalIcons = config('twill.block_editor.core_icons');
 
         foreach (config('twill.block_editor.directories.source.icons') as $iconDirectory) {
             // We do not want to process original icons.

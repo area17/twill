@@ -1,6 +1,6 @@
 # BelongsToMany with pivot data
 
-[BelongsToMany](https://laravel.com/docs/9.x/eloquent-relationships#many-to-many) is a great way to make one model refer
+[BelongsToMany](https://laravel.com/docs/10.x/eloquent-relationships#many-to-many) is a great way to make one model refer
 to many others.
 
 Examples could be:
@@ -10,7 +10,7 @@ Examples could be:
 - A project having multiple contributors
 
 In addition to that we could
-use [pivot](https://laravel.com/docs/9.x/eloquent-relationships#retrieving-intermediate-table-columns)
+use [pivot](https://laravel.com/docs/10.x/eloquent-relationships#retrieving-intermediate-table-columns)
 data to further extend this relation, to complete the examples above:
 
 - Each product in the order can have an order specific price
@@ -48,8 +48,8 @@ In the **Partner** migration we add a relational table that we will use for our 
   "diffImports": ["App\\Models\\Partner", "App\\Models\\Project"],
   "diffInMethod": {
     "method": "up",
-    "start": 19,
-    "end": 25
+    "start": 20,
+    "end": 26
   }
 }
 ```
@@ -79,30 +79,25 @@ Now with the migration setup we can setup our relation in the `Project` model:
 
 ## Setup the repeater and form
 
-To expose the relation in the ui, we will use a repeater. We will name this repeater a bit more specific as we want to
+To expose the relation in the ui, we will use an inline repeater. We will name this repeater a bit more specific as we want to
 make clear it is for the pivot table. But you can name it however you like.
 
 :::filename:::
-`resources/views/twill/repeaters/project_partner.blade.php`
+`app/Http/Controllers/Twill/ProjectController.php`
 :::#filename:::
 
 ```phptorch
 {
-  "file": "../../../../examples/portfolio/resources/views/twill/repeaters/project_partner.blade.php",
-  "simple": true
-}
-```
-
-In our project form we can now refer to the repeater and allow editors to select.
-
-:::filename:::
-`resources/views/twill/projects/form.blade.php`
-:::#filename:::
-
-```phptorch
-{
-  "file": "../../../../examples/portfolio/resources/views/twill/projects/form.blade.php",
-  "simple": true
+  "file": "../../../../examples/portfolio/app/Http/Controllers/Twill/ProjectController.php",
+  "collapseAll": "",
+  "focusImports": ["A17\\Twill\\Services\\Forms\\InlineRepeater"],
+  "diffImports": ["A17\\Twill\\Services\\Forms\\InlineRepeater"],
+  "focusMethods": "getForm",
+  "diffInMethod": {
+    "method": "getForm",
+    "start": 6,
+    "end": 22
+  }
 }
 ```
 
@@ -122,13 +117,13 @@ As a final step we have to update the repository to map the repeater field to th
   "diffInMethod": [
       {
         "method": "afterSave",
-        "start": 16,
-        "end": 23
+        "start": 17,
+        "end": 24
       },
       {
         "method": "getFormFields",
-        "start": 19,
-        "end": 26
+        "start": 20,
+        "end": 27
       }
   ]
 }

@@ -2,18 +2,18 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\canHaveButtonOnTop;
-use A17\Twill\Services\Forms\Fields\Traits\hasFieldNote;
-use A17\Twill\Services\Forms\Fields\Traits\hasMax;
-use A17\Twill\Services\Forms\Fields\Traits\isTranslatable;
+use A17\Twill\Services\Forms\Fields\Traits\CanHaveButtonOnTop;
+use A17\Twill\Services\Forms\Fields\Traits\HasFieldNote;
+use A17\Twill\Services\Forms\Fields\Traits\HasMax;
+use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 use Illuminate\Support\Str;
 
 class Browser extends BaseFormField
 {
-    use isTranslatable;
-    use hasMax;
-    use hasFieldNote;
-    use canHaveButtonOnTop;
+    use IsTranslatable;
+    use HasMax;
+    use HasFieldNote;
+    use CanHaveButtonOnTop;
 
     protected ?string $moduleName = null;
 
@@ -29,7 +29,7 @@ class Browser extends BaseFormField
 
     protected bool $wide = false;
 
-    protected bool $sortable = false;
+    protected bool $sortable = true;
 
     protected ?string $routePrefix = null;
 
@@ -49,7 +49,7 @@ class Browser extends BaseFormField
     /**
      * Additional parameters to pass to the module route.
      */
-    public function params(array $params): self
+    public function params(array $params): static
     {
         $this->params = $params;
 
@@ -59,7 +59,7 @@ class Browser extends BaseFormField
     /**
      * A list of custom endpoints to use.
      */
-    public function endpoints(array $endpoints): self
+    public function endpoints(array $endpoints): static
     {
         $this->endpoints = $endpoints;
 
@@ -69,7 +69,7 @@ class Browser extends BaseFormField
     /**
      * A note to display inside the browser.
      */
-    public function browserNote(string $browserNote): self
+    public function browserNote(string $browserNote): static
     {
         $this->browserNote = $browserNote;
 
@@ -79,7 +79,7 @@ class Browser extends BaseFormField
     /**
      * The label to display for items, defaults to the field label.
      */
-    public function itemLabel(string $itemLabel): self
+    public function itemLabel(string $itemLabel): static
     {
         $this->itemLabel = $itemLabel;
 
@@ -93,7 +93,7 @@ class Browser extends BaseFormField
      *
      * Provide an array with: label, name, routePrefix, params
      */
-    public function modulesCustom(array $modules): self
+    public function modulesCustom(array $modules): static
     {
         $this->modules = $modules;
 
@@ -103,7 +103,7 @@ class Browser extends BaseFormField
     /**
      * Makes the modal window use the full width.
      */
-    public function wide(bool $wide = true): self
+    public function wide(bool $wide = true): static
     {
         $this->wide = $wide;
 
@@ -113,7 +113,7 @@ class Browser extends BaseFormField
     /**
      * Makes the columns in the browser sortable.
      */
-    public function sortable(bool $sortable = true): self
+    public function sortable(bool $sortable = true): static
     {
         $this->sortable = $sortable;
 
@@ -123,7 +123,7 @@ class Browser extends BaseFormField
     /**
      * Set a custom route prefix if needed.
      */
-    public function routePrefix(string $routePrefix): self
+    public function routePrefix(string $routePrefix): static
     {
         $this->routePrefix = $routePrefix;
 
@@ -133,7 +133,7 @@ class Browser extends BaseFormField
     /**
      * Conditionally show this field based on another browser field.
      */
-    public function connectedBrowserField(string $connectedBrowserField): self
+    public function connectedBrowserField(string $connectedBrowserField): static
     {
         $this->connectedBrowserField = $connectedBrowserField;
 
@@ -143,23 +143,30 @@ class Browser extends BaseFormField
     /**
      * A list of modules that can be be selected in the browser modal.
      */
-    public function modules(array $modules): self
+    public function modules(array $modules): static
     {
-        if (count($modules) === 1) {
+        if (count($modules) === 1 && ! isset($modules[0])) {
             $this->moduleName = getModuleNameByModel(array_pop($modules));
 
-            if (!$this->label) {
+            if (! $this->label) {
                 $this->label = Str::headline($this->moduleName);
             }
 
-            if (!$this->name) {
+            if (! $this->name) {
                 $this->name = Str::snake($this->moduleName);
             }
         } else {
             foreach ($modules as $module) {
-                $this->modules[] = [
-                    'name' => getModuleNameByModel($module),
-                ];
+                if (isset($module['name'])) {
+                    $this->modules[] = [
+                        'name' => getModuleNameByModel($module['name']),
+                        'label' => $module['label']
+                    ];
+                } else {
+                    $this->modules[] = [
+                        'name' => getModuleNameByModel($module),
+                    ];
+                }
             }
         }
 
@@ -168,7 +175,7 @@ class Browser extends BaseFormField
 
     protected function getAdditionalConstructorArguments(): array
     {
-        if (!$this->name && !$this->moduleName) {
+        if (! $this->name && ! $this->moduleName) {
             throw new \InvalidArgumentException(
                 'Browser field is missing name field. Use ->name when using more than 1 module.'
             );
@@ -176,5 +183,4 @@ class Browser extends BaseFormField
 
         return ['name' => $this->name ?? $this->moduleName, 'endpoints' => $this->endpoints];
     }
-
 }

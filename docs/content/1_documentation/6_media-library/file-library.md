@@ -5,7 +5,7 @@ the `HasFiles` and `HandleFiles` traits, the `$filesParams` configuration and th
 
 When it comes to using those data model files in the frontend site, there are a few methods on the `HasFiles` trait that
 will help you to retrieve direct URLs. You can find the full
-reference in the [HasFiles API documentation](https://twill.io/docs/api/2.x/A17/Twill/Models/Behaviors/HasFiles.html)
+reference in the [HasFiles API documentation](https://twill.io/docs/api/3.x/A17/Twill/Models/Behaviors/HasFiles.html)
 
 :::alert=type.info:::
 The file library can be used to upload files of any type and to attach those files to records using the `file` form

@@ -14,8 +14,9 @@ use Illuminate\Support\Str;
 
 class ModuleMake extends Command
 {
-    public $capsuleNamespace;
     use HandlesStubs;
+
+    public string $capsuleNamespace;
 
     /**
      * The name and signature of the console command.
@@ -184,7 +185,7 @@ class ModuleMake extends Command
     protected function checkCapsuleDirectory($dir)
     {
         if (file_exists($dir)) {
-            if (!$this->option('force')) {
+            if (! $this->option('force')) {
                 $answer = $this->choice(
                     "Capsule path exists ($dir). Erase and overwrite?",
                     ['no', 'yes'],
@@ -228,7 +229,7 @@ class ModuleMake extends Command
 
         if ($this->isCapsule && $this->option('packageDirectory') && $this->option('packageNamespace')) {
             $dir = base_path() . '/' . $this->option('packageDirectory') . '/src/Twill/Capsules/' . $moduleTitle;
-            if (!$this->confirm('Creating capsule in ' . $dir, true)) {
+            if (! $this->confirm('Creating capsule in ' . $dir, true)) {
                 exit(1);
             }
 
@@ -272,9 +273,10 @@ class ModuleMake extends Command
             $this->sortable = true;
         }
 
-        if ($this->hasOption('parentModel') &&
+        if (
+            $this->hasOption('parentModel') &&
             ($parent = $this->option('parentModel')) &&
-            !Str::startsWith($singularModuleName, lcfirst($parent))
+            ! Str::startsWith($singularModuleName, lcfirst($parent))
         ) {
             $this->error($singularModuleName . 'must start with' . $parent);
             exit(1);
@@ -328,8 +330,8 @@ class ModuleMake extends Command
         $navTitle = $this->isSingleton ? $modelName : $moduleTitle;
         $navType = $this->isSingleton ? 'singleton' : 'module';
 
-        if (!$this->customDirs) {
-            if (!$this->hasOption('parentModel') || !$this->option('parentModel')) {
+        if (! $this->customDirs) {
+            if (! $this->hasOption('parentModel') || ! $this->option('parentModel')) {
                 $this->addEntryToNavigationFile($navModuleName, [
                     'title' => $navTitle,
                     $navType => true,
@@ -357,7 +359,7 @@ class ModuleMake extends Command
 
         $this->info('Enjoy.');
 
-        if ($this->nestable && !class_exists(\Kalnoy\Nestedset\NestedSet::class)) {
+        if ($this->nestable && ! class_exists(\Kalnoy\Nestedset\NestedSet::class)) {
             $this->warn("\nTo support module nesting, you must install the `kalnoy/nestedset` package:");
             $this->warn("\n    composer require kalnoy/nestedset\n");
         }
@@ -367,25 +369,13 @@ class ModuleMake extends Command
 
     private function addCapsuleToConfigFile(string $name): void
     {
-        $configFile = base_path('config/twill.php');
-        if (!File::exists($configFile)) {
-            File::put($configFile, '<?php ' . PHP_EOL . PHP_EOL . 'return [];');
-        }
-
-        $navigation = require($configFile);
-
-        $navigation['capsules']['list'][strtolower($name)] = $newEntry = [
+        $newEntry = [
             'name' => $name,
             'enabled' => true,
         ];
 
-        $this->warn('Added capsule entry to config/twill.php:');
+        $this->warn('Add the following capsule entry to config/twill.php:');
         $this->box($this->getFormattedArray($newEntry));
-
-        File::put(
-            $configFile,
-            '<?php ' . PHP_EOL . PHP_EOL . 'return ' . $this->getFormattedArray($navigation) . ';'
-        );
     }
 
     private function addEntryToNavigationFile(string $key, array $value): void
@@ -395,15 +385,13 @@ class ModuleMake extends Command
         // If the file does not exist, or it is empty, we explain how to use the navigation builder.
         $navigationFileExists = File::exists($navigationFile);
 
-        if ($navigationFileExists) {
-            // Che file is empty.
-            $navigation = require($navigationFile);
-            if (empty($navigation)) {
-                // Instructions here.
-                $this->warn('To add a navigation entry add the following to your AppServiceProvider BOOT method.');
+        /** @phpstan-ignore-next-line */
+        if (! $navigationFileExists || (($navigation = require($navigationFile)) && empty($navigation))) {
+            // Instructions here.
+            $this->warn('To add a navigation entry add the following to your AppServiceProvider BOOT method.');
 
-                if ($value['module'] ?? false) {
-                    $message = <<<PHP
+            if ($value['module'] ?? false) {
+                $message = <<<PHP
 use A17\Twill\Facades\TwillNavigation;
 use A17\Twill\View\Components\Navigation\NavigationLink;
 
@@ -411,8 +399,8 @@ TwillNavigation::addLink(
     NavigationLink::make()->forModule('$key')
 );
 PHP;
-                } elseif ($value['singleton'] ?? false) {
-                    $message = <<<PHP
+            } elseif ($value['singleton'] ?? false) {
+                $message = <<<PHP
 use A17\Twill\Facades\TwillNavigation;
 use A17\Twill\View\Components\Navigation\NavigationLink;
 
@@ -420,23 +408,15 @@ TwillNavigation::addLink(
     NavigationLink::make()->forSingleton('$key')
 );
 PHP;
-                }
-                $this->line('**************************');
-                $this->info($message ?? '');
-                $this->line('**************************');
-                return;
             }
+            $this->box($message ?? '');
+            return;
         }
 
         $navigation[$key] = $value;
 
-        $this->warn('Added navigation entry to config/twill-navigation.php:');
+        $this->warn('Add the following navigation entry to config/twill-navigation.php:');
         $this->box($this->getFormattedArray([$key => $navigation[$key]]));
-
-        File::put(
-            $navigationFile,
-            '<?php ' . PHP_EOL . PHP_EOL . 'return ' . $this->getFormattedArray($navigation) . ';'
-        );
     }
 
     /**
@@ -455,7 +435,7 @@ PHP;
     private function addEntryToRoutesFile(string $entry): void
     {
         $routeFilePath = base_path('routes/twill.php');
-        if (!File::exists($routeFilePath)) {
+        if (! File::exists($routeFilePath)) {
             File::put($routeFilePath, '<?php ' . PHP_EOL);
         }
 
@@ -470,14 +450,11 @@ PHP;
         $contentLines = explode(PHP_EOL, $content);
         $contentLines = array_filter($contentLines);
 
-        $maxLength = max(array_map('strlen', $contentLines));
-
-        $this->info("┌" . str_repeat('─', $maxLength + 2) . '┐');
+        $this->line('-----');
         foreach ($contentLines as $line) {
-            $padded = Str::padRight($line, $maxLength);
-            $this->info("│ $padded │");
+            $this->info($line);
         }
-        $this->info("└" . str_repeat('─', $maxLength + 2) . '┘');
+        $this->line('-----');
     }
 
     /**
@@ -633,19 +610,19 @@ PHP;
 
         foreach ($activeTraits as $index => $traitIsActive) {
             if ($traitIsActive) {
-                !isset($this->modelTraits[$index]) ?: $activeModelTraits[] = $this->modelTraits[$index];
+                ! isset($this->modelTraits[$index]) ?: $activeModelTraits[] = $this->modelTraits[$index];
             }
         }
 
         $activeModelTraitsString = empty($activeModelTraits) ? '' : 'use ' . rtrim(
-                implode(', ', $activeModelTraits),
-                ', '
-            ) . ';';
+            implode(', ', $activeModelTraits),
+            ', '
+        ) . ';';
 
         $activeModelTraitsImports = empty($activeModelTraits) ? '' : "use A17\Twill\Models\Behaviors\\" . implode(
-                ";\nuse A17\Twill\Models\Behaviors\\",
-                $activeModelTraits
-            ) . ';';
+            ";\nuse A17\Twill\Models\Behaviors\\",
+            $activeModelTraits
+        ) . ';';
 
         $activeModelImplements = $this->sortable ? 'implements Sortable' : '';
 
@@ -706,8 +683,8 @@ PHP;
         $repositoriesDir = $this->isCapsule ? $this->capsule->getRepositoriesDir() : 'Repositories';
 
         $modelClass = $this->isCapsule ? $this->capsule->getModel() : config(
-                'twill.namespace'
-            ) . "\Models\\{$modelName}";
+            'twill.namespace'
+        ) . "\Models\\{$modelName}";
 
         $this->makeTwillDirectory($repositoriesDir);
 
@@ -717,21 +694,21 @@ PHP;
 
         foreach ($activeTraits as $index => $traitIsActive) {
             if ($traitIsActive) {
-                !isset($this->repositoryTraits[$index]) ?: $activeRepositoryTraits[] = $this->repositoryTraits[$index];
+                ! isset($this->repositoryTraits[$index]) ?: $activeRepositoryTraits[] = $this->repositoryTraits[$index];
             }
         }
 
         $activeRepositoryTraits = array_filter($activeRepositoryTraits);
 
         $activeRepositoryTraitsString = empty($activeRepositoryTraits) ? '' : 'use ' . (empty($activeRepositoryTraits) ? '' : rtrim(
-                    implode(', ', $activeRepositoryTraits),
-                    ', '
-                ) . ';');
+            implode(', ', $activeRepositoryTraits),
+            ', '
+        ) . ';');
 
         $activeRepositoryTraitsImports = empty($activeRepositoryTraits) ? '' : "use A17\Twill\Repositories\Behaviors\\" . implode(
-                ";\nuse A17\Twill\Repositories\Behaviors\\",
-                $activeRepositoryTraits
-            ) . ';';
+            ";\nuse A17\Twill\Repositories\Behaviors\\",
+            $activeRepositoryTraits
+        ) . ';';
 
         $stub = str_replace(
             [
@@ -795,7 +772,7 @@ PHP;
                 $controllerClassName,
                 $this->namespace('controllers', 'Http\Controllers\Twill'),
                 $baseController,
-                $this->translatable ? '->translatable()' : ''
+                $this->translatable ? '->translatable()' : '',
             ],
             $stubFile
         );
@@ -803,7 +780,7 @@ PHP;
         $permalinkOption = '';
         $reorderOption = '';
 
-        if (!$this->sluggable) {
+        if (! $this->sluggable) {
             $permalinkOption = "\$this->disablePermalink();";
         }
 
@@ -957,7 +934,7 @@ PHP;
 
         $stub = $this->replaceConditionals([
             'hasTranslations' => $this->translatable,
-            '!hasTranslations' => !$this->translatable,
+            '!hasTranslations' => ! $this->translatable,
         ], $stub);
 
         $stub = $this->removeEmptyLinesWithOnlySpaces($stub);
@@ -990,7 +967,7 @@ PHP;
 
         $stub = $this->replaceConditionals([
             'hasTranslations' => $this->translatable,
-            '!hasTranslations' => !$this->translatable,
+            '!hasTranslations' => ! $this->translatable,
         ], $stub);
 
         $stub = $this->removeEmptyLinesWithOnlySpaces($stub);
@@ -1002,7 +979,7 @@ PHP;
 
     private function checkOption($option)
     {
-        if (!$this->hasOption($option)) {
+        if (! $this->hasOption($option)) {
             return false;
         }
 
@@ -1033,7 +1010,7 @@ PHP;
 
     public function createCapsulePath($moduleName, $modelName)
     {
-        if (!$this->isCapsule) {
+        if (! $this->isCapsule) {
             $this->moduleBasePath = base_path();
 
             return;
@@ -1055,7 +1032,7 @@ PHP;
 
     public function databasePath($path = '')
     {
-        if (!$this->isCapsule) {
+        if (! $this->isCapsule) {
             return database_path($path);
         }
 
@@ -1068,11 +1045,11 @@ PHP;
 
         $dir = isset($info['extension']) ? $info['dirname'] : $dir;
 
-        if (!is_dir($dir)) {
+        if (! is_dir($dir)) {
             mkdir($dir, 0755, true);
         }
 
-        if (!is_dir($dir)) {
+        if (! is_dir($dir)) {
             $this->info("It wasn't possible to create capsule directory $dir");
 
             die;
@@ -1107,11 +1084,11 @@ PHP;
     {
         $class = (filled($class) ? "\\$class" : '');
 
-        if (!$this->isCapsule) {
+        if (! $this->isCapsule) {
             return "App\\{$suffix}{$class}";
         }
 
-        if (!$this->isCapsule) {
+        if (! $this->isCapsule) {
             return "App\\{$suffix}{$class}";
         }
 
@@ -1136,7 +1113,7 @@ PHP;
 
     public function viewPath(string $moduleName): string
     {
-        if (!$this->isCapsule) {
+        if (! $this->isCapsule) {
             return $this->config->get('view.paths')[0] . '/twill/' . $moduleName;
         }
 
@@ -1148,7 +1125,7 @@ PHP;
 
     public function previewViewPath(): string
     {
-        if (!$this->isCapsule) {
+        if (! $this->isCapsule) {
             return $this->config->get('view.paths')[0] . '/site/';
         }
 
