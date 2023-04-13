@@ -55,6 +55,14 @@
   left: -10px;
 }
 
+.isMobile .sidebar--mobileOnly {
+  padding-bottom: 28px;
+}
+
+.isMobile .sidebar--mobileOnly > ul {
+  padding-bottom: 0;
+}
+
 .page--index .sidebar {
   display: none;
 }
