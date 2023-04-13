@@ -25,14 +25,6 @@
         </svg>
     </button>
     <ul role="list" class="flex flex-col flex-nowrap min-h-full py-32">
-        {{-- @foreach ($tree as $key => $item)
-            @unless($key === '')
-                <li class="lg:hidden">
-                    <a href="{{ $item['url'] }}" >{{ $item['title'] }}</a>
-                </li>
-            @endunless
-        @endforeach --}}
-
         <li class="lg:hidden"><x-twilldocs::navLink url="/blog/" label="Blog" mobileNav="true" /></li>
         <li class="mt-12 lg:hidden"><x-twilldocs::navLink url="/guides/" label="Guides" mobileNav="true" /></li>
         <li class="mt-12 lg:hidden"><x-twilldocs::navLink url="/docs/" label="Docs" mobileNav="true" /></li>
