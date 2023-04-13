@@ -111,7 +111,7 @@ $wysiwygOptions = [
 | hideCounter    | Hide the character counter displayed at the bottom                                                                       | boolean          | false         |
 | limitHeight    | Limit the editor height from growing beyond the viewport                                                                 | boolean          | false         |
 | translated     | Defines if the field is translatable                                                                                     | boolean          | false         |
-| maxlength      | Max character count of the field                                                                                         | integer          | 255           |
+| maxlength      | Max character count of the field                                                                                         | integer          |           |
 | note           | Hint message displayed above the field                                                                                   | string           |               |
 | placeholder    | Text displayed as a placeholder in the field                                                                             | string           |               |
 | required       | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean          | false         |
