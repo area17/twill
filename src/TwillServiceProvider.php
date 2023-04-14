@@ -93,6 +93,10 @@ class TwillServiceProvider extends ServiceProvider
         $this->addViewComposers();
 
         $this->check2FA();
+
+        Blade::componentNamespace('A17\\Twill\\View\\Components\\Partials', 'twill.partials');
+        Blade::componentNamespace('A17\\Twill\\View\\Components\\Layout', 'twill.layout');
+        Blade::componentNamespace('A17\\Twill\\View\\Components\\Fields', 'twill');
     }
 
     private function requireHelpers(): void
@@ -118,10 +122,6 @@ class TwillServiceProvider extends ServiceProvider
         $this->registerFacades();
 
         $this->app->bind(TwillCapsules::class);
-
-        Blade::componentNamespace('A17\\Twill\\View\\Components\\Partials', 'twill.partials');
-        Blade::componentNamespace('A17\\Twill\\View\\Components\\Layout', 'twill.layout');
-        Blade::componentNamespace('A17\\Twill\\View\\Components\\Fields', 'twill');
 
         \A17\Twill\Facades\TwillBlocks::registerComponentBlocks(
             '\\App\\View\\Components\\Twill\\Blocks',
