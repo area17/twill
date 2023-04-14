@@ -93,7 +93,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->addViewComposers();
 
         $this->check2FA();
-        
+
         Blade::componentNamespace('A17\\Twill\\View\\Components\\Partials', 'twill.partials');
         Blade::componentNamespace('A17\\Twill\\View\\Components\\Layout', 'twill.layout');
         Blade::componentNamespace('A17\\Twill\\View\\Components\\Fields', 'twill');
