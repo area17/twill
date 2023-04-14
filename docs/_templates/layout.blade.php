@@ -84,6 +84,7 @@
         {!! $content !!}
         <x-twilldocs::grid-auto-generated :tree="$tree" :currentSegment="$currentSegment" :url="$url" />
       </div>
+      <x-twilldocs::sidebarSimple />
     @elseif ($currentSegment === 'blog' && strpos($url, 'index.html'))
       {{-- blog index --}}
       <div class="content markdown mt-68">
@@ -91,6 +92,7 @@
         {!! $content !!}
         <x-twilldocs::grid-auto-generated :tree="$tree" :currentSegment="$currentSegment" :url="$url" />
       </div>
+      <x-twilldocs::sidebarSimple />
     @elseif ($currentSegment === 'docs' || $currentSegment === 'guides')
       <div class="flex flex-row flex-nowrap justify-between">
         <x-twilldocs::sidebar :tree="$tree" :currentSegment="$currentSegment" :url="$url"/>
@@ -121,12 +123,13 @@
           @endif
         </div>
       </div>
-    @elseif (strpos($url, 'index.html'))
+    @elseif (strpos($url, 'index.html') || strpos($url, 'welcome.html'))
       {{-- home --}}
       <div class="content markdown mt-68">
         <h1>{{$title}}</h1>
         {!! $content !!}
       </div>
+      <x-twilldocs::sidebarSimple />
     @elseif ($currentSegment === 'blog')
       {{-- blog details --}}
       <div class="flex flex-row flex-nowrap">
@@ -135,12 +138,14 @@
           {!! $content !!}
         </div>
       </div>
+      <x-twilldocs::sidebarSimple />
     @else
       {{-- capture for any other page type --}}
       <div class="content markdown mt-68">
         <h1>{{$title}}</h1>
         {!! $content !!}
       </div>
+      <x-twilldocs::sidebarSimple />
     @endif
   </div>
 </div>
