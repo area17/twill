@@ -96,10 +96,10 @@ There are 2 `Form` methods that you can do this with:
 ```php
 $form->withFieldSets([
     Fieldset::make()->title('Fieldset 1')->id('fieldset')->fields([
-      // Fields come here.
+      // Field definitions come here.
     ]),
     Fieldset::make()->title('Fieldset 2')->id('fieldset')->fields([
-      // Fields come here.
+      // Field definitions come here.
     ])
 ]);
 ```
@@ -111,11 +111,22 @@ Or if you need more control:
 ```php
 $form->addFieldset(
     Fieldset::make()->title('Fieldset!')->id('fieldset')->fields([
-      // Fields come here.
+      // Field definitions come here.
     ])
 );
 ```
 
+For example...
+
+```php
+$form->addFieldset(
+    Fieldset::make()->title('Opengraph')->id('opengraph')->fields([
+        Input::make()->name('og_title')->label('OG Title'),
+        Input::make()->name('og_description')->label('OG Description'),
+        Files::make()->name('og_image')->label('OG Image')
+    ])
+);
+```
 ## Other utilities
 
 ### Columns field
