@@ -14,8 +14,8 @@ The command accepts several options:
 - `--hasMedias (-M)`, to attach images to your records
 - `--hasFiles (-F)`, to attach files to your records
 - `--hasPosition (-P)`, to allow manually reordering of records in the listing screen
-- `--hasRevisions(-R)`, to allow comparing and restoring past revisions of records
-- `--hasNesting(-N)`, to enable nested items in the module listing (
+- `--hasRevisions (-R)`, to allow comparing and restoring past revisions of records
+- `--hasNesting (-N)`, to enable nested items in the module listing (
   see [Nested Module](../3_modules/12_nested-modules.md))
 - `--parentModel=`, to generate the route for a nested module. See (
   see [Nested Module](../3_modules/12_nested-modules.md))
