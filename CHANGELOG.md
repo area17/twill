@@ -2,11 +2,18 @@
 
 All notable changes to `twill` will be documented in this file.
 
-## UNRELEASED
+## 3.0.1
 
-### Fixed
+## Fixed
 
-- Fix #2222: Livewire navigation menu not working after twill 3.x installation
+- Fix Blade components resolution (causing an issue with Laravel Jetstream) by @haringsrob in https://github.com/area17/twill/pull/2223
+
+## Improved
+
+- Add mobile nav to all docs site pages by @13twelve in https://github.com/area17/twill/pull/2224
+- Fix WYSIWYG maxlength docs by @tttogo in https://github.com/area17/twill/pull/2226
+- Form Builder docs: provide more explicit directions on Fieldsets by @tttogo in https://github.com/area17/twill/pull/2227
+- Fix docs space coherence for the options by @agnonym in https://github.com/area17/twill/pull/2228
 
 ## 3.0.0
 
