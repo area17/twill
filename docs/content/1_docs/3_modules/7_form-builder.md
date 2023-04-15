@@ -94,14 +94,14 @@ There are 2 `Form` methods that you can do this with:
 **withFieldSets**
 
 ```php
-$form->withFieldSets([
+$form->withFieldSets(new Fieldsets([
     Fieldset::make()->title('Fieldset 1')->id('fieldset')->fields([
       // Field definitions come here.
     ]),
     Fieldset::make()->title('Fieldset 2')->id('fieldset')->fields([
       // Field definitions come here.
     ])
-]);
+]));
 ```
 
 Or if you need more control:
