@@ -96,7 +96,7 @@ class Form extends Collection implements CanHaveSubfields
 
     public function hasSideForm(): bool
     {
-        return $this->sideForm && $this->sideForm->isNotEmpty();
+        return $this->sideForm && ($this->sideForm->isNotEmpty() || ($this->sideForm->fieldsets && $this->sideForm->fieldsets->isNotEmpty()));
     }
 
     public function renderBaseForm(): View
