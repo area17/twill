@@ -154,6 +154,7 @@ class Block
         );
 
         $class->title = $componentClass::getBlockTitle();
+        $class->icon = $componentClass::getBlockIcon();
         $class->rulesForTranslatedFields = (new $componentClass())->getTranslatableValidationRules();
         $class->rules = (new $componentClass())->getValidationRules();
 
