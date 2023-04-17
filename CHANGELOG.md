@@ -2,6 +2,12 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## UNRELEASED
+
+## Fixed
+
+- Update package generator stub to use `^3.0`
+
 ## 3.0.1
 
 ## Fixed
