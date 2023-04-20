@@ -7,6 +7,7 @@ use A17\Twill\Services\Forms\InlineRepeater;
 use A17\Twill\View\Components\Blocks\TwillBlockComponent;
 use Exception;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
@@ -672,6 +673,10 @@ class Block
 
         $data['block'] = $this->renderData->block;
         $data['renderData'] = $this->renderData;
+
+        if ($this->componentClass) {
+            return Blade::renderComponent($this->componentClass::forRendering($this->renderData->block, $this->renderData, $inEditor));
+        }
 
         try {
             return view($view, $data)->render();
