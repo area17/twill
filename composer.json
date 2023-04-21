@@ -36,6 +36,7 @@
     "laravel/socialite": "^5.3",
     "laravel/ui": "^4.0",
     "league/flysystem-aws-s3-v3": "^3.0",
+    "league/glide-symfony": "^2.0",
     "matthewbdaly/laravel-azure-storage": "^2.0",
     "myclabs/php-enum": "^1.5",
     "pragmarx/google2fa-qrcode": "^2.0",
