@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use League\Glide\Responses\LaravelResponseFactory;
+use League\Glide\Responses\SymfonyResponseFactory;
 use League\Glide\ServerFactory;
 use League\Glide\Signatures\SignatureFactory;
 use League\Glide\Urls\UrlBuilderFactory;
@@ -67,7 +67,7 @@ class Glide implements ImageServiceInterface
         }
 
         $this->server = ServerFactory::create([
-            'response' => new LaravelResponseFactory($this->request),
+            'response' => new SymfonyResponseFactory($this->request),
             'source' => $this->config->get('twill.glide.source'),
             'source_path_prefix' => $this->config->get('twill.glide.source_path_prefix'),
             'cache' => $this->config->get('twill.glide.cache'),
