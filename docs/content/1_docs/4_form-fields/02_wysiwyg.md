@@ -52,7 +52,7 @@ Wysiwyg::make()
 @formField('wysiwyg', [
     'name' => 'case_study',
     'label' => 'Case study text',
-    'toolbarOptions' => [ [ 'header' => [1, 2, false] ],
+    'toolbarOptions' => [ [ 'header' => [1, 2, false] ] ],
     'placeholder' => 'Case study text',
     'maxlength' => 200,
     'editSource' => true,
