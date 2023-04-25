@@ -129,7 +129,7 @@ We can see that `Route::module('pages');` has been added to `routes/twill.php`.
 
 This is automatic, because it is simple enough to do.
 
-The `routes/tiwll.php` file is a Twill specific list of routes. These routes are protected and loaded specifically for 
+The `routes/twill.php` file is a Twill specific list of routes. These routes are protected and loaded specifically for 
 the CMS.
 
 In standard Laravel there is no `module` method on a `Route` object, this is something Twill provides and it will build
