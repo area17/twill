@@ -300,7 +300,7 @@ class file will hold our php logic, and the blade file will do the rendering.
 
 Again, we can use a command to do most of the work: `php artisan make:component Menu`
 
-This will generate the class `app/View/Components/Menu.php` and the blade file `resources/views/components/menu.php`.
+This will generate the class `app/View/Components/Menu.php` and the blade file `resources/views/components/menu.blade.php`.
 
 ### Preparing the tree
 
@@ -349,7 +349,7 @@ class Menu extends Component
 }
 ```
 
-So what we do here is requirest the tree of published menu links, then we send it to our components view file as "links"
+So what we do here is request the tree of published menu links, then we send it to our components view file as "links"
 .
 
 This will expose the `$links` variable to the blade file that we will now write.
@@ -358,7 +358,7 @@ This will expose the `$links` variable to the blade file that we will now write.
 
 Now that we have the necessary data in our blade file, we can write the markup.
 
-We will change the contents of `resources/views/components/menu.php` to this:
+We will change the contents of `resources/views/components/menu.blade.php` to this:
 
 ```phptorch
 {
