@@ -117,3 +117,15 @@ If you are overriding methods in your repository/controller or request classes. 
 need typed arguments and return types.
 
 This is an ongoing effort and will continue to occur as 3.x evolves (but not in bugfix releases).
+
+
+# Upgrading to 3.0.0 from 3.0.0-rc4
+
+Starting from version 3.0.0 Twill database table names are prefixed by `twill_`. To prevent getting an `SQLSTATE[42S02]: Base table or view not found` after updating one can execute the following steps:
+
+- `composer require rector/rector --dev`
+- ./vendor/bin/rector process --clear-cache --config=vendor/area17/twill/rector-upgrade-twill-config.php
+
+The last command will update your config to keep using the non prefixed table names.
+
+If you'd rather like to update your table names, create a migration to prefix your table names with `twill_`
