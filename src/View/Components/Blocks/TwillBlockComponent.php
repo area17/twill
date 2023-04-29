@@ -81,10 +81,22 @@ abstract class TwillBlockComponent extends Component
     }
 
     /**
-     * The $block argument is optional as there may not be a block yet.
-     * You will have to write your own condition if you want to utilize data from the block.
+     * You can use this method to use a form field to get the title of the block in the used blocks list.
+     *
+     * By default this will be prefixed with getBlockTitle, you can disable that by returning true in shouldHidePrefix.
      */
-    public static function getBlockTitle(?Block $block = null): string
+    public static function getBlockTitleField(): ?string {
+        return null;
+    }
+
+    /**
+     * If the prefix should be hidden when using getBlockTitleField.
+     */
+    public static function shouldHidePrefix(): bool {
+        return false;
+    }
+
+    public static function getBlockTitle(): string
     {
         return Str::replace('Block', '', Str::afterLast(static::class, '\\'));
     }
