@@ -55,7 +55,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 public function boot()
 {
     Relation::morphMap([
-        'guides' => 'App\Models\Guide',
+        'App\Models\Guide' => 'guides' ,
     ]);
 }
 ```
