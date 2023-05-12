@@ -47,7 +47,7 @@ class BlogController extends BaseModuleController
                 ->onChange('formatPermalink'),
             Wysiwyg::make()
                 ->name('description')
-                ->label('Descrription')
+                ->label('Description')
                 ->translatable(),
             Input::make()
                 ->name('slug')
