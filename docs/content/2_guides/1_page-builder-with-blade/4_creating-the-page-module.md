@@ -5,7 +5,7 @@ Now that we area ready with the initial setup of Laravel and Twill we can start 
 In Twill we use Modules. A module is a single "content type" and exists out of a few files:
 
 - A model class (in `app/Models`)
-  - This is your regular Larvel eloquent model. It tells Laravel how your content type is defined and is used to make
+  - This is your regular Laravel eloquent model. It tells Laravel how your content type is defined and is used to make
     the link to the database.
 - A module controller class (in `app/Http/Controllers/Twill`)
   - The module controls controls how your module interacts with the cms, you can see it as a bridge between your model
@@ -129,7 +129,7 @@ We can see that `Route::module('pages');` has been added to `routes/twill.php`.
 
 This is automatic, because it is simple enough to do.
 
-The `routes/tiwll.php` file is a Twill specific list of routes. These routes are protected and loaded specifically for 
+The `routes/twill.php` file is a Twill specific list of routes. These routes are protected and loaded specifically for 
 the CMS.
 
 In standard Laravel there is no `module` method on a `Route` object, this is something Twill provides and it will build

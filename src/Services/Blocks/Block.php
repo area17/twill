@@ -155,6 +155,9 @@ class Block
 
         $class->title = $componentClass::getBlockTitle();
         $class->icon = $componentClass::getBlockIcon();
+        $class->titleField = $componentClass::getBlockTitleField();
+        $class->hideTitlePrefix = $componentClass::shouldHidePrefix();
+
         $class->rulesForTranslatedFields = (new $componentClass())->getTranslatableValidationRules();
         $class->rules = (new $componentClass())->getValidationRules();
 
