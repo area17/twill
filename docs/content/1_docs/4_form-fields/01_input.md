@@ -121,4 +121,4 @@ Schema::table('articles', function (Blueprint $table) {
 });
 ```
 
-When used in a [block](../5_block-editor), no migration is needed, as data contained in blocks, including componentBlocks, is stored in a separate table from the model.
+When used in a [block](../5_block-editor), no migration is needed, as data contained in blocks, including componentBlocks, is stored in a separate table from the model, which is managed by Twill for you.
