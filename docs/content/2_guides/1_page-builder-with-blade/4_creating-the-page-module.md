@@ -5,7 +5,7 @@ Now that we area ready with the initial setup of Laravel and Twill we can start 
 In Twill we use Modules. A module is a single "content type" and exists out of a few files:
 
 - A model class (in `app/Models`)
-  - This is your regular Larvel eloquent model. It tells Laravel how your content type is defined and is used to make
+  - This is your regular Laravel eloquent model. It tells Laravel how your content type is defined and is used to make
     the link to the database.
 - A module controller class (in `app/Http/Controllers/Twill`)
   - The module controls controls how your module interacts with the cms, you can see it as a bridge between your model
