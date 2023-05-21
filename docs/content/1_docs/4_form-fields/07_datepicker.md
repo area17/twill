@@ -46,7 +46,7 @@ DatePicker::make()
 | minDate         | Minimum selectable date                                                                                                  | string      |               |
 | maxDate         | Maximum selectable date                                                                                                  | string      |               |
 | withTime        | Define if the field will display the time selector                                                                       | boolean     | true          |
-| time24Hr        | Pick time with a 24h picker instead of AM/PM                                                                             | boolean     | false         |
+| time24h         | Pick time with a 24h picker instead of AM/PM                                                                             | boolean     | false         |
 | allowClear      | Adds a button to clear the field                                                                                         | boolean     | false         |
 | allowInput      | Allow manually editing the selected date in the field                                                                    | boolean     | false         |
 | altFormat       | Format used by [flatpickr](https://flatpickr.js.org/formatting/)                                                         | string      | F j, Y        |
