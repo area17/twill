@@ -9,7 +9,7 @@ class MakeCapsule extends ModuleMake
      *
      * @var string
      */
-    protected $signature = 'twill:make:capsule {moduleName} {--singleton} {--packageDirectory=} {--packageNamespace=}
+    protected $signature = 'twill:make:capsule {moduleName}
         {--B|hasBlocks}
         {--T|hasTranslation}
         {--S|hasSlug}
@@ -19,9 +19,13 @@ class MakeCapsule extends ModuleMake
         {--R|hasRevisions}
         {--N|hasNesting}
         {--E|generatePreview}
+        {--singleton}
         {--bladeForm}
         {--all}
-        {--force}';
+        {--force}
+        {--packageDirectory=}
+        {--packageNamespace=}
+        {--parentModel=}';
 
     /**
      * The console command description.

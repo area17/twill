@@ -34,8 +34,11 @@ class ModuleMake extends Command
         {--N|hasNesting}
         {--bladeForm}
         {--E|generatePreview}
-        {--parentModel=}
-        {--all}';
+        {--all}
+        {--force}
+        {--packageDirectory=}
+        {--packageNamespace=}
+        {--parentModel=}';
 
     /**
      * The console command description.
