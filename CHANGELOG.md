@@ -2,11 +2,29 @@
 
 All notable changes to `twill` will be documented in this file.
 
-## UNRELEASED
+## 3.0.2
 
 ## Fixed
 
-- Update package generator stub to use `^3.0`
+- Rendering of nested components blocks by @haringsrob in https://github.com/area17/twill/pull/2243
+- Rendering of side form if it only contains fieldsets by @agnonym in https://github.com/area17/twill/pull/2234
+- Title prefix support in component blocks by @haringsrob in https://github.com/area17/twill/pull/2252
+- Icon support in component blocks by @agnonym in https://github.com/area17/twill/pull/2238
+- Columns support for checkboxes and radios in form builder by @bonroyage in https://github.com/area17/twill/pull/2232
+- `Options::fromArray` argument order by @bonroyage in https://github.com/area17/twill/pull/2231
+- Update package generator stub by @ifox in https://github.com/area17/twill/commit/78cc5b5dc023134356210f8c8940f77ff7745ea3
+
+## Improved
+
+- Fix activity log typo by @DanielSpravtsev in https://github.com/area17/twill/pull/2264
+- Fix two misspellings by @skoontastic in https://github.com/area17/twill/pull/2250
+- Fix typo in create modal docs by @lostdesign in https://github.com/area17/twill/pull/2262
+- Update upgrade guide by @undersound in https://github.com/area17/twill/pull/2251
+- Additional explanation on migration for Input field type by @tttogo in https://github.com/area17/twill/pull/2247
+- Closing bracket missing by @kerkness in https://github.com/area17/twill/pull/2245
+- `withFieldSets()` expects Fieldsets object, not a direct array by @agnonym in https://github.com/area17/twill/pull/2233
+- Fix 'tiwll' typo in docs by @ifox in https://github.com/area17/twill/commit/715bc6f60fe0f1f6ab2a65fb67c838c3582d7794
+- Fix 'Larvel' typo in docs by @ifox in https://github.com/area17/twill/commit/8db541d716135e5a8586c50ae3b240c589fa9b05
 
 ## 3.0.1
 
