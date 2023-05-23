@@ -25,6 +25,7 @@ All notable changes to `twill` will be documented in this file.
 - `withFieldSets()` expects Fieldsets object, not a direct array by @agnonym in https://github.com/area17/twill/pull/2233
 - Fix 'tiwll' typo in docs by @ifox in https://github.com/area17/twill/commit/715bc6f60fe0f1f6ab2a65fb67c838c3582d7794
 - Fix 'Larvel' typo in docs by @ifox in https://github.com/area17/twill/commit/8db541d716135e5a8586c50ae3b240c589fa9b05
+- Fix module make commands signatures addressing PHPStan error in https://github.com/area17/twill/commit/94733f1f63f3a4f7542a3af93183664b83eea839
 
 ## 3.0.1
 
