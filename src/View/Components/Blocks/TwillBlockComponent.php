@@ -85,14 +85,16 @@ abstract class TwillBlockComponent extends Component
      *
      * By default this will be prefixed with getBlockTitle, you can disable that by returning true in shouldHidePrefix.
      */
-    public static function getBlockTitleField(): ?string {
+    public static function getBlockTitleField(): ?string
+    {
         return null;
     }
 
     /**
      * If the prefix should be hidden when using getBlockTitleField.
      */
-    public static function shouldHidePrefix(): bool {
+    public static function shouldHidePrefix(): bool
+    {
         return false;
     }
 
