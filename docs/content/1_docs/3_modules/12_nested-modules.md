@@ -151,7 +151,7 @@ use A17\Twill\Services\Breadcrumbs\NestedBreadcrumbs;
 
 class IssueArticleController extends BaseModuleController
 {
-    protected $modelName = 'BrandProduct';
+    protected $modelName = 'IssueArticle';
 
     protected function setUpController(): void
     {
