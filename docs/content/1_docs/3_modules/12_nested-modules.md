@@ -161,7 +161,7 @@ class IssueArticleController extends BaseModuleController
                 NestedBreadcrumbs::make()
                     ->forParent(
                         parentModule: 'issues',
-                        module: $this->modelName,
+                        module: $this->moduleName,
                         activeParentId: request('issue'),
                         repository: \App\Repositories\IssueRepository::class
                     )
