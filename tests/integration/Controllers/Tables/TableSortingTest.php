@@ -35,7 +35,7 @@ class TableSortingTest extends ModulesTestBase
             },
         );
 
-        $this->getJson(route('twill.personnel.authors.index'))
+        $this->getJson(route(config('twill.admin_route_name_prefix') . 'personnel.authors.index'))
             ->assertJsonPath('tableData.0.id', 9)
             ->assertJsonPath('tableData.0.year', '2008')
             ->assertJsonPath('tableData.1.id', 7)
@@ -70,7 +70,7 @@ class TableSortingTest extends ModulesTestBase
             },
         );
 
-        $this->getJson(route('twill.personnel.authors.index', ['sortDir' => 'asc', 'sortKey' => 'year']))
+        $this->getJson(route(config('twill.admin_route_name_prefix') . 'personnel.authors.index', ['sortDir' => 'asc', 'sortKey' => 'year']))
             ->assertJsonPath('tableData.0.year', '2000')
             ->assertJsonPath('tableData.1.year', '2001')
             ->assertJsonPath('tableData.2.year', '2002')
@@ -95,7 +95,7 @@ class TableSortingTest extends ModulesTestBase
             },
         );
 
-        $this->getJson(route('twill.personnel.authors.index', ['sortDir' => 'desc', 'sortKey' => 'year']))
+        $this->getJson(route(config('twill.admin_route_name_prefix') . 'personnel.authors.index', ['sortDir' => 'desc', 'sortKey' => 'year']))
             ->assertJsonPath('tableData.0.year', '2009')
             ->assertJsonPath('tableData.1.year', '2008')
             ->assertJsonPath('tableData.2.year', '2007')
@@ -128,7 +128,7 @@ class TableSortingTest extends ModulesTestBase
             },
         );
 
-        $this->getJson(route('twill.personnel.authors.index'))
+        $this->getJson(route(config('twill.admin_route_name_prefix') . 'personnel.authors.index'))
             ->assertJsonPath('tableData.0.year', '2000')
             ->assertJsonPath('tableData.1.year', '2001')
             ->assertJsonPath('tableData.2.year', '2002')
@@ -161,7 +161,7 @@ class TableSortingTest extends ModulesTestBase
             },
         );
 
-        $this->getJson(route('twill.personnel.authors.index'))
+        $this->getJson(route(config('twill.admin_route_name_prefix') . 'personnel.authors.index'))
             ->assertJsonPath('tableData.0.year', '2009')
             ->assertJsonPath('tableData.1.year', '2008')
             ->assertJsonPath('tableData.2.year', '2007')
@@ -200,7 +200,7 @@ class TableSortingTest extends ModulesTestBase
             },
         );
 
-        $this->getJson(route('twill.personnel.authors.index'))
+        $this->getJson(route(config('twill.admin_route_name_prefix') . 'personnel.authors.index'))
             ->assertJsonPath('tableData.0.year', '2009')
             ->assertJsonPath('tableData.1.year', '2008')
             ->assertJsonPath('tableData.2.year', '2007')

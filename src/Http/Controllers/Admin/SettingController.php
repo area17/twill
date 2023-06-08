@@ -69,7 +69,7 @@ class SettingController extends Controller
             'section' => $section,
             'form_fields' => $this->settings->getFormFieldsForSection($section),
             'formBuilder' => Form::make(),
-            'saveUrl' => $this->urlGenerator->route('twill.settings.update', $section),
+            'saveUrl' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'settings.update', $section),
             'translate' => true,
         ])
         : $this->redirector->back();

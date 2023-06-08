@@ -141,7 +141,7 @@ class BasicControllerSettersTest extends ModulesTestBase
         array $configSettersMethods = [],
         ?Request $request = null
     ): CategoryController {
-        $request = $request ?? Request::create(route('twill.personnel.authors.index'));
+        $request = $request ?? Request::create(route(config('twill.admin_route_name_prefix') . 'personnel.authors.index'));
 
         return new class($this->app, $request, $configSettersMethods) extends CategoryController {
 

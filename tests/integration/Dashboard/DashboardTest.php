@@ -27,10 +27,10 @@ class DashboardTest extends TestCase
 
     public function testLogsActivity(): void
     {
-        $this->post(route('twill.computers.store'), ['title' => 'Test title'])
+        $this->post(route(config('twill.admin_route_name_prefix') . 'computers.store'), ['title' => 'Test title'])
             ->assertJsonPath('redirect', 'http://twill.test/twill/computers/1/edit');
 
-        $this->post(route('twill.licences.store'), ['title' => 'Test title'])
+        $this->post(route(config('twill.admin_route_name_prefix') . 'licences.store'), ['title' => 'Test title'])
             ->assertJsonPath('redirect', 'http://twill.test/twill/licences/1/edit');
 
         $this->assertCount(2, $activity = Activity::all());
@@ -61,10 +61,10 @@ class DashboardTest extends TestCase
                 ],
             ],
         ]);
-        $this->post(route('twill.computers.store'), ['title' => 'Test title'])
+        $this->post(route(config('twill.admin_route_name_prefix') . 'computers.store'), ['title' => 'Test title'])
             ->assertJsonPath('redirect', 'http://twill.test/twill/computers/1/edit');
 
-        $this->post(route('twill.licences.store'), ['title' => 'Test title'])
+        $this->post(route(config('twill.admin_route_name_prefix') . 'licences.store'), ['title' => 'Test title'])
             ->assertJsonPath('redirect', 'http://twill.test/twill/licences/1/edit');
 
         $allActivities = $this->getInvadedDashboardController()->getAllActivities();
@@ -99,10 +99,10 @@ class DashboardTest extends TestCase
 
         // Create 20 of each content.
         for ($i = 0; $i < 20; $i++) {
-            $this->post(route('twill.computers.store'), ['title' => 'Test title' . $i])
+            $this->post(route(config('twill.admin_route_name_prefix') . 'computers.store'), ['title' => 'Test title' . $i])
                 ->assertOk();
 
-            $this->post(route('twill.licences.store'), ['title' => 'Test title' . $i])
+            $this->post(route(config('twill.admin_route_name_prefix') . 'licences.store'), ['title' => 'Test title' . $i])
                 ->assertOk();
         }
 
@@ -135,10 +135,10 @@ class DashboardTest extends TestCase
 
         // Create 20 of each content.
         for ($i = 0; $i < 20; $i++) {
-            $this->post(route('twill.computers.store'), ['title' => 'Test title' . $i])
+            $this->post(route(config('twill.admin_route_name_prefix') . 'computers.store'), ['title' => 'Test title' . $i])
                 ->assertOk();
 
-            $this->post(route('twill.licences.store'), ['title' => 'Test title' . $i])
+            $this->post(route(config('twill.admin_route_name_prefix') . 'licences.store'), ['title' => 'Test title' . $i])
                 ->assertOk();
         }
 

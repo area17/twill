@@ -32,7 +32,7 @@ class NavigationBuilderTest extends TestCase
     {
         $this->login();
 
-        TwillNavigation::addLink(NavigationLink::make()->forRoute('twill.users')->title('USERS'));
+        TwillNavigation::addLink(NavigationLink::make()->forRoute(config('twill.admin_route_name_prefix') . 'users')->title('USERS'));
 
         $navigation = TwillNavigation::buildNavigationTree();
 
@@ -44,7 +44,7 @@ class NavigationBuilderTest extends TestCase
         $this->login();
 
         $link = NavigationLink::make()
-            ->forRoute('twill.users.update', ['user' => $this->superAdmin()->id])
+            ->forRoute(config('twill.admin_route_name_prefix') . 'users.update', ['user' => $this->superAdmin()->id])
             ->title('Edit admin');
 
         $this->assertStringContainsString('/twill/users/' . $this->superAdmin()->id, $link->render());
@@ -54,12 +54,12 @@ class NavigationBuilderTest extends TestCase
     {
         $this->login();
 
-        $link = NavigationLink::make()->forRoute('twill.users.index')->title('USERS');
+        $link = NavigationLink::make()->forRoute(config('twill.admin_route_name_prefix') . 'users.index')->title('USERS');
 
         $this->assertStringNotContainsString('target="_blank"', $link->render());
 
         // Second time we say it should open in a new window.
-        $link = NavigationLink::make()->forRoute('twill.users.index')->title('USERS')->shouldOpenInNewWindow();
+        $link = NavigationLink::make()->forRoute(config('twill.admin_route_name_prefix') . 'users.index')->title('USERS')->shouldOpenInNewWindow();
 
         $this->assertStringContainsString('target="_blank"', $link->render());
     }
@@ -69,7 +69,7 @@ class NavigationBuilderTest extends TestCase
         config()->set('twill-navigation', ['some-data']);
 
         $this->expectException(CannotCombineNavigationBuilderWithLegacyConfig::class);
-        TwillNavigation::addLink(NavigationLink::make()->forRoute('twill.users')->title('USERS'));
+        TwillNavigation::addLink(NavigationLink::make()->forRoute('users')->title('USERS'));
     }
 
 }

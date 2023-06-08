@@ -32,19 +32,19 @@ class SubdomainRoutingTest extends TestCase
         );
 
         $this->actingAs($this->superAdmin(), 'twill_users')
-            ->get(route('twill.dashboard', ['subdomain' => 'subdomain1']))
+            ->get(route(config('twill.admin_route_name_prefix') . 'dashboard', ['subdomain' => 'subdomain1']))
             ->assertSee('App 1 name')
             ->assertStatus(200);
 
         // The second request it would fail because of the config mismatch.
         $this->actingAs($this->superAdmin(), 'twill_users')
-            ->get(route('twill.dashboard', ['subdomain' => 'subdomain1']))
+            ->get(route(config('twill.admin_route_name_prefix') . 'dashboard', ['subdomain' => 'subdomain1']))
             ->assertSee('App 1 name')
             ->assertStatus(200);
 
         // Check that we can also request subdomain2 within the same runtime.
         $this->actingAs($this->superAdmin(), 'twill_users')
-            ->get(route('twill.dashboard', ['subdomain' => 'subdomain2']))
+            ->get(route(config('twill.admin_route_name_prefix') . 'dashboard', ['subdomain' => 'subdomain2']))
             ->assertSee('App 2 name')
             ->assertStatus(200);
     }
@@ -53,7 +53,7 @@ class SubdomainRoutingTest extends TestCase
     {
         $this->actingAs($this->superAdmin(), 'twill_users')
             //  We use json here to easily assert. In browsers this would display depending on the exception handler.
-            ->getJson(route('twill.dashboard', ['subdomain' => 'nonExistingDomain']))
+            ->getJson(route(config('twill.admin_route_name_prefix') . 'dashboard', ['subdomain' => 'nonExistingDomain']))
             ->assertJsonPath('message', 'Subdomain: nonexistingdomain')
             ->assertJsonPath('exception', 'A17\Twill\Exceptions\NoNavigationForSubdomainException')
             ->assertStatus(500);

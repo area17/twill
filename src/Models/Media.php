@@ -7,9 +7,16 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
+use HMTwill\Models\Behaviors\HasSchema;
+
 class Media extends Model
 {
+
+    use HasSchema;
+
     public $timestamps = true;
+
+    public $schemaType = 'imageObject';
 
     protected $fillable = [
         'uuid',
@@ -60,15 +67,11 @@ class Media extends Model
         return DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->count() === 0;
     }
 
-    public function isReferenced()
-    {
-        return DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->count() > 0;
-    }
-
     public function toCmsArray()
     {
         return [
             'id' => $this->id,
+            'uuid' => $this->uuid,
             'name' => $this->filename,
             'thumbnail' => ImageService::getCmsUrl($this->uuid, ['h' => '256']),
             'original' => ImageService::getRawUrl($this->uuid),
@@ -79,9 +82,9 @@ class Media extends Model
                 return $tag->name;
             }),
             'deleteUrl' => $this->canDeleteSafely() ? moduleRoute('medias', 'media-library', 'destroy', $this->id) : null,
-            'updateUrl' => route('twill.media-library.medias.single-update'),
-            'updateBulkUrl' => route('twill.media-library.medias.bulk-update'),
-            'deleteBulkUrl' => route('twill.media-library.medias.bulk-delete'),
+            'updateUrl' => route(config('twill.admin_route_name_prefix') . 'media-library.medias.single-update'),
+            'updateBulkUrl' => route(config('twill.admin_route_name_prefix') . 'media-library.medias.bulk-update'),
+            'deleteBulkUrl' => route(config('twill.admin_route_name_prefix') . 'media-library.medias.bulk-delete'),
             'metadatas' => [
                 'default' => [
                     'caption' => $this->caption,

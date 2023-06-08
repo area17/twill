@@ -155,7 +155,7 @@ abstract class ModulesTestBase extends TestCase
     {
         foreach (range(1, $count) as $c) {
             $this->httpJsonRequestAssert(
-                route('twill.personnel.authors.store'),
+                route(config('twill.admin_route_name_prefix') . 'personnel.authors.store'),
                 'POST',
                 $this->getCreateAuthorData($data)
             );

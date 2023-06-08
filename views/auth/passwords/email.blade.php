@@ -1,5 +1,5 @@
 @extends('twill::auth.layout', [
-    'route' => route('twill.password.reset.email'),
+    'route' => route(config('twill.admin_route_name_prefix') . 'password.reset.email'),
     'screenTitle' => twillTrans('twill::lang.auth.reset-password')
 ])
 

@@ -124,7 +124,7 @@ class LoginController extends Controller
 
         $request->session()->regenerateToken();
 
-        return $this->redirector->to(route('twill.login'));
+        return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'login'));
     }
 
     /**
@@ -143,7 +143,7 @@ class LoginController extends Controller
 
             $request->session()->put('2fa:user:id', $user->id);
 
-            return $this->redirector->to(route('twill.login-2fa.form'));
+            return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'login-2fa.form'));
         }
 
         $user->last_login_at = Carbon::now();
@@ -153,7 +153,7 @@ class LoginController extends Controller
             $this->logout($request);
             $token = Password::broker('twill_users')->getRepository()->create($user);
 
-            return $this->redirector->to(route('twill.password.reset.form', $token))->withErrors([
+            return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'password.reset.form', $token))->withErrors([
                 'error' => 'Your password needs to be reset before login',
             ]);
         }
@@ -190,7 +190,7 @@ class LoginController extends Controller
             return $this->redirector->intended($this->redirectTo);
         }
 
-        return $this->redirector->to(route('twill.login-2fa.form'))->withErrors([
+        return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'login-2fa.form'))->withErrors([
             'error' => 'Your one time password is invalid.',
         ]);
     }
@@ -230,7 +230,7 @@ class LoginController extends Controller
                 $request->session()->put('oauth:user_id', $user->id);
                 $request->session()->put('oauth:user', $oauthUser);
                 $request->session()->put('oauth:provider', $provider);
-                return $this->redirector->to(route('twill.login.oauth.showPasswordForm'));
+                return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'login.oauth.showPasswordForm'));
             } else {
                 $user->linkProvider($oauthUser, $provider);
 

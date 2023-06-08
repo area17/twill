@@ -32,7 +32,7 @@ class SettingsFacadeTest extends TestCase
         // Make a post.
         $this->actingAs($this->superAdmin(), 'twill_users')
             ->putJson(
-                route('twill.app.settings.update', [$model]),
+                route(config('twill.admin_route_name_prefix') . 'app.settings.update', [$model]),
                 [
                     'blocks' => [
                         [

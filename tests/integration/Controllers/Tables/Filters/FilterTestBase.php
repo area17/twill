@@ -21,7 +21,7 @@ class FilterTestBase extends ModulesTestBase
         array $extendQuickFilters = [],
         array $active = []
     ): AuthorController {
-        $request = Request::create(route('twill.personnel.authors.index'), 'GET', ['filter' => json_encode($active)]);
+        $request = Request::create(route(config('twill.admin_route_name_prefix') . 'personnel.authors.index'), 'GET', ['filter' => json_encode($active)]);
 
         return new class($this->app, $request, $filters, $quickFilters, $extendQuickFilters) extends AuthorController {
             public function __construct(

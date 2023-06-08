@@ -32,7 +32,7 @@ class SettingsModelTest extends TestCase
 
         // When we open up the controller it should auto register it and settings should be in the menu.
         // The secondary nav should show both the first and second label.
-        $this->actingAs($this->superAdmin(), 'twill_users')->getJson(route('twill.app.settings.page', ['group' => 'test']))
+        $this->actingAs($this->superAdmin(), 'twill_users')->getJson(route(config('twill.admin_route_name_prefix') . 'app.settings.page', ['group' => 'test']))
             ->assertSee('Settings')
             ->assertSee('Test label')
             // Second.
@@ -55,7 +55,7 @@ class SettingsModelTest extends TestCase
 
         // When we open up the controller it should auto register it and settings should be in the menu.
         // The secondary nav should show both the first and second label.
-        $this->actingAs($this->superAdmin(), 'twill_users')->getJson(route('twill.app.settings.page', ['group' => 'test']))
+        $this->actingAs($this->superAdmin(), 'twill_users')->getJson(route(config('twill.admin_route_name_prefix') . 'app.settings.page', ['group' => 'test']))
             ->assertSee('Settings')
             ->assertSee('Test label')
             // Second.
@@ -88,7 +88,7 @@ class SettingsModelTest extends TestCase
         );
 
         $this->actingAs($this->superAdmin(), 'twill_users')
-            ->getJson(route('twill.app.settings.page', ['group' => 'test']))
+            ->getJson(route(config('twill.admin_route_name_prefix') . 'app.settings.page', ['group' => 'test']))
             ->assertSee('title field label');
     }
 
@@ -107,7 +107,7 @@ class SettingsModelTest extends TestCase
         // Make a post.
         $this->actingAs($this->superAdmin(), 'twill_users')
             ->putJson(
-                route('twill.app.settings.update', [$model]),
+                route(config('twill.admin_route_name_prefix') . 'app.settings.update', [$model]),
                 [
                     'blocks' => [
                         [
@@ -152,7 +152,7 @@ class SettingsModelTest extends TestCase
         );
 
         $this->actingAs($this->superAdmin(), 'twill_users')
-            ->get(route('twill.app.settings.page', ['group' => 'demo']))
+            ->get(route(config('twill.admin_route_name_prefix') . 'app.settings.page', ['group' => 'demo']))
             ->assertStatus(403);
     }
 }

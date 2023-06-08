@@ -212,7 +212,7 @@ similar to that of the settings registration. In the app service provider we can
 TwillNavigation::addLink(
     NavigationLink::make()->forModule('blogs')->title('Blogs')
         ->setChildren([
-            NavigationLink::make()->forRoute('twill.app.settings.page', ['group' => 'blog'])->title('Blog settings'),
+            NavigationLink::make()->forRoute(config('twill.admin_route_name_prefix') . 'app.settings.page', ['group' => 'blog'])->title('Blog settings'),
         ])
 );
 
