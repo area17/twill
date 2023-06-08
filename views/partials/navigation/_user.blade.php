@@ -1,12 +1,12 @@
 @if(isset($currentUser) && config('twill.enabled.users-management'))
     @php
-        $user_management_route = 'twill.users.index';
+        $user_management_route = config('twill.admin_route_name_prefix') . 'users.index';
         if ($currentUser->can('edit-users')) {
-            $user_management_route = 'twill.users.index';
+            $user_management_route = config('twill.admin_route_name_prefix') . 'users.index';
         } elseif ($currentUser->can('edit-user-roles')) {
-            $user_management_route = 'twill.roles.index';
+            $user_management_route = config('twill.admin_route_name_prefix') . 'roles.index';
         } elseif ($currentUser->can('edit-user-groups')) {
-            $user_management_route = 'twill.groups.index';
+            $user_management_route = config('twill.admin_route_name_prefix') . 'groups.index';
         }
     @endphp
 
