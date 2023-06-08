@@ -8,7 +8,6 @@ use A17\Twill\Services\Listings\Filters\TableFilters;
 use A17\Twill\Services\Uploader\SignAzureUpload;
 use A17\Twill\Services\Uploader\SignS3Upload;
 use A17\Twill\Services\Uploader\SignUploadListener;
-use Aws\S3\S3Client;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
@@ -17,7 +16,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\Routing\UrlGenerator;
-use Illuminate\Support\Facades\Storage;
 
 class FileLibraryController extends ModuleController implements SignUploadListener
 {
@@ -287,43 +285,6 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             })->toArray(),
             'tags' => $this->repository->getTagsList(),
         ], 200);
-    }
-
-    /**
-     * @param Request $request
-     * @return string
-     */
-    public function getStaticLink(Request $request) {
-        $disk = $this->config->get('twill.media_library.disk');
-        $diskConfig = config('filesystems.disks.' . $disk);
-
-        $client = new S3Client([
-            'credentials' => [
-                'key'    => $diskConfig['key'],
-                'secret' => $diskConfig['secret']
-            ],
-            'region' => $diskConfig['region'],
-            'version' => 'latest'
-        ]);
-
-        // does this object have public-read?
-        $public = collect($client->getObjectAcl([
-            'Bucket' => $diskConfig['bucket'], // REQUIRED
-            'Key' => $request->uuid, // REQUIRED
-        ])->search('Grants'))
-            ->where('Permission','READ')
-            ->where('Grantee.URL','http://acs.amazonaws.com/groups/global/AllUsers')
-            ->isNotEmpty();
-
-        if(!$public) {
-            $client->putObjectAcl([
-                'ACL' => 'public-read',
-                'Bucket' => $diskConfig['bucket'], // REQUIRED
-                'Key' => $request->uuid, // REQUIRED
-            ]);
-        }
-
-        return Storage::disk($disk)->url($request->uuid);
     }
 
     /**
