@@ -326,7 +326,7 @@ class DashboardController extends Controller
                     return [];
                 }
 
-                $statsByDate = Collection::make($response ?? [])->map(function (array $dateRow) {
+                $statsByDate = Collection::make($response)->map(function (array $dateRow) {
                     return [
                         'date' => $dateRow['date'],
                         'users' => (int) $dateRow['visits'] ?? 0,
