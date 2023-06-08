@@ -2233,7 +2233,7 @@ abstract class ModuleController extends Controller
                 'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas(
                     'blocks'
                 ) && ! $this->disableEditor,
-                'blockPreviewUrl' => Route::has('twill.blocks.preview') ? URL::route(config('twill.admin_route_name_prefix') . 'blocks.preview') : '#',
+                'blockPreviewUrl' => Route::has(config('twill.admin_route_name_prefix') . 'blocks.preview') ? URL::route(config('twill.admin_route_name_prefix') . 'blocks.preview') : '#',
                 'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
                 'submitOptions' => $this->getSubmitOptions($item),
                 'groupUserMapping' => $this->getGroupUserMapping(),
