@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
 use Psr\Log\LoggerInterface as Logger;
@@ -283,29 +284,95 @@ class DashboardController extends Controller
      */
     private function getFacts()
     {
-        /** @var Analytics $analytics */
-        $analytics = app(Analytics::class);
-        try {
-            $response = $analytics->performQuery(
-                Period::days(60),
-                'ga:users,ga:pageviews,ga:bouncerate,ga:pageviewsPerSession',
-                ['dimensions' => 'ga:date']
-            );
-        } catch (InvalidConfiguration $exception) {
-            $this->logger->error($exception);
+        $analyticsService = $this->config->get('twill.dashboard.analytics.service', 'google');
 
-            return [];
-        }
+        if ($analyticsService === 'fathom') {
+            try {
+                $apiToken = $this->config->get('twill.dashboard.analytics.fathom.api_token');
+                $siteId = $this->config->get('twill.dashboard.analytics.fathom.site_id');
 
-        $statsByDate = Collection::make($response['rows'] ?? [])->map(function (array $dateRow) {
-            return [
-                'date' => $dateRow[0],
-                'users' => (int) $dateRow[1],
-                'pageViews' => (int) $dateRow[2],
-                'bounceRate' => $dateRow[3],
-                'pageviewsPerSession' => $dateRow[4],
+                $serviceDashboardUrl = 'https://app.usefathom.com/?site=' . $siteId;
+                $serviceDashboardUrlPeriodSuffix = [
+                    'today' => '&range=today',
+                    'yesterday' => '&range=yesterday',
+                    'week' => '&range=last_7_days',
+                    'month' => '&range=last_30_days',
+                ];
+
+                $period = Period::days(60);
+
+                $httpClient = Http::withOptions([
+                    'base_uri' => 'https://api.usefathom.com/v1/',
+                ])
+                    ->withHeaders([
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . $apiToken,
+                    ])
+                    ->connectTimeout(20);
+
+                $query = http_build_query([
+                    'entity' => 'pageview',
+                    'entity_id' => $siteId,
+                    'aggregates' => 'visits,pageviews,bounce_rate',
+                    'date_grouping' => 'day',
+                    'sort_by' => 'timestamp:asc',
+                    'timezone' => config('app.timezone'),
+                    'date_from' => $period->startDate ?? null,
+                    'date_to' => $period->endDate ?? null,
+                ]);
+
+                $response = $httpClient->get('aggregations?' . $query)->json();
+                if (!is_array($response) || count($response) <= 1) {
+                    return [];
+                }
+
+                $statsByDate = Collection::make($response ?? [])->map(function (array $dateRow) {
+                    return [
+                        'date' => $dateRow['date'],
+                        'users' => (int) $dateRow['visits'] ?? 0,
+                        'pageViews' => (int) $dateRow['pageviews'] ?? 0,
+                        'bounceRate' => ($dateRow['bounce_rate'] ?? 0) * 100,
+                        'pageviewsPerSession' => null,
+                    ];
+                })->reverse()->values();
+            } catch (InvalidConfiguration $exception) {
+                $this->logger->error($exception);
+
+                return [];
+            }
+        } else {
+            $serviceDashboardUrl = 'https://analytics.google.com/analytics/web';
+            $serviceDashboardUrlPeriodSuffix = [
+                'today' => '',
+                'yesterday' => '',
+                'week' => '',
+                'month' => '',
             ];
-        })->reverse()->values();
+
+            /** @var Analytics $analytics */
+            $analytics = app(Analytics::class);
+            try {
+                $response = $analytics->performQuery(
+                    Period::days(60),
+                    'ga:users,ga:pageviews,ga:bouncerate,ga:pageviewsPerSession',
+                    ['dimensions' => 'ga:date']
+                );
+            } catch (InvalidConfiguration $exception) {
+                $this->logger->error($exception);
+
+                return [];
+            }
+
+            $statsByDate = Collection::make($response['rows'] ?? [])->map(function (array $dateRow) {
+                return [
+                    'date' => $dateRow[0],
+                    'users' => (int) $dateRow[1],
+                    'pageViews' => (int) $dateRow[2],
+                    'bounceRate' => $dateRow[3],
+                    'pageviewsPerSession' => $dateRow[4],
+                ];
+            })->reverse()->values();
+        }
 
         $dummyData = null;
         if ($statsByDate->isEmpty()) {
@@ -316,7 +383,7 @@ class DashboardController extends Controller
                     'insight' => '0% Bounce rate',
                     'trend' => twillTrans('None'),
                     'data' => [0 => 0],
-                    'url' => 'https://analytics.google.com/analytics/web',
+                    'url' => $serviceDashboardUrl,
                 ],
                 [
                     'label' => 'Pageviews',
@@ -324,7 +391,7 @@ class DashboardController extends Controller
                     'insight' => '0 Pages / Session',
                     'trend' => twillTrans('None'),
                     'data' => [0 => 0],
-                    'url' => 'https://analytics.google.com/analytics/web',
+                    'url' => $serviceDashboardUrl,
                 ],
             ];
         }
@@ -334,7 +401,7 @@ class DashboardController extends Controller
             'yesterday',
             'week',
             'month',
-        ])->mapWithKeys(function ($period) use ($statsByDate, $dummyData) {
+        ])->mapWithKeys(function ($period) use ($statsByDate, $dummyData, $serviceDashboardUrl, $serviceDashboardUrlPeriodSuffix) {
             if ($dummyData) {
                 return [$period => $dummyData];
             }
@@ -349,15 +416,15 @@ class DashboardController extends Controller
                         'insight' => round($stats['stats']['bounceRate']) . '% Bounce rate',
                         'trend' => $stats['moreUsers'] ? 'up' : 'down',
                         'data' => $stats['usersData']->reverse()->values()->toArray(),
-                        'url' => 'https://analytics.google.com/analytics/web',
+                        'url' => $serviceDashboardUrl . $serviceDashboardUrlPeriodSuffix[$period] ?? '',
                     ],
                     [
                         'label' => 'Pageviews',
                         'figure' => $this->formatStat($stats['stats']['pageViews']),
-                        'insight' => round($stats['stats']['pageviewsPerSession'], 1) . ' Pages / Session',
+                        'insight' => $stats['stats']['pageviewsPerSession'] ? round($stats['stats']['pageviewsPerSession'], 1) . ' Pages / Session' : null,
                         'trend' => $stats['morePageViews'] ? 'up' : 'down',
                         'data' => $stats['pageViewsData']->reverse()->values()->toArray(),
-                        'url' => 'https://analytics.google.com/analytics/web',
+                        'url' => $serviceDashboardUrl . $serviceDashboardUrlPeriodSuffix[$period] ?? '',
                     ],
                 ],
             ];
