@@ -288,12 +288,12 @@ class DashboardController extends Controller
     private function getFacts()
     {
         /** @var Analytics $analytics */
-        $analytics = app(Analytics::class);
+        $analytics = app()->makeWith(Analytics::class, ['propertyId' => config('analytics.property_id')]);
         try {
-            $response = $analytics->performQuery(
+            $response = $analytics->get(
                 Period::days(60),
-                'ga:users,ga:pageviews,ga:bouncerate,ga:pageviewsPerSession',
-                ['dimensions' => 'ga:date']
+                ['totalUsers', 'screenPageViews', 'bounceRate', 'screenPageViewsPerSession'],
+                ['date']
             );
         } catch (InvalidConfiguration $exception) {
             $this->logger->error($exception);
@@ -301,13 +301,13 @@ class DashboardController extends Controller
             return [];
         }
 
-        $statsByDate = Collection::make($response['rows'] ?? [])->map(function (array $dateRow) {
+        $statsByDate = $response->map(function (array $item) {
             return [
-                'date' => $dateRow[0],
-                'users' => (int) $dateRow[1],
-                'pageViews' => (int) $dateRow[2],
-                'bounceRate' => $dateRow[3],
-                'pageviewsPerSession' => $dateRow[4],
+                'date' => $item['date'],
+                'users' => (int) $item['totalUsers'],
+                'pageViews' => (int) $item['screenPageViews'],
+                'bounceRate' => $item['bounceRate'],
+                'pageviewsPerSession' => $item['screenPageViewsPerSession'],
             ];
         })->reverse()->values();
 
