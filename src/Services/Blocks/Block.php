@@ -672,7 +672,7 @@ class Block
         $data['inEditor'] = $inEditor;
 
         $view = $this->getBlockView($blockViewMappings);
-        $data = $this->getData($data, $this->renderData->block);
+        $data = app()->call([$this, 'getData'], ['data' => $data, 'block' => $this->renderData->block]);
 
         $data['block'] = $this->renderData->block;
         $data['renderData'] = $this->renderData;
