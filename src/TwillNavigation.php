@@ -20,7 +20,12 @@ class TwillNavigation
      */
     private array $secondaryRequestLinks = [];
 
-    public function addLink(NavigationLink $link): self
+		/**
+     * @var array<int, NavigationLink>
+     */
+		private array $rightLinks = [];
+
+    public function addLink(NavigationLink $link, string $side = 'left'): self
     {
         if (config('twill-navigation', []) !== []) {
             throw new CannotCombineNavigationBuilderWithLegacyConfig(
@@ -28,7 +33,11 @@ class TwillNavigation
             );
         }
 
-        $this->links[] = $link;
+				if($side === 'left'){
+					$this->links[] = $link;
+				} else {
+					$this->rightLinks[] = $link;
+				}
 
         return $this;
     }
@@ -74,39 +83,52 @@ class TwillNavigation
     /**
      * @return NavigationLink[]
      */
+		private function getNavigation(string $side = 'left'):array
+		{
+			if($side === 'left' && $this->links !== []){
+				return $this->links;
+			}
+			if($side === 'right' && $this->rightLinks !== []){
+				return $this->rightLinks;
+			}
+
+			$links = [];
+
+			// Convert the original twill-navigation.
+			foreach (config('twill-navigation', []) as $key => $primaryItem) {
+					$link = $this->transformLegacyToNew($key, $primaryItem);
+
+					$children = [];
+					foreach ($primaryItem['primary_navigation'] ?? [] as $childKey => $nestedItem) {
+							$children[] = $secondary = $this->transformLegacyToNew($childKey, $nestedItem);
+
+							$secondaryChildren = [];
+							foreach ($nestedItem['secondary_navigation'] ?? [] as $tertiaryKey => $tertiaryItem) {
+									$secondaryChildren[] = $this->transformLegacyToNew($tertiaryKey, $tertiaryItem);
+							}
+
+							$secondary->setChildren($secondaryChildren);
+							$secondary->doNotAddSelfAsFirstChild();
+					}
+
+					$link->setChildren($children);
+					$link->doNotAddSelfAsFirstChild();
+
+					$links[] = $link;
+			}
+
+			return $links;
+		}
+
     private function getLeftNavigation(): array
     {
-        if ($this->links !== []) {
-            return $this->links;
-        }
-
-        $links = [];
-
-        // Convert the original twill-navigation.
-        foreach (config('twill-navigation', []) as $key => $primaryItem) {
-            $link = $this->transformLegacyToNew($key, $primaryItem);
-
-            $children = [];
-            foreach ($primaryItem['primary_navigation'] ?? [] as $childKey => $nestedItem) {
-                $children[] = $secondary = $this->transformLegacyToNew($childKey, $nestedItem);
-
-                $secondaryChildren = [];
-                foreach ($nestedItem['secondary_navigation'] ?? [] as $tertiaryKey => $tertiaryItem) {
-                    $secondaryChildren[] = $this->transformLegacyToNew($tertiaryKey, $tertiaryItem);
-                }
-
-                $secondary->setChildren($secondaryChildren);
-                $secondary->doNotAddSelfAsFirstChild();
-            }
-
-            $link->setChildren($children);
-            $link->doNotAddSelfAsFirstChild();
-
-            $links[] = $link;
-        }
-
-        return $links;
+        return $this->getNavigation('left');
     }
+
+		private function getRightNavigation(): array
+		{
+				return $this->getNavigation('right');
+		}
 
     private function transformLegacyToNew(string $key, array $legacy): NavigationLink
     {
@@ -165,7 +187,7 @@ class TwillNavigation
         $tree = [];
 
         $tree['left'] = $this->getLeftNavigation();
-        $tree['right'] = [];
+        $tree['right'] = $this->getRightNavigation();
 
         if ($settings = $this->getSettingsTree()) {
             $tree['right'][] = $settings;
