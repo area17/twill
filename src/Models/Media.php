@@ -7,16 +7,10 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
-use HMTwill\Models\Behaviors\HasSchema;
-
 class Media extends Model
 {
 
-    use HasSchema;
-
     public $timestamps = true;
-
-    public $schemaType = 'imageObject';
 
     protected $fillable = [
         'uuid',

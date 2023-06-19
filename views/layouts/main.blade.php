@@ -3,11 +3,6 @@
 
 <head>
     @include('twill::partials.head')
-		<style>
-			.fieldset__content > hr {
-					display: none;
-			}
-		</style>
     @if (app()->environment('local', 'development') && config('twill.dev_mode', false))
         <script>
             window.hmr_url = '{{config('twill.dev_mode_url', 'http://localhost:8080')}}';
