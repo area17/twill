@@ -6,6 +6,7 @@ use A17\Twill\Services\Forms\Fields\Helpers\TiptapWrapper;
 use A17\Twill\Services\Forms\Fields\Traits\HasMaxlength;
 use A17\Twill\Services\Forms\Fields\Traits\HasOnChange;
 use A17\Twill\Services\Forms\Fields\Traits\HasPlaceholder;
+use A17\Twill\Services\Forms\Fields\Traits\HasDirection;
 use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 class Wysiwyg extends BaseFormField
@@ -13,6 +14,7 @@ class Wysiwyg extends BaseFormField
     use IsTranslatable;
     use HasMaxlength;
     use HasPlaceholder;
+    use HasDirection;
     use HasOnChange;
 
     public bool $hideCounter = false;
