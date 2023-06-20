@@ -115,7 +115,7 @@ $wysiwygOptions = [
 | note           | Hint message displayed above the field                                                                                   | string              |               |
 | placeholder    | Text displayed as a placeholder in the field                                                                             | string              |               |
 | required       | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean             | false         |
-| direction      | Set custom input direction <small>(from `v3.0.3`)</small>                                                                | ltr<br/>rtl<br>auto | auto          |
+| direction      | Set custom input direction <small>(from `v3.1.0`)</small>                                                                | ltr<br/>rtl<br>auto | auto          |
 
 Note that Quill outputs CSS classes in the HTML for certain toolbar modules (indent, font, align, etc.), and that the image module is not integrated with Twill's media library. It outputs the base64 representation of the uploaded image.
 It is not a recommended way of using and storing images, prefer using one or multiple `medias` form fields or blocks fields for flexible content. This will give you greater control over your frontend output.
@@ -175,6 +175,6 @@ For regular fields on models you will have to manually call `parseInternalLinks`
 
 ## Manually setting input direction
 
-Introduced in `v3.0.3`
+Introduced in `v3.1.0`
 
 For certain types of input it maybe useful to manually set the direction to left-to-right (`ltr`) or right-to-left (`rtl`) depending upon the expected text input; for example you may need a single Hebrew text entry in an otherwise `ltr` form. 

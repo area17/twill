@@ -87,7 +87,7 @@ Input::make()
 | readonly    | Sets the field as readonly                                                                                               | boolean                                                     | false         |
 | default     | Sets a default value if empty                                                                                            | string                                                      |               |
 | mask        | Set a mask using the alpinejs mask plugin                                                                                | string                                                      |               |
-| direction   | Set custom input direction <small>(from `v3.0.3`)</small>                                                                | ltr<br/>rtl<br>auto                                                        | auto          |
+| direction   | Set custom input direction <small>(from `v3.1.0`)</small>                                                                | ltr<br/>rtl<br>auto                                                        | auto          |
 
 Specific options for the "number" type:
 
@@ -128,7 +128,7 @@ When used in a [block](../5_block-editor), no migration is needed, as data conta
 
 ## Manually setting input direction
 
-Introduced in `v3.0.3`
+Introduced in `v3.1.0`
 
 For certain types of input it maybe useful to manually set the direction to left-to-right (`ltr`) or right-to-left (`rtl`) depending upon the expected text input. 
 
