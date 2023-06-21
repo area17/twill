@@ -203,10 +203,19 @@
         return this.ajaxUrl !== ''
       },
       updateValue: function (value) {
+        // Filter out duplicate values
+        if (this.multiple) {
+          // For multiple selection
+          const uniqueValues = [...new Set(value)];
+          this.value = uniqueValues;
+        } else {
+          // For single selection
+          this.value = value;
+        }
+        
         // see formStore mixin
-        this.value = value
-        this.saveIntoStore()
-        this.$emit('change', value)
+        this.saveIntoStore();
+        this.$emit('change', value);
       },
       getOptions: debounce(function (search, loading) {
         if (!this.isAjax()) return true
