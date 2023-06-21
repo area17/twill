@@ -323,7 +323,7 @@ $multiSelectHeight: 45px;
       position:relative;
 
       .close,
-      .vs__selected {
+      .vs__deselect {
         border-radius:50%;
         background-color:$color__fborder--hover;
         height: 18px;
@@ -338,7 +338,7 @@ $multiSelectHeight: 45px;
         font-weight:normal;
         position:absolute;
         right:5px;
-        top:6px;
+        top:15px;
         background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIj48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiNFNUU1RTUiIGQ9Ik0yIDJsNiA2TTggMkwyIDgiLz48L3N2Zz4=);
         background-repeat: no-repeat;
         background-position: center;
@@ -360,7 +360,7 @@ $multiSelectHeight: 45px;
       padding-right: 15px;
 
       .close,
-      .vs__selected {
+      .vs__deselect {
         display: none;
       }
     }
@@ -400,7 +400,7 @@ $multiSelectHeight: 45px;
         @include font-small;
 
         .close,
-        .vs__selected {
+        .vs__deselect {
           top:2px;
           right:2px;
           background-color:transparent;
