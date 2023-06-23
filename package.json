@@ -29,7 +29,7 @@
     "alpinejs": "^3.10.0",
     "axios": "^0.21.2",
     "core-js": "^3.9.1",
-    "cropperjs": "1.5.6",
+    "cropperjs": "^1.5.13",
     "date-fns": "1.29.0",
     "fine-uploader": "^5.16.2",
     "fine-uploader-wrappers": "^1.1.0",
