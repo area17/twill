@@ -1,7 +1,7 @@
 @if($activeSyntax)
-    @pushonce('extra_css:wysiwyg')
+    @pushOnce('extra_css', 'field:wysiwyg')
         <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/{{$theme}}.min.css">
-    @endpushonce
+    @endPushOnce
 @endif
 
 @if($type === 'tiptap')
