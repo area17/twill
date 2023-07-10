@@ -18,6 +18,8 @@ class SettingsGroup
 
     private ?Closure $availableWhen = null;
 
+    private ?AppSetting $appSetting = null;
+
     public static function make(): self
     {
         return new self();
@@ -70,12 +72,12 @@ class SettingsGroup
 
     public function getSettingsModel(): AppSetting
     {
-        $settingsModel = AppSetting::where(['name' => $this->getName()])->first();
+        $settingsModel = $this->appSetting ?? AppSetting::where(['name' => $this->getName()])->first();
         if (!$settingsModel) {
             $settingsModel = AppSetting::create(['name' => $this->getName()]);
         }
 
-        return $settingsModel;
+        return $this->appSetting = $settingsModel;
     }
 
     /**
