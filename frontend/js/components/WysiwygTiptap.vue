@@ -90,6 +90,23 @@
                                   :isActive="editor.isActive('code')"
                                   @btn:click="editor.chain().focus().setCode().run()"/>
 
+            <wysiwyg-menu-bar-btn icon="align-left" 
+                                  v-if="toolbar.align || toolbar['align-left']" 
+                                  :isActive="editor.isActive({ textAlign: 'left' })" 
+                                  @btn:click="setTextAlign('left')"/>
+            <wysiwyg-menu-bar-btn icon="align-center" 
+                                  v-if="toolbar.align || toolbar['align-center']" 
+                                  :isActive="editor.isActive({ textAlign: 'center' })" 
+                                  @btn:click="setTextAlign('center')"/>
+            <wysiwyg-menu-bar-btn icon="align-right" 
+                                  v-if="toolbar.align || toolbar['align-right']" 
+                                  :isActive="editor.isActive({ textAlign: 'right' })" 
+                                  @btn:click="setTextAlign('right')"/>
+            <wysiwyg-menu-bar-btn icon="align-justify" 
+                                  v-if="toolbar.align || toolbar['align-justify']" 
+                                  :isActive="editor.isActive({ textAlign: 'justify' })" 
+                                  @btn:click="setTextAlign('justify')"/>
+
             <wysiwyg-menu-bar-btn icon="table"
                                   v-if="toolbar.table"
                                   @btn:click="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()"/>
@@ -235,6 +252,7 @@
   import {Placeholder} from "@tiptap/extension-placeholder";
   import {HardBreak} from "@tiptap/extension-hard-break";
   import {HorizontalRule} from "@tiptap/extension-horizontal-rule";
+  import {TextAlign} from '@tiptap/extension-text-align';
 
   export default {
     name: 'A17Wysiwyg',
@@ -484,7 +502,14 @@
 
         this.$refs['link-modal'].close()
         this.linkWindow = null
-      }
+      },
+      setTextAlign(align) {
+        this.editor
+          .chain()
+          .focus()
+          .setTextAlign(align)
+          .run();
+      },
     },
     beforeMount () {
       if (this.toolbar.header) {
@@ -495,7 +520,10 @@
 
       const content = this.value || ''
       const extensions = [
-        HardBreak
+        HardBreak,
+        TextAlign.configure({
+          types: ['heading','paragraph'], 
+        }),
       ]
 
       if (this.placeholder && this.placeholder.length > 0) {
