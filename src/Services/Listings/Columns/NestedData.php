@@ -12,7 +12,6 @@ class NestedData extends TableColumn
     public static function make(): static
     {
         $item = parent::make();
-        $item->field('children');
         return $item;
     }
 
