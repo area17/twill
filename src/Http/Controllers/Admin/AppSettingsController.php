@@ -33,7 +33,7 @@ class AppSettingsController extends ModuleController
         }
     }
 
-    public function update(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
+    public function update(int|string|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
         $model = AppSetting::findOrFail($id);
 
@@ -107,7 +107,7 @@ class AppSettingsController extends ModuleController
         return AppSettingsRepository::class;
     }
 
-    protected function form(?int $id, ?TwillModelContract $item = null): array
+    protected function form(int|string|null $id, ?TwillModelContract $item = null): array
     {
         $base = parent::form($id, $item);
 
