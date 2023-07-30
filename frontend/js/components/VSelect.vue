@@ -205,7 +205,8 @@
       updateValue: function (value) {
         // see formStore mixin
         if(!value) {
-          this.value = this.selected;
+          let allOption = this.options.find((o) => o.value === 'all' );
+          this.value = allOption ?? undefined
         }else {
           this.value = value
         }
