@@ -204,7 +204,12 @@
       },
       updateValue: function (value) {
         // see formStore mixin
-        this.value = value
+        if(!value) {
+          this.value = this.selected;
+        }else {
+          this.value = value
+        }
+
         this.saveIntoStore()
         this.$emit('change', value)
       },
