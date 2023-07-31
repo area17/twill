@@ -33,7 +33,7 @@ class AppSettingsController extends ModuleController
         }
     }
 
-    public function update(int|string|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
+    public function update(int|string|TwillModelContract $id, int|string|null $submoduleId = null): JsonResponse
     {
         $model = AppSetting::findOrFail($id);
 

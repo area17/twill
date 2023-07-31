@@ -106,7 +106,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
         ]);
     }
 
-    public function index(?int $parentModuleId = null): mixed
+    public function index(int|string|null $parentModuleId = null): mixed
     {
         if ($this->request->has('except')) {
             $prependScope['exceptIds'] = $this->request->get('except');
@@ -172,7 +172,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     }
 
     /**
-     * @param int|null $parentModuleId
+     * @param int|string|null $parentModuleId
      * @return JsonResponse
      * @throws BindingResolutionException
      */

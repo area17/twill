@@ -259,7 +259,7 @@ abstract class ModuleController extends Controller
     protected $submodule = false;
 
     /**
-     * @var int|null
+     * @var int|string|null
      */
     protected $submoduleParentId = null;
 
@@ -970,7 +970,7 @@ abstract class ModuleController extends Controller
     /**
      * @return IlluminateView|JsonResponse
      */
-    public function index(?int $parentModuleId = null): mixed
+    public function index(int|string|null $parentModuleId = null): mixed
     {
         $this->authorizeOption('list', $this->moduleName);
 
@@ -1032,7 +1032,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param int|null $parentModuleId
+     * @param int|string|null $parentModuleId
      * @return \Illuminate\Http\JsonResponse
      */
     public function store($parentModuleId = null)
@@ -1093,7 +1093,7 @@ abstract class ModuleController extends Controller
     /**
      * @param Request $request
      * @param int|string $id
-     * @param int|null $submoduleId
+     * @param int|string|null $submoduleId
      * @return \Illuminate\Http\RedirectResponse
      */
     public function show($id, $submoduleId = null)
@@ -1169,7 +1169,7 @@ abstract class ModuleController extends Controller
         );
     }
 
-    public function create(int $parentModuleId = null): JsonResponse|RedirectResponse|IlluminateView
+    public function create(int|string $parentModuleId = null): JsonResponse|RedirectResponse|IlluminateView
     {
         if (! $this->getIndexOption('skipCreateModal')) {
             return Redirect::to(
@@ -1205,7 +1205,7 @@ abstract class ModuleController extends Controller
         );
     }
 
-    public function update(int|string|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
+    public function update(int|string|TwillModelContract $id, int|string|null $submoduleId = null): JsonResponse
     {
         [$item, $id] = $this->itemAndIdFromRequest($id);
 
@@ -1435,7 +1435,7 @@ abstract class ModuleController extends Controller
         );
     }
 
-    public function duplicate(int|string|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
+    public function duplicate(int|string|TwillModelContract $id, int|string|null $submoduleId = null): JsonResponse
     {
         [$item, $id] = $this->itemAndIdFromRequest($id);
 
@@ -1475,7 +1475,7 @@ abstract class ModuleController extends Controller
         );
     }
 
-    public function destroy(int|string|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
+    public function destroy(int|string|TwillModelContract $id, int|string|null $submoduleId = null): JsonResponse
     {
         [$item, $id] = $this->itemAndIdFromRequest($id);
 

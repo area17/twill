@@ -87,7 +87,7 @@ class RoleController extends ModuleController
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }
 
-    public function index(?int $parentModuleId = null): mixed
+    public function index(int|string|null $parentModuleId = null): mixed
     {
         // Superadmins can reorder groups to determine the access-level of each one.
         // A given group can't edit other groups with a higher access-level.
@@ -103,7 +103,7 @@ class RoleController extends ModuleController
         return parent::edit($id);
     }
 
-    public function update(int|string|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
+    public function update(int|string|TwillModelContract $id, int|string|null $submoduleId = null): JsonResponse
     {
         $this->authorizableOptions['edit'] = 'edit-role';
 

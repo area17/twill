@@ -100,7 +100,7 @@ class GroupController extends ModuleController
         return parent::edit($id);
     }
 
-    public function update(int|string|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
+    public function update(int|string|TwillModelContract $id, int|string|null $submoduleId = null): JsonResponse
     {
         $this->authorizableOptions['edit'] = 'edit-group';
 
