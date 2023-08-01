@@ -90,19 +90,19 @@
                                   :isActive="editor.isActive('code')"
                                   @btn:click="editor.chain().focus().setCode().run()"/>
 
-            <wysiwyg-menu-bar-btn icon="align-left" 
+            <wysiwyg-menu-bar-btn icon="align_left" 
                                   v-if="toolbar.align || toolbar['align-left']" 
                                   :isActive="editor.isActive({ textAlign: 'left' })" 
                                   @btn:click="setTextAlign('left')"/>
-            <wysiwyg-menu-bar-btn icon="align-center" 
+            <wysiwyg-menu-bar-btn icon="align_center" 
                                   v-if="toolbar.align || toolbar['align-center']" 
                                   :isActive="editor.isActive({ textAlign: 'center' })" 
                                   @btn:click="setTextAlign('center')"/>
-            <wysiwyg-menu-bar-btn icon="align-right" 
+            <wysiwyg-menu-bar-btn icon="align_right" 
                                   v-if="toolbar.align || toolbar['align-right']" 
                                   :isActive="editor.isActive({ textAlign: 'right' })" 
                                   @btn:click="setTextAlign('right')"/>
-            <wysiwyg-menu-bar-btn icon="align-justify" 
+            <wysiwyg-menu-bar-btn icon="align_justify" 
                                   v-if="toolbar.align || toolbar['align-justify']" 
                                   :isActive="editor.isActive({ textAlign: 'justify' })" 
                                   @btn:click="setTextAlign('justify')"/>

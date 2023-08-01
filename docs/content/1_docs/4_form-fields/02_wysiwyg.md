@@ -78,7 +78,7 @@ $wysiwygOptions = [
     'underline',
     'strike',
     'blockquote',
-    "code-block",
+    'code-block',
     'ordered',
     'bullet',
     'hr',
@@ -86,6 +86,7 @@ $wysiwygOptions = [
     'link',
     'clean',
     'table',
+    'align',
 ];
 @endphp
 
