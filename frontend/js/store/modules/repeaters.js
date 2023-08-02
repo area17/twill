@@ -1,5 +1,6 @@
-import { FORM } from '../mutations'
 import ACTIONS from '@/store/actions'
+
+import { FORM } from '../mutations'
 
 const state = {
   /**
@@ -25,7 +26,7 @@ const getters = {
 }
 
 function setBlockID () {
-  return Date.now()
+  return Date.now() + Math.floor(Math.random() * 1000)
 }
 
 const mutations = {
@@ -57,6 +58,51 @@ const mutations = {
       state.repeaters[blockName].push(block) // or add a new block at the end of the list
     }
   },
+  [FORM.ADD_REPEATER_FROM_SELECTION] (state, blockInfos) {
+    const blockName = blockInfos.name
+    const blockType = blockInfos.type
+
+    const blockModel = state.availableRepeaters[blockType]
+    const isNew = (!state.repeaters[blockName])
+
+    if (!blockModel) return
+
+    const newBlocks = {}
+    newBlocks[blockName] = []
+
+    blockInfos.selection.forEach((item) => {
+
+      const block = {}
+      block.id = setBlockID()
+      block.type = blockModel.component
+      block.title = blockModel.title
+      block.repeater_target_id = item.id
+
+      const fieldData = [];
+
+      for (const key in item.repeaterFields) {
+        if (item.repeaterFields.hasOwnProperty(key)) {
+          fieldData.push({
+            name: `blocks[${block.id}][${key}]`,
+            value: item.repeaterFields[key]
+          })
+        }
+      }
+
+      this.commit(FORM.ADD_FORM_FIELDS, fieldData)
+
+      if (!isNew) {
+        state.repeaters[blockName].push(block)
+      }
+      else {
+        newBlocks[blockName].push(block)
+      }
+    })
+
+    if (isNew) {
+      state.repeaters = Object.assign({}, state.repeaters, newBlocks)
+    }
+  },
   [FORM.DELETE_FORM_BLOCK] (state, blockInfos) {
     state.repeaters[blockInfos.name].splice(blockInfos.index, 1)
   },
@@ -69,6 +115,17 @@ const mutations = {
     clone.twillUi.isNew = true
 
     state.repeaters[blockInfos.name].splice(blockInfos.index + 1, 0, clone)
+
+    // Clone the fields as well.
+    const fields = [...getters.fieldsByBlockId(blockInfos.id)]
+    const fieldCopies = []
+    fields.forEach(field => {
+      fieldCopies.push({
+        name: field.name.replace(blockInfos.id, clone.id),
+        value: field.value
+      })
+    })
+    this.commit(FORM.ADD_FORM_FIELDS, fieldCopies)
   },
   [FORM.REORDER_FORM_BLOCKS] (state, newValues) {
     const newBlocks = {}
@@ -81,6 +138,32 @@ const mutations = {
 }
 
 const actions = {
+  async [ACTIONS.DUPLICATE_REPEATER] ({ state, commit, getters }, { editorName, block, index, id }) {
+    const clone = Object.assign({}, state.repeaters[editorName][index])
+    clone.id = id
+
+    // Metadata for rendering
+    clone.twillUi = {}
+    clone.twillUi.isNew = true
+
+    const duplicates = {}
+    duplicates[editorName] = [...state.repeaters[editorName]];
+    duplicates[editorName].splice(index + 1, 0, clone)
+
+
+    // Clone the fields as well.
+    const fields = [...getters.fieldsByBlockId(block.id)]
+    const fieldCopies = []
+    fields.forEach(field => {
+      fieldCopies.push({
+        name: field.name.replace(block.id, clone.id),
+        value: JSON.parse(JSON.stringify(field.value))
+      })
+    })
+
+    commit(FORM.ADD_FORM_FIELDS, fieldCopies)
+    commit(FORM.ADD_REPEATERS, { repeaters: duplicates })
+  },
   async [ACTIONS.DUPLICATE_BLOCK] ({ commit, getters }, { block, id }) {
     // copy repeaters and update with the provided id
     const repeaters = { ...getters.repeatersByBlockId(block.id) }
@@ -92,14 +175,14 @@ const actions = {
     const fieldCopies = []
     Object.keys(duplicates).forEach(duplicateId => {
       duplicates[duplicateId].forEach((block, index) => {
-        const id = Date.now()
+        const id = Date.now() + Math.floor(Math.random() * 1000)
         const fields = [...getters.fieldsByBlockId(block.id)]
         duplicates[duplicateId][index] = { ...duplicates[duplicateId][index], id }
 
         fields.forEach(field => {
           fieldCopies.push({
             name: field.name.replace(block.id, id),
-            value: field.value
+            value: JSON.parse(JSON.stringify(field.value))
           })
         })
       })

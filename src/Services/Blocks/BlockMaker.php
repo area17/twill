@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Blocks;
 
+use A17\Twill\Facades\TwillBlocks;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
@@ -14,11 +15,6 @@ class BlockMaker
      * @var Filesystem
      */
     protected $files;
-
-    /**
-     * @var \A17\Twill\Services\Blocks\BlockCollection
-     */
-    protected $blockCollection;
 
     /**
      * @var \Illuminate\Console\Command
@@ -37,23 +33,11 @@ class BlockMaker
 
     /**
      * @param Filesystem $files
-     * @param \A17\Twill\Services\Blocks\BlockCollection $blockCollection
      */
     public function __construct(
-        Filesystem $files,
-        BlockCollection $blockCollection
+        Filesystem $files
     ) {
         $this->files = $files;
-
-        $this->blockCollection = $blockCollection;
-    }
-
-    /**
-     * @return \A17\Twill\Services\Blocks\BlockCollection
-     */
-    public function getBlockCollection()
-    {
-        return $this->blockCollection;
     }
 
     /**
@@ -66,7 +50,7 @@ class BlockMaker
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      * @throws \Exception
      */
-    public function make($blockName, $baseName, $iconName)
+    public function make($blockName, $baseName, $iconName, bool $generateView = false)
     {
         $this->info('Creating block...');
 
@@ -112,7 +96,8 @@ class BlockMaker
             $blockName,
             $blockFile,
             $repeaters,
-            $blockIdentifier
+            $blockIdentifier,
+            $generateView
         );
     }
 
@@ -264,7 +249,7 @@ class BlockMaker
             $stub
         );
 
-        $stub = preg_replace(
+        return preg_replace(
             [
                 "/@twillPropComponent\('(.*)'\)\n/",
                 "/@twillBlockComponent\('(.*)'\)\n/",
@@ -273,8 +258,6 @@ class BlockMaker
             "",
             $stub
         );
-
-        return $stub;
     }
 
     /**
@@ -292,7 +275,6 @@ class BlockMaker
     }
 
     /**
-     * @param string $blockIdentifier
      * @param string $type
      * @return string
      */
@@ -338,7 +320,7 @@ class BlockMaker
      */
     public function getBlockByName($block, $sources = [])
     {
-        return $this->blockCollection->findByName($block, $sources);
+        return TwillBlocks::getBlockCollection()->findByName($block, $sources);
     }
 
     /**
@@ -369,7 +351,6 @@ class BlockMaker
 
                 return $file->getFilename() === $icon ? $file->getPathName() : null;
             }, null);
-
         }, null);
     }
 
@@ -383,7 +364,7 @@ class BlockMaker
     public function generateRepeaters($baseName, $blockName, &$blockBase)
     {
         preg_match_all(
-            '/@formField(.*\'repeater\'.*\[.*=>.*\'(.*)\'].*)/',
+            '#<x-twill::repeater type="(.*)"\/>#',
             $blockBase,
             $matches
         );
@@ -394,7 +375,7 @@ class BlockMaker
             return null;
         }
 
-        foreach ($matches[2] as $index => $repeaterName) {
+        foreach ($matches[1] as $index => $repeaterName) {
             if (Str::startsWith($repeaterName, $baseName)) {
                 $newRepeater = $this->createRepeater(
                     $repeaterName,
@@ -444,7 +425,7 @@ class BlockMaker
         $blockBase,
         $blockString
     ) {
-        $baseRepeater = $this->blockCollection->findByName($repeaterName);
+        $baseRepeater = TwillBlocks::getBlockCollection()->findByName($repeaterName);
 
         return [
             'baseRepeater' => $baseRepeater,
@@ -493,20 +474,28 @@ class BlockMaker
 
     /**
      * @param $blockName
-     * @param string $blockFile
      * @param \Illuminate\Support\Collection $repeaters
-     * @param string $blockIdentifier
      * @return bool
      */
     protected function saveAllFiles(
         $blockName,
         string $blockFile,
         $repeaters,
-        string $blockIdentifier
+        string $blockIdentifier,
+        bool $generateView = false
     ) {
         $this->put($blockFile, $this->blockBase);
 
         $this->info("Block {$blockName} was created.");
+
+        if ($generateView) {
+            $this->put(
+                $path = str_replace('views/twill/blocks', 'views/site/blocks', $blockFile),
+                'This is a basic preview. You can use dd($block) to view the data you have access to. <br />' .
+                'This preview file is located at: ' . $path
+            );
+            $this->info("Block {$blockName} blank render view was created.");
+        }
 
         foreach ($repeaters as $repeater) {
             $this->put(
@@ -521,7 +510,6 @@ class BlockMaker
     }
 
     /**
-     * @param \Illuminate\Console\Command $command
      * @return BlockMaker
      */
     public function setCommand(Command $command)

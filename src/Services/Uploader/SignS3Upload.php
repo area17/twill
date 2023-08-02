@@ -15,9 +15,6 @@ class SignS3Upload
      */
     protected $config;
 
-    /**
-     * @param Config $config
-     */
     public function __construct(Config $config)
     {
         $this->config = $config;
@@ -64,8 +61,7 @@ class SignS3Upload
         $bucket = null;
         $parsedMaxSize = null;
 
-        for ($i = 0; $i < count($conditions); $i++) {
-            $condition = $conditions[$i];
+        foreach ($conditions as $condition) {
             if (isset($condition['bucket'])) {
                 $bucket = $condition['bucket'];
             } elseif (isset($condition[0]) && $condition[0] == 'content-length-range') {

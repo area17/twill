@@ -22,24 +22,22 @@ class UserRequest extends Request
 
     /**
      * Gets the validation rules that apply to the request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         switch ($this->method()) {
             case 'POST':
-                {
-                    return [
+                return [
                         'name' => 'required',
                         'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email',
                     ] + $this->getRoleValidator(['required']);
-                }
             case 'PUT':
-                {
-                    return [
+                return [
                         'name' => 'required',
-                        'email' => 'required|email|unique:' . config('twill.users_table', 'twill_users') . ',email,' . $this->route('user'),
+                        'email' => 'required|email|unique:' . config(
+                            'twill.users_table',
+                            'twill_users'
+                        ) . ',email,' . $this->route('user'),
                         'verify-code' => function ($attribute, $value, $fail) {
                             $user = Auth::guard('twill_users')->user();
                             $with2faSettings = config('twill.enabled.users-2fa') && $user->id == $this->route('user');
@@ -59,9 +57,32 @@ class UserRequest extends Request
                                 }
                             }
                         },
+                        'force-2fa-disable-challenge' => function ($attribute, $value, $fail) {
+                            $user = User::findOrFail($this->route('user'));
+                            if ($this->get('google_2fa_enabled') || ! $user->google_2fa_enabled) {
+                                return;
+                            }
+
+                            $loggedInAdmin = Auth::guard('twill_users')->user();
+                            if (! $loggedInAdmin->can('manage-users')) {
+                                return $fail('Unprivileged action');
+                            }
+
+                            if (! $loggedInAdmin->google_2fa_enabled) {
+                                return $fail('You must have 2FA enabled to do this action');
+                            }
+
+                            $challenge = twillTrans(
+                                'twill::lang.user-management.force-2fa-disable-challenge',
+                                ['user' => $user->email]
+                            );
+                            if ($value !== $challenge) {
+                                return $fail('Challenge mismatch');
+                            }
+                        },
                     ] + $this->getRoleValidator();
-                }
-            default:break;
+            default:
+                break;
         }
 
         return [];

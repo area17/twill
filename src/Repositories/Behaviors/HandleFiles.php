@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\File;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -71,9 +72,10 @@ trait HandleFiles
                 }
 
                 $locale = $locale ?? config('app.locale');
-                if (in_array($role, $this->model->filesParams ?? [])
-                    || in_array($role, config('twill.block_editor.files', []))) {
-
+                if (
+                    in_array($role, $this->model->filesParams ?? [])
+                    || in_array($role, config('twill.block_editor.files', []))
+                ) {
                     Collection::make($filesForRole)->each(function ($file) use (&$files, $role, $locale) {
                         $files->push([
                             'id' => $file['id'],
@@ -105,6 +107,22 @@ trait HandleFiles
                 }
             }
         }
+
         return $fields;
+    }
+
+    public function afterDuplicateHandleFiles(TwillModelContract $object, TwillModelContract $newObject): void
+    {
+        $newObject->files()->sync(
+            $object->files->mapWithKeys(function ($file) use ($object) {
+                return [
+                    $file->id => Collection::make($object->files()->getPivotColumns())->mapWithKeys(
+                        function ($attribute) use ($file) {
+                            return [$attribute => $file->pivot->$attribute];
+                        }
+                    )->toArray(),
+                ];
+            })
+        );
     }
 }

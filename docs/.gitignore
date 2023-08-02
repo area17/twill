@@ -1,8 +1,2 @@
-.idea
+_build
 node_modules
-docs
-src/.vuepress/dist
-!src/.vuepress/public
-
-# generated using npm scripts
-/README.md

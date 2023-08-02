@@ -19,7 +19,7 @@ trait HandleUserPermissions
      */
     public function getFormFieldsHandleUserPermissions($object, $fields)
     {
-        if (! config('twill.enabled.permissions-management')) {
+        if (!config('twill.enabled.permissions-management')) {
             return $fields;
         }
 
@@ -42,7 +42,7 @@ trait HandleUserPermissions
      */
     public function afterSaveHandleUserPermissions($object, $fields)
     {
-        if (! config('twill.enabled.permissions-management')) {
+        if (!config('twill.enabled.permissions-management')) {
             return;
         }
 
@@ -51,9 +51,13 @@ trait HandleUserPermissions
         $this->updateUserItemPermissions($object, $fields);
     }
 
-    private function addOrRemoveUserToEveryoneGroup($user)
+    private function addOrRemoveUserToEveryoneGroup(User $user)
     {
         $everyoneGroup = twillModel('group')::getEveryoneGroup();
+
+        if ($user->isSuperAdmin()) {
+            return;
+        }
 
         if ($user->role->in_everyone_group) {
             $user->groups()->syncWithoutDetaching([$everyoneGroup->id]);
@@ -64,7 +68,7 @@ trait HandleUserPermissions
 
     private function updateUserItemPermissions($user, $fields)
     {
-        $oldFields = \Session::get("user-{$user->id}");
+        $oldFields = Session::get("user-{$user->id}");
 
         foreach ($fields as $key => $value) {
             if (Str::endsWith($key, '_permission')) {
@@ -96,7 +100,7 @@ trait HandleUserPermissions
      */
     protected function getUserPermissionsFields($user, $fields)
     {
-        if (! config('twill.enabled.permissions-management')) {
+        if (!config('twill.enabled.permissions-management')) {
             return $fields;
         }
 
@@ -104,12 +108,11 @@ trait HandleUserPermissions
 
         // looking for group permissions that belongs to the user
         foreach ($user->publishedGroups as $group) {
-
             // get each permissions that belongs to a module from this group
             foreach ($group->permissions()->moduleItem()->get() as $permission) {
                 $model = $permission->permissionable()->first();
 
-                if (! $model) {
+                if (!$model) {
                     continue;
                 }
 
@@ -131,11 +134,14 @@ trait HandleUserPermissions
         }
 
         // looking for global permissions, if the user has the 'manage-modules' permission
-        $isManageAllModules = $user->isSuperAdmin() || ($user->role->permissions()->global()->where('name', 'manage-modules')->first() != null);
+        $isManageAllModules = $user->isSuperAdmin() || ($user->role->permissions()->global()->where(
+            'name',
+            'manage-modules'
+        )->first() != null);
 
         // looking for role module permission
         $globalPermissions = [];
-        if (! $isManageAllModules) {
+        if (!$isManageAllModules) {
             foreach ($user->role->permissions()->module()->get() as $permission) {
                 if ($permission->permissionable_type) {
                     $permissionName = str_replace('-module', '-item', $permission->name);
@@ -152,7 +158,7 @@ trait HandleUserPermissions
 
                 foreach ($moduleItems as $moduleItem) {
                     $index = $moduleName . '_' . $moduleItem->id . '_permission';
-                    if (! isset($fields[$index])) {
+                    if (!isset($fields[$index])) {
                         $fields[$index] = "{$permission}";
                     } else {
                         $current = array_search($fields[$index], $itemScopes);

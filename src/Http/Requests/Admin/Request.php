@@ -53,12 +53,7 @@ abstract class Request extends FormRequest
         return [];
     }
 
-    /**
-     * Gets the validation rules that apply to the translated fields.
-     *
-     * @return array
-     */
-    protected function rulesForTranslatedFields($rules, $fields)
+    protected function rulesForTranslatedFields(array $existingRules, array $translatedFieldRules): array
     {
         $locales = getLocales();
         $localeActive = false;
@@ -67,7 +62,7 @@ abstract class Request extends FormRequest
             foreach ($locales as $locale) {
                 $language = Collection::make($this->request->all('languages'))->where('value', $locale)->first();
                 $currentLocaleActive = $language['published'] ?? false;
-                $rules = $this->updateRules($rules, $fields, $locale, $currentLocaleActive);
+                $existingRules = $this->updateRules($existingRules, $translatedFieldRules, $locale, $currentLocaleActive);
 
                 if ($currentLocaleActive) {
                     $localeActive = true;
@@ -76,10 +71,10 @@ abstract class Request extends FormRequest
         }
 
         if (! $localeActive) {
-            $rules = $this->updateRules($rules, $fields, reset($locales));
+            $existingRules = $this->updateRules($existingRules, $translatedFieldRules, reset($locales));
         }
 
-        return $rules;
+        return $existingRules;
     }
 
     /**
@@ -110,7 +105,8 @@ abstract class Request extends FormRequest
                     return $this->ruleStartsWith($rule, 'required');
                 });
 
-                if ($hasRequiredRule && $fieldRules->doesntContain('nullable')) {
+                // @TODO: Can be replaced with doesntContain in twill 3.x
+                if ($hasRequiredRule && !in_array($fieldRules, $fieldRules->toArray())) {
                     $fieldRules->add('nullable');
                 }
             }

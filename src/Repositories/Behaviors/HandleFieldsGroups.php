@@ -74,6 +74,7 @@ trait HandleFieldsGroups
                         $object->setAttribute($field_name, $field_value);
                     }
                 }
+
                 $fields = array_merge($fields, $decoded_fields);
             }
         }
@@ -99,6 +100,7 @@ trait HandleFieldsGroups
                 foreach ($fields[$group] as $key => $value) {
                     $fieldsGroupWithGroupSeparator[Str::replaceFirst($group . $this->fieldsGroupsFormFieldNameSeparator, '', $key)] = $value;
                 }
+
                 $fields[$group] = $fieldsGroupWithGroupSeparator;
             }
 
@@ -109,6 +111,7 @@ trait HandleFieldsGroups
                         $fieldForTranslationTrait[$locale][$field] = $value;
                     }
                 }
+
                 $fields[$group] = $fieldForTranslationTrait;
             }
 
@@ -130,7 +133,7 @@ trait HandleFieldsGroups
     {
         $casts = $object->getCasts();
         if ($this->model->isTranslatable()) {
-            $casts = $casts + app()->make($this->model->getTranslationModelNameDefault())->getCasts();
+            $casts += app()->make($this->model->getTranslationModelNameDefault())->getCasts();
         }
 
         return $casts;

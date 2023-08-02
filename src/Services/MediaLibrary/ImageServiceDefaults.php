@@ -4,7 +4,6 @@ namespace A17\Twill\Services\MediaLibrary;
 
 trait ImageServiceDefaults
 {
-
     protected $cropParamsKeys = [
         'crop_x',
         'crop_y',

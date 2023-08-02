@@ -18,7 +18,7 @@
           <a17-blockeditor-model :block="savedBlock"
                            :key="savedBlock.id"
                            :editor-name="editorName"
-                           v-slot="{ block, isActive, blockIndex, move, remove, edit, unEdit }">
+                           v-slot="{ block, isActive, blockIndex, move, remove, edit, unEdit, cloneBlock }">
             <a17-editor-block-preview :ref="block.id"
                                       :block="block"
                                       :blockIndex="blockIndex"
@@ -28,6 +28,7 @@
                                       @block:select="_selectBlock(edit, blockIndex)"
                                       @block:unselect="_unselectBlock(unEdit, blockIndex)"
                                       @block:move="move"
+                                      @block:clone="_cloneBlock(cloneBlock, blockIndex)"
                                       @block:delete="_deleteBlock(remove)"
                                       @scroll-to="scrollToActive"/>
           </a17-blockeditor-model>
@@ -41,22 +42,19 @@
 </template>
 
 <script>
-  import { DraggableMixin, BlockEditorMixin } from '@/mixins'
-
-  import A17EditorBlockPreview from '@/components/editor/EditorPreviewBlockItem'
-  import A17BlockEditorModel from '@/components/blocks/BlockEditorModel'
-  import A17Spinner from '@/components/Spinner.vue'
-
-  import { PREVIEW } from '@/store/mutations/index'
-  import ACTIONS from '@/store/actions/index'
-
-  import draggable from 'vuedraggable'
-  import tinyColor from 'tinycolor2'
-
   import debounce from 'lodash/debounce'
+  import tinyColor from 'tinycolor2'
+  import draggable from 'vuedraggable'
+
+  import A17BlockEditorModel from '@/components/blocks/BlockEditorModel'
+  import A17EditorBlockPreview from '@/components/editor/EditorPreviewBlockItem'
+  import A17Spinner from '@/components/Spinner.vue'
+  import { BlockEditorMixin,DraggableMixin } from '@/mixins'
+  import ACTIONS from '@/store/actions/index'
+  import { PREVIEW } from '@/store/mutations/index'
 
   export default {
-    name: 'A17editorpreview',
+    name: 'A17editorPreview',
     props: {
       bgColor: {
         type: String,
@@ -108,7 +106,7 @@
         const index = Math.max(0, evt.newIndex)
         this.addAndEditBlock(add, edit, {
           block,
-          index: index
+          index
         })
 
         this._selectBlock(null, index)
@@ -149,6 +147,11 @@
         this.unSubscribe()
         this.deleteBlock(fn)
       },
+      _cloneBlock (fn, index) {
+        // Clone block and refresh preview
+        this.cloneBlock(fn)
+        this.getPreview(index + 1)
+      },
       unSubscribe () {
         if (!this._unSubscribeInternal) return
 
@@ -172,7 +175,7 @@
         this.loading = true
         this.$store.dispatch(ACTIONS.GET_PREVIEW, {
           editorName: this.editorName,
-          index: index
+          index
         })
           .then(() => {
             this.$nextTick(() => {

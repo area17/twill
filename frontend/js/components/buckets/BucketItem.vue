@@ -28,7 +28,7 @@
         <div v-if="restricted" slot="dropdown__content" class="item__dropdown__content">
           <a17-radiogroup name="bucketsSelection" radioClass="bucket" :radios="dropDownBuckets" :initialValue="selectedBuckets()[0]" @change="updateBucket"/>
         </div>
-        <div v-else="" slot="dropdown__content" class="item__dropdown__content">
+        <div v-else slot="dropdown__content" class="item__dropdown__content">
           <a17-checkboxgroup name="bucketsSelection" :options="dropDownBuckets" :selected="selectedBuckets()" @change="updateBucket"/>
         </div>
       </a17-dropdown>
@@ -40,8 +40,9 @@
 </template>
 
 <script>
-  import A17Dropdown from '../Dropdown.vue'
   import bucketMixin from '@/mixins/buckets'
+
+  import A17Dropdown from '../Dropdown.vue'
 
   export default {
     components: { A17Dropdown },

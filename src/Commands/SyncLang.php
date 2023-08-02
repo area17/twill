@@ -74,11 +74,11 @@ class SyncLang extends Command
                 $translations = $this->files->getRequire($directory . '/lang.php');
                 foreach (Arr::dot($translations) as $key => $translation) {
                     $rowIndex = array_search($key, Arr::pluck(array_slice($csvArray, 2), 0));
-                    if ($rowIndex === FALSE) {
+                    if ($rowIndex === false) {
                         $newRow = array_fill(0, count($csvArray[0]), "");
                         $newRow[0] = $key;
                         $newRow[$columnIndex] = $translation;
-                        array_push($csvArray, $newRow);
+                        $csvArray[] = $newRow;
                     } else {
                         $csvArray[$rowIndex + 2][$columnIndex] = $translation;
                     }
@@ -151,11 +151,12 @@ class SyncLang extends Command
     private function convertArrayToString($array)
     {
         $export = var_export($array, true);
-        $export = preg_replace("/^([ ]*)(.*)/m", '$1$1$2', $export);
+        $export = preg_replace("#^([ ]*)(.*)#m", '$1$1$2', $export);
+
         $array = preg_split("/\r\n|\n|\r/", $export);
         $array = preg_replace(["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], [null, ']$1', ' => ['], $array);
-        $export = join(PHP_EOL, array_filter(["["] + $array));
-        return $export;
+
+        return implode(PHP_EOL, array_filter(["["] + $array));
     }
 
     private function cleanup()

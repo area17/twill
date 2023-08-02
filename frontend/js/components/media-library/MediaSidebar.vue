@@ -56,6 +56,7 @@
 
           <a17-locale type="a17-textfield" v-if="isImage && translatableMetadatas.includes('alt_text')"
                       :attributes="{ label: $trans('media-library.sidebar.alt-text', 'Alt text'), name: 'alt_text', type: 'text', size: 'small' }"
+                      :keepInDom="true"
                       :initialValues="altValues" @focus="focus" @blur="blur"></a17-locale>
           <a17-textfield v-else-if="isImage" :label="$trans('media-library.sidebar.alt-text', 'Alt text')" name="alt_text"
                          :initialValue="firstMedia.metadatas.default.altText" size="small" @focus="focus" @blur="blur"/>
@@ -63,6 +64,7 @@
           <template v-if="useWysiwyg">
             <a17-locale type="a17-wysiwyg" v-if="isImage && translatableMetadatas.includes('caption')"
                         :attributes="{ options: wysiwygOptions, label: $trans('media-library.sidebar.caption', 'Caption'), name: 'caption', size: 'small' }"
+                        :keepInDom="true"
                         :initialValues="captionValues" @focus="focus" @blur="blur"></a17-locale>
             <a17-wysiwyg v-else-if="isImage" type="textarea" :rows="1" size="small" :label="$trans('media-library.sidebar.caption', 'Caption')" name="caption"
                            :options="wysiwygOptions"
@@ -71,6 +73,7 @@
           <template v-else>
             <a17-locale type="a17-textfield" v-if="isImage && translatableMetadatas.includes('caption')"
                         :attributes="{ type: 'textarea', rows: 1, label: $trans('media-library.sidebar.caption', 'Caption'), name: 'caption', size: 'small' }"
+                        :keepInDom="true"
                         :initialValues="captionValues" @focus="focus" @blur="blur"></a17-locale>
             <a17-textfield v-else-if="isImage" type="textarea" :rows="1" size="small" :label="$trans('media-library.sidebar.caption', 'Caption')" name="caption"
                            :initialValue="firstMedia.metadatas.default.caption" @focus="focus" @blur="blur"/>
@@ -79,6 +82,7 @@
           <template v-for="field in singleOnlyMetadatas">
             <a17-locale type="a17-textfield" v-bind:key="field.name"
                         v-if="isImage && (field.type === 'text' || !field.type) && translatableMetadatas.includes(field.name)"
+                        :keepInDom="true"
                         :attributes="{ label: field.label, name: field.name, type: 'textarea', rows: 1, size: 'small' }"
                         :initialValues="firstMedia.metadatas.default[field.name]" @focus="focus" @blur="blur"/>
             <a17-textfield v-bind:key="field.name" v-else-if="isImage && (field.type === 'text' || !field.type)"
@@ -96,6 +100,7 @@
         <template v-for="field in singleAndMultipleMetadatas">
           <a17-locale type="a17-textfield" v-bind:key="field.name"
                       v-if="isImage && (field.type === 'text' || !field.type)&& ((hasMultipleMedias && !fieldsRemovedFromBulkEditing.includes(field.name)) || hasSingleMedia) && translatableMetadatas.includes(field.name)"
+                      :keepInDom="true"
                       :attributes="{ label: field.label, name: field.name, type: 'textarea', rows: 1, size: 'small' }"
                       :initialValues="sharedMetadata(field.name, 'object')" @focus="focus" @blur="blur"/>
           <a17-textfield v-bind:key="field.name"
@@ -130,14 +135,15 @@
 </template>
 
 <script>
+  import isEqual from 'lodash/isEqual'
   import { mapState } from 'vuex'
+
+  import a17Langswitcher from '@/components/LangSwitcher'
+  import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
   import api from '@/store/api/media-library'
   import { NOTIFICATION } from '@/store/mutations'
-  import isEqual from 'lodash/isEqual'
-  import FormDataAsObj from '@/utils/formDataAsObj.js'
   import a17VueFilters from '@/utils/filters.js'
-  import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
-  import a17Langswitcher from '@/components/LangSwitcher'
+  import FormDataAsObj from '@/utils/formDataAsObj.js'
 
   export default {
     name: 'A17MediaSidebar',
@@ -380,15 +386,17 @@
         }
       },
       save: function () {
-        const form = this.$refs.form
-        if (!form) return
+        this.$nextTick(() => {
+          const form = this.$refs.form
+          if (!form) return
 
-        const formData = this.getFormData(form)
+          const formData = this.getFormData(form)
 
-        if (!isEqual(formData, this.previousSavedData) && !this.loading) {
-          this.previousSavedData = formData
-          this.update(form)
-        }
+          if (!isEqual(formData, this.previousSavedData) && !this.loading) {
+            this.previousSavedData = formData
+            this.update(form)
+          }
+        })
       },
       submit: function (event) {
         event.preventDefault()

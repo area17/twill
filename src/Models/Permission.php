@@ -2,6 +2,9 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Enums\PermissionLevel;
+use A17\Twill\Exceptions\ModuleNotFoundException;
+use A17\Twill\Facades\TwillPermissions;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -9,48 +12,34 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-/**
- * Permission model
- *
- * @property-read string $permissionableModule
- * @method static Builder global() Get global scope permissions.
- * @method static Builder module() Get module scope permissions.
- * @method static Builder moduleItem() Get module item scope permissions.
- * @method static Builder ofItem(BaseModel $item) Get permissions related to an item.
- * @method static Builder ofModuleName(string $moduleName) Get permissions related to a Twill module.
- * @method static Builder ofModel(BaseModel $model) Get permissions related to a model.
- */
 class Permission extends BaseModel
 {
     /**
      * Constant that represents a list of permissions that belongs to the global scope.
      *
-     * @var string
      * @see Permission::available($scope)
      */
-    const SCOPE_GLOBAL = 'global';
+    public const SCOPE_GLOBAL = 'global';
 
     /**
      * Constant that represents a list of permissions that belongs to the module scope.
      *
-     * @var string
      * @see Permission::available($scope)
      */
-    const SCOPE_MODULE = 'module';
+    public const SCOPE_MODULE = 'module';
 
     /**
      * Constant that represents a list of permissions that belongs to the module item scope.
      *
-     * @var string
      * @see Permission::available($scope)
      */
-    const SCOPE_ITEM = 'item';
+    public const SCOPE_ITEM = 'item';
 
     protected $fillable = [
         'name',
         'permissionable_type',
         'permissionable_id',
-        'is_default'
+        'is_default',
     ];
 
     protected $appends = ['permissionable_module'];
@@ -65,7 +54,7 @@ class Permission extends BaseModel
     public static function available($scope)
     {
         switch ($scope) {
-            case Permission::SCOPE_GLOBAL:
+            case self::SCOPE_GLOBAL:
                 return [
                     'edit-settings',
                     'edit-users',
@@ -73,25 +62,22 @@ class Permission extends BaseModel
                     'edit-user-groups',
                     'manage-modules',
                     'access-media-library',
-                    'edit-media-library'
+                    'edit-media-library',
                 ];
-                break;
-            case Permission::SCOPE_MODULE:
+            case self::SCOPE_MODULE:
                 return array_merge(
                     [
                         'view-module',
-                        'edit-module'
+                        'edit-module',
                     ],
-                    (config('twill.permissions.level') === 'roleGroupItem' ? ['manage-module'] : [])
+                    (TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM) ? ['manage-module'] : [])
                 );
-                break;
-            case Permission::SCOPE_ITEM:
+            case self::SCOPE_ITEM:
                 return [
                     'view-item',
                     'edit-item',
-                    'manage-item'
+                    'manage-item',
                 ];
-                break;
         }
     }
 
@@ -115,7 +101,11 @@ class Permission extends BaseModel
         return self::permissionableModules()->filter(function ($module) {
             return !strpos($module, '.');
         })->mapWithKeys(function ($module) {
-            return [$module => getRepositoryByModuleName($module)->get([], [], [], -1)];
+            try {
+                return [$module => getRepositoryByModuleName($module)->get([], [], [], -1)];
+            } catch (ModuleNotFoundException $e) {
+                return [];
+            }
         });
     }
 
@@ -124,7 +114,7 @@ class Permission extends BaseModel
      *
      * @return MorphTo|Collection|User[]
      */
-    public function permissionable()
+    public function permissionable(): MorphTo
     {
         return $this->morphTo();
     }
@@ -134,7 +124,7 @@ class Permission extends BaseModel
      *
      * @return BelongsToMany|Collection|User[]
      */
-    public function users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(twillModel('user'), 'permission_twill_user', 'permission_id', 'twill_user_id');
     }
@@ -144,7 +134,7 @@ class Permission extends BaseModel
      *
      * @return BelongsToMany|Collection|BaseModel[]
      */
-    public function roles()
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(twillModel('role'), 'permission_role', 'permission_id', 'role_id');
     }
@@ -154,7 +144,7 @@ class Permission extends BaseModel
      *
      * @return BelongsToMany|Collection|BaseModel[]
      */
-    public function groups()
+    public function groups(): BelongsToMany
     {
         return $this->belongsToMany(twillModel('group'), 'group_permission', 'permission_id', 'group_id');
     }
@@ -162,7 +152,6 @@ class Permission extends BaseModel
     /**
      * Scope a query to only include global scope permissions.
      *
-     * @param Builder $query
      * @return Builder
      */
     public function scopeGlobal(Builder $query)
@@ -173,7 +162,6 @@ class Permission extends BaseModel
     /**
      * Scope a query to only include module scope permissions.
      *
-     * @param Builder $query
      * @return Builder
      */
     public function scopeModule(Builder $query)
@@ -184,7 +172,6 @@ class Permission extends BaseModel
     /**
      * Scope a query to only include module item scope permissions.
      *
-     * @param Builder $query
      * @return Builder
      */
     public function scopeModuleItem(Builder $query)
@@ -195,13 +182,11 @@ class Permission extends BaseModel
     /**
      * Scope a query to only include permissions related to an item.
      *
-     * @param Builder $query
-     * @param BaseModel $item
      * @return Builder
      */
     public function scopeOfItem(Builder $query, BaseModel $item)
     {
-        $permissionableSubmodule = self::permissionableModules()->filter(function($module) use ($item){
+        $permissionableSubmodule = self::permissionableModules()->filter(function ($module) use ($item) {
             return strpos($module, '.') && explode('.', $module)[1] === getModuleNameByModel($item);
         })->first();
 
@@ -219,7 +204,6 @@ class Permission extends BaseModel
     /**
      * Scope a query to only include permissions related to a Twill module.
      *
-     * @param Builder $query
      * @param string $moduleName
      * @return Builder
      */
@@ -229,13 +213,13 @@ class Permission extends BaseModel
         if (strpos($moduleName, '.')) {
             $moduleName = explode('.', $moduleName)[0];
         }
+
         return $query->ofModel(getModelByModuleName($moduleName));
     }
 
     /**
      * Scope a query to only include permissions related to a model.
      *
-     * @param Builder $query
      * @param string $model
      * @return Builder
      */
@@ -253,5 +237,4 @@ class Permission extends BaseModel
     {
         return getModuleNameByModel($this->permissionable_type);
     }
-
 }

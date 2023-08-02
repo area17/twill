@@ -2,26 +2,14 @@
 
 namespace A17\Twill\Http\ViewComposers;
 
-use App;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Contracts\View\View;
 
 class Localization
 {
     /**
-     * Create a new profile composer.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-
-    }
-
-    /**
      * Bind data to the view.
      *
-     * @param  View  $view
      * @return void
      */
     public function compose(View $view)
@@ -35,7 +23,7 @@ class Localization
             'fallback_locale' => config('twill.fallback_locale', 'en'),
             'lang' => $lang
         ];
-        
+
         $view->with(['twillLocalization' => $twillLocalization]);
     }
 }

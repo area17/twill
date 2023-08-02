@@ -2,8 +2,10 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use A17\Twill\Commands\Build;
 use A17\Twill\Facades\TwillCapsules;
 use Astrotomic\Translatable\Translatable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Collection;
 
@@ -27,21 +29,16 @@ trait HasTranslation
         return TwillCapsules::getCapsuleForModel(class_basename($this))->getTranslationModel();
     }
 
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string|null $locale
-     * @return \Illuminate\Database\Eloquent\Builder|null
-     */
-    public function scopeWithActiveTranslations($query, $locale = null)
+    public function scopeWithActiveTranslations(Builder $query, ?string $locale = null): Builder
     {
         if (method_exists($query->getModel(), 'translations')) {
-            $locale = $locale == null ? app()->getLocale() : $locale;
+            $locale = $locale ?? app()->getLocale();
 
             $query->whereHas('translations', function ($query) use ($locale) {
                 $query->whereActive(true);
                 $query->whereLocale($locale);
 
-                if (config('translatable.use_property_fallback', false)) {
+                if (config('translatable.use_fallback') && config('translatable.use_property_fallback', false)) {
                     $query->orWhere('locale', config('translatable.fallback_locale'));
                 }
             });
@@ -50,11 +47,13 @@ trait HasTranslation
                 $query->whereActive(true);
                 $query->whereLocale($locale);
 
-                if (config('translatable.use_property_fallback', false)) {
+                if (config('translatable.use_fallback') && config('translatable.use_property_fallback', false)) {
                     $query->orWhere('locale', config('translatable.fallback_locale'));
                 }
             }]);
         }
+
+        return $query;
     }
 
     /**
@@ -75,12 +74,12 @@ trait HasTranslation
         return $query
             ->join($translationTable, function (JoinClause $join) use ($translationTable, $localeKey, $table, $keyName) {
                 $join
-                    ->on($translationTable.'.'.$this->getRelationKey(), '=', $table.'.'.$keyName)
-                    ->where($translationTable.'.'.$localeKey, $this->locale());
+                    ->on($translationTable . '.' . $this->getRelationKey(), '=', $table . '.' . $keyName)
+                    ->where($translationTable . '.' . $localeKey, $this->locale());
             })
-            ->where($translationTable.'.'.$this->getLocaleKey(), $locale)
-            ->orderBy($translationTable.'.'.$orderField, $orderType)
-            ->select($table.'.*')
+            ->where($translationTable . '.' . $this->getLocaleKey(), $locale)
+            ->orderBy($translationTable . '.' . $orderField, $orderType)
+            ->select($table . '.*')
             ->with('translations');
     }
 
@@ -156,5 +155,4 @@ trait HasTranslation
             return [$translation->locale => $this->translate($translation->locale)->$key];
         });
     }
-
 }

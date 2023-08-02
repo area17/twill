@@ -2,47 +2,88 @@
 
 namespace A17\Twill\Commands\Traits;
 
-use Illuminate\Filesystem\FilesystemAdapter;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Symfony\Component\Process\Process;
 
 /**
  * @method void publishConfig;
  */
 trait HandlesPresets
 {
-    /**
-     * @var \Illuminate\Filesystem\FilesystemAdapter[]
-     */
-    protected $examplesStorage = [];
-
-    /**
-     * @var \Illuminate\Filesystem\FilesystemAdapter
-     */
-    protected $appRootStorage;
-
     protected function presetExists(string $preset): bool
     {
-        return $this->getExamplesDirectoryStorage()->exists($preset);
+        return file_exists($this->getExamplesStoragePath($preset)) && is_dir($this->getExamplesStoragePath($preset));
     }
 
-    protected function installPresetFiles(string $preset): void
+    protected function generateExampleFromGit(string $preset): void
+    {
+        $basePath = base_path();
+        $status = shell_exec('cd ' . $basePath . ' && git status --short');
+
+        $targetDir = implode(DIRECTORY_SEPARATOR, [__DIR__, '..', '..', '..', 'examples', $preset, '']);
+
+        if (is_dir($targetDir)) {
+            $this->rrmdir($targetDir);
+        }
+
+        $lines = explode(PHP_EOL, $status);
+
+        $files = [];
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+
+            if ($line !== '') {
+                [$action, $file] = explode(' ', $line);
+
+                $files[] = [
+                    'from' => base_path($file),
+                    'to' => $targetDir . $file,
+                ];
+            }
+        }
+
+        $this->copyPresetFiles($files);
+    }
+
+    protected function installPresetFiles(string $preset, bool $fromTests = false, ?string $basePath = null): void
     {
         $this->checkMeetsRequirementsForPreset($preset);
 
         // First publish the config as we overwrite it later.
-        // @phpstan-ignore-next-line
-        $this->publishConfig();
-
-        $examplesStorage = $this->getExamplesStorage($preset);
-        $appRootStorage = $this->getAppRootStorage();
-
-        foreach ($examplesStorage->allDirectories() as $directory) {
-            if ($appRootStorage->makeDirectory($directory)) {
-                foreach ($examplesStorage->files($directory) as $file) {
-                    $appRootStorage->put($file, $examplesStorage->get($file));
-                }
-            }
+        if (!$fromTests) {
+            // @phpstan-ignore-next-line
+            $this->publishConfig();
         }
+
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($this->getExamplesStoragePath($preset))
+        );
+
+        // get any FE files that shouldn't be copied
+        $ignore = $fromTests ? [] : $this->getFEIgnoreFiles($preset);
+        $files = [];
+
+        foreach ($iterator as $file) {
+            // add check to iterator to exclude files from $files
+            if (
+                $file->isDir()
+                || in_array(str_replace($this->getExamplesStoragePath($preset) . DIRECTORY_SEPARATOR, '', $file->getPathname()), $ignore)
+            ) {
+                continue;
+            }
+
+            $files[] = [
+                'from' => $file->getPathname(),
+                'to' => str_replace(
+                    $this->getExamplesStoragePath($preset),
+                    $basePath ?? $this->getAppRootPath(),
+                    $file->getPathname()
+                ),
+            ];
+        }
+
+        $this->copyPresetFiles($files);
     }
 
     /**
@@ -53,56 +94,147 @@ trait HandlesPresets
      */
     protected function updatePreset(string $preset): void
     {
-        $examplesStorage = $this->getExamplesStorage($preset);
-        $appRootStorage = $this->getAppRootStorage();
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($this->getExamplesStoragePath($preset))
+        );
 
-        foreach ($examplesStorage->allDirectories() as $directory) {
-            foreach ($examplesStorage->files($directory) as $file) {
-                $examplesStorage->put($file, $appRootStorage->get($file));
+        $files = [];
+
+        foreach ($iterator as $file) {
+            if ($file->isDir()) {
+                continue;
+            }
+            $files[] = [
+                'to' => $file->getPathname(),
+                'from' => str_replace(
+                    $this->getExamplesStoragePath($preset),
+                    $this->getAppRootPath(),
+                    $file->getPathname()
+                ),
+            ];
+        }
+
+        $this->copyPresetFiles($files);
+    }
+
+    private function copyPresetFiles(array $files): void
+    {
+        foreach ($files as $file) {
+            $fileName = trim(substr($file['to'], strrpos($file['to'], DIRECTORY_SEPARATOR) + 1));
+            $dir = str_replace($fileName, '', $file['to']);
+
+            if (!file_exists($dir)) {
+                if (!mkdir($dir, 0777, true) && !is_dir($dir)) {
+                    throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
+                }
+            }
+
+            if (str_ends_with($file['from'], DIRECTORY_SEPARATOR)) {
+                $this->recurseCopy($file['from'], $file['to']);
+            } else {
+                copy($file['from'], $file['to']);
             }
         }
     }
 
-    private function getExamplesStorage(string $preset): FilesystemAdapter
+    /**
+     * @see https://www.php.net/manual/en/function.copy.php#91010
+     */
+    private function recurseCopy(string $from, string $to): void
     {
-        if (! isset($this->examplesStorage[$preset])) {
-            $this->examplesStorage[$preset] = Storage::build([
-                'driver' => 'local',
-                'root' => __DIR__ . '/../../../examples/' . $preset,
-            ]);
+        $dir = opendir($from);
+        if (!is_dir($to)) {
+            mkdir($to);
         }
-
-        return $this->examplesStorage[$preset];
+        while (false !== ($file = readdir($dir))) {
+            if (($file !== '.') && ($file !== '..')) {
+                if (is_dir($from . '/' . $file)) {
+                    $this->recurseCopy($from . '/' . $file, $to . '/' . $file);
+                } else {
+                    copy($from . '/' . $file, $to . '/' . $file);
+                }
+            }
+        }
+        closedir($dir);
     }
 
-    private function getExamplesDirectoryStorage(): FilesystemAdapter
+    /**
+     * @see https://www.php.net/manual/en/function.rmdir.php#98622
+     */
+    private function rrmdir($dir): void
     {
-        return Storage::build([
-            'driver' => 'local',
-            'root' => __DIR__ . '/../../../examples/',
-        ]);
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object !== "." && $object !== "..") {
+                    if (filetype($dir . "/" . $object) === "dir") {
+                        $this->rrmdir($dir . "/" . $object);
+                    } else {
+                        unlink($dir . "/" . $object);
+                    }
+                }
+            }
+            rmdir($dir);
+        }
     }
 
-    private function getAppRootStorage(): FilesystemAdapter
+    private function getExamplesStoragePath(string $preset): string
     {
-        if (! $this->appRootStorage) {
-            $this->appRootStorage = Storage::build([
-                'driver' => 'local',
-                'root' => base_path(),
-            ]);
-        }
+        return $this->getExamplesDirectoryPath() . DIRECTORY_SEPARATOR . $preset;
+    }
 
-        return $this->appRootStorage;
+    private function getExamplesDirectoryPath(): string
+    {
+        return dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'examples';
+    }
+
+    private function getAppRootPath(): string
+    {
+        return base_path();
     }
 
     private function checkMeetsRequirementsForPreset(string $preset): void
     {
-        if ($preset === 'blog') {
-            if (! \Composer\InstalledVersions::isInstalled('kalnoy/nestedset')) {
-                throw new \RuntimeException(
-                    'Missing nestedset, please install it using "composer require kalnoy/nestedset"'
-                );
+        if ($preset === 'basic-page-builder' && class_exists('Kalnoy\Nestedset\NodeTrait')) {
+            throw new \RuntimeException(
+                'Missing nestedset, please install it using "composer require kalnoy/nestedset"'
+            );
+        }
+    }
+
+    private function getFEIgnoreFiles(string $preset): array
+    {
+        $presetDir = $this->getExamplesStoragePath($preset);
+        $ignore = [];
+
+        // get example's manifest.json
+        $manifestPath = $presetDir . DIRECTORY_SEPARATOR . 'manifest.json';
+
+        if (file_exists($manifestPath)) {
+            $manifest = json_decode(file_get_contents($manifestPath), true);
+
+            // check if it has an fe override
+            if (array_key_exists('feOverride', $manifest)) {
+                $feOverride = $manifest['feOverride'];
+
+                // if yes get message and create prompt
+                if (array_key_exists('files', $feOverride)) {
+                    $message = "This preset will replace the following FE files if they exist: \n";
+
+                    foreach ($feOverride['files'] as $file) {
+                        $message .= "- " . $file . "\n";
+                    }
+
+                    $message .= 'Do you want to replace these files?';
+
+                    // if ignoring the fe files, get files array
+                    if (!$this->confirm($message)) {
+                        $ignore = $feOverride['files'];
+                    }
+                }
             }
         }
+
+        return $ignore;
     }
 }

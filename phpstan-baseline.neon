@@ -6,11 +6,6 @@ parameters:
 			path: src/Commands/CapsuleInstall.php
 
 		-
-			message: "#^Access to an undefined property A17\\\\Twill\\\\Commands\\\\ModuleMake\\:\\:\\$capsuleNamespace\\.$#"
-			count: 1
-			path: src/Commands/ModuleMake.php
-
-		-
 			message: "#^Variable \\$activeRepositoryTraits in empty\\(\\) always exists and is not falsy\\.$#"
 			count: 1
 			path: src/Commands/ModuleMake.php

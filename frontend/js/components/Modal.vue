@@ -17,6 +17,7 @@
 
 <script>
   import { mapState } from 'vuex'
+
   import htmlClasses from '@/utils/htmlClasses'
 
   const html = document.documentElement
@@ -125,6 +126,7 @@
         if (this.locked) return
 
         this.active = false
+        this.$emit('close')
         this.mask()
       },
       bindKeyboard: function () {

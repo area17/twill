@@ -42,8 +42,9 @@
 </template>
 
 <script>
-  import debounce from 'lodash/debounce'
   import axios from 'axios'
+  import debounce from 'lodash/debounce'
+
   import htmlClasses from '@/utils/htmlClasses'
   const html = document.documentElement
   const htmlSearchClasses = [htmlClasses.search, htmlClasses.overlay]
@@ -170,7 +171,7 @@
       },
       onSearchInput: debounce(function (event) {
         this.searchValue = event.target.value
-        if (this.searchValue && this.searchValue.length > 2) {
+        if (this.searchValue && this.searchValue.length > 0) {
           if (this.type === 'dashboard') {
             htmlSearchClasses.forEach((klass) => {
               html.classList.add(klass)

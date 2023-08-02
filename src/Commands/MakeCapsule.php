@@ -9,7 +9,7 @@ class MakeCapsule extends ModuleMake
      *
      * @var string
      */
-    protected $signature = 'twill:make:capsule {moduleName} {--singleton} {--packageDirectory=} {--packageNamespace=}
+    protected $signature = 'twill:make:capsule {moduleName}
         {--B|hasBlocks}
         {--T|hasTranslation}
         {--S|hasSlug}
@@ -18,8 +18,14 @@ class MakeCapsule extends ModuleMake
         {--P|hasPosition}
         {--R|hasRevisions}
         {--N|hasNesting}
+        {--E|generatePreview}
+        {--singleton}
+        {--bladeForm}
         {--all}
-        {--force}';
+        {--force}
+        {--packageDirectory=}
+        {--packageNamespace=}
+        {--parentModel=}';
 
     /**
      * The console command description.
@@ -31,12 +37,12 @@ class MakeCapsule extends ModuleMake
     /**
      * @var null
      */
-    protected $capsulesDirectory = null;
+    protected $capsulesDirectory;
 
     /**
      * @var null
      */
-    protected $namespace = null;
+    protected $namespace;
 
     /**
      * @var bool
@@ -48,7 +54,7 @@ class MakeCapsule extends ModuleMake
      */
     protected $isSingleton = false;
 
-    public function handle()
+    public function handle(): void
     {
         $this->isSingleton = $this->hasOption('singleton') ? $this->option('singleton') : $this->isSingleton;
 

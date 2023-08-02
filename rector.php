@@ -2,28 +2,31 @@
 
 declare(strict_types=1);
 
-use A17\Twill\Rector\RenameRoutes;
-use A17\Twill\Rector\RenameViews;
-use Rector\Core\Configuration\Option;
-use Rector\Renaming\Rector\Namespace_\RenameNamespaceRector;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Rector\Core\ValueObject\PhpVersion;
+use Rector\Laravel\Set\LaravelSetList;
+use Rector\Set\ValueObject\SetList;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
-    // Refactoring for Twill 2.6 to Twill 3.0.
-    $parameters = $containerConfigurator->parameters();
-    $parameters->set(Option::PATHS, [
-        getcwd() . '/app',
-        getcwd() . '/resources',
-        getcwd() . '/routes',
-        getcwd() . '/config',
+/**
+ * This rector file is the one used by Twill internally to handle automated upgrades of code.
+ */
+return static function (\Rector\Config\RectorConfig $rectorConfig): void {
+    $rectorConfig->sets([
+        SetList::DEAD_CODE,
+        SetList::CODE_QUALITY,
+        SetList::CODING_STYLE,
+        LaravelSetList::LARAVEL_80
     ]);
 
-    $services = $containerConfigurator->services();
-    $services->set(RenameRoutes::class)->configure(['path' =>  getcwd()]);
-    $services->set(RenameViews::class)->configure(['path' =>  getcwd()]);
-    $services->set(RenameNamespaceRector::class)->configure([
-        'App\Http\Controllers\Admin' => 'App\Http\Controllers\Twill',
-        'App\Http\Requests\Admin' => 'App\Http\Requests\Twill'
+    $rectorConfig->paths([__DIR__ . '/src', __DIR__ . '/tests']);
+    $rectorConfig->phpVersion(PhpVersion::PHP_80);
+    $rectorConfig->phpstanConfig(__DIR__ . '/phpstan.neon');
+
+    $rectorConfig->skip([
+        \Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector::class,
+        \Rector\CodingStyle\Rector\If_\NullableCompareToNullRector::class,
+        \Rector\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector::class,
+        \Rector\CodeQuality\Rector\PropertyFetch\ExplicitMethodCallOverMagicGetSetRector::class,
+        Rector\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector::class
     ]);
 };
 

@@ -3,7 +3,6 @@
 namespace A17\Twill\Tests\Integration;
 
 use App\Models\Category;
-use Illuminate\Support\Str;
 
 class ModulesCategoriesTest extends ModulesTestBase
 {

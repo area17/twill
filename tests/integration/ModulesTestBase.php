@@ -2,7 +2,8 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use A17\Twill\Models\Model;
+use App\Models\Author;
+use App\Models\Category;
 use App\Models\Translations\AuthorTranslation;
 use App\Models\Translations\CategoryTranslation;
 use Illuminate\Support\Str;
@@ -37,7 +38,7 @@ abstract class ModulesTestBase extends TestCase
 
     public $translation;
 
-    public $author;
+    public ?Author $author;
 
     public $title;
 
@@ -47,20 +48,16 @@ abstract class ModulesTestBase extends TestCase
 
     public $category;
 
-    public $example = 'tests-modules';
+    public ?string $example = 'tests-modules';
 
     public function setUp(): void
     {
         parent::setUp();
 
-        /* $this->loadModulesConfig(); */
-
-        /* $this->migrate(); */
-
-        $this->login();
+        $this->actingAs($this->superAdmin, 'twill_users');
     }
 
-    protected function assertSomethingWrongHappened()
+    protected function assertSomethingWrongHappened(): void
     {
         $this->assertSee('Something wrong happened!');
     }
@@ -154,13 +151,13 @@ abstract class ModulesTestBase extends TestCase
         $this->assertEquals($data['endpointType'], 'App\Models\Author');
     }
 
-    protected function createAuthor($count = 1): Model
+    protected function createAuthor($count = 1, array $data = []): Author
     {
         foreach (range(1, $count) as $c) {
-            $this->httpRequestAssert(
-                '/twill/personnel/authors',
+            $this->httpJsonRequestAssert(
+                route('twill.personnel.authors.store'),
                 'POST',
-                $this->getCreateAuthorData()
+                $this->getCreateAuthorData($data)
             );
         }
 
@@ -172,7 +169,7 @@ abstract class ModulesTestBase extends TestCase
 
         $this->assertNotNull($this->translation);
 
-        $this->assertCount(3, $this->author->slugs);
+        $this->assertCount(2, $this->author->slugs);
 
         return $this->author;
     }
@@ -203,7 +200,7 @@ abstract class ModulesTestBase extends TestCase
         );
     }
 
-    protected function editAuthor()
+    protected function editAuthor(): void
     {
         $this->httpRequestAssert(
             "/twill/personnel/authors/{$this->author->id}",
@@ -231,15 +228,20 @@ abstract class ModulesTestBase extends TestCase
 
     /**
      * @return array
+     * @todo: Should get rid of all the properties as they are unreliable.
      */
-    protected function getCreateAuthorData(): array
+    protected function getCreateAuthorData(array $extraData = []): array
     {
-        $name = $this->name = $this->faker->name;
+        $name = $this->faker->name;
+        // These are escaped and would not work properly (they work but not in test text comparisons')
+        $name = str_replace('\'', '-', $name);
 
-        return [
+        $this->name = $name;
+
+        $data = [
             'name' => [
-                'en' => ($this->name_en = '[EN] ' . $name),
-                'fr' => ($this->name_fr = '[FR] ' . $name),
+                'en' => ($this->name_en = '[EN] ' . ($extraData['title'] ?? $name)),
+                'fr' => ($this->name_fr = '[FR] ' . ($extraData['title'] ?? $name)),
             ],
             'slug' => [
                 'en' => ($this->slug_en = Str::slug($this->name_en)),
@@ -270,6 +272,21 @@ abstract class ModulesTestBase extends TestCase
                 ],
             ],
         ];
+
+        // Add the other values based on their translatability.
+        unset($extraData['title']);
+        foreach ($extraData as $key => $value) {
+            if (in_array($key, (new Author())->getTranslatedAttributes(), true)) {
+                $data[$key] = [
+                    'en' => '[EN] ' . $value,
+                    'fr' => '[FR] ' . $value,
+                ];
+            } else {
+                $data[$key] = $value;
+            }
+        }
+
+        return $data;
     }
 
     public function getUpdateAuthorData()
@@ -334,12 +351,12 @@ abstract class ModulesTestBase extends TestCase
     public function getUpdateAuthorWithBlock()
     {
         return $this->getUpdateAuthorData() + [
-            'blocks' => [
-                $this->getAuthorBlock(),
-                $this->getAuthorBlock($this->block_editor_name = 'unique-name'),
-            ],
-            'repeaters' => [],
-        ];
+                'blocks' => [
+                    $this->getAuthorBlock(),
+                    $this->getAuthorBlock($this->block_editor_name = 'unique-name'),
+                ],
+                'repeaters' => [],
+            ];
     }
 
     public function getAuthorBlock($name = 'default')
@@ -405,7 +422,7 @@ abstract class ModulesTestBase extends TestCase
         ];
     }
 
-    protected function createCategory($count = 1)
+    protected function createCategory($count = 1): Category
     {
         foreach (range(1, $count) as $c) {
             $this->httpRequestAssert(
@@ -426,6 +443,8 @@ abstract class ModulesTestBase extends TestCase
 
         $this->assertNotNull($this->translation);
 
-        $this->assertCount(3, $this->category->slugs);
+        $this->assertCount(2, $this->category->slugs);
+
+        return $this->category;
     }
 }

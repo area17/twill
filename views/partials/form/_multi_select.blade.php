@@ -1,26 +1,7 @@
-@php
-    $options = is_object($options) && method_exists($options, 'map') ? $options->map(function($label, $value) {
-        return [
-            'value' => $value,
-            'label' => $label
-        ];
-    })->values()->toArray() : $options;
-
-    $unpack = $unpack ?? true;
-    $note = $note ?? false;
-    $columns = $columns ?? 0;
-
-    // do not use for now, but this will allow you to create a new option directly from the form
-    $addNew = $addNew ?? false;
-    $moduleName = $moduleName ?? null;
-    $storeUrl = $storeUrl ?? '';
-    $inModal = $fieldsInModal ?? false;
-@endphp
-
 @if ($unpack)
     <a17-multiselect
         label="{{ $label }}"
-        @include('twill::partials.form.utils._field_name')
+        {!! $formFieldName() !!}
         :options="{{ json_encode($options) }}"
         :grid="true"
         :columns="{{ $columns }}"
@@ -29,18 +10,19 @@
         @if ($max ?? false) :max="{{ $max }}" @endif
         @if ($inModal) :in-modal="true" @endif
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
+        @if ($disabled ?? false) :disabled="true" @endif
         in-store="currentValue"
     >
         @if($addNew)
             <div slot="addModal">
-                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+                @partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
             </div>
         @endif
     </a17-multiselect>
 @else
     <a17-vselect
         label="{{ $label }}"
-        @include('twill::partials.form.utils._field_name')
+        {!! $formFieldName() !!}
         :options="{{ json_encode($options) }}"
         @if ($emptyText ?? false) empty-text="{{ $emptyText }}" @endif
         @if ($placeholder ?? false) placeholder="{{ $placeholder }}" @endif
@@ -48,12 +30,16 @@
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         @if ($searchable ?? $endpoint ?? false) :searchable="true" @endif
         @if ($endpoint ?? false) endpoint="{{ $endpoint }}" @endif
+        @if ($disabled ?? false) :disabled="true" @endif
         :multiple="true"
         in-store="inputValue"
+        @if ($taggable ?? false) taggable="{{ $taggable }}" @endif
+        @if ($searchable ?? false) searchable="{{ $searchable }}" @endif
+        @if ($pushTags ?? false) pushTags="{{ $pushTags }}" @endif
     >
         @if($addNew)
             <div slot="addModal">
-                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+                @partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
             </div>
         @endif
     </a17-vselect>

@@ -2,8 +2,13 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Facades\TwillPermissions;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Permission;
+use A17\Twill\Services\Listings\Columns\Text;
+use A17\Twill\Services\Listings\TableColumns;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class RoleController extends ModuleController
@@ -15,10 +20,6 @@ class RoleController extends ModuleController
     protected $indexWith = ['medias'];
 
     protected $defaultOrders = ['name' => 'asc'];
-
-    protected $defaultFilters = [
-        'search' => 'search',
-    ];
 
     protected $titleColumnKey = 'name';
 
@@ -42,83 +43,51 @@ class RoleController extends ModuleController
         parent::__construct($app, $request);
         $this->middleware('can:edit-user-roles');
 
-        $this->primaryNavigation = [
-            'users' => [
-                'title' => twillTrans('twill::lang.user-management.users'),
-                'module' => true,
-                'can' => 'edit-users',
-            ],
-            'roles' => [
-                'title' => twillTrans('twill::lang.permissions.roles.title'),
-                'module' => true,
-                'active' => true,
-                'can' => 'edit-user-roles',
-            ],
-            'groups' => [
-                'title' => twillTrans('twill::lang.permissions.groups.title'),
-                'module' => true,
-                'can' => 'edit-user-groups',
-            ],
-        ];
+        $this->disablePublish();
+
+        TwillPermissions::showUserSecondaryNavigation();
     }
 
-    protected $indexColumns = [
-        'name' => [
-            'title' => 'Name',
-            'field' => 'name',
-            'sort' => true,
-        ],
-        'created_at' => [
-            'title' => 'Date created',
-            'field' => 'created_at',
-            'sort' => true
-        ],
-        'users' => [
-            'title' => 'Users',
-            'field' => 'users_count',
-            'html' => true
-        ]
-    ];
-
-    protected function indexData($request)
+    protected function getIndexTableColumns(): TableColumns
     {
-        return [
-            'primary_navigation' => $this->primaryNavigation,
-        ];
+        return TableColumns::make([
+            Text::make()->field('name')->sortable()->title('Name')->linkToEdit(),
+            Text::make()->field('created_at')->sortable()->title('Date created'),
+            Text::make()->field('users_count')->sortable()->title('Users'),
+        ]);
     }
 
     protected function getIndexItems($scopes = [], $forcePagination = false)
     {
-        $scopes = $scopes + ['accessible' => true];
+        $scopes += ['accessible' => true];
 
         return parent::getIndexItems($scopes, $forcePagination);
     }
 
     protected function getIndexOption($option, $item = null)
     {
-        if (in_array($option, ['publish', 'bulkEdit', 'create'])) {
+        if (in_array($option, ['bulkEdit', 'create'])) {
             return auth('twill_users')->user()->can('edit-user-roles');
         }
 
         return parent::getIndexOption($option);
     }
 
-    protected function formData($request)
+    protected function formData($request): array
     {
         return [
-            'primary_navigation' => $this->primaryNavigation,
             'permission_modules' => Permission::permissionableParentModuleItems(),
         ];
     }
 
-    protected function indexItemData($item)
+    protected function indexItemData($item): array
     {
         $canEdit = auth('twill_users')->user()->can('edit-user-roles') && ($item->canEdit ?? true);
 
         return ['edit' => $canEdit ? $this->getModuleRoute($item->id, 'edit') : null];
     }
 
-    public function index($parentModuleId = null)
+    public function index(?int $parentModuleId = null): mixed
     {
         // Superadmins can reorder groups to determine the access-level of each one.
         // A given group can't edit other groups with a higher access-level.
@@ -127,14 +96,14 @@ class RoleController extends ModuleController
         return parent::index($parentModuleId);
     }
 
-    public function edit($id, $submoduleId = null)
+    public function edit(int|TwillModelContract $id): mixed
     {
         $this->authorizableOptions['edit'] = 'edit-role';
 
-        return parent::edit($id, $submoduleId);
+        return parent::edit($id);
     }
 
-    public function update($id, $submoduleId = null)
+    public function update(int|TwillModelContract $id, ?int $submoduleId = null): JsonResponse
     {
         $this->authorizableOptions['edit'] = 'edit-role';
 

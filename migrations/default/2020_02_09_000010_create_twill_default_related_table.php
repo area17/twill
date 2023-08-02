@@ -17,6 +17,7 @@ class CreateTwillDefaultRelatedTable extends Migration
 
         if (!Schema::hasTable($twillRelatedTable)) {
             Schema::create($twillRelatedTable, function (Blueprint $table) {
+                $table->increments('id');
                 $table->integer('subject_id')->nullable()->unsigned();
                 $table->string('subject_type', 255);
                 $table->integer('related_id')->nullable()->unsigned();

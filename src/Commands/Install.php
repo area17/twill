@@ -15,7 +15,7 @@ class Install extends Command
      *
      * @var string
      */
-    protected $signature = 'twill:install {preset? : Optional, the preset to install}';
+    protected $signature = 'twill:install {preset? : Optional, the preset to install} {--fromBuild}';
 
     /**
      * The console command description.
@@ -24,48 +24,34 @@ class Install extends Command
      */
     protected $description = 'Install Twill into your Laravel application';
 
-    /**
-     * @var Filesystem
-     */
-    protected $files;
-
-    /**
-     * @var DatabaseManager
-     */
-    protected $db;
-
-    /**
-     * @param Filesystem $files
-     * @param DatabaseManager $db
-     */
-    public function __construct(Filesystem $files, DatabaseManager $db)
+    public function __construct(public Filesystem $files, public DatabaseManager $db)
     {
         parent::__construct();
-
-        $this->files = $files;
-        $this->db = $db;
     }
 
     /**
      * Executes the console command.
      *
-     * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    public function handle()
+    public function handle(): void
     {
         //check the database connection before installing
         try {
             $this->db->connection()->getPdo();
-        } catch (\Exception $e) {
-            $this->error('Could not connect to the database, please check your configuration:' . "\n" . $e);
+        } catch (\Exception $exception) {
+            $this->error('Could not connect to the database, please check your configuration:' . "\n" . $exception);
 
             return;
         }
 
         if (filled($preset = $this->argument('preset'))) {
             if ($this->presetExists($preset)) {
-                if ($this->confirm('Are you sure to install this preset? This can overwrite your models, config and routes.')) {
+                if (
+                    $this->confirm(
+                        'Are you sure to install this preset? This can overwrite your models, config and routes.'
+                    )
+                ) {
                     $this->installPreset($preset);
                 } else {
                     $this->warn('Cancelled.');
@@ -74,6 +60,7 @@ class Install extends Command
                 $this->error("Could not find preset: $preset");
             }
         } else {
+            $this->copyBlockPreviewFile();
             $this->addRoutesFile();
             $this->call('migrate');
             $this->publishConfig();
@@ -96,59 +83,70 @@ class Install extends Command
 
     /**
      * Creates the default `twill.php` route configuration file.
-     *
-     * @return void
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
-    private function addRoutesFile()
+    private function addRoutesFile(): void
     {
         $routesPath = base_path('routes');
 
-        if (! $this->files->exists($routesPath)) {
+        if (!$this->files->exists($routesPath)) {
             $this->files->makeDirectory($routesPath, 0755, true);
         }
 
-        if (! $this->files->exists($routesPath . '/twill.php')) {
+        if (!$this->files->exists($routesPath . '/twill.php')) {
             $stub = $this->files->get(__DIR__ . '/stubs/admin.stub');
             $this->files->put($routesPath . '/twill.php', $stub);
         }
     }
 
+    private function copyBlockPreviewFile(): void
+    {
+        $layoutsDirectory = base_path('resources/views/site/layouts');
+
+        if (!$this->files->exists($layoutsDirectory)) {
+            $this->files->makeDirectory($layoutsDirectory, 0755, true);
+        }
+
+        if (!$this->files->exists($layoutsDirectory . '/block.blade.php')) {
+            $stub = $this->files->get(__DIR__ . '/stubs/block.blade.php');
+            $this->files->put($layoutsDirectory . '/block.blade.php', $stub);
+        }
+    }
+
     /**
      * Calls the command responsible for creation of the default superadmin user.
-     *
-     * @return void
      */
-    private function createSuperAdmin()
+    private function createSuperAdmin(): void
     {
-        if (! $this->option('no-interaction')) {
+        if (!$this->option('no-interaction')) {
             $this->call('twill:superadmin');
         }
     }
 
     /**
      * Publishes the package configuration files.
-     *
-     * @return void
      */
-    private function publishConfig()
+    private function publishConfig(): void
     {
         $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
+            '--provider' => \A17\Twill\TwillServiceProvider::class,
             '--tag' => 'config',
         ]);
     }
 
     /**
      * Publishes the package frontend assets.
-     *
-     * @return void
      */
-    private function publishAssets()
+    private function publishAssets(): void
     {
-        $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
-            '--tag' => 'assets',
-        ]);
+        if ($this->option('fromBuild')) {
+            // If this is from a build, we copy from dist to public.
+            $this->files->copyDirectory(__DIR__ . '/../../dist/', public_path());
+        } else {
+            $this->call('vendor:publish', [
+                '--provider' => \A17\Twill\TwillServiceProvider::class,
+                '--tag' => 'assets',
+            ]);
+        }
     }
 }

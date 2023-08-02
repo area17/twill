@@ -16,7 +16,9 @@ class CreateAuthorsTables extends Migration
 
             // your generated model and form include a description field, to get you started, but feel free to get rid of it if you don't need it
             // $table->text('description')->nullable();
+            $table->foreignIdFor(\App\Models\Category::class)->nullable();
 
+            $table->integer('year')->nullable();
             // $table->text('bio')->nullable();
             $table->date('birthday')->nullable();
 

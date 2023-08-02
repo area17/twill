@@ -2,19 +2,19 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasOauth;
 use A17\Twill\Models\Behaviors\HasPermissions;
 use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\IsTranslatable;
-use A17\Twill\Models\Enums\UserRole;
-use A17\Twill\Models\Group;
-use A17\Twill\Models\Role;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Notifications\PasswordResetByAdmin as PasswordResetByAdminNotification;
 use A17\Twill\Notifications\Reset as ResetNotification;
 use A17\Twill\Notifications\TemporaryPassword as TemporaryPasswordNotification;
 use A17\Twill\Notifications\Welcome as WelcomeNotification;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Foundation\Auth\User as AuthenticatableContract;
@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Session;
 use PragmaRX\Google2FAQRCode\Google2FA;
 
-class User extends AuthenticatableContract
+class User extends AuthenticatableContract implements TwillModelContract
 {
     use Authenticatable;
     use Authorizable;
@@ -40,6 +40,9 @@ class User extends AuthenticatableContract
     protected $casts = [
         'is_superadmin' => 'boolean',
         'published' => 'boolean',
+        'deleted_at' => 'datetime',
+        'registered_at' => 'datetime',
+        'last_login_at' => 'datetime',
     ];
 
     protected $fillable = [
@@ -53,12 +56,6 @@ class User extends AuthenticatableContract
         'google_2fa_enabled',
         'google_2fa_secret',
         'language',
-    ];
-
-    protected $dates = [
-        'deleted_at',
-        'registered_at',
-        'last_login_at',
     ];
 
     protected $hidden = ['password', 'remember_token', 'google_2fa_secret'];
@@ -89,7 +86,7 @@ class User extends AuthenticatableContract
      * @param Builder $query
      * @return Builder
      */
-    public function scopeAccessible($query)
+    public function scopeAccessible($query): Builder
     {
         /** @var self $currentUser */
         $currentUser = auth('twill_users')->user();
@@ -119,16 +116,16 @@ class User extends AuthenticatableContract
 
     public function getRoleValueAttribute()
     {
-        if ($this->is_superadmin || $this->role == 'SUPERADMIN') {
+        if ($this->is_superadmin || $this->role === 'SUPERADMIN') {
             return 'SUPERADMIN';
         }
 
         if (config('twill.enabled.permissions-management')) {
-            return $this->role ? $this->role->name : null;
+            return $this->role->name ?? null;
         }
 
         if (! empty($this->role)) {
-            return UserRole::{$this->role}()->getValue();
+            return TwillPermissions::roles()::{$this->role}()->getValue();
         }
 
         return null;
@@ -149,19 +146,19 @@ class User extends AuthenticatableContract
         return $query->whereNull('registered_at')->published();
     }
 
-    public function scopePublished($query)
+    public function scopePublished($query): Builder
     {
         return $query->wherePublished(true);
     }
 
-    public function scopeDraft($query)
+    public function scopeDraft($query): Builder
     {
         return $query->wherePublished(false);
     }
 
-    public function scopeOnlyTrashed($query)
+    public function scopeOnlyTrashed($query): Builder
     {
-        return $query->whereNotNull('deleted_at');
+        return $query->onlyTrashed();
     }
 
     public function scopeNotSuperAdmin($query)
@@ -312,5 +309,10 @@ class User extends AuthenticatableContract
             $this->google_2fa_secret,
             200
         );
+    }
+
+    public function getTranslatedAttributes(): array
+    {
+        return [];
     }
 }

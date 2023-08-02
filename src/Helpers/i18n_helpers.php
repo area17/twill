@@ -1,16 +1,16 @@
 <?php
 
+use A17\Twill\Helpers\TwillTransString;
 use Illuminate\Support\Collection;
 
-if (!function_exists('twillTrans')) {
-    function twillTrans($key, $replace = [])
+if (! function_exists('twillTrans')) {
+    function twillTrans($key, $replace = []): TwillTransString
     {
-        $locale = config('twill.locale', config('twill.fallback_locale', 'en'));
-        return trans($key, $replace, $locale);
+        return new TwillTransString($key, $replace);
     }
 }
 
-if (!function_exists('getLocales')) {
+if (! function_exists('getLocales')) {
     /**
      * @return string[]
      */
@@ -32,7 +32,7 @@ if (!function_exists('getLocales')) {
     }
 }
 
-if (!function_exists('getLanguagesForVueStore')) {
+if (! function_exists('getLanguagesForVueStore')) {
     /**
      * @param array $form_fields
      * @param bool $translate
@@ -74,7 +74,7 @@ if (!function_exists('getLanguagesForVueStore')) {
     }
 }
 
-if (!function_exists('getLanguageLabelFromLocaleCode')) {
+if (! function_exists('getLanguageLabelFromLocaleCode')) {
     /**
      * @param string $code
      * @return string
@@ -96,28 +96,35 @@ if (!function_exists('getLanguageLabelFromLocaleCode')) {
             if (is_array($lang) && isset($lang[1]) && $native) {
                 return $lang[1];
             }
+
+            if (is_array($lang) && isset($lang[0])) {
+                return $lang[0];
+            }
+
             return $lang;
         }
+
         return $code;
     }
 }
 
-/**
+/*
  * Converts camelCase string to have spaces between each.
  * @param string $camelCaseString
  * @return string (ex.: camel case string)
  */
-if (!function_exists('camelCaseToWords')) {
+if (! function_exists('camelCaseToWords')) {
     function camelCaseToWords($camelCaseString)
     {
         $re = '/(?<=[a-z])(?=[A-Z])/x';
         $a = preg_split($re, $camelCaseString);
-        $words = join(" ", $a);
+        $words = implode(' ', $a);
+
         return ucfirst(strtolower($words));
     }
 }
 
-if (!function_exists('getCodeToLanguageMappings')) {
+if (! function_exists('getCodeToLanguageMappings')) {
     function getCodeToLanguageMappings()
     {
         return [

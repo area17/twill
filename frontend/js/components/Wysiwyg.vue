@@ -29,21 +29,18 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-
   import 'quill/dist/quill.snow.css'
   import 'quill/dist/quill.bubble.css'
   import 'quill/dist/quill.core.css'
 
-  import QuillConfiguration from '@/libs/Quill/QuillConfiguration'
-
   import debounce from 'lodash/debounce'
+  import { mapState } from 'vuex'
 
-  import InputMixin from '@/mixins/input'
+  import QuillConfiguration from '@/libs/Quill/QuillConfiguration'
   import FormStoreMixin from '@/mixins/formStore'
+  import InputMixin from '@/mixins/input'
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
-
   import { loadScript } from '@/utils/loader'
 
   const HIGHLIGHT = '//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js'
@@ -222,6 +219,14 @@
         // emit ready
         this.$emit('ready', this.quill)
       },
+      insertDivider () {
+        const range = this.quill.getSelection(true)
+        if (range) {
+          this.quill.insertText(range.index, '\n')
+          this.quill.insertEmbed(range.index + 1, 'divider', true)
+          this.quill.setSelection(range.index + 2)
+        }
+      },
       anchorHandler (value) {
         if (value === true) {
           value = prompt('Enter anchor:')
@@ -305,6 +310,10 @@
         toolbar.handlers.anchor = this.anchorHandler
       }
 
+      if (toolbar.container.includes('divider')) {
+        toolbar.handlers.divider = this.insertDivider
+      }
+
       localOptions.modules.toolbar = toolbar
 
       this.localOptions = localOptions
@@ -356,6 +365,9 @@
 </style>
 <style lang="scss">
   /* Not scoped style here because we want to overwrite default style of the wysiwig */
+  .ql-divider {
+    overflow: hidden;
+  }
 
   $height_input: 45px;
   .wysiwyg__limit {

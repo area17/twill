@@ -7,119 +7,142 @@
                   :size="size"
                   :name="name"
                   :required="required">
-    <div class="wysiwyg__outer">
+    <div class="wysiwyg__outer" v-if="editor">
       <div class="wysiwyg"
-          :class="textfieldClasses"
-          v-show="!activeSource"
-          :dir="dirLocale">
+           :class="textfieldClasses"
+           v-show="!activeSource"
+           :dir="dirLocale">
         <input :name="name"
                type="hidden"
                v-model="value"/>
         <div class="wysiwyg__editor"
              ref="editor">
-          <editor-menu-bar :editor="editor"
-                           v-slot="{ commands, isActive }">
-            <div class="wysiwyg__menubar">
+          <div class="wysiwyg__menubar">
 
-              <template v-if="toolbar.header">
-                <wysiwyg-menu-bar-btn icon="paragraph"
-                                      v-if="toolbar.header"
-                                      :isActive="isActive.paragraph()"
-                                      @btn:click="commands.paragraph"/>
-                <wysiwyg-menu-bar-btn v-for="headingLevel in headingOptions"
-                                      :key="headingLevel"
-                                      :icon="headingLevel > 1 ? `header-${headingLevel}` : 'header'"
-                                      :isActive="isActive.heading({ level: headingLevel })"
-                                      @btn:click="commands.heading({ level: headingLevel })"/>
+            <template v-if="toolbar.header">
+              <wysiwyg-menu-bar-btn icon="paragraph"
+                                    :disabled="editor.isActive('paragraph')"
+                                    v-if="toolbar.header"
+                                    :isActive="editor.isActive('paragraph')"
+                                    @btn:click="editor.chain().focus().setParagraph().run()"/>
+              <wysiwyg-menu-bar-btn v-for="headingLevel in headingOptions"
+                                    :key="headingLevel"
+                                    :icon="headingLevel > 1 ? `header-${headingLevel}` : 'header'"
+                                    :isActive="editor.isActive('heading', { level: headingLevel })"
+                                    @btn:click="editor.chain().focus().toggleHeading({ level: headingLevel }).run()"/>
+            </template>
+
+            <wysiwyg-menu-bar-btn icon="bold"
+                                  v-if="toolbar.bold"
+                                  :isActive="editor.isActive('bold')"
+                                  @btn:click="editor.chain().focus().toggleBold().run()"/>
+            <wysiwyg-menu-bar-btn icon="italic"
+                                  v-if="toolbar.italic"
+                                  :isActive="editor.isActive('italic')"
+                                  @btn:click="editor.chain().focus().toggleItalic().run()"/>
+            <wysiwyg-menu-bar-btn icon="strike"
+                                  v-if="toolbar.strike"
+                                  :isActive="editor.isActive('strike')"
+                                  @btn:click="editor.chain().focus().toggleStrike().run()"/>
+            <wysiwyg-menu-bar-btn icon="underline"
+                                  v-if="toolbar.underline"
+                                  :isActive="editor.isActive('underline')"
+                                  @btn:click="editor.chain().focus().toggleUnderline().run()"/>
+
+            <wysiwyg-menu-bar-btn icon="hr"
+                                  v-if="toolbar.hr"
+                                  @btn:click="editor.chain().focus().setHorizontalRule().run()"/>
+
+            <wysiwyg-menu-bar-btn icon="link"
+                                  v-if="toolbar.link"
+                                  :isActive="editor.isActive('link')"
+                                  @btn:click="openLinkWindow()"
+            />
+
+            <wysiwyg-menu-bar-btn icon="unlink"
+                                  v-if="toolbar.link"
+                                  :disabled="!editor.isActive('link')"
+                                  :isActive="editor.isActive('link')"
+                                  @btn:click="removeLink()"/>
+
+            <wysiwyg-menu-bar-btn icon="ul"
+                                  v-if="toolbar.bullet"
+                                  :isActive="editor.isActive('bulletList')"
+                                  @btn:click="editor.chain().focus().toggleBulletList().run()"/>
+
+            <wysiwyg-menu-bar-btn icon="ol"
+                                  v-if="toolbar.ordered"
+                                  :isActive="editor.isActive('orderedList')"
+                                  @btn:click="editor.chain().focus().toggleOrderedList().run()"/>
+
+            <wysiwyg-menu-bar-btn icon="quote"
+                                  v-if="toolbar.blockquote"
+                                  :isActive="editor.isActive('blockquote')"
+                                  @btn:click="editor.chain().focus().toggleBlockquote().run()"/>
+
+            <wysiwyg-menu-bar-btn icon="code"
+                                  v-if="toolbar.codeBlock"
+                                  :isActive="editor.isActive('codeBlock')"
+                                  @btn:click="editor.chain().focus().toggleCodeBlock().run()"/>
+
+            <wysiwyg-menu-bar-btn icon="code"
+                                  v-if="toolbar.code"
+                                  :isActive="editor.isActive('code')"
+                                  @btn:click="editor.chain().focus().setCode().run()"/>
+
+            <wysiwyg-menu-bar-btn icon="table"
+                                  v-if="toolbar.table"
+                                  @btn:click="editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()"/>
+            <wysiwyg-menu-bar-btn icon="undo"
+                                  :disabled="!editor.can().undo()"
+                                  @btn:click="editor.chain().focus().undo().run()"/>
+            <wysiwyg-menu-bar-btn icon="redo"
+                                  :disabled="!editor.can().redo()"
+                                  @btn:click="editor.chain().focus().redo().run()"/>
+
+            <template v-if="toolbar.table">
+              <div class="wysiwyg__menubar-table-buttons"
+                   v-if="editor.isActive('table')">
+                <br/>
+
+                <wysiwyg-menu-bar-btn icon="delete_table"
+                                      @btn:click="editor.chain().focus().deleteTable().run()"/>
+
+                <wysiwyg-menu-bar-btn icon="add_col_before"
+                                      @btn:click="editor.chain().focus().addColumnBefore().run()"/>
+
+                <wysiwyg-menu-bar-btn icon="add_col_after"
+                                      @btn:click="editor.chain().focus().addColumnAfter().run()"/>
+
+                <wysiwyg-menu-bar-btn icon="delete_col"
+                                      @btn:click="editor.chain().focus().deleteColumn().run()"/>
+
+                <wysiwyg-menu-bar-btn icon="add_row_before"
+                                      @btn:click="editor.chain().focus().addRowBefore().run()"/>
+
+                <wysiwyg-menu-bar-btn icon="add_row_after"
+                                      @btn:click="editor.chain().focus().addRowAfter().run()"/>
+
+                <wysiwyg-menu-bar-btn icon="delete_row"
+                                      @btn:click="editor.chain().focus().deleteRow().run()"/>
+
+                <wysiwyg-menu-bar-btn icon="combine_cells"
+                                      @btn:click="editor.chain().focus().mergeCells().run()"/>
+              </div>
+            </template>
+
+            <template v-if="this.toolbar.wrappers">
+              <br/>
+              <template v-for="wrapper in this.toolbar.wrappers">
+                <wysiwyg-menu-bar-btn :icon-url="wrapper.icon"
+                                      :key="wrapper.id"
+                                      :isActive="editor.isActive(wrapper.class)"
+                                      :label="wrapper.label"
+                                      @btn:click="editor.commands['set' + wrapper.id]()"/>
               </template>
+            </template>
 
-              <wysiwyg-menu-bar-btn icon="bold"
-                                    v-if="toolbar.bold"
-                                    :isActive="isActive.bold()"
-                                    @btn:click="commands.bold"/>
-              <wysiwyg-menu-bar-btn icon="italic"
-                                    v-if="toolbar.italic"
-                                    :isActive="isActive.italic()"
-                                    @btn:click="commands.italic"/>
-              <wysiwyg-menu-bar-btn icon="strike"
-                                    v-if="toolbar.strike"
-                                    :isActive="isActive.strike()"
-                                    @btn:click="commands.strike"/>
-              <wysiwyg-menu-bar-btn icon="underline"
-                                    v-if="toolbar.underline"
-                                    :isActive="isActive.underline()"
-                                    @btn:click="commands.underline"/>
-              <!-- Disabling link option for now as Tiptap does
-                   not support it by default in the menu bar, only
-                   in the bubble mode. -->
-              <!-- <wysiwyg-menu-bar-btn icon="link"
-                                    v-if="toolbar.link"
-                                    :isActive="isActive.link()"
-                                    @btn:click="commands.link"/> -->
-
-              <wysiwyg-menu-bar-btn icon="ul"
-                                    v-if="toolbar.bullet"
-                                    :isActive="isActive.bullet_list()"
-                                    @btn:click="commands.bullet_list"/>
-
-              <wysiwyg-menu-bar-btn icon="ol"
-                                    v-if="toolbar.ordered"
-                                    :isActive="isActive.ordered_list()"
-                                    @btn:click="commands.ordered_list"/>
-
-              <wysiwyg-menu-bar-btn icon="quote"
-                                    v-if="toolbar.blockquote"
-                                    :isActive="isActive.blockquote()"
-                                    @btn:click="commands.blockquote"/>
-
-              <wysiwyg-menu-bar-btn icon="code"
-                                    v-if="toolbar['code-block']"
-                                    :isActive="isActive.code_block()"
-                                    @btn:click="commands.code_block"/>
-
-              <wysiwyg-menu-bar-btn icon="code"
-                                    v-if="toolbar['code']"
-                                    :isActive="isActive.code()"
-                                    @btn:click="commands.code"/>
-
-              <template v-if="toolbar.table">
-                <wysiwyg-menu-bar-btn icon="table"
-                                      @btn:click="commands.createTable({rowsCount: 3, colsCount: 3, withHeaderRow: true })"/>
-
-                <div class="wysiwyg__menubar-table-buttons"
-                     v-if="isActive.table()">
-
-                  <wysiwyg-menu-bar-btn icon="delete_table"
-                                        @btn:click="commands.deleteTable"/>
-
-                  <wysiwyg-menu-bar-btn icon="add_col_before"
-                                        @btn:click="commands.addColumnBefore"/>
-
-                  <wysiwyg-menu-bar-btn icon="add_col_after"
-                                        @btn:click="commands.addColumnAfter"/>
-
-                  <wysiwyg-menu-bar-btn icon="delete_col"
-                                        @btn:click="commands.deleteColumn"/>
-
-                  <wysiwyg-menu-bar-btn icon="add_row_before"
-                                        @btn:click="commands.addRowBefore"/>
-
-                  <wysiwyg-menu-bar-btn icon="add_row_after"
-                                        @btn:click="commands.addRowAfter"/>
-
-                  <wysiwyg-menu-bar-btn icon="delete_row"
-                                        @btn:click="commands.deleteRow"/>
-
-                  <wysiwyg-menu-bar-btn icon="combine_cells"
-                                        @btn:click="commands.toggleCellMerge"/>
-                </div>
-              </template>
-              <wysiwyg-menu-bar-btn icon="undo"
-                                    @btn:click="commands.undo"/>
-              <wysiwyg-menu-bar-btn icon="redo"
-                                    @btn:click="commands.redo"/>
-            </div>
-          </editor-menu-bar>
+          </div>
           <div class="wysiwyg__contentWrapper" :class="{ 'wysiwyg__contentWrapper--limitHeight' : limitHeight }">
             <editor-content class="wysiwyg__content"
                             :editor="editor"/>
@@ -144,46 +167,74 @@
         </a17-button>
       </template>
     </div>
+    <standalone-browser
+        v-if="browserIsOpen && browserEndpoints"
+        ref="localbrowser"
+        :endpoint-multiple="browserEndpoints"
+        @selected="setLinkFromBrowser"
+        @close="browserIsOpen = false"
+        :max="1"
+    />
+    <a17-modal :title="$trans('wysiwyg.link_window.title', 'Edit link')" ref="link-modal"
+               class="modal--form modal--link">
+      <template v-if="linkWindow">
+        <a17-textfield name="link_text"
+                       :initial-value="linkWindow.text"
+                       v-model="linkWindow.text"
+                       :label="$trans('wysiwyg.link_window.text', 'Text to display')"/>
+        <a17-textfield name="link_link"
+                       :initial-value="linkWindow.href"
+                       v-model="linkWindow.href"
+                       :label="$trans('wysiwyg.link_window.link', 'Link')"
+                       :placeholder="$trans('wysiwyg.link_window.link_placeholder', 'Link to URL address')"
+        />
+        <div>
+          <a href="#" class="link-browser-link" v-if="browserEndpoints" @click="browserIsOpen = true">
+            {{$trans('wysiwyg.link_window.internal_browser_link', 'Select internal content')}}
+          </a>
+        </div>
+        <a17-inputframe>
+          <a17-checkbox name="link_target"
+                        :initial-value="linkWindow.target"
+                        @change="linkWindow.target = $event ? '_blank' : null"
+                        value="_blank"
+                        :label="$trans('wysiwyg.link_window.open_in_new_window', 'Open in a new window')"/>
+        </a17-inputframe>
+
+        <div class="modalValidation">
+          <a17-button variant="validate" class="dialog-confirm" @click="saveLink" tabindex="4">
+            {{ $trans('wysiwyg.link_window.save', 'Save') }}
+          </a17-button>
+          <a17-button variant="aslink-grey" class="dialog-cancel" @click="$refs['link-modal'].close()" tabindex="5">
+            {{ $trans('wysiwyg.link_window.save', 'Cancel') }}
+          </a17-button>
+        </div>
+      </template>
+    </a17-modal>
   </a17-inputframe>
 </template>
 
 <script>
-  import { Editor, EditorContent, EditorMenuBar } from 'tiptap'
-  import {
-    Blockquote,
-    CodeBlock,
-    HardBreak,
-    Heading,
-    OrderedList,
-    BulletList,
-    ListItem,
-    Bold,
-    Code,
-    Italic,
-    Link,
-    Placeholder,
-    Table,
-    TableHeader,
-    TableCell,
-    TableRow,
-    Strike,
-    Underline,
-    History
-  } from 'tiptap-extensions'
-  import WysiwygMenuBarBtn from '@/components/WysiwygMenuBarButton'
-
-  import { mapState } from 'vuex'
   import debounce from 'lodash/debounce'
+  import {Editor, EditorContent, getMarkAttributes, mergeAttributes, Node} from '@tiptap/vue-2'
+  import StarterKit from '@tiptap/starter-kit'
+  import Underline from '@tiptap/extension-underline'
+  import Table from '@tiptap/extension-table'
+  import TableRow from '@tiptap/extension-table-row'
+  import TableCell from '@tiptap/extension-table-cell'
+  import TableHeader from '@tiptap/extension-table-header'
+  import {mapState} from 'vuex'
 
-  import InputMixin from '@/mixins/input'
+  import StandaloneBrowser from "@/components/StandaloneBrowser.vue";
+  import WysiwygMenuBarBtn from '@/components/WysiwygMenuBarButton'
   import FormStoreMixin from '@/mixins/formStore'
+  import InputMixin from '@/mixins/input'
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
-
-  // Todo: load highligth depending of needs
-  // import { loadScript } from '@/utils/loader'
-  //
-  // const HIGHLIGHT = '//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/highlight.min.js'
+  import {Link} from "@tiptap/extension-link";
+  import {Placeholder} from "@tiptap/extension-placeholder";
+  import {HardBreak} from "@tiptap/extension-hard-break";
+  import {HorizontalRule} from "@tiptap/extension-horizontal-rule";
 
   export default {
     name: 'A17Wysiwyg',
@@ -211,6 +262,10 @@
       },
       initialValue: {
         default: ''
+      },
+      browserEndpoints: {
+        required: false,
+        default: null
       },
       limitHeight: {
         type: Boolean,
@@ -255,7 +310,7 @@
     },
     components: {
       EditorContent,
-      EditorMenuBar,
+      StandaloneBrowser,
       'wysiwyg-menu-bar-btn': WysiwygMenuBarBtn
     },
     data () {
@@ -289,13 +344,15 @@
         focused: false,
         activeSource: false,
         counter: 0,
-        editor: null
+        editor: null,
+        linkWindow: null,
+        browserIsOpen: false,
       }
     },
     methods: {
       updateEditor: function (newValue) {
         if (this.editor) {
-          this.editor.setContent(newValue)
+          this.editor.commands.setContent(newValue)
         }
       },
       updateFromStore: function (newValue) {
@@ -332,102 +389,222 @@
       },
       getTextLength () {
         return this.editor.getHTML().replace(/<[^>]+>/g, '').length
+      },
+      openLinkWindow: function () {
+        this.editor.commands.extendMarkRange('link')
+        const {ranges} = this.editor.state.selection
+
+        const markAttributes = getMarkAttributes(this.editor.state, "link")
+
+        let newLink = true;
+
+        let from = ranges[0].$from.pos;
+        let to = ranges[0].$to.pos;
+
+        if (markAttributes.href) {
+          newLink = false;
+        }
+
+        let startPos = null;
+        let endPos = null;
+
+        const doc = this.editor.state.tr.doc;
+        const htmlLen = this.editor.getHTML().length
+
+        if (from === to) {
+          let foundStart = false;
+
+          let foundEnd = false;
+
+          while (!foundStart && from > 0) {
+            foundStart = from === 0 || doc.textBetween(from - 1, from) === ' '
+            if (doc.textBetween(from - 1, from) === ' ') {
+              startPos = from
+            } else if (from === 0) {
+              startPos = 0;
+            }
+            from = from - 1
+          }
+
+          while (!foundEnd && to < htmlLen) {
+            foundEnd = to === htmlLen ||
+              doc.textBetween(to, to + 1) === '' ||
+              doc.textBetween(to, to + 1) === ' '
+            endPos = to
+            to = to + 1
+          }
+        } else {
+          startPos = from
+          endPos = to
+        }
+
+        this.editor.commands.setTextSelection({from: startPos, to: endPos})
+
+        this.linkWindow = {
+          newLink,
+          from: startPos ?? 0,
+          to: endPos,
+          textOriginal: this.editor.state.tr.doc.textBetween(startPos, endPos),
+          text: this.editor.state.tr.doc.textBetween(startPos, endPos),
+          href: markAttributes.href,
+          target: markAttributes.target ?? ''
+        }
+
+        this.$nextTick(() => {
+          this.$refs['link-modal'].open()
+        })
+      },
+      removeLink () {
+        this.editor.chain()
+          .focus()
+          .extendMarkRange('link')
+          .unsetLink()
+          .run()
+      },
+      setLinkFromBrowser (item) {
+        this.linkWindow.href = '#twillInternalLink::' + item[0].endpointType + '#' + item[0].id
+      },
+      saveLink () {
+        if (this.linkWindow.text !== this.linkWindow.textOriginal) {
+          this.editor.commands.insertContentAt({
+            from: this.linkWindow.from,
+            to: this.linkWindow.to
+          }, this.linkWindow.text);
+          this.editor.commands.setTextSelection({
+            from: this.linkWindow.from,
+            to: this.linkWindow.from + this.linkWindow.text.length
+          });
+        }
+
+        if (this.linkWindow.newLink) {
+          this.editor.commands.setLink({href: this.linkWindow.href, target: this.linkWindow.target})
+        } else {
+          this.editor.commands.updateAttributes("link", {href: this.linkWindow.href, target: this.linkWindow.target})
+        }
+
+        this.$refs['link-modal'].close()
+        this.linkWindow = null
       }
     },
     beforeMount () {
+      if (this.toolbar.header) {
+        this.headingOptions = this.toolbar.header.filter((header) => {
+          return (typeof header === 'number')
+        })
+      }
+
       const content = this.value || ''
       const extensions = [
-        new History(),
-        new HardBreak()
+        HardBreak
       ]
 
       if (this.placeholder && this.placeholder.length > 0) {
-        extensions.push(new Placeholder({
+        extensions.push(Placeholder.configure({
           emptyNodeClass: 'is-empty',
           emptyNodeText: this.placeHolder,
           showOnlyWhenEditable: true
         }))
       }
 
-      if (this.toolbar.ordered || this.toolbar.bullet) {
-        extensions.push(new ListItem())
+      if (this.toolbar.wrappers) {
+        this.toolbar.wrappers.forEach((wrapper) => {
+          extensions.push(Node.create({
+            name: wrapper.id,
+            group: 'block',
+            marks: '_',
+            atom: true,
+            content: 'block+',
+            addOptions () {
+              return {
+                HTMLAttributes: {
+                  class: wrapper.className,
+                  'data-customwrapper': wrapper.id,
+                  'data-customwrapper-label': wrapper.label
+                },
+              }
+            },
+            parseHTML () {
+              return [
+                {
+                  tag: 'div',
+                  getAttrs: element => {
+                    element.getAttribute('data-customwrapper', wrapper.id)
+                  }
+                },
+              ]
+            },
+            renderHTML ({HTMLAttributes}) {
+              return ['div', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
+            },
+            addCommands () {
+              const commandName = 'set' + this.name
+              const commandsList = {}
+
+              commandsList[commandName] = () => ({chain}) => {
+                if (wrapper.createElement) {
+                  switch (wrapper.createElement) {
+                    case 'ol':
+                      return chain().toggleWrap(this.name).toggleOrderedList().run()
+                    case 'ul':
+                      return chain().toggleWrap(this.name).toggleBulletList().run()
+                  }
+                }
+                return chain().toggleWrap(this.name).run()
+              }
+
+              return commandsList;
+            },
+          }))
+        })
       }
 
       Object.keys(this.toolbar).forEach(tool => {
         switch (tool) {
-          case 'header': {
-            const levels = this.toolbar[tool].filter(level => typeof level === 'number')
-            levels.forEach(level => {
-              this.headingOptions.push(level)
-            })
-            extensions.push(new Heading({
-              levels: levels
-            }))
-            break
-          }
-          case 'bold': {
-            extensions.push(new Bold())
-            break
-          }
-          case 'italic': {
-            extensions.push(new Italic())
-            break
-          }
-          case 'strike': {
-            extensions.push(new Strike())
-            break
+          case 'link': {
+            extensions.push(Link.configure({openOnClick: false}))
+            break;
           }
           case 'underline': {
-            extensions.push(new Underline())
-            break
-          }
-          case 'link': {
-            extensions.push(new Link())
-            break
-          }
-          case 'blockquote': {
-            extensions.push(new Blockquote())
-            break
-          }
-          case 'bullet': {
-            extensions.push(new BulletList())
-            break
-          }
-          case 'ordered': {
-            extensions.push(new OrderedList())
-            break
-          }
-          case 'code': {
-            extensions.push(new Code())
-            break
-          }
-          case 'code-block': {
-            extensions.push(new CodeBlock())
-            break
+            extensions.push(Underline)
+            break;
           }
           case 'table': {
-            extensions.push(new Table({
+            extensions.push(Table.configure({
               resizable: false
             }))
-            extensions.push(new TableHeader())
-            extensions.push(new TableCell())
-            extensions.push(new TableRow())
+            extensions.push(TableHeader)
+            extensions.push(TableCell)
+            extensions.push(TableRow)
             break
+          }
+          case 'hr': {
+            extensions.push(HorizontalRule)
           }
         }
       })
 
+      extensions.push(StarterKit.configure({
+        orderedList: this.toolbar.ordered ?? false,
+        bulletList: this.toolbar.bullet ?? false,
+        listItem: this.toolbar.ordered || this.toolbar.bullet || false,
+        code: this.toolbar.code ?? false,
+        codeBlock: this.toolbar.codeBlock ?? false,
+      }))
+
       this.editor = new Editor({
-        extensions: extensions,
-        content: content,
-        onUpdate: ({ getHTML }) => {
-          this.value = getHTML()
+        content,
+        extensions,
+        onUpdate: ({editor}) => {
+          this.value = editor.getHTML()
           this.textUpdate()
           this.updateCounter()
         }
-      })
+      });
 
       this.updateCounter()
+    },
+    beforeUnmount () {
+      this.editor.destroy()
     },
     beforeDestroy () {
       this.editor.destroy()
@@ -437,6 +614,24 @@
 
 <style scoped lang="scss">
   $height_input: 45px;
+
+  .modal {
+    &--link {
+      z-index: $zindex__modal__lower;
+    }
+
+    .link-browser-link {
+      color: $color__text--light;
+      margin-top: 10px;
+      display: block;
+    }
+  }
+
+  .modalValidation {
+    display: flex;
+    align-items: center;
+    margin-top: 35px;
+  }
 
   .wysiwyg {
     position: relative;
@@ -525,12 +720,27 @@
     .ProseMirror {
       color: $color__text;
 
+      [data-customwrapper] {
+        position: relative;
+        width: 100%;
+        padding: 3px;
+        border: 1px dashed hsl(0, 0%, 66.7%);
+        margin-top: 10px;
+      }
+
+      [data-customwrapper]::before {
+        content: attr(data-customwrapper-label);
+        position: relative;
+        background-color: white;
+        top: -15px;
+      }
+
       h1, h2, h3, h4, h5, h6 {
         font-weight: 700;
       }
 
       b, p b, p strong, strong {
-        font-weight:700;
+        font-weight: 700;
       }
 
       p, ul, ol, h1, h2, h3, h4, h5 {

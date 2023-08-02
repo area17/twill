@@ -9,7 +9,7 @@
     "laravel",
     "cms"
   ],
-  "homepage": "https://twill.io",
+  "homepage": "https://twillcms.com",
   "authors": [
     {
       "name": "AREA 17",
@@ -19,41 +19,46 @@
   ],
   "support": {
     "issues": "https://github.com/area17/twill/issues/",
-    "docs": "https://twill.io/docs",
-    "chat": "https://discord.link/twill"
+    "docs": "https://twillcms.com/docs/",
+    "chat": "https://discord.gg/cnWk7EFv8R"
   },
   "require": {
     "php": "^8.0",
     "ext-json": "*",
     "ext-pdo": "*",
-    "area17/twill-image": "1.x-dev",
-    "astrotomic/laravel-translatable": "^11.5",
-    "cartalyst/tags": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
-    "doctrine/dbal": "^2.12|^3.0",
-    "guzzlehttp/guzzle": "^6.2|^7.0",
+    "astrotomic/laravel-translatable": "^v11.12",
+    "cartalyst/tags": "^12.0|^13.0",
+    "doctrine/dbal": "^3.0",
+    "guzzlehttp/guzzle": "^7.0",
     "imgix/imgix-php": "^3.0",
-    "laravel/framework": "~5.6|~5.7|~5.8|^6.0|^7.0|^8.0|^9.0",
-    "laravel/socialite": "^4.2|^5.0",
-    "laravel/ui": "^1.0|^2.0|^3.0",
-    "league/flysystem-aws-s3-v3": "^1.0|^2.0|^3.0",
+    "kalnoy/nestedset": "^6.0",
+    "laravel/framework": "^9.0|^10.0",
+    "laravel/socialite": "^5.3",
+    "laravel/ui": "^4.0",
+    "league/flysystem-aws-s3-v3": "^3.0",
     "league/glide-laravel": "^1.0",
-    "matthewbdaly/laravel-azure-storage": "^1.3|^2.0",
+    "matthewbdaly/laravel-azure-storage": "^2.0",
     "myclabs/php-enum": "^1.5",
-    "pragmarx/google2fa-qrcode": "^1.0|^2.0",
-    "spatie/laravel-activitylog": "^2.5|^3.2|^4.0",
-    "spatie/laravel-analytics": "^3.6|^4.0",
-    "spatie/once": "^2.0|^3.0"
+    "pragmarx/google2fa-qrcode": "^2.0",
+    "spatie/laravel-activitylog": "^4.0",
+    "spatie/laravel-analytics": "^4.0",
+    "spatie/once": "^3.0"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "^2.16|^3.0",
-    "kalnoy/nestedset": "^5.0|^6.0",
-    "nunomaduro/collision": "^3.0|^4.2|^5.0|^6.0",
-    "orchestra/testbench": "~3.3|~3.4|~3.5|~3.6|~3.7|~3.8|^4.0|^5.0|^6.0|^7.0",
-    "nunomaduro/larastan": "^1.0|^2.0",
-    "phpunit/phpunit": "~5.0|~6.0|~7.0|~8.0|~9.0",
+    "area17/phptorch": "dev-main",
+    "chillerlan/php-qrcode": "~4.0",
+    "friendsofphp/php-cs-fixer": "^3.0",
+    "nette/php-generator": "v4.0.3",
+    "nunomaduro/collision": "^6.0",
+    "nunomaduro/larastan": "^2.0",
+    "orchestra/testbench": "^7.8|^8.0",
+    "orchestra/testbench-dusk": "^7.8|^8.0",
+    "phpunit/php-invoker": "^3.1",
+    "phpunit/phpunit": "~9.0",
+    "rector/rector": "^0.12.15",
+    "spatie/invade": "^1.1",
     "squizlabs/php_codesniffer": "*",
-    "chillerlan/php-qrcode": "~2.0|~3.0|~4.0",
-    "rector/rector": "^0.12.15"
+    "torchlight/torchlight-commonmark": "^0.5"
   },
   "autoload": {
     "psr-4": {
@@ -64,6 +69,8 @@
     "psr-4": {
       "A17\\Twill\\Tests\\Unit\\": "tests/unit",
       "A17\\Twill\\Tests\\Integration\\": "tests/integration",
+      "A17\\Twill\\Tests\\Browser\\": "tests/Browser",
+      "A17\\Docs\\": "docs/generator",
       "App\\": "vendor/orchestra/testbench-core/laravel/app"
     }
   },
@@ -74,6 +81,9 @@
     "test": [
       "@test:syntax",
       "@test:phpunit"
+    ],
+    "post-autoload-dump": [
+      "@php ./vendor/bin/testbench package:discover --ansi"
     ]
   },
   "extra": {
@@ -85,13 +95,19 @@
         "TwillCapsules": "A17\\Twill\\Facades\\TwillCapsules",
         "TwillRoutes": "A17\\Twill\\Facades\\TwillRoutes",
         "TwillBlocks": "A17\\Twill\\Facades\\TwillBlocks",
-        "TwillUtil": "A17\\Twill\\Facades\\TwillUtil"
+        "TwillUtil": "A17\\Twill\\Facades\\TwillUtil",
+        "TwillAppSettings": "A17\\Twill\\Facades\\TwillAppSettings",
+        "TwillNavigation": "A17\\Twill\\Facades\\TwillNavigation",
+        "TwillPermissions": "A17\\Twill\\Facades\\TwillPermissions"
       }
     }
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "cweagans/composer-patches": true
+    }
   }
 }

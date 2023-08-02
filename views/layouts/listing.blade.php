@@ -39,44 +39,43 @@
                             v-on:clear="clearFiltersAndReloadDatas">
                     <a17-table-filters slot="navigation"></a17-table-filters>
 
-                    @forelse($hiddenFilters as $filter)
-                        @if ($loop->first)
-                            <div slot="hidden-filters">
-                        @endif
+                    @php /** @var \A17\Twill\Services\Listings\Filters\BasicFilter $filter */ @endphp
+                    @if (count($hiddenFilters) > 0)
+                        <div slot="hidden-filters">
+                            @foreach($hiddenFilters as $filter)
+                                @php
+                                    $options = $filter->getOptions($repository)->map(function($label, $value) use($filter) {
+                                            if ($value === \A17\Twill\Services\Listings\Filters\BasicFilter::OPTION_ALL) {
+                                                $label = twillTrans('twill::lang.listing.filters.all-label', ['label' => $filter->getLabel() ?? '']);
+                                            }
+                                            return [
+                                                'value' => $value,
+                                                'label' => $label,
+                                            ];
+                                        })->values()->toArray();
 
-                        @if (isset(${$filter.'List'}))
-                            @php
-                                $list = ${$filter.'List'};
-                                $options = is_object($list) && method_exists($list, 'map') ?
-                                    $list->map(function($label, $value) {
-                                        return [
-                                            'value' => $value,
-                                            'label' => $label,
-                                        ];
-                                    })->values()->toArray() : $list;
-                                $selectedIndex = isset($requestFilter[$filter]) ? array_search($requestFilter[$filter], array_column($options, 'value')) : false;
-                            @endphp
-                            <a17-vselect
-                                name="{{ $filter }}"
-                                :options="{{ json_encode($options) }}"
-                                @if ($selectedIndex !== false)
-                                    :selected="{{ json_encode($options[$selectedIndex]) }}"
-                                @endif
-                                placeholder="All {{ strtolower(\Illuminate\Support\Str::plural($filter)) }}"
-                                ref="filterDropdown[{{ $loop->index }}]"
-                            ></a17-vselect>
-                        @endif
+                                    $currentValue = $requestFilter[$filter->getQueryString()] ?? $filter->getDefaultValue();
 
-                        @if ($loop->last)
-                            </div>
-                        @endif
-                    @empty
+                                    $selectedIndex = array_search($currentValue, array_column($options, 'value'), true);
+                                @endphp
+                                <a17-vselect
+                                    name="{{ $filter->getQueryString() }}"
+                                    :options="{{ json_encode($options) }}"
+                                    @if ($selectedIndex !== false)
+                                        :selected="{{ json_encode($options[$selectedIndex]) }}"
+                                    @endif
+                                    placeholder="All {{ strtolower(\Illuminate\Support\Str::plural($filter->getQueryString())) }}"
+                                    ref="filterDropdown[{{ $loop->index }}]"
+                                ></a17-vselect>
+                            @endforeach
+                        </div>
+                    @else
                         @hasSection('hiddenFilters')
                             <div slot="hidden-filters">
                                 @yield('hiddenFilters')
                             </div>
                         @endif
-                    @endforelse
+                    @endif
 
                     @if($create)
                         <div slot="additional-actions">
@@ -89,13 +88,19 @@
                                 {{ twillTrans('twill::lang.listing.add-new-button') }}
                             </a17-button>
                             @foreach($filterLinks as $link)
-                                <a17-button el="a" href="{{ $link['url'] ?? '#' }}" download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}" target="{{ $link['target'] ?? '' }}" variant="small secondary">{{ $link['label'] }}</a17-button>
+                                <a17-button el="a" href="{{ $link['url'] ?? '#' }}"
+                                            download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}"
+                                            target="{{ $link['target'] ?? '' }}"
+                                            variant="small secondary">{{ $link['label'] }}</a17-button>
                             @endforeach
                         </div>
                     @elseif(isset($filterLinks) && count($filterLinks))
                         <div slot="additional-actions">
                             @foreach($filterLinks as $link)
-                                <a17-button el="a" href="{{ $link['url'] ?? '#' }}" download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}" target="{{ $link['target'] ?? '' }}" variant="small secondary">{{ $link['label'] }}</a17-button>
+                                <a17-button el="a" href="{{ $link['url'] ?? '#' }}"
+                                            download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}"
+                                            target="{{ $link['target'] ?? '' }}"
+                                            variant="small secondary">{{ $link['label'] }}</a17-button>
                             @endforeach
                         </div>
                     @endif
@@ -137,7 +142,7 @@
             </a17-datatable>
         @endif
 
-        @if($create)
+        @if($create || (isset($tableData[0]['editInModal']) &&!empty($tableData[0]['editInModal'])))
             <a17-modal-create
                 ref="editionModal"
                 form-create="{{ $storeUrl }}"
@@ -148,24 +153,32 @@
                 <a17-langmanager
                     :control-publication="{{ json_encode($controlLanguagesPublication) }}"
                 ></a17-langmanager>
-                @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
+
+                @if ($formBuilder->hasForm())
+                    {!! $formBuilder->renderBaseForm() !!}
+                @else
+                    @partialView(($moduleName ?? null), 'create', ['renderForModal' => true])
+                @endif
             </a17-modal-create>
         @endif
 
-        <a17-dialog ref="warningDeleteRow" modal-title="{{ twillTrans('twill::lang.listing.dialogs.delete.title') }}" confirm-label="{{ twillTrans('twill::lang.listing.dialogs.delete.confirm') }}">
-            <p class="modal--tiny-title"><strong>{{ twillTrans('twill::lang.listing.dialogs.delete.move-to-trash') }}</strong></p>
+        <a17-dialog ref="warningDeleteRow" modal-title="{{ twillTrans('twill::lang.listing.dialogs.delete.title') }}"
+                    confirm-label="{{ twillTrans('twill::lang.listing.dialogs.delete.confirm') }}">
+            <p class="modal--tiny-title">
+                <strong>{{ twillTrans('twill::lang.listing.dialogs.delete.move-to-trash') }}</strong></p>
             <p>{{ twillTrans('twill::lang.listing.dialogs.delete.disclaimer') }}</p>
         </a17-dialog>
 
-        <a17-dialog ref="warningDestroyRow" modal-title="{{ twillTrans('twill::lang.listing.dialogs.destroy.title') }}" confirm-label="{{ twillTrans('twill::lang.listing.dialogs.destroy.confirm') }}">
-            <p class="modal--tiny-title"><strong>{{ twillTrans('twill::lang.listing.dialogs.destroy.destroy-permanently') }}</strong></p>
+        <a17-dialog ref="warningDestroyRow" modal-title="{{ twillTrans('twill::lang.listing.dialogs.destroy.title') }}"
+                    confirm-label="{{ twillTrans('twill::lang.listing.dialogs.destroy.confirm') }}">
+            <p class="modal--tiny-title">
+                <strong>{{ twillTrans('twill::lang.listing.dialogs.destroy.destroy-permanently') }}</strong></p>
             <p>{{ twillTrans('twill::lang.listing.dialogs.destroy.disclaimer') }}</p>
         </a17-dialog>
     </div>
 @stop
 
 @section('initialStore')
-
     window['{{ config('twill.js_namespace') }}'].CMS_URLS = {
         index: @if(isset($indexUrl)) '{{ $indexUrl }}' @else window.location.href.split('?')[0] @endif,
         publish: '{{ $publishUrl }}',

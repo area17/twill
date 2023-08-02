@@ -1,7 +1,12 @@
 <template>
   <span class="checkbox">
-    <input type="checkbox" class="checkbox__input" :class="checkboxClasses" :value="value" :name="name" :id="uniqId" :disabled="disabled"  v-model="checkedValue">
-    <label class="checkbox__label" :for="uniqId">{{ label }} <span class="checkbox__icon"><span v-svg symbol="check"></span></span></label>
+    <input type="checkbox" :key="uniqId" class="checkbox__input" :class="checkboxClasses" :value="value" :name="name"
+           :id="uniqId" :disabled="disabled" v-model="checkedValue">
+    <label class="checkbox__label" :for="uniqId">{{ label }}
+      <span class="checkbox__icon">
+        <span v-svg symbol="check"></span>
+      </span>
+    </label>
   </span>
 </template>
 
@@ -16,7 +21,9 @@
         default: ''
       },
       initialValue: {
-        default: function () { return [] }
+        default: function () {
+          return []
+        }
       },
       name: {
         type: String,
@@ -59,8 +66,8 @@
 <style lang="scss" scoped>
 
   .checkbox {
-    color:$color__text;
-    min-width:30px;
+    color: $color__text;
+    min-width: 30px;
   }
 
   .checkbox__input {
@@ -73,7 +80,7 @@
     border: 0 none;
     clip: rect(1px, 1px, 1px, 1px);
     overflow: hidden;
-    opacity:0;
+    opacity: 0;
   }
 
   .checkbox__label {
@@ -103,17 +110,17 @@
 
   .checkbox__icon {
     background-color: $color__fborder--active;
-    color:$color__background;
+    color: $color__background;
     opacity: 0;
   }
 
   .checkbox__icon .icon {
-    color:$color__background;
+    color: $color__background;
     top: 2px;
     position: relative;
     display: block;
-    margin-left:auto;
-    margin-right:auto;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .checkbox__input:focus + .checkbox__label::before,
@@ -122,9 +129,9 @@
   }
 
   .checkbox__label:hover,
-  .checkbox__input:hover   + .checkbox__label,
+  .checkbox__input:hover + .checkbox__label,
   .checkbox__input:checked + .checkbox__label {
-    color:$color__text;
+    color: $color__text;
   }
 
   .checkbox__input:checked + .checkbox__label .checkbox__icon {
@@ -144,20 +151,20 @@
 
   /* Green variant */
   .checkbox__input--bold + .checkbox__label .checkbox__icon {
-    background-color:$color__publish
+    background-color: $color__publish
   }
 
   /* Minus variant (for Bulk Edit) */
   .checkbox--minus {
     .checkbox__label::after {
-      content:'';
-      display:block;
-      width:9px;
-      height:2px;
-      background-color:$color__fborder--active;
-      position:absolute;
-      left:2px + 15px - 14px;
-      top:8px;
+      content: '';
+      display: block;
+      width: 9px;
+      height: 2px;
+      background-color: $color__fborder--active;
+      position: absolute;
+      left: 2px + 15px - 14px;
+      top: 8px;
     }
 
     .checkbox__input:checked + .checkbox__label .checkbox__icon {

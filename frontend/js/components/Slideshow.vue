@@ -1,13 +1,13 @@
 <template>
   <div class="slideshow">
     <div class="slideshow__trigger" v-if="buttonOnTop && remainingSlides > 0">
-      <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingSlides)">{{ addLabel }}</a17-button>
+      <a17-button :disabled="disabled" type="button" variant="ghost" @click="openMediaLibrary(remainingSlides)">{{ addLabel }}</a17-button>
       <span class="slideshow__note f--small"><slot></slot></span>
     </div>
     <draggable class="slideshow__content" v-model="slides" :options="dragOptions" v-if="slides.length">
       <transition-group name="draggable_list" tag='div'>
         <div class="slide" v-for="(slide, index) in slides" :key="`${slide.id}_${index}`">
-            <div class="slide__handle">
+            <div class="slide__handle" v-if="!disabled">
               <div class="slide__handle--drag"></div>
             </div>
             <a17-mediafield class="slide__content"
@@ -22,27 +22,27 @@
                             :withVideoUrl="withVideoUrl"
                             :altTextMaxLength="altTextMaxLength"
                             :captionMaxLength="captionMaxLength"
-                            :extraMetadatas="extraMetadatas">
+                            :extraMetadatas="extraMetadatas"
+                            :disabled="disabled">
             </a17-mediafield>
         </div>
       </transition-group>
     </draggable>
     <div class="slideshow__trigger" v-if="!buttonOnTop && remainingSlides > 0">
-      <a17-button type="button" variant="ghost" @click="openMediaLibrary(remainingSlides)">{{ addLabel }}</a17-button>
+      <a17-button :disabled="disabled" type="button" variant="ghost" @click="openMediaLibrary(remainingSlides)">{{ addLabel }}</a17-button>
       <span class="slideshow__note f--small"><slot></slot></span>
     </div>
   </div>
 </template>
 
 <script>
+  import draggable from 'vuedraggable'
   import { mapState } from 'vuex'
-  import { MEDIA_LIBRARY } from '@/store/mutations'
 
   import draggableMixin from '@/mixins/draggable'
-  import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
   import mediaFieldMixin from '@/mixins/mediaField.js'
-
-  import draggable from 'vuedraggable'
+  import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
+  import { MEDIA_LIBRARY } from '@/store/mutations'
 
   export default {
     name: 'A17Slideshow',
@@ -64,6 +64,10 @@
         default: 10
       },
       buttonOnTop: {
+        type: Boolean,
+        default: false
+      },
+      disabled: {
         type: Boolean,
         default: false
       }
@@ -105,6 +109,10 @@
       deleteSlideshow: function () {
         // destroy all the medias of the slideshow
         this.$store.commit(MEDIA_LIBRARY.DESTROY_MEDIAS, this.name)
+      },
+      destroyValue: function () {
+        if (this.isSlide) return // for Slideshows : the medias are deleted when the slideshow component is destroyed (so no need to do it here)
+        if (!this.isDestroyed) this.deleteMedia()
       }
     }
   }
@@ -113,34 +121,33 @@
 <style lang="scss" scoped>
 
   .slideshow {
-    // width: 100%;
     display: block;
     border-radius: 2px;
     border: 1px solid $color__border;
-    /*overflow-x: hidden;*/
     background:$color__background;
   }
 
   .slideshow__trigger {
     padding:10px;
-    position:relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     border-top: 1px solid $color__border--light;
 
     &:first-child {
-      border-top:0 none
+      border-top:0 none;
     }
   }
 
   .slideshow__note {
     color: $color__text--light;
-    float: right;
-    position: absolute;
-    bottom: 18px;
-    right: 15px;
+    padding: 5px;
+    flex: 1;
+    justify-content: flex-end;
     display:none;
 
     @include breakpoint('small+') {
-      display: inline-block;
+      display: flex;
     }
 
     @include breakpoint('medium') {

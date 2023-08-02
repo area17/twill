@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Models\Media;
 use Carbon\Carbon;
 use Illuminate\Database\DatabaseManager;
@@ -84,9 +85,6 @@ class RefreshCrops extends Command
      */
     protected $mediaCache = [];
 
-    /**
-     * @param DatabaseManager $db
-     */
     public function __construct(DatabaseManager $db)
     {
         parent::__construct();
@@ -110,7 +108,7 @@ class RefreshCrops extends Command
 
         $mediasParams = app($this->modelName)->getMediasParams();
         if (empty($mediasParams)) {
-            $mediasParams = config('twill.block_editor.crops');
+            $mediasParams = TwillBlocks::getAllCropConfigs();
         }
 
         if (! isset($mediasParams[$this->roleName])) {
@@ -180,19 +178,16 @@ class RefreshCrops extends Command
     /**
      * Process a set of mediable items.
      *
-     * @param Builder $mediables
      * @return void
      */
     protected function processMediables(Builder $mediables)
     {
         // Handle locales separately because not all items have a 1-1 match in other locales
-        foreach ($mediables->get()->groupBy('locale') as $locale => $itemsByLocale) {
-
+        foreach ($mediables->get()->groupBy('locale') as $itemsByLocale) {
             // Group items by mediable_id to get related crops
-            foreach ($itemsByLocale->groupBy('mediable_id') as $mediableId => $itemsByMediableId) {
-
+            foreach ($itemsByLocale->groupBy('mediable_id') as $itemsByMediableId) {
                 // Then, group by media_id to handle slideshows (multiple entries for one role)
-                foreach ($itemsByMediableId->groupBy('media_id') as $mediaId => $items) {
+                foreach ($itemsByMediableId->groupBy('media_id') as $items) {
                     $existingCrops = $items->keyBy('crop')->keys();
                     $allCrops = $this->crops->keys();
 
@@ -332,16 +327,16 @@ class RefreshCrops extends Command
             $crop_y = 0;
         } elseif ($originalRatio <= $ratio) {
             $crop_w = $width;
-            $crop_h = $width / $ratio;
+            $crop_h = floor($width / $ratio);
             $crop_x = 0;
-            $crop_y = ($height - $crop_h) / 2;
+            $crop_y = floor(($height - $crop_h) / 2);
         } else {
             $crop_h = $height;
-            $crop_w = $height * $ratio;
+            $crop_w = floor($height * $ratio);
             $crop_y = 0;
-            $crop_x = ($width - $crop_w) / 2;
+            $crop_x = floor(($width - $crop_w) / 2);
         }
 
-        return compact('crop_w', 'crop_h', 'crop_x', 'crop_y');
+        return ['crop_w' => $crop_w, 'crop_h' => $crop_h, 'crop_x' => $crop_x, 'crop_y' => $crop_y];
     }
 }

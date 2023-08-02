@@ -42,11 +42,6 @@ class Glide implements ImageServiceInterface
      */
     private $urlBuilder;
 
-    /**
-     * @param Config $config
-     * @param Application $app
-     * @param Request $request
-     */
     public function __construct(Config $config, Application $app, Request $request)
     {
         $this->config = $config;
@@ -62,7 +57,7 @@ class Glide implements ImageServiceInterface
             )
         );
 
-        $baseUrl = join('/', [
+        $baseUrl = implode('/', [
             rtrim($baseUrlHost, '/'),
             ltrim($this->config->get('twill.glide.base_path'), '/'),
         ]);
@@ -74,6 +69,7 @@ class Glide implements ImageServiceInterface
         $this->server = ServerFactory::create([
             'response' => new LaravelResponseFactory($this->request),
             'source' => $this->config->get('twill.glide.source'),
+            'source_path_prefix' => $this->config->get('twill.glide.source_path_prefix'),
             'cache' => $this->config->get('twill.glide.cache'),
             'cache_path_prefix' => $this->config->get('twill.glide.cache_path_prefix'),
             'base_url' => $baseUrl,
@@ -102,7 +98,6 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
      * @return string
      */
     public function getUrl($id, array $params = [])
@@ -115,8 +110,6 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $cropParams
-     * @param array $params
      * @return string
      */
     public function getUrlWithCrop($id, array $cropParams, array $params = [])
@@ -126,10 +119,8 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $cropParams
      * @param mixed $width
      * @param mixed $height
-     * @param array $params
      * @return string
      */
     public function getUrlWithFocalCrop($id, array $cropParams, $width, $height, array $params = [])
@@ -139,7 +130,6 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
      * @return string
      */
     public function getLQIPUrl($id, array $params = [])
@@ -155,7 +145,6 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
      * @return string
      */
     public function getSocialUrl($id, array $params = [])
@@ -217,7 +206,7 @@ class Glide implements ImageServiceInterface
                 'width' => $w,
                 'height' => $h,
             ];
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             return [
                 'width' => 0,
                 'height' => 0,

@@ -44,9 +44,6 @@ class CapsuleInstall extends Command
 
     protected string $namespace;
 
-    /**
-     * @return string
-     */
     private function getUnzippedPath(): string
     {
         return TwillCapsules::getProjectCapsulesPath() .
@@ -113,7 +110,7 @@ class CapsuleInstall extends Command
 
         $this->repositoryUri = $capsule;
 
-        $this->capsuleName = Str::afterLast($capsule, '/');
+        $this->capsuleName = str_after_last($capsule, '/');
 
         $this->repositoryUrl = $url;
 
@@ -161,7 +158,7 @@ class CapsuleInstall extends Command
 
     protected function makeCapsuleName($capsule)
     {
-        $capsule = Str::afterLast($capsule, '/');
+        $capsule = str_after_last($capsule, '/');
 
         return Str::after($capsule, $this->getCapsulePrefix() . '-');
     }
@@ -218,7 +215,7 @@ class CapsuleInstall extends Command
             $this->error('A capsule with this name already exists!');
 
             return false;
-        } catch (NoCapsuleFoundException $e) {
+        } catch (NoCapsuleFoundException $noCapsuleFoundException) {
         }
 
         if ($this->directoryExists()) {

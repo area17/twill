@@ -13,38 +13,75 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Checking for prtodo's.
+        run: |
+          if grep --exclude-dir={.git,.github,vendor} -rE "PRtodo"; then
+               exit 1
+          else
+              echo "All good"
+          fi
+
+      - name: Checking for leftover "ray" usages.
+        run: |
+          if grep --exclude-dir={.git,.github,vendor} -rE "ray("; then
+               exit 1
+          else
+              echo "All good"
+          fi
+
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.0
+          php-version: 8.2
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
           coverage: none
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:8.*" "doctrine/dbal:^3.0" --no-interaction --no-update
-          composer update --prefer-stable --prefer-dist --no-interaction
+          composer require "laravel/framework:10.*" "doctrine/dbal:^3.0" --no-interaction --no-update
+          composer install
 
       - name: Execute tests
         run: vendor/bin/phpstan
 
+      - name: Check code style
+        run: vendor/bin/phpcs
+
   test:
+    name: PHP ${{ matrix.php }} - LARAVEL ${{ matrix.laravel }}
+    timeout-minutes: 30
     runs-on: ${{ matrix.os }}
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: twill_testing_3x
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: [8.1, 8.0]
-        laravel: [9.*, 8.*]
-        dbal: [^2.12, ^3.0]
+        php: [8.2, 8.1, 8.0]
+        laravel: [9.*, 10.*]
+        exclude:
+          - laravel: 10.*
+            php: 8.0
         include:
           - laravel: 9.*
             testbench: 7.*
-          - laravel: 8.*
-            testbench: 6.*
-    name: ${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.os }} - ${{ matrix.dbal }}
+          - laravel: 10.*
+            testbench: 8.*
 
     steps:
+      - name: Set timezone?
+        uses: szenius/set-timezone@v1.0
+        with:
+          timezoneLinux: "Europe/Paris"
+
       - name: Checkout code
         uses: actions/checkout@v2
 
@@ -52,7 +89,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo, mysql
           coverage: xdebug
         env:
           COMPOSER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -75,12 +112,44 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:${{ matrix.dbal }}" --no-interaction --no-update -vvv
-          composer install --prefer-dist --no-interaction -vvv
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:^3.0" --no-interaction --no-update
+          composer install --prefer-dist --no-interaction --no-plugins
 
-      - name: Execute tests
-        run: vendor/bin/testbench package:test
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '18.x'
+
+      - name: Build npm dependencies.
+        run: |
+          npm ci
+
+      - name: Create blocks dir
+        run: |
+          mkdir ./frontend/js/components/blocks/customs
+
+      - name: Build twill.
+        run: ./vendor/bin/testbench twill:build --forTesting
+
+      - name: Upgrade Chrome
+        uses: browser-actions/setup-chrome@latest
+
+      - name: Upgrade Chrome Driver
+        run: ./vendor/bin/testbench dusk:chrome-driver --detect
+
+      - name: Execute all tests
+        run: vendor/bin/phpunit
+        env:
+          DB_PORT: ${{ job.services.mysql.ports['3306'] }}
 
       - uses: codecov/codecov-action@v2
         with:
           files: .github/clover.xml
+
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: screenshots
+          path: |
+            tests/Browser/screenshots/
+            tests/Browser/console/
