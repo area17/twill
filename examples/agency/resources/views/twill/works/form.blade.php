@@ -61,7 +61,9 @@
         'label' => 'Autoloop'
     ])
 
-    @formField('block_editor')
+    @formField('block_editor', [
+        'blocks' => ['quote', 'text', 'full-width-image']
+    ])
 @stop
 
 @section('fieldsets')

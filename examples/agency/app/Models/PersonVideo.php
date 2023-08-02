@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use A17\Twill\API\Models\Traits\HasMediables;
 use A17\Twill\Models\Behaviors\HasTranslation;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Behaviors\HasMedias;
@@ -11,7 +12,7 @@ use A17\Twill\Models\Model;
 
 class PersonVideo extends Model implements Sortable
 {
-    use HasTranslation, HasSlug, HasMedias, HasPosition;
+    use HasTranslation, HasSlug, HasMedias, HasPosition, HasMediables;
 
     protected $fillable = [
         'published',
@@ -31,11 +32,11 @@ class PersonVideo extends Model implements Sortable
     ];
 
     public $mediasParams = [
-        'main' => [
+        'video' => [
             'default' => [
                 [
                     'name' => 'default',
-                    'ratio' => 4 / 3,
+                    'ratio' => 16 / 9,
                 ],
             ],
             'mobile' => [
@@ -60,6 +61,15 @@ class PersonVideo extends Model implements Sortable
             ],
         ],
     ];
+
+    protected $casts = [
+        'date' => 'datetime'
+    ];
+
+    public function getFormattedDateAttribute()
+    {
+        return $this->date->format('M, Y') ;
+    }
 
     public function person()
     {

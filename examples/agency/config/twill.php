@@ -68,4 +68,16 @@ return [
             ],
         ],
     ],
+    'block_editor' => [
+        'crops' => [
+            'full_image_block' => [
+                'default' => [
+                    [
+                        'name' => 'default',
+                        'ratio' => 16 / 9
+                    ]
+                ]
+            ],
+        ]
+    ]
 ];

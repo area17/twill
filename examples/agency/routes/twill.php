@@ -3,11 +3,12 @@
 use Illuminate\Support\Facades\Route;
 
 
+Route::twillSingleton('about');
+
 Route::group(['prefix' => 'about'], function () {
     Route::module('roles');
     Route::module('people');
     Route::module('personVideos');
-    Route::singleton('about');
 });
 
 Route::group(['prefix' => 'contact'], function () {

@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use A17\Twill\API\Models\Traits\HasMediables;
 use A17\Twill\Models\Behaviors\HasBlocks;
+use A17\Twill\Models\Behaviors\HasRelated;
 use A17\Twill\Models\Behaviors\HasTranslation;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Behaviors\HasMedias;
@@ -14,7 +16,7 @@ use App\Models\Traits\HasWorks;
 
 class Person extends Model implements Sortable
 {
-    use HasBlocks, HasTranslation, HasSlug, HasMedias, HasRevisions, HasPosition, HasWorks;
+    use HasBlocks, HasTranslation, HasSlug, HasMedias, HasRevisions, HasPosition, HasWorks, HasMediables;
 
 
     protected $fillable = [
@@ -66,7 +68,7 @@ class Person extends Model implements Sortable
                 ],
             ],
         ],
-        'search' => [
+        'video' => [
             'default' => [
                 [
                     'name' => 'default',

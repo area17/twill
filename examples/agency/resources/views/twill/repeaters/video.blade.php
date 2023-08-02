@@ -23,7 +23,7 @@
 ])
 
 @formField('medias', [
-    'name' => 'main',
+    'name' => 'video',
     'label' => 'Main',
     'max' => 1,
 ])

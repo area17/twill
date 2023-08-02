@@ -3,8 +3,11 @@
 namespace App\Repositories;
 
 use A17\Twill\Models\Behaviors\Sortable;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Repositories\Behaviors\HandleBlocks;
+use A17\Twill\Repositories\Behaviors\HandleBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
+use A17\Twill\Repositories\Behaviors\HandleRelatedBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleTags;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use A17\Twill\Repositories\Behaviors\HandleSlugs;
@@ -30,7 +33,7 @@ class WorkRepository extends ModuleRepository
         $this->model = $model;
     }
 
-    public function afterSave($object, $fields)
+    public function afterSave(TwillModelContract $object, array $fields): void
     {
         parent::afterSave($object, $fields);
         $object->sectors()->sync($fields['sectors'] ?? []);
@@ -45,7 +48,7 @@ class WorkRepository extends ModuleRepository
         $this->updateBrowser($object, $fields, 'people');
     }
 
-    public function getFormFields($object)
+    public function getFormFields(TwillModelContract $object): array
     {
         $fields = parent::getFormFields($object);
         $fields = $this->getFormFieldsForRepeater($object, $fields, 'workLinks', 'WorkLink', 'external_link');
@@ -77,7 +80,7 @@ class WorkRepository extends ModuleRepository
         return $query->paginate($perPage);
     }
 
-    public function hydrate($object, $fields)
+    public function hydrate(TwillModelContract $object, array $fields): TwillModelContract
     {
         $this->hydrateMultiSelect($object, $fields, 'disciplines');
         $this->hydrateMultiSelect($object, $fields, 'sectors');

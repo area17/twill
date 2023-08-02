@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use A17\Twill\API\Models\Traits\HasFileables;
+use A17\Twill\API\Models\Traits\HasMediables;
 use A17\Twill\Models\Behaviors\HasBlocks;
 use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Behaviors\HasRelated;
@@ -15,7 +17,7 @@ use A17\Twill\Models\Model;
 
 class Work extends Model implements Sortable
 {
-    use HasBlocks, HasTranslation, HasSlug, HasMedias, HasRevisions, HasPosition, HasFiles, HasRelated;
+    use HasBlocks, HasTranslation, HasSlug, HasMedias, HasRevisions, HasPosition, HasFiles, HasRelated, HasMediables, HasFileables;
 
     protected $fillable = [
         'published',
@@ -45,7 +47,7 @@ class Work extends Model implements Sortable
             'default' => [
                 [
                     'name' => 'default',
-                    'ratio' => 16 / 9,
+                    'ratio' => 8 / 5,
                 ],
             ],
             'mobile' => [
@@ -111,7 +113,8 @@ class Work extends Model implements Sortable
 
     protected $casts = [
         'autoplay' => 'boolean',
-        'autoloop' => 'boolean'
+        'autoloop' => 'boolean',
+        'published' => 'boolean'
     ];
 
     public function sectors()

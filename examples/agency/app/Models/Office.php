@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use A17\Twill\API\Models\Traits\HasMediables;
 use A17\Twill\Models\Behaviors\HasTranslation;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasRevisions;
@@ -11,7 +12,7 @@ use A17\Twill\Models\Model;
 
 class Office extends Model implements Sortable
 {
-    use HasTranslation, HasMedias, HasRevisions, HasPosition;
+    use HasTranslation, HasMedias, HasRevisions, HasPosition, HasMediables;
 
     protected $fillable = [
         'published',

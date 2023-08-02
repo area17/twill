@@ -14,7 +14,7 @@ class CreateWorkLinksTables extends Migration
 
             $table->integer('position')->unsigned()->nullable();
             $table->string('url')->nullable();
-            $table->{twillIntegerMethod()}('work_id')->nullable();
+            $table->bigInteger('work_id')->nullable();
         });
 
         Schema::create('work_link_translations', function (Blueprint $table) {

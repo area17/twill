@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Repositories\Behaviors\HandleBlocks;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
 use A17\Twill\Repositories\Behaviors\HandleSlugs;
@@ -19,14 +20,14 @@ class PersonRepository extends ModuleRepository
         $this->model = $model;
     }
 
-    public function afterSave($object, $fields)
+    public function afterSave(TwillModelContract $object, array $fields): void
     {
         $this->updateRepeater($object, $fields, 'videos', 'PersonVideo', 'video');
         parent::afterSave($object, $fields);
         $this->updateBrowser($object, $fields, 'works');
     }
 
-    public function getFormFields($object)
+    public function getFormFields(TwillModelContract $object): array
     {
         $fields = parent::getFormFields($object);
         $fields = $this->getFormFieldsForRepeater($object, $fields, 'videos', 'PersonVideo', 'video');
@@ -34,7 +35,7 @@ class PersonRepository extends ModuleRepository
         return $fields;
     }
 
-    public function hydrate($object, $fields)
+    public function hydrate(TwillModelContract $object, array $fields): TwillModelContract
     {
         $this->hydrateRepeater($object, $fields, 'videos', 'PersonVideo', 'video');
 
