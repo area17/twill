@@ -172,9 +172,9 @@ unpublished.
 
 ##### NestedData
 
-`NestedData::make()`
+`NestedData::make()->...`
 
-This field requires no additional methods, it shows information about the nested models.
+Renders the `field` using the relationship of the same name. It shows information and a link about the nested model.
 
 ##### Languages
 
