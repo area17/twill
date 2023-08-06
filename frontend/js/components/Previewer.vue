@@ -70,6 +70,7 @@
     components: {
       'a17-iframe': A17PreviewerFrame
     },
+    props: ['breakpointsConfig'],
     data: function () {
       return {
         loadedCurrent: false,
@@ -77,7 +78,7 @@
         activeBreakpoint: 1280,
         lastActiveBreakpoint: 1280,
         scrollPosition: 0,
-        breakpoints: [
+        breakpoints: this.breakpointsConfig || [
           {
             size: 1280,
             name: 'preview-desktop'
@@ -115,11 +116,12 @@
     methods: {
       open: function (previewId = 0) {
         const self = this
+        const desktopWidth = this.breakpoints.find(item => item.name === 'preview-desktop').size
 
         // reset previewer state
         this.loadedCurrent = false
-        this.activeBreakpoint = 1280
-        this.lastActiveBreakpoint = 1280
+        this.activeBreakpoint = desktopWidth || 1280
+        this.lastActiveBreakpoint = desktopWidth || 1280
 
         function initPreview () {
           if (self.$refs.overlay) self.$refs.overlay.open()
