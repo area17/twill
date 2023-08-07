@@ -151,17 +151,17 @@ use A17\Twill\Services\Breadcrumbs\NestedBreadcrumbs;
 
 class IssueArticleController extends BaseModuleController
 {
+    protected $moduleName = 'issues.articles';
     protected $modelName = 'IssueArticle';
 
     protected function setUpController(): void
     {
-        $this->setModuleName('issues.articles');
         if (request('issue')) {
             $this->setBreadcrumbs(
                 NestedBreadcrumbs::make()
                     ->forParent(
                         parentModule: 'issues',
-                        module: $this->modelName,
+                        module: $this->moduleName,
                         activeParentId: request('issue'),
                         repository: \App\Repositories\IssueRepository::class
                     )

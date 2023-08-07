@@ -19,7 +19,7 @@ class NestedDataColumnTest extends NestedModuleTestBase
 
     public function testColumn(): void
     {
-        $column = NestedData::make()->title('Child');
+        $column = NestedData::make()->field('children')->title('Child');
 
         $this->assertEquals('0 children', $column->renderCell($this->parent));
     }
@@ -27,7 +27,7 @@ class NestedDataColumnTest extends NestedModuleTestBase
     public function testSingleChild(): void {
         $this->parent->children()->create(['title' => 'Child 1', 'published' => true]);
 
-        $column = NestedData::make()->title('Child');
+        $column = NestedData::make()->field('children')->title('Child');
         $this->assertEquals('1 child', $column->renderCell($this->parent));
     }
 
@@ -35,7 +35,7 @@ class NestedDataColumnTest extends NestedModuleTestBase
         $this->parent->children()->create(['title' => 'Child 1', 'published' => true]);
         $this->parent->children()->create(['title' => 'Child 1', 'published' => true]);
 
-        $column = NestedData::make()->title('Child');
+        $column = NestedData::make()->field('children')->title('Child');
         $this->assertEquals('2 children', $column->renderCell($this->parent));
     }
 }
