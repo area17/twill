@@ -231,6 +231,13 @@ abstract class ModuleController extends Controller
     protected $titleColumnKey = 'title';
 
     /**
+     * Label of the index column to use as name column.
+     *
+     * @var string
+     */
+    protected $titleColumnLabel = 'Title';
+
+    /**
      * Name of the index column to use as identifier column.
      *
      * @var string
@@ -643,6 +650,14 @@ abstract class ModuleController extends Controller
     }
 
     /**
+     * Sets the Label to use for title column, defaults to `Title`.
+     */
+    protected function setTitleColumnLabel(string $titleColumnLabel): void
+    {
+        $this->titleColumnLabel = $titleColumnLabel;
+    }
+
+    /**
      * Usually not required, but in case customization is needed you can use this method to set the name of the model
      * this controller acts on.
      */
@@ -788,6 +803,7 @@ abstract class ModuleController extends Controller
             $columns->add(
                 Text::make()
                     ->field($this->titleColumnKey)
+                    ->title($this->titleColumnLabel)
                     ->sortable()
                     ->linkToEdit()
             );
