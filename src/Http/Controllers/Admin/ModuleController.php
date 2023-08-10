@@ -798,7 +798,7 @@ abstract class ModuleController extends Controller
         if ($this->getIndexOption('includeScheduledInList') && $this->repository->isFillable('publish_start_date')) {
             $columns->add(
                 ScheduledStatus::make()
-                    ->title(twillTrans('twill::lang.listing.columns.published'))
+                    ->title(twillTrans('twill::lang.publisher.scheduled'))
                     ->optional()
             );
         }

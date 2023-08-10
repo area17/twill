@@ -27,7 +27,7 @@ return new class extends Migration {
 
     public function down(): void
     {
-        Schema::table('related', function (Blueprint $table) {
+        Schema::table(config('twill.related_table', 'twill_related'), function (Blueprint $table) {
             $table->dropColumn('id');
         });
     }
