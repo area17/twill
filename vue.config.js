@@ -166,7 +166,12 @@ const config = {
 
 if (useHttps) {
   const homeDir = process.env.HOME;
-  const host = process.env.APP_URL.split('//')[1] ?? process.env.APP_URL;
+  if (process.env.APP_URL.includes('//')) {
+    const host = process.env.APP_URL.split('//')[1];
+  }
+  else {
+    const host = process.env.APP_URL;
+  }
 
   // This takes the ssh certificates from your `valet secure` domain so that browsers (Looking at safari) stop
   // complaining about it.
