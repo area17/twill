@@ -31,7 +31,7 @@ class TableColumns extends Collection
         }
 
         $data['id'] = $model->{$tableDataContext->identifierColumn};
-        $data['name'] = $model->{$tableDataContext->titleColumnKey};
+        $data['name'] = $model->titleInBrowser ?? $model->{$tableDataContext->titleColumnKey};
         $data['edit'] = $editUrl ?? null;
         $data['endpointType'] = $tableDataContext->endpointType;
         $data['repeaterFields'] = $tableDataContext->repeaterFields;
