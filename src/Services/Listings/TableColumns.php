@@ -15,7 +15,7 @@ class TableColumns extends Collection
         $data = $this->getArrayForModel($model);
 
         try {
-            $editUrl = moduleRoute(
+            $editUrl = $model->adminEditUrl ?? moduleRoute(
                 $tableDataContext->moduleName,
                 $tableDataContext->routePrefix,
                 'edit',
