@@ -101,20 +101,21 @@ $wysiwygOptions = [
 ```
 
 
-| Option         | Description                                                                                                              | Type/values      | Default value |
-|:---------------|:-------------------------------------------------------------------------------------------------------------------------|:-----------------|:--------------|
-| name           | Name of the field                                                                                                        | string           |               |
-| label          | Label of the field                                                                                                       | string           |               |
-| type           | Type of wysiwyg field                                                                                                    | quill<br/>tiptap | tiptap        |
-| toolbarOptions | Array of options/tools that will be displayed in the editor                                                              |                  | See above     |
-| editSource     | Displays a button to view source code                                                                                    | boolean          | false         |
-| hideCounter    | Hide the character counter displayed at the bottom                                                                       | boolean          | false         |
-| limitHeight    | Limit the editor height from growing beyond the viewport                                                                 | boolean          | false         |
-| translated     | Defines if the field is translatable                                                                                     | boolean          | false         |
-| maxlength      | Max character count of the field                                                                                         | integer          |           |
-| note           | Hint message displayed above the field                                                                                   | string           |               |
-| placeholder    | Text displayed as a placeholder in the field                                                                             | string           |               |
-| required       | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean          | false         |
+| Option         | Description                                                                                                              | Type/values         | Default value |
+|:---------------|:-------------------------------------------------------------------------------------------------------------------------|:--------------------|:--------------|
+| name           | Name of the field                                                                                                        | string              |               |
+| label          | Label of the field                                                                                                       | string              |               |
+| type           | Type of wysiwyg field                                                                                                    | quill<br/>tiptap    | tiptap        |
+| toolbarOptions | Array of options/tools that will be displayed in the editor                                                              |                     | See above     |
+| editSource     | Displays a button to view source code                                                                                    | boolean             | false         |
+| hideCounter    | Hide the character counter displayed at the bottom                                                                       | boolean             | false         |
+| limitHeight    | Limit the editor height from growing beyond the viewport                                                                 | boolean             | false         |
+| translated     | Defines if the field is translatable                                                                                     | boolean             | false         |
+| maxlength      | Max character count of the field                                                                                         | integer             |           |
+| note           | Hint message displayed above the field                                                                                   | string              |               |
+| placeholder    | Text displayed as a placeholder in the field                                                                             | string              |               |
+| required       | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean             | false         |
+| direction      | Set custom input direction <small>(from `v3.1.0`)</small>                                                                | ltr<br/>rtl<br>auto | auto          |
 
 Note that Quill outputs CSS classes in the HTML for certain toolbar modules (indent, font, align, etc.), and that the image module is not integrated with Twill's media library. It outputs the base64 representation of the uploaded image.
 It is not a recommended way of using and storing images, prefer using one or multiple `medias` form fields or blocks fields for flexible content. This will give you greater control over your frontend output.
@@ -171,3 +172,9 @@ For regular fields on models you will have to manually call `parseInternalLinks`
 ```blade
 {{ \A17\Twill\Facades\TwillUtil::parseInternalLinks($item->description) }}
 ```
+
+## Manually setting input direction
+
+Introduced in `v3.1.0`
+
+For certain types of input it maybe useful to manually set the direction to left-to-right (`ltr`) or right-to-left (`rtl`) depending upon the expected text input; for example you may need a single Hebrew text entry in an otherwise `ltr` form. 

@@ -83,13 +83,19 @@
     border-bottom: 1px solid $color__border;
   }
 
+  .shortcutCreator .wrapper--reverse {
+    @include breakpoint('medium+') {
+      flex-flow: row-reverse;
+    }
+  }
+
   .shortcutCreator__listing {
     display: flex;
     flex-grow: 1;
     flex-flow: column nowrap;
 
     @include breakpoint('small+') {
-      flex-flow: row nowrap;
+      flex-flow: row wrap;
     }
   }
 
