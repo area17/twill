@@ -220,7 +220,7 @@ class NavigationLink extends Component
             $parent = null;
             foreach (array_keys($currentRoute->parameters()) as $singularModuleName) {
                 $moduleName = Str::plural($singularModuleName);
-                if ($moduleName === $this->module || ($parent . $moduleName) === $this->module) {
+                if (($parent . $moduleName) === $this->module) {
                     return true;
                 }
                 $parent .= $moduleName;
