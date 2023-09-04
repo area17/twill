@@ -23,6 +23,7 @@ abstract class BaseFormField implements CanRenderForBlocks
         protected ?bool $required = false,
         protected ?bool $disabled = false,
         protected mixed $default = null,
+        protected mixed $connectedTo = null,
         /**
          * A list of mandatory properties in order of their component
          * constructor.
@@ -96,6 +97,17 @@ abstract class BaseFormField implements CanRenderForBlocks
         return $this;
     }
 
+    public function connectedTo(string $fieldName, mixed $fieldValues, array $options = [])
+    {
+        $this->connectedTo = [
+            'fieldName' => $fieldName,
+            'fieldValues' => $fieldValues,
+            ...$options,
+        ];
+
+        return $this;
+    }
+
     public function render(): View
     {
         $vars = collect(get_object_vars($this))->except(['component']);
@@ -130,6 +142,14 @@ abstract class BaseFormField implements CanRenderForBlocks
         } else {
             /** @var \A17\Twill\View\Components\Fields\TwillFormComponent $component */
             $component = $class->newInstance(...$args);
+        }
+
+        if ($this->connectedTo) {
+            return view('twill::partials.form.utils._connected_fields', [
+                ...$this->connectedTo,
+                'renderForBlocks' => $this->forBlocks(),
+                'slot' => $component->render(),
+            ]);
         }
 
         return $component->render();
