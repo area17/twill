@@ -8,6 +8,7 @@ import { FORM_MUTATIONS_TO_SUBSCRIBE } from '@/store/mutations/subscribers'
 // General shared behaviors
 import main from '@/main'
 import search from '@/main-search'
+import registerCustomComponents from '@/custom-components'
 import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
 // Page Components
@@ -106,6 +107,8 @@ Vue.component('a17-editor', a17Editor)
 
 // Add attributes
 Vue.component('a17-modal-add', a17ModalAdd)
+
+registerCustomComponents()
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */
