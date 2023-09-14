@@ -11,18 +11,19 @@ $uri = urldecode(
     parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH)
 );
 
-if ($uri === '/' || $uri === '') {
-    $uri = 'index.html';
+$base = realpath(__DIR__ . '/../_build/');
+if (is_dir($base . $uri)) {
+    $uri .= "/index.html";
 }
+$target = realpath($base . $uri);
 
-if (file_exists(__DIR__ . '/../_build/' . $uri)) {
-    if (str_ends_with($uri, '.css')) {
+if ($target && str_starts_with($target, $base) && file_exists($target)) {
+    if (str_ends_with($target, '.css')) {
         header("Content-Type: text/css");
     } else {
-        if (str_ends_with($uri, '/')) {
-            $uri .= '/index.html';
-        }
-        header('Content-Type: ' . mime_content_type(__DIR__ . '/../_build/' . $uri));
+        header('Content-Type: ' . mime_content_type($target));
     }
-    echo file_get_contents(__DIR__ . '/../_build/' . $uri);
+    echo file_get_contents($target);
+} else {
+    http_response_code(404);
 }
