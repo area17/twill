@@ -173,6 +173,20 @@ For regular fields on models you will have to manually call `parseInternalLinks`
 {{ \A17\Twill\Facades\TwillUtil::parseInternalLinks($item->description) }}
 ```
 
+### Link style
+
+If needed, you can let users add specific classes to links, which can be especially useful to create CTA or similar button-like hyperlinks that are styled differently than regular links.
+
+This can currently only be done using the Form builder by adding the browsermodules to the
+wysiwyg field:
+
+```php
+Wysiwyg::make()->name('description')
+    ->label('Description')
+    ->translatable()
+    ->classList(['btn' => 'Show this link as button'])
+```
+
 ## Manually setting input direction
 
 Introduced in `v3.1.0`

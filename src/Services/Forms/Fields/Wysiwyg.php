@@ -57,6 +57,8 @@ class Wysiwyg extends BaseFormField
 
     public ?array $browserModules;
 
+    public ?array $classList;
+
     public static function make(): static
     {
         return new self(
@@ -205,6 +207,17 @@ class Wysiwyg extends BaseFormField
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * Assosiative array ['class' => 'Label'] of classes
+     * than will be available to editor in the form of checkboxes
+     * when creating new link in modal
+     */
+    public function classList(array $list): static
+    {
+        $this->classList = array_map(fn($value, $label) => ['value' => $value, 'label' => $label, 'selected' => false], array_keys($list), $list);
         return $this;
     }
 }
