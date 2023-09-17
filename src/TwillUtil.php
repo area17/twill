@@ -57,7 +57,7 @@ class TwillUtil
     public function parseInternalLinks(string $content): string
     {
         return preg_replace_callback(
-            '/(#twillInternalLink::(.*)#(\d+))/',
+            '/(#twillInternalLink::(.*?)#(\d+))/',
             function (array $data) {
                 if (isset($data[2], $data[3])) {
                     $modelClass = $data[2];
