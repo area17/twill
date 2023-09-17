@@ -57,13 +57,18 @@ class TwillUtil
     public function parseInternalLinks(string $content): string
     {
         return preg_replace_callback(
-            '/(#twillInternalLink::(.*)#(\d))/',
+            '/(#twillInternalLink::(.*)#(\d+))/',
             function (array $data) {
                 if (isset($data[2], $data[3])) {
                     $modelClass = $data[2];
                     $id = $data[3];
 
                     $model = $modelClass::published()->where('id', $id)->first();
+
+                    if (!$model) {
+                        return url('404');
+                    }
+
                     if ($model instanceof TwillLinkableModel) {
                         return $model->getFullUrl();
                     }
