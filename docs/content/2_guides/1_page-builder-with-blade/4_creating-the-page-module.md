@@ -125,7 +125,7 @@ Let's have a look at them:
 
 ### Module routes
 
-We can see that `Route::module('pages');` has been added to `routes/twill.php`.
+We can see that `TwillRoutes::module('pages');` has been added to `routes/twill.php`.
 
 This is automatic, because it is simple enough to do.
 
