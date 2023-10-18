@@ -44,6 +44,13 @@ class Permission extends BaseModel
 
     protected $appends = ['permissionable_module'];
 
+    public function __construct(array $attributes = [])
+    {
+        $this->table = config('twill.permissions_table', 'permissions');
+
+        parent::__construct($attributes);
+    }
+
     /**
      * Return an array of permission names that belongs to
      * a certain scope (global, module or item).
