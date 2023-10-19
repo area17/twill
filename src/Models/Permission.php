@@ -48,7 +48,6 @@ class Permission extends BaseModel
     {
         $this->table = config('twill.permissions_table', 'permissions');
         parent::__construct($attributes);
-
     }
 
     /**
