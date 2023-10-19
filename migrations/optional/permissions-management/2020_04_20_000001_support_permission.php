@@ -50,7 +50,7 @@ class SupportPermission extends Migration
                 $table->integer('position')->unsigned()->nullable();
             });
 
-            Schema::create('permission_twill_user', function (Blueprint $table) {
+            Schema::create('permission_twill_user', function (Blueprint $table) use($permissionTableName) {
                 $table->bigInteger('twill_user_id')->unsigned()->nullable();
                 $table->foreign('twill_user_id')
                     ->references('id')
@@ -80,7 +80,7 @@ class SupportPermission extends Migration
                 $table->integer('position')->unsigned()->nullable();
             });
 
-            Schema::create('group_permission', function (Blueprint $table) {
+            Schema::create('group_permission', function (Blueprint $table) use($permissionTableName) {
                 $table->bigInteger('permission_id')->unsigned()->nullable();
                 $table->foreign('permission_id')
                     ->references('id')
@@ -94,7 +94,7 @@ class SupportPermission extends Migration
                     ->onDelete('cascade');
             });
 
-            Schema::create('permission_role', function (Blueprint $table) {
+            Schema::create('permission_role', function (Blueprint $table) use($permissionTableName, $roleTableName) {
                 $table->bigInteger('permission_id')->unsigned()->nullable();
                 $table->foreign('permission_id')
                     ->references('id')
