@@ -42,6 +42,12 @@ class Permission extends BaseModel
         'is_default',
     ];
 
+    public function __construct(array $attributes = [])
+    {
+        $this->table = config('twill.permissions_table', 'permissions');
+        parent::__construct($attributes);
+    }
+
     protected $appends = ['permissionable_module'];
 
     /**
