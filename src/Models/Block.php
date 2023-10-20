@@ -75,7 +75,7 @@ class Block extends BaseModel implements TwillModelContract
         return $this->content[$name] ?? null;
     }
 
-    public function translatedInput(string $name, bool $forceLocale = null): mixed
+    public function translatedInput(string $name, string $forceLocale = null): mixed
     {
         $value = $this->content[$name] ?? null;
 

@@ -26,9 +26,9 @@ return [
 - Add a controller to handle the request
 
 ```php
-// file: app/Http/Controllers/Admin/CustomPageController.php
+// file: app/Http/Controllers/Twill/CustomPageController.php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Twill;
 
 use A17\Twill\Http\Controllers\Admin\Controller;
 
@@ -36,7 +36,7 @@ class CustomPageController extends Controller
 {
     public function show()
     {
-        return view('admin.customPage');
+        return view('twill.customPage');
     }
 }
 ```
@@ -44,7 +44,7 @@ class CustomPageController extends Controller
 - And create the view
 
 ```php
-// file: resources/views/admin/customPage.blade.php
+// file: resources/views/twill/customPage.blade.php
 
 @extends('twill::layouts.free')
 

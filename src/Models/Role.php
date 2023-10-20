@@ -38,6 +38,12 @@ class Role extends BaseModel implements Sortable, TwillModelContract
         'deleted_at' => 'datetime'
     ];
 
+    public function __construct(array $attributes = [])
+    {
+        $this->table = config('twill.roles_table', 'roles');
+        parent::__construct($attributes);
+    }
+
     public function scopeAccessible($query): Builder
     {
         $currentUser = auth('twill_users')->user();

@@ -37,6 +37,7 @@ Input::make()
     type="textarea"
     :rows="3"
     :translated="true"
+    direction="ltr"
 />
 ```
 
@@ -62,7 +63,8 @@ Input::make()
     'note' => 'Hint message goes here',
     'placeholder' => 'Placeholder goes here',
     'type' => 'textarea',
-    'rows' => 3
+    'rows' => 3,
+    'direction' => 'ltr'
 ])
 ```
 
@@ -85,6 +87,7 @@ Input::make()
 | readonly    | Sets the field as readonly                                                                                               | boolean                                                     | false         |
 | default     | Sets a default value if empty                                                                                            | string                                                      |               |
 | mask        | Set a mask using the alpinejs mask plugin                                                                                | string                                                      |               |
+| direction   | Set custom input direction <small>(from `v3.1.0`)</small>                                                                | ltr<br/>rtl<br>auto                                                        | auto          |
 
 Specific options for the "number" type:
 
@@ -122,3 +125,13 @@ Schema::table('articles', function (Blueprint $table) {
 ```
 
 When used in a [block](../5_block-editor), no migration is needed, as data contained in blocks, including componentBlocks, is stored in a separate table from the model, which is managed by Twill for you.
+
+## Manually setting input direction
+
+Introduced in `v3.1.0`
+
+For certain types of input it maybe useful to manually set the direction to left-to-right (`ltr`) or right-to-left (`rtl`) depending upon the expected text input. 
+
+For example, maybe you have an Arabic translated page and need URL which mixes Arabic with an `ltr` domain name and TLD. In this case content entry maybe proving difficult for your CMS users with a `rtl` input; in which case you may find setting the direction to `ltr` beneficial. 
+
+You may also simply just need a single Hebrew text entry in an otherwise `ltr` form. 
