@@ -92,7 +92,7 @@ if (!function_exists('getModelController')) {
 
         if (!class_exists($controller)) {
             try {
-                $controller = TwillCapsules::getCapsuleForModel($model)->getControllerClass();
+                $controller = TwillCapsules::getCapsuleForModel($modelName)->getControllerClass();
             } catch (NoCapsuleFoundException) {
                 throw new Exception($controller . ' not found');
             }
