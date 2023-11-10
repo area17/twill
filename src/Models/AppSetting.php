@@ -26,26 +26,43 @@ class AppSetting extends Model
 
     private bool $didRegisterSettingsBlocks = false;
 
+		// Custom function here for self-registering directories hmtwill
+		public function getDirectories(): array
+		{
+			$directories = [];
+
+			foreach(TwillAppSettings::getSettingsPaths() as $path)
+			{
+				$directory = base_path($path . $this->getSettingGroup()->getName());
+
+				if(is_dir($directory)){
+					$directories[] = $directory;
+				}
+			}
+
+			if(count($directories) === 0){
+				throw new SettingsDirectoryMissingException($directory);
+			}
+
+			return $directories;
+		}
+
     /**
      * @return array|array<int,string>
      */
     public function getFormBlocks(): array
     {
-        $directory = resource_path('views/twill/settings/' . $this->getSettingGroup()->getName());
-
-        if (!is_dir($directory)) {
-            throw new SettingsDirectoryMissingException($directory);
-        }
-
         $finalList = [];
-        foreach (scandir($directory) as $file) {
-            if (str_starts_with($file, '.') || !str_ends_with($file, '.blade.php')) {
-                continue;
-            }
+				foreach($this->getDirectories() as $directory) { // customized to iterate over directories
+					foreach (scandir($directory) as $file) {
+							if (str_starts_with($file, '.') || !str_ends_with($file, '.blade.php')) {
+									continue;
+							}
 
-            $finalList[] = str_replace('.blade.php', '', $file);
-        }
-
+							$finalList[] = str_replace('.blade.php', '', $file);
+					}
+				}
+        
         return $finalList;
     }
 
@@ -62,23 +79,23 @@ class AppSetting extends Model
 
         $moduleName = lcfirst(Str::plural(Str::afterLast(static::class, '\\')));
 
-        $directory = resource_path('views' . DIRECTORY_SEPARATOR . 'twill' . DIRECTORY_SEPARATOR . 'settings' . DIRECTORY_SEPARATOR . $this->getSettingGroup()->getName());
+				foreach($this->getDirectories() as $directory){ // customized to iterate over directories 
+					$blockCollection = TwillBlocks::getBlockCollection();
 
-        $blockCollection = TwillBlocks::getBlockCollection();
-
-        foreach ($this->getFormBlocks() as $name) {
-            $blockCollection->add(
-                $block = Block::make(
-                    file: new SplFileInfo($directory . DIRECTORY_SEPARATOR . $name . '.blade.php'),
-                    type: Block::TYPE_SETTINGS,
-                    source: Block::SOURCE_CUSTOM
-                )
-            );
-
-            $originalName = $block->name;
-
-            $block->name = $moduleName . '.' . $this->getSettingGroup()->getName() . '.' . $originalName;
-            $block->component = 'a17-block-' . $moduleName . '-' . $this->getSettingGroup()->getName() . '-' . $originalName;
-        }
+					foreach ($this->getFormBlocks() as $name) {
+							$blockCollection->add(
+									$block = Block::make(
+											file: new SplFileInfo($directory . DIRECTORY_SEPARATOR . $name . '.blade.php'),
+											type: Block::TYPE_SETTINGS,
+											source: Block::SOURCE_CUSTOM
+									)
+							);
+	
+							$originalName = $block->name;
+	
+							$block->name = $moduleName . '.' . $this->getSettingGroup()->getName() . '.' . $originalName;
+							$block->component = 'a17-block-' . $moduleName . '-' . $this->getSettingGroup()->getName() . '-' . $originalName;
+					}
+				}
     }
 }

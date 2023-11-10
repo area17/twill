@@ -16,6 +16,13 @@ class TwillAppSettings
      */
     private array $settingsGroups = [];
 
+		/**
+     * @var string[]
+     */
+		public array $settingsPaths = [ // include the default
+			'resources' . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'twill' . DIRECTORY_SEPARATOR . 'settings' . DIRECTORY_SEPARATOR
+		];
+
     public function registerSettingsGroup(SettingsGroup $section): void
     {
         $this->settingsGroups[$section->getName()] = $section;
@@ -27,6 +34,16 @@ class TwillAppSettings
             $this->registerSettingsGroup($section);
         }
     }
+
+		public function registerSettingsPath(string $path): void
+		{
+			$this->settingsPaths[] = $path;
+		}
+
+		public function getSettingsPaths(): array
+		{
+			return $this->settingsPaths;
+		}
 
     /**
      * @return array<string, SettingsGroup>
