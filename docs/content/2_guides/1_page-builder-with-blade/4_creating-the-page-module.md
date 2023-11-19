@@ -1,6 +1,6 @@
 # Creating the page module
 
-Now that we area ready with the initial setup of Laravel and Twill we can start building our CMS.
+Now that we are ready with the initial setup of Laravel and Twill we can start building our CMS.
 
 In Twill we use Modules. A module is a single "content type" and exists out of a few files:
 

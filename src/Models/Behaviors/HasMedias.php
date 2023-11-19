@@ -44,20 +44,18 @@ trait HasMedias
             Media::class,
             'mediable',
             config('twill.mediables_table', 'twill_mediables')
-        )->withPivot(
-            array_merge([
-                'crop',
-                'role',
-                'crop_w',
-                'crop_h',
-                'crop_x',
-                'crop_y',
-                'lqip_data',
-                'ratio',
-                'metadatas',
-            ], config('twill.media_library.translated_form_fields', false) ? ['locale'] : [])
-        )
-            ->withTimestamps()->orderBy(config('twill.mediables_table', 'twill_mediables') . '.id', 'asc');
+        )->withPivot([
+            'crop',
+            'role',
+            'crop_w',
+            'crop_h',
+            'crop_x',
+            'crop_y',
+            'lqip_data',
+            'ratio',
+            'metadatas',
+            'locale',
+        ])->withTimestamps()->orderBy(config('twill.mediables_table', 'twill_mediables') . '.id', 'asc');
     }
 
     private function findMedia($role, $crop = 'default')
