@@ -16,15 +16,18 @@ class SupportPermission extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable('permissions')
+        $permissionsTableName = config('twill.permissions_table', 'permissions');
+        $rolesTableName = config('twill.roles_table', 'roles');
+
+        if (!Schema::hasTable($permissionsTableName)
             && !Schema::hasTable('groups')
-            && !Schema::hasTable('roles')
+            && !Schema::hasTable($rolesTableName)
             && !Schema::hasTable('permission_twill_user')
             && !Schema::hasTable('group_twill_user')
             && !Schema::hasTable('group_permission')
             && !Schema::hasTable('permission_role')
         ) {
-            Schema::create('permissions', function (Blueprint $table) {
+            Schema::create($permissionsTableName, function (Blueprint $table) {
                 createDefaultTableFields($table);
                 $table->string('name');
                 $table->string('display_name')->nullable();
@@ -40,14 +43,14 @@ class SupportPermission extends Migration
                 $table->boolean('is_everyone_group')->default(false);
             });
 
-            Schema::create('roles', function (Blueprint $table) {
+            Schema::create($rolesTableName, function (Blueprint $table) {
                 createDefaultTableFields($table);
                 $table->string('name', 255)->nullable();
                 $table->boolean('in_everyone_group')->default(true);
                 $table->integer('position')->unsigned()->nullable();
             });
 
-            Schema::create('permission_twill_user', function (Blueprint $table) {
+            Schema::create('permission_twill_user', function (Blueprint $table) use($permissionsTableName) {
                 $table->bigInteger('twill_user_id')->unsigned()->nullable();
                 $table->foreign('twill_user_id')
                     ->references('id')
@@ -57,7 +60,7 @@ class SupportPermission extends Migration
                 $table->bigInteger('permission_id')->unsigned()->nullable();
                 $table->foreign('permission_id')
                     ->references('id')
-                    ->on('permissions')
+                    ->on($permissionsTableName)
                     ->onDelete('cascade');
             });
 
@@ -77,11 +80,11 @@ class SupportPermission extends Migration
                 $table->integer('position')->unsigned()->nullable();
             });
 
-            Schema::create('group_permission', function (Blueprint $table) {
+            Schema::create('group_permission', function (Blueprint $table) use($permissionsTableName) {
                 $table->bigInteger('permission_id')->unsigned()->nullable();
                 $table->foreign('permission_id')
                     ->references('id')
-                    ->on('permissions')
+                    ->on($permissionsTableName)
                     ->onDelete('cascade');
 
                 $table->bigInteger('group_id')->unsigned()->nullable();
@@ -91,17 +94,17 @@ class SupportPermission extends Migration
                     ->onDelete('cascade');
             });
 
-            Schema::create('permission_role', function (Blueprint $table) {
+            Schema::create('permission_role', function (Blueprint $table) use($permissionsTableName, $rolesTableName) {
                 $table->bigInteger('permission_id')->unsigned()->nullable();
                 $table->foreign('permission_id')
                     ->references('id')
-                    ->on('permissions')
+                    ->on($permissionsTableName)
                     ->onDelete('cascade');
 
                 $table->bigInteger('role_id')->unsigned()->nullable();
                 $table->foreign('role_id')
                     ->references('id')
-                    ->on('roles')
+                    ->on($rolesTableName)
                     ->onDelete('cascade');
             });
 
@@ -118,13 +121,17 @@ class SupportPermission extends Migration
      */
     public function down()
     {
+        $permissionsTableName = config('twill.permissions_table', 'permissions');
+        $rolesTableName = config('twill.roles_table', 'roles');
+
+
         Schema::dropIfExists('permission_twill_user');
         Schema::dropIfExists('group_twill_user');
         Schema::dropIfExists('group_permission');
         Schema::dropIfExists('permission_role');
-        Schema::dropIfExists('permissions');
+        Schema::dropIfExists($permissionsTableName);
         Schema::dropIfExists('groups');
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists($rolesTableName);
     }
 
     private function seedBasicPermissions()

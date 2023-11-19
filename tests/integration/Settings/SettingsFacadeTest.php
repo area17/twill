@@ -5,6 +5,7 @@ namespace A17\Twill\Tests\Integration\Settings;
 use A17\Twill\Exceptions\Settings\SettingsGroupDoesNotExistException;
 use A17\Twill\Exceptions\Settings\SettingsSectionDoesNotExistException;
 use A17\Twill\Facades\TwillAppSettings;
+use A17\Twill\Models\AppSetting;
 use A17\Twill\Services\Settings\SettingsGroup;
 use A17\Twill\Tests\Integration\TestCase;
 
@@ -66,6 +67,9 @@ class SettingsFacadeTest extends TestCase
                 ]
             )
             ->assertStatus(200);
+
+        /** @see AppSetting::booted() */
+        $model->unsetRelation('blocks');
     }
 
     public function testTranslatedSettingsGetter(): void
