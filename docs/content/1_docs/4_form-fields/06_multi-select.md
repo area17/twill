@@ -168,7 +168,7 @@ In this case that it can be implemented as follows:
 - Create a Sectors [module](../3_modules/2_cli-generator.md)
 
 ```
-php artisan twill:module sectors
+php artisan twill:make:module sectors
 ```
 
 - Create a migration for a pivot table.
