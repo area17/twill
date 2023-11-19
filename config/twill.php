@@ -143,6 +143,8 @@ return [
     'tags_table' => 'twill_tags',
     'users_oauth_table' => 'twill_users_oauth',
     'users_table' => 'twill_users',
+    'permissions_table' => 'permissions',
+    'roles_table' => 'roles',
 
     /*
     |--------------------------------------------------------------------------
