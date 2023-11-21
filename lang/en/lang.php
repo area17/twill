@@ -26,7 +26,7 @@ return [
         'reset-password' => 'Reset password',
         'reset-send' => 'Send password reset link',
         'verify-login' => 'Verify login',
-        'auth-causer' => 'Authentication'
+        'auth-causer' => 'Authentication',
     ],
     'buckets' => [
         'intro' => 'What would you like to feature today?',
@@ -58,7 +58,7 @@ return [
             'restored' => 'Restored',
             'deleted' => 'Deleted',
             'login' => 'Login action',
-            'logout' => 'Logout action'
+            'logout' => 'Logout action',
         ],
         'activity-row' => [
             'edit' => 'Edit',
@@ -138,7 +138,6 @@ return [
         'version' => 'Version',
     ],
     'form' => [
-        'options' => 'Options',
         'content' => 'Content',
         'dialogs' => [
             'delete' => [
@@ -149,6 +148,7 @@ return [
             ],
         ],
         'editor' => 'Editor',
+        'options' => 'Options',
     ],
     'lang-manager' => [
         'published' => 'Live',
@@ -195,12 +195,12 @@ return [
         'filter' => [
             'no' => 'No',
             'yes' => 'Yes',
-            'not-set' => 'Without value',
             'all-items' => 'All items',
             'draft' => 'Draft',
             'mine' => 'Mine',
             'published' => 'Published',
             'trash' => 'Trash',
+            'not-set' => 'Without value',
         ],
         'filters' => [
             'all-label' => 'All :label',
@@ -396,11 +396,6 @@ return [
         'restore-live-new' => 'Restore as published and create new',
         'restore-message' => 'You are currently editing an older revision of this content (saved by :user on :date). Make changes if needed and click restore to save a new revision.',
         'restore-success' => 'Revision restored.',
-        'draft-revision' => 'Save as draft revision',
-        'draft-revision-close' => 'Save as draft revision and close',
-        'draft-revision-new' => 'Save as draft revision and create new',
-        'draft-revisions-available' => 'You are currently viewing the published version of this content. There are newer draft revisions available.',
-        'editing-draft-revision' => 'You are currently editing a draft revision of this content. Make changes if needed and click Save as revision or Publish.',
         'revisions' => 'Revisions',
         'save' => 'Save as draft',
         'save-close' => 'Save as draft and close',
@@ -417,6 +412,11 @@ return [
         'scheduled' => 'Scheduled',
         'expired' => 'Expired',
         'unsaved-changes' => 'There are unsaved changes',
+        'draft-revision' => 'Save as draft revision',
+        'draft-revision-close' => 'Save as draft revision and close',
+        'draft-revision-new' => 'Save as draft revision and create new',
+        'draft-revisions-available' => 'You are currently viewing the published version of this content. There are newer draft revisions available.',
+        'editing-draft-revision' => 'You are currently editing a draft revision of this content. Make changes if needed and click Save as revision or Publish.',
     ],
     'select' => [
         'empty-text' => 'Sorry, no matching options.',
