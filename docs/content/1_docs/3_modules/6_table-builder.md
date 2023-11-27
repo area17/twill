@@ -125,7 +125,7 @@ The example blow illustrates a possible usage:
 Text::make()
   ->field('customField')
   ->customRender(function (Model $model) {
-    return view('my.view', ['title' => $model->title'])->render();
+    return view('my.view', ['title' => $model->title])->render();
   });
 ```
 
