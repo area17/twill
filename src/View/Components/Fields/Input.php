@@ -21,6 +21,7 @@ class Input extends TwillFormComponent
         // Component specific
         public string $type = 'text',
         public ?string $placeholder = '',
+        public ?string $direction = 'auto',
         public ?int $maxlength = null,
         public ?int $rows = null,
         public ?string $ref = null,

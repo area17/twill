@@ -8,6 +8,7 @@
             @if ($required) required: true, @endif
             @if ($note) note: '{{ $note }}', @endif
             @if ($placeholder) placeholder: '{{ addslashes($placeholder) }}', @endif
+            @if ($direction) direction: '{{ $direction }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($disabled) disabled: true, @endif
             @if ($readOnly) readonly: true, @endif
@@ -35,6 +36,7 @@
         @if ($required) :required="true" @endif
         @if ($note) note="{{ $note }}" @endif
         @if ($placeholder) placeholder="{{ $placeholder }}" @endif
+        @if ($direction) direction="{{ $direction }}" @endif
         @if ($maxlength) :maxlength="{{ $maxlength }}" @endif
         @if ($disabled) disabled @endif
         @if ($readOnly) readonly @endif

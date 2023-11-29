@@ -7,6 +7,8 @@ use A17\Twill\Services\Forms\Fields\Traits\HasMaxlength;
 use A17\Twill\Services\Forms\Fields\Traits\HasMin;
 use A17\Twill\Services\Forms\Fields\Traits\HasOnChange;
 use A17\Twill\Services\Forms\Fields\Traits\HasPlaceholder;
+use A17\Twill\Services\Forms\Fields\Traits\HasDirection;
+use A17\Twill\Services\Forms\Fields\Traits\HasReadOnly;
 use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 /**
@@ -19,6 +21,8 @@ class Input extends BaseFormField
     use HasMax;
     use HasMaxlength;
     use HasPlaceholder;
+    use HasReadOnly;
+    use HasDirection;
     use HasOnChange;
 
     /**

@@ -41,6 +41,9 @@ export default {
       else return false
     },
     dirLocale: function () {
+      if (this.direction && this.direction !== 'auto') {
+        return this.direction;
+      }
       return (this.isLocaleRTL ? 'rtl' : 'auto')
     },
     displayedLocale: function () {
