@@ -329,7 +329,9 @@ class TwillServiceProvider extends ServiceProvider
     private function publishOptionalMigration($feature): void
     {
         if (config('twill.enabled.' . $feature, false)) {
-            $this->loadMigrationsFrom(__DIR__ . '/../migrations/optional/' . $feature);
+            if (config('twill.load_default_migrations', true)) {
+                $this->loadMigrationsFrom(__DIR__ . '/../migrations/optional/' . $feature);
+            }
 
             $this->publishes([
                 __DIR__ . '/../migrations/optional/' . $feature => database_path('migrations'),
