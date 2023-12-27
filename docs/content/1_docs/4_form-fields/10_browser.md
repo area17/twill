@@ -73,6 +73,48 @@ explanation.
 Outside the block editor, browser fields are used to save `belongsToMany` relationships. The relationships can be stored
 in Twill's own `related` table or in a custom pivot table.
 
+## Using a custom pivot table
+
+- Create your pivot table:
+
+```php
+   Schema::create('artists_artworks', function (Blueprint $table) {
+
+        createDefaultRelationshipTableFields($table, 'artist', 'artwork');
+
+        $table->integer('position')->unsigned()->nullable();
+
+    });
+```
+- Add your `afterSave` actions to your repository (i.e. `ArtistRepository`):
+
+```php
+  public function afterSave(TwillModelContract $object, array $fields): void
+    {
+        $this->updateBrowser($object, $fields, 'artworks');
+        parent::afterSave($object, $fields);
+    }
+```
+
+- Use getFormFields to hydrate your browser field to your repository:
+
+```php
+   public function getFormFields(TwillModelContract $object): array
+    {
+        $fields = parent::getFormFields($object);
+
+        $fields['browsers']['articles'] = $this->getFormFieldsForBrowser(
+            $object,
+            'articles', //relation
+            null, //routePrefix
+            'title', //title
+            'articles' //module name
+        );
+    }
+```
+
+You will NOT need to use the `HasRelated` trait with this set up.
+
 ## Using browser fields as related items
 
 The following example demonstrates how to use a browser field to attach `Authors` to `Articles`.
