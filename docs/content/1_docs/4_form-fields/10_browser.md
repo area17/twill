@@ -103,12 +103,12 @@ in Twill's own `related` table or in a custom pivot table.
     {
         $fields = parent::getFormFields($object);
 
-        $fields['browsers']['articles'] = $this->getFormFieldsForBrowser(
+        $fields['browsers']['artworks'] = $this->getFormFieldsForBrowser(
             $object,
-            'articles', //relation
+            'artworks', //relation
             null, //routePrefix
             'title', //title
-            'articles' //module name
+            'artworks' //module name
         );
 
         return $fields;
