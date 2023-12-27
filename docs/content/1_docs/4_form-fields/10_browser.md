@@ -110,6 +110,8 @@ in Twill's own `related` table or in a custom pivot table.
             'title', //title
             'articles' //module name
         );
+
+        return $fields;
     }
 ```
 
