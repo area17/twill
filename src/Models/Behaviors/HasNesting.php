@@ -35,7 +35,7 @@ trait HasNesting
      */
     public function getAncestorsSlug(?string $locale = null): string
     {
-        return $this->getAncestors()->reverse()
+        return $this->getAncestors()->sortBy('_lft')
             ->map(function ($i) use ($locale) {
                 return $i->getSlug($locale);
             })
