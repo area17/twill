@@ -331,7 +331,7 @@
     @include defaultState;
     display: flex;
     flex-direction: row;
-    flex-wrap:no-wrap;
+    flex-wrap:nowrap;
 
     &.s--focus {
       @include focusState;

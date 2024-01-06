@@ -94,7 +94,7 @@ $height__nav: 60px;
   @include breakpoint('large+') {
     display: flex;
     flex-direction: row;
-    flex-wrap: no-wrap;
+    flex-wrap: nowrap;
   }
 }
 

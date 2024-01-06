@@ -80,7 +80,7 @@
   .revaccordion__item {
     display: flex;
     flex-direction: row;
-    flex-wrap:no-wrap;
+    flex-wrap:nowrap;
     color:$color__text--light;
     padding:7.5px 20px;
     cursor:pointer;
