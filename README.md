@@ -7,6 +7,7 @@
       <img src="https://poser.pugx.org/area17/twill/v/stable.svg" alt="Latest Stable Version"></a>
     <a href="https://github.com/area17/twill/actions">
       <img src="https://github.com/area17/twill/actions/workflows/main.yml/badge.svg" alt="Build Status"></a>
+<a href="https://app.fossa.com/projects/git%2Bgithub.com%2Farea17%2Ftwill?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2Farea17%2Ftwill.svg?type=shield"/></a>
     <a href="https://packagist.org/packages/area17/twill">
       <img src="https://poser.pugx.org/area17/twill/license.svg" alt="License"></a>
     <br>
@@ -19,6 +20,9 @@
             alt="chat on Discord"></a>
     <img alt="GitHub closed pull requests" src="https://img.shields.io/github/issues-pr-closed/area17/twill">
 </p>
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Farea17%2Ftwill.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Farea17%2Ftwill?ref=badge_large)
 
 # About Twill 
 
