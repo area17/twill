@@ -25,6 +25,11 @@ trait HandleUserPermissions
 
         foreach ($object->permissions()->moduleItem()->get() as $permission) {
             $model = $permission->permissionable()->first();
+
+            if ($model === null) {
+                continue;
+            }
+
             $moduleName = getModuleNameByModel($model);
             $fields[$moduleName . '_' . $model->id . '_permission'] = $permission->name;
         }
