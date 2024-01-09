@@ -39,11 +39,11 @@ $slug = $item->getNestedSlug($lang);
 To include all ancestor slugs in the permalink of an item in the CMS, you can dynamically set the `$permalinkBase` property from the `form()` method of your module controller:
 
 ```php
-class PageController extends ModuleController
+class PageController extends NestedModuleController
 {
     //...
 
-    protected function form($id, $item = null)
+    protected function form(?int $id, TwillModelContract $item = null): array
     {
         $item = $this->repository->getById($id, $this->formWith, $this->formWithCount);
 
@@ -70,6 +70,21 @@ Route::get('{slug}', function ($slug) {
 
 For more information on how to work with nested items in your application, you can refer to the 
 [laravel-nestedset package documentation](https://github.com/lazychaser/laravel-nestedset#retrieving-nodes).
+
+### Setting a maximum nested depth
+
+You can also define the maximum depth allowed for the module changing the following:
+```php 
+protected $nestedItemsDepth = 1;
+```
+Note: a depth of 1 means parent and child.
+
+### Working with browser fields
+
+By default only a parent item will be visible to the browser field. If you want to show child items when browsing for the module you can set `$showOnlyParentItemsInBrowsers` to false:
+```php
+protected $showOnlyParentItemsInBrowsers = false; // default is true
+```
 
 ## Parent-child modules
 
