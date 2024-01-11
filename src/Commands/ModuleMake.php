@@ -657,7 +657,7 @@ PHP;
         }
 
         if ($this->seeder && $this->getApplication()->has('make:seeder')) {
-            Artisan::call('make:seeder '.$modelName.'Seeder', [], $this->output);
+            Artisan::call('make:seeder ' . $modelName . 'Seeder', [], $this->output);
         }
 
         $stub = str_replace([
