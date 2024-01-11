@@ -652,7 +652,7 @@ PHP;
 
         if ($this->factory && $this->getApplication()->has('make:factory')) {
             $activeModelTraitsImports .= "\nuse Illuminate\Database\Eloquent\Factories\HasFactory;";
-            $activeModelTraitsString = Str::of($activeModelTraitsString)->replace(';',', HasFactory;');
+            $activeModelTraitsString = Str::of($activeModelTraitsString)->replace(';', ', HasFactory;');
             Artisan::call('make:factory', ['name' => $modelName.'Factory','--model' => $modelClassName], $this->output);
         }
 
