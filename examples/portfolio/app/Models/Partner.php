@@ -22,7 +22,6 @@ class Partner extends Model
     public $translatedAttributes = [
         'title',
         'description',
-        'active',
     ];
 
     public $slugAttributes = [

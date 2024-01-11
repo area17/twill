@@ -9,7 +9,7 @@ use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Behaviors\HasRevisions;
 use A17\Twill\Models\Model;
 
-class Homepage extends Model 
+class Homepage extends Model
 {
     use HasBlocks, HasTranslation, HasMedias, HasFiles, HasRevisions;
 
@@ -18,11 +18,10 @@ class Homepage extends Model
         'title',
         'description',
     ];
-    
+
     public $translatedAttributes = [
         'title',
         'description',
-        'active',
     ];
-    
+
 }

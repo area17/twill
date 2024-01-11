@@ -19,7 +19,7 @@ trait HandleTranslations
         if ($this->model->isTranslatable()) {
             $locales = getLocales();
             $localesCount = count($locales);
-            $attributes = Collection::make($this->model->translatedAttributes);
+            $attributes = Collection::make($this->model->getTranslatedAttributes());
 
             $submittedLanguages = Collection::make($fields['languages'] ?? []);
 
@@ -67,9 +67,9 @@ trait HandleTranslations
         $slug = $fields['translations']['slug'] ?? null;
         unset($fields['translations']);
 
-        if ($object->translations !== null && $object->translatedAttributes != null) {
+        if ($object->translations !== null && $object->getTranslatedAttributes() != null) {
             foreach ($object->translations as $translation) {
-                foreach ($object->translatedAttributes as $attribute) {
+                foreach ($object->getTranslatedAttributes() as $attribute) {
                     unset($fields[$attribute]);
                     if (array_key_exists($attribute, $this->fieldsGroups) && is_array($translation->{$attribute})) {
                         foreach ($this->fieldsGroups[$attribute] as $field_name) {
@@ -100,7 +100,7 @@ trait HandleTranslations
     public function orderHandleTranslations(Builder $query, array &$orders): void
     {
         if ($this->model->isTranslatable()) {
-            $attributes = $this->model->translatedAttributes;
+            $attributes = $this->model->getTranslatedAttributes();
             $table = $this->model->getTable();
             $tableTranslation = $this->model->translations()->getRelated()->getTable();
             $foreignKeyMethod = method_exists($this->model->translations(), 'getQualifiedForeignKeyName') ? 'getQualifiedForeignKeyName' : 'getForeignKey';
