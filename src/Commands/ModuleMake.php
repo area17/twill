@@ -9,6 +9,7 @@ use Illuminate\Config\Repository as Config;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Composer;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
@@ -36,6 +37,8 @@ class ModuleMake extends Command
         {--E|generatePreview}
         {--all}
         {--force}
+        {--factory}
+        {--seeder}
         {--packageDirectory=}
         {--packageNamespace=}
         {--parentModel=}';
@@ -115,6 +118,16 @@ class ModuleMake extends Command
     /**
      * @var bool
      */
+    protected $factory;
+
+    /**
+     * @var bool
+     */
+    protected $seeder;
+
+    /**
+     * @var bool
+     */
     protected $defaultsAnswserToNo;
 
     /**
@@ -160,6 +173,8 @@ class ModuleMake extends Command
         $this->sortable = false;
         $this->revisionable = false;
         $this->nestable = false;
+        $this->factory = false;
+        $this->seeder = false;
 
         $this->defaultsAnswserToNo = false;
 
@@ -271,6 +286,8 @@ class ModuleMake extends Command
         $this->sortable = $this->checkOption('hasPosition');
         $this->revisionable = $this->checkOption('hasRevisions');
         $this->nestable = $this->checkOption('hasNesting');
+        $this->factory = $this->checkOption('factory');
+        $this->seeder = $this->checkOption('seeder');
 
         if ($this->nestable) {
             $this->sortable = true;
@@ -631,6 +648,16 @@ PHP;
 
         if ($this->sortable) {
             $activeModelTraitsImports .= "\nuse A17\Twill\Models\Behaviors\Sortable;";
+        }
+
+        if ($this->factory && $this->getApplication()->has('make:factory')) {
+            $activeModelTraitsImports .= "\nuse Illuminate\Database\Eloquent\Factories\HasFactory;";
+            $activeModelTraitsString = Str::of($activeModelTraitsString)->replace(';',', HasFactory;');
+            Artisan::call('make:factory', ['name' => $modelName.'Factory','--model' => $modelClassName], $this->output);
+        }
+
+        if ($this->seeder && $this->getApplication()->has('make:seeder')) {
+            Artisan::call('make:seeder '.$modelName.'Seeder', [], $this->output);
         }
 
         $stub = str_replace([
@@ -1000,6 +1027,8 @@ PHP;
             'hasRevisions' => 'Do you need to enable revisions on this module?',
             'hasNesting' => 'Do you need to enable nesting on this module?',
             'generatePreview' => 'Do you also want to generate the preview file?',
+            'factory' => 'Do you also want to generate a model factory?',
+            'seeder' => 'Do you also want to generate a model seeder?',
         ];
 
         $defaultAnswers = [
