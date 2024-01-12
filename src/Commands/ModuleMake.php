@@ -647,7 +647,7 @@ PHP;
             '{{baseModel}}',
         ], [
             $modelName,
-            $activeModelTraits->whenNotEmpty(fn($t) => 'use '.$t->join(', ').';'),
+            $activeModelTraits->whenNotEmpty(fn($t) => 'use ' . $t->join(', ') . ';'),
             $activeModelTraitsImports->join("\n"),
             $activeModelImplements,
             $this->namespace('models', 'Models'),
@@ -879,7 +879,7 @@ PHP;
      */
     private function createSeeders(string $modelName = 'Item'): void
     {
-        if(! $this->seeder) {
+        if (! $this->seeder) {
             return;
         }
 
@@ -891,7 +891,7 @@ PHP;
             }
         } elseif ($this->isSingleton) {
             $this->createSingletonSeed($modelName);
-        } elseif($this->getApplication()->has('make:seeder')) {
+        } elseif ($this->getApplication()->has('make:seeder')) {
             Artisan::call('make:seeder ' . $modelName . 'Seeder', [], $this->output);
         }
     }
