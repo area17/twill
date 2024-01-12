@@ -322,19 +322,13 @@ class ModuleMake extends Command
         $this->createController($moduleName, $modelName);
         $this->createRequest($modelName);
         $this->createViews($moduleName);
+        $this->createSeeders($modelName);
 
         $navModuleName = $this->isSingleton ? $singularModuleName : $moduleName;
 
         if ($this->isCapsule) {
-            if ($this->isSingleton) {
-                $this->createCapsuleSingletonSeeder();
-            } else {
-                $this->createCapsuleSeed();
-            }
-
             $this->createCapsuleRoutes();
         } elseif ($this->isSingleton) {
-            $this->createSingletonSeed($modelName);
             $this->addEntryToRoutesFile("\nTwillRoutes::singleton('{$singularModuleName}');");
         } else {
             $moduleNameForRoute = $navModuleName;
@@ -626,38 +620,22 @@ PHP;
             $this->putTwillStub(twill_path("$baseDir/" . $modelRevisionClassName . '.php'), $stub);
         }
 
-        $activeModelTraits = [];
+        $activeModelTraits = collect($this->modelTraits)
+            ->intersectByKeys(collect($activeTraits)->filter());
 
-        foreach ($activeTraits as $index => $traitIsActive) {
-            if ($traitIsActive) {
-                ! isset($this->modelTraits[$index]) ?: $activeModelTraits[] = $this->modelTraits[$index];
-            }
-        }
-
-        $activeModelTraitsString = empty($activeModelTraits) ? '' : 'use ' . rtrim(
-            implode(', ', $activeModelTraits),
-            ', '
-        ) . ';';
-
-        $activeModelTraitsImports = empty($activeModelTraits) ? '' : "use A17\Twill\Models\Behaviors\\" . implode(
-            ";\nuse A17\Twill\Models\Behaviors\\",
-            $activeModelTraits
-        ) . ';';
+        $activeModelTraitsImports = $activeModelTraits
+            ->map(fn ($trait) => "use A17\Twill\Models\Behaviors\\$trait;");
 
         $activeModelImplements = $this->sortable ? 'implements Sortable' : '';
 
         if ($this->sortable) {
-            $activeModelTraitsImports .= "\nuse A17\Twill\Models\Behaviors\Sortable;";
+            $activeModelTraitsImports->push('use A17\Twill\Models\Behaviors\Sortable;');
         }
 
         if ($this->factory && $this->getApplication()->has('make:factory')) {
-            $activeModelTraitsImports .= "\nuse Illuminate\Database\Eloquent\Factories\HasFactory;";
-            $activeModelTraitsString = Str::of($activeModelTraitsString)->replace(';', ', HasFactory;');
+            $activeModelTraitsImports->push('use Illuminate\Database\Eloquent\Factories\HasFactory;');
+            $activeModelTraits->push('HasFactory');
             Artisan::call('make:factory', ['name' => $modelName . 'Factory', '--model' => $modelClassName], $this->output);
-        }
-
-        if ($this->seeder && $this->getApplication()->has('make:seeder')) {
-            Artisan::call('make:seeder ' . $modelName . 'Seeder', [], $this->output);
         }
 
         $stub = str_replace([
@@ -669,8 +647,8 @@ PHP;
             '{{baseModel}}',
         ], [
             $modelName,
-            $activeModelTraitsString,
-            $activeModelTraitsImports,
+            $activeModelTraits->whenNotEmpty(fn($t) => 'use '.$t->join(', ').';'),
+            $activeModelTraitsImports->join("\n"),
             $activeModelImplements,
             $this->namespace('models', 'Models'),
             config('twill.base_model'),
@@ -894,6 +872,31 @@ PHP;
     }
 
     /**
+     * Creates new seeder files for the given module name.
+     *
+     * @param string $modelName
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    private function createSeeders(string $modelName = 'Item'): void
+    {
+        if(! $this->seeder) {
+            return;
+        }
+
+        if ($this->isCapsule) {
+            if ($this->isSingleton) {
+                $this->createCapsuleSingletonSeeder();
+            } else {
+                $this->createCapsuleSeed();
+            }
+        } elseif ($this->isSingleton) {
+            $this->createSingletonSeed($modelName);
+        } elseif($this->getApplication()->has('make:seeder')) {
+            Artisan::call('make:seeder ' . $modelName . 'Seeder', [], $this->output);
+        }
+    }
+
+    /**
      * Creates a basic routes file for the Capsule.
      *
      * @param string $moduleName
@@ -919,7 +922,6 @@ PHP;
     /**
      * Creates a new capsule database seed file.
      *
-     * @param string $moduleName
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     private function createCapsuleSeed(): void
