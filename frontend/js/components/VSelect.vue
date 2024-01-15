@@ -207,7 +207,7 @@
         if(!value) {
           const allOption = this.options.find((o) => o.value === 'all' );
           this.value = allOption ?? undefined
-        }else {
+        } else {
           this.value = value
         }
         this.saveIntoStore()
