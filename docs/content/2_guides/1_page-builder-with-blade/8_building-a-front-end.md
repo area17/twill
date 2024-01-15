@@ -108,7 +108,7 @@ Route::get('{slug}', [\App\Http\Controllers\PageDisplayController::class, 'show'
 ```
 
 As you can see, we create a **get** route, that has **{slug}** as uri. Our second argument is our callable. This we
-could have also written as 'PageDisplayController::show'. However, by using a proper namespace, it is easier to follow.
+could have also written as 'PageDisplayController@show'. However, by using a proper namespace, it is easier to follow.
 
 Once you save this file, head to your browser and visit: `https://your-local-domain.test/example`
 
