@@ -239,6 +239,10 @@ class DashboardController extends Controller
             return null;
         }
 
+        if (auth('twill_users')->user()->cannot('view-item', $activity->subject)) {
+            return null;
+        }
+
         $parentRelationship = $dashboardModule['parentRelationship'] ?? null;
         $parent = $activity->subject->$parentRelationship;
 
