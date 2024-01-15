@@ -21,8 +21,10 @@ trait HandleUserPermissions
      */
     public function getFormFieldsHandleUserPermissions($object, $fields)
     {
-        if (!config('twill.enabled.permissions-management') ||
-            !TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)) {
+        if (
+            !config('twill.enabled.permissions-management') ||
+            !TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)
+        ) {
             return $fields;
         }
 
