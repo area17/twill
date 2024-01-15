@@ -9,12 +9,6 @@ use Illuminate\Support\Str;
 
 class NestedData extends TableColumn
 {
-    public static function make(): static
-    {
-        $item = parent::make();
-        return $item;
-    }
-
     public function sortable(bool $sortable = true): static
     {
         if ($sortable && $this->sortFunction === null) {
