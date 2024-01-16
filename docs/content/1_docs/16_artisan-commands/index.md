@@ -62,6 +62,7 @@ php artisan twill:make:singleton {moduleName}
   {--bladeForm}
   {--all}
   {--force}
+  {--factory}
   {--packageDirectory=}
   {--packageNamespace=}
   {--parentModel=}

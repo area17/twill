@@ -873,13 +873,14 @@ PHP;
 
     /**
      * Creates new seeder files for the given module name.
+     * Singletons require seeders, users are instructed to run the seeders.
      *
      * @param string $modelName
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     private function createSeeders(string $modelName = 'Item'): void
     {
-        if (! $this->seeder) {
+        if (! $this->seeder && ! $this->isSingleton) {
             return;
         }
 
