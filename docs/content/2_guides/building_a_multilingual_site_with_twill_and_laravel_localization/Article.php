@@ -22,7 +22,6 @@ class Article extends Model implements LocalizedUrlRoutable
     public $translatedAttributes = [
         'title',
         'description',
-        'active',
     ];
 
     public $slugAttributes = [
