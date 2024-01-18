@@ -175,7 +175,7 @@ class TwillServiceProvider extends ServiceProvider
             $this->app->register($provider);
         }
 
-        if (app()->environment('testing') && class_exists(Laravel\Dusk\Browser::class)) {
+        if (app()->environment('testing')) {
             $this->app->register(DuskServiceProvider::class);
         }
 
