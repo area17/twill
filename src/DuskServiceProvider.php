@@ -14,7 +14,7 @@ class DuskServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        if (!class_exists(\Laravel\Dusk\Browser::class)) {
+        if (!class_exists(Browser::class)) {
             return;
         }
         Browser::macro('setBrowserLocationToParis', function () {
