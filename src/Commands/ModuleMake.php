@@ -9,6 +9,7 @@ use Illuminate\Config\Repository as Config;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Composer;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
@@ -36,6 +37,8 @@ class ModuleMake extends Command
         {--E|generatePreview}
         {--all}
         {--force}
+        {--factory}
+        {--seeder}
         {--packageDirectory=}
         {--packageNamespace=}
         {--parentModel=}';
@@ -115,6 +118,16 @@ class ModuleMake extends Command
     /**
      * @var bool
      */
+    protected $factory;
+
+    /**
+     * @var bool
+     */
+    protected $seeder;
+
+    /**
+     * @var bool
+     */
     protected $defaultsAnswserToNo;
 
     /**
@@ -160,6 +173,8 @@ class ModuleMake extends Command
         $this->sortable = false;
         $this->revisionable = false;
         $this->nestable = false;
+        $this->factory = false;
+        $this->seeder = false;
 
         $this->defaultsAnswserToNo = false;
 
@@ -271,6 +286,8 @@ class ModuleMake extends Command
         $this->sortable = $this->checkOption('hasPosition');
         $this->revisionable = $this->checkOption('hasRevisions');
         $this->nestable = $this->checkOption('hasNesting');
+        $this->factory = $this->checkOption('factory');
+        $this->seeder = $this->checkOption('seeder');
 
         if ($this->nestable) {
             $this->sortable = true;
@@ -305,19 +322,13 @@ class ModuleMake extends Command
         $this->createController($moduleName, $modelName);
         $this->createRequest($modelName);
         $this->createViews($moduleName);
+        $this->createSeeders($modelName);
 
         $navModuleName = $this->isSingleton ? $singularModuleName : $moduleName;
 
         if ($this->isCapsule) {
-            if ($this->isSingleton) {
-                $this->createCapsuleSingletonSeeder();
-            } else {
-                $this->createCapsuleSeed();
-            }
-
             $this->createCapsuleRoutes();
         } elseif ($this->isSingleton) {
-            $this->createSingletonSeed($modelName);
             $this->addEntryToRoutesFile("\nTwillRoutes::singleton('{$singularModuleName}');");
         } else {
             $moduleNameForRoute = $navModuleName;
@@ -609,28 +620,22 @@ PHP;
             $this->putTwillStub(twill_path("$baseDir/" . $modelRevisionClassName . '.php'), $stub);
         }
 
-        $activeModelTraits = [];
+        $activeModelTraits = collect($this->modelTraits)
+            ->intersectByKeys(collect($activeTraits)->filter());
 
-        foreach ($activeTraits as $index => $traitIsActive) {
-            if ($traitIsActive) {
-                ! isset($this->modelTraits[$index]) ?: $activeModelTraits[] = $this->modelTraits[$index];
-            }
-        }
-
-        $activeModelTraitsString = empty($activeModelTraits) ? '' : 'use ' . rtrim(
-            implode(', ', $activeModelTraits),
-            ', '
-        ) . ';';
-
-        $activeModelTraitsImports = empty($activeModelTraits) ? '' : "use A17\Twill\Models\Behaviors\\" . implode(
-            ";\nuse A17\Twill\Models\Behaviors\\",
-            $activeModelTraits
-        ) . ';';
+        $activeModelTraitsImports = $activeModelTraits
+            ->map(fn ($trait) => "use A17\Twill\Models\Behaviors\\$trait;");
 
         $activeModelImplements = $this->sortable ? 'implements Sortable' : '';
 
         if ($this->sortable) {
-            $activeModelTraitsImports .= "\nuse A17\Twill\Models\Behaviors\Sortable;";
+            $activeModelTraitsImports->push('use A17\Twill\Models\Behaviors\Sortable;');
+        }
+
+        if ($this->factory && $this->getApplication()->has('make:factory')) {
+            $activeModelTraitsImports->push('use Illuminate\Database\Eloquent\Factories\HasFactory;');
+            $activeModelTraits->push('HasFactory');
+            Artisan::call('make:factory', ['name' => $modelName . 'Factory', '--model' => $modelClassName], $this->output);
         }
 
         $stub = str_replace([
@@ -642,8 +647,8 @@ PHP;
             '{{baseModel}}',
         ], [
             $modelName,
-            $activeModelTraitsString,
-            $activeModelTraitsImports,
+            $activeModelTraits->whenNotEmpty(fn($t) => 'use ' . $t->join(', ') . ';'),
+            $activeModelTraitsImports->join("\n"),
             $activeModelImplements,
             $this->namespace('models', 'Models'),
             config('twill.base_model'),
@@ -867,6 +872,32 @@ PHP;
     }
 
     /**
+     * Creates new seeder files for the given module name.
+     * Singletons require seeders, users are instructed to run the seeders.
+     *
+     * @param string $modelName
+     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     */
+    private function createSeeders(string $modelName = 'Item'): void
+    {
+        if (! $this->seeder && ! $this->isSingleton) {
+            return;
+        }
+
+        if ($this->isCapsule) {
+            if ($this->isSingleton) {
+                $this->createCapsuleSingletonSeeder();
+            } else {
+                $this->createCapsuleSeed();
+            }
+        } elseif ($this->isSingleton) {
+            $this->createSingletonSeed($modelName);
+        } elseif ($this->getApplication()->has('make:seeder')) {
+            Artisan::call('make:seeder ' . $modelName . 'Seeder', [], $this->output);
+        }
+    }
+
+    /**
      * Creates a basic routes file for the Capsule.
      *
      * @param string $moduleName
@@ -892,7 +923,6 @@ PHP;
     /**
      * Creates a new capsule database seed file.
      *
-     * @param string $moduleName
      * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     private function createCapsuleSeed(): void
@@ -1000,6 +1030,8 @@ PHP;
             'hasRevisions' => 'Do you need to enable revisions on this module?',
             'hasNesting' => 'Do you need to enable nesting on this module?',
             'generatePreview' => 'Do you also want to generate the preview file?',
+            'factory' => 'Do you also want to generate a model factory?',
+            'seeder' => 'Do you also want to generate a model seeder?',
         ];
 
         $defaultAnswers = [

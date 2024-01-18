@@ -18,6 +18,7 @@ class MakeSingletonTest extends TestCase
                 '--hasFiles' => true,
                 '--hasRevisions' => true,
                 '--generatePreview' => true,
+                '--factory' => true,
             ])->run()
         );
 

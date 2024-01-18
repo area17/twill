@@ -24,7 +24,7 @@ class Post extends Model implements Sortable
 
     protected $fillable = ['published', 'title', 'description', 'position'];
 
-    public $translatedAttributes = ['title', 'description', 'active'];
+    public $translatedAttributes = ['title', 'description'];
 
     public $slugAttributes = ['title'];
 

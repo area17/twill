@@ -55,8 +55,8 @@ Refresh the page and you now see that the slug is cleaned up.
 These changes do not affect how the model's slug is stored in the database, it just changes the visual representation of
 it.
 
-Model slugs are always saved purely based on the content you enter. If you enter 'example' in the url field when 
-creating or editing the model, that is what will be saved. 
+Model slugs are always saved purely based on the content you enter. If you enter 'example' in the url field when
+creating or editing the model, that is what will be saved.
 
 The front-end is always responsible for handling the slugs.
 :::#alert:::
@@ -166,7 +166,6 @@ class Page extends Model
     public $translatedAttributes = [
         'title',
         'description',
-        'active',
     ];
 
     public $slugAttributes = [
