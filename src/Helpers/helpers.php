@@ -252,7 +252,7 @@ if (! function_exists('generate_list_of_available_blocks')) {
                     }
                 }
 
-                return (filled($blocks) ? collect($blocks)->contains($block->name) : true)
+                return (filled($blocks) ? collect($blocks)->contains($block->name) || collect($blocks)->contains(ltrim($block->componentClass, '\\')) : true)
                     && (filled($groups) ? collect($groups)->contains($block->group) : true);
             }
         );
@@ -260,7 +260,7 @@ if (! function_exists('generate_list_of_available_blocks')) {
         // Sort them by the original definition
         return $finalBlockList->sortBy(function (Block $b) use ($blocks) {
             return collect($blocks)->search(function ($id, $key) use ($b) {
-                return $id == $b->name;
+                return $id == $b->name || $id == ltrim($b->componentClass, '\\');
             });
         })->values()->toArray();
     }

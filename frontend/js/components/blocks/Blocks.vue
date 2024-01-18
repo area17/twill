@@ -21,7 +21,6 @@
                               :opened="opened"
                               :with-handle="!isSettings"
                               :with-actions="!isSettings"
-                              :with-move-dropdown="!isSettings"
                               @expand="setOpened"
                               v-if="availableBlocks.length">
                 <template v-for="availableBlock in availableBlocks">

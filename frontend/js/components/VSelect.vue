@@ -204,7 +204,12 @@
       },
       updateValue: function (value) {
         // see formStore mixin
-        this.value = value
+        if (!value) {
+          const allOption = this.options.find((o) => o.value === 'all');
+          this.value = allOption ?? undefined
+        } else {
+          this.value = value
+        }
         this.saveIntoStore()
         this.$emit('change', value)
       },

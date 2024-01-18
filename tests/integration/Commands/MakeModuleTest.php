@@ -19,6 +19,8 @@ class MakeModuleTest extends TestCase
                 '--hasPosition' => true,
                 '--hasRevisions' => true,
                 '--hasNesting' => true,
+                '--factory' => true,
+                '--seeder' => true,
             ])
             ->expectsConfirmation('Do you also want to generate the preview file?', 'no')
             ->run()

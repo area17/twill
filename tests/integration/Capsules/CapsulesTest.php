@@ -296,6 +296,8 @@ class CapsulesTest extends TestCase
                 '--hasRevisions' => true,
                 '--hasNesting' => true,
                 '--generatePreview' => true,
+                '--factory' => true,
+                '--seeder' => true,
             ])
                 ->run()
         );
