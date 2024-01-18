@@ -68,13 +68,13 @@ Route::get('{slug}', function ($slug) {
 })->where('slug', '.*');
 ```
 
-For more information on how to work with nested items in your application, you can refer to the 
+For more information on how to work with nested items in your application, you can refer to the
 [laravel-nestedset package documentation](https://github.com/lazychaser/laravel-nestedset#retrieving-nodes).
 
 ### Setting a maximum nested depth
 
 You can also define the maximum depth allowed for the module changing the following:
-```php 
+```php
 protected $nestedItemsDepth = 1;
 ```
 Note: a depth of 1 means parent and child.
@@ -100,23 +100,20 @@ We'll use the `slug` and `position` features in this example but you can customi
 
 ```
 php artisan twill:make:module issues -SP
-php artisan twill:make:module issueArticles -SP --parentModel=Issue 
+php artisan twill:make:module issueArticles -SP --parentModel=Issue
 ```
 
 Add the `issue_id` foreign key to the child module's migration:
 
 ```php
-class CreateIssueArticlesTables extends Migration
+public function up()
 {
-    public function up()
-    {
-        Schema::create('issue_articles', function (Blueprint $table) {
-            // ...
-            $table->foreignIdFor(Issue::class);
-        });
-        
+    Schema::create('issue_articles', function (Blueprint $table) {
         // ...
-    }
+        $table->foreignIdFor(Issue::class);
+    });
+
+    // ...
 }
 ```
 
@@ -137,7 +134,7 @@ class IssueArticle extends Model implements Sortable
         // ...
         'issue_id',
     ];
-    
+
     public function issue()
     {
         return $this->belongsTo(Issue::class);

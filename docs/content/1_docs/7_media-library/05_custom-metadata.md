@@ -1,6 +1,6 @@
 # Custom metadata
 
-By default, media comes with a few metadata attributes that can be filled in from the media managers: 
+By default, media comes with a few metadata attributes that can be filled in from the media managers:
 Tags, Alt text and caption.
 
 Say we want to add more metadata, some of which might be translatable. To do this we have to go through a few
@@ -41,7 +41,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddFieldsToMedia extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -58,7 +58,7 @@ class AddFieldsToMedia extends Migration
             $table->dropColumn('attribution');
         });
     }
-}
+};
 ```
 
 And that is all. The most important part is to make sure your migration fields are named the same as your custom metadata values in the twill config.
