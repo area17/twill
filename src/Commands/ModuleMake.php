@@ -481,7 +481,6 @@ PHP;
     private function createMigration($moduleName = 'items')
     {
         $table = Str::snake($moduleName);
-        $tableClassName = Str::studly($table);
 
         $migrationName = 'create_' . $table . '_tables';
 
@@ -493,8 +492,8 @@ PHP;
             $fullPath = $this->laravel['migration.creator']->create($migrationName, $migrationPath);
 
             $stub = str_replace(
-                ['{{table}}', '{{singularTableName}}', '{{tableClassName}}'],
-                [$table, Str::singular($table), $tableClassName],
+                ['{{table}}', '{{singularTableName}}'],
+                [$table, Str::singular($table)],
                 $this->files->get(__DIR__ . '/stubs/migration.stub')
             );
 
