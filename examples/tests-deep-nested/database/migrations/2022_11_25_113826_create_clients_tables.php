@@ -22,12 +22,6 @@ return new class extends Migration
             // $table->timestamp('publish_start_date')->nullable();
             // $table->timestamp('publish_end_date')->nullable();
         });
-
-
-
-
-
-
     }
 
     public function down()
