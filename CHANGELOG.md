@@ -6,11 +6,13 @@ All notable changes to `twill` will be documented in this file.
 
 ### Added
 - Add connected fields support to the Twill 3 form builder by @joyceverheije in #2323
+- Support block component classes in the block editor `blocks` array by @joyceverheije in 8778ab7e
+- Add `max` option to form builder `InlineRepeater` field by @joyceverheije in 4a773869
 - Make preview breakpoints configurable by @florrie-90 in #2299
-- Add `Link` column type for to table builder by @agnonym in #2376
+- Add `Link` column type to table builder by @agnonym in #2376
 - PHP 8.3 support by @antonioribeiro in #2374
 - Add `routePrefix` support to nested breadcrumbs by @yamaha252 in #2312
-- Add direction option to form text and WYSIWYG inputs by @13twelve in #2295
+- Add direction option to form input, textarea and WYSIWYG fields by @13twelve in #2295
 - Add read-only support to the form builder's Input field by @zachgarwood in #2331
 - Make permissions and roles table names configurable by @Keania-Eric in #2350
 - Support multiple nested table columns by @yamaha252 and @joyceverheije in #2314 and 1edbfbb1
@@ -18,6 +20,8 @@ All notable changes to `twill` will be documented in this file.
 - Add support for titleInBrowser and adminEditUrl accessors in browsers by @joyceverheije
 - Add configuration to controls whether a user should be created or not when a new user is logging in through Oauth by @joyceverheije
 - Allow QuickFilter extension by @joyceverheije
+- Automatically add `active` to `$translatedAttributes` by @driftingly in #2401
+- Add `--factory` and `--seeder` to `twill:make:module` by @driftingly in #2402
 
 ### Fixed
 - Fix custom components registration by @joyceverheije in 7c233334
@@ -41,18 +45,23 @@ All notable changes to `twill` will be documented in this file.
 - Fix active navigation check when a child module uses the same name as another module by @joyceverheije
 - Avoid unused data and hooks when using the default role level by @joyceverheije
 - Check user permission when displaying activity log items by @joyceverheije
-- Fix position value for blocks in non-default editors by @joyceverheije
 - Remove block actions in settings blocks by @ifox
 - Fix datepicker selection by @ifox
 - Fix create button alignement in listings by @ifox
+- Fixes incorrect order of nested items slug when item is more than 2 levels deep by @pauldwight in #2388
+- Fix getCapsuleForModel() for when passing a Model object by @antonioribeiro in #2400
+- Preserve default vselect value when undefined by @bwat-dev in #2311
+- Don't load DuskServiceProvider if dusk doesn't exist by @Tofandel in #2366
 
 ### Docs
+- Add instructions on how to use the browser field with a custom pivot table by @poncianodiego and @ifox in https://github.com/area17/twill/pull/2385
 - Fix wrong property name in 12_nested-modules.md by @Viliasas in #2282
 - Fix artisan command by @thecrazybob in #2365
 - Fix typo in create page module guide by @colegeissinger in #2367
 - Content - Modules - TableBuilder: typo by @agnonym in #2375
 - Updates to the docs for nested modules by @pauldwight in #2389
 - Fix typo in 8_building-a-front-end.md by @driftingly in #2396
+- Changed example value to better reflect given example on 16_field-groups.md by @Viliasas in #2283
 
 ### Translations
 - Added Slovenian language to translations by @Neoglyph in #2373
