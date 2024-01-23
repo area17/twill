@@ -19,7 +19,6 @@ class {{modelClassName}} extends Model {{modelImplements}}
     public $translatedAttributes = [
         'title',
         'description',
-        'active',
     ];
     {{/hasTranslation}}{{hasSlug}}
     public $slugAttributes = [
