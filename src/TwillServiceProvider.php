@@ -143,11 +143,11 @@ class TwillServiceProvider extends ServiceProvider
         }
 
         Relation::morphMap([
-            'users' => User::class,
+            'users' => config('twill.models.user', User::class),
             'media' => Media::class,
             'files' => File::class,
-            'blocks' => Block::class,
-            'groups' => Group::class,
+            'blocks' => config('twill.models.block', Block::class),
+            'groups' => config('twill.models.group', Group::class),
         ]);
 
         config(['twill.version' => $this->version()]);
