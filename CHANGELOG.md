@@ -22,6 +22,7 @@ All notable changes to `twill` will be documented in this file.
 - Allow QuickFilter extension by @joyceverheije
 - Automatically add `active` to `$translatedAttributes` by @driftingly in #2401
 - Add `--factory` and `--seeder` to `twill:make:module` by @driftingly in #2402
+- Update migration stub and existing migrations to use anonymous class by @driftingly in #2406
 
 ### Fixed
 - Fix custom components registration by @joyceverheije in 7c233334
@@ -52,6 +53,7 @@ All notable changes to `twill` will be documented in this file.
 - Fix getCapsuleForModel() for when passing a Model object by @antonioribeiro in #2400
 - Preserve default vselect value when undefined by @bwat-dev in #2311
 - Don't load DuskServiceProvider if dusk doesn't exist by @Tofandel in #2366
+- Use custom model configuration in the relationship morph map by @redelschaap in #2408
 
 ### Docs
 - Add instructions on how to use the browser field with a custom pivot table by @poncianodiego and @ifox in https://github.com/area17/twill/pull/2385
