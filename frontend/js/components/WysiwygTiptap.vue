@@ -186,19 +186,19 @@
                        :initial-value="linkWindow.href"
                        v-model="linkWindow.href"
                        :label="$trans('wysiwyg.link_window.link', 'Link')"
-                       :placeholder="$trans('wysiwyg.link_window.link_placeholder', 'Link to URL address')"
+                       :placeholder="$trans('wysiwyg.link_window.link_placeholder', 'https://...')"
         />
         <div>
-          <a href="#" class="link-browser-link" v-if="browserEndpoints" @click="browserIsOpen = true">
+          <a17-button class="link-browser-link" variant="aslink-grey" v-if="browserEndpoints" @click="browserIsOpen = true">
             {{$trans('wysiwyg.link_window.internal_browser_link', 'Select internal content')}}
-          </a>
+          </a17-button>
         </div>
-        <a17-inputframe>
+        <a17-inputframe name="link-options">
           <a17-checkbox name="link_target"
                         :initial-value="linkWindow.target"
                         @change="linkWindow.target = $event ? '_blank' : ''"
                         value="_blank"
-                        :label="$trans('wysiwyg.link_window.open_in_new_window', 'Open in a new window')"/>
+                        :label="$trans('wysiwyg.link_window.open_in_new_window', 'Open in a new tab')"/>
           <div class="classList" v-if="linkWindow && linkWindow.classList && linkWindow.classList.length">
             <a17-checkbox v-for="(item, index) in linkWindow.classList"
                           :key="`link_class_${index}`"
@@ -633,14 +633,21 @@
     &--link {
       z-index: $zindex__modal__lower;
     }
-
-    .link-browser-link {
-      color: $color__text--light;
-      margin-top: 10px;
-      display: block;
+    
+    .input {
+      margin-top: 35px !important;
     }
 
-    .classList {
+    .input-wrapper-link-options {
+      margin-top: 15px !important;
+    }
+
+    .link-browser-link {
+      padding-left: 0;
+    }
+
+    .classList > .checkbox {
+      display:block;
       margin-top: 15px;
     }
   }
