@@ -148,11 +148,12 @@ With the Tiptap wysiwyg editor you can access some additional features. Below is
 When needed, you can let users browse internal content, this can be especially useful to maintain correct links inside
 wysiwyg editors.
 
-This can currently only be done using the Form builder by adding the browsermodules to the
+This can currently only be done using the Form builder by adding `browserModules` to the
 wysiwyg field:
 
 ```php
-Wysiwyg::make()->name('description')
+Wysiwyg::make()
+    ->name('description')
     ->label('Description')
     ->translatable()
     ->browserModules([Page::class])
@@ -171,6 +172,21 @@ For regular fields on models you will have to manually call `parseInternalLinks`
 
 ```blade
 {{ \A17\Twill\Facades\TwillUtil::parseInternalLinks($item->description) }}
+```
+
+### Link style
+
+If needed, you can let users add specific classes to links, which can be especially useful to create CTA or similar button-like hyperlinks that are styled differently than regular links.
+
+This can currently only be done using the Form builder by adding `classList` to the
+wysiwyg field:
+
+```php
+Wysiwyg::make()
+    ->name('description')
+    ->label('Description')
+    ->translatable()
+    ->classList(['btn' => 'Show this link as button'])
 ```
 
 ## Manually setting input direction

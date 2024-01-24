@@ -172,11 +172,13 @@
 
           },
           onClose: function (selectedDates, dateStr, instance) {
-            self.$emit('input', dateStr)
-            self.$emit('close', dateStr)
+            self.$nextTick(function () { // wait for the datepicker to properly update the UI
+              self.$emit('input', self.date)
+              self.$emit('close', self.date)
 
-            // see formStore mixin
-            self.saveIntoStore()
+              // see formStore mixin
+              self.saveIntoStore()
+            })
           }
         }
 

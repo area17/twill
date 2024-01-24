@@ -4,6 +4,7 @@ import store from '@/store'
 // General shared behaviors
 import main from '@/main'
 import search from '@/main-search'
+import registerCustomComponents from '@/custom-components'
 import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
 // Plugins
@@ -24,6 +25,8 @@ Vue.use(A17Notif)
 
 store.registerModule('form', form)
 store.registerModule('browser', browser)
+
+registerCustomComponents()
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */

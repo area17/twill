@@ -21,7 +21,6 @@ class Setting extends Model
     public $translatedAttributes = [
         'value',
         'locale',
-        'active',
     ];
 
     public function getTranslationModelNameDefault()

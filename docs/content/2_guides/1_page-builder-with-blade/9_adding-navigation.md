@@ -62,7 +62,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMenuLinksTables extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -83,7 +83,7 @@ class CreateMenuLinksTables extends Migration
     {
         Schema::dropIfExists('menu_links');
     }
-}
+};
 ```
 
 Now you can run the migration: `php artisan migrate`
@@ -223,7 +223,7 @@ use App\Models\MenuLink;
 class MenuLinkRepository extends ModuleRepository
 {
     protected $relatedBrowsers = ['page'];
-    
+
     use HandleNesting;
 
     public function __construct(MenuLink $model)
@@ -367,7 +367,7 @@ We will change the contents of `resources/views/components/menu.blade.php` to th
 ```
 
 We add just a minimal amount of styling as we will not spend too much time on that during this guide. But this will
-build a navigation tree that is slightly indented so that you can see the proper structure. 
+build a navigation tree that is slightly indented so that you can see the proper structure.
 
 You cannot see it in action yet, for that we have to add the component to the main template file.
 
@@ -389,7 +389,7 @@ But, for this guide, we will simply open `resources/views/site/page.blade.php` a
 </head>
 <body>
 <x-menu/> <!-- [tl! ++] -->
-<div class="mx-auto max-w-2xl">
+<div class="max-w-2xl mx-auto">
     {!! $item->renderBlocks() !!}
 </div>
 </body>
@@ -402,4 +402,3 @@ Wherever you will put `<x-menu/>` it will render the menu. That's useful because
 Now that we have pages and a menu, we have one last thing we need to do.
 
 [We need a frontpage](./10_setup-the-frontpage.md)!
-

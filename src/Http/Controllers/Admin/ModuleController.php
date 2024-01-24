@@ -31,6 +31,7 @@ use A17\Twill\Services\Listings\Filters\FreeTextSearch;
 use A17\Twill\Services\Listings\Filters\QuickFilter;
 use A17\Twill\Services\Listings\Filters\QuickFilters;
 use A17\Twill\Services\Listings\Filters\TableFilters;
+use A17\Twill\Services\Listings\Filters\TwillBaseFilter;
 use A17\Twill\Services\Listings\TableColumn;
 use A17\Twill\Services\Listings\TableColumns;
 use A17\Twill\Services\Listings\TableDataContext;
@@ -1819,7 +1820,7 @@ abstract class ModuleController extends Controller
         // Get the applied quick filter..
         if (array_key_exists('status', $requestFilters)) {
             $filter = $this->quickFilters()->filter(
-                fn(QuickFilter $filter) => $filter->getQueryString() === $requestFilters['status']
+                fn(TwillBaseFilter $filter) => $filter->getQueryString() === $requestFilters['status']
             )->first();
 
             if ($filter !== null) {

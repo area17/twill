@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Enums\PermissionLevel;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Group;
@@ -203,15 +204,20 @@ class UserController extends ModuleController
             $titleThumbnail = $user->cmsImage($role, $crop, $params);
         }
 
+        if (TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)) {
+            $permissionsData = [
+                'permissionModules' => $this->getPermissionModules(),
+            ];
+        }
+
         return [
             'roleList' => $this->getRoleList(),
             'titleThumbnail' => $titleThumbnail ?? null,
-            'permissionModules' => $this->getPermissionModules(),
-            'groupPermissionMapping' => $this->getGroupPermissionMapping(),
             'with2faSettings' => $with2faSettings,
             'qrCode' => $qrCode ?? null,
+            'groupPermissionMapping' => $this->getGroupPermissionMapping(),
             'groupOptions' => $this->getGroups(),
-        ];
+        ] + ($permissionsData ?? []);
     }
 
     /**

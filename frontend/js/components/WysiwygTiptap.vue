@@ -186,19 +186,28 @@
                        :initial-value="linkWindow.href"
                        v-model="linkWindow.href"
                        :label="$trans('wysiwyg.link_window.link', 'Link')"
-                       :placeholder="$trans('wysiwyg.link_window.link_placeholder', 'Link to URL address')"
+                       :placeholder="$trans('wysiwyg.link_window.link_placeholder', 'https://...')"
         />
         <div>
-          <a href="#" class="link-browser-link" v-if="browserEndpoints" @click="browserIsOpen = true">
+          <a17-button class="link-browser-link" variant="aslink-grey" v-if="browserEndpoints" @click="browserIsOpen = true">
             {{$trans('wysiwyg.link_window.internal_browser_link', 'Select internal content')}}
-          </a>
+          </a17-button>
         </div>
-        <a17-inputframe>
+        <a17-inputframe name="link-options">
           <a17-checkbox name="link_target"
                         :initial-value="linkWindow.target"
-                        @change="linkWindow.target = $event ? '_blank' : null"
+                        @change="linkWindow.target = $event ? '_blank' : ''"
                         value="_blank"
-                        :label="$trans('wysiwyg.link_window.open_in_new_window', 'Open in a new window')"/>
+                        :label="$trans('wysiwyg.link_window.open_in_new_window', 'Open in a new tab')"/>
+          <div class="classList" v-if="linkWindow && linkWindow.classList && linkWindow.classList.length">
+            <a17-checkbox v-for="(item, index) in linkWindow.classList"
+                          :key="`link_class_${index}`"
+                          :name="`link_class_${index}`"
+                          :initial-value="linkWindow.classList[index].selected"
+                          @change="linkWindow.classList[index].selected = $event"
+                          :value="linkWindow.classList[index].value"
+                          :label="linkWindow.classList[index].label"/>
+          </div>
         </a17-inputframe>
 
         <div class="modalValidation">
@@ -264,6 +273,10 @@
         default: ''
       },
       browserEndpoints: {
+        required: false,
+        default: null
+      },
+      classList: {
         required: false,
         default: null
       },
@@ -447,7 +460,8 @@
           textOriginal: this.editor.state.tr.doc.textBetween(startPos, endPos),
           text: this.editor.state.tr.doc.textBetween(startPos, endPos),
           href: markAttributes.href,
-          target: markAttributes.target ?? ''
+          target: markAttributes.target ?? '',
+          classList: this.classList ? this.classList.map(item => {item.selected = (markAttributes.class ?? '').includes(item.value); return item}) : [],
         }
 
         this.$nextTick(() => {
@@ -477,9 +491,9 @@
         }
 
         if (this.linkWindow.newLink) {
-          this.editor.commands.setLink({href: this.linkWindow.href, target: this.linkWindow.target})
+          this.editor.commands.setLink({href: this.linkWindow.href, target: this.linkWindow.target, class: this.linkWindow.classList.filter(item => item.selected).map(item => item.value).join(' ')})
         } else {
-          this.editor.commands.updateAttributes("link", {href: this.linkWindow.href, target: this.linkWindow.target})
+          this.editor.commands.updateAttributes("link", {href: this.linkWindow.href, target: this.linkWindow.target, class: this.linkWindow.classList.filter(item => item.selected).map(item => item.value).join(' ')})
         }
 
         this.$refs['link-modal'].close()
@@ -619,11 +633,22 @@
     &--link {
       z-index: $zindex__modal__lower;
     }
+    
+    .input {
+      margin-top: 35px !important;
+    }
+
+    .input-wrapper-link-options {
+      margin-top: 15px !important;
+    }
 
     .link-browser-link {
-      color: $color__text--light;
-      margin-top: 10px;
-      display: block;
+      padding-left: 0;
+    }
+
+    .classList > .checkbox {
+      display:block;
+      margin-top: 15px;
     }
   }
 

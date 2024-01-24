@@ -33,6 +33,7 @@ class Wysiwyg extends TwillFormComponent
         public ?array $customOptions = null,
         public ?array $browserModules = null,
         public ?array $endpoints = null,
+        public ?array $classList = null,
     ) {
         parent::__construct(
             name: $name,

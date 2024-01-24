@@ -158,7 +158,9 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
 
     public function getTranslatedAttributes(): array
     {
-        return $this->translatedAttributes ?? [];
+        return $this->translatedAttributes
+            ? [...$this->translatedAttributes, 'active']
+            : [];
     }
 
     protected static function bootTaggableTrait(): void
