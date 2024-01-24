@@ -6,6 +6,7 @@ use A17\Twill\Services\Forms\Fields\Helpers\TiptapWrapper;
 use A17\Twill\Services\Forms\Fields\Traits\HasMaxlength;
 use A17\Twill\Services\Forms\Fields\Traits\HasOnChange;
 use A17\Twill\Services\Forms\Fields\Traits\HasPlaceholder;
+use A17\Twill\Services\Forms\Fields\Traits\HasDirection;
 use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 class Wysiwyg extends BaseFormField
@@ -13,6 +14,7 @@ class Wysiwyg extends BaseFormField
     use IsTranslatable;
     use HasMaxlength;
     use HasPlaceholder;
+    use HasDirection;
     use HasOnChange;
 
     public bool $hideCounter = false;
@@ -54,6 +56,8 @@ class Wysiwyg extends BaseFormField
     public ?array $customOptions = null;
 
     public ?array $browserModules;
+
+    public ?array $classList;
 
     public static function make(): static
     {
@@ -203,6 +207,17 @@ class Wysiwyg extends BaseFormField
             }
         }
 
+        return $this;
+    }
+
+    /**
+     * Assosiative array ['class' => 'Label'] of classes
+     * than will be available to editor in the form of checkboxes
+     * when creating new link in modal
+     */
+    public function classList(array $list): static
+    {
+        $this->classList = array_map(fn($value, $label) => ['value' => $value, 'label' => $label, 'selected' => false], array_keys($list), $list);
         return $this;
     }
 }

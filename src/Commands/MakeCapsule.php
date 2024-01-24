@@ -23,6 +23,8 @@ class MakeCapsule extends ModuleMake
         {--bladeForm}
         {--all}
         {--force}
+        {--factory}
+        {--seeder}
         {--packageDirectory=}
         {--packageNamespace=}
         {--parentModel=}';

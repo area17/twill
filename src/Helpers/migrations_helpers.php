@@ -55,7 +55,7 @@ if (!function_exists('createDefaultTranslationsTableFields')) {
         $table->softDeletes();
         $table->timestamps();
         $table->string('locale', 7)->index();
-        $table->boolean('active');
+        $table->boolean('active')->default(false);
 
         $table->foreign("{$tableNameSingular}_id", "fk_{$tableNameSingular}_translations_{$tableNameSingular}_id")->references('id')->on($tableNamePlural)->onDelete('CASCADE');
         $table->unique(["{$tableNameSingular}_id", 'locale'], "{$tableNameSingular}_id_locale_unique");

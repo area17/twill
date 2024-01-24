@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTwillDefaultUsersOauthTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -41,4 +41,4 @@ class CreateTwillDefaultUsersOauthTable extends Migration
     {
         Schema::dropIfExists(config('twill.users_oauth_table', 'twill_users_oauth'));
     }
-}
+};

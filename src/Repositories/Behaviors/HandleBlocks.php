@@ -244,15 +244,17 @@ trait HandleBlocks
     {
         $blocks = Collection::make();
         if (isset($fields['blocks']) && is_array($fields['blocks'])) {
-            foreach ($fields['blocks'] as $index => $block) {
-                $block = $this->buildBlock($block, $object);
+            foreach (collect($fields['blocks'])->groupBy('editor_name')->values()->toArray() as $editorBlocks) {
+                foreach ($editorBlocks as $index => $block) {
+                    $block = $this->buildBlock($block, $object);
 
-                $this->validateBlockArray($block, $block['instance'], true);
+                    $this->validateBlockArray($block, $block['instance'], true);
 
-                $block['position'] = $index + 1;
-                $block['blocks'] = $this->getChildBlocks($object, $block);
+                    $block['position'] = $index + 1;
+                    $block['blocks'] = $this->getChildBlocks($object, $block);
 
-                $blocks->push($block);
+                    $blocks->push($block);
+                }
             }
         }
 

@@ -105,7 +105,7 @@ class TwillAppSettings
     {
         $groupObject = $this->getGroupForGroupAndSectionName($group, $section);
 
-        return $groupObject->getSettingsModel()->blocks()
+        return $groupObject->getSettingsModel()->blocks
             ->where('editor_name', $section)
             ->where('parent_id', null)
             ->firstOrFail();

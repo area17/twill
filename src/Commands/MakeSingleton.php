@@ -20,6 +20,7 @@ class MakeSingleton extends ModuleMake
         {--bladeForm}
         {--all}
         {--force}
+        {--factory}
         {--packageDirectory=}
         {--packageNamespace=}
         {--parentModel=}';

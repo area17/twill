@@ -1,6 +1,6 @@
 # Creating the page module
 
-Now that we area ready with the initial setup of Laravel and Twill we can start building our CMS.
+Now that we are ready with the initial setup of Laravel and Twill we can start building our CMS.
 
 In Twill we use Modules. A module is a single "content type" and exists out of a few files:
 
@@ -129,7 +129,7 @@ We can see that `Route::module('pages');` has been added to `routes/twill.php`.
 
 This is automatic, because it is simple enough to do.
 
-The `routes/twill.php` file is a Twill specific list of routes. These routes are protected and loaded specifically for 
+The `routes/twill.php` file is a Twill specific list of routes. These routes are protected and loaded specifically for
 the CMS.
 
 In standard Laravel there is no `module` method on a `Route` object, this is something Twill provides and it will build
@@ -139,7 +139,7 @@ many routes for your module, these are then used by the cms, controllers and req
 
 The second step, we have to do ourself. So let's open `app/Providers/AppServiceProvider.php`.
 
-We will not go into detail about what a service provider is, for that you can check the 
+We will not go into detail about what a service provider is, for that you can check the
 [official documentation](https://laravel.com/docs/10.x/providers).
 
 In our `boot` method we will add the suggested snippet:
@@ -214,14 +214,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePagesTables extends Migration
+return new class extends Migration
 {
     public function up()
     {
         Schema::create('pages', function (Blueprint $table) {
             // this will create an id, a "published" column, and soft delete and timestamps columns
             createDefaultTableFields($table);
-            
+
             // add those 2 columns to enable publication timeframe fields
             // (you can use publish_start_date only if you don't need to provide the ability to specify an end date)
             // $table->timestamp('publish_start_date')->nullable();
@@ -250,7 +250,7 @@ class CreatePagesTables extends Migration
         Schema::dropIfExists('page_slugs');
         Schema::dropIfExists('pages');
     }
-}
+};
 ```
 
 This file will create the minimum required tables and columns that Twill uses to provide the CMS functionality. Later in

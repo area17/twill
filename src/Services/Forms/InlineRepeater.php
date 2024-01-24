@@ -26,6 +26,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         private ?string $relation = null,
         private ?bool $allowBrowse = false,
         private ?array $browser = null,
+        private ?int $max = null,
     ) {
     }
 
@@ -125,6 +126,13 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         return $this;
     }
 
+    public function max(int $max): static
+    {
+        $this->max = $max;
+
+        return $this;
+    }
+
     public function renderForm(): View
     {
         return view('twill::partials.form.renderer.block_form', [
@@ -172,6 +180,10 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
             ->allowCreate($this->allowCreate)
             ->relation($this->relation ?? null)
             ->browserModule($this->allowBrowse ? $this->browser : null);
+
+        if ($this->max) {
+            $repeater->max($this->max);
+        }
 
         $repeater->renderForBlocks = $this->renderForBlocks ?? false;
         return $repeater->render();
