@@ -23,6 +23,7 @@
     "@tiptap/extension-table-cell": "^2.1.16",
     "@tiptap/extension-table-header": "^2.1.16",
     "@tiptap/extension-table-row": "^2.1.16",
+    "@tiptap/extension-text-align": "^2.1.16",
     "@tiptap/extension-underline": "^2.1.16",
     "@tiptap/pm": "^2.1.16",
     "@tiptap/starter-kit": "^2.1.16",
