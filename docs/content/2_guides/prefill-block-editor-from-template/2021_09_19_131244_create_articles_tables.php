@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateArticlesTables extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -31,4 +31,4 @@ class CreateArticlesTables extends Migration
         Schema::dropIfExists('article_slugs');
         Schema::dropIfExists('articles');
     }
-}
+};

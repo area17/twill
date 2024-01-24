@@ -1,7 +1,7 @@
 @if($activeSyntax)
-    @pushonce('extra_css:wysiwyg')
+    @pushOnce('extra_css', 'form:wysiwyg')
         <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/{{$theme}}.min.css">
-    @endpushonce
+    @endPushOnce
 @endif
 
 @if($type === 'tiptap')
@@ -15,6 +15,7 @@
             @if ($required) required: true, @endif
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
             @if ($placeholder) placeholder: '{{ addslashes($placeholder) }}', @endif
+            @if ($direction) direction: '{{ $direction }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($hideCounter) showCounter: false, @endif
             @if ($disabled) disabled: true, @endif
@@ -23,6 +24,7 @@
             @if ($inModal) inModal: true, @endif
             @if ($limitHeight) limitHeight: true, @endif
             @if ($endpoints) browserEndpoints: {!! e(json_encode($endpoints)) !!}, @endif
+            @if ($classList) classList: {!! e(json_encode($classList)) !!}, @endif
             @if ($default)
                 initialValue: '{{ $default }}',
                 hasDefaultStore: true,
@@ -38,6 +40,7 @@
             @if ($required) :required="true" @endif
             @if ($options) :options='{!! json_encode($options) !!}' @endif
             @if ($placeholder) placeholder='{{ $placeholder }}' @endif
+            @if ($direction) direction="{{ $direction }}" @endif
             @if ($maxlength) :maxlength='{{ $maxlength }}' @endif
             @if ($hideCounter) :showCounter='false' @endif
             @if ($disabled) disabled @endif
@@ -45,6 +48,7 @@
             @if ($editSource) :edit-source='true' @endif
             @if ($limitHeight) :limit-height='true' @endif
             @if ($endpoints) :browser-endpoints='{!! json_encode($endpoints) !!}' @endif
+            @if ($classList) :class-list='{!! json_encode($classList) !!}' @endif
             @if ($default)
             :initial-value="'{{ $default }}'"
             :has-default-store="true"
@@ -64,6 +68,7 @@
             @if ($required) required: true, @endif
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
             @if ($placeholder) placeholder: '{{ addslashes($placeholder) }}', @endif
+            @if ($direction) direction: '{{ $direction }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($hideCounter) showCounter: false, @endif
             @if ($disabled) disabled: true, @endif
@@ -86,6 +91,7 @@
             @if ($required) :required="true" @endif
             @if ($options) :options='{!! json_encode($options) !!}' @endif
             @if ($placeholder) placeholder='{{ $placeholder }}' @endif
+            @if ($direction) direction="{{ $direction }}" @endif
             @if ($maxlength) :maxlength='{{ $maxlength }}' @endif
             @if ($hideCounter) :showCounter='false' @endif
             @if ($disabled) disabled @endif

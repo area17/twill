@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTwillDefaultTagsTables extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -49,4 +49,4 @@ class CreateTwillDefaultTagsTables extends Migration
         Schema::dropIfExists(config('twill.tags_table', 'twill_tags'));
         Schema::dropIfExists(config('twill.tagged_table', 'twill_tagged'));
     }
-}
+};

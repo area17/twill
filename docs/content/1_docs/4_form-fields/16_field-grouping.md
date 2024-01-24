@@ -104,7 +104,7 @@ In the repository file you can setup the following parameters:
 
 ```php
 public bool $fieldsGroupsFormFieldNamesAutoPrefix = true;
-public string $fieldsGroupsFormFieldNameSeparator = '-'; // Default is _
+public string $fieldsGroupsFormFieldNameSeparator = '.'; // Default is _
 ```
 
 This will automatically group/ungroup these fields based on the separator:

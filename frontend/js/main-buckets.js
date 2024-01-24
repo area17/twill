@@ -4,6 +4,7 @@ import store from '@/store'
 // General shared behaviors
 import main from '@/main'
 import search from '@/main-search'
+import registerCustomComponents from '@/custom-components'
 import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
 // Buckets
@@ -25,6 +26,8 @@ Vue.use(A17Notif)
 store.registerModule('buckets', buckets)
 store.registerModule('language', language)
 store.registerModule('form', form)
+
+registerCustomComponents()
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */

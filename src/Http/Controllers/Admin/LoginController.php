@@ -240,6 +240,12 @@ class LoginController extends Controller
                 return $this->afterAuthentication($request, $user);
             }
         } else {
+            if (!config('twill.oauth.create_user_with_default_role', true)) {
+                return $this->redirector->to(route('twill.login'))->withErrors([
+                    'error' => __('auth.failed'),
+                ]);
+            }
+
             // If the user doesn't exist, create it
             $user = $repository->oauthCreateUser($oauthUser);
             $user->linkProvider($oauthUser, $provider);

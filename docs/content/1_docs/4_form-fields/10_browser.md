@@ -71,7 +71,7 @@ titled [Adding browser fields to a block](../5_block-editor/04_adding-browser-fi
 explanation.
 
 Outside the block editor, browser fields are used to save `belongsToMany` relationships. The relationships can be stored
-in Twill's own `related` table or in a custom pivot table.
+in Twill's own `twill_related` table or in a custom pivot table.
 
 ## Using browser fields as related items
 
@@ -265,6 +265,50 @@ public function getBrowserData($prependScope = [])
 
 In the presented example, this will make sure only variants of the selected product in the first browser can be selected
 in the second one.
+
+## Using a custom pivot table
+
+Using the `HasRelated` trait means that Twill is storing the relationship in a polymorphic table, which can make efficient database queries harder to implement depending on the needs of your frontend. Using a pivot table between 2 Twill models is available if you need it. 
+
+- Create your pivot table:
+
+```php
+   Schema::create('artist_artwork', function (Blueprint $table) {
+        createDefaultRelationshipTableFields($table, 'artist', 'artwork');
+        $table->integer('position')->unsigned()->nullable();
+    });
+```
+
+- Add the relationship to your model (i.e. `Artist`):
+```php
+  public function artworks(): BelongsToMany
+  {
+      return $this->belongsToMany('artworks')->orderByPivot('position');      
+  }
+```
+
+- Configure the `$browsers` property in your repository (i.e. `ArtistRepository`):
+
+```php
+     protected $browsers = ['artworks'];
+```
+
+Additional parameters can also be overridden with an array. When only the browser name is given, the rest of the parameters are inferred from the name.
+
+
+```php
+    protected $browsers = [
+        'artworks' => [
+            'titleKey' => 'title',
+            'relation' => 'artworks',
+            'browserName' => 'artworks',
+            'moduleName' => 'artworks',
+            'positionAttribute' => 'position',
+        ],   
+    ];
+```
+
+For even more control, you can use [updateBrowser()](https://twillcms.com/docs/api/3.x/A17/Twill/Repositories/Behaviors/HandleBrowsers.html#method_updateBrowser) in your own `afterSave()` method and [getFormFieldsForBrowser()](https://twillcms.com/docs/api/3.x/A17/Twill/Repositories/Behaviors/HandleBrowsers.html#method_getFormFieldsForBrowser) in your own `getFormFields()` method.
 
 ## Morphable browser fields
 

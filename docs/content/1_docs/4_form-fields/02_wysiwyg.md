@@ -78,7 +78,7 @@ $wysiwygOptions = [
     'underline',
     'strike',
     'blockquote',
-    "code-block",
+    'code-block',
     'ordered',
     'bullet',
     'hr',
@@ -86,6 +86,7 @@ $wysiwygOptions = [
     'link',
     'clean',
     'table',
+    'align',
 ];
 @endphp
 
@@ -101,20 +102,21 @@ $wysiwygOptions = [
 ```
 
 
-| Option         | Description                                                                                                              | Type/values      | Default value |
-|:---------------|:-------------------------------------------------------------------------------------------------------------------------|:-----------------|:--------------|
-| name           | Name of the field                                                                                                        | string           |               |
-| label          | Label of the field                                                                                                       | string           |               |
-| type           | Type of wysiwyg field                                                                                                    | quill<br/>tiptap | tiptap        |
-| toolbarOptions | Array of options/tools that will be displayed in the editor                                                              |                  | See above     |
-| editSource     | Displays a button to view source code                                                                                    | boolean          | false         |
-| hideCounter    | Hide the character counter displayed at the bottom                                                                       | boolean          | false         |
-| limitHeight    | Limit the editor height from growing beyond the viewport                                                                 | boolean          | false         |
-| translated     | Defines if the field is translatable                                                                                     | boolean          | false         |
-| maxlength      | Max character count of the field                                                                                         | integer          |           |
-| note           | Hint message displayed above the field                                                                                   | string           |               |
-| placeholder    | Text displayed as a placeholder in the field                                                                             | string           |               |
-| required       | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean          | false         |
+| Option         | Description                                                                                                              | Type/values         | Default value |
+|:---------------|:-------------------------------------------------------------------------------------------------------------------------|:--------------------|:--------------|
+| name           | Name of the field                                                                                                        | string              |               |
+| label          | Label of the field                                                                                                       | string              |               |
+| type           | Type of wysiwyg field                                                                                                    | quill<br/>tiptap    | tiptap        |
+| toolbarOptions | Array of options/tools that will be displayed in the editor                                                              |                     | See above     |
+| editSource     | Displays a button to view source code                                                                                    | boolean             | false         |
+| hideCounter    | Hide the character counter displayed at the bottom                                                                       | boolean             | false         |
+| limitHeight    | Limit the editor height from growing beyond the viewport                                                                 | boolean             | false         |
+| translated     | Defines if the field is translatable                                                                                     | boolean             | false         |
+| maxlength      | Max character count of the field                                                                                         | integer             |           |
+| note           | Hint message displayed above the field                                                                                   | string              |               |
+| placeholder    | Text displayed as a placeholder in the field                                                                             | string              |               |
+| required       | Displays an indicator that this field is required<br/>A backend validation rule is required to prevent users from saving | boolean             | false         |
+| direction      | Set custom input direction <small>(from `v3.1.0`)</small>                                                                | ltr<br/>rtl<br>auto | auto          |
 
 Note that Quill outputs CSS classes in the HTML for certain toolbar modules (indent, font, align, etc.), and that the image module is not integrated with Twill's media library. It outputs the base64 representation of the uploaded image.
 It is not a recommended way of using and storing images, prefer using one or multiple `medias` form fields or blocks fields for flexible content. This will give you greater control over your frontend output.
@@ -147,11 +149,12 @@ With the Tiptap wysiwyg editor you can access some additional features. Below is
 When needed, you can let users browse internal content, this can be especially useful to maintain correct links inside
 wysiwyg editors.
 
-This can currently only be done using the Form builder by adding the browsermodules to the
+This can currently only be done using the Form builder by adding `browserModules` to the
 wysiwyg field:
 
 ```php
-Wysiwyg::make()->name('description')
+Wysiwyg::make()
+    ->name('description')
     ->label('Description')
     ->translatable()
     ->browserModules([Page::class])
@@ -171,3 +174,24 @@ For regular fields on models you will have to manually call `parseInternalLinks`
 ```blade
 {{ \A17\Twill\Facades\TwillUtil::parseInternalLinks($item->description) }}
 ```
+
+### Link style
+
+If needed, you can let users add specific classes to links, which can be especially useful to create CTA or similar button-like hyperlinks that are styled differently than regular links.
+
+This can currently only be done using the Form builder by adding `classList` to the
+wysiwyg field:
+
+```php
+Wysiwyg::make()
+    ->name('description')
+    ->label('Description')
+    ->translatable()
+    ->classList(['btn' => 'Show this link as button'])
+```
+
+## Manually setting input direction
+
+Introduced in `v3.1.0`
+
+For certain types of input it maybe useful to manually set the direction to left-to-right (`ltr`) or right-to-left (`rtl`) depending upon the expected text input; for example you may need a single Hebrew text entry in an otherwise `ltr` form. 

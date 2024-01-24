@@ -21,6 +21,7 @@ class Wysiwyg extends TwillFormComponent
         // Component specific
         public bool $hideCounter = false,
         public ?string $placeholder = null,
+        public ?string $direction = 'auto',
         public bool $editSource = false,
         public ?array $toolbarOptions = null,
         public ?int $maxlength = null,
@@ -32,6 +33,7 @@ class Wysiwyg extends TwillFormComponent
         public ?array $customOptions = null,
         public ?array $browserModules = null,
         public ?array $endpoints = null,
+        public ?array $classList = null,
     ) {
         parent::__construct(
             name: $name,

@@ -262,11 +262,10 @@ class CapsulesTest extends TestCase
     public function selectCapsule()
     {
         foreach ($this->capsules as $capsule) {
-            $class = Str::studly($capsule);
+            $migrationDeclared = collect(get_declared_classes())
+                ->contains(fn($class) => Str::contains($class, "create_{$capsule}_tables"));
 
-            $class = "Create{$class}Tables";
-
-            if (! collect(get_declared_classes())->contains($class)) {
+            if (! $migrationDeclared) {
                 $this->capsuleName = $capsule;
 
                 break;
@@ -296,6 +295,8 @@ class CapsulesTest extends TestCase
                 '--hasRevisions' => true,
                 '--hasNesting' => true,
                 '--generatePreview' => true,
+                '--factory' => true,
+                '--seeder' => true,
             ])
                 ->run()
         );

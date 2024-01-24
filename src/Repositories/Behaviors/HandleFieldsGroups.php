@@ -119,7 +119,7 @@ trait HandleFieldsGroups
                 $fields[$group] = null;
             }
 
-            Arr::forget($fields, $groupFields);
+            $fields = array_filter($fields, fn($key) => !in_array($key, $groupFields), ARRAY_FILTER_USE_KEY);
         }
 
         return $fields;

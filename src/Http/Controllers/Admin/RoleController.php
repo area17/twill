@@ -76,7 +76,9 @@ class RoleController extends ModuleController
     protected function formData($request): array
     {
         return [
-            'permission_modules' => Permission::permissionableParentModuleItems(),
+            'permission_modules' => Permission::permissionableModules()->filter(function ($module) {
+                return !strpos($module, '.');
+            }),
         ];
     }
 

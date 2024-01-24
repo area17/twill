@@ -13,6 +13,7 @@ class NestedBreadcrumbs extends Breadcrumbs
     private int $activeParentId;
     private string $titleKey;
     private string $label;
+    private string $routePrefix = '';
 
     public function parentLabel(string $parentLabel): self
     {
@@ -26,13 +27,15 @@ class NestedBreadcrumbs extends Breadcrumbs
         string $module,
         int $activeParentId,
         string $repository,
-        ?string $titleKey = 'title'
+        ?string $titleKey = 'title',
+        ?string $routePrefix = '',
     ): self {
         $this->module = $module;
         $this->parentModule = $parentModule;
         $this->parentRepository = $repository;
         $this->activeParentId = $activeParentId;
         $this->titleKey = $titleKey;
+        $this->routePrefix = $routePrefix;
 
         if (!$this->parentLabel) {
             $this->parentLabel(Str::title($parentModule));
@@ -61,16 +64,16 @@ class NestedBreadcrumbs extends Breadcrumbs
             BreadcrumbItem::make()->label($this->parentLabel)
                 ->displayOnForm()
                 ->displayOnListing()
-                ->url(moduleRoute($this->parentModule, '', 'index')),
+                ->url(moduleRoute($this->parentModule, $this->routePrefix, 'index')),
             BreadcrumbItem::make()->label($this->getActiveParentTitle())
                 ->displayOnForm()
                 ->displayOnListing()
-                ->url(moduleRoute($this->parentModule, '', 'edit', $this->activeParentId)),
+                ->url(moduleRoute($this->parentModule, $this->routePrefix, 'edit', $this->activeParentId)),
             BreadcrumbItem::make()->label($this->label)
                 ->displayOnListing(),
             BreadcrumbItem::make()->label($this->label)
                 ->displayOnForm()
-                ->url(moduleRoute($this->module, '', 'index')),
+                ->url(moduleRoute($this->module, $this->routePrefix, 'index')),
             BreadcrumbItem::make()->label('Edit')
                 ->displayOnForm(),
         ];

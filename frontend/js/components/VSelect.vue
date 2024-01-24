@@ -212,10 +212,17 @@
           // For single selection
           this.value = value;
         }
-        
+
+        if (!value) {
+          const allOption = this.options.find((o) => o.value === 'all');
+          this.value = allOption ?? undefined
+        } else {
+          this.value = value
+        }
+
         // see formStore mixin
-        this.saveIntoStore();
-        this.$emit('change', value);
+        this.saveIntoStore()
+        this.$emit('change', value)
       },
       getOptions: debounce(function (search, loading) {
         if (!this.isAjax()) return true

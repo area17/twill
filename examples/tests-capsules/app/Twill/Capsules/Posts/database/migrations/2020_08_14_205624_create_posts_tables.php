@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreatePostsTables extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -40,4 +40,4 @@ class CreatePostsTables extends Migration
         Schema::dropIfExists('post_slugs');
         Schema::dropIfExists('posts');
     }
-}
+};
