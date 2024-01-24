@@ -25,7 +25,7 @@ php artisan twill:refresh-crops
   {--dry : Print the operations that would be performed without modifying the database}` -
 ```
 
-* `php artisan twill:make:module` - Generate a new module, see [CLI Generator](./../3_modules/2_cli-generator.md) 
+* `php artisan twill:make:module` - Generate a new module, see [CLI Generator](./../3_modules/2_cli-generator.md)
 
 ```
 php artisan twill:make:module {moduleName}
@@ -39,10 +39,15 @@ php artisan twill:make:module {moduleName}
   {--N|hasNesting}
   {--bladeForm}
   {--E|generatePreview}
-  {--parentModel=}
   {--all}
+  {--force}
+  {--factory}
+  {--seeder}
+  {--packageDirectory=}
+  {--packageNamespace=}
+  {--parentModel=}
 ```
-  
+
 
 * `php artisan twill:make:singleton` - Generate a new singleton, see [CLI Generator](./../3_modules/2_cli-generator.md)
 ```
@@ -56,14 +61,16 @@ php artisan twill:make:singleton {moduleName}
   {--E|generatePreview}
   {--bladeForm}
   {--all}
+  {--force}
+  {--factory}
+  {--packageDirectory=}
+  {--packageNamespace=}
+  {--parentModel=}
 ```
 
 * `php artisan twill:make:capsule` - Generate a new capsule, see [CLI Generator](./../3_modules/2_cli-generator.md)
 ```
-php artisan twill:make:capsule {moduleName} 
-  {--singleton} 
-  {--packageDirectory=} 
-  {--packageNamespace=}
+php artisan twill:make:capsule {moduleName}
   {--B|hasBlocks}
   {--T|hasTranslation}
   {--S|hasSlug}
@@ -73,9 +80,15 @@ php artisan twill:make:capsule {moduleName}
   {--R|hasRevisions}
   {--N|hasNesting}
   {--E|generatePreview}
+  {--singleton}
   {--bladeForm}
   {--all}
   {--force}
+  {--factory}
+  {--seeder}
+  {--packageDirectory=}
+  {--packageNamespace=}
+  {--parentModel=}
 ```
 
 * `php artisan twill:list:icons {filter? : Filter icons by name}` - List available icons

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateClientProjectApplicationsTables extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -23,17 +23,10 @@ class CreateClientProjectApplicationsTables extends Migration
             // $table->timestamp('publish_start_date')->nullable();
             // $table->timestamp('publish_end_date')->nullable();
         });
-
-
-
-
-
-
     }
 
     public function down()
     {
-
         Schema::dropIfExists('client_project_applications');
     }
-}
+};

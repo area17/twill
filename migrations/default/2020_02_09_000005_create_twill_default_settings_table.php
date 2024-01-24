@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
-class CreateTwillDefaultSettingsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -46,4 +46,4 @@ class CreateTwillDefaultSettingsTable extends Migration
         Schema::dropIfExists(Str::singular($twillSettingsTable) . '_translations');
         Schema::dropIfExists($twillSettingsTable);
     }
-}
+};

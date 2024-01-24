@@ -179,19 +179,16 @@ php artisan twill:make:module TeamMember -P
   relationship:
 
 ```php
-class CreateTeamMembersTables extends Migration
+public function up()
 {
-    public function up()
-    {
-        Schema::create('team_members', function (Blueprint $table) {
-            /* ... */
+    Schema::create('team_members', function (Blueprint $table) {
+        /* ... */
 
-            $table->foreignId('team_id')
-                ->constrained()
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-        });
-    }
+        $table->foreignId('team_id')
+            ->constrained()
+            ->onUpdate('cascade')
+            ->onDelete('cascade');
+    });
 }
 ```
 
@@ -306,5 +303,3 @@ of the repeater items. This directive also accepts a `hidePrefix` option to hide
     :required="true"
 />
 ```
-
-
