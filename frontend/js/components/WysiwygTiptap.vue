@@ -60,7 +60,7 @@
             />
 
             <wysiwyg-menu-bar-btn icon="unlink"
-                                  v-if="toolbar.link"
+                                  v-if="toolbar.link && editor.isActive('link')"
                                   :disabled="!editor.isActive('link')"
                                   :isActive="editor.isActive('link')"
                                   @btn:click="removeLink()"/>
@@ -90,21 +90,25 @@
                                   :isActive="editor.isActive('code')"
                                   @btn:click="editor.chain().focus().setCode().run()"/>
 
-            <wysiwyg-menu-bar-btn icon="align_left" 
-                                  v-if="toolbar.align || toolbar['align-left']" 
-                                  :isActive="editor.isActive({ textAlign: 'left' })" 
+            <wysiwyg-menu-bar-btn icon="align_left"
+                                  label="align left"
+                                  v-if="toolbar.align || toolbar['align-left']"
+                                  :isActive="editor.isActive({ textAlign: 'left' })"
                                   @btn:click="setTextAlign('left')"/>
-            <wysiwyg-menu-bar-btn icon="align_center" 
-                                  v-if="toolbar.align || toolbar['align-center']" 
-                                  :isActive="editor.isActive({ textAlign: 'center' })" 
+            <wysiwyg-menu-bar-btn icon="align_center"
+                                  label="align center"
+                                  v-if="toolbar.align || toolbar['align-center']"
+                                  :isActive="editor.isActive({ textAlign: 'center' })"
                                   @btn:click="setTextAlign('center')"/>
-            <wysiwyg-menu-bar-btn icon="align_right" 
-                                  v-if="toolbar.align || toolbar['align-right']" 
-                                  :isActive="editor.isActive({ textAlign: 'right' })" 
+            <wysiwyg-menu-bar-btn icon="align_right"
+                                  label="align right"
+                                  v-if="toolbar.align || toolbar['align-right']"
+                                  :isActive="editor.isActive({ textAlign: 'right' })"
                                   @btn:click="setTextAlign('right')"/>
-            <wysiwyg-menu-bar-btn icon="align_justify" 
-                                  v-if="toolbar.align || toolbar['align-justify']" 
-                                  :isActive="editor.isActive({ textAlign: 'justify' })" 
+            <wysiwyg-menu-bar-btn icon="align_justify"
+                                  label="justify"
+                                  v-if="toolbar.align || toolbar['align-justify']"
+                                  :isActive="editor.isActive({ textAlign: 'justify' })"
                                   @btn:click="setTextAlign('justify')"/>
 
             <wysiwyg-menu-bar-btn icon="table"
@@ -536,7 +540,7 @@
       const extensions = [
         HardBreak,
         TextAlign.configure({
-          types: ['heading','paragraph'], 
+          types: ['heading','paragraph'],
         }),
       ]
 
@@ -661,7 +665,7 @@
     &--link {
       z-index: $zindex__modal__lower;
     }
-    
+
     .input {
       margin-top: 35px !important;
     }
