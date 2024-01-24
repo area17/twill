@@ -232,6 +232,13 @@ abstract class ModuleController extends Controller
     protected $titleColumnKey = 'title';
 
     /**
+     * Label of the index column to use as name column.
+     *
+     * @var string
+     */
+    protected $titleColumnLabel = 'Title';
+
+    /**
      * Name of the index column to use as identifier column.
      *
      * @var string
@@ -244,6 +251,13 @@ abstract class ModuleController extends Controller
      * @var string
      */
     protected $titleFormKey;
+
+    /**
+     * Label of the title field in forms.
+     *
+     * @var string
+     */
+    protected $titleFormLabel = 'Title';
 
     /**
      * Feature field name if the controller is using the feature route (defaults to "featured").
@@ -644,6 +658,30 @@ abstract class ModuleController extends Controller
     }
 
     /**
+     * Sets the label to use for title column, defaults to `Title`.
+     */
+    protected function setTitleColumnLabel(string $titleColumnLabel): void
+    {
+        $this->titleColumnLabel = $titleColumnLabel;
+    }
+
+    /**
+     * Sets the field to use as title in forms, defaults to `title`.
+     */
+    protected function setTitleFormKey(string $titleFormKey): void
+    {
+        $this->titleFormKey = $titleFormKey;
+    }
+
+    /**
+     * Sets the label to use for title field in forms, defaults to `Title`.
+     */
+    protected function setTitleFormLabel(string $titleFormLabel): void
+    {
+        $this->titleFormLabel = $titleFormLabel;
+    }
+
+    /**
      * Usually not required, but in case customization is needed you can use this method to set the name of the model
      * this controller acts on.
      */
@@ -789,6 +827,7 @@ abstract class ModuleController extends Controller
             $columns->add(
                 Text::make()
                     ->field($this->titleColumnKey)
+                    ->title($this->titleColumnKey === 'title' && $this->titleColumnLabel === 'Title' ? twillTrans('twill::lang.main.title') : $this->titleColumnLabel)
                     ->sortable()
                     ->linkToEdit()
             );
@@ -1731,6 +1770,7 @@ abstract class ModuleController extends Controller
             'permalink' => $this->getIndexOption('permalink'),
             'bulkEdit' => $this->getIndexOption('bulkEdit'),
             'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
+            'titleFormLabel' => $this->titleFormLabel ?? $this->titleColumnLabel,
             'baseUrl' => $baseUrl,
             'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
             'additionalTableActions' => $this->additionalTableActions(),
@@ -2211,6 +2251,7 @@ abstract class ModuleController extends Controller
                 'moduleName' => $this->moduleName,
                 'routePrefix' => $this->routePrefix,
                 'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
+                'titleFormLabel' => $this->titleFormLabel ?? $this->titleColumnLabel,
                 'publish' => $item->canPublish ?? true,
                 'publishDate24Hr' => Config::get('twill.publish_date_24h') ?? false,
                 'publishDateFormat' => Config::get('twill.publish_date_format') ?? null,
