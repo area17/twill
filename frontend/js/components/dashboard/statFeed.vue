@@ -38,9 +38,6 @@
       </a>
       </template>
     </div>
-    <footer class="box__footer statFeed__footer">
-      <a href="https://analytics.google.com/analytics/web" class="f--external" target="_blank">Google Analytics</a>
-    </footer>
   </div>
 </template>
 
