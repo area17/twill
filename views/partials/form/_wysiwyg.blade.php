@@ -24,6 +24,7 @@
             @if ($inModal) inModal: true, @endif
             @if ($limitHeight) limitHeight: true, @endif
             @if ($endpoints) browserEndpoints: {!! e(json_encode($endpoints)) !!}, @endif
+            @if ($classList) classList: {!! e(json_encode($classList)) !!}, @endif
             @if ($default)
                 initialValue: '{{ $default }}',
                 hasDefaultStore: true,
@@ -47,6 +48,7 @@
             @if ($editSource) :edit-source='true' @endif
             @if ($limitHeight) :limit-height='true' @endif
             @if ($endpoints) :browser-endpoints='{!! json_encode($endpoints) !!}' @endif
+            @if ($classList) :class-list='{!! json_encode($classList) !!}' @endif
             @if ($default)
             :initial-value="'{{ $default }}'"
             :has-default-store="true"
