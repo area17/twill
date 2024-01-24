@@ -23,6 +23,8 @@ All notable changes to `twill` will be documented in this file.
 - Automatically add `active` to `$translatedAttributes` by @driftingly in #2401
 - Add `--factory` and `--seeder` to `twill:make:module` by @driftingly in #2402
 - Update migration stub and existing migrations to use anonymous class by @driftingly in #2406
+- Add predefined class selection to TipTap link component by @zipavlin in #2336
+- Fix `parseInternalLinks` helper issues by @avinash403 in #2338
 
 ### Fixed
 - Fix custom components registration by @joyceverheije in 7c233334
