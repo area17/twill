@@ -14,6 +14,7 @@ class BlockEditor extends TwillFormComponent
         bool $renderForModal = false,
         // Component specific
         public array $blocks = [],
+        public array $excludeBlocks = [],
         public array $groups = [],
         public bool $withoutSeparator = false,
         public ?string $group = null,
@@ -45,7 +46,8 @@ class BlockEditor extends TwillFormComponent
                 'allowedBlocks' => generate_list_of_available_blocks(
                     $this->blocks ?? null,
                     $groups,
-                    $this->isSettings
+                    $this->isSettings,
+                    $this->excludeBlocks ?? null,
                 ),
                 'editorName' => [
                     'label' => $this->label,
