@@ -250,7 +250,6 @@ if (! function_exists('generate_list_of_available_blocks')) {
                     ) {
                         return false;
                     }
-
                 }
 
                 if (in_array($block->name, $excludeBlocks)) {
