@@ -6,9 +6,6 @@ use Illuminate\Validation\Rule;
 
 class OauthRequest extends Request
 {
-    protected $redirectRoute = 'twill.login.form';
-
-
     /**
      * Include route parameters for validation
      *
@@ -37,5 +34,12 @@ class OauthRequest extends Request
                 Rule::in(config('twill.oauth.providers', [])),
             ],
         ];
+    }
+
+    protected function getRedirectUrl()
+    {
+        $url = $this->redirector->getUrlGenerator();
+
+        return $url->route(config('twill.admin_route_name_prefix') . 'login.form');
     }
 }

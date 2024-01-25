@@ -13,9 +13,9 @@
                 @endforeach
                 @if (($currentUser = auth()->user()) && config('twill.enabled.users-management'))
                     <a
-                        href="{{ route('twill.users.index') }}">{{ twillTrans('twill::lang.nav.cms-users') }}</a><br />
+                        href="{{ route(config('twill.admin_route_name_prefix') . 'users.index') }}">{{ twillTrans('twill::lang.nav.cms-users') }}</a><br />
                     <a
-                        href="{{ route('twill.users.edit', $currentUser->id) }}">{{ twillTrans('twill::lang.nav.profile') }}</a><br />
+                        href="{{ route(config('twill.admin_route_name_prefix') . 'users.edit', $currentUser->id) }}">{{ twillTrans('twill::lang.nav.profile') }}</a><br />
                     <a href="#" data-logout-btn>{{ twillTrans('twill::lang.nav.logout') }}</a>
                 @endif
             </div>
