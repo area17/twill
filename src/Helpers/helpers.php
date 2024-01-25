@@ -251,9 +251,10 @@ if (! function_exists('generate_list_of_available_blocks')) {
                         return false;
                     }
 
-                    if (in_array($block->name, $excludeBlocks)) {
-                        return false;
-                    }
+                }
+
+                if (in_array($block->name, $excludeBlocks)) {
+                    return false;
                 }
 
                 return (filled($blocks) ? collect($blocks)->contains($block->name) || collect($blocks)->contains(ltrim($block->componentClass, '\\')) : true)
