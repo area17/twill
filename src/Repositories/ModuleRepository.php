@@ -156,7 +156,7 @@ abstract class ModuleRepository
     {
         $builder = $this->model->latest();
 
-        $translatedAttributes = $this->model->translatedAttributes ?? [];
+        $translatedAttributes = $this->model->getTranslatedAttributes() ?? [];
 
         foreach ($fields as $field) {
             if (in_array($field, $translatedAttributes, true)) {

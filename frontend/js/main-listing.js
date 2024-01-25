@@ -6,6 +6,7 @@ import ACTIONS from '@/store/actions'
 // General shared behaviors
 import main from '@/main'
 import search from '@/main-search'
+import registerCustomComponents from '@/custom-components'
 import openMediaLibrary from '@/behaviors/openMediaLibrary'
 
 // Plugins
@@ -46,6 +47,8 @@ store.registerModule('language', language)
 store.registerModule('form', form)
 store.registerModule('modalEdition', modalEdition)
 store.registerModule('attributes', attributes)
+
+registerCustomComponents()
 
 /* eslint-disable no-new */
 /* eslint no-unused-vars: "off" */

@@ -79,9 +79,9 @@ class Media extends Model
                 return $tag->name;
             }),
             'deleteUrl' => $this->canDeleteSafely() ? moduleRoute('medias', 'media-library', 'destroy', $this->id) : null,
-            'updateUrl' => route('twill.media-library.medias.single-update'),
-            'updateBulkUrl' => route('twill.media-library.medias.bulk-update'),
-            'deleteBulkUrl' => route('twill.media-library.medias.bulk-delete'),
+            'updateUrl' => route(config('twill.admin_route_name_prefix') . 'media-library.medias.single-update'),
+            'updateBulkUrl' => route(config('twill.admin_route_name_prefix') . 'media-library.medias.bulk-update'),
+            'deleteBulkUrl' => route(config('twill.admin_route_name_prefix') . 'media-library.medias.bulk-delete'),
             'metadatas' => [
                 'default' => [
                     'caption' => $this->caption,

@@ -45,7 +45,7 @@
             field-name="manage-modules"
             :field-values="false"
         >
-            @foreach($permission_modules as $module_name => $module_items)
+            @foreach($permission_modules as $module_name)
                 <x-twill::select
                     :name="'module_' . $module_name . '_permissions'"
                     :label="ucfirst($module_name) . ' permissions'"

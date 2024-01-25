@@ -125,7 +125,7 @@ $multiSelectHeight: 45px;
     }
 
     .vs__selected-options {
-      padding: 0 15px;
+      padding: 0 30px 0 15px;
     }
 
     .vs__search {
@@ -322,7 +322,8 @@ $multiSelectHeight: 45px;
       margin:7px 0 0 10px;
       position:relative;
 
-      .close {
+      .close,
+      .vs__deselect {
         border-radius:50%;
         background-color:$color__fborder--hover;
         height: 18px;
@@ -337,12 +338,13 @@ $multiSelectHeight: 45px;
         font-weight:normal;
         position:absolute;
         right:5px;
-        top:6px;
+        top:15px;
         background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIj48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiNFNUU1RTUiIGQ9Ik0yIDJsNiA2TTggMkwyIDgiLz48L3N2Zz4=);
         background-repeat: no-repeat;
         background-position: center;
 
-        span {
+        span,
+        svg {
           display:none;
         }
 
@@ -357,7 +359,8 @@ $multiSelectHeight: 45px;
     .selected-tag {
       padding-right: 15px;
 
-      .close {
+      .close,
+      .vs__deselect {
         display: none;
       }
     }
@@ -396,14 +399,16 @@ $multiSelectHeight: 45px;
         padding-right: 25px;
         @include font-small;
 
-        .close {
+        .close,
+        .vs__deselect {
           top:2px;
           right:2px;
           background-color:transparent;
           background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIj48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiNhNmE2YTYiIGQ9Ik0yIDJsNiA2TTggMkwyIDgiLz48L3N2Zz4=);
           color:$color__fborder--hover;
 
-          span {
+          span,
+          svg {
             display:none
           }
         }

@@ -22,7 +22,7 @@ class Category extends Model
     protected $fillable = ['published', 'title', 'description', 'position'];
 
     // uncomment and modify this as needed if you use the HasTranslation trait
-    public $translatedAttributes = ['title', 'active'];
+    public $translatedAttributes = ['title'];
 
     // uncomment and modify this as needed if you use the HasSlug trait
     public $slugAttributes = ['title'];

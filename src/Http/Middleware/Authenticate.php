@@ -21,12 +21,12 @@ class Authenticate extends Middleware
             (
                 !$request->user() ||
                 !$request->user()->published
-            ) && $request->route()?->getName() !== 'twill.login.form'
+            ) && $request->route()?->getName() !== (config('twill.admin_route_name_prefix') . 'login.form')
         ) {
             Auth::logout();
             return $request->expectsJson()
                 ? abort(403, 'Your account is not verified.')
-                : Redirect::guest(URL::route('twill.login.form'));
+                : Redirect::guest(URL::route(config('twill.admin_route_name_prefix') . 'login.form'));
         }
 
         return $next($request);
@@ -37,6 +37,6 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-        return route('twill.login.form');
+        return route(config('twill.admin_route_name_prefix') . 'login.form');
     }
 }

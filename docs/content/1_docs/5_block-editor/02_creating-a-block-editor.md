@@ -31,6 +31,17 @@ BlockEditor::make()
 <x-twill::block-editor
     :blocks="$blocks"
 />
+
+@php
+    $excludeBlocks = [
+        'title',
+        'quote'
+    ];
+@endphp
+
+<x-twill::block-editor
+    :excludeBlocks="$excludeBlocks"
+/>
 ```
 
 :::#tab:::
@@ -40,6 +51,10 @@ BlockEditor::make()
 ```blade
 @formField('block_editor', [
     'blocks' => ['title', 'quote', 'text', 'image', 'grid', 'test', 'publications', 'news']
+])
+
+@formField('block_editor', [
+    'excludeBlocks' => ['title', 'quote']
 ])
 ```
 

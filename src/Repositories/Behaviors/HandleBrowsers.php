@@ -201,7 +201,7 @@ trait HandleBrowsers
                     return [
                             'id' => $relatedElement->id,
                             'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
-                            'edit' => moduleRoute(
+                            'edit' => $relatedElement->adminEditUrl ?? moduleRoute(
                                 $moduleName ?? $relation,
                                 $routePrefix ?? '',
                                 'edit',

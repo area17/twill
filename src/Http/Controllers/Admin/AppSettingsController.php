@@ -78,7 +78,7 @@ class AppSettingsController extends ModuleController
     protected function getModuleRoute($id, $action): ?string
     {
         if ($action === 'update') {
-            return route('twill.app.settings.update', $id);
+            return route(config('twill.admin_route_name_prefix') . 'app.settings.update', $id);
         }
 
         return null;

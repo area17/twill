@@ -46,7 +46,7 @@ class FilesUploaderConfig
         // the execution of the appropriate implementation
         $endpointByType = [
             'local' => function () {
-                return $this->urlGenerator->route('twill.file-library.files.store');
+                return $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'file-library.files.store');
             },
             's3' => function () use ($libraryDisk) {
                 return s3Endpoint($libraryDisk);
@@ -58,14 +58,14 @@ class FilesUploaderConfig
 
         $signatureEndpointByType = [
             'local' => null,
-            's3' => $this->urlGenerator->route('twill.file-library.sign-s3-upload'),
-            'azure' => $this->urlGenerator->route('twill.file-library.sign-azure-upload'),
+            's3' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'file-library.sign-s3-upload'),
+            'azure' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'file-library.sign-azure-upload'),
         ];
 
         $filesUploaderConfig = [
             'endpointType' => $endpointType,
             'endpoint' => $endpointByType[$endpointType](),
-            'successEndpoint' => $this->urlGenerator->route('twill.file-library.files.store'),
+            'successEndpoint' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'file-library.files.store'),
             'signatureEndpoint' => $signatureEndpointByType[$endpointType],
             'endpointBucket' => $this->config->get('filesystems.disks.' . $libraryDisk . '.bucket', 'none'),
             'endpointRegion' => $this->config->get('filesystems.disks.' . $libraryDisk . '.region', 'none'),
