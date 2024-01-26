@@ -48,7 +48,7 @@ return [
 
 It is using Spatie's [Laravel Analytics](https://github.com/spatie/laravel-analytics) package.
 
-Follow [Spatie's documentation](https://github.com/spatie/laravel-analytics#how-to-obtain-the-credentials-to-communicate-with-google-analytics) to set up a Google service account and download a json file containing your credentials, and provide your Analytics view ID using the `ANALYTICS_VIEW_ID` environment variable.
+Follow [Spatie's documentation](https://github.com/spatie/laravel-analytics#how-to-obtain-the-credentials-to-communicate-with-google-analytics) to set up a Google service account and download a json file containing your credentials, and provide your Analytics view ID using the `ANALYTICS_PROPERTY_ID` environment variable.
 
 ## User activity
 
