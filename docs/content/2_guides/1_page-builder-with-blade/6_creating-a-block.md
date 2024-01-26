@@ -2,36 +2,6 @@
 
 Now that we have a block editor on the page module. We can start creating some custom blocks.
 
-By default, Twill provides 2 basic blocks:
-
-- There is a image block
-- And a wysiwyg block
-
-It is up to you to decide if you want to keep these enabled or disable them. For this guide we will disable them and
-create our own custom blocks:
-
-- A title and text block
-- A basic image block
-
-### Disable default blocks
-
-To disable the default blocks, we have to remove them from the configuration.
-
-Open up `config/twill.php` and add a `block_editor` key like this:
-
-```php
-<?php
-
-return [
-    'block_editor' => [
-        'use_twill_blocks' => [],
-    ]
-]
-```
-
-If you now go back to the block editor and try to add a block you will see that there is nothing available. That's great
-now we can go and create our own!
-
 ## Creating a title and text block
 
 A basic block is just a single blade file in the `resources/views/twill/block` directory. It does have some annotations
@@ -43,7 +13,7 @@ Let's make a block that has a title and body. We will call it `text`.
 
 `php artisan twill:make:block text`
 
-It will ask us `Should we also generate a view file for rendering the block?`, as this will make it easier usually you 
+It will ask us `Should we also generate a view file for rendering the block?`, as this will make it easier usually you
 will want to answer *yes*.
 
 Now that the block has been created, open up `resources/views/twill/blocks/text.blade.php` and it should look like this:
@@ -99,7 +69,7 @@ In `resources/views/site/blocks/text.blade.php` we can add the following:
 </div>
 ```
 
-As you can see we use `translatedInput`, this makes sure that the content shown is in the current Laravel locale. If a 
+As you can see we use `translatedInput`, this makes sure that the content shown is in the current Laravel locale. If a
 field is not translatable you should use `input` instead.
 
 Now when you add the block and write some content, you will see that the title and text appear!
@@ -108,7 +78,7 @@ Let's make another block now for the image.
 
 ## Creating a basic image block
 
-We will basically do the same as before, however, this time we will have to update the block form as we do not enter 
+We will basically do the same as before, however, this time we will have to update the block form as we do not enter
 text but we attach a media field instead.
 
 `php artisan twill:make:block image`
@@ -159,11 +129,11 @@ return [
 ```
 
 Now with this in place, you can go back to the block editor and add your first image block! But just as before, we have
-to update the content of the preview file (`resources/views/site/blocks/text.blade.php`) so that we actually display 
+to update the content of the preview file (`resources/views/site/blocks/text.blade.php`) so that we actually display
 the image!
 
 ```blade
-<div class="py-8 mx-auto max-w-2xl flex items-center">
+<div class="flex items-center max-w-2xl py-8 mx-auto">
     <img src="{{$block->image('highlight', 'desktop')}}"/>
 </div>
 ```
