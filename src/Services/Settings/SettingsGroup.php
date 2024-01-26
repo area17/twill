@@ -55,7 +55,7 @@ class SettingsGroup
 
     public function getRoute(): string
     {
-        return 'twill.app.settings.page';
+        return config('twill.admin_route_name_prefix') . 'app.settings.page';
     }
 
     public function getHref(): string

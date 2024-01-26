@@ -2237,7 +2237,7 @@ abstract class ModuleController extends Controller
             $item = $this->repository->newInstance();
         }
 
-        $fullRoutePrefix = 'twill.' . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
+        $fullRoutePrefix = config('twill.admin_route_name_prefix') . ($this->routePrefix ? $this->routePrefix . '.' : '') . $this->moduleName . '.';
         $previewRouteName = $fullRoutePrefix . 'preview';
         $restoreRouteName = $fullRoutePrefix . 'restoreRevision';
 
@@ -2275,7 +2275,7 @@ abstract class ModuleController extends Controller
                 'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas(
                     'blocks'
                 ) && ! $this->disableEditor,
-                'blockPreviewUrl' => Route::has('twill.blocks.preview') ? URL::route('twill.blocks.preview') : '#',
+                'blockPreviewUrl' => Route::has(config('twill.admin_route_name_prefix') . 'blocks.preview') ? URL::route(config('twill.admin_route_name_prefix') . 'blocks.preview') : '#',
                 'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
                 'submitOptions' => $this->getSubmitOptions($item),
                 'groupUserMapping' => $this->getGroupUserMapping(),

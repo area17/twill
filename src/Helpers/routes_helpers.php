@@ -21,7 +21,7 @@ if (! function_exists('moduleRoute')) {
         }
 
         // Create base route name
-        $routeName = 'twill.' . ($prefix ? $prefix . '.' : '');
+        $routeName = config('twill.admin_route_name_prefix') . ($prefix ? $prefix . '.' : '');
 
         // Prefix it with module name only if prefix doesn't contains it already
         if (

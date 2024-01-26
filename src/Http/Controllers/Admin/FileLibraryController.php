@@ -145,9 +145,9 @@ class FileLibraryController extends ModuleController implements SignUploadListen
                     'destroy',
                     $item->id
                 ) : null,
-                'updateUrl' => $this->urlGenerator->route('twill.file-library.files.single-update'),
-                'updateBulkUrl' => $this->urlGenerator->route('twill.file-library.files.bulk-update'),
-                'deleteBulkUrl' => $this->urlGenerator->route('twill.file-library.files.bulk-delete'),
+                'updateUrl' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'file-library.files.single-update'),
+                'updateBulkUrl' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'file-library.files.bulk-update'),
+                'deleteBulkUrl' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'file-library.files.bulk-delete'),
             ];
     }
 

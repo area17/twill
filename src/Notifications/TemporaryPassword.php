@@ -10,7 +10,7 @@ class TemporaryPassword extends ResetPassword
     public function toMail($notifiable)
     {
         return (new MailMessage())->markdown('twill::emails.html.email', [
-            'url' => route('twill.login.form'),
+            'url' => route(config('twill.admin_route_name_prefix') . 'login.form'),
             'actionText' => 'Login',
             'copy' => 'You are receiving this email because your password has been changed to: ' . $this->token,
         ]);

@@ -87,6 +87,17 @@ class DatePicker extends BaseFormField
     }
 
     /**
+     * If 24h format should be used.
+     * Added for docs and backwards compatibility
+     */
+    public function time24hr(bool $time24hr = true): static
+    {
+        $this->time24Hr = $time24hr;
+
+        return $this;
+    }
+
+    /**
      * Define a custom date format.
      */
     public function altFormat(string $altFormat): static

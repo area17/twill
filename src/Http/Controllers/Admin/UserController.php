@@ -316,7 +316,7 @@ class UserController extends ModuleController
             Password::broker('twill_users')->getRepository()->create($user)
         );
 
-        return redirect()->route('twill.users.edit', ['user' => $user])->with(
+        return redirect()->route(config('twill.admin_route_name_prefix') . 'users.edit', ['user' => $user])->with(
             'status',
             'Registration email has been sent to the user!'
         );

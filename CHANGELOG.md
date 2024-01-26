@@ -24,7 +24,10 @@ All notable changes to `twill` will be documented in this file.
 - Add `--factory` and `--seeder` to `twill:make:module` by @driftingly in #2402
 - Update migration stub and existing migrations to use anonymous class by @driftingly in #2406
 - Add predefined class selection to TipTap link component by @zipavlin in #2336
-- Fix `parseInternalLinks` helper issues by @avinash403 in #2338
+- Allow customization of the title column's label by @Phiosss in #2318
+- Add alignment buttons to TipTap editor by @florrie-90 in #2305
+- Fixes breaking changes in Laravel Analytics and support GA4 by @lewiswharf in #2288
+- Allow a list of blocks to be excluded from the block editor fields by @pauldwight in #2409
 
 ### Fixed
 - Fix custom components registration by @joyceverheije in 7c233334
@@ -56,6 +59,10 @@ All notable changes to `twill` will be documented in this file.
 - Preserve default vselect value when undefined by @bwat-dev in #2311
 - Don't load DuskServiceProvider if dusk doesn't exist by @Tofandel in #2366
 - Use custom model configuration in the relationship morph map by @redelschaap in #2408
+- Fix `parseInternalLinks` helper issues by @avinash403 in #2338
+- Use pushOnce builtin, remove custom pushonce directive by @mikerockett in #2301
+- Prevent multi select options from being selected more than once by @florrie-90 in #2296
+- Use twill.admin_route_name_prefix configuration for all internal routes by @ifox and @raymondtri in #2286
 
 ### Docs
 - Add instructions on how to use the browser field with a custom pivot table by @poncianodiego and @ifox in https://github.com/area17/twill/pull/2385
