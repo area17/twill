@@ -300,6 +300,11 @@ class Block
         return $this;
     }
 
+    public function getData(array $data, \A17\Twill\Models\Block $block): array
+    {
+        return $data;
+    }
+
     /**
      * Gets the form data. This is only called once and not per create.
      *
@@ -668,9 +673,8 @@ class Block
         $data['inEditor'] = $inEditor;
 
         $view = $this->getBlockView($blockViewMappings);
-        if (method_exists($this, 'getData')) {
-            $data = Container::getInstance()->call([$this, 'getData'], ['data' => $data, 'block' => $this->renderData->block]);
-        }
+
+        $data = Container::getInstance()->call([$this, 'getData'], ['data' => $data, 'block' => $this->renderData->block]);
 
         $data['block'] = $this->renderData->block;
         $data['renderData'] = $this->renderData;
