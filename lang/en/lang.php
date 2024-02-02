@@ -93,6 +93,7 @@ return [
             'expand-all' => 'Expand all',
             'loading' => 'Loading',
             'open-in-editor' => 'Open in editor',
+            'no-available-blocks' => 'No available blocks for this editor',
             'preview' => 'Preview',
             'add-item' => 'Add item',
             'clone-block' => 'Clone block',
