@@ -61,18 +61,26 @@ class SettingController extends Controller
      */
     public function index(string $section)
     {
-        return $this->viewFactory->exists('twill.settings.' . $section)
-        ? $this->viewFactory->make('twill.settings.' . $section, [
+        if (! $this->viewFactory->exists('twill.settings.' . $section)) {
+            return $this->redirector->back();
+        }
+
+        $formFields = $this->settings->getFormFieldsForSection($section);
+
+        View::share('form', [
+            'form_fields' => $formFields,
+        ]);
+
+        return $this->viewFactory->make('twill.settings.' . $section, [
             'customForm' => true,
             'editableTitle' => false,
             'customTitle' => ucfirst($section) . ' settings',
             'section' => $section,
-            'form_fields' => $this->settings->getFormFieldsForSection($section),
+            'form_fields' => $formFields,
             'formBuilder' => Form::make(),
             'saveUrl' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'settings.update', $section),
             'translate' => true,
-        ])
-        : $this->redirector->back();
+        ]);
     }
 
     /**
