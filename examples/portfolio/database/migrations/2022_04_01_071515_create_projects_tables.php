@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProjectsTables extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -34,4 +34,4 @@ class CreateProjectsTables extends Migration
         Schema::dropIfExists('project_slugs');
         Schema::dropIfExists('projects');
     }
-}
+};

@@ -178,7 +178,7 @@ creating and deleting users from the CMS.
 A few methods from `ModuleRepository` can be extended in
 `ProfileRepository` to implement the feature:
 
-* [`afterSave()`](https://twill.io/docs/api/2.x/A17/Twill/Repositories/ModuleRepository.html#method_afterSave),
+* [`afterSave()`](https://twillcms.com/docs/api/2.x/A17/Twill/Repositories/ModuleRepository.html#method_afterSave),
   for user creation
-* [`afterDelete()`](https://twill.io/docs/api/2.x/A17/Twill/Repositories/ModuleRepository.html#method_afterDelete),
+* [`afterDelete()`](https://twillcms.com/docs/api/2.x/A17/Twill/Repositories/ModuleRepository.html#method_afterDelete),
   for user deletion

@@ -48,7 +48,7 @@ foreach($tree[$currentSegment]['items'] ?? [] as $item) {
         <a
             class="text-link !no-underline"
             href="{{$githubLink}}"
-            ref="noopener noreferrer"
+            rel="noopener noreferrer"
             target="_blank">
             Edit this page on Github
         </a>

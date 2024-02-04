@@ -7,8 +7,10 @@ use A17\Twill\Services\Forms\InlineRepeater;
 use A17\Twill\View\Components\Blocks\TwillBlockComponent;
 use Exception;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
+use Illuminate\Container\Container;
 
 class Block
 {
@@ -154,6 +156,9 @@ class Block
         );
 
         $class->title = $componentClass::getBlockTitle();
+        $class->icon = $componentClass::getBlockIcon();
+        $class->titleField = $componentClass::getBlockTitleField();
+        $class->hideTitlePrefix = $componentClass::shouldHidePrefix();
         $class->rulesForTranslatedFields = (new $componentClass())->getTranslatableValidationRules();
         $class->rules = (new $componentClass())->getValidationRules();
 
@@ -668,10 +673,15 @@ class Block
         $data['inEditor'] = $inEditor;
 
         $view = $this->getBlockView($blockViewMappings);
-        $data = $this->getData($data, $this->renderData->block);
+
+        $data = Container::getInstance()->call([$this, 'getData'], ['data' => $data, 'block' => $this->renderData->block]);
 
         $data['block'] = $this->renderData->block;
         $data['renderData'] = $this->renderData;
+
+        if ($this->componentClass) {
+            return Blade::renderComponent($this->componentClass::forRendering($this->renderData->block, $this->renderData, $inEditor));
+        }
 
         try {
             return view($view, $data)->render();

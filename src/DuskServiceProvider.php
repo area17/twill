@@ -14,6 +14,9 @@ class DuskServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
+        if (!class_exists(Browser::class)) {
+            return;
+        }
         Browser::macro('setBrowserLocationToParis', function () {
             $this->setLocationToLatLon(48.864716, 2.349014, 'Europe/Paris');
         });

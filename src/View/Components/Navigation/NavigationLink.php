@@ -114,7 +114,7 @@ class NavigationLink extends Component
             $this->title(Str::title($module));
         }
 
-        $this->route = 'twill.' . $module;
+        $this->route = config('twill.admin_route_name_prefix') . $module;
 
         return $this;
     }
@@ -175,7 +175,7 @@ class NavigationLink extends Component
             $routeMatcher = Str::plural($moduleName);
         }
 
-        return 'twill.' . TwillRoutes::getModuleRouteFromRegistry(
+        return config('twill.admin_route_name_prefix') . TwillRoutes::getModuleRouteFromRegistry(
             Str::camel($routeMatcher)
         ) . '.' . ($action ?? 'index');
     }
@@ -220,7 +220,7 @@ class NavigationLink extends Component
             $parent = null;
             foreach (array_keys($currentRoute->parameters()) as $singularModuleName) {
                 $moduleName = Str::plural($singularModuleName);
-                if ($moduleName === $this->module || ($parent . $moduleName) === $this->module) {
+                if (($parent . $moduleName) === $this->module) {
                     return true;
                 }
                 $parent .= $moduleName;

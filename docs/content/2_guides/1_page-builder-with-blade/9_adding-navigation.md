@@ -15,11 +15,7 @@ We can generate a self-nested module using:
 
 To all other questions we will answer **no**.
 
-Perfect. When the command is completed, you will see that we need to `composer require kalnoy/nestedset` so you can go
-ahead and run that command as well.
-
-[`kaloy/nestedset`](https://github.com/lazychaser/laravel-nestedset) is the package Twill uses internally to manage
-nested modules.
+Perfect.
 
 Once again, we add the NavigationLink as provided in our `app/Providers/AppServiceProvider.php`, but this time, we
 change the title to make a bit more sense.
@@ -66,7 +62,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMenuLinksTables extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -87,7 +83,7 @@ class CreateMenuLinksTables extends Migration
     {
         Schema::dropIfExists('menu_links');
     }
-}
+};
 ```
 
 Now you can run the migration: `php artisan migrate`
@@ -169,7 +165,7 @@ created, you will notice, there is no way for us to refer to one of our pages! L
 
 ## Adding a browser field
 
-We will use a simple Twill managed [browser field](../../1_documentation/4_form-fields/browser.md). A browser field is
+We will use a simple Twill managed [browser field](../../1_docs/4_form-fields/browser.md). A browser field is
 an easy way to make a connection to another model.
 
 In this case, every menu link will have a link to a page so that we know what we should link to.
@@ -227,7 +223,7 @@ use App\Models\MenuLink;
 class MenuLinkRepository extends ModuleRepository
 {
     protected $relatedBrowsers = ['page'];
-    
+
     use HandleNesting;
 
     public function __construct(MenuLink $model)
@@ -304,7 +300,7 @@ class file will hold our php logic, and the blade file will do the rendering.
 
 Again, we can use a command to do most of the work: `php artisan make:component Menu`
 
-This will generate the class `app/View/Components/Menu.php` and the blade file `resources/views/components/menu.php`.
+This will generate the class `app/View/Components/Menu.php` and the blade file `resources/views/components/menu.blade.php`.
 
 ### Preparing the tree
 
@@ -353,45 +349,25 @@ class Menu extends Component
 }
 ```
 
-So what we do here is requirest the tree of published menu links, then we send it to our components view file as "links"
+So what we do here is request the tree of published menu links, then we send it to our components view file as "links"
 .
 
 This will expose the `$links` variable to the blade file that we will now write.
 
 ### Tree rendering markup
 
-Now that we have the neccisary data in our blade file, we can write the markup.
+Now that we have the necessary data in our blade file, we can write the markup.
 
-We will change the contents of `resources/views/components/menu.php` to this:
+We will change the contents of `resources/views/components/menu.blade.php` to this:
 
-```blade
-<nav class="p-4">
-    <ul class="pl-4">
-        @foreach($links as $link)
-            <li>
-                <a href="{{route('frontend.page', [$link->getRelated('page')->first()->slug])}}">
-                    {{$link->title}}
-                </a>
-
-                @if ($link->children->isNotEmpty())
-                    <ul class="pl-4">
-                        @foreach($link->children as $link)
-                            <li>
-                                <a href="{{route('frontend.page', [$link->getRelated('page')->first()->slug])}}">
-                                    {{$link->title}}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
-                @endif
-            </li>
-        @endforeach
-    </ul>
-</nav>
+```phptorch
+{
+  "file": "../../../../examples/basic-page-builder/resources/views/components/menu.blade.php"
+}
 ```
 
 We add just a minimal amount of styling as we will not spend too much time on that during this guide. But this will
-build a navigation tree that is slightly indented so that you can see the proper structure. 
+build a navigation tree that is slightly indented so that you can see the proper structure.
 
 You cannot see it in action yet, for that we have to add the component to the main template file.
 
@@ -413,7 +389,7 @@ But, for this guide, we will simply open `resources/views/site/page.blade.php` a
 </head>
 <body>
 <x-menu/> <!-- [tl! ++] -->
-<div class="mx-auto max-w-2xl">
+<div class="max-w-2xl mx-auto">
     {!! $item->renderBlocks() !!}
 </div>
 </body>
@@ -426,4 +402,3 @@ Wherever you will put `<x-menu/>` it will render the menu. That's useful because
 Now that we have pages and a menu, we have one last thing we need to do.
 
 [We need a frontpage](./10_setup-the-frontpage.md)!
-

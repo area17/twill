@@ -32,13 +32,13 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.0
+          php-version: 8.3
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
           coverage: none
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:9.*" "doctrine/dbal:^3.0" --no-interaction --no-update
+          composer require "laravel/framework:10.*" "doctrine/dbal:^3.0" --no-interaction --no-update
           composer install
 
       - name: Execute tests
@@ -65,7 +65,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: [8.2, 8.1, 8.0]
+        php: [8.3, 8.2, 8.1, 8.0]
         laravel: [9.*, 10.*]
         exclude:
           - laravel: 10.*
@@ -118,11 +118,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '16.x'
+          node-version: '18.x'
 
       - name: Build npm dependencies.
         run: |
-          npm install
+          npm ci
 
       - name: Create blocks dir
         run: |

@@ -86,7 +86,7 @@
 </div>
 
 @if (config('twill.enabled.users-management'))
-    <form style="display: none" method="POST" action="{{ route('twill.logout') }}" data-logout-form>
+    <form style="display: none" method="POST" action="{{ route(config('twill.admin_route_name_prefix') . 'logout') }}" data-logout-form>
         @csrf
     </form>
 @endif
@@ -114,8 +114,8 @@
             value: 'image',
             text: '{{ twillTrans('twill::lang.media-library.images') }}',
             total: {{ \A17\Twill\Models\Media::count() }},
-            endpoint: '{{ route('twill.media-library.medias.index') }}',
-            tagsEndpoint: '{{ route('twill.media-library.medias.tags') }}',
+            endpoint: '{{ route(config('twill.admin_route_name_prefix') . 'media-library.medias.index') }}',
+            tagsEndpoint: '{{ route(config('twill.admin_route_name_prefix') . 'media-library.medias.tags') }}',
             uploaderConfig: {!! json_encode($mediasUploaderConfig) !!}
         })
         window['{{ config('twill.js_namespace') }}'].STORE.medias.showFileName = !!'{{ config('twill.media_library.show_file_name') }}'
@@ -126,8 +126,8 @@
             value: 'file',
             text: '{{ twillTrans('twill::lang.media-library.files') }}',
             total: {{ \A17\Twill\Models\File::count() }},
-            endpoint: '{{ route('twill.file-library.files.index') }}',
-            tagsEndpoint: '{{ route('twill.file-library.files.tags') }}',
+            endpoint: '{{ route(config('twill.admin_route_name_prefix') . 'file-library.files.index') }}',
+            tagsEndpoint: '{{ route(config('twill.admin_route_name_prefix') . 'file-library.files.tags') }}',
             uploaderConfig: {!! json_encode($filesUploaderConfig) !!}
         })
     @endif

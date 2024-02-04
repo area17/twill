@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Enums\PermissionLevel;
+use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Model;
 use A17\Twill\Models\Permission;
 use A17\Twill\Models\User;
@@ -19,12 +21,20 @@ trait HandleUserPermissions
      */
     public function getFormFieldsHandleUserPermissions($object, $fields)
     {
-        if (!config('twill.enabled.permissions-management')) {
+        if (
+            !config('twill.enabled.permissions-management') ||
+            !TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)
+        ) {
             return $fields;
         }
 
         foreach ($object->permissions()->moduleItem()->get() as $permission) {
             $model = $permission->permissionable()->first();
+
+            if ($model === null) {
+                continue;
+            }
+
             $moduleName = getModuleNameByModel($model);
             $fields[$moduleName . '_' . $model->id . '_permission'] = $permission->name;
         }
@@ -48,7 +58,9 @@ trait HandleUserPermissions
 
         $this->addOrRemoveUserToEveryoneGroup($object);
 
-        $this->updateUserItemPermissions($object, $fields);
+        if (TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)) {
+            $this->updateUserItemPermissions($object, $fields);
+        }
     }
 
     private function addOrRemoveUserToEveryoneGroup(User $user)

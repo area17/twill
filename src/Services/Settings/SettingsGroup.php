@@ -18,6 +18,8 @@ class SettingsGroup
 
     private ?Closure $availableWhen = null;
 
+    private AppSetting $appSetting;
+
     public static function make(): self
     {
         return new self();
@@ -53,7 +55,7 @@ class SettingsGroup
 
     public function getRoute(): string
     {
-        return 'twill.app.settings.page';
+        return config('twill.admin_route_name_prefix') . 'app.settings.page';
     }
 
     public function getHref(): string
@@ -70,12 +72,9 @@ class SettingsGroup
 
     public function getSettingsModel(): AppSetting
     {
-        $settingsModel = AppSetting::where(['name' => $this->getName()])->first();
-        if (!$settingsModel) {
-            $settingsModel = AppSetting::create(['name' => $this->getName()]);
-        }
-
-        return $settingsModel;
+        return $this->appSetting ??= AppSetting::firstOrCreate([
+            'name' => $this->getName(),
+        ]);
     }
 
     /**

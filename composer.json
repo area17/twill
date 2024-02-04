@@ -9,7 +9,7 @@
     "laravel",
     "cms"
   ],
-  "homepage": "https://twill.io",
+  "homepage": "https://twillcms.com",
   "authors": [
     {
       "name": "AREA 17",
@@ -19,8 +19,8 @@
   ],
   "support": {
     "issues": "https://github.com/area17/twill/issues/",
-    "docs": "https://twill.io/docs",
-    "chat": "https://discord.link/twill"
+    "docs": "https://twillcms.com/docs/",
+    "chat": "https://discord.gg/cnWk7EFv8R"
   },
   "require": {
     "php": "^8.0",
@@ -31,6 +31,7 @@
     "doctrine/dbal": "^3.0",
     "guzzlehttp/guzzle": "^7.0",
     "imgix/imgix-php": "^3.0",
+    "kalnoy/nestedset": "^6.0",
     "laravel/framework": "^9.0|^10.0",
     "laravel/socialite": "^5.3",
     "laravel/ui": "^4.0",
@@ -40,16 +41,15 @@
     "myclabs/php-enum": "^1.5",
     "pragmarx/google2fa-qrcode": "^2.0",
     "spatie/laravel-activitylog": "^4.0",
-    "spatie/laravel-analytics": "^4.0",
+    "spatie/laravel-analytics": "^4.0|^5.0",
     "spatie/once": "^3.0"
   },
   "require-dev": {
     "area17/phptorch": "dev-main",
     "chillerlan/php-qrcode": "~4.0",
     "friendsofphp/php-cs-fixer": "^3.0",
-    "kalnoy/nestedset": "^6.0",
-    "nette/php-generator": "v4.0.3",
-    "nunomaduro/collision": "^6.0",
+    "nette/php-generator": "^4.0.3",
+    "nunomaduro/collision": "^6.0|^7.0|^8.0",
     "nunomaduro/larastan": "^2.0",
     "orchestra/testbench": "^7.8|^8.0",
     "orchestra/testbench-dusk": "^7.8|^8.0",

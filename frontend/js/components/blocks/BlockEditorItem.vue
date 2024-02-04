@@ -3,13 +3,13 @@
     <div class="block__header" @dblclick.prevent="toggleExpand()">
       <span v-if="withHandle" class="block__handle"></span>
       <div class="block__toggle">
-        <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown" :maxHeight="270">
+        <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown && withActions" :maxHeight="270">
           <span class="block__counter f--tiny" @click="$refs[moveDropdown].toggle()">{{ index + 1 }}</span>
           <div slot="dropdown__content">
             <slot name="dropdown-numbers"/>
           </div>
         </a17-dropdown>
-        <span class="block__counter f--tiny" v-else>{{ index + 1 }}</span>
+        <span class="block__counter f--tiny" v-else-if="withActions">{{ index + 1 }}</span>
         <span class="block__title">{{ blockTitle }}</span>
       </div>
       <div class="block__actions" v-if="withActions">
@@ -176,7 +176,7 @@
 <style lang="scss" scoped>
   .block__content {
     display: none;
-    padding: 15px;
+    padding: 25px 15px 15px 15px;
     background: $color__background;
   }
 
@@ -330,10 +330,6 @@
     > .browserField {
       margin: -15px;
       border: 0 none;
-    }
-
-    ::v-deep(.input) {
-      margin-top: 15px;
     }
 
     ::v-deep(.block__body) {

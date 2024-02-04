@@ -21,17 +21,19 @@ class Wysiwyg extends TwillFormComponent
         // Component specific
         public bool $hideCounter = false,
         public ?string $placeholder = null,
+        public ?string $direction = 'auto',
         public bool $editSource = false,
         public ?array $toolbarOptions = null,
         public ?int $maxlength = null,
         public ?array $options = null,
-        public string $type = 'quill',
+        public string $type = 'tiptap',
         public bool $limitHeight = false,
         public bool $syntax = false,
         public string $customTheme = 'github',
         public ?array $customOptions = null,
         public ?array $browserModules = null,
         public ?array $endpoints = null,
+        public ?array $classList = null,
     ) {
         parent::__construct(
             name: $name,

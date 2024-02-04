@@ -6,6 +6,7 @@ use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Helpers\Capsule;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use A17\Twill\Models\Contracts\TwillModelContract;
 
 class TwillCapsules
 {
@@ -65,8 +66,14 @@ class TwillCapsules
     /**
      * @throws \A17\Twill\Exceptions\NoCapsuleFoundException
      */
-    public function getCapsuleForModel(string $model): Capsule
+    public function getCapsuleForModel(string|TwillModelContract $model): Capsule
     {
+        if ($model instanceof TwillModelContract) {
+            $model = explode('\\', get_class($model));
+
+            $model = end($model);
+        }
+
         $capsule = $this->getRegisteredCapsules()->first(function (Capsule $capsule) use ($model) {
             return $capsule->getSingular() === $model;
         });

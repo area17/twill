@@ -16,7 +16,7 @@ class GenerateBlocks extends Command
     /**
      * @var string
      */
-    public const NO_BLOCKS_DEFINED = 'There are no blocks defined yet. Please refer to https://twill.io/docs/#block-editor-3 in order to create blocks.';
+    public const NO_BLOCKS_DEFINED = 'There are no blocks defined yet. Please refer to https://twillcms.com/block-editor/index.html in order to create blocks.';
 
     /**
      * @var string

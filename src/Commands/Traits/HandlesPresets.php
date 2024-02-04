@@ -3,6 +3,7 @@
 namespace A17\Twill\Commands\Traits;
 
 use Illuminate\Support\Str;
+use Symfony\Component\Process\Process;
 
 /**
  * @method void publishConfig;
@@ -59,12 +60,19 @@ trait HandlesPresets
             new \RecursiveDirectoryIterator($this->getExamplesStoragePath($preset))
         );
 
+        // get any FE files that shouldn't be copied
+        $ignore = $fromTests ? [] : $this->getFEIgnoreFiles($preset);
         $files = [];
 
         foreach ($iterator as $file) {
-            if ($file->isDir()) {
+            // add check to iterator to exclude files from $files
+            if (
+                $file->isDir()
+                || in_array(str_replace($this->getExamplesStoragePath($preset) . DIRECTORY_SEPARATOR, '', $file->getPathname()), $ignore)
+            ) {
                 continue;
             }
+
             $files[] = [
                 'from' => $file->getPathname(),
                 'to' => str_replace(
@@ -192,5 +200,41 @@ trait HandlesPresets
                 'Missing nestedset, please install it using "composer require kalnoy/nestedset"'
             );
         }
+    }
+
+    private function getFEIgnoreFiles(string $preset): array
+    {
+        $presetDir = $this->getExamplesStoragePath($preset);
+        $ignore = [];
+
+        // get example's manifest.json
+        $manifestPath = $presetDir . DIRECTORY_SEPARATOR . 'manifest.json';
+
+        if (file_exists($manifestPath)) {
+            $manifest = json_decode(file_get_contents($manifestPath), true);
+
+            // check if it has an fe override
+            if (array_key_exists('feOverride', $manifest)) {
+                $feOverride = $manifest['feOverride'];
+
+                // if yes get message and create prompt
+                if (array_key_exists('files', $feOverride)) {
+                    $message = "This preset will replace the following FE files if they exist: \n";
+
+                    foreach ($feOverride['files'] as $file) {
+                        $message .= "- " . $file . "\n";
+                    }
+
+                    $message .= 'Do you want to replace these files?';
+
+                    // if ignoring the fe files, get files array
+                    if (!$this->confirm($message)) {
+                        $ignore = $feOverride['files'];
+                    }
+                }
+            }
+        }
+
+        return $ignore;
     }
 }

@@ -39,13 +39,12 @@
 <script>
   import debounce from 'lodash/debounce'
 
+  // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
   import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue'
   import AttributesMixin from '@/mixins/addAttributes'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
   import randKeyMixin from '@/mixins/randKey'
-  // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
-  // import vSelect from 'vue-select' // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
   export default {
     name: 'A17VueSelect',
     mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
@@ -212,8 +211,21 @@
         return this.ajaxUrl !== ''
       },
       updateValue: function (value) {
+        // Filter out duplicate values
+        if (this.multiple) {
+          // For multiple selection
+          this.value = [...new Set(value)];
+        } else {
+          // For single selection
+          if (!value) {
+            const allOption = this.options.find((o) => o.value === 'all');
+            this.value = allOption ?? undefined
+          } else {
+            this.value = value
+          }
+        }
+
         // see formStore mixin
-        this.value = value
         this.saveIntoStore()
         this.$emit('change', value)
       },

@@ -105,6 +105,10 @@
                   subChild.componentInstance.destroyValue()
                 }
               })
+            } else if (
+              child.componentInstance.destroyValue
+            ) {
+              child.componentInstance.destroyValue()
             }
           })
         }

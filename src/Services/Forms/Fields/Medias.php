@@ -99,7 +99,7 @@ class Medias extends BaseFormField
     /**
      * Define custom extra metadata.
      *
-     * @see https://twill.io/docs/form-fields/medias.html#extra-metadatas
+     * @see https://twillcms.com/docs/form-fields/medias.html#content-extra-metadatas
      */
     public function extraMetadatas(array $extraMetadatas): static
     {

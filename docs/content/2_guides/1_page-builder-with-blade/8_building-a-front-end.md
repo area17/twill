@@ -108,7 +108,7 @@ Route::get('{slug}', [\App\Http\Controllers\PageDisplayController::class, 'show'
 ```
 
 As you can see, we create a **get** route, that has **{slug}** as uri. Our second argument is our callable. This we
-could have also written as 'PageDisplayController::show'. However, by using a proper namespace, it is easier to follow.
+could have also written as 'PageDisplayController@show'. However, by using a proper namespace, it is easier to follow.
 
 Once you save this file, head to your browser and visit: `https://your-local-domain.test/example`
 
@@ -173,5 +173,5 @@ from the repository! `item` in the data array corresponds to `$item` in our blad
 And that is it, we can now display all the pages by using the slug in the url!
 
 Now, we cannot tell our site visitors to guess the urls. Perhaps we need to 
-[add some navigation](9_adding_navigation.md)?
+[add some navigation](9_adding-navigation.md)?
 

@@ -12,7 +12,7 @@
           :class="`icon--wysiwyg_${icon}`"
           aria-hidden="true">
     <svg>
-      <title>{{ icon }}</title>
+      <title>{{ label ?? icon }}</title>
       <use :xlink:href="`#icon--wysiwyg_${icon}`"></use>
     </svg>
     </span>
@@ -58,7 +58,8 @@
 
 <style lang="scss">
   .wysiwyg__menubar-button:disabled {
-    opacity: 10%;
+    opacity: 50%;
+    cursor: unset !important;
   }
 
   .icon--custom {

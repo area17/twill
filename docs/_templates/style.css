@@ -39,16 +39,12 @@
   margin-left: 0 !important;
   z-index: 11;
   height: 100%;
-  padding-top: 30px;
+  padding-top: 28px;
   padding-left: 40px;
   min-width: 300px;
   width: 40%;
-  padding-bottom: 60px;
+  padding-bottom: 28px;
   transition: all 0.4s;
-}
-
-.isMobile .sidebar > ul {
-  padding-bottom: 60px;
 }
 
 .isMobile.openNav .sidebar {
