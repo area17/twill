@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\View;
 use Illuminate\View\Factory as ViewFactory;
 
 class SettingController extends Controller
