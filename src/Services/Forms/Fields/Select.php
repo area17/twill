@@ -14,11 +14,23 @@ class Select extends BaseFormField
     use HasPlaceholder;
     use Unpackable;
 
+    protected bool $searchable = false;
+
     public static function make(): static
     {
         return new self(
             component: \A17\Twill\View\Components\Fields\Select::class,
             mandatoryProperties: ['name', 'label', 'options']
         );
+    }
+
+    /**
+     * If the options should be searchable.
+     */
+    public function searchable(bool $searchable = true): static
+    {
+        $this->searchable = $searchable;
+
+        return $this;
     }
 }

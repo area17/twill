@@ -167,7 +167,16 @@
             if (this.taggable) {
               this.value = value
             } else {
-              this.value = this.options.filter(o => value.includes(o.value))
+              this.value = []
+              for (const v in value) {
+                const matches = this.options.filter(o => {
+                  return o.value === value[v]
+                })
+
+                if (matches[0]) {
+                  this.value.push(matches[0])
+                }
+              }
             }
           } else {
             this.value = this.options.find(o => {

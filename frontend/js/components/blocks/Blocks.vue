@@ -298,7 +298,7 @@
 
 <style lang="scss" scoped>
   .blocks {
-    margin-top: 20px; // margin-top:35px;
+    margin-top: 20px;
   }
 
   .blocks__container {
@@ -326,6 +326,10 @@
 
     &.sortable-ghost {
       opacity: 0.5;
+    }
+
+    .blocks:first-child {
+      margin-top: 35px;
     }
   }
 

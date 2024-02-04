@@ -1937,7 +1937,7 @@ abstract class ModuleController extends Controller
                         BasicFilter::make()
                             ->queryString($queryString)
                             ->options($value)
-                            ->apply(function (Builder $builder, int $value) use ($filterKey) {
+                            ->apply(function (Builder $builder, mixed $value) use ($filterKey) {
                                 $builder->where($filterKey, '=', $value);
                             })
                     );
