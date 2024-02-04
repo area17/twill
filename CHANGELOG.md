@@ -5,81 +5,87 @@ All notable changes to `twill` will be documented in this file.
 ## UNRELEASED (3.1.0)
 
 ### Added
-- Add connected fields support to the Twill 3 form builder by @joyceverheije in #2323
-- Support block component classes in the block editor `blocks` array by @joyceverheije in 8778ab7e
-- Add `max` option to form builder `InlineRepeater` field by @joyceverheije in 4a773869
-- Make preview breakpoints configurable by @florrie-90 in #2299
-- Add `Link` column type to table builder by @agnonym in #2376
 - PHP 8.3 support by @antonioribeiro in #2374
-- Add `routePrefix` support to nested breadcrumbs by @yamaha252 in #2312
-- Add direction option to form input, textarea and WYSIWYG fields by @13twelve in #2295
-- Add read-only support to the form builder's Input field by @zachgarwood in #2331
-- Make permissions and roles table names configurable by @Keania-Eric in #2350
-- Support multiple nested table columns by @yamaha252 and @joyceverheije in #2314 and 1edbfbb1
-- Add support for current request only tertiary nav links by @joyceverheije
-- Add support for titleInBrowser and adminEditUrl accessors in browsers by @joyceverheije
-- Add configuration to controls whether a user should be created or not when a new user is logging in through Oauth by @joyceverheije
-- Allow QuickFilter extension by @joyceverheije
+- Form builder connected fields support by @joyceverheije in #2323
+- Google Analytics 4 support in the dashboard by @lewiswharf in #2288
+- Configurable preview breakpoints by @florrie-90 in #2299
 - Automatically add `active` to `$translatedAttributes` by @driftingly in #2401
+- Block component classes support in the `BlockEditor` `blocks` array by @joyceverheije in 8778ab7e
+- Add `excludeBlocks` option to the `BlockEditor` fields by @pauldwight in #2409
+- Add `readOnly` support to form builder `Input` field by @zachgarwood in #2331
+- Add `searchable` support to form builder `Select` field by @iedex in #2415
+- Add `max` support to form builder `InlineRepeater` field by @joyceverheije in 4a773869
+- Add `direction` option to `Input` and `Wysiwyg` fields by @13twelve in #2295
+- Add alignment buttons to `TipTap` editor by @florrie-90 in #2305
+- Add predefined class selection to `TipTap` link component by @zipavlin in #2336
+- Add support for `titleInBrowser` and `adminEditUrl` accessors in `browsers` by @joyceverheije in 02ac019e, ab8635fe and 160e9165
 - Add `--factory` and `--seeder` to `twill:make:module` by @driftingly in #2402
+- Add `Link` column type to table builder by @agnonym in #2376
+- Add `routePrefix` support to nested breadcrumbs by @yamaha252 in #2312
+- Add DI support for Twill Block `getData` method by @Afting in #2292
+- Allow `QuickFilter` extension by @joyceverheije in 9c15b017
+- Configurable permissions and roles table names  by @Keania-Eric in #2350
+- Configurable user creation with default role when using OAuth SSO by @joyceverheije in 14f8dd29
+- Customizable title column's label by @Phiosss in #2318
+- Current request only tertiary nav links support by @joyceverheije in d1c06992
+- Multiple `nested` table columns support in the table builder by @yamaha252 and @joyceverheije in #2314 and 1edbfbb1
 - Update migration stub and existing migrations to use anonymous class by @driftingly in #2406
-- Add predefined class selection to TipTap link component by @zipavlin in #2336
-- Allow customization of the title column's label by @Phiosss in #2318
-- Add alignment buttons to TipTap editor by @florrie-90 in #2305
-- Fixes breaking changes in Laravel Analytics and support GA4 by @lewiswharf in #2288
-- Allow a list of blocks to be excluded from the block editor fields by @pauldwight in #2409
 
 ### Fixed
+- Fix `DatePicker` date selection by @ifox in 0e751723
 - Fix custom components registration by @joyceverheije in 7c233334
-- Turn move dropdowns off for settings blocks by @droplister in #2293
-- Fix scheduled filter label by @droplister in #2291
-- Fix related table name in migration down method by @droplister in #2290
-- Updated namespace paths from Admin to Twill on custom pages by @pauldwight in #2317
-- Fix type of $forceLocale in translatedInput() by @pvdbroek in #2315
-- Fix duplication when translated media fields are enabled by @petertsoisstuff in #2320
-- Support using a dot as `fieldsGroupsFormFieldNameSeparator` by @yamaha252 in #2277
-- Allow dashboard modules to wrap onto the next line by @florrie-90 in #2298
-- Always include locale in the mediables pivot by @bonroyage in #2368
-- Fixes to reduce excessive number of queries when using Twill 3 settings by @bonroyage in #2369
-- Update migration helper for translations table by @sauron in #2327
-- Fix x-position of full height crops being reset at some ratios/screen sizes by @13twelve in #2297
-- Fix optional feature migrations publication by @Tofandel in #2384
-- Fix build error with custom icons by @emanueljacob in #2392
-- Fix position value for blocks in non-default editors by @joyceverheije in #2381
-- Fix user list errors when deleting roles by @antonioribeiro in #2372
-- Fix keepAlive on connected non localized fields by @joyceverheije
-- Fix active navigation check when a child module uses the same name as another module by @joyceverheije
-- Avoid unused data and hooks when using the default role level by @joyceverheije
-- Check user permission when displaying activity log items by @joyceverheije
-- Remove block actions in settings blocks by @ifox
-- Fix datepicker selection by @ifox
-- Fix create button alignement in listings by @ifox
-- Fixes incorrect order of nested items slug when item is more than 2 levels deep by @pauldwight in #2388
-- Fix getCapsuleForModel() for when passing a Model object by @antonioribeiro in #2400
-- Preserve default vselect value when undefined by @bwat-dev in #2311
-- Don't load DuskServiceProvider if dusk doesn't exist by @Tofandel in #2366
-- Use custom model configuration in the relationship morph map by @redelschaap in #2408
+- Fix position value for blocks in non-default `BlockEditor` fields by @joyceverheije in #2381
+- Fix incorrect order of nested items slug when item is more than 2 levels deep by @pauldwight in #2388
 - Fix `parseInternalLinks` helper issues by @avinash403 in #2338
-- Use pushOnce builtin, remove custom pushonce directive by @mikerockett in #2301
+- Fix to reduce excessive number of queries when using Twill 3 settings by @bonroyage in #2369
+- Fix user list errors when deleting roles by @antonioribeiro in #2372
+- Fix build error with custom icons by @emanueljacob in #2392
+- Fix x-position of full height crops being reset at some ratios/screen sizes by @13twelve in #2297
+- Fix fields/blocks/repeaters spacings by @ifox in 506d1fd8
+- Fix active navigation check when a child module uses the same name as another module by @joyceverheije in f22eb35a
+- Fix create button alignment in listings by @ifox in 006f478f
+- Fix duplication when translated media fields are enabled by @petertsoisstuff in #2320
+- Fix `getCapsuleForModel()` for when passing a Model object by @antonioribeiro in #2400
+- Fix `keepAlive` on connected non localized fields by @joyceverheije in b1593c75
+- Fix optional feature migrations publication by @Tofandel in #2384
+- Fix related table name in migration down method by @droplister in #2290
+- Fix scheduled filter label by @droplister in #2291
+- Fix type of `$forceLocale` in `translatedInput()` by @pvdbroek in #2315
+- Fix user role filter when using the standard permissions setup by @ifox in 916a2e52
+- Fix vselect component to align with design by @ifox in c01ddb0e
+- Fix error when running `php artisan migrate:reset` by @NuktukDev in #2413
+- Allow dashboard modules to wrap onto the next line by @florrie-90 in #2298
+- Always include locale in the `mediables` pivot by @bonroyage in #2368
+- Avoid unused data and hooks when using the default role level by @joyceverheije in 5d4060b5
+- Check user permission when displaying activity log items by @joyceverheije in 3526dca5
+- Don't load `DuskServiceProvider` if Dusk doesn't exist by @Tofandel in #2366
+- Preserve default vselect value when undefined by @bwat-dev in #2311
 - Prevent multi select options from being selected more than once by @florrie-90 in #2296
-- Use twill.admin_route_name_prefix configuration for all internal routes by @ifox and @raymondtri in #2286
+- Remove block actions in settings blocks by @ifox in 0bc5e754
+- Support using a dot as `fieldsGroupsFormFieldNameSeparator` by @yamaha252 in #2277
+- Turn move dropdowns off for settings blocks by @droplister in #2293
+- Update migration helper for translations table by @sauron in #2327
+- Updated namespace paths from `Admin` to `Twill` on custom pages by @pauldwight in #2317
+- Use custom model configuration in the relationship morph map by @redelschaap in #2408
+- Use `pushOnce` builtin, remove custom `pushonce` directive by @mikerockett in #2301
+- Use `twill.admin_route_name_prefix` configuration for all internal routes by @ifox and @raymondtri in #2286
 
 ### Docs
-- Add instructions on how to use the browser field with a custom pivot table by @poncianodiego and @ifox in https://github.com/area17/twill/pull/2385
-- Fix wrong property name in 12_nested-modules.md by @Viliasas in #2282
+- Add instructions on how to use the `browser` field with a custom pivot table by @poncianodiego and @ifox in #2385
+- Changed example value to better reflect given example in fields group docs by @Viliasas in #2283
 - Fix artisan command by @thecrazybob in #2365
+- Fix typo in Building a frontend guide by @driftingly in #2396
+- Fix typo in Content - Modules - TableBuilder by @agnonym in #2375
 - Fix typo in create page module guide by @colegeissinger in #2367
-- Content - Modules - TableBuilder: typo by @agnonym in #2375
+- Fix wrong property name in nested modules docs by @Viliasas in #2282
 - Updates to the docs for nested modules by @pauldwight in #2389
-- Fix typo in 8_building-a-front-end.md by @driftingly in #2396
-- Changed example value to better reflect given example on 16_field-groups.md by @Viliasas in #2283
 
 ### Translations
 - Added Slovenian language to translations by @Neoglyph in #2373
-- Update dutch lang files by @lindeVW in #2378
-
-### Chores
-- Update frontend dependencies by @ifox
+- Update Dutch translations by @lindeVW in #2378
+- Update German translations by @florianschrottenloher-iu in #2411
+- Add all locales with translations to the user locale selector by @ifox in 5602cf88
+- Configure all locales with translations for date rendering and datepicker configuration by @ifox in d7e53248
 
 ## 3.0.2
 
