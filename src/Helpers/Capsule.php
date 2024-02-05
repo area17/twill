@@ -142,7 +142,7 @@ class Capsule
     {
         $explodedNamespace = explode('\\', $this->namespace);
 
-        return implode('\\', array_pop($explodedNamespace));
+        return implode('\\', array_slice($explodedNamespace, 0, -1));
     }
 
     public function getDatabaseNamespace(): string
