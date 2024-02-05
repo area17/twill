@@ -176,7 +176,7 @@
 <style lang="scss" scoped>
   .block__content {
     display: none;
-    padding: 15px;
+    padding: 25px 15px 15px 15px;
     background: $color__background;
   }
 
@@ -330,10 +330,6 @@
     > .browserField {
       margin: -15px;
       border: 0 none;
-    }
-
-    ::v-deep(.input) {
-      margin-top: 15px;
     }
 
     ::v-deep(.block__body) {
