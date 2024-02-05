@@ -164,7 +164,7 @@
             </template>
 
           </div>
-          <div class="wysiwyg__contentWrapper" :class="{ 'wysiwyg__contentWrapper--limitHeight' : limitHeight }">
+          <div class="wysiwyg__contentWrapper" :class="{ 'wysiwyg__contentWrapper--limitHeight' : limitHeight }" @click="editor.chain().focus()">
             <editor-content class="wysiwyg__content"
                             :editor="editor"/>
           </div>
