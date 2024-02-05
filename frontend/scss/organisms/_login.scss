@@ -142,10 +142,15 @@
 
     &:hover {
       color:$color__black--40;
+
+      svg {
+        color:$color__black--50;
+      }
     }
   }
 
   svg {
+    color:$color__black--60;
     position: relative;
     height:22px;
     width:101px;
