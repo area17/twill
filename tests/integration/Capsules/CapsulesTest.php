@@ -87,13 +87,12 @@ class CapsulesTest extends TestCase
      */
     public function testCapsuleProviderWasRegistered()
     {
-        class_exists(
-            "App\Twill\Capsules\{$this->capsuleClassName}\Models\{$this->capsuleModelName}"
-        );
-
-        class_exists('A17\Twill\Services\Modules\HasModules');
-
-        // @todo: Validate this test.
+        $capsule = TwillCapsules::getCapsuleForModule($this->capsuleName);
+        
+        $this->assertTrue(class_exists("{$capsule->namespace}\Models\{$this->capsuleModelName}"));
+        $this->assertTrue(class_exists('A17\Twill\Services\Modules\HasModules'));
+        
+        $this->assertEquals($capsule->getBaseNamespace(), 'App\Twill\Capsules');
     }
 
     /**
