@@ -89,10 +89,9 @@ class CapsulesTest extends TestCase
     {
         $capsule = TwillCapsules::getCapsuleForModule($this->capsuleName);
         
-        $this->assertTrue(class_exists("{$capsule->namespace}\Models\{$this->capsuleModelName}"));
-        $this->assertTrue(class_exists('A17\Twill\Services\Modules\HasModules'));
-        
-        $this->assertEquals($capsule->getBaseNamespace(), 'App\Twill\Capsules');
+        $this->assertTrue(class_exists("{$capsule->getModelNamespace()}\\{$this->capsuleModelName}"));
+        $this->assertEquals($capsule->getBaseNamespace(), 'App\\Twill\\Capsules');
+        $this->assertEquals($capsule->namespace, "App\\Twill\\Capsules\\".$this->capsuleName);
     }
 
     /**
