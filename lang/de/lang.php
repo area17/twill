@@ -189,11 +189,16 @@ return [
             'unpublish' => 'Veröffentlichung aufheben',
         ],
         'filter' => [
+            'no' => 'Nein',
+            'yes' => 'Ja',
             'all-items' => 'Alle',
             'draft' => 'Entwürfe',
             'mine' => 'Meine',
             'published' => 'Veröffentlicht',
             'trash' => 'Papierkorb',
+        ],
+        'filters' => [
+            'all-label' => 'Alle :label',
         ],
         'languages' => 'Sprachen',
         'listing-empty-message' => 'Noch keine Einträge vorhanden.',

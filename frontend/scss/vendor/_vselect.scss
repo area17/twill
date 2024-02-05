@@ -25,11 +25,11 @@ $multiSelectHeight: 45px;
     }
 
     .vs__dropdown-menu {
-      border:0 none;
       padding:15px 0;
       border-top:1px solid $color__border--light;
-      box-shadow:0 0px 8px rgba(0,0,0,0.3);
-      border-radius: 2px;
+      box-shadow: 0px 1px 3.5px 0px rgba(0, 0, 0, 0.30);
+      border-bottom-right-radius: 2px;
+      border-bottom-left-radius: 2px;
 
       li.vs__no-options {
         color:$color__text--light;
@@ -106,6 +106,12 @@ $multiSelectHeight: 45px;
         border-style: solid;
         border-color: $color__icons transparent transparent;
       }
+      &[aria-expanded="true"] {
+        &::after {
+          border-width: 0 4px 4px;
+          border-color: transparent transparent $color__icons;
+        }
+      }
     }
 
     .vselect__field {
@@ -181,12 +187,11 @@ $multiSelectHeight: 45px;
     }
 
     .v-select {
-      &.open,
+      &.vs--open,
       &:hover {
         .vs__dropdown-toggle {
-          @include hoverState;
-          border-bottom-left-radius: 2px;
-          border-bottom-right-radius: 2px;
+          box-shadow: 0px 1px 3.5px 0px rgba(0, 0, 0, 0.30);
+          border-radius: 2px;
         }
 
         .vs__selected {
