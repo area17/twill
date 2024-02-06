@@ -2,11 +2,12 @@
 
 All notable changes to `twill` will be documented in this file.
 
-## UNRELEASED (3.1.0)
+## 3.1.0
 
 ### Added
 - PHP 8.3 support by @antonioribeiro in #2374
 - Form builder connected fields support by @joyceverheije in #2323
+- Glide image rendering service improvements for remote disks by @ifox in #2422
 - Google Analytics 4 support in the dashboard by @lewiswharf in #2288
 - Configurable preview breakpoints by @florrie-90 in #2299
 - Automatically add `active` to `$translatedAttributes` by @driftingly in #2401
@@ -29,15 +30,18 @@ All notable changes to `twill` will be documented in this file.
 - Customizable title column's label by @Phiosss in #2318
 - Current request only tertiary nav links support by @joyceverheije in d1c06992
 - Multiple `nested` table columns support in the table builder by @yamaha252 and @joyceverheije in #2314 and 1edbfbb1
+- Store position and render selected values ordered on multi selects fields by @haringsrob in #2204
 - Update migration stub and existing migrations to use anonymous class by @driftingly in #2406
 
 ### Fixed
 - Fix `DatePicker` date selection by @ifox in 0e751723
+- Fix Tiptap `Wysiwyg` click to focus area by @TimBlanchard in #2418 
 - Fix custom components registration by @joyceverheije in 7c233334
 - Fix position value for blocks in non-default `BlockEditor` fields by @joyceverheije in #2381
 - Fix incorrect order of nested items slug when item is more than 2 levels deep by @pauldwight in #2388
 - Fix `parseInternalLinks` helper issues by @avinash403 in #2338
 - Fix to reduce excessive number of queries when using Twill 3 settings by @bonroyage in #2369
+- Fix legacy settings in Twill 3 by @joyceverheije in #2417
 - Fix user list errors when deleting roles by @antonioribeiro in #2372
 - Fix build error with custom icons by @emanueljacob in #2392
 - Fix x-position of full height crops being reset at some ratios/screen sizes by @13twelve in #2297
