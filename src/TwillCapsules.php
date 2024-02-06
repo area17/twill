@@ -4,6 +4,7 @@ namespace A17\Twill;
 
 use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Helpers\Capsule;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use A17\Twill\Models\Contracts\TwillModelContract;
@@ -160,5 +161,30 @@ class TwillCapsules
         return app()->bound('autoloader')
             ? app('autoloader')
             : require base_path('vendor/autoload.php');
+    }
+
+    /** @return class-string<Model> */
+    public function guessRelatedModelClass(string $related, Model $model): string
+    {
+        $rc = new \ReflectionClass($model);
+        $namespace = $rc->getNamespaceName();
+        $capsule = $rc->getShortName();
+        $relatedClass = $capsule . $related;
+        foreach (
+            [
+            // First load it from the base directory.
+            config('twill.namespace') . "\\Models\\{$related}s\\" . $relatedClass,
+            // Alternatively try to get it from the same directory as the model resides
+            $rc->getName() . $related,
+            // Or in nested directory models.
+            $namespace . "\\{$related}s\\" . $relatedClass,
+            ] as $possibleClass
+        ) {
+            if (@class_exists($possibleClass)) {
+                return $possibleClass;
+            }
+        }
+
+        return call_user_func([$this->getCapsuleForModel($capsule), 'get' . $related . 'Model']);
     }
 }
