@@ -15,18 +15,10 @@ trait HasTranslation
 
     /**
      * Returns the fully qualified translation class name for this model.
-     *
-     * @return string|null
      */
-    public function getTranslationModelNameDefault()
+    public function getTranslationModelNameDefault(): string
     {
-        $repository = config('twill.namespace') . "\Models\Translations\\" . class_basename($this) . 'Translation';
-
-        if (@class_exists($repository)) {
-            return $repository;
-        }
-
-        return TwillCapsules::getCapsuleForModel(class_basename($this))->getTranslationModel();
+        return TwillCapsules::guessRelatedModelClass('Translation', $this);
     }
 
     public function scopeWithActiveTranslations(Builder $query, ?string $locale = null): Builder
