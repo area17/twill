@@ -47,22 +47,7 @@ trait HasSlug
      */
     public function getSlugModelClass(): string
     {
-        // First load it from the base directory.
-        $slug = config('twill.namespace') . "\\Models\\Slugs\\" . $this->getSlugClassName();
-
-        if (@class_exists($slug)) {
-            return $slug;
-        }
-
-        // Alternatively try to get it from the same directory as the model resides in (nested directory models).
-        $slug = $this->getNamespace() . "\Slugs\\" . $this->getSlugClassName();
-
-        if (@class_exists($slug)) {
-            return $slug;
-        }
-
-        // Finally try to get it from capsules.
-        return TwillCapsules::getCapsuleForModel(class_basename($this))->getSlugModel();
+        return TwillCapsules::guessRelatedModelClass('Slug', $this);
     }
 
     protected function getSlugClassName(): string
