@@ -6,6 +6,8 @@ class BlockEditor extends BaseFormField
 {
     protected array $blocks = [];
 
+    protected array $excludeBlocks = [];
+
     protected bool $isSettings = false;
 
     protected bool $withoutSeparator = false;
@@ -47,6 +49,16 @@ class BlockEditor extends BaseFormField
     public function blocks(array $blocks): static
     {
         $this->blocks = $blocks;
+
+        return $this;
+    }
+
+    /**
+     * Use this method if you want to exclude any block types
+     */
+    public function excludeBlocks(array $blocks): static
+    {
+        $this->excludeBlocks = $blocks;
 
         return $this;
     }

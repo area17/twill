@@ -57,7 +57,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const VERSION = '3.0.0';
+    public const VERSION = '3.1.0';
 
     /**
      * Service providers to be registered.
@@ -93,6 +93,10 @@ class TwillServiceProvider extends ServiceProvider
         $this->addViewComposers();
 
         $this->check2FA();
+
+        Blade::componentNamespace('A17\\Twill\\View\\Components\\Partials', 'twill.partials');
+        Blade::componentNamespace('A17\\Twill\\View\\Components\\Layout', 'twill.layout');
+        Blade::componentNamespace('A17\\Twill\\View\\Components\\Fields', 'twill');
     }
 
     private function requireHelpers(): void
@@ -119,10 +123,6 @@ class TwillServiceProvider extends ServiceProvider
 
         $this->app->bind(TwillCapsules::class);
 
-        Blade::componentNamespace('A17\\Twill\\View\\Components\\Partials', 'twill.partials');
-        Blade::componentNamespace('A17\\Twill\\View\\Components\\Layout', 'twill.layout');
-        Blade::componentNamespace('A17\\Twill\\View\\Components\\Fields', 'twill');
-
         \A17\Twill\Facades\TwillBlocks::registerComponentBlocks(
             '\\App\\View\\Components\\Twill\\Blocks',
             base_path('app/View/Components/Twill/Blocks')
@@ -143,11 +143,11 @@ class TwillServiceProvider extends ServiceProvider
         }
 
         Relation::morphMap([
-            'users' => User::class,
+            'users' => config('twill.models.user', User::class),
             'media' => Media::class,
             'files' => File::class,
-            'blocks' => Block::class,
-            'groups' => Group::class,
+            'blocks' => config('twill.models.block', Block::class),
+            'groups' => config('twill.models.group', Group::class),
         ]);
 
         config(['twill.version' => $this->version()]);
@@ -329,7 +329,9 @@ class TwillServiceProvider extends ServiceProvider
     private function publishOptionalMigration($feature): void
     {
         if (config('twill.enabled.' . $feature, false)) {
-            $this->loadMigrationsFrom(__DIR__ . '/../migrations/optional/' . $feature);
+            if (config('twill.load_default_migrations', true)) {
+                $this->loadMigrationsFrom(__DIR__ . '/../migrations/optional/' . $feature);
+            }
 
             $this->publishes([
                 __DIR__ . '/../migrations/optional/' . $feature => database_path('migrations'),
@@ -503,17 +505,6 @@ class TwillServiceProvider extends ServiceProvider
                 echo \$__env->make('$view', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->with{$expression}->render();
             }
             ?>";
-        });
-
-        $blade->directive('pushonce', function ($expression) {
-            [$pushName, $pushSub] = explode(':', trim(substr($expression, 1, -1)));
-            $key = '__pushonce_' . $pushName . '_' . str_replace('-', '_', $pushSub);
-
-            return "<?php if(! isset(\$__env->{$key})): \$__env->{$key} = 1; \$__env->startPush('{$pushName}'); ?>";
-        });
-
-        $blade->directive('endpushonce', function () {
-            return '<?php $__env->stopPush(); endif; ?>';
         });
 
         $blade->component('twill::partials.form.utils._fieldset', 'formFieldset');

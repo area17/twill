@@ -10,4 +10,4 @@ Using the Person example, your `cover` image could have a `square` crop for mobi
 
 The only thing you have to do to make it work is to compose your model and repository with the appropriate traits, respectively `HasMedias` and `HandleMedias`, set up your `$mediasParams` configuration and use the `medias` form partial in your form view (more info in the CRUD section).
 
-When it comes to using those data model images in the frontend site, there are a few methods on the `HasMedias` trait that will help you to retrieve them for each of your layouts. You can find the full reference in the [HasMedias API documentation](https://twill.io/docs/api/3.x/A17/Twill/Models/Behaviors/HasMedias.html)
+When it comes to using those data model images in the frontend site, there are a few methods on the `HasMedias` trait that will help you to retrieve them for each of your layouts. You can find the full reference in the [HasMedias API documentation](https://twillcms.com/docs/api/3.x/A17/Twill/Models/Behaviors/HasMedias.html)

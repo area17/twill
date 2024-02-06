@@ -6,7 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePartnersTables extends Migration
+return new class extends Migration
 {
     public function up(): void
     {
@@ -44,4 +44,4 @@ class CreatePartnersTables extends Migration
         Schema::dropIfExists('partner_slugs');
         Schema::dropIfExists('partners');
     }
-}
+};

@@ -24,20 +24,17 @@
         <svg class="h-18 w-18" xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10"><defs><style>.close-icon-line{fill:none;stroke-miterlimit:10;stroke-width:1.5px;}</style></defs><title>close_icon</title><line class="close-icon-line" x1="1" y1="1" x2="9" y2="9" stroke="currentColor"/><line class="close-icon-line" x1="9" y1="1" x2="1" y2="9" stroke="currentColor"/>
         </svg>
     </button>
-    <ul role="list">
-        @foreach ($tree as $key => $item)
-            @unless($key === '')
-                <li class="md:hidden">
-                    <a href="{{ $item['url'] }}" >{{ $item['title'] }}</a>
-                </li>
-            @endunless
-        @endforeach
-        <li class="mt-32">
-            <h2 class="f-doc-title strong">
-                {{ $tree[$currentSegment]['title'] ?? '' }}
-            </h2>
+    <ul role="list" class="flex flex-col flex-nowrap min-h-full py-32">
+        <li class="lg:hidden"><x-twilldocs::navLink url="/blog/" label="Blog" mobileNav="true" /></li>
+        <li class="mt-12 lg:hidden"><x-twilldocs::navLink url="/guides/" label="Guides" mobileNav="true" /></li>
+        <li class="mt-12 lg:hidden"><x-twilldocs::navLink url="/docs/" label="Docs" mobileNav="true" /></li>
 
-            @if (!empty($tree[$currentSegment]['items'] ?? []))
+        @if (!empty($tree[$currentSegment]['items'] ?? []))
+            <li class="my-40 pt-20 border-t border-t-primary lg:my-0 lg:pt-0 lg:border-t-0">
+                <h2 class="f-doc-title strong">
+                    {{ $tree[$currentSegment]['title'] ?? '' }}
+                </h2>
+
                 <ul class="core-list mt-30 f-sidebar subpixel-antialiased">
                     @php
                         $index = 0;
@@ -93,7 +90,11 @@
                         </li>
                     @endforeach
                 </ul>
-            @endif
-        </li>
+            </li>
+        @endif
+
+        <li class="mt-auto pt-20 border-t border-t-primary lg:hidden"><x-twilldocs::navLink url="/made" label="#MadeWithTwill" mobileNav="true" branded /></li>
+        <li class="mt-12 lg:hidden"><x-twilldocs::navLink url="https://demo.twill.io/" label="Demo" mobileNav="true" /></li>
+        <li class="mt-12 lg:hidden"><x-twilldocs::navLink url="https://discord.gg/cnWk7EFv8R" label="Chat" mobileNav="true" /></li>
     </ul>
 </nav>

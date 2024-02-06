@@ -143,6 +143,8 @@ return [
     'tags_table' => 'twill_tags',
     'users_oauth_table' => 'twill_users_oauth',
     'users_table' => 'twill_users',
+    'permissions_table' => 'permissions',
+    'roles_table' => 'roles',
 
     /*
     |--------------------------------------------------------------------------
@@ -209,16 +211,22 @@ return [
     'fallback_locale' => 'en',
     'available_user_locales' => [
         'en',
-        'fr',
-        'pl',
-        'de',
-        'nl',
-        'pt',
-        'zh-Hans',
-        'ru',
-        'tr',
-        'bs',
         'ar',
+        'bs',
+        'cs',
+        'de',
+        'es',
+        'fr',
+        'it',
+        'nl',
+        'no',
+        'pl',
+        'pt',
+        'ru',
+        'sl',
+        'tr',
+        'uk',
+        'zh-Hans',
     ],
 
     /*

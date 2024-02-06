@@ -3,6 +3,7 @@
 namespace A17\Twill\Services\Forms\Fields;
 
 use A17\Twill\Services\Forms\Fields\Traits\HasBorder;
+use A17\Twill\Services\Forms\Fields\Traits\HasColumns;
 use A17\Twill\Services\Forms\Fields\Traits\HasMax;
 use A17\Twill\Services\Forms\Fields\Traits\HasMin;
 use A17\Twill\Services\Forms\Fields\Traits\HasOptions;
@@ -17,6 +18,7 @@ class Checkboxes extends BaseFormField
     use HasMin;
     use Inlineable;
     use HasBorder;
+    use HasColumns;
 
     public static function make(): static
     {

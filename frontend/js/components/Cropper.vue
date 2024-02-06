@@ -181,7 +181,21 @@
       },
       initCrop: function () {
         const crop = this.toNaturalCrop(this.crop)
-        this.cropper.setData(crop)
+        // Mike (mike@area17.com) --
+        //
+        // it seems due to rounding errors(?) that sometimes
+        // the x position can be reset incorrectly
+        // see: https://github.com/fengyuanchen/cropperjs/issues/1057
+        //
+        // from my testing it seems to be a little inconsistent and unpredictable
+        // I guess you just need for the rounding error to happen
+        // But, it seems setting the properties individually avoids this...
+        //
+        // -- Mike (mike@area17.com)
+        this.cropper.setData({ x: crop.x })
+        this.cropper.setData({ y: crop.y })
+        this.cropper.setData({ width: crop.width })
+        this.cropper.setData({ height: crop.height })
       },
       test: function () {
         const crop = this.toNaturalCrop({ x: 0, y: 0, width: 380, height: 475 })

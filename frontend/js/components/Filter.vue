@@ -180,7 +180,7 @@
     div {
       display:inline-block;
 
-      button, a {
+      button:not(.button--validate), a{
         vertical-align: middle;
       }
 

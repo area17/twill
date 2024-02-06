@@ -31,6 +31,17 @@ BlockEditor::make()
 <x-twill::block-editor
     :blocks="$blocks"
 />
+
+@php
+    $excludeBlocks = [
+        'title',
+        'quote'
+    ];
+@endphp
+
+<x-twill::block-editor
+    :excludeBlocks="$excludeBlocks"
+/>
 ```
 
 :::#tab:::
@@ -40,6 +51,10 @@ BlockEditor::make()
 ```blade
 @formField('block_editor', [
     'blocks' => ['title', 'quote', 'text', 'image', 'grid', 'test', 'publications', 'news']
+])
+
+@formField('block_editor', [
+    'excludeBlocks' => ['title', 'quote']
 ])
 ```
 
@@ -374,7 +389,7 @@ return [
 ];
 ```
 
-See also [Default Configuration](../11_default-configuration.md).
+See also [Default Configuration](./11_default-configuration.md).
 
 If the `resource_path('assets/admin/icons')` directory contains a `my-custom-icon.svg` file, you can use this icon in your block by using its basename: `@twillBlockIcon('my-custom-icon')`.
 

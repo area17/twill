@@ -2,6 +2,174 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.1.0
+
+### Added
+- PHP 8.3 support by @antonioribeiro in #2374
+- Form builder connected fields support by @joyceverheije in #2323
+- Glide image rendering service improvements for remote disks by @ifox in #2422
+- Google Analytics 4 support in the dashboard by @lewiswharf in #2288
+- Configurable preview breakpoints by @florrie-90 in #2299
+- Automatically add `active` to `$translatedAttributes` by @driftingly in #2401
+- Block component classes support in the `BlockEditor` `blocks` array by @joyceverheije in 8778ab7e
+- Add `excludeBlocks` option to the `BlockEditor` fields by @pauldwight in #2409
+- Add `readOnly` support to form builder `Input` field by @zachgarwood in #2331
+- Add `searchable` support to form builder `Select` field by @iedex in #2415
+- Add `max` support to form builder `InlineRepeater` field by @joyceverheije in 4a773869
+- Add `direction` option to `Input` and `Wysiwyg` fields by @13twelve in #2295
+- Add alignment buttons to `TipTap` editor by @florrie-90 in #2305
+- Add predefined class selection to `TipTap` link component by @zipavlin in #2336
+- Add support for `titleInBrowser` and `adminEditUrl` accessors in `browsers` by @joyceverheije in 02ac019e, ab8635fe and 160e9165
+- Add `--factory` and `--seeder` to `twill:make:module` by @driftingly in #2402
+- Add `Link` column type to table builder by @agnonym in #2376
+- Add `routePrefix` support to nested breadcrumbs by @yamaha252 in #2312
+- Add DI support for Twill Block `getData` method by @Afting in #2292
+- Allow `QuickFilter` extension by @joyceverheije in 9c15b017
+- Configurable permissions and roles table names  by @Keania-Eric in #2350
+- Configurable user creation with default role when using OAuth SSO by @joyceverheije in 14f8dd29
+- Customizable title column's label by @Phiosss in #2318
+- Current request only tertiary nav links support by @joyceverheije in d1c06992
+- Multiple `nested` table columns support in the table builder by @yamaha252 and @joyceverheije in #2314 and 1edbfbb1
+- Store position and render selected values ordered on multi selects fields by @haringsrob in #2204
+- Update migration stub and existing migrations to use anonymous class by @driftingly in #2406
+
+### Fixed
+- Fix `DatePicker` date selection by @ifox in 0e751723
+- Fix Tiptap `Wysiwyg` click to focus area by @TimBlanchard in #2418
+- Fix custom components registration by @joyceverheije in 7c233334
+- Fix position value for blocks in non-default `BlockEditor` fields by @joyceverheije in #2381
+- Fix incorrect order of nested items slug when item is more than 2 levels deep by @pauldwight in #2388
+- Fix `parseInternalLinks` helper issues by @avinash403 in #2338
+- Fix to reduce excessive number of queries when using Twill 3 settings by @bonroyage in #2369
+- Fix legacy settings in Twill 3 by @joyceverheije in #2417
+- Fix user list errors when deleting roles by @antonioribeiro in #2372
+- Fix build error with custom icons by @emanueljacob in #2392
+- Fix x-position of full height crops being reset at some ratios/screen sizes by @13twelve in #2297
+- Fix fields/blocks/repeaters spacings by @ifox in 1a93fe47
+- Fix active navigation check when a child module uses the same name as another module by @joyceverheije in f22eb35a
+- Fix create button alignment in listings by @ifox in 006f478f
+- Fix duplication when translated media fields are enabled by @petertsoisstuff in #2320
+- Fix `getCapsuleForModel()` for when passing a Model object by @antonioribeiro in #2400
+- Fix `keepAlive` on connected non localized fields by @joyceverheije in b1593c75
+- Fix optional feature migrations publication by @Tofandel in #2384
+- Fix related table name in migration down method by @droplister in #2290
+- Fix scheduled filter label by @droplister in #2291
+- Fix type of `$forceLocale` in `translatedInput()` by @pvdbroek in #2315
+- Fix user role filter when using the standard permissions setup by @ifox in 6e893232
+- Fix vselect component to align with design by @ifox in 6e893232
+- Fix error when running `php artisan migrate:reset` by @NuktukDev in #2413
+- Allow dashboard modules to wrap onto the next line by @florrie-90 in #2298
+- Always include locale in the `mediables` pivot by @bonroyage in #2368
+- Avoid unused data and hooks when using the default role level by @joyceverheije in 5d4060b5
+- Check user permission when displaying activity log items by @joyceverheije in 3526dca5
+- Don't load `DuskServiceProvider` if Dusk doesn't exist by @Tofandel in #2366
+- Preserve default vselect value when undefined by @bwat-dev in #2311
+- Prevent multi select options from being selected more than once by @florrie-90 in #2296
+- Remove block actions in settings blocks by @ifox in 0bc5e754
+- Support using a dot as `fieldsGroupsFormFieldNameSeparator` by @yamaha252 in #2277
+- Turn move dropdowns off for settings blocks by @droplister in #2293
+- Update migration helper for translations table by @sauron in #2327
+- Updated namespace paths from `Admin` to `Twill` on custom pages by @pauldwight in #2317
+- Use custom model configuration in the relationship morph map by @redelschaap in #2408
+- Use `pushOnce` builtin, remove custom `pushonce` directive by @mikerockett in #2301
+- Use `twill.admin_route_name_prefix` configuration for all internal routes by @ifox and @raymondtri in #2286
+
+### Docs
+- Add instructions on how to use the `browser` field with a custom pivot table by @poncianodiego and @ifox in #2385
+- Changed example value to better reflect given example in fields group docs by @Viliasas in #2283
+- Fix artisan command by @thecrazybob in #2365
+- Fix typo in Building a frontend guide by @driftingly in #2396
+- Fix typo in Content - Modules - TableBuilder by @agnonym in #2375
+- Fix typo in create page module guide by @colegeissinger in #2367
+- Fix wrong property name in nested modules docs by @Viliasas in #2282
+- Updates to the docs for nested modules by @pauldwight in #2389
+
+### Translations
+- Added Slovenian language to translations by @Neoglyph in #2373
+- Update Dutch translations by @lindeVW in #2378
+- Update German translations by @florianschrottenloher-iu in #2411
+- Add all locales with translations to the user locale selector by @ifox in 6e893232
+- Configure all locales with translations for date rendering and datepicker configuration by @ifox in eb21fa9f
+
+## 3.0.2
+
+### Fixed
+
+- Rendering of nested components blocks by @haringsrob in https://github.com/area17/twill/pull/2243
+- Rendering of side form if it only contains fieldsets by @agnonym in https://github.com/area17/twill/pull/2234
+- Title prefix support in component blocks by @haringsrob in https://github.com/area17/twill/pull/2252
+- Icon support in component blocks by @agnonym in https://github.com/area17/twill/pull/2238
+- Columns support for checkboxes and radios in form builder by @bonroyage in https://github.com/area17/twill/pull/2232
+- `Options::fromArray` argument order by @bonroyage in https://github.com/area17/twill/pull/2231
+- Update package generator stub by @ifox in https://github.com/area17/twill/commit/78cc5b5dc023134356210f8c8940f77ff7745ea3
+
+### Improved
+
+- Fix activity log typo by @DanielSpravtsev in https://github.com/area17/twill/pull/2264
+- Fix two misspellings by @skoontastic in https://github.com/area17/twill/pull/2250
+- Fix typo in create modal docs by @lostdesign in https://github.com/area17/twill/pull/2262
+- Update upgrade guide by @undersound in https://github.com/area17/twill/pull/2251
+- Additional explanation on migration for Input field type by @tttogo in https://github.com/area17/twill/pull/2247
+- Closing bracket missing by @kerkness in https://github.com/area17/twill/pull/2245
+- `withFieldSets()` expects Fieldsets object, not a direct array by @agnonym in https://github.com/area17/twill/pull/2233
+- Fix 'tiwll' typo in docs by @ifox in https://github.com/area17/twill/commit/715bc6f60fe0f1f6ab2a65fb67c838c3582d7794
+- Fix 'Larvel' typo in docs by @ifox in https://github.com/area17/twill/commit/8db541d716135e5a8586c50ae3b240c589fa9b05
+- Fix module make commands signatures addressing PHPStan error in https://github.com/area17/twill/commit/94733f1f63f3a4f7542a3af93183664b83eea839
+
+## 3.0.1
+
+### Fixed
+
+- Fix Blade components resolution (causing an issue with Laravel Jetstream) by @haringsrob in https://github.com/area17/twill/pull/2223
+
+### Improved
+
+- Add mobile nav to all docs site pages by @13twelve in https://github.com/area17/twill/pull/2224
+- Fix WYSIWYG maxlength docs by @tttogo in https://github.com/area17/twill/pull/2226
+- Form Builder docs: provide more explicit directions on Fieldsets by @tttogo in https://github.com/area17/twill/pull/2227
+- Fix docs space coherence for the options by @agnonym in https://github.com/area17/twill/pull/2228
+
+## 3.0.0
+
+This is the final, stable release for Twill 3!
+
+### Breaking changes
+
+- Prefix tables with `twill_` by @aksiome
+- Set tiptap as default WYSIWYG type when using blade components
+
+### Added
+
+- Laravel 10 support by @haringsrob
+- Add `fromArray` to `options` by @aksiome
+- Float min, max and step props for numeric input by @iedex
+- Add `source_path_prefix` to Glide ServerFactory by @matteovg7
+- Allow using 0 as min or max for numeric input by @iedex
+
+### Fixed
+
+- Fix phpdocs by @joyceverheije
+- #2044|#1818: Improve repeater cloning. by @haringsrob
+- Resolve repeater duplication issue. by @haringsrob
+- Prevent erroring when permissions is not able to find disabled capsules by @antonioribeiro
+- #2177: Fix renderForBlocks for columns. by @haringsrob
+- Fix stretched image in browser field by @joyceverheije
+- Fix duplicate action redirect route for nested parent-child modules by @agnonym
+- Fix duplicate block duplicate with children by @agnonym
+- Fix source edit not updateing the editor (Tiptap) by @iedex
+- Fixing mistypes in ru localization by @Quarasique
+
+### Improved
+
+- Twill 3.0 docs updates
+- Enable resend email only when user is published by @joyceverheije
+- #2154: Use scope. by @haringsrob
+- 2179: Avoid recreating related items. by @haringsrob
+- Update Environment Requirements
+- Require kalnoy/nestedset as a non-dev dependency
+- Update node version in CI
+- Add database table names change to upgrade guide
+
 ## 3.0.0-rc4
 
 This is the fourth release candidate for Twill 3!

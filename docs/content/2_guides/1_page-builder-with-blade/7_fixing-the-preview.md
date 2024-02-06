@@ -36,7 +36,7 @@ Open up `resources/views/site/page.blade.php` and update it to the following:
 </head>
 <body>
 <div>
-    Example preview. See <a href="https://twill.io/documentation/modules/revisions-and-previewing.html">documentation.</a>
+    Example preview. See <a href="https://twillcms.com/docs/modules/revisions-and-previewing.html">documentation.</a>
     <br />
     {{ $item->title }}
     <br />

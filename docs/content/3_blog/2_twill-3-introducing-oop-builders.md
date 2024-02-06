@@ -8,7 +8,7 @@ Laravel's core templating engine.
 Blade components are a great way to abstract html snippets and some logic into separate files. When used correctly it
 will improve the readability of your template files a lot.
 
-In Twill 2, forms would be defined by using the custom `@@formField()` directives.
+In Twill 2, forms would be defined by using the custom `@formField()` directives.
 
 And while this works great, it has one has some shortcomings. There is no ability to explore, formatting is not always
 that easy and readability can sometimes be a bit difficult to maintain, on top of that, type errors are much harder to
@@ -125,7 +125,7 @@ As time goes on, we will introduce more components for structuring forms, but al
 
 ## Form builder
 
-If you prefer to build your forms in PHP, we also have created a whole set of classes for you to do so.
+If you prefer to build your forms in PHP, we also have created a whole set of [classes](https://twillcms.com/docs/modules/form-builder.html) for you to do so.
 
 ```php
 <?php 
@@ -169,7 +169,7 @@ requirements to modify this.
 While this was already possible by updating the array in `$indexColumns` in your module controller, we knew we could do
 better.
 
-With Twill 3, we have build a complete table builder that you can use to structure the table the way you want!
+With Twill 3, we have build a complete [table builder](https://twillcms.com/docs/modules/table-builder.html) that you can use to structure the table the way you want!
 
 For example, you may want to display the description of your module alongside the default columns:
 
@@ -205,7 +205,7 @@ You can check all these out in our documentation.
 
 ## Navigation builder
 
-While it will continue working as in Twill 2.x, in Twill 3 we introduce a new navigation builder. The approach is
+While it will continue working as in Twill 2.x, in Twill 3 we introduce a new [navigation builder](https://twillcms.com/docs/getting-started/navigation.html#content-oop-method). The approach is
 similar to that of the settings registration. In the app service provider we can register our navigation items:
 
 ```php

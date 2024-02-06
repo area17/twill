@@ -34,5 +34,5 @@
         @endif
     @endunless
 >
-    {{ $slot }}
+    {!! $slot !!}
 </a17-connectorfield>

@@ -22,7 +22,6 @@ class Page extends Model
     public $translatedAttributes = [
         'title',
         'description',
-        'active',
     ];
 
     public $slugAttributes = [

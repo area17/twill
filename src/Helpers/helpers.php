@@ -221,7 +221,7 @@ if (! function_exists('generate_list_of_available_blocks')) {
      * @param array $groups
      * @return array
      */
-    function generate_list_of_available_blocks($blocks, $groups, bool $settingsOnly = false): array
+    function generate_list_of_available_blocks($blocks, $groups, bool $settingsOnly = false, array $excludeBlocks = []): array
     {
         if ($settingsOnly) {
             $blockList = TwillBlocks::getSettingsBlocks();
@@ -234,7 +234,7 @@ if (! function_exists('generate_list_of_available_blocks')) {
         });
 
         $finalBlockList = $blockList->filter(
-            function (Block $block) use ($blocks, $groups, $appBlocksList) {
+            function (Block $block) use ($blocks, $groups, $appBlocksList, $excludeBlocks) {
                 if ($block->group === A17\Twill\Services\Blocks\Block::SOURCE_TWILL) {
                     if (! collect(config('twill.block_editor.use_twill_blocks'))->contains($block->name)) {
                         return false;
@@ -252,7 +252,11 @@ if (! function_exists('generate_list_of_available_blocks')) {
                     }
                 }
 
-                return (filled($blocks) ? collect($blocks)->contains($block->name) : true)
+                if (in_array($block->name, $excludeBlocks)) {
+                    return false;
+                }
+
+                return (filled($blocks) ? collect($blocks)->contains($block->name) || collect($blocks)->contains(ltrim($block->componentClass, '\\')) : true)
                     && (filled($groups) ? collect($groups)->contains($block->group) : true);
             }
         );
@@ -260,7 +264,7 @@ if (! function_exists('generate_list_of_available_blocks')) {
         // Sort them by the original definition
         return $finalBlockList->sortBy(function (Block $b) use ($blocks) {
             return collect($blocks)->search(function ($id, $key) use ($b) {
-                return $id == $b->name;
+                return $id == $b->name || $id == ltrim($b->componentClass, '\\');
             });
         })->values()->toArray();
     }

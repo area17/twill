@@ -42,12 +42,12 @@ class TextAndColumnBaseTest extends ModulesTestBase
 
     public function testLinkCell(): void
     {
-        $column = Text::make()->field('name')->linkCell('https://twill.io');
+        $column = Text::make()->field('name')->linkCell('https://twillcms.com');
 
         $html = $column->renderCell($this->author);
 
         $this->assertEquals(
-            '<a href="https://twill.io" data-edit="false">' . $this->author->name . '</a>',
+            '<a href="https://twillcms.com" data-edit="false">' . $this->author->name . '</a>',
             str_replace([PHP_EOL, '    '], null, $html)
         );
     }
@@ -55,13 +55,13 @@ class TextAndColumnBaseTest extends ModulesTestBase
     public function testLinkWithClosure(): void
     {
         $column = Text::make()->field('name')->linkCell(function (Model $model) {
-            return 'https://twill.io';
+            return 'https://twillcms.com';
         });
 
         $html = $column->renderCell($this->author);
 
         $this->assertEquals(
-            '<a href="https://twill.io" data-edit="false">' . $this->author->name . '</a>',
+            '<a href="https://twillcms.com" data-edit="false">' . $this->author->name . '</a>',
             str_replace([PHP_EOL, '    '], null, $html)
         );
     }

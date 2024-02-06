@@ -26,6 +26,19 @@ class AppSetting extends Model
 
     private bool $didRegisterSettingsBlocks = false;
 
+    public static function booted()
+    {
+        self::saving(function (self $model) {
+            /*
+             * Here we remove the 'blocks' relation so that any developer hooking
+             * into the saved event on the AppSetting can still fetch the settings
+             * with the new values. The next time the setting facade is called to
+             * retrieve a setting, the blocks relation is hydrated again.
+             */
+            $model->unsetRelation('blocks');
+        });
+    }
+
     /**
      * @return array|array<int,string>
      */

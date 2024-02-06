@@ -18,7 +18,12 @@ class MakeSingleton extends ModuleMake
         {--R|hasRevisions}
         {--E|generatePreview}
         {--bladeForm}
-        {--all}';
+        {--all}
+        {--force}
+        {--factory}
+        {--packageDirectory=}
+        {--packageNamespace=}
+        {--parentModel=}';
 
     /**
      * The console command description.

@@ -206,6 +206,7 @@ trait HandleMedias
                 'crop_x' => $media->pivot->crop_x,
                 'crop_y' => $media->pivot->crop_y,
                 'metadatas' => $media->pivot->metadatas,
+                'locale' => $media->pivot->locale,
             ];
 
             $newObject->medias()->attach($media->id, $newPushData);

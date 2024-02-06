@@ -31,51 +31,56 @@ We provide an automated upgrade path using the commands explained below. This wi
 php ./vendor/area17/twill/upgrade.php
 ```
 
-## Other changes
+### Other changes
 
-### Changes in admin app url/path
+#### Changes in admin app url/path
 
-The admin url is now by default /admin instead of a subdomain. Please read the docs to change this to a [subdomain](https://twill.io/docs) if  you were relying on that.
+The admin url is now by default /admin instead of a subdomain. Please check the docs to change this to a [subdomain](https://twillcms.com/docs/getting-started/installation.html#content-using-a-subdomain) if
+you were relying on that.
 
 On top of that, this is now more "loose" and does not require the exact url. However, you can set it back to being
 strict using:
 
 `ADMIN_APP_STRICT=true`
 
-### withVideo on media defaults to false
+#### WYSIWYG fields defaults to Tiptap
+
+If you are relying on Quill.js specifics (like css classes), use `'type' => 'quill'` on your `wysiwyg` form fields.
+
+#### withVideo on media defaults to false
 
 Previously `withVideo` was true by default, if you relied on this you have to update these media fields to
 `'withVideo' => true`.
 
-### SVG's are now no longer passing thorough glide
+#### SVG's are now no longer passing thorough glide
 
 These are now rendered directly, you can change this by updating config `twill.glide.original_media_for_extensions` to an empty array `[]`
 
-### media/file library
+#### Media library
 
-The default for media and file libraries are now local and glide, if you relied on the default config for aws
-then you now need to specify this in your `.env`.
+The default for media and file libraries are now local and glide, if you relied on the default config for S3 and Imgix
+then you now need to [specify it](https://twillcms.com/docs/getting-started/installation.html#content-storage-on-s3) in your `.env`.
 
-### Block editor render children
+#### Block editor render children
 
 The `renderBlocks` method now has the mapping as first argument.
 
 The `renderBlocks` method now by default will NOT render the nested repeaters below the block. If you relied on this
 you now need to update to `renderBlocks([], true)`
 
-### scopeForBucket replaced with getForBucket in featured
+#### scopeForBucket replaced with getForBucket in featured
 
 In Twill 2 scopeForBucket would return a collection of featured items. However, as the name illustrates, this
 is not a scope.
 
 In Twill 3 `scopeForBucket` is an actual scope and `getForBucket` is a helper to get the items directly.
 
-### Crops
+#### Crops
 
 Model crops are now a global config, if you do not need model specific crops you can manage them globally from your
 config.
 
-### twillIncrementsMethod and twillIntegerMethod are removed
+#### twillIncrementsMethod and twillIntegerMethod are removed
 
 The default now is bigIncrements and bigInteger. If you relied on these functions for custom
 logic you can add them to your own codebase. For reference the functions are below:
@@ -106,9 +111,21 @@ if (!function_exists('twillIntegerMethod')) {
 }
 ```
 
-### Many methods now have typings to them
+#### Many methods now have typings to them
 
 If you are overriding methods in your repository/controller or request classes. They may now
 need typed arguments and return types.
 
 This is an ongoing effort and will continue to occur as 3.x evolves (but not in bugfix releases).
+
+
+# Upgrading to 3.0.0 from 3.0.0-rc4
+
+Starting from version 3.0.0 Twill database table names are prefixed by `twill_`. To prevent getting an `SQLSTATE[42S02]: Base table or view not found` after updating one can execute the following steps:
+
+- `composer require rector/rector --dev`
+- ./vendor/bin/rector process --clear-cache --config=vendor/area17/twill/rector-upgrade-twill-config.php
+
+The last command will update your config to keep using the non prefixed table names.
+
+If you'd rather like to update your table names, create a migration to prefix your table names with `twill_`

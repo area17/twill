@@ -21,7 +21,6 @@
                               :opened="opened"
                               :with-handle="!isSettings"
                               :with-actions="!isSettings"
-                              :with-move-dropdown="isSettings"
                               @expand="setOpened"
                               v-if="availableBlocks.length">
                 <template v-for="availableBlock in availableBlocks">
@@ -290,7 +289,7 @@
 
 <style lang="scss" scoped>
   .blocks {
-    margin-top: 20px; // margin-top:35px;
+    margin-top: 20px;
   }
 
   .blocks__container {
@@ -318,6 +317,10 @@
 
     &.sortable-ghost {
       opacity: 0.5;
+    }
+
+    .blocks:first-child {
+      margin-top: 35px;
     }
   }
 

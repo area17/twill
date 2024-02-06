@@ -37,13 +37,17 @@ php ./vendor/area17/twill/upgrade.php
 
 #### Changes in admin app url/path
 
-The admin url is now by default /admin instead of a subdomain. Please consult the docs to change this to a subdomain if
+The admin url is now by default /admin instead of a subdomain. Please check the docs to change this to a [subdomain](https://twillcms.com/docs/getting-started/installation.html#content-using-a-subdomain) if
 you were relying on that.
 
 On top of that, this is now more "loose" and does not require the exact url. However, you can set it back to being
 strict using:
 
 `ADMIN_APP_STRICT=true`
+
+#### WYSIWYG fields defaults to Tiptap
+
+If you are relying on Quill.js specifics (like css classes), use `'type' => 'quill'` on your `wysiwyg` form fields.
 
 #### withVideo on media defaults to false
 
@@ -54,10 +58,10 @@ Previously `withVideo` was true by default, if you relied on this you have to up
 
 These are now rendered directly, you can change this by updating config `twill.glide.original_media_for_extensions` to an empty array `[]`
 
-#### media/file library
+#### Media library
 
-The default for media and file libraries are now local and glide, if you relied on the default config for aws
-then you now need to specify this in your `.env`.
+The default for media and file libraries are now local and glide, if you relied on the default config for S3 and Imgix
+then you now need to [specify it](https://twillcms.com/docs/getting-started/installation.html#content-storage-on-s3) in your `.env`.
 
 #### Block editor render children
 

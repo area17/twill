@@ -12,7 +12,7 @@ return [
      */
     'modules' => [],
     'analytics' => ['enabled' => false],
-    'search_endpoint' => 'twill.search',
+    'search_endpoint' => config('twill.admin_route_name_prefix') . 'search',
 
     /*
     |--------------------------------------------------------------------------

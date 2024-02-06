@@ -239,6 +239,10 @@ class DashboardController extends Controller
             return null;
         }
 
+        if (auth('twill_users')->user()->cannot('view-item', $activity->subject)) {
+            return null;
+        }
+
         $parentRelationship = $dashboardModule['parentRelationship'] ?? null;
         $parent = $activity->subject->$parentRelationship;
 
@@ -283,29 +287,56 @@ class DashboardController extends Controller
      */
     private function getFacts()
     {
-        /** @var Analytics $analytics */
-        $analytics = app(Analytics::class);
+        // TODO: cleanup when dropping support for Laravel 9
+        $useV5API = true;
+        if (class_exists('Spatie\Analytics\Facades\Analytics')) {
+            /** @var Analytics $analytics */
+            $analytics = app()->makeWith(Analytics::class, ['propertyId' => config('analytics.property_id')]);
+        } else {
+            /** @var Analytics $analytics */
+            $analytics = app(Analytics::class);
+            $useV5API = false;
+        }
+
         try {
-            $response = $analytics->performQuery(
-                Period::days(60),
-                'ga:users,ga:pageviews,ga:bouncerate,ga:pageviewsPerSession',
-                ['dimensions' => 'ga:date']
-            );
+            if ($useV5API) {
+                $response = $analytics->get(
+                    Period::days(60),
+                    ['totalUsers', 'screenPageViews', 'bounceRate', 'screenPageViewsPerSession'],
+                    ['date']
+                );
+
+                $statsByDate = $response->map(function (array $item) {
+                    return [
+                        'date' => $item['date'],
+                        'users' => (int) $item['totalUsers'],
+                        'pageViews' => (int) $item['screenPageViews'],
+                        'bounceRate' => $item['bounceRate'],
+                        'pageviewsPerSession' => $item['screenPageViewsPerSession'],
+                    ];
+                })->reverse()->values();
+            } else {
+                $response = $analytics->performQuery(
+                    Period::days(60),
+                    'ga:users,ga:pageviews,ga:bouncerate,ga:pageviewsPerSession',
+                    ['dimensions' => 'ga:date']
+                );
+
+                $statsByDate = Collection::make($response['rows'] ?? [])->map(function (array $dateRow) {
+                    return [
+                        'date' => $dateRow[0],
+                        'users' => (int)$dateRow[1],
+                        'pageViews' => (int)$dateRow[2],
+                        'bounceRate' => $dateRow[3],
+                        'pageviewsPerSession' => $dateRow[4],
+                    ];
+                });
+            }
         } catch (InvalidConfiguration $exception) {
             $this->logger->error($exception);
 
             return [];
         }
-
-        $statsByDate = Collection::make($response['rows'] ?? [])->map(function (array $dateRow) {
-            return [
-                'date' => $dateRow[0],
-                'users' => (int) $dateRow[1],
-                'pageViews' => (int) $dateRow[2],
-                'bounceRate' => $dateRow[3],
-                'pageviewsPerSession' => $dateRow[4],
-            ];
-        })->reverse()->values();
 
         $dummyData = null;
         if ($statsByDate->isEmpty()) {
