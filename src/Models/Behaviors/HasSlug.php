@@ -37,9 +37,9 @@ trait HasSlug
      *
      * @return object
      */
-    public function getSlugClass(): string
+    public function getSlugClass(): Model
     {
-        return new $this->getSlugModelClass();
+        return new ($this->getSlugModelClass());
     }
 
     /**
