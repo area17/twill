@@ -111,13 +111,6 @@ class Capsule
         }
     }
 
-    public function getBasePath(string $path): string
-    {
-        $exploded = explode(DIRECTORY_SEPARATOR, $path);
-
-        return implode(DIRECTORY_SEPARATOR, array_pop($exploded));
-    }
-
     public function getModule(): string
     {
         return Str::camel($this->name);
@@ -142,7 +135,7 @@ class Capsule
     {
         $explodedNamespace = explode('\\', $this->namespace);
 
-        return implode('\\', array_pop($explodedNamespace));
+        return implode('\\', array_slice($explodedNamespace, 0, -1));
     }
 
     public function getDatabaseNamespace(): string
