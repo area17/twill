@@ -7,7 +7,7 @@ Twill's generated migrations are standard Laravel migrations, enhanced with help
 // main table, holds all non translated fields
 Schema::create('table_name_plural', function (Blueprint $table) {
     createDefaultTableFields($table);
-    // will add the following inscructions to your migration file
+    // will add the following instructions to your migration file
     // $table->increments('id');
     // $table->softDeletes();
     // $table->timestamps();
@@ -17,7 +17,7 @@ Schema::create('table_name_plural', function (Blueprint $table) {
 // translation table, holds translated fields
 Schema::create('table_name_singular_translations', function (Blueprint $table) {
     createDefaultTranslationsTableFields($table, 'tableNameSingular');
-    // will add the following inscructions to your migration file
+    // will add the following instructions to your migration file
     // createDefaultTableFields($table);
     // $table->string('locale', 6)->index();
     // $table->boolean('active');
@@ -29,7 +29,7 @@ Schema::create('table_name_singular_translations', function (Blueprint $table) {
 // slugs table, holds slugs history
 Schema::create('table_name_singular_slugs', function (Blueprint $table) {
     createDefaultSlugsTableFields($table, 'tableNameSingular');
-    // will add the following inscructions to your migration file
+    // will add the following instructions to your migration file
     // createDefaultTableFields($table);
     // $table->string('slug');
     // $table->string('locale', 6)->index();
@@ -41,7 +41,7 @@ Schema::create('table_name_singular_slugs', function (Blueprint $table) {
 // revisions table, holds revision history
 Schema::create('table_name_singular_revisions', function (Blueprint $table) {
     createDefaultRevisionTableFields($table, 'tableNameSingular');
-    // will add the following inscructions to your migration file
+    // will add the following instructions to your migration file
     // $table->increments('id');
     // $table->timestamps();
     // $table->json('payload');
@@ -54,7 +54,7 @@ Schema::create('table_name_singular_revisions', function (Blueprint $table) {
 // related content table, holds many to many association between 2 tables
 Schema::create('table_name_singular1_table_name_singular2', function (Blueprint $table) {
     createDefaultRelationshipTableFields($table, $table1NameSingular, $table2NameSingular);
-    // will add the following inscructions to your migration file
+    // will add the following instructions to your migration file
     // $table->integer("{$table1NameSingular}_id")->unsigned();
     // $table->foreign("{$table1NameSingular}_id")->references('id')->on($table1NamePlural)->onDelete('cascade');
     // $table->integer("{$table2NameSingular}_id")->unsigned();
