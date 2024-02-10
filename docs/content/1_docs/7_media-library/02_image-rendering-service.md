@@ -27,4 +27,4 @@ public function getSocialFallbackUrl();
 public function getTransparentFallbackUrl();
 ```
 
-$crop_params will be an array with the following keys: crop_x, crop_y, crop_w and crop_y. If the service you are implementing doesn't support focal point cropping, you can call the getUrlWithCrop from your implementation.
+$crop_params will be an array with the following keys: crop_x, crop_y, crop_w and crop_h. If the service you are implementing doesn't support focal point cropping, you can call the getUrlWithCrop from your implementation.
