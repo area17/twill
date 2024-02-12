@@ -2438,7 +2438,7 @@ abstract class ModuleController extends Controller
 
                 $base .= $name . '/' . ($hasSlug ? $model->slug : $model->id) . '/';
 
-                $prev[] = Str::studly($singularName);
+                $prev[] = $modelName;
             } else {
                 $base .= $name;
             }
