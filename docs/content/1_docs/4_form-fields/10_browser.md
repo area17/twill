@@ -47,6 +47,7 @@ Browser::make()
 |:----------------------|:--------------------------------------------------------------------------------|:--------|:--------------|
 | name                  | Name of the field                                                               | string  |               |
 | label                 | Label of the field                                                              | string  |               |
+| moduleName | Name of the module (single related module) (use the `modules` method with a single class for the FormBuilder) | string | |
 | modules               | Array of modules (multiple related modules), must include _name_ or be a module class | array   |               |
 | endpoints             | Array of endpoints (multiple related modules), must include _value_ and _label_ | array   |               |
 | params                | Array of query params (key => value) to be passed to the browser endpoint       | array   |               |
