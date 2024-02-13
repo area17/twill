@@ -145,7 +145,7 @@ class Browser extends BaseFormField
      */
     public function modules(array $modules): static
     {
-        if (count($modules) === 1 && ! isset($modules[0])) {
+        if (count($modules) === 1 && is_string(current($modules))) {
             $this->moduleName = getModuleNameByModel(array_pop($modules));
 
             if (! $this->label) {
