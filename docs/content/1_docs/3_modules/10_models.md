@@ -16,7 +16,7 @@ Implement the `A17\Twill\Models\Behaviors\Sortable` interface and add a position
 
 Add translated fields in the `translatedAttributes` array.
 
-Twill's `HasTranslation` trait is a wrapper around the popular `astronomic/laravel-translatable` package. A default configuration will be automatically published to your `config` directory when you run the `twill:install` command.
+Twill's `HasTranslation` trait is a wrapper around the popular `astrotomic/laravel-translatable` package. A default configuration will be automatically published to your `config` directory when you run the `twill:install` command.
 
 To setup your list of available languages for translated fields, modify the `locales` array in `config/translatable.php`, using ISO 639-1 two-letter languages codes as in the following example:
 

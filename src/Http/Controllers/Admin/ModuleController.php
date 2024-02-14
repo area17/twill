@@ -2418,17 +2418,18 @@ abstract class ModuleController extends Controller
         foreach ($moduleParts as $index => $name) {
             if (array_key_last($moduleParts) !== $index) {
                 $singularName = Str::singular($name);
-                $modelClass = config('twill.namespace') . '\\Models\\' . Str::studly($singularName);
+                $modelName = Str::studly($singularName);
+                $modelClass = config('twill.namespace') . '\\Models\\' . $modelName;
 
                 if (! @class_exists($modelClass)) {
                     // First try to construct it based on the last.
                     $modelClass = config('twill.namespace') .
                         '\\Models\\' .
-                        implode('', array_merge($prev + [99 => Str::studly($singularName)]));
+                        implode('', array_merge($prev, [$modelName]));
 
                     // Last option is to search for a capsule model.
                     if (! class_exists($modelClass)) {
-                        $modelClass = TwillCapsules::getCapsuleForModel($name)->getModel();
+                        $modelClass = TwillCapsules::getCapsuleForModel($modelName)->getModel();
                     }
                 }
 
@@ -2437,7 +2438,7 @@ abstract class ModuleController extends Controller
 
                 $base .= $name . '/' . ($hasSlug ? $model->slug : $model->id) . '/';
 
-                $prev[] = Str::studly($singularName);
+                $prev[] = $modelName;
             } else {
                 $base .= $name;
             }

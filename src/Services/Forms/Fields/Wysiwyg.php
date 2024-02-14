@@ -188,7 +188,7 @@ class Wysiwyg extends BaseFormField
      */
     public function browserModules(?array $modules = null): static
     {
-        if (count($modules) === 1 && ! isset($modules[0])) {
+        if (count($modules) === 1 && is_string(current($modules))) {
             $this->browserModules[] = [
                 'name' => getModuleNameByModel(array_pop($modules))
             ];
