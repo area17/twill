@@ -101,7 +101,7 @@ class Capsule
     public function loadTranslations(): void
     {
         $callback = function (Translator $translator) {
-            $translator->addNamespace($this->getLanguagesPath(), 'twill:capsules:' . $this->getModule());
+            $translator->addNamespace('twill:capsules:' . $this->getModule(), $this->getLanguagesPath());
         };
 
         App()->afterResolving('translator', $callback);
