@@ -623,9 +623,6 @@
             extensions.push(TableRow)
             break
           }
-          case 'hr': {
-            extensions.push(HorizontalRule)
-          }
         }
       })
 
@@ -635,6 +632,8 @@
         listItem: this.toolbar.ordered || this.toolbar.bullet || false,
         code: this.toolbar.code ?? false,
         codeBlock: this.toolbar.codeBlock ?? false,
+        horizontalRule: this.toolbar.hr ?? false,
+        hardBreak: false,
       }))
 
       this.editor = new Editor({
