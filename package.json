@@ -29,7 +29,7 @@
     "@tiptap/starter-kit": "^2.2.1",
     "@tiptap/vue-2": "^2.2.1",
     "alpinejs": "^3.13.5",
-    "axios": "^0.27.2",
+    "axios": "^0.28.0",
     "core-js": "^3.35.1",
     "cropperjs": "^1.6.1",
     "date-fns": "1.30.1",
