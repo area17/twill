@@ -214,6 +214,7 @@
         }
       },
       handleOnEnd (moveFn, moveBlockToEditorFn) {
+        if (!this.nextMove) return
         const {
           block,
           editorName,
