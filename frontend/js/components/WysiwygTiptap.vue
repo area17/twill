@@ -263,8 +263,6 @@
   import LocaleMixin from '@/mixins/locale'
   import {Link} from "@tiptap/extension-link";
   import {Placeholder} from "@tiptap/extension-placeholder";
-  import {HardBreak} from "@tiptap/extension-hard-break";
-  import {HorizontalRule} from "@tiptap/extension-horizontal-rule";
   import {TextAlign} from '@tiptap/extension-text-align';
 
   export default {
@@ -538,7 +536,6 @@
 
       const content = this.value || ''
       const extensions = [
-        HardBreak,
         TextAlign.configure({
           types: ['heading','paragraph'],
         }),
@@ -633,7 +630,6 @@
         code: this.toolbar.code ?? false,
         codeBlock: this.toolbar.codeBlock ?? false,
         horizontalRule: this.toolbar.hr ?? false,
-        hardBreak: false,
       }))
 
       this.editor = new Editor({
