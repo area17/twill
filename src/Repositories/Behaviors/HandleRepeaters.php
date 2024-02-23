@@ -9,6 +9,9 @@ use A17\Twill\Models\Model;
 use A17\Twill\Repositories\ModuleRepository;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -280,13 +283,22 @@ trait HandleRepeaters
 
         $relationRepository = $this->getModelRepository($relation, $modelOrRepository);
 
+        if (method_exists($this->model, $relation)) {
+            /** @var Relation $relationInstance */
+            $relationInstance = $this->model->$relation();
+            if ($relationInstance instanceof BelongsTo || $relationInstance instanceof HasOneOrMany) {
+                $fk = $relationInstance->getForeignKeyName();
+            }
+        }
+        $fk ??= $this->model->getForeignKey();
+
         // If no relation field submitted, soft deletes all associated rows.
         // We only do this when the model is already existing.
         if (! $relationFields && ! $object->wasRecentlyCreated) {
             $relationRepository->updateBasic(null, [
                 'deleted_at' => Carbon::now(),
             ], [
-                $this->model->getForeignKey() => $object->id,
+                $fk => $object->id,
             ]);
         }
 
@@ -322,7 +334,7 @@ trait HandleRepeaters
                 $currentIdList[] = (int)$id;
             } else {
                 // new row, let's attach to our object and create
-                $relationField[$this->model->getForeignKey()] = $object->id;
+                $relationField[$fk] = $object->id;
                 $frontEndId = $relationField['id'];
                 unset($relationField['id']);
                 $newRelation = $relationRepository->create($relationField);
@@ -358,10 +370,18 @@ trait HandleRepeaters
         return $fields;
     }
 
-    /**
-     * @todo: This is currently a massive duplication, once done, this needs to be cleaned up
-     */
     public function getFormFieldForRepeaterWithPivot(
+        TwillModelContract $object,
+        array $fields,
+        string $relation,
+        array $pivotFields,
+        null|string|TwillModelContract|ModuleRepository $modelOrRepository = null,
+        ?string $repeaterName = null
+    ): array {
+        return $this->getFormFieldsShared($object, $fields, $relation, $pivotFields, $modelOrRepository, $repeaterName);
+    }
+
+    private function getFormFieldsShared(
         TwillModelContract $object,
         array $fields,
         string $relation,
@@ -382,11 +402,15 @@ trait HandleRepeaters
 
         $repeaterType = TwillBlocks::findRepeaterByName($repeaterName);
 
-        $pivotFields[] = 'id';
-        $objects = $object->$relation()->withPivot($pivotFields)->get();
+        if (!empty($pivotFields)) {
+            $pivotFields[] = 'id';
+            $objects = $object->$relation()->withPivot($pivotFields)->get();
+        } else {
+            $objects = $object->$relation;
+        }
 
         foreach ($objects as $relationItem) {
-            $pivotRowId = $relationItem->pivot->id;
+            $pivotRowId = !empty($pivotFields) ? $relationItem->pivot->id : $relationItem->id;
             $repeaters[] = [
                 'id' => $relation . '-' . $pivotRowId,
                 'type' => $repeaterType->component,
@@ -409,7 +433,6 @@ trait HandleRepeaters
                 }
             }
 
-            // @todo: Can we make this work without custom pivot tables?
             if (isset($relatedItemFormFields['medias'])) {
                 if (config('twill.media_library.translated_form_fields', false)) {
                     Collection::make($relatedItemFormFields['medias'])->each(
@@ -430,7 +453,6 @@ trait HandleRepeaters
                 }
             }
 
-            // @todo: Can we make this work without custom pivot tables?
             if (isset($relatedItemFormFields['files'])) {
                 Collection::make($relatedItemFormFields['files'])->each(
                     function ($rolesWithFiles, $locale) use (&$repeatersFiles, $relation, $relationItem) {
@@ -445,7 +467,6 @@ trait HandleRepeaters
                 );
             }
 
-            // @todo: Can we make this work without custom pivot tables?
             if (isset($relatedItemFormFields['browsers'])) {
                 foreach ($relatedItemFormFields['browsers'] as $key => $values) {
                     $repeatersBrowsers["blocks[$relation-$relationItem->id][$key]"] = $values;
@@ -471,25 +492,33 @@ trait HandleRepeaters
                 ];
             }
 
-            // @todo: Can we make this work without custom pivot tables?
+            foreach ($relatedItemFormFields['blocks'] ?? [] as $key => $block) {
+                $fields['blocks'][str_contains($key, '|') ? $key : "blocks-$relation-{$relationItem->id}|$key"] = $block;
+            }
+            $fields['blocksFields'] = array_merge($fields['blocksFields'] ?? [], $relatedItemFormFields['blocksFields'] ?? []);
+
             if (isset($relatedItemFormFields['repeaters'])) {
                 foreach ($relatedItemFormFields['repeaters'] as $childRepeaterName => $childRepeaterItems) {
-                    $fields['repeaters']["blocks-$relation-{$relationItem->id}_$childRepeaterName"] = $childRepeaterItems;
+                    if (str_contains($childRepeaterName, '|')) {
+                        $fields['repeaters'][$childRepeaterName] = $childRepeaterItems;
+                        continue;
+                    }
+                    $fields['repeaters']["blocks-$relation-{$relationItem->id}|$childRepeaterName"] = $childRepeaterItems;
                     $repeatersFields = array_merge(
                         $repeatersFields,
-                        $relatedItemFormFields['repeaterFields'][$childRepeaterName]
+                        $relatedItemFormFields['repeaterFields'][$childRepeaterName] ?? []
                     );
                     $repeatersMedias = array_merge(
                         $repeatersMedias,
-                        $relatedItemFormFields['repeaterMedias'][$childRepeaterName]
+                        $relatedItemFormFields['repeaterMedias'][$childRepeaterName] ?? []
                     );
                     $repeatersFiles = array_merge(
                         $repeatersFiles,
-                        $relatedItemFormFields['repeaterFiles'][$childRepeaterName]
+                        $relatedItemFormFields['repeaterFiles'][$childRepeaterName] ?? []
                     );
                     $repeatersBrowsers = array_merge(
                         $repeatersBrowsers,
-                        $relatedItemFormFields['repeaterBrowsers'][$childRepeaterName]
+                        $relatedItemFormFields['repeaterBrowsers'][$childRepeaterName] ?? []
                     );
                 }
             }
@@ -522,133 +551,7 @@ trait HandleRepeaters
         null|string|TwillModelContract|ModuleRepository $modelOrRepository = null,
         ?string $repeaterName = null
     ): array {
-        if (! $repeaterName) {
-            $repeaterName = $relation;
-        }
-
-        $repeaters = [];
-        $repeatersFields = [];
-        $repeatersBrowsers = [];
-        $repeatersMedias = [];
-        $repeatersFiles = [];
-        $relationRepository = $this->getModelRepository($relation, $modelOrRepository);
-
-        $repeaterType = TwillBlocks::findRepeaterByName($repeaterName);
-
-        $objects = $object->$relation;
-
-        foreach ($objects as $relationItem) {
-            $repeaters[] = [
-                'id' => $relation . '-' . $relationItem->id,
-                'type' => $repeaterType->component,
-                'title' => $repeaterType->title,
-                'titleField' => $repeaterType->titleField,
-                'hideTitlePrefix' => $repeaterType->hideTitlePrefix,
-            ];
-
-            $relatedItemFormFields = $relationRepository->getFormFields($relationItem);
-            $translatedFields = [];
-
-            if (isset($relatedItemFormFields['translations'])) {
-                foreach ($relatedItemFormFields['translations'] as $key => $values) {
-                    $repeatersFields[] = [
-                        'name' => "blocks[$relation-$relationItem->id][$key]",
-                        'value' => $values,
-                    ];
-
-                    $translatedFields[] = $key;
-                }
-            }
-
-            if (isset($relatedItemFormFields['medias'])) {
-                if (config('twill.media_library.translated_form_fields', false)) {
-                    Collection::make($relatedItemFormFields['medias'])->each(
-                        function ($rolesWithMedias, $locale) use (&$repeatersMedias, $relation, $relationItem) {
-                            $repeatersMedias[] = Collection::make($rolesWithMedias)->mapWithKeys(
-                                function ($medias, $role) use ($locale, $relation, $relationItem) {
-                                    return [
-                                        "blocks[$relation-$relationItem->id][$role][$locale]" => $medias,
-                                    ];
-                                }
-                            )->toArray();
-                        }
-                    );
-                } else {
-                    foreach ($relatedItemFormFields['medias'] as $key => $values) {
-                        $repeatersMedias["blocks[$relation-$relationItem->id][$key]"] = $values;
-                    }
-                }
-            }
-
-            if (isset($relatedItemFormFields['files'])) {
-                Collection::make($relatedItemFormFields['files'])->each(
-                    function ($rolesWithFiles, $locale) use (&$repeatersFiles, $relation, $relationItem) {
-                        $repeatersFiles[] = Collection::make($rolesWithFiles)->mapWithKeys(
-                            function ($files, $role) use ($locale, $relation, $relationItem) {
-                                return [
-                                    "blocks[$relation-$relationItem->id][$role][$locale]" => $files,
-                                ];
-                            }
-                        )->toArray();
-                    }
-                );
-            }
-
-            if (isset($relatedItemFormFields['browsers'])) {
-                foreach ($relatedItemFormFields['browsers'] as $key => $values) {
-                    $repeatersBrowsers["blocks[$relation-$relationItem->id][$key]"] = $values;
-                }
-            }
-
-            $itemFields = method_exists($relationItem, 'toRepeaterArray') ?
-                $relationItem->toRepeaterArray() :
-                Arr::except($relationItem->attributesToArray(), $translatedFields);
-
-            foreach ($itemFields as $key => $value) {
-                $repeatersFields[] = [
-                    'name' => "blocks[$relation-$relationItem->id][$key]",
-                    'value' => $value,
-                ];
-            }
-
-            if (isset($relatedItemFormFields['repeaters'])) {
-                foreach ($relatedItemFormFields['repeaters'] as $childRepeaterName => $childRepeaterItems) {
-                    $fields['repeaters']["blocks-$relation-{$relationItem->id}_$childRepeaterName"] = $childRepeaterItems;
-                    $repeatersFields = array_merge(
-                        $repeatersFields,
-                        $relatedItemFormFields['repeaterFields'][$childRepeaterName]
-                    );
-                    $repeatersMedias = array_merge(
-                        $repeatersMedias,
-                        $relatedItemFormFields['repeaterMedias'][$childRepeaterName]
-                    );
-                    $repeatersFiles = array_merge(
-                        $repeatersFiles,
-                        $relatedItemFormFields['repeaterFiles'][$childRepeaterName]
-                    );
-                    $repeatersBrowsers = array_merge(
-                        $repeatersBrowsers,
-                        $relatedItemFormFields['repeaterBrowsers'][$childRepeaterName]
-                    );
-                }
-            }
-        }
-
-        if (! empty($repeatersMedias) && config('twill.media_library.translated_form_fields', false)) {
-            $repeatersMedias = array_merge(...$repeatersMedias);
-        }
-
-        if (! empty($repeatersFiles)) {
-            $repeatersFiles = array_merge(...$repeatersFiles);
-        }
-
-        $fields['repeaters'][$repeaterName] = $repeaters;
-        $fields['repeaterFields'][$repeaterName] = $repeatersFields;
-        $fields['repeaterMedias'][$repeaterName] = $repeatersMedias;
-        $fields['repeaterFiles'][$repeaterName] = $repeatersFiles;
-        $fields['repeaterBrowsers'][$repeaterName] = $repeatersBrowsers;
-
-        return $fields;
+        return $this->getFormFieldsShared($object, $fields, $relation, [], $modelOrRepository, $repeaterName);
     }
 
     private function decodePivotField(?string $data): null|array|string

@@ -123,6 +123,7 @@
         handle: '.block__handle' // drag handle
       }
     },
+    inject: {inContentEditor: {default: false}},
     computed: {
       triggerVariant: function () {
         if (this.buttonAsLink) {
@@ -135,9 +136,6 @@
       },
       blockSize: function () {
         return this.inContentEditor ? 'small' : ''
-      },
-      inContentEditor: function () {
-        return typeof this.$parent.repeaterName !== 'undefined'
       },
       hasRemainingBlocks: function () {
         let max = null

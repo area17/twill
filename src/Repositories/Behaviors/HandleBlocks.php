@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
@@ -272,20 +273,30 @@ trait HandleBlocks
     {
         $childBlocksList = Collection::make();
 
-        foreach ($parentBlockFields['blocks'] ?? [] as $childKey => $childBlocks) {
-            if (strpos($childKey, '|')) {
-                continue;
-            }
-            foreach ($childBlocks as $index => $childBlock) {
-                $childBlock = $this->buildBlock($childBlock, $object, $childBlock['is_repeater'] ?? true);
-                $this->validateBlockArray($childBlock, $childBlock['instance'], true);
-                $childBlock['child_key'] = $childKey;
-                $childBlock['position'] = $index + 1;
-                $childBlock['editor_name'] = $parentBlockFields['editor_name'] ?? 'default';
-                $childBlock['blocks'] = $this->getChildBlocks($object, $childBlock);
+        if (empty($parentBlockFields['blocks'])) {
+            return $childBlocksList;
+        }
 
-                $childBlocksList->push($childBlock);
+        // Fallback if frontend or revision is still on the old schema
+        if (is_int(key(current($parentBlockFields['blocks'])))) {
+            foreach ($parentBlockFields['blocks'] as $childKey => $childBlocks) {
+                foreach ($childBlocks as $childBlock) {
+                    $childBlock['child_key'] = $childKey;
+                    $parentBlockFields['blocks'][] = $childBlock;
+                }
+                unset($parentBlockFields['blocks'][$childKey]);
             }
+        }
+
+        foreach ($parentBlockFields['blocks'] as $index => $childBlock) {
+            $childBlock = $this->buildBlock($childBlock, $object, $childBlock['is_repeater'] ?? false);
+            $this->validateBlockArray($childBlock, $childBlock['instance'], true);
+            $childBlock['child_key'] = $childBlock['child_key'] ?? Str::afterLast($childBlock['editor_name'] ?? $index, '|');
+            $childBlock['position'] = $index + 1;
+            $childBlock['editor_name'] = $parentBlockFields['editor_name'] ?? 'default';
+            $childBlock['blocks'] = $this->getChildBlocks($object, $childBlock);
+
+            $childBlocksList->push($childBlock);
         }
 
         return $childBlocksList;
