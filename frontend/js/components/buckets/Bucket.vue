@@ -45,7 +45,7 @@
                           class="buckets__number">{{ (index + 1) }}</span> {{ bucket.name }}</span> <span
               class="buckets__size-infos">{{ bucket.children.length }} / {{ bucket.max }}</span>
             </h3>
-            <draggable v-if="bucket.children.length > 0" class="buckets__list buckets__draggable" :options="dragOptions"
+            <draggable v-if="bucket.children.length > 0" class="buckets__list buckets__draggable" v-bind="dragOptions"
                        @change="sortBucket($event, index)" :value="bucket.children" :tag="'table'">
               <transition-group name="fade_scale_list" tag='tbody'>
                 <a17-bucket-item v-for="(child, index) in bucket.children" :key="`${child.id}_${index}`" :item="child"
