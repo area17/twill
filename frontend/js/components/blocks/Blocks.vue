@@ -5,8 +5,8 @@
                  :value="savedBlocks"
                  group="blocks"
                  :move="handleOnMove"
-                 @end="e => handleOnEnd(moveBlock, moveBlockToEditor)"
-                 :options="dragOptions">
+                 @end="handleOnEnd(moveBlock, moveBlockToEditor)"
+                 v-bind="dragOptions">
         <transition-group name="draggable_list"
                           tag='div'>
           <div class="blocks__item"
