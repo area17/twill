@@ -1,5 +1,7 @@
 <?php
-    /*
+return [
+    'auth' => [
+        /*
     |--------------------------------------------------------------------------
     | 5 Steps to Contribute a New Twill Localization at Ease
     |--------------------------------------------------------------------------
@@ -9,10 +11,6 @@
     | 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
     | 5. Run the command "php artisan twill:lang" to sync all lang files.
     */
-
-
-return [
-    'auth' => [
         'back-to-login' => 'Se connecter',
         'choose-password' => 'Choisir un mot de passe',
         'email' => 'Email',
@@ -56,6 +54,8 @@ return [
             'unfeatured' => 'N’est plus mis en avant',
             'restored' => 'Restauré',
             'deleted' => 'Supprimé',
+            'login' => 'Connexion',
+            'logout' => 'Déconnexion',
         ],
         'activity-row' => [
             'edit' => 'Éditer',
@@ -93,6 +93,7 @@ return [
             'preview' => 'Prévisualiser',
             'add-item' => 'Ajouter',
             'clone-block' => 'Dupliquer le bloc',
+            'select-existing' => 'Sélectionner un élément existant',
         ],
         'browser' => [
             'add-label' => 'Ajouter des',
@@ -252,6 +253,9 @@ return [
             'unpublished' => ':modelTitle la sélection est dépubliée !',
             'published' => ':modelTitle la sélection est publiée !',
             'error' => ':modelTitle la sélection n’a pas été publiée. Une erreur est survenue !',
+        ],
+        'filters' => [
+            'all-label' => 'Tous les :label',
         ],
     ],
     'main' => [
@@ -446,6 +450,9 @@ return [
         'update-disabled-user-and-create-new' => 'Mettre à jour l’utilisateur désactivé et créer un nouveau',
         'user-image' => 'Image',
         'users' => 'Utilisateurs',
+        'force-2fa-disable' => 'Désactiver la double authentification',
+        'force-2fa-disable-description' => 'Entrer le texte affiché dans le champ pour désactiver la double authentification pour cet utilisateur',
+        'force-2fa-disable-challenge' => 'Désactiver la double authentification pour :user',
     ],
     'settings' => [
         'update' => 'Mettre à jour',
