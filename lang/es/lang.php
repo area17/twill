@@ -1,5 +1,7 @@
 <?php
-    /*
+return [
+    'auth' => [
+        /*
     |--------------------------------------------------------------------------
     | 5 Steps to Contribute a New Twill Localization at Ease
     |--------------------------------------------------------------------------
@@ -9,15 +11,30 @@
     | 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
     | 5. Run the command "php artisan twill:lang" to sync all lang files.
     */
-
-
-return [
-    'auth' => [
         'email' => 'Email',
         'forgot-password' => 'Recuperar contraseña',
         'login' => 'Iniciar sesión',
         'login-title' => 'Iniciar sesión',
         'password' => 'Contraseña',
+        'choose-password' => 'Elija una contraseña',
+        'oauth-link-title' => 'Vuelva a introducir su contraseña para vincular :provider a su cuenta',
+        'otp' => 'Contraseña de un solo uso',
+        'password-confirmation' => 'Confirmar la contraseña',
+        'reset-password' => 'Restablecer la contraseña',
+        'reset-send' => 'Enviar un enlace para restablecer la contraseña',
+        'verify-login' => 'Confirmar inicio de sesión',
+        'auth-causer' => 'Autentificación',
+        /*
+    |--------------------------------------------------------------------------
+    | 5 Steps to Contribute a New Twill Localization at Ease
+    |--------------------------------------------------------------------------
+    | 1. Find the "lang.csv" under "lang" directory.
+    | 2. Import the csv file into a blank Google Sheet.
+    | 3. Each column is a language, enter the translation for a column. (tips: feel free to freeze rows and columns).
+    | 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
+    | 5. Run the command "php artisan twill:lang" to sync all lang files.
+    */
+        'back-to-login' => 'Volver al inicio de sesión',
     ],
     'dashboard' => [
         'all-activity' => 'Todas las actividades',
@@ -27,6 +44,29 @@ return [
         'my-drafts' => 'Mis borradores',
         'search-placeholder' => 'Buscar...',
         'statitics' => 'Estadísticas',
+        'activities' => [
+            'unpublished' => 'Sin publicar',
+            'published' => 'Publicado',
+            'featured' => 'Destacados',
+            'unfeatured' => 'Sin destacar',
+            'restored' => 'Restaurado',
+            'deleted' => 'Borrado',
+            'login' => 'Iniciar sesión',
+            'logout' => 'Cerrar sesión',
+            'created' => 'Creado',
+            'updated' => 'Actualizado',
+        ],
+        'activity-row' => [
+            'edit' => 'Editar',
+            'view-permalink' => 'Ver enlace permanente',
+            'by' => 'por',
+        ],
+        'unknown-author' => 'Desconocido',
+        'search' => [
+            'loading' => 'Cargando…',
+            'no-result' => 'No hay resultados.',
+            'last-edit' => 'Última edición',
+        ],
     ],
     'fields' => [
         'block-editor' => [
@@ -38,6 +78,9 @@ return [
             'loading' => 'Cargando',
             'open-in-editor' => 'Abrir en el editor',
             'preview' => 'Previsualizar',
+            'clone-block' => 'Clonar bloque',
+            'add-item' => 'Añadir elemento',
+            'select-existing' => 'Seleccionar los existentes',
         ],
         'browser' => [
             'add-label' => 'Agregar',
@@ -48,6 +91,12 @@ return [
         ],
         'medias' => [
             'btn-label' => 'Adjuntar imagen',
+        ],
+        'generic' => [
+            'switch-language' => 'Cambiar de idioma',
+        ],
+        'map' => [
+            'hide' => 'Ocultar&nbsp;mapa',
         ],
     ],
     'filter' => [
@@ -166,5 +215,29 @@ return [
         'update-disabled-user-and-create-new' => 'Actualizar usuario deshabilitado y crear nuevo',
         'user-image' => 'Imagen',
         'users' => 'Usuarios',
+    ],
+    'buckets' => [
+        'intro' => '¿Qué le gustaría presentar hoy?',
+        'none-available' => 'Ningún artículo disponible.',
+        'none-featured' => 'No hay artículos destacados.',
+        'publish' => 'Publicar',
+        'source-title' => 'Elementos disponibles',
+    ],
+    'dialog' => [
+        'cancel' => 'Cancelar',
+        'ok' => 'De acuerdo',
+        'title' => 'Mover a la papelera',
+    ],
+    'editor' => [
+        'cancel' => 'Cancelar',
+        'done' => 'Hecho',
+        'title' => 'Editor de contenidos',
+        'delete' => 'Borrar',
+    ],
+    'emails' => [
+        'all-rights-reserved' => 'Todos los derechos reservados.',
+        'hello' => '¡Hola!',
+        'problems' => 'Si tiene problemas para hacer clic en el botón ":actionText", copie y pegue la siguiente URL en su navegador web: [:url](:url)',
+        'regards' => 'Saludos,',
     ],
 ];
