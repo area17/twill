@@ -469,9 +469,13 @@ return [
     'permissions' => [
         'roles' => [
             'title' => 'Rôles',
+            'published' => 'Activé',
+            'draft' => 'Désactivé',
         ],
         'groups' => [
             'title' => 'Groupes',
+            'published' => 'Activé',
+            'draft' => 'Désactivé',
         ],
     ],
 ];
