@@ -24,6 +24,7 @@ return [
         'reset-password' => 'Réinitialisation du mot de passe',
         'reset-send' => 'Envoyer un lien de réinitialisation de mot de passe',
         'verify-login' => 'Vérifier la connexion',
+        'auth-causer' => 'Authentification',
     ],
     'buckets' => [
         'intro' => 'Que souhaitez-vous mettre en avant aujourd’hui ?',
@@ -145,6 +146,7 @@ return [
             ],
         ],
         'editor' => 'Éditeur',
+        'options' => 'Options',
     ],
     'lang-manager' => [
         'published' => 'Publié',
@@ -194,6 +196,9 @@ return [
             'mine' => 'Mes contenus',
             'published' => 'Publié',
             'trash' => 'Corbeille',
+            'no' => 'Non',
+            'yes' => 'Oui',
+            'not-set' => 'Sans valeur',
         ],
         'languages' => 'Langues',
         'listing-empty-message' => 'Il n’y a aucun contenu pour le moment.',
@@ -453,10 +458,20 @@ return [
         'force-2fa-disable' => 'Désactiver la double authentification',
         'force-2fa-disable-description' => 'Entrer le texte affiché dans le champ pour désactiver la double authentification pour cet utilisateur',
         'force-2fa-disable-challenge' => 'Désactiver la double authentification pour :user',
+        'pending' => 'En attente',
+        'activation-pending' => 'Activation en attente',
     ],
     'settings' => [
         'update' => 'Mettre à jour',
         'cancel' => 'Annuler',
         'fieldset-label' => 'Éditer paramètres',
+    ],
+    'permissions' => [
+        'roles' => [
+            'title' => 'Rôles',
+        ],
+        'groups' => [
+            'title' => 'Groupes',
+        ],
     ],
 ];
