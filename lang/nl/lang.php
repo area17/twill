@@ -1,5 +1,7 @@
 <?php
-    /*
+return [
+    'auth' => [
+        /*
     |--------------------------------------------------------------------------
     | 5 Steps to Contribute a New Twill Localization at Ease
     |--------------------------------------------------------------------------
@@ -9,10 +11,6 @@
     | 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
     | 5. Run the command "php artisan twill:lang" to sync all lang files.
     */
-
-
-return [
-    'auth' => [
         'back-to-login' => 'Terug naar login',
         'choose-password' => 'Wachtwoord kiezen',
         'email' => 'E-mail',
@@ -175,9 +173,7 @@ return [
                 'destroy-permanently' => 'Permanent vernietigen',
                 'disclaimer' => 'Dit item zal niet meer hersteld kunnen worden',
                 'title' => 'Item vernietigen',
-                'cancel' => 'Annuleren',
             ],
-            'cancel' => 'Annuleren',
         ],
         'dropdown' => [
             'delete' => 'Verwijderen',
