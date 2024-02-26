@@ -102,24 +102,24 @@ abstract class TestCase extends OrchestraTestCase
         // Enforce the url for testing to be 'http://twill.test' for certain assertions.
         // This is different from the one in phpunit.xml because that one is used for laravel dusk.
         $_ENV['APP_URL'] = 'http://twill.test';
-        $_ENV['MEDIA_LIBRARY_LOCAL_PATH'] = "media-library";
-        $_ENV["FILE_LIBRARY_LOCAL_PATH"] = "file-library";
-        $_ENV["FILE_LIBRARY_ENDPOINT_TYPE"] = "local";
-        $_ENV["IMGIX_SOURCE_HOST"] = "";
-        $_ENV["IMGIX_USE_HTTPS"] = "";
-        $_ENV["IMGIX_USE_SIGNED_URLS"] = "";
-        $_ENV["IMGIX_SIGN_KEY"] = "";
-        $_ENV["GLIDE_SOURCE"] = $this->getBasePath() . "/storage/app/public/media-library";
-        $_ENV["GLIDE_CACHE"] = $this->getBasePath() . "/storage/app/twill/cache";
-        $_ENV["GLIDE_CACHE_PATH_PREFIX"] = "glide_cache";
-        $_ENV["GLIDE_BASE_URL"] = "http://twill.test";
-        $_ENV["GLIDE_BASE_PATH"] = "storage/media-library";
-        $_ENV["GLIDE_USE_SIGNED_URLS"] = "false";
-        $_ENV["GLIDE_SIGN_KEY"] = "";
+        $_ENV['MEDIA_LIBRARY_LOCAL_PATH'] = 'media-library';
+        $_ENV['FILE_LIBRARY_LOCAL_PATH'] = 'file-library';
+        $_ENV['FILE_LIBRARY_ENDPOINT_TYPE'] = 'local';
+        $_ENV['IMGIX_SOURCE_HOST'] = '';
+        $_ENV['IMGIX_USE_HTTPS'] = '';
+        $_ENV['IMGIX_USE_SIGNED_URLS'] = '';
+        $_ENV['IMGIX_SIGN_KEY'] = '';
+        $_ENV['GLIDE_SOURCE'] = $this->getBasePath() . '/storage/app/public/media-library';
+        $_ENV['GLIDE_CACHE'] = $this->getBasePath() . '/storage/app/twill/cache';
+        $_ENV['GLIDE_CACHE_PATH_PREFIX'] = 'glide_cache';
+        $_ENV['GLIDE_BASE_URL'] = 'http://twill.test';
+        $_ENV['GLIDE_BASE_PATH'] = 'storage/media-library';
+        $_ENV['GLIDE_USE_SIGNED_URLS'] = 'false';
+        $_ENV['GLIDE_SIGN_KEY'] = '';
 
         parent::setUp();
 
-        if (!self::$didInitialFreshMigration) {
+        if (! self::$didInitialFreshMigration) {
             $this->artisan('migrate:fresh');
         }
 
@@ -139,8 +139,6 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Configure Twill options.
-     *
-     * @param $app
      */
     public function configTwill($app): void
     {
@@ -155,8 +153,6 @@ abstract class TestCase extends OrchestraTestCase
 
     /**
      * Configure storage path.
-     *
-     * @param $app
      */
     public function configureStorage($app): void
     {
@@ -237,7 +233,7 @@ abstract class TestCase extends OrchestraTestCase
         ];
 
         if ($this->example && file_exists(app_path('Providers/AppServiceProvider.php'))) {
-//            $list[] = AppServiceProvider::class;
+            //            $list[] = AppServiceProvider::class;
         }
 
         return $list;

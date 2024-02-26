@@ -14,8 +14,7 @@ class NestedsetCollection extends BaseNestedsetCollection
      *
      * If `$root` is provided, the tree will contain only descendants of that node.
      *
-     * @param mixed $root
-     *
+     * @param  mixed  $root
      * @return NestedsetCollection
      */
     public function toTree($root = false)
@@ -36,7 +35,7 @@ class NestedsetCollection extends BaseNestedsetCollection
         foreach ($this->items as $node) {
             if ($node->getParentId() == $root) {
                 $items[] = $node;
-            } elseif (!in_array($node->getParentId(), $ids)) {
+            } elseif (! in_array($node->getParentId(), $ids)) {
                 $items[] = $node;
             }
         }

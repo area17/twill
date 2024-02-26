@@ -4,10 +4,12 @@ namespace A17\Twill\Commands;
 
 use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Facades\TwillCapsules;
+use A17\Twill\Helpers\Capsule;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use ZipArchive;
 
 class CapsuleInstall extends Command
 {
@@ -34,7 +36,7 @@ class CapsuleInstall extends Command
     protected $repositoryUri;
 
     /**
-     * @var \A17\Twill\Helpers\Capsule
+     * @var Capsule
      */
     protected $capsule;
 
@@ -354,7 +356,7 @@ class CapsuleInstall extends Command
     {
         $this->info('Unzipping with PHP zip extension...');
 
-        $unzip = new \ZipArchive();
+        $unzip = new ZipArchive();
 
         $success = $unzip->open($zip) && $unzip->extractTo("$directory/");
 

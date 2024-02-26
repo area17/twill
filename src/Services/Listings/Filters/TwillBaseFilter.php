@@ -2,15 +2,19 @@
 
 namespace A17\Twill\Services\Listings\Filters;
 
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 abstract class TwillBaseFilter
 {
     protected ?string $label = null;
+
     protected ?string $queryString = null;
+
     protected bool $enabled = true;
-    protected ?\Closure $apply = null;
+
+    protected ?Closure $apply = null;
 
     abstract public function applyFilter(Builder $builder): Builder;
 
@@ -73,7 +77,7 @@ abstract class TwillBaseFilter
      */
     public function disable(bool $disable = true): static
     {
-        $this->enabled = !$disable;
+        $this->enabled = ! $disable;
 
         return $this;
     }
@@ -81,7 +85,7 @@ abstract class TwillBaseFilter
     /**
      * The closure to apply the filter.
      */
-    public function apply(\Closure $closure): static
+    public function apply(Closure $closure): static
     {
         $this->apply = $closure;
 

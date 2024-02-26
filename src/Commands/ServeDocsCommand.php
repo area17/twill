@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Commands;
 
+use Exception;
 use Illuminate\Foundation\Console\ServeCommand;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Process\PhpExecutableFinder;
@@ -21,7 +22,7 @@ class ServeDocsCommand extends ServeCommand
         while ($process->isRunning()) {
             try {
                 Artisan::call('twill:staticdocs:generate', ['--updatesOnly' => ''], $this->output);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error($e->getMessage());
                 $this->error('sleeping 5 seconds');
                 usleep(5000 * 1000);
@@ -32,7 +33,7 @@ class ServeDocsCommand extends ServeCommand
         $status = $process->getExitCode();
 
         if ($status && $this->canTryAnotherPort()) {
-            ++$this->portOffset;
+            $this->portOffset++;
 
             return $this->handle();
         }

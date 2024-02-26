@@ -22,5 +22,4 @@ class ClientProject extends Model
     {
         return $this->hasMany(ClientProjectApplication::class);
     }
-
 }

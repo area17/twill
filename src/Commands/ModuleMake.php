@@ -5,13 +5,16 @@ namespace A17\Twill\Commands;
 use A17\Twill\Commands\Traits\HandlesStubs;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Helpers\Capsule;
+use Exception;
 use Illuminate\Config\Repository as Config;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Composer;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Kalnoy\Nestedset\NestedSet;
 
 class ModuleMake extends Command
 {
@@ -146,7 +149,7 @@ class ModuleMake extends Command
     protected $moduleBasePath;
 
     /**
-     * @var \A17\Twill\Helpers\Capsule
+     * @var Capsule
      */
     protected $capsule;
 
@@ -373,7 +376,7 @@ class ModuleMake extends Command
 
         $this->info('Enjoy.');
 
-        if ($this->nestable && ! class_exists(\Kalnoy\Nestedset\NestedSet::class)) {
+        if ($this->nestable && ! class_exists(NestedSet::class)) {
             $this->warn("\nTo support module nesting, you must install the `kalnoy/nestedset` package:");
             $this->warn("\n    composer require kalnoy/nestedset\n");
         }
@@ -400,7 +403,7 @@ class ModuleMake extends Command
         $navigationFileExists = File::exists($navigationFile);
 
         /** @phpstan-ignore-next-line */
-        if (! $navigationFileExists || (($navigation = require($navigationFile)) && empty($navigation))) {
+        if (! $navigationFileExists || (($navigation = require ($navigationFile)) && empty($navigation))) {
             // Instructions here.
             $this->warn('To add a navigation entry add the following to your AppServiceProvider BOOT method.');
 
@@ -424,6 +427,7 @@ TwillNavigation::addLink(
 PHP;
             }
             $this->box($message ?? '');
+
             return;
         }
 
@@ -439,10 +443,11 @@ PHP;
     private function getFormattedArray(array $array): string
     {
         $export = var_export($array, true);
-        $export = preg_replace("/^([ ]*)(.*)/m", '$1$1$2', $export);
+        $export = preg_replace('/^([ ]*)(.*)/m', '$1$1$2', $export);
         $array = preg_split("/\r\n|\n|\r/", $export);
         $array = preg_replace(["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], [null, ']$1', ' => ['], $array);
-        $export = implode(PHP_EOL, array_filter(["["] + $array));
+        $export = implode(PHP_EOL, array_filter(['['] + $array));
+
         return $export;
     }
 
@@ -455,7 +460,7 @@ PHP;
 
         File::append($routeFilePath, $entry);
 
-        $this->warn("The following snippet has been added to routes/twill.php:");
+        $this->warn('The following snippet has been added to routes/twill.php:');
         $this->box($entry);
     }
 
@@ -474,9 +479,10 @@ PHP;
     /**
      * Creates a new module database migration file.
      *
-     * @param string $moduleName
+     * @param  string  $moduleName
      * @return void
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     *
+     * @throws FileNotFoundException
      */
     private function createMigration($moduleName = 'items')
     {
@@ -523,9 +529,10 @@ PHP;
     /**
      * Creates new model class files for the given model name and traits.
      *
-     * @param string $modelName
-     * @param array $activeTraits
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @param  string  $modelName
+     * @param  array  $activeTraits
+     *
+     * @throws FileNotFoundException
      */
     private function createModels($modelName = 'Item', $activeTraits = [])
     {
@@ -646,7 +653,7 @@ PHP;
             '{{baseModel}}',
         ], [
             $modelName,
-            $activeModelTraits->whenNotEmpty(fn($t) => 'use ' . $t->join(', ') . ';'),
+            $activeModelTraits->whenNotEmpty(fn ($t) => 'use ' . $t->join(', ') . ';'),
             $activeModelTraitsImports->join("\n"),
             $activeModelImplements,
             $this->namespace('models', 'Models'),
@@ -680,10 +687,11 @@ PHP;
     /**
      * Creates new repository class file for the given model name.
      *
-     * @param string $modelName
-     * @param array $activeTraits
+     * @param  string  $modelName
+     * @param  array  $activeTraits
      * @return void
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     *
+     * @throws FileNotFoundException
      */
     private function createRepository($modelName = 'Item', $activeTraits = [])
     {
@@ -747,10 +755,11 @@ PHP;
     /**
      * Create a new controller class file for the given module name and model name.
      *
-     * @param string $moduleName
-     * @param string $modelName
+     * @param  string  $moduleName
+     * @param  string  $modelName
      * @return void
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     *
+     * @throws FileNotFoundException
      */
     private function createController($moduleName = 'items', $modelName = 'Item')
     {
@@ -788,11 +797,11 @@ PHP;
         $reorderOption = '';
 
         if (! $this->sluggable) {
-            $permalinkOption = "\$this->disablePermalink();";
+            $permalinkOption = '$this->disablePermalink();';
         }
 
         if ($this->nestable) {
-            $reorderOption = "\$this->enableReorder();";
+            $reorderOption = '$this->enableReorder();';
 
             $stub = str_replace(['{{hasNesting}}', '{{/hasNesting}}'], '', $stub);
         } else {
@@ -816,9 +825,10 @@ PHP;
     /**
      * Creates a new request class file for the given model name.
      *
-     * @param string $modelName
+     * @param  string  $modelName
      * @return void
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     *
+     * @throws FileNotFoundException
      */
     private function createRequest($modelName = 'Item')
     {
@@ -842,7 +852,7 @@ PHP;
     /**
      * Creates appropriate module Blade view files.
      *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @throws FileNotFoundException
      */
     private function createViews(string $moduleName = 'items'): void
     {
@@ -874,8 +884,7 @@ PHP;
      * Creates new seeder files for the given module name.
      * Singletons require seeders, users are instructed to run the seeders.
      *
-     * @param string $modelName
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @throws FileNotFoundException
      */
     private function createSeeders(string $modelName = 'Item'): void
     {
@@ -899,8 +908,9 @@ PHP;
     /**
      * Creates a basic routes file for the Capsule.
      *
-     * @param string $moduleName
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @param  string  $moduleName
+     *
+     * @throws FileNotFoundException
      */
     public function createCapsuleRoutes(): void
     {
@@ -922,7 +932,7 @@ PHP;
     /**
      * Creates a new capsule database seed file.
      *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @throws FileNotFoundException
      */
     private function createCapsuleSeed(): void
     {
@@ -940,9 +950,10 @@ PHP;
     /**
      * Creates a new singleton module database seed file.
      *
-     * @param string $modelName
+     * @param  string  $modelName
      * @return void
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     *
+     * @throws FileNotFoundException
      */
     private function createSingletonSeed($modelName = 'Item')
     {
@@ -1039,7 +1050,7 @@ PHP;
 
         $currentDefaultAnswer = $this->defaultsAnswserToNo ? 0 : ($defaultAnswers[$option] ?? 1);
 
-        return 'yes' === $this->choice($questions[$option], ['no', 'yes'], $currentDefaultAnswer);
+        return $this->choice($questions[$option], ['no', 'yes'], $currentDefaultAnswer) === 'yes';
     }
 
     public function createCapsulePath($moduleName, $modelName)
@@ -1086,7 +1097,7 @@ PHP;
         if (! is_dir($dir)) {
             $this->info("It wasn't possible to create capsule directory $dir");
 
-            die;
+            exit;
         }
     }
 
@@ -1142,7 +1153,7 @@ PHP;
             return $this->capsule->getRequestsNamespace() . $class;
         }
 
-        throw new \Exception('Missing Implementation.');
+        throw new Exception('Missing Implementation.');
     }
 
     public function viewPath(string $moduleName): string

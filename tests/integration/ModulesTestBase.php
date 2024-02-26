@@ -227,7 +227,6 @@ abstract class ModulesTestBase extends TestCase
     }
 
     /**
-     * @return array
      * @todo: Should get rid of all the properties as they are unreliable.
      */
     protected function getCreateAuthorData(array $extraData = []): array
@@ -351,12 +350,12 @@ abstract class ModulesTestBase extends TestCase
     public function getUpdateAuthorWithBlock()
     {
         return $this->getUpdateAuthorData() + [
-                'blocks' => [
-                    $this->getAuthorBlock(),
-                    $this->getAuthorBlock($this->block_editor_name = 'unique-name'),
-                ],
-                'repeaters' => [],
-            ];
+            'blocks' => [
+                $this->getAuthorBlock(),
+                $this->getAuthorBlock($this->block_editor_name = 'unique-name'),
+            ],
+            'repeaters' => [],
+        ];
     }
 
     public function getAuthorBlock($name = 'default')
@@ -379,9 +378,6 @@ abstract class ModulesTestBase extends TestCase
         ];
     }
 
-    /**
-     * @return array
-     */
     protected function getCreateCategoryData(): array
     {
         $category = $this->title = 'Category: ' . $this->faker->name;

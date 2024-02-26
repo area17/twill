@@ -20,11 +20,11 @@ return new class extends Migration
             $connection->table(
                 $tableName,
                 function (Blueprint $table) use ($connection, $tableName) {
-                    if (!$connection->hasColumn($tableName, 'event')) {
+                    if (! $connection->hasColumn($tableName, 'event')) {
                         $table->string('event')->nullable()->after('subject_type');
                     }
 
-                    if (!$connection->hasColumn($tableName, 'batch_uuid')) {
+                    if (! $connection->hasColumn($tableName, 'batch_uuid')) {
                         $table->uuid('batch_uuid')->nullable()->after('properties');
                     }
                 }

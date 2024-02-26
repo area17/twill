@@ -35,11 +35,11 @@ foreach ($arrayRenameInFile as $file => $replace) {
     }
 }
 
-echo "Replacing admin. with twill. in views:" . PHP_EOL;
+echo 'Replacing admin. with twill. in views:' . PHP_EOL;
 // Loop over all views and replace admin. with twill.
 $directories = new RecursiveDirectoryIterator(getcwd() . '/resources/views');
 foreach (new RecursiveIteratorIterator($directories) as $filename => $file) {
-    if (!str_ends_with($filename, '.')) {
+    if (! str_ends_with($filename, '.')) {
         $contents = file_get_contents($filename);
         if (str_contains($contents, 'admin.')) {
             echo '--' . $filename . PHP_EOL;
@@ -49,17 +49,17 @@ foreach (new RecursiveIteratorIterator($directories) as $filename => $file) {
     }
 }
 
-echo "Dumping composer autoloader" . PHP_EOL;
+echo 'Dumping composer autoloader' . PHP_EOL;
 
 shell_exec('composer dump');
 
-echo "Installing rector as dev dependency:" . PHP_EOL . PHP_EOL;
-shell_exec("composer require rector/rector:^0.14 --dev");
+echo 'Installing rector as dev dependency:' . PHP_EOL . PHP_EOL;
+shell_exec('composer require rector/rector:^0.14 --dev');
 
-echo "Running rector upgrade:";
-shell_exec("./vendor/bin/rector process --clear-cache --config=vendor/area17/twill/rector-upgrade-compatibility.php");
-shell_exec("./vendor/bin/rector process --clear-cache --config=vendor/area17/twill/rector-upgrade-routes-views.php");
-shell_exec("./vendor/bin/rector process --clear-cache --config=vendor/area17/twill/rector-upgrade-twill-config.php");
+echo 'Running rector upgrade:';
+shell_exec('./vendor/bin/rector process --clear-cache --config=vendor/area17/twill/rector-upgrade-compatibility.php');
+shell_exec('./vendor/bin/rector process --clear-cache --config=vendor/area17/twill/rector-upgrade-routes-views.php');
+shell_exec('./vendor/bin/rector process --clear-cache --config=vendor/area17/twill/rector-upgrade-twill-config.php');
 echo PHP_EOL;
 
 exit(0);

@@ -70,7 +70,7 @@ class TwillUtil
 
                     $model = $modelClass::published()->where('id', $id)->first();
 
-                    if (!$model) {
+                    if (! $model) {
                         return url('404');
                     }
 

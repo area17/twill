@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up()
     {
-        if (!Schema::hasTable(config('activitylog.table_name'))) {
+        if (! Schema::hasTable(config('activitylog.table_name'))) {
             Schema::create(config('activitylog.table_name'), function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('log_name')->nullable();

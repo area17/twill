@@ -15,7 +15,7 @@ return new class extends Migration
     {
         $twillRelatedTable = config('twill.related_table', 'twill_related');
 
-        if (!Schema::hasTable($twillRelatedTable)) {
+        if (! Schema::hasTable($twillRelatedTable)) {
             Schema::create($twillRelatedTable, function (Blueprint $table) {
                 $table->increments('id');
                 $table->integer('subject_id')->nullable()->unsigned();

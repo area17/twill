@@ -95,12 +95,14 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
                         $builder->where('tag_id', $value);
                     });
                 }
+
                 return $builder;
             }),
             BasicFilter::make()->queryString('unused')->apply(function (Builder $builder, ?bool $value) {
                 if ($value) {
                     return $builder->unused();
                 }
+
                 return $builder;
             }),
         ]);
@@ -129,9 +131,6 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         ];
     }
 
-    /**
-     * @return array
-     */
     protected function getRequestFilters(): array
     {
         if ($this->request->has('search')) {
@@ -142,7 +141,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             $requestFilters['tag'] = $this->request->get('tag');
         }
 
-        if ($this->request->has('unused') && (int)$this->request->unused === 1) {
+        if ($this->request->has('unused') && (int) $this->request->unused === 1) {
             $requestFilters['unused'] = $this->request->get('unused');
         }
 
@@ -150,8 +149,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     }
 
     /**
-     * @param int|null $parentModuleId
-     * @return
+     * @param  int|null  $parentModuleId
      */
     public function store($parentModuleId = null)
     {
@@ -162,7 +160,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return Media
      */
     public function storeFile($request)
@@ -200,6 +198,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             $media = $this->repository->whereId($id)->first();
             $this->repository->afterDelete($media);
             $media->replace($fields);
+
             return $media->fresh();
         }
 
@@ -207,7 +206,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return Media
      */
     public function storeReference($request)
@@ -223,6 +222,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             $media = $this->repository->whereId($id)->first();
             $this->repository->afterDelete($media);
             $media->update($fields);
+
             return $media->fresh();
         }
 
@@ -261,7 +261,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
         $extraMetadatas = array_diff_key(
             $metadatasFromRequest,
-            array_flip((array)$this->request->get('fieldsRemovedFromBulkEditing', []))
+            array_flip((array) $this->request->get('fieldsRemovedFromBulkEditing', []))
         );
 
         if (in_array('tags', $this->request->get('fieldsRemovedFromBulkEditing', []))) {
@@ -308,8 +308,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     }
 
     /**
-     * @param $signature
-     * @param bool $isJsonResponse
+     * @param  bool  $isJsonResponse
      * @return mixed
      */
     public function uploadIsSigned($signature, $isJsonResponse = true)
@@ -324,7 +323,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
      */
     public function uploadIsNotValid()
     {
-        return $this->responseFactory->json(["invalid" => true], 500);
+        return $this->responseFactory->json(['invalid' => true], 500);
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Facades\TwillBlocks;
+use A17\Twill\Models\Model;
+use A17\Twill\Services\Blocks\Block;
 use Illuminate\Support\Arr;
 
 /**
@@ -23,7 +25,7 @@ use Illuminate\Support\Arr;
 trait HandleJsonRepeaters
 {
     /**
-     * @param array $fields
+     * @param  array  $fields
      * @return array
      */
     public function prepareFieldsBeforeCreateHandleJsonRepeaters($fields)
@@ -38,8 +40,8 @@ trait HandleJsonRepeaters
     }
 
     /**
-     * @param \A17\Twill\Models\Model|null $object
-     * @param array $fields
+     * @param  Model|null  $object
+     * @param  array  $fields
      * @return array
      */
     public function prepareFieldsBeforeSaveHandleJsonRepeaters($object, $fields)
@@ -54,8 +56,8 @@ trait HandleJsonRepeaters
     }
 
     /**
-     * @param \A17\Twill\Models\Model|null $object
-     * @param array $fields
+     * @param  Model|null  $object
+     * @param  array  $fields
      * @return array
      */
     public function getFormFieldsHandleJsonRepeaters($object, $fields)
@@ -73,7 +75,7 @@ trait HandleJsonRepeaters
     {
         $repeatersFields = [];
         $repeatersBrowsers = [];
-        /** @var \A17\Twill\Services\Blocks\Block[] $repeatersList */
+        /** @var Block[] $repeatersList */
         $repeatersList = TwillBlocks::getRepeaters()->keyBy('name');
         $repeaters = [];
 
@@ -82,7 +84,7 @@ trait HandleJsonRepeaters
 
             $repeater = $repeatersList[$repeaterName] ?? $repeatersList['dynamic-repeater-' . $repeaterName] ?? null;
 
-            if (!$repeater) {
+            if (! $repeater) {
                 // There is no repeater found. This can be due to code removal but a database left-over.
                 // In that case, we cannot do anything so we simply return the fields.
                 return $fields;

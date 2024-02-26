@@ -17,19 +17,19 @@ class Handler extends ExceptionHandler
      */
     protected function getHttpExceptionView(HttpExceptionInterface $e)
     {
-        $usesAdminPath = !empty(config('twill.admin_app_path'));
+        $usesAdminPath = ! empty(config('twill.admin_app_path'));
         $adminAppUrl = config('twill.admin_app_url', config('app.url'));
 
-        $isSubdomainAdmin = !$usesAdminPath && Str::contains(Request::url(), $adminAppUrl);
+        $isSubdomainAdmin = ! $usesAdminPath && Str::contains(Request::url(), $adminAppUrl);
         $isSubdirectoryAdmin = $usesAdminPath && Str::startsWith(Request::path(), config('twill.admin_app_path'));
 
-        return $this->getTwillErrorView($e->getStatusCode(), !$isSubdomainAdmin && !$isSubdirectoryAdmin);
+        return $this->getTwillErrorView($e->getStatusCode(), ! $isSubdomainAdmin && ! $isSubdirectoryAdmin);
     }
 
     /**
      * Get the Twill error view used to render a specified HTTP status code.
      *
-     * @param  integer $statusCode
+     * @param  int  $statusCode
      * @return string
      */
     protected function getTwillErrorView($statusCode, $frontend = false)

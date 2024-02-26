@@ -292,12 +292,14 @@ abstract class ModuleController extends Controller
 
     /**
      * @var array
+     *
      * @deprecated please use the getIndexTableColumns method. Will be removed in Twill 4.0
      */
     protected $indexColumns = [];
 
     /**
      * @var array
+     *
      * @deprecated please use the getBrowserTableColumns method. Will be removed in Twill 4.0
      */
     protected $browserColumns = [];
@@ -409,7 +411,7 @@ abstract class ModuleController extends Controller
             return $next($request);
         });
 
-        if (!$this instanceof AppSettingsController) {
+        if (! $this instanceof AppSettingsController) {
             $this->getForm($this->repository->getBaseModel())->registerDynamicRepeaters();
             $this->getSideFieldsets($this->repository->getBaseModel())->registerDynamicRepeaters();
         }
@@ -964,7 +966,9 @@ abstract class ModuleController extends Controller
 
     /**
      * @return void
+     *
      * @deprecated To be removed in Twill 3.0
+     *
      * @todo: Check this.
      */
     protected function setMiddlewarePermission()
@@ -991,7 +995,6 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param Request $request
      * @return string|int|null
      */
     protected function getParentModuleIdFromRequest(Request $request)
@@ -1072,7 +1075,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param int|null $parentModuleId
+     * @param  int|null  $parentModuleId
      * @return \Illuminate\Http\JsonResponse
      */
     public function store($parentModuleId = null)
@@ -1131,9 +1134,9 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @param int|$id
-     * @param int|null $submoduleId
+     * @param  int|null  $submoduleId
      * @return \Illuminate\Http\RedirectResponse
      */
     public function show($id, $submoduleId = null)
@@ -1209,7 +1212,7 @@ abstract class ModuleController extends Controller
         );
     }
 
-    public function create(int $parentModuleId = null): JsonResponse|RedirectResponse|IlluminateView
+    public function create(?int $parentModuleId = null): JsonResponse|RedirectResponse|IlluminateView
     {
         if (! $this->getIndexOption('skipCreateModal')) {
             return Redirect::to(
@@ -1363,7 +1366,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param int $id
+     * @param  int  $id
      * @return \Illuminate\View\View
      */
     public function restoreRevision($id)
@@ -1741,21 +1744,21 @@ abstract class ModuleController extends Controller
         $items = $this->getIndexItems($prependScope);
 
         $data = [
-                'tableData' => $this->getIndexTableData($items),
-                'tableColumns' => $this->getTableColumns('index')->toCmsArray(
-                    request(),
-                    $this->getIndexOption('sortable')
-                ),
-                'tableMainFilters' => $this->quickFilters()->toFrontendArray(),
-                'filters' => json_decode($this->request->get('filter'), true) ?? [],
-                // HiddenFilters are called "hidden" because they only show when the filters button is clicked.
-                'hiddenFilters' => $this->filters(),
-                'filterLinks' => $this->filterLinks ?? [],
-                'maxPage' => method_exists($items, 'lastPage') ? $items->lastPage() : 1,
-                'defaultMaxPage' => method_exists($items, 'total') ? ceil($items->total() / $this->perPage) : 1,
-                'offset' => method_exists($items, 'perPage') ? $items->perPage() : count($items),
-                'defaultOffset' => $this->perPage,
-            ] + $this->getIndexUrls($this->moduleName, $this->routePrefix);
+            'tableData' => $this->getIndexTableData($items),
+            'tableColumns' => $this->getTableColumns('index')->toCmsArray(
+                request(),
+                $this->getIndexOption('sortable')
+            ),
+            'tableMainFilters' => $this->quickFilters()->toFrontendArray(),
+            'filters' => json_decode($this->request->get('filter'), true) ?? [],
+            // HiddenFilters are called "hidden" because they only show when the filters button is clicked.
+            'hiddenFilters' => $this->filters(),
+            'filterLinks' => $this->filterLinks ?? [],
+            'maxPage' => method_exists($items, 'lastPage') ? $items->lastPage() : 1,
+            'defaultMaxPage' => method_exists($items, 'total') ? ceil($items->total() / $this->perPage) : 1,
+            'offset' => method_exists($items, 'perPage') ? $items->perPage() : count($items),
+            'defaultOffset' => $this->perPage,
+        ] + $this->getIndexUrls($this->moduleName, $this->routePrefix);
 
         $baseUrl = $this->getPermalinkBaseUrl();
 
@@ -1796,7 +1799,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return array
      */
     protected function indexData($request)
@@ -1820,7 +1823,7 @@ abstract class ModuleController extends Controller
         // Get the applied quick filter..
         if (array_key_exists('status', $requestFilters)) {
             $filter = $this->quickFilters()->filter(
-                fn(TwillBaseFilter $filter) => $filter->getQueryString() === $requestFilters['status']
+                fn (TwillBaseFilter $filter) => $filter->getQueryString() === $requestFilters['status']
             )->first();
 
             if ($filter !== null) {
@@ -1833,7 +1836,7 @@ abstract class ModuleController extends Controller
         // Get other filters that need to applied.
         foreach ($requestFilters as $filterKey => $filterValue) {
             $filter = $this->filters()->filter(
-                fn(BasicFilter $filter) => $filter->getQueryString() === $filterKey
+                fn (BasicFilter $filter) => $filter->getQueryString() === $filterKey
             )->first();
 
             if ($filter !== null) {
@@ -1863,7 +1866,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Collection|TwillModelContract[] $items
+     * @param  \Illuminate\Database\Eloquent\Collection|TwillModelContract[]  $items
      */
     protected function getIndexTableData(Collection|LengthAwarePaginator $items): array
     {
@@ -1966,37 +1969,37 @@ abstract class ModuleController extends Controller
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.listing.filter.all-items'))
                 ->queryString('all')
-                ->amount(fn() => $this->repository->getCountByStatusSlug('all', $scope)),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('all', $scope)),
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.listing.filter.mine'))
                 ->queryString('mine')
                 ->scope('mine')
                 ->onlyEnableWhen($this->moduleHas('revisions') && $this->getIndexOption('create'))
-                ->amount(fn() => $this->repository->getCountByStatusSlug('mine', $scope)),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('mine', $scope)),
             QuickFilter::make()
                 ->label($this->getTransLabel('listing.filter.published'))
                 ->queryString('published')
                 ->scope('published')
                 ->onlyEnableWhen($this->getIndexOption('publish'))
-                ->amount(fn() => $this->repository->getCountByStatusSlug('published', $scope)),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('published', $scope)),
             QuickFilter::make()
                 ->label($this->getTransLabel('listing.filter.draft'))
                 ->queryString('draft')
                 ->scope('draft')
                 ->onlyEnableWhen($this->getIndexOption('publish'))
-                ->amount(fn() => $this->repository->getCountByStatusSlug('draft', $scope)),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('draft', $scope)),
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.listing.filter.trash'))
                 ->queryString('trash')
                 ->scope('onlyTrashed')
                 ->onlyEnableWhen($this->getIndexOption('restore'))
-                ->amount(fn() => $this->repository->getCountByStatusSlug('trash', $scope)),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('trash', $scope)),
         ]);
     }
 
     /**
-     * @param string $moduleName
-     * @param string $routePrefix
+     * @param  string  $moduleName
+     * @param  string  $routePrefix
      * @return array
      */
     protected function getIndexUrls($moduleName, $routePrefix)
@@ -2027,7 +2030,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param string $option
+     * @param  string  $option
      * @return bool
      */
     protected function getIndexOption($option, $item = null)
@@ -2085,7 +2088,8 @@ abstract class ModuleController extends Controller
                     } else {
                         // @todo: In php 8.1 this is an int by itself. In php8.1 it is not.
                         if ($field === 'published') {
-                            $repeaterFields[$field] = (int)$item->{$field};
+                            $repeaterFields[$field] = (int) $item->{$field};
+
                             continue;
                         }
                         $repeaterFields[$field] = $item->{$field};
@@ -2247,42 +2251,42 @@ abstract class ModuleController extends Controller
         $itemId = $this->getItemIdentifier($item);
 
         $data = [
-                'item' => $item,
-                'moduleName' => $this->moduleName,
-                'routePrefix' => $this->routePrefix,
-                'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
-                'titleFormLabel' => $this->titleFormLabel ?? $this->titleColumnLabel,
-                'publish' => $item->canPublish ?? true,
-                'publishDate24Hr' => Config::get('twill.publish_date_24h') ?? false,
-                'publishDateFormat' => Config::get('twill.publish_date_format') ?? null,
-                'publishDateDisplayFormat' => Config::get('twill.publish_date_display_format') ?? null,
-                'publishedLabel' => $this->getTransLabel('published'),
-                'draftLabel' => $this->getTransLabel('draft'),
-                'translate' => $this->moduleHas('translations'),
-                'translateTitle' => $this->titleIsTranslatable(),
-                'permalink' => $this->getIndexOption('permalink', $item),
-                'createWithoutModal' => ! $itemId && $this->getIndexOption('skipCreateModal'),
-                'form_fields' => $this->repository->getFormFields($item),
-                'baseUrl' => $baseUrl,
-                'localizedPermalinkBase' => $localizedPermalinkBase,
-                'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
-                'saveUrl' => $itemId ? $this->getModuleRoute($itemId, 'update') : moduleRoute(
-                    $this->moduleName,
-                    $this->routePrefix,
-                    'store',
-                    [$this->submoduleParentId]
-                ),
-                'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas(
-                    'blocks'
-                ) && ! $this->disableEditor,
-                'blockPreviewUrl' => Route::has(config('twill.admin_route_name_prefix') . 'blocks.preview') ? URL::route(config('twill.admin_route_name_prefix') . 'blocks.preview') : '#',
-                'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
-                'submitOptions' => $this->getSubmitOptions($item),
-                'groupUserMapping' => $this->getGroupUserMapping(),
-                'showPermissionFieldset' => $this->getShowPermissionFieldset($item),
-            ] + (Route::has($previewRouteName) && $itemId ? [
-                'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', [$itemId]),
-            ] : [])
+            'item' => $item,
+            'moduleName' => $this->moduleName,
+            'routePrefix' => $this->routePrefix,
+            'titleFormKey' => $this->titleFormKey ?? $this->titleColumnKey,
+            'titleFormLabel' => $this->titleFormLabel ?? $this->titleColumnLabel,
+            'publish' => $item->canPublish ?? true,
+            'publishDate24Hr' => Config::get('twill.publish_date_24h') ?? false,
+            'publishDateFormat' => Config::get('twill.publish_date_format') ?? null,
+            'publishDateDisplayFormat' => Config::get('twill.publish_date_display_format') ?? null,
+            'publishedLabel' => $this->getTransLabel('published'),
+            'draftLabel' => $this->getTransLabel('draft'),
+            'translate' => $this->moduleHas('translations'),
+            'translateTitle' => $this->titleIsTranslatable(),
+            'permalink' => $this->getIndexOption('permalink', $item),
+            'createWithoutModal' => ! $itemId && $this->getIndexOption('skipCreateModal'),
+            'form_fields' => $this->repository->getFormFields($item),
+            'baseUrl' => $baseUrl,
+            'localizedPermalinkBase' => $localizedPermalinkBase,
+            'permalinkPrefix' => $this->getPermalinkPrefix($baseUrl),
+            'saveUrl' => $itemId ? $this->getModuleRoute($itemId, 'update') : moduleRoute(
+                $this->moduleName,
+                $this->routePrefix,
+                'store',
+                [$this->submoduleParentId]
+            ),
+            'editor' => Config::get('twill.enabled.block-editor') && $this->moduleHas(
+                'blocks'
+            ) && ! $this->disableEditor,
+            'blockPreviewUrl' => Route::has(config('twill.admin_route_name_prefix') . 'blocks.preview') ? URL::route(config('twill.admin_route_name_prefix') . 'blocks.preview') : '#',
+            'revisions' => $this->moduleHas('revisions') ? $item->revisionsArray() : null,
+            'submitOptions' => $this->getSubmitOptions($item),
+            'groupUserMapping' => $this->getGroupUserMapping(),
+            'showPermissionFieldset' => $this->getShowPermissionFieldset($item),
+        ] + (Route::has($previewRouteName) && $itemId ? [
+            'previewUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'preview', [$itemId]),
+        ] : [])
             + (Route::has($restoreRouteName) && $itemId ? [
                 'restoreUrl' => moduleRoute($this->moduleName, $this->routePrefix, 'restoreRevision', [$itemId]),
             ] : []);
@@ -2335,7 +2339,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return array
      */
     protected function formData($request)
@@ -2344,7 +2348,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param TwillModelContract $item
+     * @param  TwillModelContract  $item
      * @return array
      */
     protected function previewData($item)
@@ -2519,16 +2523,13 @@ abstract class ModuleController extends Controller
             )) ? '' : '/');
     }
 
-    /**
-     * @return array
-     */
     protected function getLocalizedPermalinkBase(): array
     {
         return [];
     }
 
     /**
-     * @param string $baseUrl
+     * @param  string  $baseUrl
      * @return string
      */
     protected function getPermalinkPrefix($baseUrl)
@@ -2537,8 +2538,8 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param int $id
-     * @param string $action
+     * @param  int  $id
+     * @param  string  $action
      * @return string
      */
     protected function getModuleRoute($id, $action)
@@ -2547,7 +2548,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param string $behavior
+     * @param  string  $behavior
      * @return bool
      */
     protected function moduleHas($behavior)
@@ -2566,8 +2567,8 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param string|null $back_link
-     * @param array $params
+     * @param  string|null  $back_link
+     * @param  array  $params
      * @return void
      */
     protected function setBackLink($back_link = null, $params = [])
@@ -2591,8 +2592,8 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param string|null $fallback
-     * @param array $params
+     * @param  string|null  $fallback
+     * @param  array  $params
      * @return string
      */
     protected function getBackLink($fallback = null, $params = [])
@@ -2611,8 +2612,8 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param int $id
-     * @param array $params
+     * @param  int  $id
+     * @param  array  $params
      * @return \Illuminate\Http\RedirectResponse
      */
     protected function redirectToForm($id, $params = [])
@@ -2630,7 +2631,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param string $message
+     * @param  string  $message
      * @return \Illuminate\Http\JsonResponse
      */
     protected function respondWithSuccess($message)
@@ -2639,7 +2640,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param string $redirectUrl
+     * @param  string  $redirectUrl
      * @return \Illuminate\Http\JsonResponse
      */
     protected function respondWithRedirect($redirectUrl)
@@ -2650,7 +2651,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param string $message
+     * @param  string  $message
      * @return \Illuminate\Http\JsonResponse
      */
     protected function respondWithError($message)
@@ -2659,8 +2660,8 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param string $message
-     * @param mixed $variant
+     * @param  string  $message
+     * @param  mixed  $variant
      * @return \Illuminate\Http\JsonResponse
      */
     protected function respondWithJson($message, $variant)
@@ -2684,7 +2685,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @param array $input
+     * @param  array  $input
      * @return void
      */
     protected function fireEvent($input = [])
@@ -2706,8 +2707,8 @@ abstract class ModuleController extends Controller
     /**
      * Get translation key from labels array and attemps to return a translated string.
      *
-     * @param string $key
-     * @param array $replace
+     * @param  string  $key
+     * @param  array  $replace
      * @return \Illuminate\Contracts\Translation\Translator|string|array|null
      */
     protected function getTransLabel($key, $replace = [])

@@ -24,12 +24,12 @@ class QuickFilterTest extends FilterTestBase
             QuickFilter::make()
                 ->queryString('title_test')
                 ->amount(
-                    fn() => app()
+                    fn () => app()
                         ->make(AuthorRepository::class)
                         ->whereTranslation('name', Author::first()->name)
                         ->count()
                 )
-                ->apply(fn(Builder $builder) => $builder->whereTranslation('name', Author::first()->name)
+                ->apply(fn (Builder $builder) => $builder->whereTranslation('name', Author::first()->name)
                 ),
         ];
 
@@ -54,12 +54,12 @@ class QuickFilterTest extends FilterTestBase
                 ->queryString('title_test')
                 ->label('Custom label')
                 ->amount(
-                    fn() => app()
+                    fn () => app()
                         ->make(AuthorRepository::class)
                         ->whereTranslation('name', Author::first()->name)
                         ->count()
                 )
-                ->apply(fn(Builder $builder) => $builder->whereTranslation('name', Author::first()->name)
+                ->apply(fn (Builder $builder) => $builder->whereTranslation('name', Author::first()->name)
                 ),
         ];
 
@@ -76,7 +76,7 @@ class QuickFilterTest extends FilterTestBase
                 ->queryString('title_test')
                 ->scope('published')
                 ->amount(
-                    fn() => app()
+                    fn () => app()
                         ->make(AuthorRepository::class)
                         ->getCountByStatusSlug('published')
                 ),
@@ -88,18 +88,19 @@ class QuickFilterTest extends FilterTestBase
         $this->assertStringContainsString($this->author->name, $data['tableData'][0]['name']);
     }
 
-    public function testDisabledFilterDoesNotShow(): void {
+    public function testDisabledFilterDoesNotShow(): void
+    {
         $filters = [
             QuickFilter::make()
                 ->queryString('title_test')
                 ->disable()
                 ->amount(
-                    fn() => app()
+                    fn () => app()
                         ->make(AuthorRepository::class)
                         ->whereTranslation('name', Author::first()->name)
                         ->count()
                 )
-                ->apply(fn(Builder $builder) => $builder->whereTranslation('name', Author::first()->name)
+                ->apply(fn (Builder $builder) => $builder->whereTranslation('name', Author::first()->name)
                 ),
         ];
 
@@ -116,23 +117,23 @@ class QuickFilterTest extends FilterTestBase
             QuickFilter::make()
                 ->queryString('first_author')
                 ->amount(
-                    fn() => app()
+                    fn () => app()
                         ->make(AuthorRepository::class)
                         ->whereTranslation('name', Author::first()->name)
                         ->count()
                 )
-                ->apply(fn(Builder $builder) => $builder->whereTranslation('name', Author::first()->name)
+                ->apply(fn (Builder $builder) => $builder->whereTranslation('name', Author::first()->name)
                 ),
             QuickFilter::make()
                 ->queryString('last_author')
                 ->amount(
-                    fn() => app()
+                    fn () => app()
                         ->make(AuthorRepository::class)
                         ->whereTranslation('name', Author::latest()->first()->name)
                         ->count()
                 )
                 ->apply(
-                    fn(Builder $builder) => $builder->whereTranslation(
+                    fn (Builder $builder) => $builder->whereTranslation(
                         'name',
                         Author::latest()->first()->name
                     )
@@ -152,24 +153,24 @@ class QuickFilterTest extends FilterTestBase
             QuickFilter::make()
                 ->queryString('first_author')
                 ->amount(
-                    fn() => app()
+                    fn () => app()
                         ->make(AuthorRepository::class)
                         ->whereTranslation('name', Author::first()->name)
                         ->count()
                 )
-                ->apply(fn(Builder $builder) => $builder->whereTranslation('name', Author::first()->name)
+                ->apply(fn (Builder $builder) => $builder->whereTranslation('name', Author::first()->name)
                 ),
             QuickFilter::make()
                 ->queryString('last_author')
                 ->default()
                 ->amount(
-                    fn() => app()
+                    fn () => app()
                         ->make(AuthorRepository::class)
                         ->whereTranslation('name', Author::latest()->first()->name)
                         ->count()
                 )
                 ->apply(
-                    fn(Builder $builder) => $builder->whereTranslation(
+                    fn (Builder $builder) => $builder->whereTranslation(
                         'name',
                         Author::latest()->first()->name
                     )
@@ -189,24 +190,24 @@ class QuickFilterTest extends FilterTestBase
             QuickFilter::make()
                 ->queryString('first_author')
                 ->amount(
-                    fn() => app()
+                    fn () => app()
                         ->make(AuthorRepository::class)
                         ->whereTranslation('name', Author::first()->name)
                         ->count()
                 )
-                ->apply(fn(Builder $builder) => $builder->whereTranslation('name', Author::first()->name)
+                ->apply(fn (Builder $builder) => $builder->whereTranslation('name', Author::first()->name)
                 ),
             QuickFilter::make()
                 ->queryString('last_author')
                 ->default()
                 ->amount(
-                    fn() => app()
+                    fn () => app()
                         ->make(AuthorRepository::class)
                         ->whereTranslation('name', Author::latest()->first()->name)
                         ->count()
                 )
                 ->apply(
-                    fn(Builder $builder) => $builder->whereTranslation(
+                    fn (Builder $builder) => $builder->whereTranslation(
                         'name',
                         Author::latest()->first()->name
                     )

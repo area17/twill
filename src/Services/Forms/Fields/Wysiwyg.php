@@ -3,19 +3,19 @@
 namespace A17\Twill\Services\Forms\Fields;
 
 use A17\Twill\Services\Forms\Fields\Helpers\TiptapWrapper;
+use A17\Twill\Services\Forms\Fields\Traits\HasDirection;
 use A17\Twill\Services\Forms\Fields\Traits\HasMaxlength;
 use A17\Twill\Services\Forms\Fields\Traits\HasOnChange;
 use A17\Twill\Services\Forms\Fields\Traits\HasPlaceholder;
-use A17\Twill\Services\Forms\Fields\Traits\HasDirection;
 use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 class Wysiwyg extends BaseFormField
 {
-    use IsTranslatable;
-    use HasMaxlength;
-    use HasPlaceholder;
     use HasDirection;
+    use HasMaxlength;
     use HasOnChange;
+    use HasPlaceholder;
+    use IsTranslatable;
 
     public bool $hideCounter = false;
 
@@ -28,7 +28,7 @@ class Wysiwyg extends BaseFormField
         'underline',
         'strike',
         'blockquote',
-        "code-block",
+        'code-block',
         'ordered',
         'bullet',
         'hr',
@@ -176,7 +176,7 @@ class Wysiwyg extends BaseFormField
                 $wrapperList[] = $wrapper->toArray();
             }
             $base[] = [
-                'wrappers' => $wrapperList
+                'wrappers' => $wrapperList,
             ];
         }
 
@@ -190,14 +190,14 @@ class Wysiwyg extends BaseFormField
     {
         if (count($modules) === 1 && is_string(current($modules))) {
             $this->browserModules[] = [
-                'name' => getModuleNameByModel(array_pop($modules))
+                'name' => getModuleNameByModel(array_pop($modules)),
             ];
         } else {
             foreach ($modules as $module) {
                 if (isset($module['name'])) {
                     $this->browserModules[] = [
                         'name' => getModuleNameByModel($module['name']),
-                        'label' => $module['label']
+                        'label' => $module['label'],
                     ];
                 } else {
                     $this->browserModules[] = [
@@ -217,7 +217,8 @@ class Wysiwyg extends BaseFormField
      */
     public function classList(array $list): static
     {
-        $this->classList = array_map(fn($value, $label) => ['value' => $value, 'label' => $label, 'selected' => false], array_keys($list), $list);
+        $this->classList = array_map(fn ($value, $label) => ['value' => $value, 'label' => $label, 'selected' => false], array_keys($list), $list);
+
         return $this;
     }
 }

@@ -12,7 +12,7 @@ class PageDisplayController extends Controller
     {
         $page = $pageRepository->forSlug($slug);
 
-        if (!$page) {
+        if (! $page) {
             abort(404);
         }
 

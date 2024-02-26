@@ -3,7 +3,6 @@
 namespace A17\Twill\Tests\Integration\Controllers;
 
 use A17\Twill\Tests\Integration\ModulesTestBase;
-use App\Http\Controllers\Twill\AuthorController;
 use App\Http\Controllers\Twill\CategoryController;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
@@ -23,7 +22,7 @@ class BasicControllerSettersTest extends ModulesTestBase
         $this->assertEquals($default, $controller->getIndexOptionTest($indexOption));
 
         $controller = $this->getCategoryController([$method => null]);
-        $this->assertEquals(!$default, $controller->getIndexOptionTest($indexOption));
+        $this->assertEquals(! $default, $controller->getIndexOptionTest($indexOption));
     }
 
     public function simplePropertyOptions(): array
@@ -143,8 +142,8 @@ class BasicControllerSettersTest extends ModulesTestBase
     ): CategoryController {
         $request = $request ?? Request::create(route('twill.personnel.authors.index'));
 
-        return new class($this->app, $request, $configSettersMethods) extends CategoryController {
-
+        return new class($this->app, $request, $configSettersMethods) extends CategoryController
+        {
             // Reset them so we use default only for this test class.
             protected $indexOptions = [];
 
@@ -177,5 +176,4 @@ class BasicControllerSettersTest extends ModulesTestBase
             }
         };
     }
-
 }

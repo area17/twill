@@ -15,11 +15,11 @@ use A17\Twill\Repositories\BlockRepository;
 class Article extends Model implements Sortable
 {
     use HasBlocks;
-    use HasSlug;
-    use HasMedias;
     use HasFiles;
-    use HasRevisions;
+    use HasMedias;
     use HasPosition;
+    use HasRevisions;
+    use HasSlug;
 
     // #region constants
     public const DEFAULT_TEMPLATE = 'full_article';

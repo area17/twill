@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        if (Schema::hasTable('groups') && !Schema::hasColumn('groups', 'subdomains_access')) {
+        if (Schema::hasTable('groups') && ! Schema::hasColumn('groups', 'subdomains_access')) {
             Schema::table('groups', function (Blueprint $table) {
                 $table->json('subdomains_access')->nullable();
             });

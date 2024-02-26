@@ -78,10 +78,10 @@ abstract class Request extends FormRequest
     }
 
     /**
-     * @param array $rules
-     * @param array $fields
-     * @param string $locale
-     * @param bool $localeActive
+     * @param  array  $rules
+     * @param  array  $fields
+     * @param  string  $locale
+     * @param  bool  $localeActive
      * @return array
      */
     private function updateRules($rules, $fields, $locale, $localeActive = true)
@@ -106,7 +106,7 @@ abstract class Request extends FormRequest
                 });
 
                 // @TODO: Can be replaced with doesntContain in twill 3.x
-                if ($hasRequiredRule && !in_array($fieldRules, $fieldRules->toArray())) {
+                if ($hasRequiredRule && ! in_array($fieldRules, $fieldRules->toArray())) {
                     $fieldRules->add('nullable');
                 }
             }
@@ -127,9 +127,8 @@ abstract class Request extends FormRequest
     }
 
     /**
-     * @param mixed $rule
-     * @param string $needle
-     *
+     * @param  mixed  $rule
+     * @param  string  $needle
      * @return bool
      */
     private function ruleStartsWith($rule, $needle)
@@ -140,8 +139,8 @@ abstract class Request extends FormRequest
     /**
      * Gets the error messages for the defined validation rules.
      *
-     * @param array $messages
-     * @param array $fields
+     * @param  array  $messages
+     * @param  array  $fields
      * @return array
      */
     protected function messagesForTranslatedFields($messages, $fields)
@@ -154,9 +153,9 @@ abstract class Request extends FormRequest
     }
 
     /**
-     * @param array $messages
-     * @param array $fields
-     * @param string $locale
+     * @param  array  $messages
+     * @param  array  $fields
+     * @param  string  $locale
      * @return array
      */
     private function updateMessages($messages, $fields, $locale)

@@ -6,6 +6,7 @@ use A17\Twill\Repositories\SettingRepository;
 use A17\Twill\Services\Forms\Form;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\UrlGenerator;
@@ -57,8 +58,7 @@ class SettingController extends Controller
     }
 
     /**
-     * @param string $section
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
+     * @return RedirectResponse|\Illuminate\View\View
      */
     public function index(string $section)
     {
@@ -85,8 +85,8 @@ class SettingController extends Controller
     }
 
     /**
-     * @param mixed $section
-     * @return \Illuminate\Http\RedirectResponse
+     * @param  mixed  $section
+     * @return RedirectResponse
      */
     public function update($section, Request $request)
     {

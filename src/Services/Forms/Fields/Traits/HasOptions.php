@@ -5,6 +5,7 @@ namespace A17\Twill\Services\Forms\Fields\Traits;
 use A17\Twill\Services\Forms\Option;
 use A17\Twill\Services\Forms\Options;
 use Closure;
+use Exception;
 
 trait HasOptions
 {
@@ -30,7 +31,7 @@ trait HasOptions
     public function addOption(Option $option): static
     {
         if ($this->options instanceof Closure) {
-            throw new \Exception('addOption cannot be used with an options closure.');
+            throw new Exception('addOption cannot be used with an options closure.');
         }
 
         if ($this->options === null) {
@@ -45,6 +46,7 @@ trait HasOptions
     {
         if ($this->options instanceof Closure) {
             $execute = $this->options;
+
             return $execute();
         }
 

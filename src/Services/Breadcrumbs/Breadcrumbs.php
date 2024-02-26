@@ -5,7 +5,7 @@ namespace A17\Twill\Services\Breadcrumbs;
 class Breadcrumbs
 {
     /**
-     * @var \A17\Twill\Services\Breadcrumbs\BreadcrumbItem[]
+     * @var BreadcrumbItem[]
      */
     public array $items = [];
 
@@ -14,7 +14,7 @@ class Breadcrumbs
     }
 
     /**
-     * @param \A17\Twill\Services\Breadcrumbs\BreadcrumbItem[] $items
+     * @param  BreadcrumbItem[]  $items
      */
     public static function make(array $items = []): static
     {
@@ -25,7 +25,7 @@ class Breadcrumbs
     }
 
     /**
-     * @return \A17\Twill\Services\Breadcrumbs\BreadcrumbItem[]
+     * @return BreadcrumbItem[]
      */
     public function toArray(): array
     {
@@ -33,18 +33,18 @@ class Breadcrumbs
     }
 
     /**
-     * @return \A17\Twill\Services\Breadcrumbs\BreadcrumbItem[]
+     * @return BreadcrumbItem[]
      */
     public function getListingBreadcrumbs(): array
     {
-        return array_filter($this->toArray(), fn(BreadcrumbItem $item) => $item->shouldDisplayOnListing());
+        return array_filter($this->toArray(), fn (BreadcrumbItem $item) => $item->shouldDisplayOnListing());
     }
 
     /**
-     * @return \A17\Twill\Services\Breadcrumbs\BreadcrumbItem[]
+     * @return BreadcrumbItem[]
      */
     public function getFormBreadcrumbs(): array
     {
-        return array_filter($this->toArray(), fn(BreadcrumbItem $item) => $item->shouldDisplayOnForm());
+        return array_filter($this->toArray(), fn (BreadcrumbItem $item) => $item->shouldDisplayOnForm());
     }
 }

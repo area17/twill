@@ -99,12 +99,12 @@ abstract class TwillPackageServiceProvider extends ServiceProvider
      *   ]);
      * ```
      */
-    protected function registerBlocksDirectory($path, string $renderNamespace = null)
+    protected function registerBlocksDirectory($path, ?string $renderNamespace = null)
     {
         TwillBlocks::registerPackageBlocksDirectory($path, $renderNamespace);
     }
 
-    protected function registerRepeatersDirectory($path, string $renderNamespace = null)
+    protected function registerRepeatersDirectory($path, ?string $renderNamespace = null)
     {
         TwillBlocks::registerPackageRepeatersDirectory($path, $renderNamespace);
     }

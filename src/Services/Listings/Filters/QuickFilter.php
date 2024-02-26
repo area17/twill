@@ -2,18 +2,21 @@
 
 namespace A17\Twill\Services\Listings\Filters;
 
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 
 class QuickFilter extends TwillBaseFilter
 {
-    protected ?\Closure $amount = null;
+    protected ?Closure $amount = null;
+
     protected ?string $scope = null;
+
     protected bool $isDefaultQuickFilter = false;
 
     /**
      * The callback that will tell the filter how many results there are.
      */
-    public function amount(\Closure $callback): static
+    public function amount(Closure $callback): static
     {
         $this->amount = $callback;
 
@@ -56,6 +59,7 @@ class QuickFilter extends TwillBaseFilter
     public function toArray(): array
     {
         $callback = $this->amount;
+
         return [
             'name' => $this->getLabel(),
             'slug' => $this->getQueryString(),

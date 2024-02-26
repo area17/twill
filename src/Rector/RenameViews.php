@@ -32,7 +32,7 @@ class RenameViews extends LaravelAwareRectorRule
     }
 
     /**
-     * @param Node\Expr\FuncCall|Node\Expr\StaticCall $node
+     * @param  Node\Expr\FuncCall|Node\Expr\StaticCall  $node
      */
     public function refactor(Node $node)
     {
@@ -51,9 +51,9 @@ class RenameViews extends LaravelAwareRectorRule
         }
 
         if (
-            !($arg = $node->getArgs()[0] ?? null)
-            || !property_exists($arg->value, 'value')
-            || !Str::startsWith($arg->value->value, 'admin.')
+            ! ($arg = $node->getArgs()[0] ?? null)
+            || ! property_exists($arg->value, 'value')
+            || ! Str::startsWith($arg->value->value, 'admin.')
         ) {
             return null;
         }

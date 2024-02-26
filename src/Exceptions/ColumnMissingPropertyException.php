@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Exceptions;
 
-class ColumnMissingPropertyException extends \Exception
+use Exception;
+
+class ColumnMissingPropertyException extends Exception
 {
 }

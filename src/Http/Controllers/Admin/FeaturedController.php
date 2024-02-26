@@ -5,6 +5,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Models\Feature;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
+use A17\Twill\Repositories\ModuleRepository;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\DatabaseManager as DB;
@@ -14,6 +15,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory as ViewFactory;
+use Throwable;
 
 class FeaturedController extends Controller
 {
@@ -93,15 +95,17 @@ class FeaturedController extends Controller
     }
 
     /**
-     * @param array $featuredSection
-     * @param string $featuredSectionKey
+     * @param  array  $featuredSection
+     * @param  string  $featuredSectionKey
      * @return array
      */
     private function getFeaturedItemsByBucket($featuredSection, $featuredSectionKey)
     {
         $bucketRouteConfig = $this->config->get('twill.bucketsRoutes') ?? [$featuredSectionKey => 'featured'];
+
         return Collection::make($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use ($featuredSectionKey, $bucketRouteConfig) {
             $routePrefix = $bucketRouteConfig[$featuredSectionKey];
+
             return [
                 'id' => $bucketKey,
                 'name' => $bucket['name'],
@@ -136,9 +140,8 @@ class FeaturedController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param array $featuredSection
-     * @param string|null $search
+     * @param  array  $featuredSection
+     * @param  string|null  $search
      * @return array
      */
     private function getFeaturedSources(Request $request, $featuredSection, $search = null)
@@ -203,9 +206,9 @@ class FeaturedController extends Controller
     }
 
     /**
-     * @param Request $request
      * @return void
-     * @throws \Throwable
+     *
+     * @throws Throwable
      */
     public function save(Request $request, DB $db)
     {
@@ -228,11 +231,11 @@ class FeaturedController extends Controller
     }
 
     /**
-     * @param string $bucketable
-     * @return \A17\Twill\Repositories\ModuleRepository
+     * @param  string  $bucketable
+     * @return ModuleRepository
      */
     private function getRepository($bucketable, $forModule = null)
     {
-        return $this->app->make($forModule ?: $this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($bucketable)) . "Repository");
+        return $this->app->make($forModule ?: $this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($bucketable)) . 'Repository');
     }
 }

@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Http\Requests\Admin\FileRequest;
+use A17\Twill\Models\File;
 use A17\Twill\Services\Listings\Filters\BasicFilter;
 use A17\Twill\Services\Listings\Filters\TableFilters;
 use A17\Twill\Services\Uploader\SignAzureUpload;
@@ -95,12 +96,14 @@ class FileLibraryController extends ModuleController implements SignUploadListen
                         $builder->where('tag_id', $value);
                     });
                 }
+
                 return $builder;
             }),
             BasicFilter::make()->queryString('unused')->apply(function (Builder $builder, ?bool $value) {
                 if ($value) {
                     return $builder->unused();
                 }
+
                 return $builder;
             }),
         ]);
@@ -130,30 +133,27 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     }
 
     /**
-     * @param \A17\Twill\Models\File $item
+     * @param  File  $item
      * @return array
      */
     private function buildFile($item)
     {
         return $item->toCmsArray() + [
-                'tags' => $item->tags->map(function ($tag) {
-                    return $tag->name;
-                }),
-                'deleteUrl' => $item->canDeleteSafely() ? moduleRoute(
-                    $this->moduleName,
-                    $this->routePrefix,
-                    'destroy',
-                    $item->id
-                ) : null,
-                'updateUrl' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'file-library.files.single-update'),
-                'updateBulkUrl' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'file-library.files.bulk-update'),
-                'deleteBulkUrl' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'file-library.files.bulk-delete'),
-            ];
+            'tags' => $item->tags->map(function ($tag) {
+                return $tag->name;
+            }),
+            'deleteUrl' => $item->canDeleteSafely() ? moduleRoute(
+                $this->moduleName,
+                $this->routePrefix,
+                'destroy',
+                $item->id
+            ) : null,
+            'updateUrl' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'file-library.files.single-update'),
+            'updateBulkUrl' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'file-library.files.bulk-update'),
+            'deleteBulkUrl' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'file-library.files.bulk-delete'),
+        ];
     }
 
-    /**
-     * @return array
-     */
     protected function getRequestFilters(): array
     {
         if ($this->request->has('search')) {
@@ -164,7 +164,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             $requestFilters['tag'] = $this->request->get('tag');
         }
 
-        if ($this->request->has('unused') && (int)$this->request->unused === 1) {
+        if ($this->request->has('unused') && (int) $this->request->unused === 1) {
             $requestFilters['unused'] = $this->request->get('unused');
         }
 
@@ -172,8 +172,9 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     }
 
     /**
-     * @param int|null $parentModuleId
+     * @param  int|null  $parentModuleId
      * @return JsonResponse
+     *
      * @throws BindingResolutionException
      */
     public function store($parentModuleId = null)
@@ -190,14 +191,14 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     }
 
     /**
-     * @param Request $request
-     * @return \A17\Twill\Models\File
+     * @param  Request  $request
+     * @return File
      */
     public function storeFile($request)
     {
         $filename = $request->input('qqfilename');
 
-        $cleanFilename = preg_replace("/\s+/i", "-", $filename);
+        $cleanFilename = preg_replace("/\s+/i", '-', $filename);
 
         $fileDirectory = $request->input('unique_folder_name');
 
@@ -223,6 +224,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             $file = $this->repository->whereId($id)->first();
             $this->repository->afterDelete($file);
             $file->update($fields);
+
             return $file->fresh();
         }
 
@@ -230,8 +232,8 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     }
 
     /**
-     * @param Request $request
-     * @return \A17\Twill\Models\File
+     * @param  Request  $request
+     * @return File
      */
     public function storeReference($request)
     {
@@ -244,6 +246,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             $file = $this->repository->whereId($id)->first();
             $this->repository->afterDelete($file);
             $file->update($fields);
+
             return $file->fresh();
         }
 
@@ -288,8 +291,6 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     }
 
     /**
-     * @param Request $request
-     * @param SignS3Upload $signS3Upload
      * @return mixed
      */
     public function signS3Upload(Request $request, SignS3Upload $signS3Upload)
@@ -298,8 +299,6 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     }
 
     /**
-     * @param Request $request
-     * @param SignAzureUpload $signAzureUpload
      * @return mixed
      */
     public function signAzureUpload(Request $request, SignAzureUpload $signAzureUpload)
@@ -308,8 +307,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
     }
 
     /**
-     * @param $signature
-     * @param bool $isJsonResponse
+     * @param  bool  $isJsonResponse
      * @return mixed
      */
     public function uploadIsSigned($signature, $isJsonResponse = true)
@@ -324,7 +322,7 @@ class FileLibraryController extends ModuleController implements SignUploadListen
      */
     public function uploadIsNotValid()
     {
-        return $this->responseFactory->json(["invalid" => true], 500);
+        return $this->responseFactory->json(['invalid' => true], 500);
     }
 
     /**

@@ -30,7 +30,7 @@ class SettingRepository extends ModuleRepository
         return $setting?->value ?? null;
     }
 
-    public function getFormFieldsForSection(string $section = null): array
+    public function getFormFieldsForSection(?string $section = null): array
     {
         $settings = $this->model->when($section, function ($query) use ($section) {
             $query->where('section', $section);
@@ -40,7 +40,7 @@ class SettingRepository extends ModuleRepository
             $medias = $settings->reduce(function ($carry, TwillModelContract $setting) {
                 foreach (getLocales() as $locale) {
                     if (
-                        !empty(parent::getFormFields($setting)['medias'][$locale]) && !empty(
+                        ! empty(parent::getFormFields($setting)['medias'][$locale]) && ! empty(
                             parent::getFormFields(
                                 $setting
                             )['medias'][$locale][$setting->key]
@@ -61,21 +61,16 @@ class SettingRepository extends ModuleRepository
         }
 
         return $settings->mapWithKeys(function ($setting) {
-                $settingValue = [];
+            $settingValue = [];
 
             foreach ($setting->translations as $translation) {
                 $settingValue[$translation->locale] = $translation->value;
             }
 
-                return [$setting->key => count(getLocales()) > 1 ? $settingValue : $setting->value];
+            return [$setting->key => count(getLocales()) > 1 ? $settingValue : $setting->value];
         })->toArray() + ['medias' => $medias];
     }
 
-    /**
-     * @param array $settingsFields
-     * @param string|null $section
-     * @return void
-     */
     public function saveAll(array $settingsFields, ?string $section = null): void
     {
         $section = $section ? ['section' => $section] : [];
@@ -103,7 +98,7 @@ class SettingRepository extends ModuleRepository
             }
         }
 
-        if (isset($settingsTranslated) && !empty($settingsTranslated)) {
+        if (isset($settingsTranslated) && ! empty($settingsTranslated)) {
             $settings = [];
 
             foreach ($settingsTranslated as $key => $values) {

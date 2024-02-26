@@ -6,16 +6,16 @@ use A17\Twill\Enums\PermissionLevel;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Group;
 use A17\Twill\Models\Model;
-use Illuminate\Support\Str;
 use A17\Twill\Models\Permission;
+use Illuminate\Support\Str;
 
 trait HandleGroupPermissions
 {
     /**
      * Retrieve group permissions fields
      *
-     * @param Model|Group $object
-     * @param array $fields
+     * @param  Model|Group  $object
+     * @param  array  $fields
      * @return array
      */
     public function getFormFieldsHandleGroupPermissions($object, $fields)
@@ -55,8 +55,8 @@ trait HandleGroupPermissions
     /**
      * Function executed after save on group form
      *
-     * @param Model|Group $object
-     * @param array $fields
+     * @param  Model|Group  $object
+     * @param  array  $fields
      */
     public function afterSaveHandleGroupPermissions($object, $fields)
     {
@@ -80,10 +80,9 @@ trait HandleGroupPermissions
                 $currentPermission = $object->permissions()
                     ->where('permissionable_type', $model)
                     ->whereIn('name', $modulePermissions)
-                    ->first()
-                ;
+                    ->first();
 
-                if (!$currentPermission || $permissionName != $currentPermission->name) {
+                if (! $currentPermission || $permissionName != $currentPermission->name) {
                     $object->revokeAllModulePermission($model);
                     if (in_array($permissionName, $modulePermissions)) {
                         $object->grantModulePermission($permissionName, $model);

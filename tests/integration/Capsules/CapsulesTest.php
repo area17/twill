@@ -4,10 +4,10 @@ namespace A17\Twill\Tests\Integration\Capsules;
 
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Facades\TwillRoutes;
+use A17\Twill\Tests\Integration\TestCase;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
-use A17\Twill\Tests\Integration\TestCase;
 
 class CapsulesTest extends TestCase
 {
@@ -88,10 +88,10 @@ class CapsulesTest extends TestCase
     public function testCapsuleProviderWasRegistered()
     {
         $capsule = TwillCapsules::getCapsuleForModule($this->capsuleName);
-        
+
         $this->assertTrue(class_exists("{$capsule->getModelNamespace()}\\{$this->capsuleModelName}"));
-        $this->assertEquals("App\\Twill\\Capsules", $capsule->getBaseNamespace());
-        $this->assertEquals("App\\Twill\\Capsules\\".$this->capsuleClassName, $capsule->namespace);
+        $this->assertEquals('App\\Twill\\Capsules', $capsule->getBaseNamespace());
+        $this->assertEquals('App\\Twill\\Capsules\\' . $this->capsuleClassName, $capsule->namespace);
     }
 
     /**
@@ -261,7 +261,7 @@ class CapsulesTest extends TestCase
     {
         foreach ($this->capsules as $capsule) {
             $migrationDeclared = collect(get_declared_classes())
-                ->contains(fn($class) => Str::contains($class, "create_{$capsule}_tables"));
+                ->contains(fn ($class) => Str::contains($class, "create_{$capsule}_tables"));
 
             if (! $migrationDeclared) {
                 $this->capsuleName = $capsule;

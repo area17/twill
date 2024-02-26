@@ -41,11 +41,11 @@ jobs:
           composer require "laravel/framework:10.*" "doctrine/dbal:^3.0" --no-interaction --no-update
           composer install
 
-      - name: Execute tests
-        run: vendor/bin/phpstan
+      - name: Execute pint
+        run: vendor/bin/pint --test
 
-      - name: Check code style
-        run: vendor/bin/phpcs
+      - name: Execute phpstan
+        run: vendor/bin/phpstan
 
   test:
     name: PHP ${{ matrix.php }} - LARAVEL ${{ matrix.laravel }}
@@ -112,7 +112,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:^3.0" --no-interaction --no-update
+          composer remove "laravel/pint" --dev --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "doctrine/dbal:^3.0" --no-interaction --no-update
+          composer require "orchestra/testbench:${{ matrix.testbench }}" --dev --no-interaction --no-update
           composer install --prefer-dist --no-interaction --no-plugins
 
       - name: Setup Node.js

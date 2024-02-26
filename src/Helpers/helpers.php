@@ -3,8 +3,10 @@
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Services\Blocks\Block;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 
@@ -21,7 +23,7 @@ if (! function_exists('getLikeOperator')) {
     function getLikeOperator(): string
     {
         return once(function () {
-            if (DB::connection()->getPDO()->getAttribute(\PDO::ATTR_DRIVER_NAME) === 'pgsql') {
+            if (DB::connection()->getPDO()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') {
                 return 'ILIKE';
             }
 
@@ -32,8 +34,8 @@ if (! function_exists('getLikeOperator')) {
 
 if (! function_exists('classUsesDeep')) {
     /**
-     * @param mixed $class
-     * @param bool $autoload
+     * @param  mixed  $class
+     * @param  bool  $autoload
      * @return array
      */
     function classUsesDeep($class, $autoload = true)
@@ -63,8 +65,8 @@ if (! function_exists('classUsesDeep')) {
 
 if (! function_exists('classHasTrait')) {
     /**
-     * @param mixed $class
-     * @param string $trait
+     * @param  mixed  $class
+     * @param  string  $trait
      * @return bool
      */
     function classHasTrait($class, $trait)
@@ -77,9 +79,9 @@ if (! function_exists('classHasTrait')) {
 
 if (! function_exists('getFormFieldsValue')) {
     /**
-     * @param array $formFields
-     * @param string $name
-     * @param mixed $default
+     * @param  array  $formFields
+     * @param  string  $name
+     * @param  mixed  $default
      * @return mixed
      */
     function getFormFieldsValue($formFields, $name, $default = null)
@@ -90,20 +92,20 @@ if (! function_exists('getFormFieldsValue')) {
 
 if (! function_exists('fireCmsEvent')) {
     /**
-     * @param string $eventName
-     * @param array $input
+     * @param  string  $eventName
+     * @param  array  $input
      * @return void
      */
     function fireCmsEvent($eventName, $input = [])
     {
-        $method = method_exists(\Illuminate\Events\Dispatcher::class, 'dispatch') ? 'dispatch' : 'fire';
+        $method = method_exists(Dispatcher::class, 'dispatch') ? 'dispatch' : 'fire';
         Event::$method($eventName, [$eventName, $input]);
     }
 }
 
 if (! function_exists('twill_path')) {
     /**
-     * @param string $path
+     * @param  string  $path
      * @return string
      */
     function twill_path($path = '')
@@ -145,9 +147,9 @@ if (! function_exists('twill_path')) {
 
 if (! function_exists('make_twill_directory')) {
     /**
-     * @param string $path
-     * @param bool $recursive
-     * @param \Illuminate\Filesystem\Filesystem|null $fs
+     * @param  string  $path
+     * @param  bool  $recursive
+     * @param  Filesystem|null  $fs
      */
     function make_twill_directory($path, $recursive = true, $fs = null)
     {
@@ -165,9 +167,9 @@ if (! function_exists('make_twill_directory')) {
 
 if (! function_exists('twill_put_stub')) {
     /**
-     * @param string $path
-     * @param bool $recursive
-     * @param \Illuminate\Filesystem\Filesystem|null $fs
+     * @param  string  $path
+     * @param  bool  $recursive
+     * @param  Filesystem|null  $fs
      */
     function twill_put_stub($path, $stub, $fs = null)
     {
@@ -193,9 +195,9 @@ if (! function_exists('twill_put_stub')) {
 
 if (! function_exists('fix_directory_separator')) {
     /**
-     * @param string $path
-     * @param bool $recursive
-     * @param int $mode
+     * @param  string  $path
+     * @param  bool  $recursive
+     * @param  int  $mode
      */
     function fix_directory_separator($path)
     {
@@ -217,9 +219,8 @@ if (! function_exists('twillModel')) {
 
 if (! function_exists('generate_list_of_available_blocks')) {
     /**
-     * @param array $blocks
-     * @param array $groups
-     * @return array
+     * @param  array  $blocks
+     * @param  array  $groups
      */
     function generate_list_of_available_blocks($blocks, $groups, bool $settingsOnly = false, array $excludeBlocks = []): array
     {
@@ -240,7 +241,7 @@ if (! function_exists('generate_list_of_available_blocks')) {
                         return false;
                     }
 
-                    /** @var \Illuminate\Support\Collection<Block> $appBlocksList */
+                    /** @var Collection<Block> $appBlocksList */
                     if (
                         count($appBlocksList) > 0 && $appBlocksList->contains(
                             function ($appBlock) use ($block) {

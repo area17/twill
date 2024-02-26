@@ -7,6 +7,7 @@ trait ExecutesInTwillDir
     public function executeInTwillDir(string $command): mixed
     {
         $twillDir = $this->getTwillDir();
+
         return shell_exec("cd $twillDir && $command");
     }
 

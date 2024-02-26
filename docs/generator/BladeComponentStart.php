@@ -14,13 +14,13 @@ class BladeComponentStart implements BlockStartParserInterface
     {
         $currentLine = $cursor->getLine();
 
-        if (!Str::startsWith($currentLine, ':::')) {
+        if (! Str::startsWith($currentLine, ':::')) {
             return BlockStart::none();
         }
 
         $data = mb_strtolower(str_replace(' ', '-', trim($currentLine, ' :')));
 
-        if (!$data) {
+        if (! $data) {
             return BlockStart::none();
         }
 

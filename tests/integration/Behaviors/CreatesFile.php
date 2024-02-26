@@ -3,7 +3,6 @@
 namespace A17\Twill\Tests\Integration\Behaviors;
 
 use A17\Twill\Models\File;
-use A17\Twill\Models\Media;
 use Illuminate\Http\UploadedFile;
 
 trait CreatesFile

@@ -4,7 +4,6 @@ namespace A17\Twill\Commands;
 
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Services\Blocks\Block;
-use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Facades\View;
@@ -62,7 +61,7 @@ class GenerateBlocks extends Command
      */
     public function handle()
     {
-        if (!$this->filesystem->exists($path = resource_path('views/twill/blocks'))) {
+        if (! $this->filesystem->exists($path = resource_path('views/twill/blocks'))) {
             $this->error(self::NO_BLOCKS_DEFINED);
 
             return;
@@ -109,7 +108,7 @@ class GenerateBlocks extends Command
     /**
      * Recursively make a directory.
      *
-     * @param string $directory
+     * @param  string  $directory
      * @return string
      */
     public function makeDirectory($directory)
@@ -124,7 +123,7 @@ class GenerateBlocks extends Command
     /**
      * Sanitizes the given HTML code by removing redundant spaces and comments.
      *
-     * @param string $html
+     * @param  string  $html
      * @return string
      */
     private function sanitize($html)
@@ -147,7 +146,6 @@ class GenerateBlocks extends Command
     }
 
     /**
-     * @param $contents
      * @return string
      */
     private function removeSpecialBladeTags($contents)

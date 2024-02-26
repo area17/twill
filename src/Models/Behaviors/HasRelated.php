@@ -3,9 +3,9 @@
 namespace A17\Twill\Models\Behaviors;
 
 use A17\Twill\Models\Contracts\TwillModelContract;
+use A17\Twill\Models\Model;
 use A17\Twill\Models\RelatedItem;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 trait HasRelated
@@ -49,7 +49,7 @@ trait HasRelated
         return $this->relatedCache[$browserName] = $this->relatedItems
             ->where('browser_name', $browserName)
             ->map(function ($item) {
-                /** @var \A17\Twill\Models\Model $model */
+                /** @var Model $model */
                 if ($model = $item->related) {
                     $model->setRelation('pivot', $item);
 
@@ -63,7 +63,7 @@ trait HasRelated
     /**
      * Attach items to the model for a browser field.
      *
-     * @param array<int, TwillModelContract> $items
+     * @param  array<int, TwillModelContract>  $items
      */
     public function saveRelated(array|Collection $items, string $browserName): void
     {

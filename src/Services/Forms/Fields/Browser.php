@@ -7,13 +7,14 @@ use A17\Twill\Services\Forms\Fields\Traits\HasFieldNote;
 use A17\Twill\Services\Forms\Fields\Traits\HasMax;
 use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 class Browser extends BaseFormField
 {
-    use IsTranslatable;
-    use HasMax;
-    use HasFieldNote;
     use CanHaveButtonOnTop;
+    use HasFieldNote;
+    use HasMax;
+    use IsTranslatable;
 
     protected ?string $moduleName = null;
 
@@ -160,7 +161,7 @@ class Browser extends BaseFormField
                 if (isset($module['name'])) {
                     $this->modules[] = [
                         'name' => getModuleNameByModel($module['name']),
-                        'label' => $module['label']
+                        'label' => $module['label'],
                     ];
                 } else {
                     $this->modules[] = [
@@ -176,7 +177,7 @@ class Browser extends BaseFormField
     protected function getAdditionalConstructorArguments(): array
     {
         if (! $this->name && ! $this->moduleName) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Browser field is missing name field. Use ->name when using more than 1 module.'
             );
         }

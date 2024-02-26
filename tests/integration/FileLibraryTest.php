@@ -2,9 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
-use A17\Twill\Models\File;
 use A17\Twill\Tests\Integration\Behaviors\CreatesFile;
-use Illuminate\Http\UploadedFile;
 
 class FileLibraryTest extends TestCase
 {

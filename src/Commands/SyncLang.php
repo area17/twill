@@ -20,7 +20,7 @@ class SyncLang extends Command
      *
      * @var string
      */
-    protected $description = "Sync the translations";
+    protected $description = 'Sync the translations';
 
     /**
      * @var Filesystem
@@ -34,8 +34,8 @@ class SyncLang extends Command
     protected $langStubPath = __DIR__ . '/stubs/lang.stub';
 
     /**
-     * @param ValidatorFactory $validatorFactory
-     * @param Config $config
+     * @param  ValidatorFactory  $validatorFactory
+     * @param  Config  $config
      */
     public function __construct(Filesystem $files)
     {
@@ -75,7 +75,7 @@ class SyncLang extends Command
                 foreach (Arr::dot($translations) as $key => $translation) {
                     $rowIndex = array_search($key, Arr::pluck(array_slice($csvArray, 2), 0));
                     if ($rowIndex === false) {
-                        $newRow = array_fill(0, count($csvArray[0]), "");
+                        $newRow = array_fill(0, count($csvArray[0]), '');
                         $newRow[0] = $key;
                         $newRow[$columnIndex] = $translation;
                         $csvArray[] = $newRow;
@@ -131,7 +131,7 @@ class SyncLang extends Command
         foreach (array_slice($this->getArrayFromCsv(), 2) as $row) {
             $key = $row[0];
             $translation = $row[$index];
-            if (!empty($translation)) {
+            if (! empty($translation)) {
                 Arr::set($content, $key, $translation);
             }
         }
@@ -151,12 +151,12 @@ class SyncLang extends Command
     private function convertArrayToString($array)
     {
         $export = var_export($array, true);
-        $export = preg_replace("#^([ ]*)(.*)#m", '$1$1$2', $export);
+        $export = preg_replace('#^([ ]*)(.*)#m', '$1$1$2', $export);
 
         $array = preg_split("/\r\n|\n|\r/", $export);
         $array = preg_replace(["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], [null, ']$1', ' => ['], $array);
 
-        return implode(PHP_EOL, array_filter(["["] + $array));
+        return implode(PHP_EOL, array_filter(['['] + $array));
     }
 
     private function cleanup()

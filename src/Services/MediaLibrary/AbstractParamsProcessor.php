@@ -61,7 +61,7 @@ abstract class AbstractParamsProcessor
      * for each param. Custom handlers can be defined by following this naming
      * convention: `handleParamNAME`, where NAME is the name of the param.
      *
-     * @param array $params
+     * @param  array  $params
      * @return array
      */
     public function process($params)
@@ -86,8 +86,8 @@ abstract class AbstractParamsProcessor
      * corresponding properties as defined in COMPATIBLE_PARAMS. Unknown params
      * will remain untouched.
      *
-     * @param string $key
-     * @param mixed $value
+     * @param  string  $key
+     * @param  mixed  $value
      * @return void
      */
     protected function handleParam($key, $value)

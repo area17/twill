@@ -3,7 +3,6 @@
 namespace A17\Twill\Repositories;
 
 use A17\Twill\Exceptions\NoCapsuleFoundException;
-use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Behaviors\Sortable;
@@ -18,6 +17,7 @@ use A17\Twill\Repositories\Behaviors\HandleRepeaters;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
@@ -27,15 +27,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use ReflectionClass;
+use Throwable;
 
 abstract class ModuleRepository
 {
-    use HandleDates;
     use HandleBrowsers;
-    use HandleRelatedBrowsers;
-    use HandleRepeaters;
+    use HandleDates;
     use HandleFieldsGroups;
     use HandlePermissions;
+    use HandleRelatedBrowsers;
+    use HandleRepeaters;
 
     protected TwillModelContract $model;
 
@@ -115,7 +116,7 @@ abstract class ModuleRepository
     }
 
     /**
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function getById(int $id, array $with = [], array $withCount = []): TwillModelContract
     {
@@ -654,7 +655,7 @@ abstract class ModuleRepository
             } else {
                 if (is_array($item)) {
                     // if it's an array of pivot fields and no position is set, set the position
-                    if (!isset($item['position'])) {
+                    if (! isset($item['position'])) {
                         $item['position'] = $position;
                     }
                 }
@@ -668,7 +669,7 @@ abstract class ModuleRepository
 
         try {
             $object->$relationship()->sync($newItems);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // If an error occurs, maybe because the pivot table doesn't have the 'position' column,
             // we will just keep the old implementation
             $object->$relationship()->sync($fields[$relationship]);
@@ -764,7 +765,7 @@ abstract class ModuleRepository
 
             return App::make($capsule->getRepositoryClass());
         } catch (NoCapsuleFoundException) {
-            throw new \Exception("Repository class not found for model '$modelOrRepository'");
+            throw new Exception("Repository class not found for model '$modelOrRepository'");
         }
     }
 

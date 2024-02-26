@@ -32,27 +32,27 @@ trait HandleTranslations
                     return $lang['value'] === $locale;
                 }));
 
-                $shouldPublishFirstLanguage = ($index === 0 && !$atLeastOneLanguageIsPublished);
+                $shouldPublishFirstLanguage = ($index === 0 && ! $atLeastOneLanguageIsPublished);
 
                 $fallBack = $fields[$locale]['active'] ?? false;
 
                 $activeField = $shouldPublishFirstLanguage || ($submittedLanguage['published'] ?? $fallBack);
 
                 $fields[$locale] = [
-                        'active' => $activeField,
-                    ] + $attributes->mapWithKeys(function ($attribute) use (&$fields, $locale, $localesCount, $index) {
-                        $attributeValue = $fields[$attribute] ?? null;
+                    'active' => $activeField,
+                ] + $attributes->mapWithKeys(function ($attribute) use (&$fields, $locale, $localesCount, $index) {
+                    $attributeValue = $fields[$attribute] ?? null;
 
-                        // if we are at the last locale,
-                        // let's unset this field as it is now managed by this trait
-                        if ($index + 1 === $localesCount) {
-                            unset($fields[$attribute]);
-                        }
+                    // if we are at the last locale,
+                    // let's unset this field as it is now managed by this trait
+                    if ($index + 1 === $localesCount) {
+                        unset($fields[$attribute]);
+                    }
 
-                        return [
-                            $attribute => ($attributeValue[$locale] ?? $fields[$locale][$attribute] ?? null),
-                        ];
-                    })->toArray();
+                    return [
+                        $attribute => ($attributeValue[$locale] ?? $fields[$locale][$attribute] ?? null),
+                    ];
+                })->toArray();
             }
 
             unset($fields['languages']);

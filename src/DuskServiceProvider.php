@@ -4,6 +4,7 @@ namespace A17\Twill;
 
 use Carbon\Carbon;
 use Carbon\Laravel\ServiceProvider;
+use Closure;
 use Facebook\WebDriver\Chrome\ChromeDevToolsDriver;
 use Facebook\WebDriver\WebDriverBy;
 use Illuminate\Support\Str;
@@ -14,7 +15,7 @@ class DuskServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        if (!class_exists(Browser::class)) {
+        if (! class_exists(Browser::class)) {
             return;
         }
         Browser::macro('setBrowserLocationToParis', function () {
@@ -39,7 +40,7 @@ class DuskServiceProvider extends ServiceProvider
             $this->pause(100);
         });
 
-        Browser::macro('inRow', function (string $stringInTable, \Closure $closure) {
+        Browser::macro('inRow', function (string $stringInTable, Closure $closure) {
             $resolver = new ElementResolver(
                 $this->driver->findElement(WebDriverBy::xpath('//table//tr[td/span//text()[contains(., "' . $stringInTable . '")]]')),
             );
@@ -131,7 +132,7 @@ class DuskServiceProvider extends ServiceProvider
             $this->waitForText('Content saved. All good!');
         });
 
-        Browser::macro('withinEditor', function (\Closure $closure) {
+        Browser::macro('withinEditor', function (Closure $closure) {
             $this->press('EDITOR');
             $this->with('.overlay__window', function (Browser $element) use ($closure) {
                 $closure($element);
@@ -140,7 +141,7 @@ class DuskServiceProvider extends ServiceProvider
             });
         });
 
-        Browser::macro('withinNewBlock', function (string $block, \Closure $closure, string $addLabel = 'Add content') {
+        Browser::macro('withinNewBlock', function (string $block, Closure $closure, string $addLabel = 'Add content') {
             $this->press($addLabel);
 
             $this->waitFor('.dropdown__scroller');
@@ -174,7 +175,7 @@ class DuskServiceProvider extends ServiceProvider
             });
         });
 
-        Browser::macro('dragBlock', function (string $block, ?\Closure $closure = null) {
+        Browser::macro('dragBlock', function (string $block, ?Closure $closure = null) {
             $buttons = $this->elements('.editorSidebar__button');
 
             $index = 1;
@@ -249,7 +250,7 @@ class DuskServiceProvider extends ServiceProvider
                 string $fieldSelector,
                 Carbon $dateTime,
                 string $dateFormat = 'F j, Y H:i',
-                string $staticWrapper = null
+                ?string $staticWrapper = null
             ) {
                 $this->waitFor($fieldSelector);
 

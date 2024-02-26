@@ -5,6 +5,7 @@ namespace A17\Twill\Services\Listings\Columns;
 use A17\Twill\Exceptions\ColumnMissingPropertyException;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Services\Listings\TableColumn;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 
 class Relation extends TableColumn
@@ -22,7 +23,7 @@ class Relation extends TableColumn
 
     public function getSortKey(): string
     {
-        if (null === $this->sortKey) {
+        if ($this->sortKey === null) {
             return $this->relation . ucfirst($this->field);
         }
 
@@ -35,17 +36,18 @@ class Relation extends TableColumn
     public function relation(string $relation): static
     {
         $this->relation = $relation;
+
         return $this;
     }
 
     protected function getRenderValue(TwillModelContract $model): string
     {
-        if (null === $this->relation) {
+        if ($this->relation === null) {
             throw new ColumnMissingPropertyException('Relation column missing relation value: ' . $this->field);
         }
 
         // @todo: I feel this can be optimized.
-        /** @var \Illuminate\Database\Eloquent\Collection $relation */
+        /** @var Collection $relation */
         $relation = $model->{$this->relation}()->get();
 
         return $relation->pluck($this->field)->join(', ');

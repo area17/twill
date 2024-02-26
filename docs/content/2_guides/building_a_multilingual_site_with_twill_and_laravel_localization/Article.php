@@ -10,8 +10,8 @@ use Mcamara\LaravelLocalization\Interfaces\LocalizedUrlRoutable;
 
 class Article extends Model implements LocalizedUrlRoutable
 {
-    use HasTranslation;
     use HasSlug;
+    use HasTranslation;
 
     protected $fillable = [
         'published',

@@ -71,5 +71,4 @@ class NavigationBuilderTest extends TestCase
         $this->expectException(CannotCombineNavigationBuilderWithLegacyConfig::class);
         TwillNavigation::addLink(NavigationLink::make()->forRoute('twill.users')->title('USERS'));
     }
-
 }

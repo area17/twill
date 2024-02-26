@@ -24,7 +24,7 @@ class Disk implements FileServiceInterface
     }
 
     /**
-     * @param mixed $id
+     * @param  mixed  $id
      * @return mixed
      */
     public function getUrl($id)

@@ -9,7 +9,6 @@ use A17\Twill\Services\Forms\Fields\Input;
 use A17\Twill\Services\Forms\Fields\Repeater;
 use A17\Twill\Services\Forms\Form;
 use A17\Twill\Services\Forms\InlineRepeater;
-use App\Models\Link;
 use App\Models\Partner;
 
 class ProjectController extends BaseModuleController
@@ -50,10 +49,10 @@ class ProjectController extends BaseModuleController
                     Input::make()
                         ->name('title'),
                     Input::make()
-                        ->name('url')
+                        ->name('url'),
                 ]),
 
-            BlockEditor::make()
+            BlockEditor::make(),
         ]);
     }
 }

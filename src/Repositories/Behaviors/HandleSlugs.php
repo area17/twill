@@ -13,7 +13,7 @@ trait HandleSlugs
         if (property_exists($this->model, 'slugAttributes')) {
             $object->twillSlugData = [];
             foreach (getLocales() as $locale) {
-                if (isset($fields['slug'][$locale]) && !empty($fields['slug'][$locale])) {
+                if (isset($fields['slug'][$locale]) && ! empty($fields['slug'][$locale])) {
                     $currentSlug = [];
                     $currentSlug['slug'] = $fields['slug'][$locale];
                     $currentSlug['locale'] = $locale;
@@ -28,11 +28,11 @@ trait HandleSlugs
                         $slugData[] = $fields[$param][$locale] ?? '';
                     }
 
-                    if (!empty(Arr::join($slugData, '-'))) {
+                    if (! empty(Arr::join($slugData, '-'))) {
                         $object->twillSlugData[] = [
                             'slug' => Str::slug(Arr::join($slugData, '-')),
                             'active' => $this->model->isTranslatable() ? $object->translate($locale)->active : 1,
-                            'locale' => $locale
+                            'locale' => $locale,
                         ];
                     }
                 }
@@ -92,12 +92,12 @@ trait HandleSlugs
 
         $item = (clone $query)->forSlug($slug)->with($with)->withCount($withCount)->first();
 
-        if (!$item && $item = (clone $query)->forInactiveSlug($slug)->first()) {
+        if (! $item && $item = (clone $query)->forInactiveSlug($slug)->first()) {
             $item->redirect = true;
         }
 
         if (
-            !$item && config('translatable.use_property_fallback', false)
+            ! $item && config('translatable.use_property_fallback', false)
             && config('translatable.fallback_locale') != config('app.locale')
         ) {
             $item = (clone $query)->orWhere(function ($query) {

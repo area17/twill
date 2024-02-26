@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Storage;
-use Aws\S3\S3Client;
 use Aws\S3\PostObjectV4;
+use Aws\S3\S3Client;
+use Illuminate\Support\Facades\Storage;
 
-if (!function_exists('s3Endpoint')) {
+if (! function_exists('s3Endpoint')) {
     /**
-     * @param string $disk
+     * @param  string  $disk
      * @return string
      */
     function s3Endpoint($disk = 'libraries')
@@ -27,28 +27,29 @@ if (!function_exists('s3Endpoint')) {
     }
 }
 
-if (!function_exists('azureEndpoint')) {
+if (! function_exists('azureEndpoint')) {
     /**
-     * @param string $disk
+     * @param  string  $disk
      * @return string
      */
     function azureEndpoint($disk = 'libraries')
     {
         $scheme = config("filesystems.disks.{$disk}.use_https") ? 'https://' : '';
+
         return $scheme . config("filesystems.disks.{$disk}.name") . '.blob.' . config("filesystems.disks.{$disk}.endpoint-suffix") . '/' . config("filesystems.disks.{$disk}.container");
     }
 }
 
-if (!function_exists('bytesToHuman')) {
+if (! function_exists('bytesToHuman')) {
     /**
-     * @param float $bytes
+     * @param  float  $bytes
      * @return string
      */
     function bytesToHuman($bytes)
     {
         $units = ['B', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb'];
 
-        for ($i = 0; $bytes > 1024; ++$i) {
+        for ($i = 0; $bytes > 1024; $i++) {
             $bytes /= 1024;
         }
 
@@ -56,9 +57,9 @@ if (!function_exists('bytesToHuman')) {
     }
 }
 
-if (!function_exists('replaceAccents')) {
+if (! function_exists('replaceAccents')) {
     /**
-     * @param string $str
+     * @param  string  $str
      * @return bool|string
      */
     function replaceAccents($str)
@@ -66,24 +67,25 @@ if (!function_exists('replaceAccents')) {
         if (function_exists('mb_convert_encoding')) {
             return mb_convert_encoding($str, 'ASCII', 'UTF-8');
         }
+
         return iconv('UTF-8', 'ASCII//TRANSLIT', $str);
     }
 }
 
-if (!function_exists('sanitizeFilename')) {
+if (! function_exists('sanitizeFilename')) {
     /**
-     * @param string $filename
+     * @param  string  $filename
      * @return string
      */
     function sanitizeFilename($filename)
     {
         $sanitizedFilename = replaceAccents($filename);
 
-        $invalid = array(
+        $invalid = [
             ' ' => '-',
             '%20' => '-',
             '_' => '-',
-        );
+        ];
 
         $sanitizedFilename = str_replace(array_keys($invalid), array_values($invalid), $sanitizedFilename);
 

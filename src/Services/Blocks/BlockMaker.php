@@ -4,7 +4,9 @@ namespace A17\Twill\Services\Blocks;
 
 use A17\Twill\Facades\TwillBlocks;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Mockery\Exception;
 use SplFileInfo;
@@ -17,12 +19,12 @@ class BlockMaker
     protected $files;
 
     /**
-     * @var \Illuminate\Console\Command
+     * @var Command
      */
     protected $command;
 
     /**
-     * @var \A17\Twill\Services\Blocks\Block
+     * @var Block
      */
     protected $blockBase;
 
@@ -31,9 +33,6 @@ class BlockMaker
      */
     protected $icon;
 
-    /**
-     * @param Filesystem $files
-     */
     public function __construct(
         Filesystem $files
     ) {
@@ -43,11 +42,9 @@ class BlockMaker
     /**
      * Make a new block.
      *
-     * @param $blockName
-     * @param $baseName
-     * @param $iconName
      * @return mixed
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     *
+     * @throws FileNotFoundException
      * @throws \Exception
      */
     public function make($blockName, $baseName, $iconName, bool $generateView = false)
@@ -55,9 +52,9 @@ class BlockMaker
         $this->info('Creating block...');
 
         if (
-            !$this->checkBlockStub($baseName) ||
-            !$this->checkIconFile($iconName) ||
-            !$this->checkBlockBaseFormat(
+            ! $this->checkBlockStub($baseName) ||
+            ! $this->checkIconFile($iconName) ||
+            ! $this->checkBlockBaseFormat(
                 $stubFileName = $this->blockBase->file->getPathName()
             )
         ) {
@@ -65,7 +62,7 @@ class BlockMaker
         }
 
         if (
-            !$this->checkBlockFile(
+            ! $this->checkBlockFile(
                 $blockFile = $this->makeBlockPath(
                     $blockIdentifier = $this->makeBlockIdentifier($blockName)
                 )
@@ -81,7 +78,7 @@ class BlockMaker
         );
 
         if (
-            !$this->checkRepeaters(
+            ! $this->checkRepeaters(
                 $repeaters = $this->generateRepeaters(
                     $baseName,
                     $blockIdentifier,
@@ -102,8 +99,8 @@ class BlockMaker
     }
 
     /**
-     * @param $baseName
      * @return bool
+     *
      * @throws \Exception
      */
     protected function checkBlockStub($baseName)
@@ -118,7 +115,6 @@ class BlockMaker
     }
 
     /**
-     * @param $iconName
      * @return bool
      */
     protected function checkIconFile($iconName)
@@ -133,7 +129,6 @@ class BlockMaker
     }
 
     /**
-     * @param $blockFile
      * @return bool
      */
     protected function checkBlockFile($blockFile)
@@ -151,7 +146,7 @@ class BlockMaker
 
     protected function checkBlockBaseFormat($stubFileName)
     {
-        if (!$this->blockBase->isNewFormat) {
+        if (! $this->blockBase->isNewFormat) {
             $this->error(
                 "The block file '{$stubFileName}' format is the old one."
             );
@@ -182,12 +177,10 @@ class BlockMaker
     }
 
     /**
-     * @param $blockName
-     * @param $iconName
-     * @param $stubFileName
-     * @param null|string $stub
+     * @param  null|string  $stub
      * @return string|string[]|null
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     *
+     * @throws FileNotFoundException
      */
     public function makeBlock(
         $blockName,
@@ -245,7 +238,7 @@ class BlockMaker
                 "/@twillBlockCompiled\('(.*)'\)\n/",
                 "/@twillRepeaterCompiled\('(.*)'\)\n/",
             ],
-            "",
+            '',
             $stub
         );
 
@@ -255,14 +248,14 @@ class BlockMaker
                 "/@twillBlockComponent\('(.*)'\)\n/",
                 "/@twillRepeaterComponent\('(.*)'\)\n/",
             ],
-            "",
+            '',
             $stub
         );
     }
 
     /**
-     * @param $blockName
      * @return string
+     *
      * @throws \Exception
      */
     protected function makeBlockIdentifier($blockName)
@@ -275,7 +268,7 @@ class BlockMaker
     }
 
     /**
-     * @param string $type
+     * @param  string  $type
      * @return string
      */
     protected function makeBlockPath(string $blockIdentifier, $type = 'block')
@@ -284,9 +277,9 @@ class BlockMaker
             "twill.block_editor.directories.destination.{$type}s"
         );
 
-        if (!$this->files->exists($destination)) {
+        if (! $this->files->exists($destination)) {
             if (
-                !config('twill.block_editor.directories.destination.make_dir')
+                ! config('twill.block_editor.directories.destination.make_dir')
             ) {
                 throw new Exception(
                     "Destination directory does not exists: {$destination}"
@@ -300,7 +293,6 @@ class BlockMaker
     }
 
     /**
-     * @param $string
      * @return string
      */
     public function makeBlockTitle($string)
@@ -313,9 +305,9 @@ class BlockMaker
     }
 
     /**
-     * @param $block
-     * @param array $sources
+     * @param  array  $sources
      * @return mixed
+     *
      * @throws \Exception
      */
     public function getBlockByName($block, $sources = [])
@@ -324,7 +316,6 @@ class BlockMaker
     }
 
     /**
-     * @param $icon
      * @return mixed
      */
     public function getIconFile($icon, $addExtension = true)
@@ -340,7 +331,7 @@ class BlockMaker
                 return $keep;
             }
 
-            if (!$this->files->exists($path)) {
+            if (! $this->files->exists($path)) {
                 return null;
             }
 
@@ -355,11 +346,9 @@ class BlockMaker
     }
 
     /**
-     * @param $baseName
-     * @param $blockName
-     * @param $blockBase
-     * @return \Illuminate\Support\Collection
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @return Collection
+     *
+     * @throws FileNotFoundException
      */
     public function generateRepeaters($baseName, $blockName, &$blockBase)
     {
@@ -409,13 +398,9 @@ class BlockMaker
     }
 
     /**
-     * @param $repeaterName
-     * @param $baseName
-     * @param $blockName
-     * @param $blockBase
-     * @param $blockString
      * @return array
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     *
+     * @throws FileNotFoundException
      * @throws \Exception
      */
     public function createRepeater(
@@ -465,7 +450,7 @@ class BlockMaker
     {
         $directory = dirname($filePath);
 
-        if (!$this->files->exists($directory)) {
+        if (! $this->files->exists($directory)) {
             $this->files->makeDirectory($directory, 0755, true);
         }
 
@@ -473,8 +458,7 @@ class BlockMaker
     }
 
     /**
-     * @param $blockName
-     * @param \Illuminate\Support\Collection $repeaters
+     * @param  Collection  $repeaters
      * @return bool
      */
     protected function saveAllFiles(
@@ -519,9 +503,6 @@ class BlockMaker
         return $this;
     }
 
-    /**
-     * @param $message
-     */
     public function info($message)
     {
         if ($this->command) {
@@ -529,9 +510,6 @@ class BlockMaker
         }
     }
 
-    /**
-     * @param $message
-     */
     public function error($message)
     {
         if ($this->command) {

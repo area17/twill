@@ -11,5 +11,4 @@ class Posting extends Model
         'title',
         'description',
     ];
-
 }

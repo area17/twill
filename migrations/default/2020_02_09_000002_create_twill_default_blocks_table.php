@@ -15,7 +15,7 @@ return new class extends Migration
     {
         $twillBlocksTable = config('twill.blocks_table', 'twill_blocks');
 
-        if (!Schema::hasTable($twillBlocksTable)) {
+        if (! Schema::hasTable($twillBlocksTable)) {
             Schema::create($twillBlocksTable, function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->integer('blockable_id')->nullable()->unsigned();

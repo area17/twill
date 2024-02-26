@@ -2,17 +2,19 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use Illuminate\Database\Eloquent\Builder;
+
 interface Sortable
 {
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeOrdered($query);
 
     /**
-     * @param array $ids
-     * @param int $startOrder
+     * @param  array  $ids
+     * @param  int  $startOrder
      * @return void
      */
     public static function setNewOrder($ids, $startOrder = 1);

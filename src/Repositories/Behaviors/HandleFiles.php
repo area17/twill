@@ -4,16 +4,17 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\File;
+use A17\Twill\Models\Model;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 trait HandleFiles
 {
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @return \A17\Twill\Models\Model
+     * @param  Model  $object
+     * @param  array  $fields
+     * @return Model
      */
     public function hydrateHandleFiles($object, $fields)
     {
@@ -37,8 +38,8 @@ trait HandleFiles
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
+     * @param  Model  $object
+     * @param  array  $fields
      * @return void
      */
     public function afterSaveHandleFiles($object, $fields)
@@ -55,8 +56,8 @@ trait HandleFiles
     }
 
     /**
-     * @param array $fields
-     * @return \Illuminate\Support\Collection
+     * @param  array  $fields
+     * @return Collection
      */
     private function getFiles($fields)
     {
@@ -91,8 +92,8 @@ trait HandleFiles
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
+     * @param  Model  $object
+     * @param  array  $fields
      * @return array
      */
     public function getFormFieldsHandleFiles($object, $fields)

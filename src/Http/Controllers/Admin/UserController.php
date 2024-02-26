@@ -143,6 +143,7 @@ class UserController extends ModuleController
                     if (TwillPermissions::enabled()) {
                         return Str::title($user->role->name);
                     }
+
                     return Str::title($user->role);
                 })
                 ->sortable()
@@ -157,7 +158,7 @@ class UserController extends ModuleController
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return array
      */
     protected function indexData($request)
@@ -179,8 +180,9 @@ class UserController extends ModuleController
     }
 
     /**
-     * @param Request $request
+     * @param  Request  $request
      * @return array
+     *
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
      */
@@ -220,9 +222,6 @@ class UserController extends ModuleController
         ] + ($permissionsData ?? []);
     }
 
-    /**
-     * @return array
-     */
     protected function getRequestFilters(): array
     {
         if ($this->request->has('search')) {
@@ -245,17 +244,17 @@ class UserController extends ModuleController
                 ->label(twillTrans('twill::lang.user-management.active'))
                 ->queryString('activated')
                 ->scope('activated')
-                ->amount(fn() => $this->repository->getCountByStatusSlug('activated', [$roleScope])),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('activated', [$roleScope])),
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.user-management.pending'))
                 ->queryString('pending')
                 ->scope('pending')
-                ->amount(fn() => $this->repository->getCountByStatusSlug('pending', [$roleScope])),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('pending', [$roleScope])),
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.user-management.disabled'))
                 ->queryString('draft')
                 ->scope('draft')
-                ->amount(fn() => $this->repository->getCountByStatusSlug('draft', [$roleScope])),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('draft', [$roleScope])),
         ]);
 
         if ($this->getIndexOption('restore')) {
@@ -264,7 +263,7 @@ class UserController extends ModuleController
                     ->label(twillTrans('twill::lang.user-management.trash'))
                     ->queryString('trash')
                     ->scope('onlyTrashed')
-                    ->amount(fn() => $this->repository->getCountByStatusSlug('trash', [$roleScope])),
+                    ->amount(fn () => $this->repository->getCountByStatusSlug('trash', [$roleScope])),
             );
         }
 
@@ -272,7 +271,7 @@ class UserController extends ModuleController
     }
 
     /**
-     * @param string $option
+     * @param  string  $option
      * @return bool
      */
     protected function getIndexOption($option, $item = null)
@@ -285,7 +284,7 @@ class UserController extends ModuleController
     }
 
     /**
-     * @param \A17\Twill\Models\ModelInterface $item
+     * @param  \A17\Twill\Models\ModelInterface  $item
      * @return array
      */
     protected function indexItemData($item)

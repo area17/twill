@@ -2,12 +2,12 @@
 
 namespace A17\Twill\Tests\Unit\Components;
 
-
 use A17\Twill\View\Components\Fields\Browser;
 
 class BrowserFieldTest extends ComponentTestBase
 {
     public string $component = Browser::class;
+
     public array $data = [
         'name' => 'name',
         'label' => 'label',
@@ -18,7 +18,9 @@ class BrowserFieldTest extends ComponentTestBase
             ],
         ],
     ];
+
     public string $field = \A17\Twill\Services\Forms\Fields\Browser::class;
+
     public array $fieldSetters = [
         'name' => 'browser_name',
         'endpoints' => [
@@ -28,5 +30,6 @@ class BrowserFieldTest extends ComponentTestBase
             ],
         ],
     ];
+
     public string $expectedView = 'twill::partials.form._browser';
 }

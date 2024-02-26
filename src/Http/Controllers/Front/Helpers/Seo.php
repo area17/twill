@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Http\Controllers\Front\Helpers;
 
+use A17\Twill\Models\Media;
+
 class Seo
 {
     /**
@@ -20,7 +22,7 @@ class Seo
     public $nofollow = false;
 
     /**
-     * @var \A17\Twill\Models\Media|null
+     * @var Media|null
      */
     public $image;
 
@@ -35,23 +37,23 @@ class Seo
     public $height;
 
     /**
-     * @param string $title
+     * @param  string  $title
      * @return void
      */
     public function setTitle($title)
     {
-        if (!empty($title)) {
+        if (! empty($title)) {
             $this->title = $title;
         }
     }
 
     /**
-     * @param string $description
+     * @param  string  $description
      * @return void
      */
     public function setDescription($description)
     {
-        if (!empty($description)) {
+        if (! empty($description)) {
             $this->description = $description;
         }
     }

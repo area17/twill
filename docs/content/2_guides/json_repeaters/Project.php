@@ -10,10 +10,10 @@ class Project extends Model
         'published',
         'title',
         'description',
-        'tasks'
+        'tasks',
     ];
 
     protected $casts = [
-        'tasks' => 'array'
+        'tasks' => 'array',
     ];
 }

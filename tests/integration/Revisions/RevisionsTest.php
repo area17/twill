@@ -21,7 +21,7 @@ class RevisionsTest extends RevisionTestBase
         ]);
 
         $author->refresh();
-        $this->assertTrue((bool)$author->published);
+        $this->assertTrue((bool) $author->published);
         $this->assertEquals('Test', $author->name);
     }
 
@@ -74,7 +74,7 @@ class RevisionsTest extends RevisionTestBase
         ]);
 
         $author->refresh();
-        $this->assertTrue((bool)$author->published);
+        $this->assertTrue((bool) $author->published);
         $this->assertNotEquals('Test', $author->name);
     }
 
@@ -92,7 +92,7 @@ class RevisionsTest extends RevisionTestBase
 
         $revisionData = $this->getRevisionPayloads($author)->first();
         $this->assertEquals('draft-revision', $revisionData['cmsSaveType']);
-        $this->assertFalse((bool)$revisionData['published']);
+        $this->assertFalse((bool) $revisionData['published']);
     }
 
     public function test_draft_revision_is_not_identified_as_current(): void

@@ -22,8 +22,8 @@ class MakeModuleTest extends TestCase
                 '--factory' => true,
                 '--seeder' => true,
             ])
-            ->expectsConfirmation('Do you also want to generate the preview file?', 'no')
-            ->run()
+                ->expectsConfirmation('Do you also want to generate the preview file?', 'no')
+                ->run()
         );
 
         $this->assertFileExists(

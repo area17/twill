@@ -10,8 +10,8 @@ use Illuminate\Support\Str;
 
 class Node extends Model implements Sortable
 {
-    use HasPosition;
     use HasNesting;
+    use HasPosition;
 
     protected $fillable = [
         'published',

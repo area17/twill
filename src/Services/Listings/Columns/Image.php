@@ -32,6 +32,7 @@ class Image extends TableColumn
     public function role(?string $role): static
     {
         $this->role = $role;
+
         return $this;
     }
 
@@ -41,6 +42,7 @@ class Image extends TableColumn
     public function crop(?string $crop): static
     {
         $this->crop = $crop;
+
         return $this;
     }
 
@@ -50,6 +52,7 @@ class Image extends TableColumn
     public function mediaParams(array $params): static
     {
         $this->mediaParams = $params;
+
         return $this;
     }
 
@@ -59,6 +62,7 @@ class Image extends TableColumn
     public function rounded(bool $rounded = true): static
     {
         $this->rounded = $rounded;
+
         return $this;
     }
 
@@ -72,7 +76,7 @@ class Image extends TableColumn
 
     protected function getRenderValue(TwillModelContract $model): string
     {
-        if (!classHasTrait($model::class, HasMedias::class)) {
+        if (! classHasTrait($model::class, HasMedias::class)) {
             throw new InvalidArgumentException('Cannot use image column on model not implementing HasMedias trait');
         }
 

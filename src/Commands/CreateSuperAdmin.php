@@ -2,11 +2,11 @@
 
 namespace A17\Twill\Commands;
 
+use Carbon\Carbon;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Factory as ValidatorFactory;
-use Carbon\Carbon;
 
 class CreateSuperAdmin extends Command
 {
@@ -22,7 +22,7 @@ class CreateSuperAdmin extends Command
      *
      * @var string
      */
-    protected $description = "Create the superadmin account";
+    protected $description = 'Create the superadmin account';
 
     /**
      * @var ValidatorFactory
@@ -56,7 +56,7 @@ class CreateSuperAdmin extends Command
         $userModel = twillModel('user');
         $user = new $userModel();
         $user->fill([
-            'name' => "Admin",
+            'name' => 'Admin',
             'email' => $email,
             'published' => true,
         ]);
@@ -71,6 +71,7 @@ class CreateSuperAdmin extends Command
         $user->password = Hash::make($password);
         if ($user->save()) {
             $this->info('Your account has been created');
+
             return;
         }
 
@@ -92,7 +93,8 @@ class CreateSuperAdmin extends Command
         if ($this->validateEmail($email)) {
             return $email;
         } else {
-            $this->error("Your email is not valid");
+            $this->error('Your email is not valid');
+
             return $this->setEmail();
         }
     }
@@ -115,10 +117,12 @@ class CreateSuperAdmin extends Command
                 return $password;
             } else {
                 $this->error('Password does not match the confirm password');
+
                 return $this->setPassword();
             }
         } else {
-            $this->error("Your password is not valid, at least 6 characters");
+            $this->error('Your password is not valid, at least 6 characters');
+
             return $this->setPassword();
         }
     }
@@ -127,7 +131,7 @@ class CreateSuperAdmin extends Command
      * Determine if the email address given valid.
      *
      * @param  string  $email
-     * @return boolean
+     * @return bool
      */
     private function validateEmail($email)
     {
@@ -140,7 +144,7 @@ class CreateSuperAdmin extends Command
      * Determine if the password given valid.
      *
      * @param  string  $password
-     * @return boolean
+     * @return bool
      */
     private function validatePassword($password)
     {

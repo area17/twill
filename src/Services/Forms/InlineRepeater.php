@@ -48,6 +48,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
     {
         $self = new self();
         $self->fields = collect();
+
         return $self;
     }
 
@@ -96,6 +97,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
     public function allowBrowser(bool $allowBrowse = true): static
     {
         $this->allowBrowse = $allowBrowse;
+
         return $this;
     }
 
@@ -136,7 +138,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
     public function renderForm(): View
     {
         return view('twill::partials.form.renderer.block_form', [
-            'fields' => Form::make($this->fields)->renderForBlocks()
+            'fields' => Form::make($this->fields)->renderForBlocks(),
         ]);
     }
 
@@ -186,6 +188,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         }
 
         $repeater->renderForBlocks = $this->renderForBlocks ?? false;
+
         return $repeater->render();
     }
 

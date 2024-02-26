@@ -9,9 +9,9 @@ use A17\Twill\Services\Forms\Fields\Traits\Unpackable;
 
 class Select extends BaseFormField
 {
-    use IsTranslatable;
     use HasOptions;
     use HasPlaceholder;
+    use IsTranslatable;
     use Unpackable;
 
     protected bool $searchable = false;

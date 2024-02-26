@@ -4,15 +4,16 @@ namespace A17\Twill;
 
 use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Helpers\Capsule;
+use A17\Twill\Models\Contracts\TwillModelContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use A17\Twill\Models\Contracts\TwillModelContract;
+use ReflectionClass;
 
 class TwillCapsules
 {
     /**
-     * @var \A17\Twill\Helpers\Capsule[]
+     * @var Capsule[]
      */
     public array $registeredCapsules = [];
 
@@ -20,7 +21,7 @@ class TwillCapsules
         string $name,
         string $namespace,
         string $path,
-        string $singular = null,
+        ?string $singular = null,
         bool $enabled = true,
         bool $automaticNavigation = true
     ): Capsule {
@@ -49,7 +50,7 @@ class TwillCapsules
     }
 
     /**
-     * @throws \A17\Twill\Exceptions\NoCapsuleFoundException
+     * @throws NoCapsuleFoundException
      */
     public function getCapsuleForModule(string $module): Capsule
     {
@@ -57,7 +58,7 @@ class TwillCapsules
             return $capsule->getModule() === $module;
         });
 
-        if (!$capsule) {
+        if (! $capsule) {
             throw new NoCapsuleFoundException($module);
         }
 
@@ -65,7 +66,7 @@ class TwillCapsules
     }
 
     /**
-     * @throws \A17\Twill\Exceptions\NoCapsuleFoundException
+     * @throws NoCapsuleFoundException
      */
     public function getCapsuleForModel(string|TwillModelContract $model): Capsule
     {
@@ -79,7 +80,7 @@ class TwillCapsules
             return $capsule->getSingular() === $model;
         });
 
-        if (!$capsule) {
+        if (! $capsule) {
             throw new NoCapsuleFoundException($model);
         }
 
@@ -105,7 +106,7 @@ class TwillCapsules
         $list
             ->where('enabled', true)
             ->filter(function ($capsule) {
-                return !isset($this->registeredCapsules[$capsule['name']]);
+                return ! isset($this->registeredCapsules[$capsule['name']]);
             })
             ->map(function ($capsule) use ($path) {
                 $this->registerCapsule(
@@ -166,18 +167,18 @@ class TwillCapsules
     /** @return class-string<Model> */
     public function guessRelatedModelClass(string $related, Model $model): string
     {
-        $rc = new \ReflectionClass($model);
+        $rc = new ReflectionClass($model);
         $namespace = $rc->getNamespaceName();
         $capsule = $rc->getShortName();
         $relatedClass = $capsule . $related;
         foreach (
             [
-            // First load it from the base directory.
-            config('twill.namespace') . "\\Models\\{$related}s\\" . $relatedClass,
-            // Alternatively try to get it from the same directory as the model resides
-            $rc->getName() . $related,
-            // Or in nested directory models.
-            $namespace . "\\{$related}s\\" . $relatedClass,
+                // First load it from the base directory.
+                config('twill.namespace') . "\\Models\\{$related}s\\" . $relatedClass,
+                // Alternatively try to get it from the same directory as the model resides
+                $rc->getName() . $related,
+                // Or in nested directory models.
+                $namespace . "\\{$related}s\\" . $relatedClass,
             ] as $possibleClass
         ) {
             if (@class_exists($possibleClass)) {

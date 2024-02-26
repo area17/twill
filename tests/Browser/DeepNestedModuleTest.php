@@ -8,7 +8,8 @@ class DeepNestedModuleTest extends BrowserTestCase
 {
     public ?string $example = 'tests-deep-nested';
 
-    public function testCanVisitDeeplyNestedModules(): void {
+    public function testCanVisitDeeplyNestedModules(): void
+    {
         $this->browse(function (Browser $browser) {
             $browser->loginAs($this->superAdmin, 'twill_users');
             $browser->visitTwill();
@@ -18,7 +19,7 @@ class DeepNestedModuleTest extends BrowserTestCase
 
             $browser->clickLink('Clients');
 
-            $browser->inRow('SecondaryClient', function(Browser $browser) {
+            $browser->inRow('SecondaryClient', function (Browser $browser) {
                 // Clicklink does not work "within" another element for some reason.
                 // $browser->clickLink('0 children');
                 $browser->click('td:nth-of-type(5) a');
@@ -32,7 +33,7 @@ class DeepNestedModuleTest extends BrowserTestCase
 
             $browser->visit('/twill/clients/2/projects');
 
-            $browser->inRow('SecondaryClientProject', function(Browser $browser) {
+            $browser->inRow('SecondaryClientProject', function (Browser $browser) {
                 $browser->click('td:nth-of-type(5) a');
             });
 

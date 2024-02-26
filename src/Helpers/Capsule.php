@@ -379,7 +379,7 @@ class Capsule
 
                 $paths[] = [
                     'path' => $path,
-                    'source' => 'capsule::' . $this->name
+                    'source' => 'capsule::' . $this->name,
                 ];
 
                 config(["twill.block_editor.directories.source.$type" => $paths]);

@@ -3,10 +3,10 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\User;
+use Carbon\Carbon;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
-use Carbon\Carbon;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -83,7 +83,7 @@ class ResetPasswordController extends Controller
     protected function sendResetResponse(Request $request, $response)
     {
         $user = User::where('email', $request->input('email'))->first();
-        if (!$user->isActivated()) {
+        if (! $user->isActivated()) {
             $user->registered_at = Carbon::now();
             $user->save();
         }
@@ -97,8 +97,7 @@ class ResetPasswordController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param string|null $token
+     * @param  string|null  $token
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
     public function showResetForm(Request $request, $token = null)
@@ -120,8 +119,7 @@ class ResetPasswordController extends Controller
     }
 
     /**
-     * @param Request $request
-     * @param string|null $token
+     * @param  string|null  $token
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
     public function showWelcomeForm(Request $request, $token = null)
@@ -148,7 +146,7 @@ class ResetPasswordController extends Controller
      * Since Laravel 5.4, reset tokens are encrypted, but we support both cases here
      * https://github.com/laravel/framework/pull/16850
      *
-     * @param string $token
+     * @param  string  $token
      * @return \A17\Twill\Models\User|null
      */
     private function getUserFromToken($token)

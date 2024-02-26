@@ -16,7 +16,7 @@ return new class extends Migration
     {
         $twillSettingsTable = config('twill.settings_table', 'twill_settings');
 
-        if (!Schema::hasTable($twillSettingsTable)) {
+        if (! Schema::hasTable($twillSettingsTable)) {
             Schema::create($twillSettingsTable, function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->timestamps();
@@ -26,7 +26,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable(Str::singular($twillSettingsTable) . '_translations')) {
+        if (! Schema::hasTable(Str::singular($twillSettingsTable) . '_translations')) {
             Schema::create(Str::singular($twillSettingsTable) . '_translations', function (Blueprint $table) use ($twillSettingsTable) {
                 createDefaultTranslationsTableFields($table, Str::singular($twillSettingsTable));
                 $table->text('value')->nullable();

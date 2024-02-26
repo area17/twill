@@ -3,11 +3,14 @@
 namespace A17\Twill\Models\Behaviors;
 
 use A17\Twill\Models\UserOauth;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Laravel\Socialite\Contracts\User;
 
 trait HasOauth
 {
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function providers()
     {
@@ -16,16 +19,16 @@ trait HasOauth
     }
 
     /**
-     * @param \Laravel\Socialite\Contracts\User $oauthUser
-     * @param string $provider Socialite provider
-     * @return \Illuminate\Database\Eloquent\Model|false
+     * @param  User  $oauthUser
+     * @param  string  $provider  Socialite provider
+     * @return Model|false
      */
     public function linkProvider($oauthUser, $provider)
     {
 
         $provider = new UserOauth([
-            'token'    => $oauthUser->token,
-            'avatar'   => $oauthUser->avatar,
+            'token' => $oauthUser->token,
+            'avatar' => $oauthUser->avatar,
             'provider' => $provider,
             'oauth_id' => $oauthUser->id,
         ]);

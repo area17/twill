@@ -4,6 +4,7 @@ namespace A17\Twill\Services\Cache;
 
 use Aws\CloudFront\CloudFrontClient;
 use Aws\Result;
+use Exception;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -64,7 +65,7 @@ class CloudfrontCacheService
     }
 
     /**
-     * @param string[] $urls
+     * @param  string[]  $urls
      * @return void
      */
     public function invalidate($urls = ['/*'])
@@ -72,7 +73,7 @@ class CloudfrontCacheService
         if (! $this->hasInProgressInvalidation()) {
             try {
                 $this->createInvalidationRequest($urls);
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 Log::debug('Cloudfront invalidation request failed');
             }
         } else {
@@ -107,7 +108,7 @@ class CloudfrontCacheService
                         'CallerReference' => time(),
                     ],
                 ]);
-            } catch (\Exception) {
+            } catch (Exception) {
                 Log::debug('Cloudfront invalidation request failed');
             }
         }

@@ -7,17 +7,22 @@ use A17\Twill\View\Components\Fields\Wysiwyg;
 class WysiwygFieldTest extends ComponentTestBase
 {
     public string $component = Wysiwyg::class;
+
     public array $data = [
         'name' => 'name',
         'label' => 'label',
     ];
+
     public string $expectedView = 'twill::partials.form._wysiwyg';
+
     public string $field = \A17\Twill\Services\Forms\Fields\Wysiwyg::class;
+
     public array $fieldSetters = [
         'name' => 'name',
     ];
 
-    public function testTipTap(): void {
+    public function testTipTap(): void
+    {
         $this->data['type'] = 'tiptap';
 
         $component = $this->getMakeComponent();

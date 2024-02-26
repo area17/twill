@@ -15,7 +15,7 @@ return new class extends Migration
     {
         $twillFeaturesTable = config('twill.features_table', 'twill_features');
 
-        if (!Schema::hasTable($twillFeaturesTable)) {
+        if (! Schema::hasTable($twillFeaturesTable)) {
             Schema::create($twillFeaturesTable, function (Blueprint $table) use ($twillFeaturesTable) {
                 $table->bigIncrements('id');
                 $table->string('featured_id', 36);

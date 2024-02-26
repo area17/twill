@@ -22,7 +22,7 @@ class BasicFilterTest extends FilterTestBase
             BasicFilter::make()
                 ->queryString('title_test')
                 ->options(collect(['yes' => 'yes', 'no' => 'no']))
-                ->apply(fn(Builder $builder, string $value) => $builder->whereTranslation('name', Author::first()->name)
+                ->apply(fn (Builder $builder, string $value) => $builder->whereTranslation('name', Author::first()->name)
                 ),
         ];
 
@@ -68,7 +68,7 @@ class BasicFilterTest extends FilterTestBase
                 ->queryString('title_test')
                 ->default('yes')
                 ->options(collect(['yes' => 'yes', 'no' => 'no']))
-                ->apply(fn(Builder $builder, string $value) => $builder->whereTranslation('name', Author::first()->name)
+                ->apply(fn (Builder $builder, string $value) => $builder->whereTranslation('name', Author::first()->name)
                 ),
         ];
 
@@ -85,7 +85,7 @@ class BasicFilterTest extends FilterTestBase
             BasicFilter::make()
                 ->queryString('title_test')
                 ->options(collect(['yes' => 'yes', 'no' => 'no']))
-                ->apply(fn(Builder $builder, string $value) => $builder->whereTranslation('name', Author::first()->name)
+                ->apply(fn (Builder $builder, string $value) => $builder->whereTranslation('name', Author::first()->name)
                 ),
         ];
 

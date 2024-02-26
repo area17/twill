@@ -76,9 +76,9 @@ class RefreshCropsTest extends TestCase
         $this->createMediable();
 
         $this->artisan('twill:refresh-crops', [
-                'modelName' => 'Author',
-                'roleName' => 'avatar',
-            ])
+            'modelName' => 'Author',
+            'roleName' => 'avatar',
+        ])
             ->assertExitCode(0);
     }
 
@@ -89,9 +89,9 @@ class RefreshCropsTest extends TestCase
         $this->createMediable();
 
         $this->artisan('twill:refresh-crops', [
-                'modelName' => 'App\Models\Author',
-                'roleName' => 'avatar',
-            ])
+            'modelName' => 'App\Models\Author',
+            'roleName' => 'avatar',
+        ])
             ->assertExitCode(0);
     }
 
@@ -102,9 +102,9 @@ class RefreshCropsTest extends TestCase
         $this->createMediable();
 
         $this->artisan('twill:refresh-crops', [
-                'modelName' => 'App\Models\Post',
-                'roleName' => 'avatar',
-            ])
+            'modelName' => 'App\Models\Post',
+            'roleName' => 'avatar',
+        ])
             ->assertExitCode(1);
     }
 
@@ -115,9 +115,9 @@ class RefreshCropsTest extends TestCase
         $this->createMediable();
 
         $this->artisan('twill:refresh-crops', [
-                'modelName' => 'App\Models\Author',
-                'roleName' => 'photo',
-            ])
+            'modelName' => 'App\Models\Author',
+            'roleName' => 'photo',
+        ])
             ->assertExitCode(1);
     }
 
@@ -127,9 +127,9 @@ class RefreshCropsTest extends TestCase
         $this->createMedia();
 
         $this->artisan('twill:refresh-crops', [
-                'modelName' => 'App\Models\Author',
-                'roleName' => 'avatar',
-            ])
+            'modelName' => 'App\Models\Author',
+            'roleName' => 'avatar',
+        ])
             ->assertExitCode(1);
     }
 
@@ -142,10 +142,10 @@ class RefreshCropsTest extends TestCase
         $this->assertEquals(1, $this->mediables()->count());
 
         $this->artisan('twill:refresh-crops', [
-                'modelName' => 'App\Models\Author',
-                'roleName' => 'avatar',
-                '--dry' => 'true',
-            ])
+            'modelName' => 'App\Models\Author',
+            'roleName' => 'avatar',
+            '--dry' => 'true',
+        ])
             ->assertExitCode(0);
 
         $this->assertEquals(1, $this->mediables()->count());
@@ -162,9 +162,9 @@ class RefreshCropsTest extends TestCase
         $this->assertEquals('default', $mediables[0]->crop);
 
         $this->artisan('twill:refresh-crops', [
-                'modelName' => 'App\Models\Author',
-                'roleName' => 'avatar',
-            ])
+            'modelName' => 'App\Models\Author',
+            'roleName' => 'avatar',
+        ])
             ->assertExitCode(0);
 
         $mediables = $this->mediables()->get();
@@ -184,9 +184,9 @@ class RefreshCropsTest extends TestCase
         $this->assertEquals(3, $this->mediables()->count());
 
         $this->artisan('twill:refresh-crops', [
-                'modelName' => 'App\Models\Author',
-                'roleName' => 'avatar',
-            ])
+            'modelName' => 'App\Models\Author',
+            'roleName' => 'avatar',
+        ])
             ->assertExitCode(0);
 
         $mediables = $this->mediables()->get();
@@ -206,9 +206,9 @@ class RefreshCropsTest extends TestCase
         $this->assertEquals(3, $this->mediables()->count());
 
         $this->artisan('twill:refresh-crops', [
-                'modelName' => 'App\Models\Author',
-                'roleName' => 'avatar',
-            ])
+            'modelName' => 'App\Models\Author',
+            'roleName' => 'avatar',
+        ])
             ->assertExitCode(0);
 
         $mediables = $this->mediables()->get();
@@ -236,9 +236,9 @@ class RefreshCropsTest extends TestCase
         $this->assertEquals(5, $this->mediables()->count());
 
         $this->artisan('twill:refresh-crops', [
-                'modelName' => 'App\Models\Author',
-                'roleName' => 'avatar',
-            ])
+            'modelName' => 'App\Models\Author',
+            'roleName' => 'avatar',
+        ])
             ->assertExitCode(0);
 
         $mediables = $this->mediables()->get();
@@ -288,9 +288,9 @@ class RefreshCropsTest extends TestCase
         $this->assertEquals(23, $this->mediables()->count());
 
         $this->artisan('twill:refresh-crops', [
-                'modelName' => 'App\Models\Author',
-                'roleName' => 'avatar',
-            ])
+            'modelName' => 'App\Models\Author',
+            'roleName' => 'avatar',
+        ])
             ->assertExitCode(0);
 
         // 2 crop added, 5 crops removed
@@ -311,9 +311,9 @@ class RefreshCropsTest extends TestCase
         $this->assertEquals(5, $this->mediables()->count());
 
         $this->artisan('twill:refresh-crops', [
-                'modelName' => 'App\Models\Author',
-                'roleName' => 'avatar',
-            ])
+            'modelName' => 'App\Models\Author',
+            'roleName' => 'avatar',
+        ])
             ->assertExitCode(0);
 
         $this->assertEquals(10, $this->mediables()->count());
@@ -332,9 +332,9 @@ class RefreshCropsTest extends TestCase
         $this->createMediable(['crop' => 'mobile', 'mediable_id' => $author2->id, 'media_id' => $media2->id]);
 
         $this->artisan('twill:refresh-crops', [
-                'modelName' => 'App\Models\Author',
-                'roleName' => 'avatar',
-            ])
+            'modelName' => 'App\Models\Author',
+            'roleName' => 'avatar',
+        ])
             ->assertExitCode(0);
 
         // generated mobile crop
@@ -356,9 +356,9 @@ class RefreshCropsTest extends TestCase
         ]);
 
         $this->artisan('twill:refresh-crops', [
-                'modelName' => 'App\Models\Author',
-                'roleName' => 'avatar',
-            ])
+            'modelName' => 'App\Models\Author',
+            'roleName' => 'avatar',
+        ])
             ->assertExitCode(0);
 
         $mediables = $this->mediables()->get();

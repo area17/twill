@@ -37,7 +37,7 @@ class BlockRenderer
     /**
      * A list of root blocks.
      *
-     * @var \A17\Twill\Services\Blocks\Block[]
+     * @var Block[]
      */
     public array $rootBlocks = [];
 
@@ -83,7 +83,7 @@ class BlockRenderer
     private static function getNestedBlocksForData(
         array $data,
         string $editorName,
-        string $parentEditorName = null
+        ?string $parentEditorName = null
     ): Block {
         $class = clone Block::getForComponent($data['type'], $data['is_repeater'] ?? false)->newInstance();
 
@@ -140,7 +140,8 @@ class BlockRenderer
      */
     private static function getPivotDummy(array $data): object
     {
-        return new class ($data) implements Arrayable {
+        return new class($data) implements Arrayable
+        {
             public function __construct(public array $data)
             {
             }
@@ -240,7 +241,7 @@ class BlockRenderer
 
         $renderer = new self();
 
-        /** @var \A17\Twill\Models\Block[] $blocks */
+        /** @var A17Block[] $blocks */
         $blocks = $model->blocks->where('editor_name', $editorName)->where('parent_id', null);
 
         foreach ($blocks as $block) {

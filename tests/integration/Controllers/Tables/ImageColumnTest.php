@@ -77,14 +77,14 @@ class ImageColumnTest extends ModulesTestBase
 
         $this->assertEquals(
             [
-                "name" => "image",
-                "label" => "Image",
-                "visible" => true,
-                "optional" => false,
-                "sortable" => false,
-                "html" => false,
-                "variation" => "square",
-                "specificType" => "thumbnail",
+                'name' => 'image',
+                'label' => 'Image',
+                'visible' => true,
+                'optional' => false,
+                'sortable' => false,
+                'html' => false,
+                'variation' => 'square',
+                'specificType' => 'thumbnail',
                 'shrink' => true,
             ],
             $column->toColumnArray()
@@ -94,15 +94,15 @@ class ImageColumnTest extends ModulesTestBase
 
         $this->assertEquals(
             [
-                "name" => "image",
-                "label" => "Image",
-                "visible" => true,
-                "optional" => false,
-                "sortable" => false,
-                "html" => false,
-                "variation" => "rounded",
-                "specificType" => "thumbnail",
-                "shrink" => true,
+                'name' => 'image',
+                'label' => 'Image',
+                'visible' => true,
+                'optional' => false,
+                'sortable' => false,
+                'html' => false,
+                'variation' => 'rounded',
+                'specificType' => 'thumbnail',
+                'shrink' => true,
             ],
             $column->toColumnArray()
         );
@@ -123,11 +123,11 @@ class ImageColumnTest extends ModulesTestBase
     public function testCustomRenderer(): void
     {
         $column = Image::make()->field('image')->customRender(function () {
-            return "Test";
+            return 'Test';
         });
 
         $this->assertEquals(
-            "Test",
+            'Test',
             urldecode($column->renderCell($this->author))
         );
     }
@@ -150,7 +150,7 @@ class ImageColumnTest extends ModulesTestBase
 
         // As there is no crop, we expect a blank image.
         $this->assertEquals(
-            "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
             urldecode($column->renderCell($this->author))
         );
     }
@@ -162,7 +162,7 @@ class ImageColumnTest extends ModulesTestBase
 
         // As there is no crop, we expect a blank image.
         $this->assertEquals(
-            "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
+            'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
             urldecode($column->renderCell($this->author))
         );
     }

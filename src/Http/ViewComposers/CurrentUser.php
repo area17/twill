@@ -12,9 +12,6 @@ class CurrentUser
      */
     protected $authFactory;
 
-    /**
-     * @param AuthFactory $authFactory
-     */
     public function __construct(AuthFactory $authFactory)
     {
         $this->authFactory = $authFactory;
@@ -23,7 +20,6 @@ class CurrentUser
     /**
      * Binds data to the view.
      *
-     * @param View $view
      * @return void
      */
     public function compose(View $view)

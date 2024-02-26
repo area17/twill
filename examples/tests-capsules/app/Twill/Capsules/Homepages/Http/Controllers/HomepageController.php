@@ -2,16 +2,17 @@
 
 namespace App\Twill\Capsules\Homepages\Http\Controllers;
 
+use A17\Twill\Http\Controllers\Admin\SingletonModuleController as BaseModuleController;
 use A17\Twill\Models\Contracts\TwillModelContract;
-use A17\Twill\Services\Listings\Columns\Text;
-use A17\Twill\Services\Listings\TableColumns;
 use A17\Twill\Services\Forms\Fields\Input;
 use A17\Twill\Services\Forms\Form;
-use A17\Twill\Http\Controllers\Admin\SingletonModuleController as BaseModuleController;
+use A17\Twill\Services\Listings\Columns\Text;
+use A17\Twill\Services\Listings\TableColumns;
 
 class HomepageController extends BaseModuleController
 {
     protected $moduleName = 'homepages';
+
     /**
      * This method can be used to enable/disable defaults. See setUpController in the docs for available options.
      */

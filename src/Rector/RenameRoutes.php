@@ -35,7 +35,7 @@ class RenameRoutes extends LaravelAwareRectorRule
     }
 
     /**
-     * @param Node\Expr\FuncCall|Node\Expr\StaticCall $node
+     * @param  Node\Expr\FuncCall|Node\Expr\StaticCall  $node
      */
     public function refactor(Node $node)
     {

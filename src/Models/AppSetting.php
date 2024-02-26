@@ -46,13 +46,13 @@ class AppSetting extends Model
     {
         $directory = resource_path('views/twill/settings/' . $this->getSettingGroup()->getName());
 
-        if (!is_dir($directory)) {
+        if (! is_dir($directory)) {
             throw new SettingsDirectoryMissingException($directory);
         }
 
         $finalList = [];
         foreach (scandir($directory) as $file) {
-            if (str_starts_with($file, '.') || !str_ends_with($file, '.blade.php')) {
+            if (str_starts_with($file, '.') || ! str_ends_with($file, '.blade.php')) {
                 continue;
             }
 

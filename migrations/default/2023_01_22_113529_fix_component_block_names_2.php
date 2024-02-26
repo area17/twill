@@ -3,7 +3,8 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Str;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function up(): void
     {
         $blockList = \A17\Twill\Facades\TwillBlocks::getAll();

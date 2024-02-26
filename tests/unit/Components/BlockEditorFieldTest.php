@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\View;
 class BlockEditorFieldTest extends ComponentTestBase
 {
     public string $component = BlockEditor::class;
+
     public string $field = \A17\Twill\Services\Forms\Fields\BlockEditor::class;
+
     public string $expectedView = 'twill::partials.form._block_editor';
 
     protected function setUp(): void

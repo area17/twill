@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\UserRepository;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Http\RedirectResponse;
 
 class ImpersonateController extends Controller
 {
@@ -20,9 +21,8 @@ class ImpersonateController extends Controller
     }
 
     /**
-     * @param int $id
-     * @param UserRepository $users
-     * @return \Illuminate\Http\RedirectResponse
+     * @param  int  $id
+     * @return RedirectResponse
      */
     public function impersonate($id, UserRepository $users)
     {
@@ -35,11 +35,12 @@ class ImpersonateController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function stopImpersonate()
     {
         $this->authManager->guard('twill_users')->user()->stopImpersonating();
+
         return back();
     }
 }

@@ -3,6 +3,7 @@
 namespace A17\Twill\Commands;
 
 use A17\Twill\Services\Blocks\BlockMaker;
+use Exception;
 
 class BlockMake extends Command
 {
@@ -25,12 +26,12 @@ class BlockMake extends Command
     protected $description = 'Create a new block';
 
     /**
-     * @var \A17\Twill\Services\Blocks\BlockMaker
+     * @var BlockMaker
      */
     protected $blockMaker;
 
     /**
-     * @param \A17\Twill\Services\Blocks\BlockMaker
+     * @param BlockMaker
      */
     public function __construct(BlockMaker $blockMaker)
     {
@@ -39,7 +40,7 @@ class BlockMake extends Command
         $this->blockMaker = $blockMaker;
     }
 
-    public function getBlockMaker(): \A17\Twill\Services\Blocks\BlockMaker
+    public function getBlockMaker(): BlockMaker
     {
         return $this->blockMaker;
     }
@@ -48,7 +49,8 @@ class BlockMake extends Command
      * Executes the console command.
      *
      * @return mixed
-     * @throws \Exception
+     *
+     * @throws Exception
      */
     public function handle()
     {

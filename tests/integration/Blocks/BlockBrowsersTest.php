@@ -22,11 +22,12 @@ class BlockBrowsersTest extends TestCase
     {
         $module = AnonymousModule::make('blockbrowserstests', $this->app)
             ->withFormFields(Form::make([
-                BlockEditor::make()
+                BlockEditor::make(),
             ]))
             ->boot();
 
-        $block = new class extends TwillBlockComponent {
+        $block = new class extends TwillBlockComponent
+        {
             public static function getBlockIdentifier(): string
             {
                 return 'test-block-browsers';
@@ -40,7 +41,7 @@ class BlockBrowsersTest extends TestCase
                         ->modules([Book::class]),
                     Browser::make()
                         ->name('writers')
-                        ->modules([Writer::class])
+                        ->modules([Writer::class]),
                 ]);
             }
 
@@ -49,7 +50,6 @@ class BlockBrowsersTest extends TestCase
                 return 'hello world!';
             }
         };
-
 
         TwillBlocks::registerManualBlock($block::class);
 
@@ -71,14 +71,14 @@ class BlockBrowsersTest extends TestCase
                             [
                                 'id' => $writer->id,
                                 'endpointType' => '\\App\\Models\\Writer',
-                            ]
+                            ],
                         ],
                         'books' => [
                             [
                                 'id' => $book->id,
                                 'endpointType' => '\\App\\Models\\Book',
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                     'medias' => [],
                     'blocks' => [],
@@ -111,8 +111,8 @@ class BlockBrowsersTest extends TestCase
                             [
                                 'id' => $book->id,
                                 'endpointType' => '\\App\\Models\\Book',
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                     'medias' => [],
                     'blocks' => [],

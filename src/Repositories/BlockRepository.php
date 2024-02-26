@@ -12,11 +12,12 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use ReflectionException;
+use stdClass;
 
 class BlockRepository extends ModuleRepository
 {
-    use HandleMedias;
     use HandleFiles;
+    use HandleMedias;
 
     protected Config $config;
 
@@ -93,7 +94,7 @@ class BlockRepository extends ModuleRepository
 
         $block['instance'] = $blockInstance;
 
-        $block['content'] = empty($block['content']) ? new \stdClass() : (object) $block['content'];
+        $block['content'] = empty($block['content']) ? new stdClass() : (object) $block['content'];
 
         if ($block['browsers'] ?? null) {
             $browsers = Collection::make($block['browsers'])->map(function ($items) {

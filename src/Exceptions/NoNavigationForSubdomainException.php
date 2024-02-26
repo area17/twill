@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Exceptions;
 
-class NoNavigationForSubdomainException extends \Exception
+use Exception;
+
+class NoNavigationForSubdomainException extends Exception
 {
 }

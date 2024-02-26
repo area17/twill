@@ -70,19 +70,19 @@ class Wysiwyg extends TwillFormComponent
         if ($this->toolbarOptions) {
             $toolbarOptions = array_map(static function ($option) {
                 if ($option === 'list-unordered') {
-                    return (object)['list' => 'bullet'];
+                    return (object) ['list' => 'bullet'];
                 }
 
                 if ($option === 'list-ordered') {
-                    return (object)['list' => 'ordered'];
+                    return (object) ['list' => 'ordered'];
                 }
 
                 if ($option === 'h1') {
-                    return (object)['header' => 1];
+                    return (object) ['header' => 1];
                 }
 
                 if ($option === 'h2') {
-                    return (object)['header' => 2];
+                    return (object) ['header' => 2];
                 }
 
                 return $option;
@@ -102,7 +102,7 @@ class Wysiwyg extends TwillFormComponent
             'twill::partials.form._wysiwyg',
             array_merge($this->data(), [
                 'theme' => $this->customTheme,
-                'activeSyntax' => $this->syntax
+                'activeSyntax' => $this->syntax,
             ])
         );
     }

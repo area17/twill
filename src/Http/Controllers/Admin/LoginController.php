@@ -8,6 +8,7 @@ use A17\Twill\Repositories\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Config\Repository as Config;
+use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\RedirectResponse;
@@ -16,7 +17,11 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Password;
 use Illuminate\View\Factory as ViewFactory;
+use Illuminate\View\View;
 use Laravel\Socialite\Facades\Socialite;
+use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
+use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
+use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
 use PragmaRX\Google2FA\Google2FA;
 
 /**
@@ -85,7 +90,7 @@ class LoginController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\Auth\Guard
+     * @return Guard
      */
     protected function guard()
     {
@@ -93,7 +98,7 @@ class LoginController extends Controller
     }
 
     /**
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function showLoginForm()
     {
@@ -105,7 +110,7 @@ class LoginController extends Controller
     }
 
     /**
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function showLogin2FaForm()
     {
@@ -128,8 +133,8 @@ class LoginController extends Controller
     }
 
     /**
-     * @param \Illuminate\Foundation\Auth\User $user
-     * @return \Illuminate\Http\RedirectResponse
+     * @param  \Illuminate\Foundation\Auth\User  $user
+     * @return RedirectResponse
      */
     protected function authenticated(Request $request, $user)
     {
@@ -166,10 +171,11 @@ class LoginController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
-     * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
-     * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+     * @return RedirectResponse
+     *
+     * @throws IncompatibleWithGoogleAuthenticatorException
+     * @throws InvalidCharactersException
+     * @throws SecretKeyTooShortException
      */
     public function login2Fa(Request $request)
     {
@@ -196,8 +202,8 @@ class LoginController extends Controller
     }
 
     /**
-     * @param string $provider Socialite provider
-     * @return \Illuminate\Http\RedirectResponse
+     * @param  string  $provider  Socialite provider
+     * @return RedirectResponse
      */
     public function redirectToProvider($provider, OauthRequest $request)
     {
@@ -208,8 +214,8 @@ class LoginController extends Controller
     }
 
     /**
-     * @param string $provider Socialite provider
-     * @return \Illuminate\Http\RedirectResponse
+     * @param  string  $provider  Socialite provider
+     * @return RedirectResponse
      */
     public function handleProviderCallback($provider, OauthRequest $request)
     {
@@ -223,6 +229,7 @@ class LoginController extends Controller
                 $user = $repository->oauthUpdateProvider($oauthUser, $provider);
                 // Login and redirect
                 $this->authManager->guard('twill_users')->login($user);
+
                 return $this->afterAuthentication($request, $user);
             } elseif ($user->password) {
                 // If the user has a password then redirect to a form to ask for it
@@ -230,6 +237,7 @@ class LoginController extends Controller
                 $request->session()->put('oauth:user_id', $user->id);
                 $request->session()->put('oauth:user', $oauthUser);
                 $request->session()->put('oauth:provider', $provider);
+
                 return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'login.oauth.showPasswordForm'));
             } else {
                 $user->linkProvider($oauthUser, $provider);
@@ -240,7 +248,7 @@ class LoginController extends Controller
                 return $this->afterAuthentication($request, $user);
             }
         } else {
-            if (!config('twill.oauth.create_user_with_default_role', true)) {
+            if (! config('twill.oauth.create_user_with_default_role', true)) {
                 return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'login'))->withErrors([
                     'error' => __('auth.failed'),
                 ]);
@@ -258,7 +266,7 @@ class LoginController extends Controller
     }
 
     /**
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function showPasswordForm(Request $request)
     {
@@ -272,8 +280,8 @@ class LoginController extends Controller
     }
 
     /**
-     * @param string $provider Socialite provider
-     * @return \Illuminate\Http\RedirectResponse
+     * @param  string  $provider  Socialite provider
+     * @return RedirectResponse
      */
     public function linkProvider(Request $request)
     {
@@ -309,7 +317,7 @@ class LoginController extends Controller
 
     protected function autologin(): bool
     {
-        if (!$this->autologinEnabled()) {
+        if (! $this->autologinEnabled()) {
             return false;
         }
 
@@ -321,7 +329,7 @@ class LoginController extends Controller
 
     protected function autologinEnabled(): bool
     {
-        if (!$this->config->get('twill.autologin.enabled', false)) {
+        if (! $this->config->get('twill.autologin.enabled', false)) {
             return false;
         }
 
@@ -337,7 +345,7 @@ class LoginController extends Controller
             return false;
         }
 
-        if (!in_array(app()->environment(), $environments)) {
+        if (! in_array(app()->environment(), $environments)) {
             return false;
         }
 

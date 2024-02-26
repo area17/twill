@@ -28,12 +28,12 @@ class User extends AuthenticatableContract implements TwillModelContract
     use Authenticatable;
     use Authorizable;
     use HasMedias;
-    use Notifiable;
-    use HasPresenter;
     use HasOauth;
     use HasPermissions;
-    use SoftDeletes;
+    use HasPresenter;
     use IsTranslatable;
+    use Notifiable;
+    use SoftDeletes;
 
     public $timestamps = true;
 
@@ -83,8 +83,7 @@ class User extends AuthenticatableContract implements TwillModelContract
     /**
      * Scope accessible users for the current user.
      *
-     * @param Builder $query
-     * @return Builder
+     * @param  Builder  $query
      */
     public function scopeAccessible($query): Builder
     {

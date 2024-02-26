@@ -15,15 +15,15 @@ trait HandleUserPermissions
     /**
      * Retrieve user permissions fields.
      *
-     * @param Model|User $object
-     * @param array $fields
+     * @param  Model|User  $object
+     * @param  array  $fields
      * @return array
      */
     public function getFormFieldsHandleUserPermissions($object, $fields)
     {
         if (
-            !config('twill.enabled.permissions-management') ||
-            !TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)
+            ! config('twill.enabled.permissions-management') ||
+            ! TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)
         ) {
             return $fields;
         }
@@ -47,12 +47,12 @@ trait HandleUserPermissions
     /**
      * Function executed after save on user form.
      *
-     * @param Model|User $object
-     * @param array $fields
+     * @param  Model|User  $object
+     * @param  array  $fields
      */
     public function afterSaveHandleUserPermissions($object, $fields)
     {
-        if (!config('twill.enabled.permissions-management')) {
+        if (! config('twill.enabled.permissions-management')) {
             return;
         }
 
@@ -106,13 +106,13 @@ trait HandleUserPermissions
     /**
      * Get user permissions fields.
      *
-     * @param Model|User $user
-     * @param array $fields
+     * @param  Model|User  $user
+     * @param  array  $fields
      * @return array
      */
     protected function getUserPermissionsFields($user, $fields)
     {
-        if (!config('twill.enabled.permissions-management')) {
+        if (! config('twill.enabled.permissions-management')) {
             return $fields;
         }
 
@@ -124,7 +124,7 @@ trait HandleUserPermissions
             foreach ($group->permissions()->moduleItem()->get() as $permission) {
                 $model = $permission->permissionable()->first();
 
-                if (!$model) {
+                if (! $model) {
                     continue;
                 }
 
@@ -153,7 +153,7 @@ trait HandleUserPermissions
 
         // looking for role module permission
         $globalPermissions = [];
-        if (!$isManageAllModules) {
+        if (! $isManageAllModules) {
             foreach ($user->role->permissions()->module()->get() as $permission) {
                 if ($permission->permissionable_type) {
                     $permissionName = str_replace('-module', '-item', $permission->name);
@@ -170,7 +170,7 @@ trait HandleUserPermissions
 
                 foreach ($moduleItems as $moduleItem) {
                     $index = $moduleName . '_' . $moduleItem->id . '_permission';
-                    if (!isset($fields[$index])) {
+                    if (! isset($fields[$index])) {
                         $fields[$index] = "{$permission}";
                     } else {
                         $current = array_search($fields[$index], $itemScopes);
@@ -191,8 +191,8 @@ trait HandleUserPermissions
     /**
      * Retrieve count of user for 'activated' and 'pending' status slug.
      *
-     * @param string $slug
-     * @param array $scope
+     * @param  string  $slug
+     * @param  array  $scope
      * @return int|bool
      */
     public function getCountByStatusSlugHandleUserPermissions($slug, $scope = [])

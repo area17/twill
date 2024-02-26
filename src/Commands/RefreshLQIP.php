@@ -5,6 +5,7 @@ namespace A17\Twill\Commands;
 use A17\Twill\Models\Media;
 use A17\Twill\Services\MediaLibrary\Glide;
 use A17\Twill\Services\MediaLibrary\ImageService;
+use Exception;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Arr;
@@ -42,10 +43,6 @@ class RefreshLQIP extends Command
         'crop_h',
     ];
 
-    /**
-     * @param DatabaseManager $db
-     * @param Config $config
-     */
     public function __construct(DatabaseManager $db, Config $config)
     {
         parent::__construct();
@@ -63,15 +60,16 @@ class RefreshLQIP extends Command
 
                 $lqip_width = $this->config->get('lqip.' . $attached_media->mediable_type . '.' . $attached_media->role . '.' . $attached_media->crop, 30);
 
-                if ($lqip_width && (!$attached_media->lqip_data || $this->option('all'))) {
+                if ($lqip_width && (! $attached_media->lqip_data || $this->option('all'))) {
                     $crop_params = Arr::only((array) $attached_media, $this->cropParamsKeys);
 
                     $imageService = config('twill.media_library.image_service');
 
                     $url = ImageService::getLQIPUrl($uuid, $crop_params + ['w' => $lqip_width]);
 
-                    if (($imageService === Glide::class) && !config('twill.glide.base_url')) {
+                    if (($imageService === Glide::class) && ! config('twill.glide.base_url')) {
                         $this->error('Cannot generate LQIP. Missing glide base url. Please set GLIDE_BASE_URL in your .env');
+
                         return;
                     }
 
@@ -79,7 +77,7 @@ class RefreshLQIP extends Command
                         $data = file_get_contents($url);
                         $dataUri = 'data:image/gif;base64,' . base64_encode($data);
                         $this->db->table(config('twill.mediables_table', 'twill_mediables'))->where('id', $attached_media->id)->update(['lqip_data' => $dataUri]);
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $this->info("LQIP was not generated for $uuid because {$e->getMessage()}");
                     }
                 }

@@ -4,8 +4,10 @@ namespace A17\Twill\Services\Forms\Fields;
 
 use A17\Twill\Services\Forms\Contracts\CanRenderForBlocks;
 use A17\Twill\Services\Forms\Traits\RenderForBlocks;
+use A17\Twill\View\Components\Fields\TwillFormComponent;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use ReflectionClass;
 
 abstract class BaseFormField implements CanRenderForBlocks
@@ -13,7 +15,7 @@ abstract class BaseFormField implements CanRenderForBlocks
     use RenderForBlocks;
 
     /**
-     * @var \A17\Twill\View\Components\Fields\TwillFormComponent
+     * @var TwillFormComponent
      */
     protected function __construct(
         protected string $component,
@@ -127,7 +129,7 @@ abstract class BaseFormField implements CanRenderForBlocks
         if ($this->mandatoryProperties !== []) {
             foreach ($this->mandatoryProperties as $property) {
                 if (! $this->{$property}) {
-                    throw new \InvalidArgumentException(
+                    throw new InvalidArgumentException(
                         "Missing required field property '$property' on " . $this::class
                     );
                 }
@@ -140,7 +142,7 @@ abstract class BaseFormField implements CanRenderForBlocks
             // This allows more control.
             $component = $class->newInstance(...$args);
         } else {
-            /** @var \A17\Twill\View\Components\Fields\TwillFormComponent $component */
+            /** @var TwillFormComponent $component */
             $component = $class->newInstance(...$args);
         }
 

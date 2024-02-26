@@ -44,6 +44,7 @@ use Nette\PhpGenerator\PsrPrinter;
 class AnonymousModule
 {
     private ?TableColumns $tableColumns = null;
+
     private ?TableColumns $additionalTableColumns = null;
 
     private ?Form $formFields = null;
@@ -216,7 +217,7 @@ class AnonymousModule
          */
         $this->modelTranslationClass = '\App\Models\Translations\\' . $modelName . 'Translation';
 
-        if (!class_exists($this->modelTranslationClass)) {
+        if (! class_exists($this->modelTranslationClass)) {
             eval($this->classPrinter->printNamespace($this->getTranslationModelClass($this->modelTranslationClass)));
         }
 
@@ -225,7 +226,7 @@ class AnonymousModule
          */
         $this->modelClass = '\App\Models\\' . $modelName;
 
-        if (!class_exists($this->modelClass)) {
+        if (! class_exists($this->modelClass)) {
             eval($this->classPrinter->printNamespace($this->getModelClass($this->modelClass)));
         }
 
@@ -234,7 +235,7 @@ class AnonymousModule
          */
         $this->revisionClass = '\App\Models\Revisions\\' . $modelName . 'Revision';
 
-        if (!class_exists($this->revisionClass)) {
+        if (! class_exists($this->revisionClass)) {
             eval($this->classPrinter->printNamespace($this->getRevisionClass($this->revisionClass)));
         }
 
@@ -242,7 +243,7 @@ class AnonymousModule
          * The slug class.
          */
         $this->slugClass = '\App\Models\Slugs\\' . $modelName . 'Slug';
-        if (!class_exists($this->slugClass)) {
+        if (! class_exists($this->slugClass)) {
             eval($this->classPrinter->printNamespace($this->getSlugClass($this->slugClass)));
         }
 
@@ -251,7 +252,7 @@ class AnonymousModule
          */
         $this->controllerClass = '\App\Http\Controllers\Twill\\' . $modelName . 'Controller';
 
-        if (!class_exists($this->controllerClass)) {
+        if (! class_exists($this->controllerClass)) {
             eval($this->classPrinter->printNamespace($this->getControllerClass($this->controllerClass)));
         }
 
@@ -260,7 +261,7 @@ class AnonymousModule
          */
         $this->repositoryClass = '\App\Repositories\\' . $modelName . 'Repository';
 
-        if (!class_exists($this->repositoryClass)) {
+        if (! class_exists($this->repositoryClass)) {
             eval($this->classPrinter->printNamespace($this->getRepositoryClass($this->repositoryClass)));
         }
 
@@ -357,12 +358,12 @@ class AnonymousModule
         if (isset($options['only'])) {
             $customRoutes = array_intersect(
                 $defaults,
-                (array)$options['only']
+                (array) $options['only']
             );
         } elseif (isset($options['except'])) {
             $customRoutes = array_diff(
                 $defaults,
-                (array)$options['except']
+                (array) $options['except']
             );
         }
 
@@ -811,12 +812,8 @@ PHP
     private function migrate(): void
     {
         // Create the migration class.
-        $migration = new class(
-            $this->namePlural,
-            $this->fields,
-            $this->belongsToMany,
-            $this->belongsTo
-        ) extends Migration {
+        $migration = new class($this->namePlural, $this->fields, $this->belongsToMany, $this->belongsTo) extends Migration
+        {
             public string $nameSingular;
 
             public function __construct(
@@ -856,7 +853,7 @@ PHP
                     }
 
                     foreach (collect($this->fields)->where('translatable', false) as $fieldName => $data) {
-                        if (!isset($data['type']) || $data['type'] === 'string') {
+                        if (! isset($data['type']) || $data['type'] === 'string') {
                             $table->string($fieldName)
                                 ->default($data['default'] ?? null)
                                 ->nullable($data['nullable'] ?? true);

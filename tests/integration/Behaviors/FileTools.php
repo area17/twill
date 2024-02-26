@@ -6,7 +6,8 @@ use Illuminate\Support\Str;
 
 trait FileTools
 {
-    public function putContentToFilePath(string $content, $filePath): void {
+    public function putContentToFilePath(string $content, $filePath): void
+    {
         $requiredPath = Str::beforeLast($filePath, '/');
 
         $this->ensureDirectoryExists($requiredPath);
@@ -16,6 +17,7 @@ trait FileTools
             $content
         );
     }
+
     public function copyFileFromTo(string $from, string $to): void
     {
         $requiredPath = Str::beforeLast($to, '/');
@@ -27,7 +29,7 @@ trait FileTools
 
     public function ensureDirectoryExists(string $path): void
     {
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             mkdir($path, 0777, true);
         }
     }

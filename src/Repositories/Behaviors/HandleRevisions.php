@@ -3,13 +3,13 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Facades\TwillConfig;
+use A17\Twill\Jobs\CleanupRevisions;
 use A17\Twill\Models\Behaviors\HasRelated;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\RelatedItem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use A17\Twill\Jobs\CleanupRevisions;
 
 trait HandleRevisions
 {
@@ -44,7 +44,7 @@ trait HandleRevisions
 
     public function createRevisionIfNeeded(TwillModelContract $object, array $fields): array
     {
-        $lastRevisionPayload = json_decode($object->revisions->first()->payload ?? "{}", true);
+        $lastRevisionPayload = json_decode($object->revisions->first()->payload ?? '{}', true);
 
         if ($fields !== $lastRevisionPayload) {
             $object->revisions()->create([
@@ -96,7 +96,7 @@ trait HandleRevisions
         null|string|TwillModelContract $model = null,
         ?string $customHydratedRelationship = null
     ): void {
-        $fieldsHasElements = isset($fields[$relationship]) && !empty($fields[$relationship]);
+        $fieldsHasElements = isset($fields[$relationship]) && ! empty($fields[$relationship]);
         $relatedElements = $fieldsHasElements ? $fields[$relationship] : [];
 
         $relationRepository = $this->getModelRepository($relationship, $model);
@@ -127,7 +127,7 @@ trait HandleRevisions
         string $positionAttribute = 'position',
         null|TwillModelContract|string $model = null
     ): void {
-        $fieldsHasElements = isset($fields['browsers'][$relationship]) && !empty($fields['browsers'][$relationship]);
+        $fieldsHasElements = isset($fields['browsers'][$relationship]) && ! empty($fields['browsers'][$relationship]);
         $relatedElements = $fieldsHasElements ? $fields['browsers'][$relationship] : [];
 
         $relationRepository = $this->getModelRepository($relationship, $model);
@@ -185,7 +185,7 @@ trait HandleRevisions
         string $model,
         ?string $repeaterName = null
     ): void {
-        if (!$repeaterName) {
+        if (! $repeaterName) {
             $repeaterName = $relationship;
         }
 
@@ -211,6 +211,7 @@ trait HandleRevisions
     public function getCountForMine(): int
     {
         $query = $this->model->newQuery();
+
         return $this->filter($query, $this->countScope)->mine()->count();
     }
 

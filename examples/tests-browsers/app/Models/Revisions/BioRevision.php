@@ -6,5 +6,5 @@ use A17\Twill\Models\Revision;
 
 class BioRevision extends Revision
 {
-    protected $table = "bio_revisions";
+    protected $table = 'bio_revisions';
 }

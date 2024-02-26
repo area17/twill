@@ -77,7 +77,7 @@ class RoleController extends ModuleController
     {
         return [
             'permission_modules' => Permission::permissionableModules()->filter(function ($module) {
-                return !strpos($module, '.');
+                return ! strpos($module, '.');
             }),
         ];
     }

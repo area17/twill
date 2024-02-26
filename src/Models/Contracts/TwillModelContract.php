@@ -2,11 +2,12 @@
 
 namespace A17\Twill\Models\Contracts;
 
+use A17\Twill\Models\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
  * @mixin \Illuminate\Database\Eloquent\Model
- * @mixin \A17\Twill\Models\Model
+ * @mixin Model
  *
  * @property int $id
  *

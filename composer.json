@@ -48,6 +48,8 @@
     "area17/phptorch": "dev-main",
     "chillerlan/php-qrcode": "~4.0",
     "friendsofphp/php-cs-fixer": "^3.0",
+    "brainmaestro/composer-git-hooks": "^3.0.0@alpha",
+    "laravel/pint": "^1.14",
     "nette/php-generator": "^4.0.3",
     "nunomaduro/collision": "^6.0|^7.0|^8.0",
     "nunomaduro/larastan": "^2.0",
@@ -57,7 +59,6 @@
     "phpunit/phpunit": "~9.0",
     "rector/rector": "^0.12.15",
     "spatie/invade": "^1.1",
-    "squizlabs/php_codesniffer": "*",
     "torchlight/torchlight-commonmark": "^0.5"
   },
   "autoload": {
@@ -84,6 +85,20 @@
     ],
     "post-autoload-dump": [
       "@php ./vendor/bin/testbench package:discover --ansi"
+    ],
+    "post-install-cmd": "[ $COMPOSER_DEV_MODE -eq 0 ] || cghooks add --ignore-lock",
+    "post-update-cmd": "[ $COMPOSER_DEV_MODE -eq 0 ] || cghooks update"
+  },
+  "hooks": {
+    "config": {
+      "stop-on-failure": ["pre-push"]
+    },
+    "pre-commit": [
+      "vendor/bin/pint --dirty",
+      "git update-index --again"
+    ],
+    "pre-push": [
+      "vendor/bin/pint --test"
     ]
   },
   "extra": {

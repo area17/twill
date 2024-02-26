@@ -2,11 +2,13 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\TwillServiceProvider;
 use Illuminate\Filesystem\Filesystem;
 
 class Update extends Command
 {
     protected $signature = 'twill:update {--fromBuild} {--migrate}';
+
     protected $description = 'Publish new updated Twill assets and optionally run database migrations';
 
     public function __construct(public Filesystem $files)
@@ -34,7 +36,7 @@ class Update extends Command
             $this->files->copyDirectory(__DIR__ . '/../../dist/', public_path());
         } else {
             $this->call('vendor:publish', [
-                '--provider' => \A17\Twill\TwillServiceProvider::class,
+                '--provider' => TwillServiceProvider::class,
                 '--tag' => 'assets',
                 '--force' => true,
             ]);

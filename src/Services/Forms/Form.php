@@ -11,7 +11,9 @@ class Form extends Collection implements CanHaveSubfields
     public ?Fieldsets $fieldsets = null;
 
     private ?Form $sideForm = null;
+
     private bool $isCreate = false;
+
     private bool $forBlocks = false;
 
     public function withFieldSets(Fieldsets $fieldsets): static
@@ -47,7 +49,7 @@ class Form extends Collection implements CanHaveSubfields
             return [];
         }
 
-        return $this->fieldsets->map(fn($fieldset): array => [
+        return $this->fieldsets->map(fn ($fieldset): array => [
             'fieldset' => $fieldset->id,
             'label' => $fieldset->title,
         ])->toArray();
@@ -64,7 +66,7 @@ class Form extends Collection implements CanHaveSubfields
 
         if ($this->fieldsets) {
             $viewWithData['renderFieldsets'] = $this->fieldsets;
-            $viewWithData['additionalFieldsets'] = $this->fieldsets->map(fn($fieldset): array => [
+            $viewWithData['additionalFieldsets'] = $this->fieldsets->map(fn ($fieldset): array => [
                 'fieldset' => $fieldset->id,
                 'label' => $fieldset->title,
             ])->toArray();
