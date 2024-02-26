@@ -244,7 +244,7 @@ class User extends AuthenticatableContract implements TwillModelContract
 
     public function groups()
     {
-        return $this->belongsToMany(Group::class, 'group_twill_user', 'twill_user_id', 'group_id');
+        return $this->belongsToMany(twillModel('group'), 'group_twill_user', 'twill_user_id', 'group_id');
     }
 
     public function publishedGroups()
@@ -254,7 +254,7 @@ class User extends AuthenticatableContract implements TwillModelContract
 
     public function role()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(twillModel('role'));
     }
 
     public function allPermissions()

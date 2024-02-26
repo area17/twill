@@ -2,8 +2,6 @@
 
 namespace A17\Twill\Http\Requests\Admin;
 
-use A17\Twill\Models\Role;
-use A17\Twill\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use PragmaRX\Google2FA\Google2FA;
@@ -58,7 +56,7 @@ class UserRequest extends Request
                             }
                         },
                         'force-2fa-disable-challenge' => function ($attribute, $value, $fail) {
-                            $user = User::findOrFail($this->route('user'));
+                            $user = twillModel('user')::findOrFail($this->route('user'));
                             if ($this->get('google_2fa_enabled') || ! $user->google_2fa_enabled) {
                                 return;
                             }
@@ -95,12 +93,12 @@ class UserRequest extends Request
     {
         if (config('twill.enabled.permissions-management')) {
             // Users can't assign roles above their own
-            $accessibleRoleIds = Role::accessible()->pluck('id')->toArray();
+            $accessibleRoleIds = twillModel('role')::accessible()->pluck('id')->toArray();
             $baseRule[] = Rule::in($accessibleRoleIds);
         } else {
             $baseRule[] = 'not_in:SUPERADMIN';
         }
 
-        return [User::getRoleColumnName() => $baseRule];
+        return [twillModel('user')::getRoleColumnName() => $baseRule];
     }
 }
