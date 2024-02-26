@@ -16,5 +16,6 @@ class InputFieldTest extends ComponentTestBase
     public string $field = \A17\Twill\Services\Forms\Fields\Input::class;
     public array $fieldSetters = [
         'name' => 'name',
+        'step' => 5.0
     ];
 }
