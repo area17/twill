@@ -29,7 +29,7 @@ abstract class Revision extends BaseModel
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(twillModel('user'));
     }
 
     public function getByUserAttribute()

@@ -74,7 +74,7 @@ class Role extends BaseModel implements Sortable, TwillModelContract
 
     public function users(): HasMany
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(twillModel('user'));
     }
 
     public function getCreatedAtAttribute($value): string
