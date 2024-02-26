@@ -27,6 +27,8 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         private ?bool $allowBrowse = false,
         private ?array $browser = null,
         private ?int $max = null,
+        private ?string $titleField = null,
+        private ?bool $hideTitlePrefix = false,
     ) {
     }
 
@@ -40,6 +42,20 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
     public function selectTriggerText(string $selectTrigger): static
     {
         $this->selectTrigger = $selectTrigger;
+
+        return $this;
+    }
+
+    public function titleField(string $field): static
+    {
+        $this->titleField = $field;
+
+        return $this;
+    }
+
+    public function hideTitlePrefix(bool $hide = true): static
+    {
+        $this->hideTitlePrefix = $hide;
 
         return $this;
     }
@@ -160,6 +176,8 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         $repeaterBlock->trigger = $this->trigger ?? 'Add ' . $this->label;
         $repeaterBlock->selectTrigger = $this->selectTrigger ?? 'Select ' . $this->label;
         $repeaterBlock->group = 'dynamic';
+        $repeaterBlock->titleField = $this->titleField;
+        $repeaterBlock->hideTitlePrefix = $this->hideTitlePrefix;
 
         return $repeaterBlock;
     }
