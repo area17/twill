@@ -72,12 +72,12 @@ class Image extends TableColumn
 
     protected function getRenderValue(TwillModelContract $model): string
     {
-        if (!classHasTrait($model::class, HasMedias::class)) {
-            throw new InvalidArgumentException('Cannot use image column on model not implementing HasMedias trait');
-        }
-
         if ($renderFunction = $this->render) {
             return $renderFunction($model);
+        }
+
+        if (!classHasTrait($model::class, HasMedias::class)) {
+            throw new InvalidArgumentException('Cannot use image column on model not implementing HasMedias trait');
         }
 
         return $this->getThumbnail($model);
