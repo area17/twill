@@ -3,12 +3,15 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Behaviors\HasMedias;
+use A17\Twill\Models\Contracts\TwillModelContract;
+use A17\Twill\Models\Model;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 trait HandleBrowsers
@@ -35,8 +38,8 @@ trait HandleBrowsers
     protected $browsers = [];
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
+     * @param  Model  $object
+     * @param  array  $fields
      * @return void
      */
     public function afterSaveHandleBrowsers($object, $fields)
@@ -53,8 +56,8 @@ trait HandleBrowsers
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
+     * @param  Model  $object
+     * @param  array  $fields
      * @return array
      */
     public function getFormFieldsHandleBrowsers($object, $fields)
@@ -76,12 +79,12 @@ trait HandleBrowsers
     }
 
     /**
-     * @param \A17\Twill\Models\Contracts\TwillModelContract $object
-     * @param array $fields
-     * @param string $relationship
-     * @param string $positionAttribute
-     * @param string|null $browserName
-     * @param array $pivotAttributes
+     * @param  TwillModelContract  $object
+     * @param  array  $fields
+     * @param  string  $relationship
+     * @param  string  $positionAttribute
+     * @param  string|null  $browserName
+     * @param  array  $pivotAttributes
      * @return void
      */
     public function updateBrowser(
@@ -93,7 +96,7 @@ trait HandleBrowsers
         $pivotAttributes = []
     ) {
         $browserName = $browserName ?? $relationship;
-        $fieldsHasElements = isset($fields['browsers'][$browserName]) && !empty($fields['browsers'][$browserName]);
+        $fieldsHasElements = isset($fields['browsers'][$browserName]) && ! empty($fields['browsers'][$browserName]);
         $relatedElements = $fieldsHasElements ? $fields['browsers'][$browserName] : [];
 
         $relatedElementsWithPosition = [];
@@ -149,10 +152,10 @@ trait HandleBrowsers
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $relationship
-     * @param string $positionAttribute
+     * @param  Model  $object
+     * @param  array  $fields
+     * @param  string  $relationship
+     * @param  string  $positionAttribute
      * @return void
      */
     public function updateOrderedBelongsTomany($object, $fields, $relationship, $positionAttribute = 'position')
@@ -161,9 +164,9 @@ trait HandleBrowsers
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @param string $browserName
+     * @param  Model  $object
+     * @param  array  $fields
+     * @param  string  $browserName
      * @return void
      */
     public function updateRelatedBrowser($object, $fields, $browserName)
@@ -172,11 +175,11 @@ trait HandleBrowsers
     }
 
     /**
-     * @param \A17\Twill\Models\Contracts\TwillModelContract $object
-     * @param string $relation
-     * @param string|null $routePrefix
-     * @param string $titleKey
-     * @param string|null $moduleName
+     * @param  TwillModelContract  $object
+     * @param  string  $relation
+     * @param  string|null  $routePrefix
+     * @param  string  $titleKey
+     * @param  string|null  $moduleName
      * @return array
      */
     public function getFormFieldsForBrowser(
@@ -193,24 +196,24 @@ trait HandleBrowsers
         if ($fields->isNotEmpty()) {
             return $fields->map(
                 function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName, $isMorphTo) {
-                    if ($isMorphTo && !$moduleName) {
+                    if ($isMorphTo && ! $moduleName) {
                         // @todo: Maybe there is an existing helper for this?
                         $moduleName = Str::plural(Arr::last(explode('\\', get_class($relatedElement))));
                     }
 
                     return [
-                            'id' => $relatedElement->id,
-                            'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
-                            'edit' => $relatedElement->adminEditUrl ?? moduleRoute(
-                                $moduleName ?? $relation,
-                                $routePrefix ?? '',
-                                'edit',
-                                $relatedElement->id
-                            ),
-                            'endpointType' => $relatedElement->getMorphClass(),
-                        ] + (classHasTrait($relatedElement, HasMedias::class) ? [
-                            'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100, 'fit' => 'crop']),
-                        ] : []);
+                        'id' => $relatedElement->id,
+                        'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
+                        'edit' => $relatedElement->adminEditUrl ?? moduleRoute(
+                            $moduleName ?? $relation,
+                            $routePrefix ?? '',
+                            'edit',
+                            $relatedElement->id
+                        ),
+                        'endpointType' => $relatedElement->getMorphClass(),
+                    ] + (classHasTrait($relatedElement, HasMedias::class) ? [
+                        'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100, 'fit' => 'crop']),
+                    ] : []);
                 }
             )->toArray();
         }
@@ -219,22 +222,22 @@ trait HandleBrowsers
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param string $relation
+     * @param  Model  $object
+     * @param  string  $relation
      * @return array
      */
     public function getFormFieldsForRelatedBrowser($object, $relation, $titleKey = 'title')
     {
         return $object->getRelated($relation)->map(function ($relatedElement) use ($titleKey) {
             return ($relatedElement != null) ? [
-                    'id' => $relatedElement->id,
-                    'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
-                    'endpointType' => $relatedElement->getMorphClass(),
-                ] + (empty($relatedElement->adminEditUrl) ? [] : [
-                    'edit' => $relatedElement->adminEditUrl,
-                ]) + (classHasTrait($relatedElement, HasMedias::class) ? [
-                    'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100, 'fit' => 'crop']),
-                ] : []) : [];
+                'id' => $relatedElement->id,
+                'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
+                'endpointType' => $relatedElement->getMorphClass(),
+            ] + (empty($relatedElement->adminEditUrl) ? [] : [
+                'edit' => $relatedElement->adminEditUrl,
+            ]) + (classHasTrait($relatedElement, HasMedias::class) ? [
+                'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100, 'fit' => 'crop']),
+            ] : []) : [];
         })->reject(function ($item) {
             return empty($item);
         })->values()->toArray();
@@ -244,7 +247,7 @@ trait HandleBrowsers
      * Get all browser' detail info from the $browsers attribute.
      * The missing information will be inferred by convention of Twill.
      *
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     protected function getBrowsers()
     {

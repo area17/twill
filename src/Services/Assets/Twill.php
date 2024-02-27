@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Assets;
 
+use Exception;
 use Illuminate\Support\Facades\Cache;
 
 class Twill
@@ -42,7 +43,7 @@ class Twill
 
     public function devAsset($file)
     {
-        if (!$this->devMode()) {
+        if (! $this->devMode()) {
             return null;
         }
 
@@ -55,8 +56,8 @@ class Twill
                 // During dev mode and webpack 5 this is the valid path.
                 'assets/twill/twill-manifest.json'
             );
-        } catch (\Exception $exception) {
-            throw new \Exception('Twill dev assets manifest is missing. Make sure you are running the npm run serve command inside Twill.', $exception->getCode(), $exception);
+        } catch (Exception $exception) {
+            throw new Exception('Twill dev assets manifest is missing. Make sure you are running the npm run serve command inside Twill.', $exception->getCode(), $exception);
         }
 
         return $devServerUrl . ($manifest[$file] ?? '/' . $file);
@@ -71,17 +72,17 @@ class Twill
             return Cache::rememberForever('twill-manifest', function () {
                 return $this->readJson($this->getManifestFilename());
             });
-        } catch (\Exception $exception) {
-            throw new \Exception('Twill assets manifest is missing. Make sure you published/updated Twill assets using the "php artisan twill:update" command.', $exception->getCode(), $exception);
+        } catch (Exception $exception) {
+            throw new Exception('Twill assets manifest is missing. Make sure you published/updated Twill assets using the "php artisan twill:update" command.', $exception->getCode(), $exception);
         }
     }
 
     private function readJson($fileName)
     {
         $requestOptionsIgnoreSsl = [
-            "ssl" => [
-                "verify_peer" => false,
-                "verify_peer_name" => false,
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
             ],
         ];
 

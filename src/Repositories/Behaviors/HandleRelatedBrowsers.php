@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Contracts\TwillModelContract;
+use A17\Twill\Models\Model;
 
 /**
  * Mimic HandleBrowsers, but when the relation uses
@@ -36,8 +37,8 @@ trait HandleRelatedBrowsers
     protected $relatedBrowsers = [];
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
+     * @param  Model  $object
+     * @param  array  $fields
      * @return void
      */
     public function afterSaveHandleRelatedBrowsers($object, $fields)
@@ -48,8 +49,8 @@ trait HandleRelatedBrowsers
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
+     * @param  Model  $object
+     * @param  array  $fields
      * @return array
      */
     public function getFormFieldsHandleRelatedBrowsers($object, $fields)

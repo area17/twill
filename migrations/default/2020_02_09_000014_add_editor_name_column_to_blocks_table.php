@@ -15,7 +15,7 @@ return new class extends Migration
     {
         $twillBlocksTable = config('twill.blocks_table', 'twill_blocks');
 
-        if (Schema::hasTable($twillBlocksTable) && !Schema::hasColumn($twillBlocksTable, 'editor_name')) {
+        if (Schema::hasTable($twillBlocksTable) && ! Schema::hasColumn($twillBlocksTable, 'editor_name')) {
             Schema::table($twillBlocksTable, function (Blueprint $table) {
                 $table->string('editor_name', 60)->nullable();
             });

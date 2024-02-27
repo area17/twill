@@ -9,21 +9,22 @@ use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
 use App\Providers\AppServiceProvider;
 use Carbon\Carbon;
+use Facebook\WebDriver\Chrome\ChromeOptions;
+use Facebook\WebDriver\Remote\DesiredCapabilities;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverDimension;
 use Illuminate\Support\Facades\DB;
 use Kalnoy\Nestedset\NestedSetServiceProvider;
+use Orchestra\Testbench\Dusk\Options as DuskOptions;
 use Orchestra\Testbench\Dusk\TestCase;
 use Throwable;
-use Orchestra\Testbench\Dusk\Options as DuskOptions;
-use Facebook\WebDriver\Chrome\ChromeOptions;
-use Facebook\WebDriver\Remote\DesiredCapabilities;
 
 class BrowserTestCase extends TestCase
 {
     use HandlesPresets;
 
     public ?string $example = null;
+
     public User $superAdmin;
 
     protected function getEnvironmentSetUp($app): void
@@ -56,8 +57,6 @@ class BrowserTestCase extends TestCase
 
     /**
      * Configure Twill options.
-     *
-     * @param $app
      */
     public function configTwill($app): void
     {
@@ -82,6 +81,7 @@ class BrowserTestCase extends TestCase
         foreach ($files as $file) {
             (is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
         }
+
         return rmdir($dir);
     }
 
@@ -204,7 +204,7 @@ class BrowserTestCase extends TestCase
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      *
      * Override the default driver so that we can fix our resolution.
      */

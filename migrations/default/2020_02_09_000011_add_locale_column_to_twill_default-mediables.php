@@ -7,7 +7,7 @@ return new class extends Migration
 {
     public function up()
     {
-        if (Schema::hasTable(config('twill.mediables_table', 'twill_mediables')) && !Schema::hasColumn(config('twill.mediables_table', 'twill_mediables'), 'locale')) {
+        if (Schema::hasTable(config('twill.mediables_table', 'twill_mediables')) && ! Schema::hasColumn(config('twill.mediables_table', 'twill_mediables'), 'locale')) {
             Schema::table(config('twill.mediables_table', 'twill_mediables'), function (Blueprint $table) {
                 $table->string('locale', 7)->default($this->getCurrentLocale())->index();
             });

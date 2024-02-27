@@ -3,10 +3,10 @@
 namespace A17\Twill\Commands;
 
 use A17\Docs\BladeComponentElement;
-use A17\Docs\PhpTorchExtension;
-use A17\Docs\RelativeLinksExtension;
 use A17\Docs\BladeComponentRenderer;
 use A17\Docs\BladeComponentStart;
+use A17\Docs\PhpTorchExtension;
+use A17\Docs\RelativeLinksExtension;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
@@ -103,7 +103,7 @@ class GenerateDocsCommand extends Command
             $weight = 3;
             foreach ($parts as $part) {
                 if (Str::contains($part, '_')) {
-                    $number = (int)Str::before($part, '_');
+                    $number = (int) Str::before($part, '_');
 
                     $index += $number;
                     if ($weight === 3) {
@@ -129,6 +129,7 @@ class GenerateDocsCommand extends Command
                 if ($this->option('updatesOnly') === false) {
                     $this->line('Skipped (no update) ' . $relativePath);
                 }
+
                 continue;
             }
 
@@ -161,7 +162,7 @@ class GenerateDocsCommand extends Command
 
                 if ($toc) {
                     $TOCRenderer = new TableOfContentsRenderer(new ListBlockRenderer());
-                    $tocRendered = (string)$TOCRenderer->render($toc, new HtmlRenderer($environment));
+                    $tocRendered = (string) $TOCRenderer->render($toc, new HtmlRenderer($environment));
                 }
 
                 $structure = explode('/', $this->withoutNumbers(Str::beforeLast($relativePath, '/')));
@@ -169,7 +170,7 @@ class GenerateDocsCommand extends Command
                 // Remove the first item as that is the content dir.
                 unset($structure[0]);
 
-                $documentString = (string)$document;
+                $documentString = (string) $document;
 
                 // Remove the title as it is rendered manually.
                 if (Str::startsWith($documentString, '<h1>')) {
@@ -178,7 +179,7 @@ class GenerateDocsCommand extends Command
 
                 // Grab metadata
                 $metadata = [];
-                $metadataJsonPath = preg_replace('/.md$/i', ".json", $relativePath);
+                $metadataJsonPath = preg_replace('/.md$/i', '.json', $relativePath);
                 if ($disk->exists($metadataJsonPath) && $md = json_decode($disk->get($metadataJsonPath), true)) {
                     $metadata = $md;
                 }
@@ -222,7 +223,7 @@ class GenerateDocsCommand extends Command
         // Copy the files if any markdown changed.
         if ($hasChange) {
             foreach ($sorted as $relativePath) {
-                if (!Str::endsWith($relativePath, '.md')) {
+                if (! Str::endsWith($relativePath, '.md')) {
                     $disk->copy(
                         $relativePath,
                         '_build/' . $this->withoutNumbers(Str::replaceFirst('content/', '', $relativePath))
@@ -232,18 +233,18 @@ class GenerateDocsCommand extends Command
         }
 
         // Check for changes in the _templates folder.
-        if (!$hasChange || $this->option('fresh')) {
+        if (! $hasChange || $this->option('fresh')) {
             foreach ($disk->allFiles('_templates') as $templatesPath) {
                 if (
                     isset($navTree['last_updated']) &&
                     $disk->lastModified($templatesPath) >= $navTree['last_updated']
                 ) {
-                    if (!$hasChange) {
+                    if (! $hasChange) {
                         $this->line('Template changed, rebuilding.');
                         $hasChange = true;
                     }
                 }
-                if (!Str::endsWith($templatesPath, ['.css', '.php'])) {
+                if (! Str::endsWith($templatesPath, ['.css', '.php'])) {
                     $disk->copy($templatesPath, '_build/' . Str::replaceFirst('_templates/', '', $templatesPath));
                 }
             }

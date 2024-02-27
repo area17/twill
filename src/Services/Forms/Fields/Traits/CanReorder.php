@@ -11,7 +11,7 @@ trait CanReorder
      */
     public function disableReorder(bool $disableReorder = true): static
     {
-        $this->reorder = !$disableReorder;
+        $this->reorder = ! $disableReorder;
 
         return $this;
     }

@@ -5,6 +5,7 @@ namespace A17\Twill\Models;
 use A17\Twill\Models\Behaviors\HasPermissions;
 use A17\Twill\Models\Behaviors\IsTranslatable;
 use A17\Twill\Models\Contracts\TwillModelContract;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -14,8 +15,8 @@ use Illuminate\Support\Collection;
 class Group extends BaseModel implements TwillModelContract
 {
     use HasPermissions;
-    use SoftDeletes;
     use IsTranslatable;
+    use SoftDeletes;
 
     public $timestamps = true;
 
@@ -30,7 +31,7 @@ class Group extends BaseModel implements TwillModelContract
 
     protected $casts = [
         'subdomains_access' => 'array',
-        'deleted_at' => 'datetime'
+        'deleted_at' => 'datetime',
     ];
 
     /**
@@ -91,7 +92,7 @@ class Group extends BaseModel implements TwillModelContract
      */
     public function getCreatedAtAttribute($value): string
     {
-        return \Carbon\Carbon::parse($value)->format('d M Y');
+        return Carbon::parse($value)->format('d M Y');
     }
 
     /**
@@ -99,7 +100,7 @@ class Group extends BaseModel implements TwillModelContract
      */
     public function getCanEditAttribute(): bool
     {
-        return !$this->isEveryoneGroup();
+        return ! $this->isEveryoneGroup();
     }
 
     /**
@@ -107,7 +108,7 @@ class Group extends BaseModel implements TwillModelContract
      */
     public function getCanPublishAttribute(): bool
     {
-        return !$this->isEveryoneGroup();
+        return ! $this->isEveryoneGroup();
     }
 
     /**

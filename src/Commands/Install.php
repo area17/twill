@@ -3,6 +3,9 @@
 namespace A17\Twill\Commands;
 
 use A17\Twill\Commands\Traits\HandlesPresets;
+use A17\Twill\TwillServiceProvider;
+use Exception;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Filesystem\Filesystem;
 
@@ -32,14 +35,14 @@ class Install extends Command
     /**
      * Executes the console command.
      *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     * @throws FileNotFoundException
      */
     public function handle(): void
     {
         //check the database connection before installing
         try {
             $this->db->connection()->getPdo();
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             $this->error('Could not connect to the database, please check your configuration:' . "\n" . $exception);
 
             return;
@@ -82,17 +85,18 @@ class Install extends Command
 
     /**
      * Creates the default `twill.php` route configuration file.
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
+     *
+     * @throws FileNotFoundException
      */
     private function addRoutesFile(): void
     {
         $routesPath = base_path('routes');
 
-        if (!$this->files->exists($routesPath)) {
+        if (! $this->files->exists($routesPath)) {
             $this->files->makeDirectory($routesPath, 0755, true);
         }
 
-        if (!$this->files->exists($routesPath . '/twill.php')) {
+        if (! $this->files->exists($routesPath . '/twill.php')) {
             $stub = $this->files->get(__DIR__ . '/stubs/admin.stub');
             $this->files->put($routesPath . '/twill.php', $stub);
         }
@@ -102,11 +106,11 @@ class Install extends Command
     {
         $layoutsDirectory = base_path('resources/views/site/layouts');
 
-        if (!$this->files->exists($layoutsDirectory)) {
+        if (! $this->files->exists($layoutsDirectory)) {
             $this->files->makeDirectory($layoutsDirectory, 0755, true);
         }
 
-        if (!$this->files->exists($layoutsDirectory . '/block.blade.php')) {
+        if (! $this->files->exists($layoutsDirectory . '/block.blade.php')) {
             $stub = $this->files->get(__DIR__ . '/stubs/block.blade.php');
             $this->files->put($layoutsDirectory . '/block.blade.php', $stub);
         }
@@ -117,7 +121,7 @@ class Install extends Command
      */
     private function createSuperAdmin(): void
     {
-        if (!$this->option('no-interaction')) {
+        if (! $this->option('no-interaction')) {
             $this->call('twill:superadmin');
         }
     }
@@ -128,7 +132,7 @@ class Install extends Command
     private function publishConfig(): void
     {
         $this->call('vendor:publish', [
-            '--provider' => \A17\Twill\TwillServiceProvider::class,
+            '--provider' => TwillServiceProvider::class,
             '--tag' => 'config',
         ]);
     }
@@ -143,7 +147,7 @@ class Install extends Command
             $this->files->copyDirectory(__DIR__ . '/../../dist/', public_path());
         } else {
             $this->call('vendor:publish', [
-                '--provider' => \A17\Twill\TwillServiceProvider::class,
+                '--provider' => TwillServiceProvider::class,
                 '--tag' => 'assets',
             ]);
         }

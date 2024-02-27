@@ -10,11 +10,11 @@ use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 class Radios extends BaseFormField
 {
-    use IsTranslatable;
-    use HasOptions;
-    use Inlineable;
     use HasBorder;
     use HasColumns;
+    use HasOptions;
+    use Inlineable;
+    use IsTranslatable;
 
     public static function make(): static
     {

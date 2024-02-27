@@ -148,7 +148,7 @@ class SettingsModelTest extends TestCase
         TwillAppSettings::registerSettingsGroup(
             SettingsGroup::make()
                 ->name('demo')
-                ->availableWhen(fn() => false)
+                ->availableWhen(fn () => false)
         );
 
         $this->actingAs($this->superAdmin(), 'twill_users')

@@ -9,6 +9,7 @@ use A17\Twill\View\Components\Fields\Radios;
 class RadiosFieldTest extends ComponentTestBase
 {
     public string $component = Radios::class;
+
     public array $data = [
         'name' => 'name',
         'label' => 'label',
@@ -19,10 +20,13 @@ class RadiosFieldTest extends ComponentTestBase
             ],
         ],
     ];
+
     public string $field = \A17\Twill\Services\Forms\Fields\Radios::class;
+
     public array $fieldSetters = [
         'name' => 'name',
     ];
+
     public string $expectedView = 'twill::partials.form._radios';
 
     protected function setUp(): void

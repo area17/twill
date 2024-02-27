@@ -5,6 +5,7 @@ namespace A17\Twill\Repositories\Behaviors;
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Media;
+use A17\Twill\Models\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -12,9 +13,9 @@ use Illuminate\Support\Str;
 trait HandleMedias
 {
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @return \A17\Twill\Models\Model
+     * @param  Model  $object
+     * @param  array  $fields
+     * @return Model
      */
     public function hydrateHandleMedias($object, $fields)
     {
@@ -43,8 +44,8 @@ trait HandleMedias
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
+     * @param  Model  $object
+     * @param  array  $fields
      * @return void
      */
     public function afterSaveHandleMedias($object, $fields)
@@ -61,8 +62,8 @@ trait HandleMedias
     }
 
     /**
-     * @param array $fields
-     * @return \Illuminate\Support\Collection
+     * @param  array  $fields
+     * @return Collection
      */
     private function getMedias($fields)
     {
@@ -86,7 +87,7 @@ trait HandleMedias
                 ) {
                     Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
-                        if (isset($media['crops']) && !empty($media['crops'])) {
+                        if (isset($media['crops']) && ! empty($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
                                 $medias->push([
                                     'id' => $media['id'],
@@ -126,8 +127,8 @@ trait HandleMedias
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
+     * @param  Model  $object
+     * @param  array  $fields
      * @return array
      */
     public function getFormFieldsHandleMedias($object, $fields)
@@ -154,7 +155,7 @@ trait HandleMedias
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Collection $medias
+     * @param  \Illuminate\Database\Eloquent\Collection  $medias
      * @return array
      */
     private function getMediaFormItems($medias)
@@ -186,7 +187,7 @@ trait HandleMedias
     }
 
     /**
-     * @param string $role
+     * @param  string  $role
      * @return array
      */
     public function getCrops($role)

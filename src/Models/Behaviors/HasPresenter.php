@@ -2,21 +2,23 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use Exception;
+
 trait HasPresenter
 {
     protected $presenterInstance;
 
     /**
-     * @param string $presenter
+     * @param  string  $presenter
      * @return object
      */
     public function present($presenter = 'presenter')
     {
-        if (!$this->$presenter || !class_exists($this->$presenter)) {
-            throw new \Exception('Please set the Presenter path to your Presenter :' . $presenter . ' FQN');
+        if (! $this->$presenter || ! class_exists($this->$presenter)) {
+            throw new Exception('Please set the Presenter path to your Presenter :' . $presenter . ' FQN');
         }
 
-        if (!$this->presenterInstance) {
+        if (! $this->presenterInstance) {
             $this->presenterInstance = new $this->$presenter($this);
         }
 
@@ -32,13 +34,13 @@ trait HasPresenter
     }
 
     /**
-     * @param string $presenter
-     * @param string $presenterProperty
+     * @param  string  $presenter
+     * @param  string  $presenterProperty
      * @return $this
      */
     public function setPresenter($presenter, $presenterProperty = 'presenter')
     {
-        if (!$this->$presenterProperty) {
+        if (! $this->$presenterProperty) {
             $this->$presenterProperty = $presenter;
         }
 
@@ -46,7 +48,7 @@ trait HasPresenter
     }
 
     /**
-     * @param string $presenter
+     * @param  string  $presenter
      * @return $this
      */
     public function setPresenterAdmin($presenter)

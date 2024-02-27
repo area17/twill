@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Listings\Filters;
 
+use A17\Twill\Models\Model;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
@@ -10,12 +11,13 @@ use Illuminate\Database\Eloquent\Builder;
 class FreeTextSearch extends TwillBaseFilter
 {
     protected array $searchColumns = [];
+
     protected ?string $searchString = null;
 
     public function applyFilter(Builder $builder): Builder
     {
-        if (!empty($this->searchString) && $this->searchColumns !== []) {
-            /** @var \A17\Twill\Models\Model $builderModel */
+        if (! empty($this->searchString) && $this->searchColumns !== []) {
+            /** @var Model $builderModel */
             $translatedAttributes = $builder->getModel()->getTranslatedAttributes();
             $builder->where(function (Builder $builder) use ($translatedAttributes) {
                 foreach ($this->searchColumns as $column) {
@@ -41,6 +43,7 @@ class FreeTextSearch extends TwillBaseFilter
     public function searchColumns(array $columns): static
     {
         $this->searchColumns = $columns;
+
         return $this;
     }
 }

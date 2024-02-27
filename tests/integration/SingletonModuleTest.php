@@ -53,7 +53,7 @@ class SingletonModuleTest extends TestCase
     public function testSingletonRouteAutoSeeds(): void
     {
         $this->httpRequestAssert('/twill/contactPage', 'GET', [], 200);
-        $this->assertDontSee("ContactPage is not seeded");
+        $this->assertDontSee('ContactPage is not seeded');
     }
 
     public function testSingletonRouteRequiresOneRecordIfNotAutoSeeded(): void

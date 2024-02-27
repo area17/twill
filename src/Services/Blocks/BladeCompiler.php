@@ -2,14 +2,13 @@
 
 namespace A17\Twill\Services\Blocks;
 
-use Throwable;
-use Illuminate\View\Factory;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\View\Factory;
+use Throwable;
 
 class BladeCompiler
 {
     /**
-     * @param $data
      * @return mixed
      */
     protected static function absorbApplicationEnvironment($data)
@@ -20,7 +19,7 @@ class BladeCompiler
     }
 
     /**
-     * @throws \Throwable
+     * @throws Throwable
      */
     protected static function compile(string $php, array $data)
     {
@@ -60,10 +59,9 @@ class BladeCompiler
     }
 
     /**
-     * @param $string
-     * @param $data
      * @return false|string
-     * @throws \Throwable
+     *
+     * @throws Throwable
      */
     public static function render($string, $data)
     {

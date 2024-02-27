@@ -1,8 +1,8 @@
 <?php
 
-use Kalnoy\Nestedset\NestedSet;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Kalnoy\Nestedset\NestedSet;
 
 return new class extends Migration
 {

@@ -40,7 +40,6 @@ return static function (RectorConfig $config): void {
     $config->phpVersion(PhpVersion::PHP_80);
     $config->disableParallel();
 
-
     $config->ruleWithConfiguration(RenameNamespaceRector::class, [
         'App\Http\Controllers\Admin' => 'App\Http\Controllers\Twill',
         'App\Http\Requests\Admin' => 'App\Http\Requests\Twill',

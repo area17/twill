@@ -9,6 +9,7 @@ use A17\Twill\View\Components\Fields\MultiSelect;
 class MultiSelectFieldTest extends ComponentTestBase
 {
     public string $component = MultiSelect::class;
+
     public array $data = [
         'name' => 'name',
         'label' => 'label',
@@ -19,8 +20,11 @@ class MultiSelectFieldTest extends ComponentTestBase
             ],
         ],
     ];
+
     public string $expectedView = 'twill::partials.form._multi_select';
+
     public string $field = \A17\Twill\Services\Forms\Fields\MultiSelect::class;
+
     public array $fieldSetters = [
         'name' => 'name',
     ];

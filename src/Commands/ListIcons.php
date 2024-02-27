@@ -50,11 +50,12 @@ class ListIcons extends Command
                 Str::lower($filter)
             );
         }
-        return !in_array($icon['name'] . '.svg', config('twill.internal_icons'));
+
+        return ! in_array($icon['name'] . '.svg', config('twill.internal_icons'));
     }
 
     /**
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     protected function getIconList()
     {

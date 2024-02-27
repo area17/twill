@@ -2,9 +2,9 @@
 
 namespace App\Twill\Capsules\Homepages\Database\Seeds;
 
-use Illuminate\Database\Seeder;
-use App\Twill\Capsules\Homepages\Repositories\HomepageRepository;
 use App\Twill\Capsules\Homepages\Models\Homepage;
+use App\Twill\Capsules\Homepages\Repositories\HomepageRepository;
+use Illuminate\Database\Seeder;
 
 class HomepageSeeder extends Seeder
 {

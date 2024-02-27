@@ -7,8 +7,8 @@ use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 class DatePicker extends BaseFormField
 {
-    use IsTranslatable;
     use HasPlaceholder;
+    use IsTranslatable;
 
     protected bool $withTime = true;
 
@@ -39,7 +39,7 @@ class DatePicker extends BaseFormField
      */
     public function withoutTime(bool $withoutTime = true): static
     {
-        $this->withTime = !$withoutTime;
+        $this->withTime = ! $withoutTime;
 
         return $this;
     }

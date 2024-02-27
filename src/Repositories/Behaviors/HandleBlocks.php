@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
+use Throwable;
 
 trait HandleBlocks
 {
@@ -68,7 +69,7 @@ trait HandleBlocks
 
             $fakeBlockId++;
             $newChildBlock->id = $fakeBlockId;
-            if (!empty($childBlock['blocks'])) {
+            if (! empty($childBlock['blocks'])) {
                 $childBlockHydrated = $this->hydrateHandleBlocks(
                     $newChildBlock,
                     $childBlock,
@@ -137,7 +138,7 @@ trait HandleBlocks
     ): void {
         // Find an existing block id based on the frontend id.
         if (
-            !in_array($blockData['id'] ?? null, $existingBlockIds, false) &&
+            ! in_array($blockData['id'] ?? null, $existingBlockIds, false) &&
             $id = TwillUtil::hasBlockIdFor($blockData['id'])
         ) {
             $originalBlockId = $blockData['id'];
@@ -236,9 +237,9 @@ trait HandleBlocks
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @return \Illuminate\Support\Collection
+     * @param  Model  $object
+     * @param  array  $fields
+     * @return Collection
      */
     private function getBlocks($object, $fields)
     {
@@ -264,9 +265,9 @@ trait HandleBlocks
     /**
      * Recursively generate child blocks from the fields of a block.
      *
-     * @param \A17\Twill\Models\Model $object
-     * @param array $parentBlockFields
-     * @return \Illuminate\Support\Collection
+     * @param  Model  $object
+     * @param  array  $parentBlockFields
+     * @return Collection
      */
     private function getChildBlocks($object, $parentBlockFields)
     {
@@ -297,7 +298,7 @@ trait HandleBlocks
         bool $handleTranslations
     ): void {
         $this->validate(
-            (array)$block['content'] + ($block['medias'] ?? []) + ($block['browsers'] ?? []) + ($block['blocks'] ?? []),
+            (array) $block['content'] + ($block['medias'] ?? []) + ($block['browsers'] ?? []) + ($block['blocks'] ?? []),
             $block['id'],
             $blockInstance->getRules(),
             $handleTranslations ? $blockInstance->getRulesForTranslatedFields() : []
@@ -305,9 +306,9 @@ trait HandleBlocks
     }
 
     /**
-     * @param array $block
-     * @param \A17\Twill\Models\Model $object
-     * @param bool $repeater
+     * @param  array  $block
+     * @param  Model  $object
+     * @param  bool  $repeater
      * @return array
      */
     private function buildBlock($block, $object, $repeater = false)
@@ -319,8 +320,8 @@ trait HandleBlocks
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
+     * @param  Model  $object
+     * @param  array  $fields
      * @return array
      */
     public function getFormFieldsHandleBlocks($object, $fields)
@@ -349,19 +350,19 @@ trait HandleBlocks
 
                 if (isset($block->parent_id) && $blockTypeConfig->type !== 'block') {
                     $fields['blocksRepeaters']["blocks-{$block->parent_id}|{$block->child_key}"][] = $blockItem + [
-                            'trigger' => $blockTypeConfig->trigger,
-                            'selectTrigger' => $blockTypeConfig->selectTrigger,
-                            'max' => $blockTypeConfig->max,
-                        ];
+                        'trigger' => $blockTypeConfig->trigger,
+                        'selectTrigger' => $blockTypeConfig->selectTrigger,
+                        'max' => $blockTypeConfig->max,
+                    ];
                 } else {
                     if (isset($block->parent_id)) {
                         $fields['blocks']["blocks-{$block->parent_id}|{$block->child_key}"][] = $blockItem + [
-                                'icon' => $blockTypeConfig->icon,
-                            ];
+                            'icon' => $blockTypeConfig->icon,
+                        ];
                     } else {
                         $fields['blocks'][$blockItem['name']][] = $blockItem + [
-                                'icon' => $blockTypeConfig->icon,
-                            ];
+                            'icon' => $blockTypeConfig->icon,
+                        ];
                     }
                 }
 
@@ -442,7 +443,7 @@ trait HandleBlocks
     }
 
     /**
-     * @param \A17\Twill\Models\Block $block
+     * @param  Block  $block
      * @return array
      */
     protected function getBlockBrowsers($block)
@@ -451,7 +452,7 @@ trait HandleBlocks
             if ($this->hasRelatedTable() && $block->getRelated($relation)->isNotEmpty()) {
                 $items = $this->getFormFieldsForRelatedBrowser($block, $relation);
                 foreach ($items as &$item) {
-                    if (!isset($item['edit'])) {
+                    if (! isset($item['edit'])) {
                         try {
                             $item['edit'] = moduleRoute(
                                 $relation,
@@ -473,7 +474,7 @@ trait HandleBlocks
                 try {
                     $relationRepository = $this->getModelRepository($relation);
                     $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     $relatedItems = collect();
                 }
                 $sortedRelatedItems = array_flip($ids);
@@ -486,17 +487,17 @@ trait HandleBlocks
                     return is_object($value);
                 })->map(function ($relatedElement) use ($relation) {
                     return [
-                            'id' => $relatedElement->id,
-                            'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
-                            'edit' => moduleRoute(
-                                $relation,
-                                config('twill.block_editor.browser_route_prefixes.' . $relation),
-                                'edit',
-                                $relatedElement->id
-                            ),
-                        ] + (classHasTrait($relatedElement, HasMedias::class) ? [
-                            'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
-                        ] : []);
+                        'id' => $relatedElement->id,
+                        'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
+                        'edit' => moduleRoute(
+                            $relation,
+                            config('twill.block_editor.browser_route_prefixes.' . $relation),
+                            'edit',
+                            $relatedElement->id
+                        ),
+                    ] + (classHasTrait($relatedElement, HasMedias::class) ? [
+                        'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
+                    ] : []);
                 })->toArray();
             }
 
@@ -531,6 +532,7 @@ trait HandleBlocks
         if (is_null(static::$hasRelatedTableCache)) {
             static::$hasRelatedTableCache = Schema::hasTable(config('twill.related_table', 'twill_related'));
         }
+
         return static::$hasRelatedTableCache;
     }
 }

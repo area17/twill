@@ -49,9 +49,9 @@ class Columns implements CanHaveSubfields, CanRenderForBlocks
     public function render(): View
     {
         if ($this->forBlocks()) {
-            $this->left?->each(fn(CanRenderForBlocks $field) => $field->renderForBlocks());
-            $this->right?->each(fn(CanRenderForBlocks $field) => $field->renderForBlocks());
-            $this->middle?->each(fn(CanRenderForBlocks $field) => $field->renderForBlocks());
+            $this->left?->each(fn (CanRenderForBlocks $field) => $field->renderForBlocks());
+            $this->right?->each(fn (CanRenderForBlocks $field) => $field->renderForBlocks());
+            $this->middle?->each(fn (CanRenderForBlocks $field) => $field->renderForBlocks());
         }
 
         return ViewFacade::make('twill::partials.form.utils._columns', [

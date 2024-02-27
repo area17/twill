@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Models\Behaviors;
 
-use A17\Twill\Commands\Build;
 use A17\Twill\Facades\TwillCapsules;
 use Astrotomic\Translatable\Translatable;
 use Illuminate\Database\Eloquent\Builder;
@@ -49,11 +48,11 @@ trait HasTranslation
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $orderField
-     * @param string $orderType
-     * @param string|null $locale
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @param  string  $orderField
+     * @param  string  $orderType
+     * @param  string|null  $locale
+     * @return Builder
      */
     public function scopeOrderByTranslation($query, $orderField, $orderType = 'ASC', $locale = null)
     {
@@ -76,11 +75,11 @@ trait HasTranslation
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $orderRawString
-     * @param string $groupByField
-     * @param string|null $locale
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @param  string  $orderRawString
+     * @param  string  $groupByField
+     * @param  string|null  $locale
+     * @return Builder
      */
     public function scopeOrderByRawByTranslation($query, $orderRawString, $groupByField, $locale = null)
     {
@@ -88,7 +87,7 @@ trait HasTranslation
         $table = $this->getTable();
         $locale = $locale == null ? app()->getLocale() : $locale;
 
-        return $query->join("{$translationTable} as t", "t.{$this->getRelationKey()}", "=", "{$table}.id")
+        return $query->join("{$translationTable} as t", "t.{$this->getRelationKey()}", '=', "{$table}.id")
             ->where($this->getLocaleKey(), $locale)
             ->groupBy("{$table}.id")
             ->groupBy("t.{$groupByField}")
@@ -100,7 +99,7 @@ trait HasTranslation
     /**
      * Checks if this model has active translations.
      *
-     * @param string|null $locale
+     * @param  string|null  $locale
      * @return bool
      */
     public function hasActiveTranslation($locale = null)
@@ -138,7 +137,7 @@ trait HasTranslation
     /**
      * Returns all translations for a given attribute.
      *
-     * @param string $key
+     * @param  string  $key
      * @return Illuminate\Support\Collection
      */
     public function translatedAttribute($key)

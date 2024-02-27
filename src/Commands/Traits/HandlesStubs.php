@@ -5,9 +5,9 @@ namespace A17\Twill\Commands\Traits;
 trait HandlesStubs
 {
     /**
-     * @param array $variables
-     * @param string $stub
-     * @param array|null $delimiters
+     * @param  array  $variables
+     * @param  string  $stub
+     * @param  array|null  $delimiters
      * @return string
      */
     public function replaceVariables($variables, $stub, $delimiters = null)
@@ -24,9 +24,9 @@ trait HandlesStubs
     }
 
     /**
-     * @param array $variables
-     * @param string $stub
-     * @param array|null $delimiters
+     * @param  array  $variables
+     * @param  string  $stub
+     * @param  array|null  $delimiters
      * @return string
      */
     public function replaceConditionals($conditionals, $stub, $delimiters = null)
@@ -37,7 +37,7 @@ trait HandlesStubs
             $start = "{$delimiters[0]}{$key}{$delimiters[1]}";
             $end = "{$delimiters[0]}\/{$key}{$delimiters[1]}";
 
-            if ((bool)$value) {
+            if ((bool) $value) {
                 // replace delimiters only
                 $stub = preg_replace("/$start/", '', $stub);
                 $stub = preg_replace("/$end/", '', $stub);
@@ -52,7 +52,7 @@ trait HandlesStubs
     }
 
     /**
-     * @param string $stub
+     * @param  string  $stub
      * @return string
      */
     public function removeEmptyLinesWithOnlySpaces($stub)

@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Tests\Integration\Repositories;
 
-use A17\Twill\Models\Block;
 use A17\Twill\Tests\Integration\Anonymous\AnonymousModule;
 use A17\Twill\Tests\Integration\Behaviors\CreatesMedia;
 use A17\Twill\Tests\Integration\Behaviors\FileTools;
@@ -11,8 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 class DuplicateTest extends TestCase
 {
-    use FileTools;
     use CreatesMedia;
+    use FileTools;
 
     public function setUp(): void
     {

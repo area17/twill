@@ -23,7 +23,8 @@ class FilterTestBase extends ModulesTestBase
     ): AuthorController {
         $request = Request::create(route('twill.personnel.authors.index'), 'GET', ['filter' => json_encode($active)]);
 
-        return new class($this->app, $request, $filters, $quickFilters, $extendQuickFilters) extends AuthorController {
+        return new class($this->app, $request, $filters, $quickFilters, $extendQuickFilters) extends AuthorController
+        {
             public function __construct(
                 Application $app,
                 Request $request,

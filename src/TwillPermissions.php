@@ -6,6 +6,7 @@ use A17\Twill\Enums\PermissionLevel;
 use A17\Twill\Models\Enums\UserRole;
 use A17\Twill\Models\Permission;
 use A17\Twill\View\Components\Navigation\NavigationLink;
+use Exception;
 use Illuminate\Support\Facades\Auth;
 use MyCLabs\Enum\Enum;
 
@@ -57,8 +58,8 @@ class TwillPermissions
 
     public function levelIs(string $level): bool
     {
-        if (!PermissionLevel::isValid($level)) {
-            throw new \Exception('Invalid permission level. Check TwillPermissions for available levels');
+        if (! PermissionLevel::isValid($level)) {
+            throw new Exception('Invalid permission level. Check TwillPermissions for available levels');
         }
 
         return $this->enabled() && config('twill.permissions.level') === $level;
@@ -67,10 +68,11 @@ class TwillPermissions
     public function levelIsOneOf(array $levels): bool
     {
         foreach ($levels as $level) {
-            if (!PermissionLevel::isValid($level)) {
-                throw new \Exception('Invalid permission level. Check TwillPermissions for available levels');
+            if (! PermissionLevel::isValid($level)) {
+                throw new Exception('Invalid permission level. Check TwillPermissions for available levels');
             }
         }
+
         return $this->enabled() && in_array(config('twill.permissions.level'), $levels, true);
     }
 
@@ -79,14 +81,14 @@ class TwillPermissions
         \A17\Twill\Facades\TwillNavigation::addSecondaryNavigationForCurrentRequest(
             NavigationLink::make()->title(twillTrans('twill::lang.user-management.users'))
                 ->forModule('users')
-                ->onlyWhen(fn() => Auth::user()->can('edit-users'))
+                ->onlyWhen(fn () => Auth::user()->can('edit-users'))
         );
 
         \A17\Twill\Facades\TwillNavigation::addSecondaryNavigationForCurrentRequest(
             NavigationLink::make()->title(twillTrans('twill::lang.permissions.roles.title'))
                 ->forModule('roles')
                 ->onlyWhen(
-                    fn() => config('twill.enabled.permissions-management') && Auth::user()->can('edit-user-roles')
+                    fn () => config('twill.enabled.permissions-management') && Auth::user()->can('edit-user-roles')
                 )
         );
 
@@ -94,7 +96,7 @@ class TwillPermissions
             NavigationLink::make()->title(twillTrans('twill::lang.permissions.groups.title'))
                 ->forModule('groups')
                 ->onlyWhen(
-                    fn() => config('twill.enabled.permissions-management') && Auth::user()->can('edit-user-groups')
+                    fn () => config('twill.enabled.permissions-management') && Auth::user()->can('edit-user-groups')
                 )
         );
     }

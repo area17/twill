@@ -8,6 +8,7 @@ use A17\Twill\Helpers\BlockRenderer;
 use A17\Twill\Models\Block;
 use A17\Twill\Services\Blocks\Block as BlockService;
 use A17\Twill\Services\Settings\SettingsGroup;
+use Exception;
 
 class TwillAppSettings
 {
@@ -43,7 +44,7 @@ class TwillAppSettings
     {
         return array_filter(
             $this->settingsGroups,
-            fn(SettingsGroup $group) => ! $group->shouldNotAutoRegisterInMenu() && $group->isAvailable()
+            fn (SettingsGroup $group) => ! $group->shouldNotAutoRegisterInMenu() && $group->isAvailable()
         );
     }
 
@@ -84,7 +85,7 @@ class TwillAppSettings
 
         if (count($sections) !== 3) {
             // At some point we can improve on this.
-            throw new \Exception('Currently only 3 levels are supported for getting settings.');
+            throw new Exception('Currently only 3 levels are supported for getting settings.');
         }
 
         return $sections;

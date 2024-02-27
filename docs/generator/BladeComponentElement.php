@@ -8,6 +8,7 @@ use League\CommonMark\Node\Block\AbstractBlock;
 class BladeComponentElement extends AbstractBlock
 {
     private string $element;
+
     private array $properties;
 
     public function __construct(string $className, array $properties = [])

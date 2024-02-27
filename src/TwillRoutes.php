@@ -23,7 +23,7 @@ class TwillRoutes
         }
 
         // Find and cache a match.
-        /** @var $route \Illuminate\Support\Facades\Route */
+        /** @var $route Route */
         foreach (app('router')->getRoutes()->getRoutes() as $route) {
             if (isset($route->action['twill']['slug']) && $route->action['twill']['slug'] === $module) {
                 return $route->action['twill']['customRoutePrefix'];
@@ -95,12 +95,12 @@ class TwillRoutes
         if (isset($options['only'])) {
             $customRoutes = array_intersect(
                 $defaults,
-                (array)$options['only']
+                (array) $options['only']
             );
         } elseif (isset($options['except'])) {
             $customRoutes = array_diff(
                 $defaults,
-                (array)$options['except']
+                (array) $options['except']
             );
         }
 
@@ -323,7 +323,7 @@ class TwillRoutes
                 $capsule->getControllersNamespace(),
                 $routesFile,
                 // When it is not a package capsule we can register it immediately.
-                !$capsule->packageCapsule
+                ! $capsule->packageCapsule
             );
         }
     }
@@ -364,8 +364,8 @@ class TwillRoutes
 
     public function moduleShowWithPreview(
         string $moduleName,
-        string $routePrefix = null,
-        string $controllerName = null
+        ?string $routePrefix = null,
+        ?string $controllerName = null
     ): void {
         if ($routePrefix === null) {
             $routePrefix = $moduleName;

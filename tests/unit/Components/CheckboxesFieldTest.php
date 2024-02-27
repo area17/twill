@@ -9,6 +9,7 @@ use A17\Twill\View\Components\Fields\Checkboxes;
 class CheckboxesFieldTest extends ComponentTestBase
 {
     public string $component = Checkboxes::class;
+
     public array $data = [
         'name' => 'name',
         'label' => 'label',
@@ -19,10 +20,13 @@ class CheckboxesFieldTest extends ComponentTestBase
             ],
         ],
     ];
+
     public string $field = \A17\Twill\Services\Forms\Fields\Checkboxes::class;
+
     public array $fieldSetters = [
         'name' => 'name',
     ];
+
     public string $expectedView = 'twill::partials.form._checkboxes';
 
     protected function setUp(): void

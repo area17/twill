@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Tests\Unit\MediaLibrary;
 
-use A17\Twill\Tests\Unit\TestCase;
 use A17\Twill\Services\MediaLibrary\AbstractParamsProcessor;
+use A17\Twill\Tests\Unit\TestCase;
 
 class AbstractParamsProcessorTest extends TestCase
 {
@@ -44,11 +44,11 @@ class AbstractParamsProcessorTest extends TestCase
     public function testSupportsCustomHandlers()
     {
         $processedParams = (new DummyParamsProcessor)->process([
-            'custom' => 'this_is_a_custom_value'
+            'custom' => 'this_is_a_custom_value',
         ]);
 
         $this->assertEquals([
-            'custom' => 'THIS_IS_A_CUSTOM_VALUE'
+            'custom' => 'THIS_IS_A_CUSTOM_VALUE',
         ], $processedParams);
     }
 }

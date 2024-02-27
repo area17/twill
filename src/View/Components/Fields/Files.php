@@ -12,7 +12,7 @@ class Files extends TwillFormComponent
         string $label,
         bool $renderForBlocks = false,
         bool $renderForModal = false,
-        string $note = null,
+        ?string $note = null,
         // Component specific
         public int $max = 1,
         public int $filesizeMax = 0,

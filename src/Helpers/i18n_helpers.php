@@ -34,8 +34,8 @@ if (! function_exists('getLocales')) {
 
 if (! function_exists('getLanguagesForVueStore')) {
     /**
-     * @param array $form_fields
-     * @param bool $translate
+     * @param  array  $form_fields
+     * @param  bool  $translate
      * @return array
      */
     function getLanguagesForVueStore($form_fields = [], $translate = true)
@@ -76,7 +76,7 @@ if (! function_exists('getLanguagesForVueStore')) {
 
 if (! function_exists('getLanguageLabelFromLocaleCode')) {
     /**
-     * @param string $code
+     * @param  string  $code
      * @return string
      */
     function getLanguageLabelFromLocaleCode($code, $native = false)

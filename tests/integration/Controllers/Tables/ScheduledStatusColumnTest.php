@@ -26,7 +26,7 @@ class ScheduledStatusColumnTest extends ModulesTestBase
         );
 
         $this->assertEquals(
-            "<span> <span class=\"tablecell__datePub \"> May 11, 2050 - May 12, 2050 <br> <span>Scheduled</span> </span> </span>",
+            '<span> <span class="tablecell__datePub "> May 11, 2050 - May 12, 2050 <br> <span>Scheduled</span> </span> </span>',
             $flattedOutput
         );
     }
@@ -43,7 +43,7 @@ class ScheduledStatusColumnTest extends ModulesTestBase
         );
 
         $this->assertEquals(
-            "<span> <span class=\"tablecell__datePub s--expired \"> May 11, 2020 - May 12, 2020 <br> <span>Expired</span> </span> </span>",
+            '<span> <span class="tablecell__datePub s--expired "> May 11, 2020 - May 12, 2020 <br> <span>Expired</span> </span> </span>',
             $flattedOutput
         );
     }
@@ -60,7 +60,7 @@ class ScheduledStatusColumnTest extends ModulesTestBase
         );
 
         $this->assertEquals(
-            "<span> <span class=\"tablecell__datePub \"> May 11, 2050 <br> <span>Scheduled</span> </span> </span>",
+            '<span> <span class="tablecell__datePub "> May 11, 2050 <br> <span>Scheduled</span> </span> </span>',
             $flattedOutput
         );
     }
@@ -77,7 +77,7 @@ class ScheduledStatusColumnTest extends ModulesTestBase
         );
 
         $this->assertEquals(
-            "<span> - </span>",
+            '<span> - </span>',
             $flattedOutput
         );
     }
@@ -94,7 +94,7 @@ class ScheduledStatusColumnTest extends ModulesTestBase
         );
 
         $this->assertEquals(
-            "<span> - </span>",
+            '<span> - </span>',
             $flattedOutput
         );
     }

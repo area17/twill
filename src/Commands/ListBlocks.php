@@ -94,7 +94,6 @@ class ListBlocks extends Command
 
         $list = [];
 
-
         /** @var Block $block */
         foreach ($filteredList as $block) {
             $data = $this->colorize(
@@ -113,7 +112,6 @@ class ListBlocks extends Command
     }
 
     /**
-     * @param $block
      * @return mixed
      */
     public function colorize($block)

@@ -2,8 +2,8 @@
 
 namespace App\Models\Translations;
 
-use App\Models\Author;
 use A17\Twill\Models\Model;
+use App\Models\Author;
 
 class AuthorTranslation extends Model
 {

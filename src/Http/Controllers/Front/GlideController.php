@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Http\Controllers\Front;
 
-use Illuminate\Config\Repository as Config;
 use A17\Twill\Services\MediaLibrary\Glide;
+use Illuminate\Config\Repository as Config;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;

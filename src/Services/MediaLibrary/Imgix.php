@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\MediaLibrary;
 
+use Exception;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -40,7 +41,7 @@ class Imgix implements ImageServiceInterface
     }
 
     /**
-     * @param string $id
+     * @param  string  $id
      * @return string
      */
     public function getUrl($id, array $params = [])
@@ -56,7 +57,7 @@ class Imgix implements ImageServiceInterface
     }
 
     /**
-     * @param string $id
+     * @param  string  $id
      * @return string
      */
     public function getUrlWithCrop($id, array $cropParams, array $params = [])
@@ -65,9 +66,9 @@ class Imgix implements ImageServiceInterface
     }
 
     /**
-     * @param string $id
-     * @param mixed $width
-     * @param mixed $height
+     * @param  string  $id
+     * @param  mixed  $width
+     * @param  mixed  $height
      * @return string
      */
     public function getUrlWithFocalCrop($id, array $cropParams, $width, $height, array $params = [])
@@ -76,7 +77,7 @@ class Imgix implements ImageServiceInterface
     }
 
     /**
-     * @param string $id
+     * @param  string  $id
      * @return string
      */
     public function getLQIPUrl($id, array $params = [])
@@ -91,7 +92,7 @@ class Imgix implements ImageServiceInterface
     }
 
     /**
-     * @param string $id
+     * @param  string  $id
      * @return string
      */
     public function getSocialUrl($id, array $params = [])
@@ -106,7 +107,7 @@ class Imgix implements ImageServiceInterface
     }
 
     /**
-     * @param string $id
+     * @param  string  $id
      * @return string
      */
     public function getCmsUrl($id, array $params = [])
@@ -121,7 +122,7 @@ class Imgix implements ImageServiceInterface
     }
 
     /**
-     * @param string $id
+     * @param  string  $id
      * @return string
      */
     public function getRawUrl($id)
@@ -130,7 +131,7 @@ class Imgix implements ImageServiceInterface
     }
 
     /**
-     * @param string $id
+     * @param  string  $id
      * @return array|null
      */
     public function getDimensions($id)
@@ -144,15 +145,15 @@ class Imgix implements ImageServiceInterface
                 'width' => $imageMetadata['PixelWidth'],
                 'height' => $imageMetadata['PixelHeight'],
             ];
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             try {
-                list($width, $height) = getimagesize($url);
+                [$width, $height] = getimagesize($url);
 
                 return [
                     'width' => $width,
                     'height' => $height,
                 ];
-            } catch (\Exception $exception) {
+            } catch (Exception $exception) {
                 return [
                     'width' => 0,
                     'height' => 0,
@@ -162,7 +163,7 @@ class Imgix implements ImageServiceInterface
     }
 
     /**
-     * @param array $crop_params
+     * @param  array  $crop_params
      * @return array
      */
     protected function getCrop($crop_params)
@@ -179,9 +180,9 @@ class Imgix implements ImageServiceInterface
     }
 
     /**
-     * @param array $crop_params
-     * @param int $width
-     * @param int $height
+     * @param  array  $crop_params
+     * @param  int  $width
+     * @param  int  $height
      * @return array
      */
     protected function getFocalPointCrop($crop_params, $width, $height)

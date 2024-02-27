@@ -15,13 +15,12 @@ use App\Models\Author;
 class AuthorRepository extends ModuleRepository
 {
     use HandleBlocks;
-    // Slugs is before translations deliberately as this used to give errors.
-    use HandleSlugs;
-    use HandleTranslations;
-    use HandleMedias;
     use HandleFiles;
+    use HandleMedias;
     use HandleRevisions;
+    use HandleSlugs;
     use HandleTags;
+    use HandleTranslations;
 
     public function __construct(Author $model)
     {

@@ -2,17 +2,17 @@
 
 namespace App\Repositories;
 
+use A17\Twill\Repositories\Behaviors\HandleBlocks;
+use A17\Twill\Repositories\Behaviors\HandleRevisions;
+use A17\Twill\Repositories\Behaviors\HandleSlugs;
+use A17\Twill\Repositories\Behaviors\HandleTranslations;
+use A17\Twill\Repositories\ModuleRepository;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
-use A17\Twill\Repositories\Behaviors\HandleBlocks;
-use A17\Twill\Repositories\Behaviors\HandleTranslations;
-use A17\Twill\Repositories\Behaviors\HandleSlugs;
-use A17\Twill\Repositories\Behaviors\HandleRevisions;
-use A17\Twill\Repositories\ModuleRepository;
 
 class CategoryRepository extends ModuleRepository
 {
-    use HandleBlocks, HandleTranslations, HandleSlugs, HandleRevisions;
+    use HandleBlocks, HandleRevisions, HandleSlugs, HandleTranslations;
 
     public function __construct(Category $model)
     {

@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Exceptions;
 
-class NoCapsuleFoundException extends \Exception
+use Exception;
+
+class NoCapsuleFoundException extends Exception
 {
 }

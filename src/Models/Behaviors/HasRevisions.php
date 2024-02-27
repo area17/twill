@@ -35,7 +35,7 @@ trait HasRevisions
 
         return $this->revisions
             ->map(function ($revision, $index) use (&$currentRevision) {
-                if (!$currentRevision && !$revision->isDraft()) {
+                if (! $currentRevision && ! $revision->isDraft()) {
                     $currentRevision = $revision;
                 }
 

@@ -2,8 +2,11 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\ResponseFactory;
 use Illuminate\View\Factory as ViewFactory;
+use Illuminate\View\View;
+use Throwable;
 
 class TemplatesController extends Controller
 {
@@ -26,7 +29,7 @@ class TemplatesController extends Controller
     }
 
     /**
-     * @return \Illuminate\View\View
+     * @return View
      */
     public function index()
     {
@@ -34,8 +37,8 @@ class TemplatesController extends Controller
     }
 
     /**
-     * @param string $view
-     * @return \Illuminate\View\View
+     * @param  string  $view
+     * @return View
      */
     public function view($view)
     {
@@ -44,8 +47,9 @@ class TemplatesController extends Controller
 
     /**
      * @param string view
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Throwable
+     * @return JsonResponse
+     *
+     * @throws Throwable
      */
     public function xhr($view)
     {
@@ -53,6 +57,7 @@ class TemplatesController extends Controller
             'data' => $this->viewFactory->make('templates.' . $view)->render(),
             'has_more' => (rand(0, 10) > 5),
         ];
+
         return $this->responseFactory->json($response);
     }
 }

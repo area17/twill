@@ -16,5 +16,4 @@ class RevisionLimited extends Model
         'title',
         'description',
     ];
-
 }

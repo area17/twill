@@ -57,7 +57,7 @@ class TwillBlocks
      * If the blockCollection is not yet initialized, we add it to the local static so that we
      * can process it once the collection is needed.
      */
-    public function registerPackageBlocksDirectory(string $path, string $renderNamespace = null): void
+    public function registerPackageBlocksDirectory(string $path, ?string $renderNamespace = null): void
     {
         if (! isset(self::$blockDirectories[$path])) {
             if (isset($this->blockCollection)) {
@@ -114,7 +114,7 @@ class TwillBlocks
      * If the blockCollection is not yet initialized, we add it to the local static so that we
      * can process it once the collection is needed.
      */
-    public function registerPackageRepeatersDirectory(string $path, string $renderNamespace = null): void
+    public function registerPackageRepeatersDirectory(string $path, ?string $renderNamespace = null): void
     {
         if (! isset(self::$repeatersDirectories[$path])) {
             if (isset($this->blockCollection)) {
@@ -170,7 +170,6 @@ class TwillBlocks
 
             unset(self::$blockDirectories[$blockDir]);
         }
-
 
         foreach (self::$componentBlockNamespaces as $namespace => $path) {
             if (file_exists($path)) {

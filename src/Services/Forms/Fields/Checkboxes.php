@@ -12,13 +12,13 @@ use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 class Checkboxes extends BaseFormField
 {
-    use IsTranslatable;
-    use HasOptions;
-    use HasMax;
-    use HasMin;
-    use Inlineable;
     use HasBorder;
     use HasColumns;
+    use HasMax;
+    use HasMin;
+    use HasOptions;
+    use Inlineable;
+    use IsTranslatable;
 
     public static function make(): static
     {

@@ -2,12 +2,15 @@
 
 namespace A17\Twill\Services\Forms\Fields\Helpers;
 
+use Exception;
 use Illuminate\Support\Str;
 
 class TiptapWrapper
 {
     public const ELEMENT_UL = 'ul';
+
     public const ELEMENT_OL = 'ol';
+
     public const ELEMENT_NONE = null;
 
     private const SUPPORTED_ELEMENTS = ['ul', 'ol', null];
@@ -19,7 +22,7 @@ class TiptapWrapper
         public ?string $createElement = self::ELEMENT_NONE
     ) {
         if (! in_array($this->createElement, self::SUPPORTED_ELEMENTS, true)) {
-            throw new \Exception($this->createElement . ' is not supported in tiptapWrappers');
+            throw new Exception($this->createElement . ' is not supported in tiptapWrappers');
         }
 
         if (! $this->label) {

@@ -49,7 +49,7 @@ class PermissionsLegacyTest extends PermissionsTestBase
         $this->httpRequestAssert('/twill/settings/seo', 'GET', [], 403);
 
         // User can't access users list
-        $this->httpRequestAssert("/twill/users", 'GET', [], 403);
+        $this->httpRequestAssert('/twill/users', 'GET', [], 403);
 
         // User can't access other profiles
         $this->httpRequestAssert("/twill/users/{$admin->id}/edit", 'GET', [], 403);
@@ -57,11 +57,10 @@ class PermissionsLegacyTest extends PermissionsTestBase
         // User can access own profile
         $this->httpRequestAssert("/twill/users/{$guest->id}/edit", 'GET', [], 200);
 
-
         $posting = $this->createPosting();
 
         // User can access items list
-        $this->httpRequestAssert("/twill/postings", 'GET', [], 200);
+        $this->httpRequestAssert('/twill/postings', 'GET', [], 200);
 
         // User can't access item details
         $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 403);
@@ -91,7 +90,7 @@ class PermissionsLegacyTest extends PermissionsTestBase
         $this->httpRequestAssert('/twill/settings/seo', 'GET', [], 200);
 
         // User can't access users list
-        $this->httpRequestAssert("/twill/users", 'GET', [], 403);
+        $this->httpRequestAssert('/twill/users', 'GET', [], 403);
 
         // User can't access other profiles
         $this->httpRequestAssert("/twill/users/{$guest->id}/edit", 'GET', [], 403);
@@ -100,11 +99,10 @@ class PermissionsLegacyTest extends PermissionsTestBase
         // User can access own profile
         $this->httpRequestAssert("/twill/users/{$publisher->id}/edit", 'GET', [], 200);
 
-
         $posting = $this->createPosting();
 
         // User can access items list
-        $this->httpRequestAssert("/twill/postings", 'GET', [], 200);
+        $this->httpRequestAssert('/twill/postings', 'GET', [], 200);
 
         // User can access item details
         $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 200);
@@ -134,7 +132,7 @@ class PermissionsLegacyTest extends PermissionsTestBase
         $this->httpRequestAssert('/twill/settings/seo', 'GET', [], 200);
 
         // User can access users list
-        $this->httpRequestAssert("/twill/users", 'GET', [], 200);
+        $this->httpRequestAssert('/twill/users', 'GET', [], 200);
 
         // User can access other profiles
         $this->httpRequestAssert("/twill/users/{$guest->id}/edit", 'GET', [], 200);
@@ -143,11 +141,10 @@ class PermissionsLegacyTest extends PermissionsTestBase
         // User can access own profile
         $this->httpRequestAssert("/twill/users/{$admin->id}/edit", 'GET', [], 200);
 
-
         $posting = $this->createPosting();
 
         // User can access items list
-        $this->httpRequestAssert("/twill/postings", 'GET', [], 200);
+        $this->httpRequestAssert('/twill/postings', 'GET', [], 200);
 
         // User can access item details
         $this->httpRequestAssert("/twill/postings/{$posting->id}/edit", 'GET', [], 200);

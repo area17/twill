@@ -15,6 +15,6 @@ class BuildTest extends TestCase
     {
         // $this->assertExitCodeIsGood($this->artisan($command = 'twill:build')->run());
 
-        $this->assertTrue(!false);
+        $this->assertTrue(! false);
     }
 }

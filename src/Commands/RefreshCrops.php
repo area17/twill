@@ -206,8 +206,8 @@ class RefreshCrops extends Command
     /**
      * Create missing crops for a given mediable item, preserving existing metadata.
      *
-     * @param string[] $crops List of crop names to create.
-     * @param object $baseItem Base mediable object from which to pull information.
+     * @param  string[]  $crops  List of crop names to create.
+     * @param  object  $baseItem  Base mediable object from which to pull information.
      * @return void
      */
     protected function createCrops($crops, $baseItem)
@@ -247,8 +247,8 @@ class RefreshCrops extends Command
     /**
      * Delete unused crops for a given mediable item.
      *
-     * @param string[] $crops List of crop names to create.
-     * @param object $baseItem Base mediable object from which to pull information.
+     * @param  string[]  $crops  List of crop names to create.
+     * @param  object  $baseItem  Base mediable object from which to pull information.
      * @return void
      */
     protected function deleteCrops($crops, $baseItem)
@@ -278,8 +278,8 @@ class RefreshCrops extends Command
     /**
      * Attempt to locate the model from the given command argument.
      *
-     * @param string $modelName
-     * @return string|null  The model FQCN.
+     * @param  string  $modelName
+     * @return string|null The model FQCN.
      */
     protected function locateModel($modelName)
     {
@@ -306,8 +306,8 @@ class RefreshCrops extends Command
     /**
      * Calculate crop params for a media from a given ratio.
      *
-     * @param int $mediaId
-     * @param float $ratio
+     * @param  int  $mediaId
+     * @param  float  $ratio
      * @return array
      */
     protected function getCropParams($mediaId, $ratio)

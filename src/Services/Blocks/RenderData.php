@@ -9,6 +9,7 @@ use A17\Twill\Models\Contracts\TwillModelContract;
  * DTO for rendering a Block.
  *
  * $model is undefined when in a block editor context.
+ *
  * @todo: I guess we can add this by passing the model via the editor preview request? Not blocking.
  */
 class RenderData

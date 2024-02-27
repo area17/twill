@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Tests\Integration\Controllers\Tables;
 
-use A17\Twill\Http\Controllers\Admin\ModuleController;
 use A17\Twill\Services\Listings\Columns\Text;
 use A17\Twill\Services\Listings\TableColumns;
 use A17\Twill\Services\Listings\TableDataContext;

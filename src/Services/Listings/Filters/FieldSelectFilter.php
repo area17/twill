@@ -15,11 +15,13 @@ class FieldSelectFilter extends BasicFilter
 {
     /**
      * The option not set allows to filter by "null" values.
+     *
      * @var string
      */
     public const OPTION_NOT_SET = 'null';
 
     protected string $field;
+
     private bool $addWithoutValueOption = false;
 
     public function applyFilter(Builder $builder): Builder

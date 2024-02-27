@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-
 use A17\Twill\Models\Model;
 
 class ClientProjectApplication extends Model
@@ -11,7 +10,7 @@ class ClientProjectApplication extends Model
         'published',
         'title',
         'description',
-        'client_project_id'
+        'client_project_id',
     ];
 
     public function project()

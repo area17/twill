@@ -16,7 +16,7 @@ return new class extends Migration
         $twillMediasTable = config('twill.medias_table', 'twill_medias');
         $twillMediablesTable = config('twill.mediables_table', 'twill_mediables');
 
-        if (!Schema::hasTable($twillMediasTable)) {
+        if (! Schema::hasTable($twillMediasTable)) {
             Schema::create($twillMediasTable, function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->timestamps();
@@ -30,7 +30,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable($twillMediablesTable)) {
+        if (! Schema::hasTable($twillMediablesTable)) {
             Schema::create($twillMediablesTable, function (Blueprint $table) use ($twillMediasTable) {
                 $table->bigIncrements('id');
                 $table->timestamps();

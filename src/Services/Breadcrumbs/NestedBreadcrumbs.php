@@ -7,12 +7,19 @@ use Illuminate\Support\Str;
 class NestedBreadcrumbs extends Breadcrumbs
 {
     private ?string $parentLabel = null;
+
     private string $parentModule;
+
     private string $module;
+
     private string $parentRepository;
+
     private int $activeParentId;
+
     private string $titleKey;
+
     private string $label;
+
     private string $routePrefix = '';
 
     public function parentLabel(string $parentLabel): self
@@ -37,7 +44,7 @@ class NestedBreadcrumbs extends Breadcrumbs
         $this->titleKey = $titleKey;
         $this->routePrefix = $routePrefix;
 
-        if (!$this->parentLabel) {
+        if (! $this->parentLabel) {
             $this->parentLabel(Str::title($parentModule));
         }
 

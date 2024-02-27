@@ -2,6 +2,9 @@
 
 namespace A17\Twill\Models\Behaviors;
 
+use Exception;
+use Illuminate\Database\Eloquent\Builder;
+
 trait HasPosition
 {
     protected static function bootHasPosition()
@@ -18,12 +21,12 @@ trait HasPosition
 
     protected function getCurrentLastPosition()
     {
-        return ((int) static::max("{$this->getTable()}.position"));
+        return (int) static::max("{$this->getTable()}.position");
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeOrdered($query)
     {
@@ -31,14 +34,14 @@ trait HasPosition
     }
 
     /**
-     * @param array $ids
-     * @param int $startOrder
+     * @param  array  $ids
+     * @param  int  $startOrder
      * @return void
      */
     public static function setNewOrder($ids, $startOrder = 1)
     {
-        if (!is_array($ids)) {
-            throw new \Exception('You must pass an array to setNewOrder');
+        if (! is_array($ids)) {
+            throw new Exception('You must pass an array to setNewOrder');
         }
 
         foreach ($ids as $id) {

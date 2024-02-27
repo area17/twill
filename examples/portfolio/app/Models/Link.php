@@ -16,7 +16,6 @@ class Link extends Model implements Sortable
         'description',
         'position',
         'project_id',
-        'url'
+        'url',
     ];
-
 }

@@ -2,11 +2,13 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\User;
+
 trait HandleOauth
 {
     /**
-     * @param \Laravel\Socialite\Contracts\User $oauthUser
-     * @return \A17\Twill\Models\User
+     * @param  \Laravel\Socialite\Contracts\User  $oauthUser
+     * @return User
      */
     public function oauthUser($oauthUser)
     {
@@ -14,9 +16,9 @@ trait HandleOauth
     }
 
     /**
-     * @param \Laravel\Socialite\Contracts\User $oauthUser
-     * @param string $provider
-     * @return boolean
+     * @param  \Laravel\Socialite\Contracts\User  $oauthUser
+     * @param  string  $provider
+     * @return bool
      */
     public function oauthIsUserLinked($oauthUser, $provider)
     {
@@ -28,9 +30,9 @@ trait HandleOauth
     }
 
     /**
-     * @param \Laravel\Socialite\Contracts\User $oauthUser
-     * @param string $provider
-     * @return \A17\Twill\Models\User
+     * @param  \Laravel\Socialite\Contracts\User  $oauthUser
+     * @param  string  $provider
+     * @return User
      */
     public function oauthUpdateProvider($oauthUser, $provider)
     {
@@ -47,8 +49,8 @@ trait HandleOauth
     }
 
     /**
-     * @param \Laravel\Socialite\Contracts\User $oauthUser
-     * @return \A17\Twill\Models\User
+     * @param  \Laravel\Socialite\Contracts\User  $oauthUser
+     * @return User
      */
     public function oauthCreateUser($oauthUser)
     {

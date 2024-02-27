@@ -15,13 +15,15 @@ class SwappableRolesTest extends PermissionsTestBase
         );
     }
 
-    public function testCustomRoles(): void {
-        $rolesEnum = new class('Custom only') extends Enum {
+    public function testCustomRoles(): void
+    {
+        $rolesEnum = new class('Custom only') extends Enum
+        {
             public const CUSTOMONLY = 'Custom only';
         };
 
         TwillPermissions::setRoleEnum($rolesEnum::class);
-        
+
         $this->assertEquals(
             ['CUSTOMONLY' => 'Custom only'],
             TwillPermissions::roles()::toArray()

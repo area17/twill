@@ -28,7 +28,7 @@ class Controller extends BaseController
     /**
      * Attempts to unset the given middleware.
      *
-     * @param string $middleware
+     * @param  string  $middleware
      * @return void
      */
     public function removeMiddleware($middleware)

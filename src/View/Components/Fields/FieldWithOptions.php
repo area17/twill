@@ -58,7 +58,7 @@ abstract class FieldWithOptions extends TwillFormComponent
 
     public function getOptions(): array
     {
-        if (null === $this->options) {
+        if ($this->options === null) {
             $this->options = [];
         }
 

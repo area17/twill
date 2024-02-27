@@ -35,6 +35,7 @@ class NavigationLink extends Component
     private bool $isModuleRoute = false;
 
     private ?string $module = null;
+
     private ?string $moduleAction = null;
 
     public static function make(): self
@@ -83,6 +84,7 @@ class NavigationLink extends Component
 
             return $closure();
         }
+
         // If there is no closure we should just render it.
         return true;
     }
@@ -127,7 +129,7 @@ class NavigationLink extends Component
     }
 
     /**
-     * @param \A17\Twill\View\Components\Navigation\NavigationLink[] $links
+     * @param  NavigationLink[]  $links
      */
     public function setChildren(array $links): self
     {
@@ -160,7 +162,7 @@ class NavigationLink extends Component
 
         $fullList = array_merge($fullList, $this->children);
 
-        return array_filter($fullList, fn(NavigationLink $link) => $link->shouldShow());
+        return array_filter($fullList, fn (NavigationLink $link) => $link->shouldShow());
     }
 
     protected function getModuleRoute(string $moduleName, ?string $action = null): string
@@ -198,6 +200,7 @@ class NavigationLink extends Component
         if ($this->getRoute() && ($this->isModuleRoute || $this->route)) {
             return route($this->getRoute(), $this->routeArguments);
         }
+
         // Could also return the route.
         return $this->href ?? '#';
     }

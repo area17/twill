@@ -102,7 +102,9 @@ class RoutesTest extends ModulesTestBase
     public function testCanListAllRoutes(): void
     {
         $this->getAllUris()->each(
-            function($uri) { $this->assertContains($uri, collect(static::ROUTES)); }
+            function ($uri) {
+                $this->assertContains($uri, collect(static::ROUTES));
+            }
         );
     }
 }

@@ -10,14 +10,14 @@ class Reset extends ResetPassword
     /**
      * Build the mail representation of the notification.
      *
-     * @param mixed $notifiable
+     * @param  mixed  $notifiable
      * @return MailMessage
      */
     public function toMail($notifiable)
     {
         return (new MailMessage())
             ->subject(twillTrans('twill::lang.notifications.reset.subject', [
-                'appName' => config('app.name')
+                'appName' => config('app.name'),
             ]))
             ->markdown('twill::emails.html.email', [
                 'url' => route(config('twill.admin_route_name_prefix') . 'password.reset.form', $this->token),

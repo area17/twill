@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Repositories\ModuleRepository;
+use Exception;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
@@ -125,7 +126,7 @@ class DashboardController extends Controller
             return $found->map(function ($item) use ($module) {
                 try {
                     $author = $item->revisions()->latest()->first()->user->name ?? 'Admin';
-                } catch (\Exception) {
+                } catch (Exception) {
                     $author = 'Admin';
                 }
 
@@ -161,7 +162,7 @@ class DashboardController extends Controller
             if (! empty($moduleConfiguration['activity'])) {
                 if (! class_exists($moduleClassToCheck)) {
                     //  Try to load it from the morph map.
-                    throw new \Exception(
+                    throw new Exception(
                         "Class $moduleClassToCheck specified in twill.dashboard configuration does not exists."
                     );
                 }
@@ -283,7 +284,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * @return array|\Illuminate\Support\Collection
+     * @return array|Collection
      */
     private function getFacts()
     {
@@ -325,8 +326,8 @@ class DashboardController extends Controller
                 $statsByDate = Collection::make($response['rows'] ?? [])->map(function (array $dateRow) {
                     return [
                         'date' => $dateRow[0],
-                        'users' => (int)$dateRow[1],
-                        'pageViews' => (int)$dateRow[2],
+                        'users' => (int) $dateRow[1],
+                        'pageViews' => (int) $dateRow[2],
                         'bounceRate' => $dateRow[3],
                         'pageviewsPerSession' => $dateRow[4],
                     ];
@@ -396,8 +397,8 @@ class DashboardController extends Controller
     }
 
     /**
-     * @param string $period
-     * @param \Illuminate\Support\Collection $statsByDate
+     * @param  string  $period
+     * @param  Collection  $statsByDate
      * @return array
      */
     private function getPeriodStats($period, $statsByDate)
@@ -484,7 +485,7 @@ class DashboardController extends Controller
     }
 
     /**
-     * @param int $count
+     * @param  int  $count
      * @return string
      */
     private function formatStat($count)
@@ -555,7 +556,7 @@ class DashboardController extends Controller
         })->collapse()->values();
     }
 
-    private function getRepository(string $module, string $forModule = null): ModuleRepository
+    private function getRepository(string $module, ?string $forModule = null): ModuleRepository
     {
         return $this->app->make($forModule ?? $this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($module)) . 'Repository');
     }

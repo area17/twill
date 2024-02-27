@@ -50,7 +50,7 @@ class Browser extends TwillFormComponent
             default: $default
         );
 
-        if (!$this->endpoints) {
+        if (! $this->endpoints) {
             $endpointsFromModules = isset($this->modules) ? collect($this->modules)->map(function ($module) {
                 return [
                     'label' => $module['label'] ?? ucfirst($module['name']),
@@ -73,7 +73,7 @@ class Browser extends TwillFormComponent
                 $routeEndpoint = Str::replaceFirst($this->routePrefix . '.', '', $this->moduleName);
             }
             $this->endpoint = $this->endpoint ?? (empty($endpoints) ? moduleRoute(
-            // Remove the route prefix from the moduleName.
+                // Remove the route prefix from the moduleName.
                 $routeEndpoint,
                 $routePrefix,
                 'browser',

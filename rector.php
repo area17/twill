@@ -14,7 +14,7 @@ return static function (\Rector\Config\RectorConfig $rectorConfig): void {
         SetList::DEAD_CODE,
         SetList::CODE_QUALITY,
         SetList::CODING_STYLE,
-        LaravelSetList::LARAVEL_80
+        LaravelSetList::LARAVEL_80,
     ]);
 
     $rectorConfig->paths([__DIR__ . '/src', __DIR__ . '/tests']);
@@ -26,7 +26,6 @@ return static function (\Rector\Config\RectorConfig $rectorConfig): void {
         \Rector\CodingStyle\Rector\If_\NullableCompareToNullRector::class,
         \Rector\CodeQuality\Rector\Isset_\IssetOnPropertyObjectToPropertyExistsRector::class,
         \Rector\CodeQuality\Rector\PropertyFetch\ExplicitMethodCallOverMagicGetSetRector::class,
-        Rector\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector::class
+        Rector\CodingStyle\Rector\Encapsed\WrapEncapsedVariableInCurlyBracesRector::class,
     ]);
 };
-

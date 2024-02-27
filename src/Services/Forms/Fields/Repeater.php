@@ -7,15 +7,18 @@ use A17\Twill\Services\Forms\Fields\Traits\HasMax;
 
 class Repeater extends BaseFormField
 {
-    use HasMax;
     use CanReorder;
+    use HasMax;
 
     protected ?string $type = null;
-    protected bool $buttonAsLink = false;
-    protected bool $allowCreate = true;
-    protected ?string $relation = null;
-    protected ?array $browserModule = null;
 
+    protected bool $buttonAsLink = false;
+
+    protected bool $allowCreate = true;
+
+    protected ?string $relation = null;
+
+    protected ?array $browserModule = null;
 
     public static function make(): static
     {

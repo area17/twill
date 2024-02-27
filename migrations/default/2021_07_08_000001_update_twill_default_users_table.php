@@ -49,7 +49,7 @@ return new class extends Migration
     {
         User::chunk(100, function ($users) {
             foreach ($users as $user) {
-                if (!empty($user->password)) {
+                if (! empty($user->password)) {
                     $user->registered_at = $user->created_at;
                 }
 

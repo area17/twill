@@ -15,7 +15,7 @@ return new class extends Migration
     {
         $twillUsersTable = config('twill.users_table', 'twill_users');
 
-        if (Schema::hasTable($twillUsersTable) && !Schema::hasColumn($twillUsersTable, 'language')) {
+        if (Schema::hasTable($twillUsersTable) && ! Schema::hasColumn($twillUsersTable, 'language')) {
             Schema::table($twillUsersTable, function (Blueprint $table) {
                 $table->string('language')->nullable();
             });

@@ -19,6 +19,7 @@ class RepositoryRepeatersTest extends ModulesTestBase
     public ?string $example = 'portfolio';
 
     protected Partner $partner;
+
     protected Project $project;
 
     public function setUp(): void

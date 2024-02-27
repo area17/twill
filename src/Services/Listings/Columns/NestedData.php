@@ -16,6 +16,7 @@ class NestedData extends TableColumn
                 return $builder->withCount($this->field)->orderBy($this->field . '_count', $direction);
             });
         }
+
         return parent::sortable($sortable);
     }
 

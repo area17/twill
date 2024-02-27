@@ -9,10 +9,10 @@ use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 class Medias extends BaseFormField
 {
-    use IsTranslatable;
-    use HasMax;
-    use HasFieldNote;
     use CanHaveButtonOnTop;
+    use HasFieldNote;
+    use HasMax;
+    use IsTranslatable;
 
     protected bool $withAddInfo = true;
 
@@ -51,7 +51,7 @@ class Medias extends BaseFormField
      */
     public function withoutAddInfo(bool $withoutAddInfo = true): static
     {
-        $this->withAddInfo = !$withoutAddInfo;
+        $this->withAddInfo = ! $withoutAddInfo;
 
         return $this;
     }
@@ -61,7 +61,7 @@ class Medias extends BaseFormField
      */
     public function withoutVideoUrl(bool $withoutVideoUrl = true): static
     {
-        $this->withVideoUrl = !$withoutVideoUrl;
+        $this->withVideoUrl = ! $withoutVideoUrl;
 
         return $this;
     }
@@ -71,7 +71,7 @@ class Medias extends BaseFormField
      */
     public function withoutCaption(bool $withoutCaption = true): static
     {
-        $this->withCaption = !$withoutCaption;
+        $this->withCaption = ! $withoutCaption;
 
         return $this;
     }
@@ -133,7 +133,7 @@ class Medias extends BaseFormField
      */
     public function hideActiveCrop(bool $hideActiveCrop = true): static
     {
-        $this->activeCrop = !$hideActiveCrop;
+        $this->activeCrop = ! $hideActiveCrop;
 
         return $this;
     }

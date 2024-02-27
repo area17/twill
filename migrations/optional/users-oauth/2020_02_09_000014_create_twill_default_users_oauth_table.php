@@ -17,7 +17,7 @@ return new class extends Migration
             $twillUsersTable = config('twill.users_table', 'twill_users');
             $twillOauthTable = config('twill.users_oauth_table', 'twill_users_oauth');
 
-            if (!Schema::hasTable($twillOauthTable)) {
+            if (! Schema::hasTable($twillOauthTable)) {
                 Schema::create($twillOauthTable, function (Blueprint $table) use ($twillUsersTable) {
                     $table->bigIncrements('id');
                     $table->timestamps();

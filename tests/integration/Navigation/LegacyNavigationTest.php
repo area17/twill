@@ -4,8 +4,8 @@ namespace A17\Twill\Tests\Integration\Navigation;
 
 use A17\Twill\Facades\TwillNavigation;
 use A17\Twill\Tests\Integration\TestCase;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class LegacyNavigationTest extends TestCase
 {
@@ -15,7 +15,7 @@ class LegacyNavigationTest extends TestCase
             'pages' => [
                 'module' => true,
                 'can' => 'see-nav-item',
-            ]
+            ],
         ]);
 
         $this->login();
@@ -32,7 +32,7 @@ class LegacyNavigationTest extends TestCase
             'pages' => [
                 'module' => true,
                 'can' => 'see-nav-item',
-            ]
+            ],
         ]);
 
         Gate::define('see-nav-item', function () {

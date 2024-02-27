@@ -10,10 +10,10 @@ use Illuminate\Support\Str;
 
 class Files extends BaseFormField
 {
-    use IsTranslatable;
-    use HasMax;
-    use HasFieldNote;
     use CanHaveButtonOnTop;
+    use HasFieldNote;
+    use HasMax;
+    use IsTranslatable;
 
     protected ?string $itemLabel = null;
 
@@ -38,7 +38,7 @@ class Files extends BaseFormField
      */
     public function label(string $label): static
     {
-        if (!$this->itemLabel) {
+        if (! $this->itemLabel) {
             $this->itemLabel = strtolower($label);
         }
 

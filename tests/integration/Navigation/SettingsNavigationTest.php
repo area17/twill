@@ -48,7 +48,7 @@ class SettingsNavigationTest extends TestCase
         TwillAppSettings::registerSettingsGroup(
             SettingsGroup::make()
                 ->name('test')
-                ->availableWhen(fn() => false)
+                ->availableWhen(fn () => false)
         );
 
         $this->assertSettingsIsNotInNavgationTree(TwillNavigation::buildNavigationTree());
@@ -61,7 +61,7 @@ class SettingsNavigationTest extends TestCase
         TwillAppSettings::registerSettingsGroup(
             SettingsGroup::make()
                 ->name('test')
-                ->availableWhen(fn() => true)
+                ->availableWhen(fn () => true)
         );
 
         $navigation = TwillNavigation::buildNavigationTree();
@@ -75,7 +75,8 @@ class SettingsNavigationTest extends TestCase
         $this->assertEquals('Test', $navigation['right'][0]->getChildren()[0]->getTitle());
     }
 
-    protected function assertSettingsIsNotInNavgationTree(array $navigationTree): void {
+    protected function assertSettingsIsNotInNavgationTree(array $navigationTree): void
+    {
         $this->assertCount(1, $navigationTree['right']);
         // The only link is the media library one.
         $this->assertEquals('Media Library', $navigationTree['right'][0]->getTitle());

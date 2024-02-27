@@ -4,7 +4,9 @@ namespace A17\Docs;
 
 use A17\PhpTorch\Highlight;
 use A17\Twill\Commands\GenerateDocsCommand;
+use Exception;
 use Illuminate\Support\Str;
+use stdClass;
 use Torchlight\Block;
 use Torchlight\Commonmark\V2\TorchlightExtension;
 
@@ -100,14 +102,14 @@ class PhpTorchExtension extends TorchlightExtension
 
                 if (method_exists($highlighter, $key)) {
                     if (is_object($value)) {
-                        $highlighter->{$key}(...(array)$value);
+                        $highlighter->{$key}(...(array) $value);
                     } elseif (is_array($value) && is_object($value[0])) {
                         if ($key === 'diffInMethod') {
                             foreach ($value as $item) {
-                                $highlighter->{$key}(...(array)$item);
+                                $highlighter->{$key}(...(array) $item);
                             }
                         } else {
-                            $highlighter->{$key}(...(array)$value[0]);
+                            $highlighter->{$key}(...(array) $value[0]);
                         }
                     } else {
                         $highlighter->{$key}($value);
@@ -115,18 +117,18 @@ class PhpTorchExtension extends TorchlightExtension
                 }
             }
 
-            return (string)$highlighter;
+            return (string) $highlighter;
         }
 
         return parent::getContent($node);
     }
 
-    private function getJson(string $json): \stdClass
+    private function getJson(string $json): stdClass
     {
         try {
             return json_decode($json, flags: JSON_THROW_ON_ERROR);
-        } catch (\Exception $e) {
-            throw new \Exception($e->getMessage() . '====>' . $json);
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage() . '====>' . $json);
         }
     }
 }

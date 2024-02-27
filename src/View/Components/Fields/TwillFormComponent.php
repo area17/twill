@@ -35,7 +35,7 @@ abstract class TwillFormComponent extends Component
         public mixed $default = null
     ) {
         // This can be null. In that case the field might be used outside of a form and we have no shared $form.
-        $form = ViewFacade::shared("form");
+        $form = ViewFacade::shared('form');
         $this->item = $form['item'] ?? null;
         $this->form_fields = $form['form_fields'] ?? [];
         $this->formModuleName = $form['moduleName'] ?? null;

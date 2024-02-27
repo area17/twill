@@ -22,14 +22,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Author extends Model implements Sortable
 {
     use HasBlocks;
-    use HasTranslation;
-    use HasSlug;
-    use HasMedias;
     use HasFiles;
-    use HasRevisions;
-    use HasRelated;
-    use HasPresenter;
+    use HasMedias;
     use HasPosition;
+    use HasPresenter;
+    use HasRelated;
+    use HasRevisions;
+    use HasSlug;
+    use HasTranslation;
 
     public $presenterAdmin = TestPresenter::class;
 

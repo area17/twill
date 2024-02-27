@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Commands;
 
-use Illuminate\Support\Str;
 use Illuminate\Console\Command as IlluminateCommand;
+use Illuminate\Support\Str;
 
 abstract class Command extends IlluminateCommand
 {

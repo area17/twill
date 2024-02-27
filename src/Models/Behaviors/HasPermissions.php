@@ -3,8 +3,8 @@
 namespace A17\Twill\Models\Behaviors;
 
 use A17\Twill\Models\Permission;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Collection;
 
 trait HasPermissions
 {
@@ -32,17 +32,17 @@ trait HasPermissions
      * Add global permission to item, after making sure the permission is
      * valid
      *
-     * @param string $name
+     * @param  string  $name
      * @return void
      */
     public function grantGlobalPermission($name)
     {
         $this->checkPermissionAvailable($name, Permission::SCOPE_GLOBAL);
 
-        $permission = Permission::firstOrCreate(['name' => $name,]);
+        $permission = Permission::firstOrCreate(['name' => $name]);
 
         // check the existence to avoid duplicate records on pivot table
-        if (!$this->permissions()->global()->where('name', $name)->exists()) {
+        if (! $this->permissions()->global()->where('name', $name)->exists()) {
             $this->permissions()->save($permission);
         }
     }
@@ -51,7 +51,7 @@ trait HasPermissions
      * Revoke global permission from the item, after making sure the permission is
      * valid
      *
-     * @param string $name
+     * @param  string  $name
      * @return void
      */
     public function revokeGlobalPermission($name)
@@ -65,8 +65,8 @@ trait HasPermissions
      * Add module permission to item, after making sure the permission is
      * valid
      *
-     * @param string $name
-     * @param string|object $permissionableType
+     * @param  string  $name
+     * @param  string|object  $permissionableType
      * @return void
      */
     public function grantModulePermission($name, $permissionableType)
@@ -85,8 +85,8 @@ trait HasPermissions
      * Revoke module permission from the item, after making sure the permission is
      * valid
      *
-     * @param string $name
-     * @param string|object $permissionableType
+     * @param  string  $name
+     * @param  string|object  $permissionableType
      * @return void
      */
     public function revokeModulePermission($name, $permissionableType)
@@ -101,7 +101,7 @@ trait HasPermissions
     /**
      * Revoke all module permissions from the item
      *
-     * @param string|object $permissionableType
+     * @param  string|object  $permissionableType
      * @return void
      */
     public function revokeAllModulePermission($permissionableType)
@@ -115,8 +115,8 @@ trait HasPermissions
      * Add module item permission, after making sure the permission is
      * valid
      *
-     * @param string $name
-     * @param object $permissionableItem
+     * @param  string  $name
+     * @param  object  $permissionableItem
      * @return void
      */
     public function grantModuleItemPermission($name, $permissionableItem)
@@ -140,8 +140,8 @@ trait HasPermissions
      * Revoke module item permissions, after making sure the permission is
      * valid
      *
-     * @param string $name
-     * @param object $permissionableItem
+     * @param  string  $name
+     * @param  object  $permissionableItem
      * @return void
      */
     public function revokeModuleItemPermission($name, $permissionableItem)
@@ -157,7 +157,7 @@ trait HasPermissions
     /**
      * Revoke all module item permissions
      *
-     * @param object $permissionableItem
+     * @param  object  $permissionableItem
      * @return void
      */
     public function revokeModuleItemAllPermissions($permissionableItem)
@@ -168,7 +168,7 @@ trait HasPermissions
     /**
      * Revoke all permissions
      *
-     * @param object $permissionableItem
+     * @param  object  $permissionableItem
      * @return void
      */
     public function revokeAllPermissions()
@@ -179,12 +179,12 @@ trait HasPermissions
     /**
      * Revoke all permissions from a list of permission ids
      *
-     * @param int[] $permissionableIds
+     * @param  int[]  $permissionableIds
      * @return void
      */
     public function removePermissions($permissionableIds)
     {
-        if (!empty($permissionableIds)) {
+        if (! empty($permissionableIds)) {
             $this->permissions()->detach($permissionableIds);
         }
     }
@@ -192,17 +192,17 @@ trait HasPermissions
     /**
      * Check if a permission is available for a particular scope
      *
-     * @param string $name
-     * @param string $scope
+     * @param  string  $name
+     * @param  string  $scope
      * @return void
+     *
      * @see Permission::SCOPE_GLOBAL
      * @see Permission::SCOPE_MODULE
      * @see Permission::SCOPE_ITEM
-     *
      */
     protected function checkPermissionAvailable($name, $scope)
     {
-        if (!in_array($name, Permission::available($scope))) {
+        if (! in_array($name, Permission::available($scope))) {
             abort(400, 'Operation failed, permission ' . $name . ' not available on ' . $scope);
         }
     }

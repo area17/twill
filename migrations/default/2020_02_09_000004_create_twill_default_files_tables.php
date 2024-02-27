@@ -16,7 +16,7 @@ return new class extends Migration
         $twillFilesTable = config('twill.files_table', 'twill_files');
         $twillFileablesTable = config('twill.fileables_table', 'twill_fileables');
 
-        if (!Schema::hasTable($twillFilesTable)) {
+        if (! Schema::hasTable($twillFilesTable)) {
             Schema::create($twillFilesTable, function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->timestamps();
@@ -27,7 +27,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable($twillFileablesTable)) {
+        if (! Schema::hasTable($twillFileablesTable)) {
             Schema::create($twillFileablesTable, function (Blueprint $table) use ($twillFilesTable) {
                 $table->bigIncrements('id');
                 $table->timestamps();

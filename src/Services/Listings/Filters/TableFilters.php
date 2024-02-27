@@ -11,12 +11,12 @@ class TableFilters extends Collection
     {
         $result = [];
 
-        /** @var \A17\Twill\Services\Listings\Filters\BasicFilter $filter */
+        /** @var BasicFilter $filter */
         foreach ($this->items as $filter) {
-//
-//            if (!$filters->isEnabled()) {
-//                continue;
-//            }
+            //
+            //            if (!$filters->isEnabled()) {
+            //                continue;
+            //            }
             $result[$filter->getKey()] = $filter->getOptions($repository);
         }
 

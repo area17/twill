@@ -29,7 +29,7 @@ trait CopyBlocks
                 ];
             })
             ->merge([
-                "{\$tests}/../../src/Commands/stubs/repeaters/carousel-item.blade.php" => collect(
+                '{$tests}/../../src/Commands/stubs/repeaters/carousel-item.blade.php' => collect(
                     config('twill.block_editor.directories.source.repeaters')
                 )->map(function ($path) {
                     return $this->normalizeDir($path['path']);
@@ -41,7 +41,7 @@ trait CopyBlocks
 
     protected function normalizeDir($directory)
     {
-        if (!Str::endsWith($directory, DIRECTORY_SEPARATOR)) {
+        if (! Str::endsWith($directory, DIRECTORY_SEPARATOR)) {
             $directory .= DIRECTORY_SEPARATOR;
         }
 
@@ -60,7 +60,7 @@ trait CopyBlocks
 
                 $destination = $this->makeFileName($destination, $source);
 
-                if (!$this->files->exists($directory = dirname($destination))) {
+                if (! $this->files->exists($directory = dirname($destination))) {
                     $this->files->makeDirectory($directory, 0755, true);
                 }
 

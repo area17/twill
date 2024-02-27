@@ -8,8 +8,8 @@ use A17\Twill\Models\Model;
 
 class Letter extends Model
 {
-    use HasRevisions;
     use HasRelated;
+    use HasRevisions;
 
     protected $fillable = [
         'published',

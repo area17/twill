@@ -2,7 +2,11 @@
 
 namespace A17\Twill\Http\Controllers\Front;
 
+use A17\Twill\Models\Model;
+use Exception;
 use Illuminate\Config\Repository as Config;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Str;
@@ -12,8 +16,9 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 trait ShowWithPreview
 {
     /**
-     * @return \Illuminate\Contracts\View\View|\Illuminate\Http\RedirectResponse
-     * @throws \Exception
+     * @return View|RedirectResponse
+     *
+     * @throws Exception
      */
     public function show(
         string $slug,
@@ -22,15 +27,15 @@ trait ShowWithPreview
         ViewFactory $viewFactory,
         Config $config
     ) {
-        if (!isset($this->moduleName) || !isset($this->repository)) {
-            throw new \Exception("You should at least provide a module name and inject a repository.");
+        if (! isset($this->moduleName) || ! isset($this->repository)) {
+            throw new Exception('You should at least provide a module name and inject a repository.');
         }
 
-        if (!isset($this->routeName)) {
+        if (! isset($this->routeName)) {
             $this->routeName = $this->moduleName;
         }
 
-        if (!isset($this->showViewName)) {
+        if (! isset($this->showViewName)) {
             $this->showViewName = $config->get('twill.frontend.views_path', 'site') . '.' . Str::singular($this->moduleName);
         }
 
@@ -40,7 +45,7 @@ trait ShowWithPreview
 
         $item = ($item ?? $this->getItem($slug));
 
-        if (!$item) {
+        if (! $item) {
             throw new NotFoundHttpException(ucfirst($this->moduleName) . ' not found');
         }
 
@@ -54,8 +59,8 @@ trait ShowWithPreview
     }
 
     /**
-     * @param string $slug
-     * @return \A17\Twill\Models\Model|null
+     * @param  string  $slug
+     * @return Model|null
      */
     protected function getItem($slug)
     {
@@ -68,8 +73,7 @@ trait ShowWithPreview
     }
 
     /**
-     * @param $slug
-     * @return \A17\Twill\Models\Model|null
+     * @return Model|null
      */
     protected function getItemPreview($slug)
     {
@@ -81,8 +85,8 @@ trait ShowWithPreview
     }
 
     /**
-     * @param string $slug
-     * @param mixed $item
+     * @param  string  $slug
+     * @param  mixed  $item
      * @return array
      */
     protected function showData($slug, $item)

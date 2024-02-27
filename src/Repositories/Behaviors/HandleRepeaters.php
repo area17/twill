@@ -31,8 +31,6 @@ trait HandleRepeaters
      *         'relation' => 'pages'
      *     ]
      * ]
-     *
-     * @var array
      */
     protected array $repeaters = [];
 
@@ -132,13 +130,13 @@ trait HandleRepeaters
                 // row already exists, let's update
                 $id = str_replace($relation . '-', '', $relationField['id']);
                 $relationRepository->update($id, $relationField);
-                $currentIdList[] = (int)$id;
+                $currentIdList[] = (int) $id;
             } else {
                 // new row, let's attach to our object and create
                 unset($relationField['id']);
                 $newRelation = $relationRepository->create($relationField);
                 $object->$relation()->save($newRelation);
-                $currentIdList[] = (int)$newRelation['id'];
+                $currentIdList[] = (int) $newRelation['id'];
             }
         }
 
@@ -213,7 +211,7 @@ trait HandleRepeaters
 
                 // The id here is the one of the pivot column. From there we can update the correct target.
                 $currentRelation = $currentRelations->first(function (Model $model) use ($pivotRowId) {
-                    return (int)$pivotRowId === $model->pivot->id;
+                    return (int) $pivotRowId === $model->pivot->id;
                 });
 
                 $relationRepository->update($currentRelation->id, $relationField);
@@ -223,7 +221,7 @@ trait HandleRepeaters
                     $currentRelation->pivot->update($pivotFieldData);
                 }
 
-                $currentIdList[] = (int)$pivotRowId;
+                $currentIdList[] = (int) $pivotRowId;
             } else {
                 $frontEndId = $relationField['id'];
                 if ($relationField['repeater_target_id'] ?? false) {
@@ -239,7 +237,7 @@ trait HandleRepeaters
                     $newRelation = $relationRepository->create($relationField);
                 }
 
-                $currentIdList[] = (int)$newRelation['id'];
+                $currentIdList[] = (int) $newRelation['id'];
 
                 $pivotFieldData = $this->encodePivotFields(collect($relationField)->only($pivotFields)->all());
 
@@ -254,7 +252,7 @@ trait HandleRepeaters
         $current = $object->{$relation}()->withPivot('id')->get();
         if ($current->isNotEmpty()) {
             foreach ($current as $existingRelation) {
-                if (! in_array((int)$existingRelation->pivot->id, $currentIdList, true)) {
+                if (! in_array((int) $existingRelation->pivot->id, $currentIdList, true)) {
                     // The pivot table is treated differently.
                     $object->{$relation}()->detach($existingRelation->pivot->id);
                 }
@@ -319,14 +317,14 @@ trait HandleRepeaters
                 $id = str_replace($relation . '-', '', $relationField['id']);
                 $relationRepository->update($id, $relationField);
 
-                $currentIdList[] = (int)$id;
+                $currentIdList[] = (int) $id;
             } else {
                 // new row, let's attach to our object and create
                 $relationField[$this->model->getForeignKey()] = $object->id;
                 $frontEndId = $relationField['id'];
                 unset($relationField['id']);
                 $newRelation = $relationRepository->create($relationField);
-                $currentIdList[] = (int)$newRelation['id'];
+                $currentIdList[] = (int) $newRelation['id'];
 
                 TwillUtil::registerRepeaterId($frontEndId, $newRelation->id);
             }

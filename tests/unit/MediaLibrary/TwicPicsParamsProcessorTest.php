@@ -2,8 +2,8 @@
 
 namespace A17\Twill\Tests\Unit\MediaLibrary;
 
-use A17\Twill\Tests\Unit\TestCase;
 use A17\Twill\Services\MediaLibrary\TwicPicsParamsProcessor;
+use A17\Twill\Tests\Unit\TestCase;
 
 class TwicPicsParamsProcessorTest extends TestCase
 {

@@ -4,12 +4,12 @@ namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Contracts\TwillModelContract;
+use A17\Twill\Models\Permission;
 use A17\Twill\Services\Listings\Columns\Text;
 use A17\Twill\Services\Listings\TableColumns;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use A17\Twill\Models\Permission;
-use Illuminate\Contracts\Foundation\Application;
 
 class GroupController extends ModuleController
 {
@@ -54,7 +54,6 @@ class GroupController extends ModuleController
             Text::make()->field('users_count')->sortable()->title('Users'),
         ]);
     }
-
 
     protected function getIndexOption($option, $item = null): mixed
     {

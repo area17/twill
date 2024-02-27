@@ -14,7 +14,8 @@ class RelationColumnTest extends ModulesTestBase
         $this->author = $this->createAuthor();
     }
 
-    public function testKey(): void {
+    public function testKey(): void
+    {
         $column = Relation::make()->field('title')->relation('categories');
 
         $this->assertEquals('categoriesTitle', $column->getKey());
@@ -57,7 +58,8 @@ class RelationColumnTest extends ModulesTestBase
         Relation::make()->field('categories')->renderCell($this->author);
     }
 
-    public function testKeyMissingThrowsException(): void {
+    public function testKeyMissingThrowsException(): void
+    {
         $column = Relation::make();
 
         $this->expectException(ColumnMissingPropertyException::class);

@@ -22,7 +22,7 @@ trait HandleNesting
 
         $targetItem = $this->forSlug($targetSlug, $with, $withCount, $scopes);
 
-        if (!$targetItem || $nestedSlug !== $targetItem->nestedSlug) {
+        if (! $targetItem || $nestedSlug !== $targetItem->nestedSlug) {
             return null;
         }
 
@@ -37,7 +37,7 @@ trait HandleNesting
 
     public function afterRestore(TwillModelContract $object): void
     {
-        if (!$object->parent) {
+        if (! $object->parent) {
             $object->parent_id = null;
             $object->save();
         }

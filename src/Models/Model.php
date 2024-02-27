@@ -19,12 +19,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
-abstract class Model extends BaseModel implements TaggableInterface, TwillModelContract, TwillSchedulableModel, TwillLinkableModel
+abstract class Model extends BaseModel implements TaggableInterface, TwillLinkableModel, TwillModelContract, TwillSchedulableModel
 {
     use HasPresenter;
+    use IsTranslatable;
     use SoftDeletes;
     use TaggableTrait;
-    use IsTranslatable;
 
     public $timestamps = true;
 
@@ -169,7 +169,7 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function tags(): MorphToMany
     {

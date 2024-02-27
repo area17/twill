@@ -11,10 +11,11 @@ use Illuminate\Support\Facades\Config;
 
 class MediaFileDeleteTest extends TestCase
 {
-    use CreatesMedia;
     use CreatesFile;
+    use CreatesMedia;
 
     protected MediaRepository $mediaRepository;
+
     protected FileRepository $fileRepository;
 
     public function setUp(): void

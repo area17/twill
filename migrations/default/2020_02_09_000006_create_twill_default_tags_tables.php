@@ -15,7 +15,7 @@ return new class extends Migration
     {
         $twillTaggedTable = config('twill.tagged_table', 'twill_tagged');
 
-        if (!Schema::hasTable($twillTaggedTable)) {
+        if (! Schema::hasTable($twillTaggedTable)) {
             Schema::create($twillTaggedTable, function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('taggable_type');
@@ -25,10 +25,9 @@ return new class extends Migration
             });
         }
 
-
         $twillTagsTable = config('twill.tags_table', 'twill_tags');
 
-        if (!Schema::hasTable($twillTagsTable)) {
+        if (! Schema::hasTable($twillTagsTable)) {
             Schema::create($twillTagsTable, function (Blueprint $table) {
                 $table->bigIncrements('id');
                 $table->string('namespace');

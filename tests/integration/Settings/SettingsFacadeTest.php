@@ -11,7 +11,6 @@ use A17\Twill\Tests\Integration\TestCase;
 
 class SettingsFacadeTest extends TestCase
 {
-
     public ?string $example = 'tests-settings';
 
     public function setUp(): void
@@ -52,15 +51,15 @@ class SettingsFacadeTest extends TestCase
                                         'id' => time(),
                                         'content' => [
                                             'title' => [
-                                                'en' => 'Title english.'
-                                            ]
+                                                'en' => 'Title english.',
+                                            ],
                                         ],
                                         'editor_name' => 'blocks-' . $model->blocks[0]->id . '|default',
                                         'type' => 'a17-block-text',
                                         'is_repeater' => false,
                                     ],
-                                ]
-                            ]
+                                ],
+                            ],
 
                         ],
                     ],

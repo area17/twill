@@ -3,6 +3,8 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use Illuminate\Auth\Passwords\PasswordBrokerManager;
+use Illuminate\Contracts\Auth\PasswordBroker;
+use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\View\Factory as ViewFactory;
 
@@ -34,7 +36,7 @@ class ForgotPasswordController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\Auth\PasswordBroker
+     * @return PasswordBroker
      */
     public function broker()
     {
@@ -42,7 +44,7 @@ class ForgotPasswordController extends Controller
     }
 
     /**
-     * @return \Illuminate\Contracts\View\View
+     * @return View
      */
     public function showLinkRequestForm(ViewFactory $viewFactory)
     {

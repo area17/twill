@@ -36,7 +36,7 @@ class TableColumns extends Collection
         $data['endpointType'] = $tableDataContext->endpointType;
         $data['repeaterFields'] = $tableDataContext->repeaterFields;
 
-        if (!isset($data['thumbnail']) && $tableDataContext->hasMedia) {
+        if (! isset($data['thumbnail']) && $tableDataContext->hasMedia) {
             $data['thumbnail'] = $model->defaultCmsImage(['w' => 100, 'h' => 100]);
         }
 
@@ -47,7 +47,7 @@ class TableColumns extends Collection
     {
         $data = [];
 
-        /** @var \A17\Twill\Services\Listings\TableColumn $item */
+        /** @var TableColumn $item */
         foreach ($this->items as $item) {
             $data[$item->getKey()] = $item->renderCell($model);
         }
@@ -61,7 +61,7 @@ class TableColumns extends Collection
 
         $tableColumns = [];
 
-        /** @var \A17\Twill\Services\Listings\TableColumn $column */
+        /** @var TableColumn $column */
         foreach ($this->items as $column) {
             $tableColumns[] = $column->toColumnArray($visibleColumns, $sortable);
         }

@@ -34,7 +34,8 @@ class SearchTest extends FilterTestBase
         $this->assertCount(0, $data['tableData']);
     }
 
-    public function testSearchColumnSetter(): void {
+    public function testSearchColumnSetter(): void
+    {
         // Search for another field yield no results.
         $data = $this->controllerWithFiltersAndQuickFilters(active: ['search' => '2022'])->index()->getData();
         $this->assertCount(0, $data['tableData']);

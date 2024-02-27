@@ -1,9 +1,9 @@
 <?php
 
+use A17\Twill\Facades\TwillRoutes;
 use A17\Twill\Http\Controllers\Admin\AppSettingsController;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
-use A17\Twill\Facades\TwillRoutes;
 
 if (config('twill.enabled.users-management')) {
     TwillRoutes::module('users', ['except' => ['sort', 'feature']]);

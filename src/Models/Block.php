@@ -15,8 +15,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Block extends BaseModel implements TwillModelContract
 {
-    use HasMedias;
     use HasFiles;
+    use HasMedias;
     use HasPresenter;
     use HasRelated;
 
@@ -75,17 +75,17 @@ class Block extends BaseModel implements TwillModelContract
         return $this->content[$name] ?? null;
     }
 
-    public function translatedInput(string $name, string $forceLocale = null): mixed
+    public function translatedInput(string $name, ?string $forceLocale = null): mixed
     {
         $value = $this->content[$name] ?? null;
 
         $locale = $forceLocale ?? (
-        config('translatable.use_property_fallback', false) && (! array_key_exists(
-            app()->getLocale(),
-            array_filter($value ?? []) ?? []
-        ))
-            ? config('translatable.fallback_locale')
-            : app()->getLocale()
+            config('translatable.use_property_fallback', false) && (! array_key_exists(
+                app()->getLocale(),
+                array_filter($value ?? []) ?? []
+            ))
+                ? config('translatable.fallback_locale')
+                : app()->getLocale()
         );
 
         return $value[$locale] ?? null;

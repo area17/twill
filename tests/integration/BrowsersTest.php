@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
+use A17\Twill\Models\RelatedItem;
 use App\Models\Bio;
 use App\Models\Book;
 use App\Models\Letter;
@@ -10,7 +11,6 @@ use App\Repositories\BioRepository;
 use App\Repositories\BookRepository;
 use App\Repositories\LetterRepository;
 use App\Repositories\WriterRepository;
-use A17\Twill\Models\RelatedItem;
 use Illuminate\Support\Collection;
 
 class BrowsersTest extends TestCase
@@ -144,6 +144,7 @@ class BrowsersTest extends TestCase
                 }),
             ],
         ]);
+
         return $item;
     }
 
@@ -386,14 +387,14 @@ class BrowsersTest extends TestCase
                     [
                         'id' => $writer->id,
                         'endpointType' => '\\App\\Models\\Writer',
-                    ]
+                    ],
                 ],
                 'books' => [
                     [
                         'id' => $book->id,
                         'endpointType' => '\\App\\Models\\Book',
-                    ]
-                ]
+                    ],
+                ],
             ],
         ]);
 
@@ -405,7 +406,7 @@ class BrowsersTest extends TestCase
                     [
                         'id' => $writer->id,
                         'endpointType' => '\\App\\Models\\Writer',
-                    ]
+                    ],
                 ],
             ],
         ]);

@@ -2,17 +2,17 @@
 
 use A17\Twill\Exceptions\NoCapsuleFoundException;
 use A17\Twill\Facades\TwillCapsules;
-use Illuminate\Support\Facades\Cache;
 use A17\Twill\Services\Assets\Twill as TwillAssets;
+use Illuminate\Support\Facades\Cache;
 
-if (!function_exists('revAsset')) {
+if (! function_exists('revAsset')) {
     /**
-     * @param string $file
+     * @param  string  $file
      * @return string
      */
     function revAsset($file)
     {
-        if (!app()->environment('local', 'development')) {
+        if (! app()->environment('local', 'development')) {
             try {
                 $manifest = Cache::rememberForever('rev-manifest', function () {
                     return json_decode(file_get_contents(config('twill.frontend.rev_manifest_path')), true);
@@ -30,9 +30,9 @@ if (!function_exists('revAsset')) {
     }
 }
 
-if (!function_exists('twillAsset')) {
+if (! function_exists('twillAsset')) {
     /**
-     * @param string $file
+     * @param  string  $file
      * @return string
      */
     function twillAsset($file)
@@ -41,12 +41,12 @@ if (!function_exists('twillAsset')) {
     }
 }
 
-if (!function_exists('icon')) {
+if (! function_exists('icon')) {
     /**
      * ARIA roles memo: 'presentation' means merely decoration. Otherwise, use role="img".
      *
-     * @param string $name
-     * @param array $opts
+     * @param  string  $name
+     * @param  array  $opts
      * @return string
      */
     function icon($name, $opts = [])
@@ -61,11 +61,12 @@ if (!function_exists('icon')) {
         $svg_link = config('twill.frontend.svg_sprites_use_hash_only') ? "#icon--$name" : revAsset(
             config('twill.frontend.svg_sprites_path')
         ) . "#icon--$name";
+
         return "<svg class=\"icon--$name $css_class\" $title $role><use xlink:href=\"" . $svg_link . '"></use></svg>';
     }
 }
 
-if (!function_exists('twillViewName')) {
+if (! function_exists('twillViewName')) {
     function twillViewName($module, $suffix)
     {
         $view = "twill.{$module}.{$suffix}";
@@ -75,7 +76,7 @@ if (!function_exists('twillViewName')) {
         }
 
         // No module is set.
-        if (!$module) {
+        if (! $module) {
             return ".$suffix";
         }
 

@@ -5,19 +5,19 @@ namespace App\Models;
 use A17\Twill\Models\Behaviors\HasBlocks;
 use A17\Twill\Models\Behaviors\HasPosition;
 use A17\Twill\Models\Behaviors\HasRevisions;
-use A17\Twill\Models\Behaviors\HasTranslation;
 use A17\Twill\Models\Behaviors\HasSlug;
+use A17\Twill\Models\Behaviors\HasTranslation;
 use A17\Twill\Models\Model;
 use Kalnoy\Nestedset\NodeTrait;
 
 class Category extends Model
 {
     use HasBlocks,
-        HasTranslation,
-        HasSlug,
         HasPosition,
-        NodeTrait,
-        HasRevisions;
+        HasRevisions,
+        HasSlug,
+        HasTranslation,
+        NodeTrait;
 
     protected $fillable = ['published', 'title', 'description', 'position'];
 
@@ -39,7 +39,7 @@ class Category extends Model
             $nodeModel = $nodeModels->where('id', $nodeArray['id'])->first();
 
             if ($nodeArray['parent_id'] === null) {
-                if (!$nodeModel->isRoot() || $nodeModel->position !== $nodeArray['position']) {
+                if (! $nodeModel->isRoot() || $nodeModel->position !== $nodeArray['position']) {
                     $nodeModel->position = $nodeArray['position'];
                     $nodeModel->saveAsRoot();
                 }
@@ -53,7 +53,7 @@ class Category extends Model
         }
     }
 
-    public static function flattenTree(array $nodeTree, int $parentId = null)
+    public static function flattenTree(array $nodeTree, ?int $parentId = null)
     {
         $nodeArrays = [];
         $position = 0;

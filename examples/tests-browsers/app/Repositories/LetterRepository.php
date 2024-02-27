@@ -26,6 +26,7 @@ class LetterRepository extends ModuleRepository
     {
         $fields = parent::getFormFields($object);
         $fields['browsers']['writers'] = $this->getFormFieldsForBrowser($object, 'writers');
+
         return $fields;
     }
 }

@@ -2,22 +2,23 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 trait HandleFieldsGroups
 {
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array|null $fields
-     * @return \A17\Twill\Models\Model
+     * @param  Model  $object
+     * @param  array|null  $fields
+     * @return Model
      */
     public function hydrateHandleFieldsGroups($object, $fields)
     {
         foreach ($this->fieldsGroups as $group => $groupFields) {
             if ($object->$group) {
                 $casts = $this->getModelCasts($object);
-                if (!array_key_exists($group, $casts) || (array_key_exists($group, $casts) && $casts[$group] !== 'array')) {
+                if (! array_key_exists($group, $casts) || (array_key_exists($group, $casts) && $casts[$group] !== 'array')) {
                     $object->$group = json_encode($object->$group);
                 }
             }
@@ -27,8 +28,8 @@ trait HandleFieldsGroups
     }
 
     /**
-     * @param \A17\Twill\Models\Model|null $object
-     * @param array $fields
+     * @param  Model|null  $object
+     * @param  array  $fields
      * @return array
      */
     public function prepareFieldsBeforeSaveHandleFieldsGroups($object, $fields)
@@ -37,7 +38,7 @@ trait HandleFieldsGroups
     }
 
     /**
-     * @param array $fields
+     * @param  array  $fields
      * @return array
      */
     public function prepareFieldsBeforeCreateHandleFieldsGroups($fields)
@@ -46,8 +47,8 @@ trait HandleFieldsGroups
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
+     * @param  Model  $object
+     * @param  array  $fields
      * @return array
      */
     public function getFormFieldsHandleFieldsGroups($object, $fields)
@@ -67,7 +68,7 @@ trait HandleFieldsGroups
                         $decoded_fields[$group . $this->fieldsGroupsFormFieldNameSeparator . $field_name] = $field_value;
                         unset($decoded_fields[$field_name]);
 
-                        if (!is_array($field_value)) {
+                        if (! is_array($field_value)) {
                             $object->setAttribute($group . $this->fieldsGroupsFormFieldNameSeparator . $field_name, $field_value);
                         }
                     } else {
@@ -92,7 +93,7 @@ trait HandleFieldsGroups
             }
 
             $fields[$group] = Arr::where(Arr::only($fields, $groupFields), function ($value, $key) {
-                return !empty($value);
+                return ! empty($value);
             });
 
             if ($this->fieldsGroupsFormFieldNamesAutoPrefix) {
@@ -119,14 +120,14 @@ trait HandleFieldsGroups
                 $fields[$group] = null;
             }
 
-            $fields = array_filter($fields, fn($key) => !in_array($key, $groupFields), ARRAY_FILTER_USE_KEY);
+            $fields = array_filter($fields, fn ($key) => ! in_array($key, $groupFields), ARRAY_FILTER_USE_KEY);
         }
 
         return $fields;
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param  Model  $object
      * @return array
      */
     protected function getModelCasts($object)

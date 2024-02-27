@@ -11,8 +11,6 @@ use A17\Twill\Commands\Dev;
 use A17\Twill\Commands\GenerateBlockComponent;
 use A17\Twill\Commands\GenerateBlocks;
 use A17\Twill\Commands\GenerateDocsCommand;
-use A17\Twill\Commands\ServeDocsCommand;
-use A17\Twill\Commands\TwillFlushManifest;
 use A17\Twill\Commands\GeneratePackageCommand;
 use A17\Twill\Commands\Install;
 use A17\Twill\Commands\ListBlocks;
@@ -23,8 +21,10 @@ use A17\Twill\Commands\ModuleMake;
 use A17\Twill\Commands\RefreshCrops;
 use A17\Twill\Commands\RefreshLQIP;
 use A17\Twill\Commands\Release;
+use A17\Twill\Commands\ServeDocsCommand;
 use A17\Twill\Commands\SetupDevTools;
 use A17\Twill\Commands\SyncLang;
+use A17\Twill\Commands\TwillFlushManifest;
 use A17\Twill\Commands\Update;
 use A17\Twill\Commands\UpdateExampleCommand;
 use A17\Twill\Commands\UpdateMorphMapReferences;
@@ -132,14 +132,14 @@ class TwillServiceProvider extends ServiceProvider
         foreach (config('twill.block_editor.directories.source.blocks') as $value) {
             TwillBlocks::$blockDirectories[$value['path']] = [
                 'source' => $value['source'],
-                'renderNamespace' => null
+                'renderNamespace' => null,
             ];
         }
 
         foreach (config('twill.block_editor.directories.source.repeaters') as $value) {
             TwillBlocks::$repeatersDirectories[$value['path']] = [
                 'source' => $value['source'],
-                'renderNamespace' => null
+                'renderNamespace' => null,
             ];
         }
 
@@ -168,8 +168,8 @@ class TwillServiceProvider extends ServiceProvider
     {
         // select auth service provider implementation
         $this->providers[] = config('twill.custom_auth_service_provider') ?: (
-        config('twill.enabled.permissions-management') ?
-            PermissionAuthServiceProvider::class : AuthServiceProvider::class
+            config('twill.enabled.permissions-management') ?
+                PermissionAuthServiceProvider::class : AuthServiceProvider::class
         );
 
         foreach ($this->providers as $provider) {
@@ -395,8 +395,8 @@ class TwillServiceProvider extends ServiceProvider
     /**
      * Resolve and include a given view expression in the project, Twill internals or a package.
      *
-     * @param string $view
-     * @param string $expression
+     * @param  string  $view
+     * @param  string  $expression
      */
     private function includeView($view, $expression): string
     {
@@ -466,7 +466,7 @@ class TwillServiceProvider extends ServiceProvider
         $blade->directive('dumpData', function ($data) {
             return sprintf(
                 "<?php (new Symfony\Component\VarDumper\VarDumper)->dump(%s); exit; ?>",
-                null != $data ? $data : 'get_defined_vars()'
+                $data != null ? $data : 'get_defined_vars()'
             );
         });
 
@@ -485,7 +485,7 @@ class TwillServiceProvider extends ServiceProvider
             $viewModuleTwill = "'twill::'.$moduleName.'.{$viewName}'";
             $view = $partialNamespace . '.' . $viewName;
 
-            if (!isset($moduleName) || is_null($moduleName)) {
+            if (! isset($moduleName) || is_null($moduleName)) {
                 $viewModule = $viewApplication;
             }
 
@@ -615,7 +615,7 @@ class TwillServiceProvider extends ServiceProvider
      */
     public function check2FA(): void
     {
-        if (!$this->app->runningInConsole() || !config('twill.enabled.users-2fa')) {
+        if (! $this->app->runningInConsole() || ! config('twill.enabled.users-2fa')) {
             return;
         }
 

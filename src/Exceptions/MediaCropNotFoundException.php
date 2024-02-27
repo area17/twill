@@ -2,7 +2,9 @@
 
 namespace A17\Twill\Exceptions;
 
-class MediaCropNotFoundException extends \Exception
+use Exception;
+
+class MediaCropNotFoundException extends Exception
 {
     public function __construct(string $crop)
     {

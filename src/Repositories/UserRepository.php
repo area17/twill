@@ -4,8 +4,8 @@ namespace A17\Twill\Repositories;
 
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Contracts\TwillModelContract;
-use A17\Twill\Models\User;
 use A17\Twill\Models\Group;
+use A17\Twill\Models\User;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleOauth;
 use A17\Twill\Repositories\Behaviors\HandleUserPermissions;
@@ -66,6 +66,7 @@ class UserRepository extends ModuleRepository
         } else {
             $query->where('role', '<>', 'SUPERADMIN');
         }
+
         return parent::filter($query, $scopes);
     }
 
@@ -89,6 +90,7 @@ class UserRepository extends ModuleRepository
                 }
             }
         }
+
         return $browserFields;
     }
 
@@ -107,7 +109,7 @@ class UserRepository extends ModuleRepository
         if (
             $with2faSettings
             && $user->google_2fa_enabled
-            && !($fields['google_2fa_enabled'] ?? false)
+            && ! ($fields['google_2fa_enabled'] ?? false)
         ) {
             $fields['google_2fa_secret'] = null;
         }
@@ -127,14 +129,14 @@ class UserRepository extends ModuleRepository
     {
         $this->sendWelcomeEmail($user);
 
-        if (!empty($fields['reset_password']) && !empty($fields['new_password'])) {
+        if (! empty($fields['reset_password']) && ! empty($fields['new_password'])) {
             $user->password = bcrypt($fields['new_password']);
 
-            if (!$user->isActivated()) {
+            if (! $user->isActivated()) {
                 $user->registered_at = Carbon::now();
             }
 
-            if (!empty($fields['require_password_change'])) {
+            if (! empty($fields['require_password_change'])) {
                 $user->require_new_password = true;
                 $user->sendTemporaryPasswordNotification($fields['new_password']);
             } else {
@@ -156,7 +158,7 @@ class UserRepository extends ModuleRepository
         if (
             empty($user->password)
             && $user->published
-            && !$this->db
+            && ! $this->db
                 ->table($this->config->get('twill.password_resets_table', 'twill_password_resets'))
                 ->where('email', $user->email)
                 ->exists()

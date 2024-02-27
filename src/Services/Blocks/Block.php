@@ -6,11 +6,13 @@ use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Services\Forms\InlineRepeater;
 use A17\Twill\View\Components\Blocks\TwillBlockComponent;
 use Exception;
+use Illuminate\Container\Container;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
-use Illuminate\Container\Container;
+use Symfony\Component\Finder\SplFileInfo;
+use Throwable;
 
 class Block
 {
@@ -101,7 +103,7 @@ class Block
     public $isNewFormat;
 
     /**
-     * @var \Symfony\Component\Finder\SplFileInfo
+     * @var SplFileInfo
      */
     public $file;
 
@@ -143,7 +145,7 @@ class Block
     public ?InlineRepeater $inlineRepeater = null;
 
     /**
-     * @param TwillBlockComponent $componentClass
+     * @param  TwillBlockComponent  $componentClass
      */
     public static function forComponent(string $componentClass): self
     {
@@ -168,15 +170,11 @@ class Block
     /**
      * Make a block instance out of arguments.
      *
-     * @param $file
-     * @param $type
-     * @param $source
-     * @param $name
-     * @param string $renderNamespace
-     *   Mainly for packages, but this will get the preview/render view file from that namespace.
+     * @param  string  $renderNamespace
+     *                                   Mainly for packages, but this will get the preview/render view file from that namespace.
      * @return static
      */
-    public static function make($file, $type, $source, $name = null, string $renderNamespace = null): self
+    public static function make($file, $type, $source, $name = null, ?string $renderNamespace = null): self
     {
         $name = $name ?? Str::before(
             $file->getFilename(),
@@ -244,14 +242,14 @@ class Block
 
     /**
      * Block constructor.
-     * @param Symfony\Component\Finder\SplFileInfo|null $file
-     * @param string|null $type
-     * @param $source
-     * @param $name
-     * @param string $renderNamespace
-     *   Mainly for packages, but this will get the preview/render view file from that namespace.
-     * @param InlineRepeater $inlineRepeater used when registering dynamic repeaters.
-     * @throws \Exception
+     *
+     * @param  Symfony\Component\Finder\SplFileInfo|null  $file
+     * @param  string|null  $type
+     * @param  string  $renderNamespace
+     *                                   Mainly for packages, but this will get the preview/render view file from that namespace.
+     * @param  InlineRepeater  $inlineRepeater  used when registering dynamic repeaters.
+     *
+     * @throws Exception
      */
     final public function __construct(
         $file,
@@ -356,7 +354,7 @@ class Block
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function parse(): self
     {
@@ -375,10 +373,10 @@ class Block
             $this->name,
             $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.select-existing') : null
         );
-        $this->max = (int)$this->parseProperty('max', $contents, $this->name, 999);
+        $this->max = (int) $this->parseProperty('max', $contents, $this->name, 999);
         $this->group = $this->parseProperty('group', $contents, $this->name, 'app');
         $this->icon = $this->parseProperty('icon', $contents, $this->name, 'text');
-        $this->compiled = (bool)$this->parseProperty('compiled', $contents, $this->name, false);
+        $this->compiled = (bool) $this->parseProperty('compiled', $contents, $this->name, false);
         $this->component = $this->parseProperty('component', $contents, $this->name, "a17-block-{$this->name}");
         $this->isNewFormat = $this->isNewFormat($contents);
         $this->contents = $contents;
@@ -393,7 +391,7 @@ class Block
 
         $this->parseMixedProperty('titleField', $contents, $this->name, function ($value, $options) {
             $this->titleField = $value;
-            $this->hideTitlePrefix = (bool)($options['hidePrefix'] ?? false);
+            $this->hideTitlePrefix = (bool) ($options['hidePrefix'] ?? false);
         });
 
         return $this;
@@ -418,12 +416,13 @@ class Block
     /**
      * Parse a string property directive in the form of `@twillTypeProperty('value')`.
      *
-     * @param string $property
-     * @param string $block
-     * @param string $blockName
-     * @param string|null $default
+     * @param  string  $property
+     * @param  string  $block
+     * @param  string  $blockName
+     * @param  string|null  $default
      * @return string
-     * @throws \Exception
+     *
+     * @throws Exception
      */
     public function parseProperty(
         $property,
@@ -462,12 +461,12 @@ class Block
      * Parse an array property directive in the form of `@twillTypeProperty([...])`
      * and pass the result to a given callback.
      *
-     * @param string $property
-     * @param string $block
-     * @param string $blockName
-     * @param callable $callback Should have the following signature: `function (array $value)`
-     * @return void
-     * @throws \Exception
+     * @param  string  $property
+     * @param  string  $block
+     * @param  string  $blockName
+     * @param  callable  $callback  Should have the following signature: `function (array $value)`
+     *
+     * @throws Exception
      */
     public function parseArrayProperty(
         $property,
@@ -484,12 +483,13 @@ class Block
      * Parse a mixed property directive in the form of `@twillTypeProperty('value', [...])`
      * and pass the result to a given callback.
      *
-     * @param string $property
-     * @param string $block
-     * @param string $blockName
-     * @param callable $callback Should have the following signature: `function ($value, $options)`
+     * @param  string  $property
+     * @param  string  $block
+     * @param  string  $blockName
+     * @param  callable  $callback  Should have the following signature: `function ($value, $options)`
      * @return mixed
-     * @throws \Exception
+     *
+     * @throws Exception
      */
     public function parseMixedProperty(
         $property,
@@ -523,11 +523,10 @@ class Block
     }
 
     /**
-     * @param $property
-     * @param $blockName
-     * @param null $default
+     * @param  null  $default
      * @return mixed
-     * @throws \Exception
+     *
+     * @throws Exception
      */
     private function parsePropertyFallback(
         $property,
@@ -594,7 +593,6 @@ class Block
     }
 
     /**
-     * @param $block
      * @return bool
      */
     public function isNewFormat($block)
@@ -614,7 +612,8 @@ class Block
 
     /**
      * @return string
-     * @throws \Throwable
+     *
+     * @throws Throwable
      */
     public function renderForm()
     {
@@ -667,7 +666,7 @@ class Block
         bool $inEditor = false
     ): string {
         if (! $this->renderData) {
-            throw new \Exception('Cannot render without renderData');
+            throw new Exception('Cannot render without renderData');
         }
 
         $data['inEditor'] = $inEditor;

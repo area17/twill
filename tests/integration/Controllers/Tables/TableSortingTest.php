@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Builder;
 
 class TableSortingTest extends ModulesTestBase
 {
-
     public function setUp(): void
     {
         parent::setUp();
@@ -28,7 +27,8 @@ class TableSortingTest extends ModulesTestBase
         $this->app->bind(
             AuthorController::class,
             function ($app) {
-                return new class($app, request()) extends AuthorController {
+                return new class($app, request()) extends AuthorController
+                {
                     // Set index options empty.
                     protected $indexOptions = [];
                 };
@@ -63,7 +63,8 @@ class TableSortingTest extends ModulesTestBase
         $this->app->bind(
             AuthorController::class,
             function ($app) {
-                return new class($app, request()) extends AuthorController {
+                return new class($app, request()) extends AuthorController
+                {
                     // Set index options empty.
                     protected $indexOptions = [];
                 };
@@ -88,7 +89,8 @@ class TableSortingTest extends ModulesTestBase
         $this->app->bind(
             AuthorController::class,
             function ($app) {
-                return new class($app, request()) extends AuthorController {
+                return new class($app, request()) extends AuthorController
+                {
                     // Set index options empty.
                     protected $indexOptions = [];
                 };
@@ -113,9 +115,11 @@ class TableSortingTest extends ModulesTestBase
         $this->app->bind(
             AuthorController::class,
             function ($app) {
-                return new class($app, request()) extends AuthorController {
+                return new class($app, request()) extends AuthorController
+                {
                     // Set index options empty.
                     protected $indexOptions = [];
+
                     protected $indexColumns = [];
 
                     protected function getIndexTableColumns(): TableColumns
@@ -146,9 +150,11 @@ class TableSortingTest extends ModulesTestBase
         $this->app->bind(
             AuthorController::class,
             function ($app) {
-                return new class($app, request()) extends AuthorController {
+                return new class($app, request()) extends AuthorController
+                {
                     // Set index options empty.
                     protected $indexOptions = [];
+
                     protected $indexColumns = [];
 
                     protected function getIndexTableColumns(): TableColumns
@@ -179,9 +185,11 @@ class TableSortingTest extends ModulesTestBase
         $this->app->bind(
             AuthorController::class,
             function ($app) {
-                return new class($app, request()) extends AuthorController {
+                return new class($app, request()) extends AuthorController
+                {
                     // Set index options empty.
                     protected $indexOptions = [];
+
                     protected $indexColumns = [];
 
                     protected function getIndexTableColumns(): TableColumns

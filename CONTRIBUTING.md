@@ -44,19 +44,4 @@ For JavaScript, Vue and SCSS formatting, the [Prettier](https://marketplace.visu
 "editor.defaultFormatter": "esbenp.prettier-vscode",
 ```
 
-For PHP auto-formatting on save, you can use the [phpcsfixer](https://marketplace.visualstudio.com/items?itemName=junstyle.php-cs-fixer) extension and add to `settings.json`.
-
-```
-"php-cs-fixer.executablePath": "${workspaceRoot}/vendor/bin/php-cs-fixer",
-"php-cs-fixer.formatHtml": true,
-"php-cs-fixer.onsave": true,
-"[php]": {
-  "editor.defaultFormatter": "junstyle.php-cs-fixer"
-},
-```
-
-For PHP contextual linting, you can use the [phpcs](https://marketplace.visualstudio.com/items?itemName=ikappas.phpcs) extension and then install [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) globally.
-
-```
-composer global require "squizlabs/php_codesniffer=*"
-```
+Php linting will be automatically done for you during commit with cghooks and laravel pint

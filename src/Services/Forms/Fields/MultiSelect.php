@@ -13,14 +13,14 @@ use A17\Twill\Services\Forms\Fields\Traits\Unpackable;
 
 class MultiSelect extends BaseFormField
 {
-    use IsTranslatable;
-    use HasOptions;
+    use HasBorder;
     use HasMax;
     use HasMin;
-    use Inlineable;
-    use Unpackable;
-    use HasBorder;
+    use HasOptions;
     use HasPlaceholder;
+    use Inlineable;
+    use IsTranslatable;
+    use Unpackable;
 
     protected bool $searchable = false;
 

@@ -24,14 +24,16 @@ class NestedDataColumnTest extends NestedModuleTestBase
         $this->assertEquals('0 children', $column->renderCell($this->parent));
     }
 
-    public function testSingleChild(): void {
+    public function testSingleChild(): void
+    {
         $this->parent->children()->create(['title' => 'Child 1', 'published' => true]);
 
         $column = NestedData::make()->field('children')->title('Child');
         $this->assertEquals('1 child', $column->renderCell($this->parent));
     }
 
-    public function testMultipleChilden(): void {
+    public function testMultipleChilden(): void
+    {
         $this->parent->children()->create(['title' => 'Child 1', 'published' => true]);
         $this->parent->children()->create(['title' => 'Child 1', 'published' => true]);
 

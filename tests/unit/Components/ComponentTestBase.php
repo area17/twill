@@ -55,6 +55,7 @@ abstract class ComponentTestBase extends TestCase
     {
         if ($this->noFieldTest) {
             $this->assertTrue(true);
+
             return;
         }
         /** @var \A17\Twill\Services\Forms\Fields\BaseFormField $class */

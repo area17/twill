@@ -20,13 +20,15 @@ class PresenterColumnTest extends ModulesTestBase
         $this->assertEquals('PresenterValueFromTestPresenter', $column->renderCell($this->author));
     }
 
-    public function testColumnCanCastCasing(): void {
+    public function testColumnCanCastCasing(): void
+    {
         $column = Presenter::make()->field('created_at');
 
         $this->assertEquals('PresenterValueFromTestPresenter', $column->renderCell($this->author));
     }
 
-    public function testColumnCanFallback(): void {
+    public function testColumnCanFallback(): void
+    {
         $column = Presenter::make()->field('name');
 
         $this->assertEquals($this->author->name, $column->renderCell($this->author));

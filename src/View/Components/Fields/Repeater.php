@@ -30,7 +30,7 @@ class Repeater extends TwillFormComponent
 
         $this->browserModule = $browserModule ? [
             'label' => $browserModule['label'] ?? ucfirst($browserModule['name']),
-            'value' => moduleRoute($browserModule['name'], $browserModule['routePrefix'] ?? null, 'browser', $browserModule['params'] ?? [], false)
+            'value' => moduleRoute($browserModule['name'], $browserModule['routePrefix'] ?? null, 'browser', $browserModule['params'] ?? [], false),
         ] : null;
     }
 

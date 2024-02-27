@@ -27,7 +27,7 @@ class SettingsGroup
 
     public function name(string $name): self
     {
-        if (!isset($this->label)) {
+        if (! isset($this->label)) {
             $this->label = Str::title($name);
         }
 
@@ -66,7 +66,7 @@ class SettingsGroup
     public function hasSection(string $sectionName): bool
     {
         return collect($this->getSettingsModel()->getFormBlocks())->first(function (string $name) use ($sectionName) {
-                return $name === $sectionName;
+            return $name === $sectionName;
         }) !== null;
     }
 
@@ -82,7 +82,7 @@ class SettingsGroup
      */
     public function boot(): void
     {
-        if (!$this->booted) {
+        if (! $this->booted) {
             $this->booted = true;
 
             $this->ensureModelExists();
@@ -116,7 +116,7 @@ class SettingsGroup
 
     protected function createBlockIfNotExisting(string $name, AppSetting $model): void
     {
-        if (!$model->blocks()->where('editor_name', '=', $name)->exists()) {
+        if (! $model->blocks()->where('editor_name', '=', $name)->exists()) {
             $model->blocks()->create([
                 'editor_name' => $name,
                 'type' => 'appSettings.' . $this->getName() . '.' . $name,

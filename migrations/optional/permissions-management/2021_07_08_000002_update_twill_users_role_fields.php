@@ -1,11 +1,11 @@
 <?php
 
+use A17\Twill\Models\Group;
 use A17\Twill\Models\Role;
 use A17\Twill\Models\User;
-use A17\Twill\Models\Group;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -72,7 +72,7 @@ return new class extends Migration
                     $user->is_superadmin = true;
                 }
 
-                if (!in_array($user->role, ['SUPERADMIN', 'VIEWONLY'])) {
+                if (! in_array($user->role, ['SUPERADMIN', 'VIEWONLY'])) {
                     $user->groups()->attach($defaultGroup->id);
                 }
 

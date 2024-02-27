@@ -2,6 +2,9 @@
 
 namespace A17\Twill\Rector;
 
+use App\Exceptions\Handler;
+use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Application;
 use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
 use Rector\Core\Rector\AbstractRector;
@@ -27,16 +30,16 @@ abstract class LaravelAwareRectorRule extends AbstractRector implements Configur
         );
 
         $app->singleton(
-            \Illuminate\Contracts\Console\Kernel::class,
+            Kernel::class,
             \App\Console\Kernel::class
         );
 
         $app->singleton(
-            \Illuminate\Contracts\Debug\ExceptionHandler::class,
-            \App\Exceptions\Handler::class
+            ExceptionHandler::class,
+            Handler::class
         );
 
-        $kernel = $app->make(\Illuminate\Contracts\Console\Kernel::class);
+        $kernel = $app->make(Kernel::class);
         $kernel->bootstrap();
 
         return $app;

@@ -5,7 +5,9 @@ namespace A17\Twill\Enums;
 class PermissionLevel
 {
     public const LEVEL_ROLE = 'role';
+
     public const LEVEL_ROLE_GROUP = 'roleGroup';
+
     public const LEVEL_ROLE_GROUP_ITEM = 'roleGroupItem';
 
     public static function options(): array

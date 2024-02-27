@@ -26,26 +26,26 @@ class SelectPermissions extends TwillFormComponent
         );
 
         $this->options = $options ?? [
-                [
-                    'value' => '',
-                    'label' => 'None',
-                ],
-                [
-                    'value' => 'view-item',
-                    'label' => 'View',
-                ],
-                [
-                    'value' => 'edit-item',
-                    'label' => 'Edit',
-                ],
-                [
-                    'value' => 'manage-item',
-                    'label' => 'Manage',
-                ],
-            ];
+            [
+                'value' => '',
+                'label' => 'None',
+            ],
+            [
+                'value' => 'view-item',
+                'label' => 'View',
+            ],
+            [
+                'value' => 'edit-item',
+                'label' => 'Edit',
+            ],
+            [
+                'value' => 'manage-item',
+                'label' => 'Manage',
+            ],
+        ];
 
         $this->isUserForm = get_class($this->item) === twillModel('user');
-        $this->fctUpdatePermissionOptions = $this->item instanceof Group ? "updatePermissionGroupOptions" : "updatePermissionOptions";
+        $this->fctUpdatePermissionOptions = $this->item instanceof Group ? 'updatePermissionGroupOptions' : 'updatePermissionOptions';
     }
 
     public function render(): View

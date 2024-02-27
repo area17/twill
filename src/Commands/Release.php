@@ -54,7 +54,7 @@ class Release extends Command
     private function isNotBehind()
     {
         $currentBranch = $this->executeInTwillDir('git rev-parse --abbrev-ref HEAD');
-        if (!empty($this->executeInTwillDir('git diff origin/' . $currentBranch))) {
+        if (! empty($this->executeInTwillDir('git diff origin/' . $currentBranch))) {
             $this->error(
                 'It looks like your current branch is not clean, please git pull/commit/stash the latest changes before making a release.'
             );
@@ -68,26 +68,26 @@ class Release extends Command
     private function isOnMainBranch()
     {
         $currentBranch = $this->executeInTwillDir('git rev-parse --abbrev-ref HEAD');
-        if (!in_array(trim($currentBranch), ['2.x', '3.x'])) {
+        if (! in_array(trim($currentBranch), ['2.x', '3.x'])) {
             $this->error('Current working branch must be a releasable branch (2.x or 3.x)');
             exit(1);
         }
     }
 
     /**
-     * @param string $version
+     * @param  string  $version
      * @return void
      */
     private function checkChangelogContainsVersion($version)
     {
-        if (!str_contains(file_get_contents($this->getTwillDir('CHANGELOG.md')), "## $version")) {
+        if (! str_contains(file_get_contents($this->getTwillDir('CHANGELOG.md')), "## $version")) {
             $this->error('The changelog is currently missing the version you are trying to tag.');
             exit(1);
         }
     }
 
     /**
-     * @param string $version
+     * @param  string  $version
      * @return void
      */
     private function versionIsGreaterThanLatestVersion($version)
@@ -110,6 +110,7 @@ class Release extends Command
 
         if ($this->newVersionIsGreaterThanOld($version, $tags->last())) {
             $this->line('New version is greater than old version, continuing release.');
+
             return;
         }
 
@@ -118,8 +119,8 @@ class Release extends Command
     }
 
     /**
-     * @param string $newVersion
-     * @param string $oldVersion
+     * @param  string  $newVersion
+     * @param  string  $oldVersion
      * @return bool
      */
     private function newVersionIsGreaterThanOld($newVersion, $oldVersion)
@@ -139,7 +140,7 @@ class Release extends Command
     }
 
     /**
-     * @param string $version
+     * @param  string  $version
      * @return void
      */
     private function checkPackageJsonVersionMatches($version)
@@ -153,12 +154,11 @@ class Release extends Command
     }
 
     /**
-     * @param $version
      * @return void
      */
     private function checkTwillServiceProviderVersion($version)
     {
-        if (TwillServiceProvider::VERSION !== $version) {
+        if ($version !== TwillServiceProvider::VERSION) {
             $twillServiceProviderVersion = TwillServiceProvider::VERSION;
             $this->error(
                 "The TwillServiceProvider::VERSION version ($twillServiceProviderVersion) does not match that of the release ($version)"

@@ -16,7 +16,7 @@ trait HandleDates
     {
         foreach ($fields as $name => $fieldData) {
             if ($this->model->hasCast($name, ['date', 'datetime'])) {
-                if (!empty($fields[$name])) {
+                if (! empty($fields[$name])) {
                     $fields = $this->prepareDatesField($fields, $name);
                 } else {
                     $fields[$name] = null;

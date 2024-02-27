@@ -41,31 +41,31 @@ class TagsHandlerTest extends ModulesTestBase
         return [
             'default' => [
                 'string' => 'some string',
-                'slug' => 'some-string'
+                'slug' => 'some-string',
             ],
             'numbers' => [
                 'string' => '12345',
-                'slug' => '12345'
+                'slug' => '12345',
             ],
             'atsign' => [
                 'string' => 'example @ foo',
-                'slug' => 'example-at-foo'
+                'slug' => 'example-at-foo',
             ],
             'specialcharacters' => [
                 'string' => '!#$%^^&*^(',
-                'slug' => ''
+                'slug' => '',
             ],
             'chinesecharacters' => [
                 'string' => '標籤',
-                'slug' => '標籤'
+                'slug' => '標籤',
             ],
             'chinesecharacters2' => [
                 'string' => '示範',
-                'slug' => '示範'
+                'slug' => '示範',
             ],
             'chinesecharacters3' => [
                 'string' => 'test:示@範 foo!',
-                'slug' => 'test-示-範-foo-'
+                'slug' => 'test-示-範-foo-',
             ],
         ];
     }

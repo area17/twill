@@ -10,7 +10,7 @@ use League\CommonMark\Renderer\NodeRendererInterface;
 use League\Config\ConfigurationAwareInterface;
 use League\Config\ConfigurationInterface;
 
-class RelativeLinksExtension implements NodeRendererInterface, ConfigurationAwareInterface
+class RelativeLinksExtension implements ConfigurationAwareInterface, NodeRendererInterface
 {
     private ConfigurationInterface $config;
 

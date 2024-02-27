@@ -2,8 +2,8 @@
 
 namespace App\Models\Translations;
 
-use App\Models\Category;
 use A17\Twill\Models\Model;
+use App\Models\Category;
 
 class CategoryTranslation extends Model
 {

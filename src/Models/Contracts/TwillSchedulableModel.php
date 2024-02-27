@@ -2,11 +2,12 @@
 
 namespace A17\Twill\Models\Contracts;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 
 /**
- * @property \Carbon\Carbon $publish_start_date
- * @property \Carbon\Carbon $publish_end_date
+ * @property Carbon $publish_start_date
+ * @property Carbon $publish_end_date
  */
 interface TwillSchedulableModel
 {

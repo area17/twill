@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Repositories\ContactPageRepository;
 use App\Models\ContactPage;
+use App\Repositories\ContactPageRepository;
+use Illuminate\Database\Seeder;
 
 class ContactPageSeeder extends Seeder
 {

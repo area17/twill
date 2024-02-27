@@ -18,7 +18,7 @@ class BlockEditorMediaTest extends BrowserTestCase
     {
         parent::setUp();
 
-        $block = <<<HTML
+        $block = <<<'HTML'
 @twillBlockTitle('Image')
 @twillBlockIcon('image')
 @twillBlockGroup('app')
@@ -45,8 +45,8 @@ HTML;
     {
         $this->tweakApplication(function () {
             $pathToStore = 'app/public/uploads/uuid';
-            if (!Media::whereUuid('uuid/area17.png')->exists()) {
-                if (!file_exists(storage_path($pathToStore))) {
+            if (! Media::whereUuid('uuid/area17.png')->exists()) {
+                if (! file_exists(storage_path($pathToStore))) {
                     mkdir(storage_path($pathToStore), 0777, true);
                 }
                 copy(__DIR__ . '/../stubs/images/area17.png', storage_path($pathToStore . '/area17.png'));

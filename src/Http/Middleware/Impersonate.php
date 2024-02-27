@@ -4,6 +4,7 @@ namespace A17\Twill\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
+use Illuminate\Http\Request;
 
 class Impersonate
 {
@@ -20,7 +21,7 @@ class Impersonate
     /**
      * Handles an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param  Request  $request
      * @return mixed
      */
     public function handle($request, Closure $next)

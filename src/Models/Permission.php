@@ -5,12 +5,12 @@ namespace A17\Twill\Models;
 use A17\Twill\Enums\PermissionLevel;
 use A17\Twill\Exceptions\ModuleNotFoundException;
 use A17\Twill\Facades\TwillPermissions;
-use Illuminate\Support\Str;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Str;
 
 class Permission extends BaseModel
 {
@@ -54,7 +54,7 @@ class Permission extends BaseModel
      * Return an array of permission names that belongs to
      * a certain scope (global, module or item).
      *
-     * @param string $scope
+     * @param  string  $scope
      * @return string[]|void
      */
     public static function available($scope)
@@ -105,7 +105,7 @@ class Permission extends BaseModel
     public static function permissionableParentModuleItems()
     {
         return self::permissionableModules()->filter(function ($module) {
-            return !strpos($module, '.');
+            return ! strpos($module, '.');
         })->mapWithKeys(function ($module) {
             try {
                 return [$module => getRepositoryByModuleName($module)->get([], [], [], -1)];
@@ -210,7 +210,7 @@ class Permission extends BaseModel
     /**
      * Scope a query to only include permissions related to a Twill module.
      *
-     * @param string $moduleName
+     * @param  string  $moduleName
      * @return Builder
      */
     public function scopeOfModuleName(Builder $query, $moduleName)
@@ -226,7 +226,7 @@ class Permission extends BaseModel
     /**
      * Scope a query to only include permissions related to a model.
      *
-     * @param string $model
+     * @param  string  $model
      * @return Builder
      */
     public function scopeOfModel(Builder $query, $model)

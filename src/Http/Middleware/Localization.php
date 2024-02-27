@@ -3,14 +3,14 @@
 namespace A17\Twill\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 
 class Localization
 {
     /**
      * Handles an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param Closure $next
+     * @param  Request  $request
      * @return mixed
      */
     public function handle($request, Closure $next)

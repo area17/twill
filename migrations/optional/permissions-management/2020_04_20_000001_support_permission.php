@@ -1,11 +1,11 @@
 <?php
 
-use A17\Twill\Models\Role;
 use A17\Twill\Models\Group;
 use A17\Twill\Models\Permission;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
+use A17\Twill\Models\Role;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -19,13 +19,13 @@ return new class extends Migration
         $permissionsTableName = config('twill.permissions_table', 'permissions');
         $rolesTableName = config('twill.roles_table', 'roles');
 
-        if (!Schema::hasTable($permissionsTableName)
-            && !Schema::hasTable('groups')
-            && !Schema::hasTable($rolesTableName)
-            && !Schema::hasTable('permission_twill_user')
-            && !Schema::hasTable('group_twill_user')
-            && !Schema::hasTable('group_permission')
-            && !Schema::hasTable('permission_role')
+        if (! Schema::hasTable($permissionsTableName)
+            && ! Schema::hasTable('groups')
+            && ! Schema::hasTable($rolesTableName)
+            && ! Schema::hasTable('permission_twill_user')
+            && ! Schema::hasTable('group_twill_user')
+            && ! Schema::hasTable('group_permission')
+            && ! Schema::hasTable('permission_role')
         ) {
             Schema::create($permissionsTableName, function (Blueprint $table) {
                 createDefaultTableFields($table);
@@ -50,7 +50,7 @@ return new class extends Migration
                 $table->integer('position')->unsigned()->nullable();
             });
 
-            Schema::create('permission_twill_user', function (Blueprint $table) use($permissionsTableName) {
+            Schema::create('permission_twill_user', function (Blueprint $table) use ($permissionsTableName) {
                 $table->bigInteger('twill_user_id')->unsigned()->nullable();
                 $table->foreign('twill_user_id')
                     ->references('id')
@@ -80,7 +80,7 @@ return new class extends Migration
                 $table->integer('position')->unsigned()->nullable();
             });
 
-            Schema::create('group_permission', function (Blueprint $table) use($permissionsTableName) {
+            Schema::create('group_permission', function (Blueprint $table) use ($permissionsTableName) {
                 $table->bigInteger('permission_id')->unsigned()->nullable();
                 $table->foreign('permission_id')
                     ->references('id')
@@ -94,7 +94,7 @@ return new class extends Migration
                     ->onDelete('cascade');
             });
 
-            Schema::create('permission_role', function (Blueprint $table) use($permissionsTableName, $rolesTableName) {
+            Schema::create('permission_role', function (Blueprint $table) use ($permissionsTableName, $rolesTableName) {
                 $table->bigInteger('permission_id')->unsigned()->nullable();
                 $table->foreign('permission_id')
                     ->references('id')
@@ -123,7 +123,6 @@ return new class extends Migration
     {
         $permissionsTableName = config('twill.permissions_table', 'permissions');
         $rolesTableName = config('twill.roles_table', 'roles');
-
 
         Schema::dropIfExists('permission_twill_user');
         Schema::dropIfExists('group_twill_user');
@@ -157,7 +156,7 @@ return new class extends Migration
         // Default roles and their permissions
         $roles = [
             'Owner' => Permission::available(Permission::SCOPE_GLOBAL),
-            'Administrator' => array_diff(Permission::available(Permission::SCOPE_GLOBAL), ["edit-user-roles", "manage-modules"]),
+            'Administrator' => array_diff(Permission::available(Permission::SCOPE_GLOBAL), ['edit-user-roles', 'manage-modules']),
             'Team' => [],
             'Guest' => [],
         ];
@@ -171,7 +170,7 @@ return new class extends Migration
                 'in_everyone_group' => $role_name === 'Guest' ? false : true,
                 'position' => $position++,
             ]);
-            $role->permissions()->attach(Permission::whereIn("name", $role_permissions)->pluck('id'));
+            $role->permissions()->attach(Permission::whereIn('name', $role_permissions)->pluck('id'));
         }
     }
 
@@ -181,7 +180,7 @@ return new class extends Migration
             [
                 'name' => 'Everyone',
                 'description' => 'The default everyone group',
-                'published' => true
+                'published' => true,
             ]
         );
 
