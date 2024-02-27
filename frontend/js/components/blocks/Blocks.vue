@@ -1,5 +1,5 @@
 <template>
-  <a17-blocks-list :editor-name="editorName" v-slot="{ savedBlocks, availableBlocks, moveBlock, moveBlockToEditor, cloneBlock }">
+  <a17-blocks-list :editor-name="editorName" :availability-id="availabilityId" v-slot="{ savedBlocks, availableBlocks, moveBlock, moveBlockToEditor, cloneBlock }">
     <div class="blocks">
       <draggable class="blocks__container"
                  :value="savedBlocks"
@@ -163,6 +163,9 @@
       editorName: {
         type: String,
         required: true
+      },
+      availabilityId: {
+        type: String,
       }
     },
     data () {
@@ -179,9 +182,8 @@
       }),
       ...mapGetters([
         'blocks',
-        'fieldsByBlockId',
         'availableBlocks'
-      ])
+      ]),
     },
     methods: {
       setOpened: function () {
@@ -265,7 +267,7 @@
         }
       },
       checkIfBlockTypeIsAvailable (editorName, type) {
-        const availableBlocks = JSON.parse(JSON.stringify(this.availableBlocks(editorName)))
+        const availableBlocks = this.availableBlocks(editorName)
         const blockTypes = availableBlocks.map(block => block.component)
 
         return blockTypes.indexOf(type) !== -1
