@@ -243,7 +243,7 @@ trait HandleRepeaters
 
                 $object->{$relation}()->attach($newRelation['id'], $pivotFieldData);
 
-                $latestAttached = $object->{$relation}()->withPivot('id')->orderByPivot('id', 'desc')->get()->last();
+                $latestAttached = $object->{$relation}()->withPivot('id')->orderByPivot('id', 'asc')->get()->last();
 
                 $currentIdList[] = $latestAttached->pivot->id;
 
