@@ -273,22 +273,29 @@ trait HandleBlocks
     {
         $childBlocksList = Collection::make();
 
-        if (empty($parentBlockFields['blocks'])) {
-            return $childBlocksList;
+        if (!empty($parentBlockFields['blocks'])) {
+            // Fallback if frontend or revision is still on the old schema
+            if (is_int(key(current($parentBlockFields['blocks'])))) {
+                foreach ($parentBlockFields['blocks'] as $childKey => $childBlocks) {
+                    foreach ($childBlocks as $childBlock) {
+                        $childBlock['child_key'] = $childKey;
+                        $parentBlockFields['blocks'][] = $childBlock;
+                    }
+                    unset($parentBlockFields['blocks'][$childKey]);
+                }
+            }
         }
 
-        // Fallback if frontend or revision is still on the old schema
-        if (is_int(key(current($parentBlockFields['blocks'])))) {
-            foreach ($parentBlockFields['blocks'] as $childKey => $childBlocks) {
+        if (!empty($parentBlockFields['repeaters'])) {
+            foreach ($parentBlockFields['repeaters'] as $childKey => $childBlocks) {
                 foreach ($childBlocks as $childBlock) {
                     $childBlock['child_key'] = $childKey;
                     $parentBlockFields['blocks'][] = $childBlock;
                 }
-                unset($parentBlockFields['blocks'][$childKey]);
             }
         }
 
-        foreach ($parentBlockFields['blocks'] as $index => $childBlock) {
+        foreach ($parentBlockFields['blocks'] ?? [] as $index => $childBlock) {
             $childBlock = $this->buildBlock($childBlock, $object, $childBlock['is_repeater'] ?? false);
             $this->validateBlockArray($childBlock, $childBlock['instance'], true);
             $childBlock['child_key'] = $childBlock['child_key'] ?? Str::afterLast($childBlock['editor_name'] ?? $index, '|');
@@ -434,8 +441,8 @@ trait HandleBlocks
 
 
             foreach (['Fields', 'Medias', 'Files', 'Browsers'] as $fieldKey) {
-                if ($fields['blocks'.$fieldKey] ?? false) {
-                    $fields['blocks'.$fieldKey] = call_user_func_array('array_merge', $fields['blocks'.$fieldKey] ?? []);
+                if ($fields['blocks' . $fieldKey] ?? false) {
+                    $fields['blocks' . $fieldKey] = call_user_func_array('array_merge', $fields['blocks' . $fieldKey] ?? []);
                 }
             }
         }

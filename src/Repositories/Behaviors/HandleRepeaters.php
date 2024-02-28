@@ -131,6 +131,12 @@ trait HandleRepeaters
             $relationField[$morphFieldId] = $object->id;
             $relationField[$morphFieldType] = $object->getMorphClass();
 
+            if (is_array($relationField['content'] ?? null)) {
+                $content = $relationField['content'];
+                unset($relationField['content']);
+                $relationField = array_merge($content, $relationField);
+            }
+
             if (isset($relationField['id']) && Str::startsWith($relationField['id'], $relation)) {
                 // row already exists, let's update
                 $id = str_replace($relation . '-', '', $relationField['id']);
@@ -208,6 +214,12 @@ trait HandleRepeaters
                         'published' => $fields[$langCode]['active'],
                     ];
                 }
+            }
+
+            if (is_array($relationField['content'] ?? null)) {
+                $content = $relationField['content'];
+                unset($relationField['content']);
+                $relationField = array_merge($content, $relationField);
             }
 
             if (isset($relationField['id']) && Str::startsWith($relationField['id'], $relation)) {
@@ -307,12 +319,19 @@ trait HandleRepeaters
 
         foreach ($relationFields as $index => $relationField) {
             $relationField['position'] = $index + 1;
+
             // If the relation is not an "existing" one try to match it with our session.
             if (
                 ! Str::startsWith($relationField['id'], $relation) &&
                 $id = TwillUtil::hasRepeaterIdFor($relationField['id'])
             ) {
                 $relationField['id'] = $relation . '-' . $id;
+            }
+
+            if (is_array($relationField['content'] ?? null)) {
+                $content = $relationField['content'];
+                unset($relationField['content']);
+                $relationField = array_merge($content, $relationField);
             }
 
             // Set the active data based on the parent.
@@ -495,9 +514,9 @@ trait HandleRepeaters
             foreach ($relatedItemFormFields['blocks'] ?? [] as $key => $block) {
                 $fields['blocks'][str_contains($key, '|') ? $key : "blocks-$relation-{$relationItem->id}|$key"] = $block;
             }
-            foreach (['Fields', 'Medias', 'Files', 'Browsers'] as $fieldKey) {
-                if (!empty($relatedItemFormFields['blocks'.$fieldKey])) {
-                    $fields['blocks'.$fieldKey] = array_merge($fields['blocks'.$fieldKey] ?? [], $relatedItemFormFields['blocks'.$fieldKey]);
+            foreach (['Fields', 'Medias', 'Files', 'Browsers', 'Repeaters'] as $fieldKey) {
+                if (!empty($relatedItemFormFields['blocks' . $fieldKey])) {
+                    $fields['blocks' . $fieldKey] = array_merge($fields['blocks' . $fieldKey] ?? [], $relatedItemFormFields['blocks' . $fieldKey]);
                 }
             }
 

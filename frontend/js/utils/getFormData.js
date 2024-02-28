@@ -74,16 +74,17 @@ export const buildBlock = (block, rootState, isRepeater = false, childKey) => {
 
   const base = {
     id: block.id,
-    editor_name: block.name,
+    type: block.type,
     medias: gatherSelected(rootState.mediaLibrary.selected, block),
     browsers: gatherSelected(rootState.browser.selected, block),
+    content,
     // gather repeater blocks from the repeater store module
     blocks,
     repeaters,
   }
   return isRepeater
-    ? { ...content, ...base, is_repeater: true, repeater_target_id: block.repeater_target_id}
-    : { ...base, type: block.type, content, child_key: childKey }
+    ? { ...base, is_repeater: true, repeater_target_id: block.repeater_target_id}
+    : { ...base, editor_name: block.name, child_key: childKey }
 }
 
 export const isBlockEmpty = (blockData) => {
