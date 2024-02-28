@@ -17,7 +17,7 @@ trait HandleSlugs
                     $currentSlug = [];
                     $currentSlug['slug'] = $fields['slug'][$locale];
                     $currentSlug['locale'] = $locale;
-                    $currentSlug['active'] = $this->model->isTranslatable() ? $object->translate($locale)->active : true;
+                    $currentSlug['active'] = !$this->model->isTranslatable() || $object->translate($locale)?->active ?? false;
                     $currentSlug = $this->getSlugParameters($object, $fields, $currentSlug);
                     $object->twillSlugData[] = $currentSlug;
                 } else {

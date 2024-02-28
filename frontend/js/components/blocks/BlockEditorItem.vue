@@ -220,6 +220,7 @@
     display: inline-block;
     line-height: 25px;
     margin-right: 10px;
+    flex-shrink: 0;
     background: $color__background;
     color: $color__text--light;
     @include monospaced-figures('off'); // dont use monospaced figures here
