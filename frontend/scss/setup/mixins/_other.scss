@@ -50,9 +50,8 @@
   }
 }
 
-
 // @mixin keyline-fill
-@mixin keyline-full($position:top, $color:$color__black) {
+@mixin keyline-full($position: top, $color: $color__black) {
   position: relative;
 
   &::before {
@@ -89,8 +88,4 @@
       right: -99em;
     }
   }
-}
-
-@function strip-units($number) {
-  @return math.div($number, $number * 0 + 1);
 }

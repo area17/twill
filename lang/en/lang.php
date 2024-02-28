@@ -1,5 +1,5 @@
 <?php
-    /*
+/*
     |--------------------------------------------------------------------------
     | 5 Steps to Contribute a New Twill Localization at Ease
     |--------------------------------------------------------------------------
@@ -35,6 +35,7 @@ return [
         'publish' => 'Publish',
         'source-title' => 'Available items',
     ],
+    'dam' => [],
     'dashboard' => [
         'all-activity' => 'All activity',
         'create-new' => 'Create new',

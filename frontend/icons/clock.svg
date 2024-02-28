@@ -1,0 +1,5 @@
+<svg id="svg" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><title>icon_clock</title>
+<rect x="9" y="5" width="1" height="6" fill="currentColor"/>
+<rect x="14" y="10" width="1" height="5" transform="rotate(90 14 10)" fill="currentColor"/>
+<circle cx="10" cy="10" r="7.25" stroke="currentColor" stroke-width="1.5"/>
+</svg>

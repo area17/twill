@@ -1,9 +1,9 @@
 html,
 body {
-    min-width: 320px;
-    min-height: 100%;
-    overflow-x: hidden;
-    /*
+  min-width: 320px;
+  min-height: 100%;
+  overflow-x: hidden;
+  /*
     @include breakpoint('xsmall') {
         overflow-x: auto;
     }
@@ -35,8 +35,8 @@ body {
   font-variant-ligatures: common-ligatures;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  padding:0;
-  height:100%;
+  padding: 0;
+  height: 100%;
   /* letter-spacing:-0.022em; San Francisco font : similar to apple.com */
 
   &::after {
@@ -53,28 +53,27 @@ body {
 }
 
 .a17 {
-  width:100vw;
-  overflow:hidden;
-  min-height:100vh;
+  width: 100vw;
+  overflow: hidden;
+  min-height: 100vh;
 }
 
-
 .app {
-  min-height:calc(100vh - 230px);
+  min-height: calc(100vh - 230px);
 }
 
 .appLoader {
-  background-color:$color__background;
+  background-color: $color__background;
 }
 
 .body--form,
 .body--dashboard,
 .body--custom-page,
 .body--buckets {
-  background-color:$color__border--light;
+  background-color: $color__border--light;
 
   .appLoader {
-    background-color:$color__border--light;
+    background-color: $color__border--light;
   }
 }
 
@@ -90,6 +89,10 @@ body {
 
     body::after {
       content: '#{$name}';
+    }
+
+    :root {
+      --breakpoint: '#{$name}';
     }
   }
 }
