@@ -495,7 +495,11 @@ trait HandleRepeaters
             foreach ($relatedItemFormFields['blocks'] ?? [] as $key => $block) {
                 $fields['blocks'][str_contains($key, '|') ? $key : "blocks-$relation-{$relationItem->id}|$key"] = $block;
             }
-            $fields['blocksFields'] = array_merge($fields['blocksFields'] ?? [], $relatedItemFormFields['blocksFields'] ?? []);
+            foreach (['Fields', 'Medias', 'Files', 'Browsers'] as $fieldKey) {
+                if (!empty($relatedItemFormFields['blocks'.$fieldKey])) {
+                    $fields['blocks'.$fieldKey] = array_merge($fields['blocks'.$fieldKey] ?? [], $relatedItemFormFields['blocks'.$fieldKey]);
+                }
+            }
 
             if (isset($relatedItemFormFields['repeaters'])) {
                 foreach ($relatedItemFormFields['repeaters'] as $childRepeaterName => $childRepeaterItems) {
