@@ -432,20 +432,11 @@ trait HandleBlocks
                 }
             }
 
-            if ($fields['blocksFields'] ?? false) {
-                $fields['blocksFields'] = call_user_func_array('array_merge', $fields['blocksFields'] ?? []);
-            }
 
-            if ($fields['blocksMedias'] ?? false) {
-                $fields['blocksMedias'] = call_user_func_array('array_merge', $fields['blocksMedias'] ?? []);
-            }
-
-            if ($fields['blocksFiles'] ?? false) {
-                $fields['blocksFiles'] = call_user_func_array('array_merge', $fields['blocksFiles'] ?? []);
-            }
-
-            if ($fields['blocksBrowsers'] ?? false) {
-                $fields['blocksBrowsers'] = call_user_func_array('array_merge', $fields['blocksBrowsers'] ?? []);
+            foreach (['Fields', 'Medias', 'Files', 'Browsers'] as $fieldKey) {
+                if ($fields['blocks'.$fieldKey] ?? false) {
+                    $fields['blocks'.$fieldKey] = call_user_func_array('array_merge', $fields['blocks'.$fieldKey] ?? []);
+                }
             }
         }
 
