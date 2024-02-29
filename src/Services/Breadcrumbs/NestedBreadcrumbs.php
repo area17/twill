@@ -10,7 +10,7 @@ class NestedBreadcrumbs extends Breadcrumbs
     private string $parentModule;
     private string $module;
     private string $parentRepository;
-    private int $activeParentId;
+    private int|string $activeParentId;
     private string $titleKey;
     private string $label;
     private string $routePrefix = '';
@@ -25,7 +25,7 @@ class NestedBreadcrumbs extends Breadcrumbs
     public function forParent(
         string $parentModule,
         string $module,
-        int $activeParentId,
+        int|string $activeParentId,
         string $repository,
         ?string $titleKey = 'title',
         ?string $routePrefix = '',

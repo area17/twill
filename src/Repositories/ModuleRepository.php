@@ -117,7 +117,7 @@ abstract class ModuleRepository
     /**
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function getById(int $id, array $with = [], array $withCount = []): TwillModelContract
+    public function getById(int|string $id, array $with = [], array $withCount = []): TwillModelContract
     {
         return once(function () use ($id, $with, $withCount) {
             return $this->model->with($with)->withCount($withCount)->findOrFail($id);
