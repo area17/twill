@@ -4,13 +4,16 @@ use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Models\Model;
 use A17\Twill\Services\Blocks\Block;
+use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 
 if (! function_exists('dumpUsableSqlQuery')) {
-    function dumpUsableSqlQuery($query)
+    function dumpUsableSqlQuery(Builder $query): void
     {
         dd(vsprintf(str_replace('?', '%s', $query->toSql()), array_map(function ($binding) {
             return is_numeric($binding) ? $binding : "'{$binding}'";
@@ -32,12 +35,7 @@ if (! function_exists('getLikeOperator')) {
 }
 
 if (! function_exists('classUsesDeep')) {
-    /**
-     * @param mixed $class
-     * @param bool $autoload
-     * @return array
-     */
-    function classUsesDeep($class, $autoload = true)
+    function classUsesDeep(string|object $class, bool $autoload = true): array
     {
         $traits = [];
 
@@ -63,12 +61,7 @@ if (! function_exists('classUsesDeep')) {
 }
 
 if (! function_exists('classHasTrait')) {
-    /**
-     * @param mixed $class
-     * @param string $trait
-     * @return bool
-     */
-    function classHasTrait($class, $trait)
+    function classHasTrait(string|object $class, string $trait): bool
     {
         $traits = classUsesDeep($class);
 
@@ -77,13 +70,7 @@ if (! function_exists('classHasTrait')) {
 }
 
 if (! function_exists('getFormFieldsValue')) {
-    /**
-     * @param array $formFields
-     * @param string $name
-     * @param mixed $default
-     * @return mixed
-     */
-    function getFormFieldsValue($formFields, $name, $default = null)
+    function getFormFieldsValue(array|ArrayAccess $formFields, string $name, mixed $default = null): mixed
     {
         return Arr::get($formFields, str_replace(']', '', str_replace('[', '.', $name)), $default ?? '') ?? $default;
     }
@@ -95,19 +82,15 @@ if (! function_exists('fireCmsEvent')) {
      * @param array $input
      * @return void
      */
-    function fireCmsEvent($eventName, $input = [])
+    function fireCmsEvent(string $eventName, array $input = []): void
     {
-        $method = method_exists(\Illuminate\Events\Dispatcher::class, 'dispatch') ? 'dispatch' : 'fire';
+        $method = method_exists(Dispatcher::class, 'dispatch') ? 'dispatch' : 'fire';
         Event::$method($eventName, [$eventName, $input]);
     }
 }
 
 if (! function_exists('twill_path')) {
-    /**
-     * @param string $path
-     * @return string
-     */
-    function twill_path($path = '')
+    function twill_path(string $path = ''): string
     {
         // Is it a full application path?
         if (Str::startsWith($path, base_path())) {
@@ -133,7 +116,7 @@ if (! function_exists('twill_path')) {
             return app_path($path);
         }
 
-        // If it it still starts with App, use the left part, otherwise use the whole namespace
+        // If it still starts with App, use the left part, otherwise use the whole namespace
         // This can be a problem for those using a completely different app path for the application
         $left = ($namespaceParts[1] === 'App' ? $namespaceParts[2] : $namespaceParts[0]);
 
@@ -145,12 +128,7 @@ if (! function_exists('twill_path')) {
 }
 
 if (! function_exists('make_twill_directory')) {
-    /**
-     * @param string $path
-     * @param bool $recursive
-     * @param \Illuminate\Filesystem\Filesystem|null $fs
-     */
-    function make_twill_directory($path, $recursive = true, $fs = null)
+    function make_twill_directory(string $path, bool $recursive = true, Filesystem $fs = null): void
     {
         $fs = filled($fs)
         ? $fs
@@ -165,12 +143,7 @@ if (! function_exists('make_twill_directory')) {
 }
 
 if (! function_exists('twill_put_stub')) {
-    /**
-     * @param string $path
-     * @param bool $recursive
-     * @param \Illuminate\Filesystem\Filesystem|null $fs
-     */
-    function twill_put_stub($path, $stub, $fs = null)
+    function twill_put_stub(string $path, string $stub, Filesystem $fs = null): void
     {
         $fs = filled($fs)
         ? $fs
@@ -193,12 +166,7 @@ if (! function_exists('twill_put_stub')) {
 }
 
 if (! function_exists('fix_directory_separator')) {
-    /**
-     * @param string $path
-     * @param bool $recursive
-     * @param int $mode
-     */
-    function fix_directory_separator($path)
+    function fix_directory_separator(string $path): string
     {
         return str_replace(
             '\\',
@@ -218,12 +186,7 @@ if (! function_exists('twillModel')) {
 }
 
 if (! function_exists('generate_list_of_available_blocks')) {
-    /**
-     * @param array $blocks
-     * @param array $groups
-     * @return array
-     */
-    function generate_list_of_available_blocks($blocks, $groups, bool $settingsOnly = false, array $excludeBlocks = []): array
+    function generate_list_of_available_blocks(?array $blocks = null, ?array $groups = null, bool $settingsOnly = false, array|callable $excludeBlocks = []): array
     {
         if ($settingsOnly) {
             $blockList = TwillBlocks::getSettingsBlocks();
@@ -263,17 +226,13 @@ if (! function_exists('generate_list_of_available_blocks')) {
             }
         );
 
-        // Sort them by the original definition
-        return $finalBlockList->sortBy(function (Block $b) use ($blocks) {
-            return collect($blocks)->search(function ($id, $key) use ($b) {
-                return $id == $b->name || $id == ltrim($b->componentClass, '\\');
-            });
-        })->values()->toArray();
+        return $finalBlockList->values()->all();
     }
 }
 
 if (! function_exists('capsule_namespace')) {
     /**
+     * TODO remove in v4
      * @deprecated use TwillCapsules::capsuleNamespace instead
      */
     function capsule_namespace($capsuleName, $type = null)
@@ -284,6 +243,7 @@ if (! function_exists('capsule_namespace')) {
 
 if (! function_exists('capsule_namespace_to_path')) {
     /**
+     * TODO remove in v4
      * @deprecated use TwillCapsules::capsuleNamespaceToPath instead
      */
     function capsule_namespace_to_path($namespace, $capsuleNamespace, $rootPath)
@@ -294,20 +254,11 @@ if (! function_exists('capsule_namespace_to_path')) {
 
 if (! function_exists('str_after_last')) {
     /**
-     * @todo: In twill 3.x remove and replace with Str::afterlast
+     * TODO remove in v4
+     * @deprecated use Str::afterLast instead
      */
-    function str_after_last($subject, $search)
+    function str_after_last($subject, $search): string
     {
-        if ($search === '') {
-            return $subject;
-        }
-
-        $position = strrpos($subject, (string) $search);
-
-        if ($position === false) {
-            return $subject;
-        }
-
-        return substr($subject, $position + strlen($search));
+        return Str::afterLast($subject, $search);
     }
 }

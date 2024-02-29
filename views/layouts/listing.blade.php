@@ -52,7 +52,7 @@
                                                 'value' => $value,
                                                 'label' => $label,
                                             ];
-                                        })->values()->toArray();
+                                        })->values()->all();
 
                                     $currentValue = $requestFilter[$filter->getQueryString()] ?? $filter->getDefaultValue();
 

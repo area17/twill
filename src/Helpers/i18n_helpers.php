@@ -4,7 +4,7 @@ use A17\Twill\Helpers\TwillTransString;
 use Illuminate\Support\Collection;
 
 if (! function_exists('twillTrans')) {
-    function twillTrans($key, $replace = []): TwillTransString
+    function twillTrans(string $key, array $replace = []): TwillTransString
     {
         return new TwillTransString($key, $replace);
     }
@@ -14,7 +14,7 @@ if (! function_exists('getLocales')) {
     /**
      * @return string[]
      */
-    function getLocales()
+    function getLocales(): array
     {
         $locales = collect(config('translatable.locales'))->map(function ($locale, $index) {
             return collect($locale)->map(function ($country) use ($locale, $index) {
@@ -22,7 +22,7 @@ if (! function_exists('getLocales')) {
                     ? $locale
                     : "$index-$country";
             });
-        })->flatten()->toArray();
+        })->flatten()->all();
 
         if (blank($locales)) {
             $locales = [config('app.locale')];
@@ -33,12 +33,7 @@ if (! function_exists('getLocales')) {
 }
 
 if (! function_exists('getLanguagesForVueStore')) {
-    /**
-     * @param array $form_fields
-     * @param bool $translate
-     * @return array
-     */
-    function getLanguagesForVueStore($form_fields = [], $translate = true)
+    function getLanguagesForVueStore(array $form_fields = [], bool $translate = true): array
     {
         $manageMultipleLanguages = count(getLocales()) > 1;
         if ($manageMultipleLanguages && $translate) {
@@ -75,11 +70,7 @@ if (! function_exists('getLanguagesForVueStore')) {
 }
 
 if (! function_exists('getLanguageLabelFromLocaleCode')) {
-    /**
-     * @param string $code
-     * @return string
-     */
-    function getLanguageLabelFromLocaleCode($code, $native = false)
+    function getLanguageLabelFromLocaleCode(string $code, $native = false): string
     {
         if (class_exists(Locale::class)) {
             if ($native) {
@@ -114,7 +105,7 @@ if (! function_exists('getLanguageLabelFromLocaleCode')) {
  * @return string (ex.: camel case string)
  */
 if (! function_exists('camelCaseToWords')) {
-    function camelCaseToWords($camelCaseString)
+    function camelCaseToWords(string $camelCaseString): string
     {
         $re = '/(?<=[a-z])(?=[A-Z])/x';
         $a = preg_split($re, $camelCaseString);
@@ -125,7 +116,8 @@ if (! function_exists('camelCaseToWords')) {
 }
 
 if (! function_exists('getCodeToLanguageMappings')) {
-    function getCodeToLanguageMappings()
+    /** @return array<string,string|array<string>> */
+    function getCodeToLanguageMappings(): array
     {
         return [
             'ab' => 'Abkhazian',
