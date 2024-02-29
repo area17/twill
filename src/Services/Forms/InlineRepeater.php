@@ -203,7 +203,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
             $repeater->max($this->max);
         }
 
-        $repeater->renderForBlocks = $this->renderForBlocks ?? false;
+        $repeater->renderForBlocks($this->renderForBlocks ?? false);
         return $repeater->render();
     }
 
