@@ -231,4 +231,38 @@ class RepositoryRepeatersTest extends ModulesTestBase
                 ]
             );
     }
+
+    public function testCanDetachPartnerWhenDeleted(): void
+    {
+        $this->project->partners()->attach($this->partner->id, ['position' => 1]);
+
+        $fields = [
+            'repeaters' => [
+                'project_partners' => [
+                    [
+                        'role' => ['The partner role'],
+                        'repeater_target_id' => null,
+                        'title' => ['en' => 'Partner name'],
+                        'id' => time(),
+                    ],
+                ],
+            ],
+        ];
+
+        app(ProjectRepository::class)->updateRepeaterWithPivot(
+            $this->project,
+            $fields,
+            'partners',
+            ['role'],
+            'partner',
+            'project_partners'
+        );
+
+        $partners = $this->project->partners()->withPivot('role')->get();
+
+        $this->assertEquals(1, $partners->count());
+
+        $this->assertEquals('Partner name', $partners[0]->title);
+        $this->assertEquals('["The partner role"]', $partners[0]->pivot->role);
+    }
 }
