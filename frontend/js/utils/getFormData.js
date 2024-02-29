@@ -31,17 +31,17 @@ export const stripOutBlockNamespace = (name, id) => {
   return nameWithoutBlock.match(/]/gi).length > 1 ? nameWithoutBlock.replace(']', '') : nameWithoutBlock.slice(0, -1)
 }
 
-export const buildBlock = (block, rootState, isRepeater = false, childKey) => {
-  const parentRepeaters = rootState.repeaters.repeaters;
-  const repeaterIds = Object.keys(parentRepeaters);
+export const buildBlock = (block, rootState, isRepeater = false, isInsideRepeater = isRepeater) => {
+  const repeaterIds = Object.keys(rootState.repeaters.repeaters);
   const prefix = 'blocks-' + block.id + '|';
   const repeaters = repeaterIds.filter(repeaterKey => {
     return repeaterKey.startsWith(prefix)
   })
     .reduce((acc, repeaterKey) => {
-      acc[repeaterKey.replace(prefix, '')] = parentRepeaters[repeaterKey].map(repeaterItem => {
-        return buildBlock(repeaterItem, rootState, true)
-      })
+      acc[repeaterKey.replace(prefix, '')] = rootState.repeaters.repeaters[repeaterKey]
+        .map(repeaterItem => {
+          return buildBlock(repeaterItem, rootState, true, isRepeater)
+        })
 
       return acc
     }, {})
@@ -50,41 +50,38 @@ export const buildBlock = (block, rootState, isRepeater = false, childKey) => {
   const blocks = blockIds.filter(blockKey => {
     return blockKey.startsWith(prefix)
   }).reduce((acc, blockKey) => {
-    acc.push(...rootState.blocks.blocks[blockKey].map(repeaterItem => {
-      if (isRepeater) {
-        repeaterItem = {...repeaterItem, name: repeaterItem.name.replace(prefix, '')}
+    const key = blockKey.replace(prefix, '');
+    rootState.blocks.blocks[blockKey].forEach(blockItem => {
+      const block = buildBlock(blockItem, rootState, false);
+      if (isInsideRepeater) {
+        acc.push(block);
+      } else {
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(block)
       }
-      return buildBlock(repeaterItem, rootState, false, blockKey.replace(prefix, ''))
-    }));
+    })
     return acc;
-  }, [])
+  }, isInsideRepeater ? [] : {})
 
   // retrieve all fields for this block and clean up field names
   const content = rootState.form.fields.filter((field) => {
     return isBlockField(field.name, block.id)
-  }).map((field) => {
-    return {
-      name: stripOutBlockNamespace(field.name, block.id),
-      value: field.value
-    }
-  }).reduce((content, field) => {
-    content[field.name] = field.value
-    return content
-  }, {});
+  }).reduce((acc, field) => {
+    acc[stripOutBlockNamespace(field.name, block.id)] = field.value;
+    return acc;
+  }, {})
 
   const base = {
     id: block.id,
-    type: block.type,
     medias: gatherSelected(rootState.mediaLibrary.selected, block),
     browsers: gatherSelected(rootState.browser.selected, block),
-    content,
     // gather repeater blocks from the repeater store module
-    blocks,
-    repeaters,
   }
-  return isRepeater
-    ? { ...base, is_repeater: true, repeater_target_id: block.repeater_target_id}
-    : { ...base, editor_name: block.name, child_key: childKey }
+  return isInsideRepeater
+    ? { ...content, ...base, repeater_target_id: block.repeater_target_id, blocks, repeaters}
+    : { ...base, content, is_repeater: isRepeater, type: block.type, editor_name: block.name, blocks: {...blocks, ...repeaters} }
 }
 
 export const isBlockEmpty = (blockData) => {

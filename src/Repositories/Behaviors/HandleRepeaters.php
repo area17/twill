@@ -131,12 +131,6 @@ trait HandleRepeaters
             $relationField[$morphFieldId] = $object->id;
             $relationField[$morphFieldType] = $object->getMorphClass();
 
-            if (is_array($relationField['content'] ?? null)) {
-                $content = $relationField['content'];
-                unset($relationField['content']);
-                $relationField = array_merge($content, $relationField);
-            }
-
             if (isset($relationField['id']) && Str::startsWith($relationField['id'], $relation)) {
                 // row already exists, let's update
                 $id = str_replace($relation . '-', '', $relationField['id']);
@@ -214,12 +208,6 @@ trait HandleRepeaters
                         'published' => $fields[$langCode]['active'],
                     ];
                 }
-            }
-
-            if (is_array($relationField['content'] ?? null)) {
-                $content = $relationField['content'];
-                unset($relationField['content']);
-                $relationField = array_merge($content, $relationField);
             }
 
             if (isset($relationField['id']) && Str::startsWith($relationField['id'], $relation)) {
@@ -326,12 +314,6 @@ trait HandleRepeaters
                 $id = TwillUtil::hasRepeaterIdFor($relationField['id'])
             ) {
                 $relationField['id'] = $relation . '-' . $id;
-            }
-
-            if (is_array($relationField['content'] ?? null)) {
-                $content = $relationField['content'];
-                unset($relationField['content']);
-                $relationField = array_merge($content, $relationField);
             }
 
             // Set the active data based on the parent.

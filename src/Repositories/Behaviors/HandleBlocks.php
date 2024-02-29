@@ -273,37 +273,20 @@ trait HandleBlocks
     {
         $childBlocksList = Collection::make();
 
-        if (!empty($parentBlockFields['blocks'])) {
-            // Fallback if frontend or revision is still on the old schema
-            if (is_int(key(current($parentBlockFields['blocks'])))) {
-                foreach ($parentBlockFields['blocks'] as $childKey => $childBlocks) {
-                    foreach ($childBlocks as $childBlock) {
-                        $childBlock['child_key'] = $childKey;
-                        $parentBlockFields['blocks'][] = $childBlock;
-                    }
-                    unset($parentBlockFields['blocks'][$childKey]);
-                }
+        foreach ($parentBlockFields['blocks'] ?? [] as $childKey => $childBlocks) {
+            if (str_contains($childKey, '|')) {
+                continue;
             }
-        }
+            foreach ($childBlocks as $index => $childBlock) {
+                $childBlock = $this->buildBlock($childBlock, $object, $childBlock['is_repeater'] ?? false);
+                $this->validateBlockArray($childBlock, $childBlock['instance'], true);
+                $childBlock['child_key'] = $childKey;
+                $childBlock['position'] = $index + 1;
+                $childBlock['editor_name'] = $parentBlockFields['editor_name'] ?? 'default';
+                $childBlock['blocks'] = $this->getChildBlocks($object, $childBlock);
 
-        if (!empty($parentBlockFields['repeaters'])) {
-            foreach ($parentBlockFields['repeaters'] as $childKey => $childBlocks) {
-                foreach ($childBlocks as $childBlock) {
-                    $childBlock['child_key'] = $childKey;
-                    $parentBlockFields['blocks'][] = $childBlock;
-                }
+                $childBlocksList->push($childBlock);
             }
-        }
-
-        foreach ($parentBlockFields['blocks'] ?? [] as $index => $childBlock) {
-            $childBlock = $this->buildBlock($childBlock, $object, $childBlock['is_repeater'] ?? false);
-            $this->validateBlockArray($childBlock, $childBlock['instance'], true);
-            $childBlock['child_key'] = $childBlock['child_key'] ?? Str::afterLast($childBlock['editor_name'] ?? $index, '|');
-            $childBlock['position'] = $index + 1;
-            $childBlock['editor_name'] = $parentBlockFields['editor_name'] ?? 'default';
-            $childBlock['blocks'] = $this->getChildBlocks($object, $childBlock);
-
-            $childBlocksList->push($childBlock);
         }
 
         return $childBlocksList;
@@ -482,7 +465,7 @@ trait HandleBlocks
                 try {
                     $relationRepository = $this->getModelRepository($relation);
                     $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);
-                } catch (\Throwable $th) {
+                } catch (\Throwable) {
                     $relatedItems = collect();
                 }
                 $sortedRelatedItems = array_flip($ids);
@@ -494,6 +477,7 @@ trait HandleBlocks
                 $items = Collection::make(array_values($sortedRelatedItems))->filter(function ($value) {
                     return is_object($value);
                 })->map(function ($relatedElement) use ($relation) {
+                    // TODO this needs refactoring, it's duplicated from HandleBrowsers
                     return [
                             'id' => $relatedElement->id,
                             'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
@@ -503,6 +487,7 @@ trait HandleBlocks
                                 'edit',
                                 $relatedElement->id
                             ),
+                            'endpointType' => $relatedElement->getMorphClass(),
                         ] + (classHasTrait($relatedElement, HasMedias::class) ? [
                             'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
                         ] : []);
