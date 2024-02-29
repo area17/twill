@@ -35,7 +35,11 @@ return [
         'publish' => 'Publish',
         'source-title' => 'Available items',
     ],
-    'dam' => [],
+    'dam' => [
+        'close-nav' => 'Close navigation',
+        'expand-nav' => 'Expand navigation',
+        'submit-search' => 'Submit search'
+    ],
     'dashboard' => [
         'all-activity' => 'All activity',
         'create-new' => 'Create new',
