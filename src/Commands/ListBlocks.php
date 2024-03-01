@@ -104,7 +104,7 @@ class ListBlocks extends Command
             // We do not render this.
             unset($data['rules'], $data['rulesForTranslatedFields']);
 
-            $data['block class'] = $block::class !== 'A17\Twill\Services\Blocks\Block' ? get_class($block) : 'default';
+            $data['block class'] = $block::class !== Block::class ? get_class($block) : 'default';
 
             $list[] = $data;
         }

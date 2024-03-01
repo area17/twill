@@ -27,6 +27,7 @@ use A17\Twill\Commands\SetupDevTools;
 use A17\Twill\Commands\SyncLang;
 use A17\Twill\Commands\Update;
 use A17\Twill\Commands\UpdateExampleCommand;
+use A17\Twill\Commands\UpdateMorphMapReferences;
 use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
 use A17\Twill\Http\ViewComposers\Localization;
@@ -57,7 +58,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const VERSION = '3.1.0';
+    public const VERSION = '3.2.0';
 
     /**
      * Service providers to be registered.
@@ -379,6 +380,7 @@ class TwillServiceProvider extends ServiceProvider
             GeneratePackageCommand::class,
             TwillFlushManifest::class,
             GenerateBlockComponent::class,
+            UpdateMorphMapReferences::class,
         ];
 
         if (app()->runningInConsole()) {

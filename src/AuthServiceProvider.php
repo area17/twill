@@ -3,7 +3,6 @@
 namespace A17\Twill;
 
 use A17\Twill\Facades\TwillPermissions;
-use A17\Twill\Models\User;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -159,7 +158,7 @@ class AuthServiceProvider extends ServiceProvider
 
         $this->define('publish-user', function ($user) {
             return $this->authorize($user, function ($user) {
-                $editedUserObject = User::find(request('id'));
+                $editedUserObject = twillModel('user')::find(request('id'));
                 return $this->userHasRole(
                     $user,
                     [TwillPermissions::roles()::ADMIN]

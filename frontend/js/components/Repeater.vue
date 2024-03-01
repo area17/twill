@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <draggable class="content__content" v-model="blocks" :options="dragOptions">
+    <draggable class="content__content" v-model="blocks" v-bind="dragOptions">
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
           <a17-blockeditor-item

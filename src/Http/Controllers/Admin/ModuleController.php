@@ -9,7 +9,6 @@ use A17\Twill\Helpers\FlashLevel;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Contracts\TwillSchedulableModel;
-use A17\Twill\Models\Group;
 use A17\Twill\Repositories\ModuleRepository;
 use A17\Twill\Services\Breadcrumbs\Breadcrumbs;
 use A17\Twill\Services\Forms\Fields\BaseFormField;
@@ -2674,7 +2673,7 @@ abstract class ModuleController extends Controller
     protected function getGroupUserMapping()
     {
         if (config('twill.enabled.permissions-management')) {
-            return Group::with('users')->get()
+            return twillModel('group')::with('users')->get()
                 ->mapWithKeys(function ($group) {
                     return [$group->id => $group->users()->pluck('id')->toArray()];
                 })->toArray();
