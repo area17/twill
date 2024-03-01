@@ -235,8 +235,10 @@ if (! function_exists('capsule_namespace')) {
      * TODO remove in v4
      * @deprecated use TwillCapsules::capsuleNamespace instead
      */
-    function capsule_namespace($capsuleName, $type = null)
+    function capsule_namespace(string $capsuleName, string $type = null): string
     {
+        trigger_deprecation('area17/twill', '3.3', __FUNCTION__ . ' is deprecated and will be removed in 4.x, use TwillCapsules::capsuleNamespace instead');
+
         return TwillCapsules::capsuleNamespace($capsuleName, $type);
     }
 }
@@ -246,8 +248,10 @@ if (! function_exists('capsule_namespace_to_path')) {
      * TODO remove in v4
      * @deprecated use TwillCapsules::capsuleNamespaceToPath instead
      */
-    function capsule_namespace_to_path($namespace, $capsuleNamespace, $rootPath)
+    function capsule_namespace_to_path(string $namespace, string $capsuleNamespace, string $rootPath): string
     {
+        trigger_deprecation('area17/twill', '3.3', __FUNCTION__ . ' is deprecated and will be removed in 4.x, use TwillCapsules::capsuleNamespaceToPath instead');
+
         return TwillCapsules::capsuleNamespaceToPath($namespace, $capsuleNamespace, $rootPath);
     }
 }
@@ -259,6 +263,8 @@ if (! function_exists('str_after_last')) {
      */
     function str_after_last($subject, $search): string
     {
+        trigger_deprecation('area17/twill', '3.3', __FUNCTION__ . ' is deprecated and will be removed in 4.x, use Str::afterLast instead');
+
         return Str::afterLast($subject, $search);
     }
 }

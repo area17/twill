@@ -151,7 +151,9 @@ if (!function_exists('updatePermissionOptions')) {
 }
 
 if (!function_exists('updatePermissionGroupOptions')) {
-    // TODO remove in v4, it's not used and does nothing
+    /**
+     * TODO why is this a noop?
+     */
     function updatePermissionGroupOptions($options, $item, $group)
     {
         return $options;
