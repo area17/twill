@@ -22,7 +22,7 @@ return [
         // When setting to false, make sure to build Twill with your all your custom blocks.
         'inline_blocks_templates' => true,
         'custom_vue_blocks_resource_path' => 'assets/js/blocks',
-        'use_twill_blocks' => ['text', 'image'],
+        'use_twill_blocks' => [],
         'crops' => [
             'image' => [
                 'desktop' => [
