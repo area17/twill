@@ -735,6 +735,21 @@ abstract class ModuleController extends Controller
             $this->fireEvent();
             activity()->performedOn($item)->log('duplicated');
 
+            // For nested module
+            if (Str::contains($this->moduleName, '.')) {
+                $moduleName = Str::afterLast($this->moduleName, '.');
+                $singularParentModuleName = Str::singular(Str::beforeLast($this->moduleName, '.'));
+
+                $parameters = [
+                    Str::singular($moduleName) => $newItem->id,
+                    $singularParentModuleName => request()->query($singularParentModuleName),
+                ];
+            } else {
+                $parameters = [
+                    Str::singular($this->moduleName) => $newItem->id,
+                ];
+            }
+
             return Response::json([
                 'message' => twillTrans('twill::lang.listing.duplicate.success', ['modelTitle' => $this->modelTitle]),
                 'variant' => FlashLevel::SUCCESS,
@@ -742,7 +757,7 @@ abstract class ModuleController extends Controller
                     $this->moduleName,
                     $this->routePrefix,
                     'edit',
-                    array_filter([Str::singular($this->moduleName) => $newItem->id])
+                    array_filter($parameters)
                 ),
             ]);
         }
