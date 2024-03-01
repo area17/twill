@@ -14,7 +14,7 @@
 @push('vuexStore')
     window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
         name: 'tags',
-        value: {!! json_encode($item->tags->map(function ($tag) { return $tag->name; })->toArray()) !!}
+        value: {!! json_encode($item->tags->pluck('name')) !!}
     })
 @endpush
 @endunless

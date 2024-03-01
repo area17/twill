@@ -1,5 +1,5 @@
 includes:
-  - ./vendor/nunomaduro/larastan/extension.neon
+  - ./vendor/larastan/larastan/extension.neon
   - phpstan-baseline.neon
 
 parameters:
@@ -19,7 +19,7 @@ parameters:
     - migrations/optional
 
   ignoreErrors:
-    # See: https://github.com/nunomaduro/larastan/issues/1080
+    # See: https://github.com/larastan/larastan/issues/1080
     - '#Access to an undefined property A17\\Twill\\Models\\(\w*)::\$(\w*)#'
 
   excludePaths:
