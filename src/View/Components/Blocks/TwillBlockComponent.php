@@ -60,8 +60,12 @@ abstract class TwillBlockComponent extends Component
      */
     public static function getBlockIdentifier(): string
     {
-        $class = Str::afterLast(static::class, '\\');
-        return Str::slug(static::getBlockGroup() . '--' . $class);
+        return Str::slug(static::getBlockGroup() . '-' . static::getBlockName());
+    }
+
+    public static function getBlockName(): string
+    {
+        return Str::afterLast(static::class, '\\');
     }
 
     /**
@@ -106,6 +110,11 @@ abstract class TwillBlockComponent extends Component
     public static function getBlockGroup(): string
     {
         return Str::slug(Str::before(static::class, '\\'));
+    }
+
+    public static function getPosition(): float|int|string
+    {
+        return 0;
     }
 
     public static function getBlockIcon(): string

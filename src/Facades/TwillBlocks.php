@@ -2,8 +2,19 @@
 
 namespace A17\Twill\Facades;
 
+use A17\Twill\Services\Blocks\Block;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
+/**
+ * @method static void globallyExcludeBlocks(array|callable $blocks)
+ * @method static array getGloballyExcludedBlocks
+ * @method static Collection<Block>getBlocks
+ * @method static Collection<Block>getSettingsBlocks
+ * @method static Collection<Block>getRepeaters
+ * @method static registerManualBlock(string $blockClass, string $source = Block::SOURCE_APP)
+ * @method static Collection<Block>generateListOfAvailableBlocks(?array $blocks = null, ?array $groups = null, bool $settingsOnly = false, array|callable $excludeBlocks = [])
+ */
 class TwillBlocks extends Facade
 {
     protected static function getFacadeAccessor(): string

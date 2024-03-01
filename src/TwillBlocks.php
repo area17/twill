@@ -130,6 +130,20 @@ class TwillBlocks
         }
     }
 
+
+    protected array $globallyExcludedBlocks = [];
+
+    /** Util method to be called in a service provider to prevent some of a package's block to be opt in */
+    public function globallyExcludeBlocks(array|callable $blocks): void
+    {
+        $this->globallyExcludedBlocks[] = $blocks;
+    }
+
+    public function getGloballyExcludedBlocks(): array
+    {
+        return $this->globallyExcludedBlocks;
+    }
+
     /**
      * Only when the block collection is actually requested we parse all the information.
      */
@@ -192,9 +206,9 @@ class TwillBlocks
             unset(self::$componentBlockNamespaces[$namespace]);
         }
 
-        foreach (self::$manualBlocks as $class) {
+        foreach (self::$manualBlocks as $class => $source) {
             $this->blockCollection->add(
-                Block::forComponent($class)
+                Block::forComponent($class, $source)
             );
 
             unset(self::$manualBlocks[$class]);
@@ -220,9 +234,9 @@ class TwillBlocks
         return $this->blockCollection;
     }
 
-    public function registerManualBlock(string $blockClass): void
+    public function registerManualBlock(string $blockClass, string $source = Block::SOURCE_APP): void
     {
-        self::$manualBlocks[$blockClass] = $blockClass;
+        self::$manualBlocks[$blockClass] = $source;
     }
 
     public function findByName(string $name): ?Block
@@ -326,5 +340,85 @@ class TwillBlocks
         }
 
         return $this->cropConfigs;
+    }
+
+    public function generateListOfAllBlocks(bool $settingsOnly = false)
+    {
+        return once(function () use ($settingsOnly) {
+            /** @var Collection $blockList */
+            if ($settingsOnly) {
+                $blockList = TwillBlocks::getSettingsBlocks();
+            } else {
+                $blockList = TwillBlocks::getBlocks();
+            }
+
+            $appBlocksList = $blockList->filter(function (Block $block) {
+                return $block->source !== Block::SOURCE_TWILL;
+            });
+
+            return $blockList->filter(function (Block $block) use ($appBlocksList) {
+                if ($block->group === Block::SOURCE_TWILL) {
+                    if (!collect(config('twill.block_editor.use_twill_blocks'))->contains($block->name)) {
+                        return false;
+                    }
+
+                    if (
+                        count($appBlocksList) > 0 && $appBlocksList->contains(
+                            function ($appBlock) use ($block) {
+                                return $appBlock->name === $block->name;
+                            }
+                        )
+                    ) {
+                        return false;
+                    }
+                }
+                return true;
+            })->sortBy(function (Block $b) {
+                // Blocks are by default sorted by the order they have been found in directories, but we can allow individual blocks to override this behavior
+                return $b->getPosition();
+            })->values();
+        });
+    }
+
+    public function generateListOfAvailableBlocks(?array $blocks = null, ?array $groups = null, bool $settingsOnly = false, array|callable $excludeBlocks = []): Collection
+    {
+        $globalExcludeBlocks = TwillBlocks::getGloballyExcludedBlocks();
+
+        $matchBlock = function ($matcher, $block, $someFn = null) {
+            if (is_callable($matcher)) {
+                return call_user_func($matcher, $block);
+            } elseif (!empty($matcher) && is_array($matcher)) {
+                $class = ltrim($block->componentClass, '\\');
+                return collect($matcher)->some($someFn ?: fn($ex) => $ex == $block->name || $ex == $class);
+            }
+            return null;
+        };
+        return $this->generateListOfAllBlocks($settingsOnly)->filter(
+            function (Block $block) use ($blocks, $groups, $excludeBlocks, $globalExcludeBlocks, $matchBlock) {
+                if ($matchBlock($excludeBlocks, $block)) {
+                    return false;
+                }
+
+                // Allow list of blocks and groups should have priority over globally excluded blocks (or there would be no way of allowing them)
+                if ($matchedBlock = $matchBlock($blocks, $block)) {
+                    return true;
+                }
+                if ($matchedGroup = $matchBlock($groups, $block, fn($ex) => $ex === $block->group)) {
+                    return true;
+                }
+
+                if ($matchedBlock === false || $matchedGroup === false) {
+                    return false;
+                }
+
+                foreach ($globalExcludeBlocks as $excludeBlock) {
+                    if ($matchBlock($excludeBlock, $block)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        );
     }
 }

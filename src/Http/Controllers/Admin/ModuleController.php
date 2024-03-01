@@ -3,6 +3,7 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Exceptions\NoCapsuleFoundException;
+use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Helpers\FlashLevel;
@@ -2261,6 +2262,7 @@ abstract class ModuleController extends Controller
                 'translateTitle' => $this->titleIsTranslatable(),
                 'permalink' => $this->getIndexOption('permalink', $item),
                 'createWithoutModal' => ! $itemId && $this->getIndexOption('skipCreateModal'),
+                'allBlocks' => TwillBlocks::generateListOfAllBlocks()->keyBy('name'),
                 'form_fields' => $this->repository->getFormFields($item),
                 'baseUrl' => $baseUrl,
                 'localizedPermalinkBase' => $localizedPermalinkBase,

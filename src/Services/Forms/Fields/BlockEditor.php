@@ -2,11 +2,14 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
+use A17\Twill\Services\Blocks\Block;
+
 class BlockEditor extends BaseFormField
 {
     protected array $blocks = [];
+    protected array $groups = [];
 
-    protected array $excludeBlocks = [];
+    protected mixed $excludeBlocks = [];
 
     protected bool $isSettings = false;
 
@@ -48,15 +51,36 @@ class BlockEditor extends BaseFormField
      */
     public function blocks(array $blocks): static
     {
+        // For backward compatibility, clear the list of excludeBlocks in case both ->excludeBlocks()->blocks() were called
+        $this->excludeBlocks = [];
         $this->blocks = $blocks;
 
         return $this;
     }
 
+    public function getBlocks(): array
+    {
+        return $this->blocks;
+    }
+
+    public function groups(array $groups)
+    {
+        $this->groups = $groups;
+
+        return $this;
+    }
+
+    public function getGroups(): array
+    {
+        return $this->groups;
+    }
+
     /**
      * Use this method if you want to exclude any block types
+     *
+     * @param array<string>|callable<Block> $blocks
      */
-    public function excludeBlocks(array $blocks): static
+    public function excludeBlocks(array|callable $blocks): static
     {
         $this->excludeBlocks = $blocks;
 

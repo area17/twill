@@ -30,10 +30,15 @@ const state = {
    */
   editorNames: window[process.env.VUE_APP_NAME].STORE.form.editorNames || [],
   /**
-   * An object with all the blocks available to add
+   * An object with all the blocks name available to add keyed by availibityId
    * @type {Object}
    */
   available: window[process.env.VUE_APP_NAME].STORE.form.availableBlocks || {},
+  /**
+   * An object with all the blocks available to add
+   * @type {Object}
+   */
+  allAvailable: window[process.env.VUE_APP_NAME].STORE.form.allAvailableBlocks || {},
   /**
    * An array with all the blocks created
    * @type {Object.Array}
@@ -55,7 +60,7 @@ const state = {
 const getters = {
   previewsById: state => (id) => state.previews[id] ? state.previews[id] : '',
   blocks: state => editorName => state.blocks[editorName] || [],
-  availableBlocks: state => editorName => state.available[editorName] || [],
+  availableBlocks: state => editorName => state.available[editorName] && state.available[editorName].length ? state.available[editorName].map((k) => state.allAvailable[k]) : [],
   blockIndex: (state, getters) => (block, editorName) => getters.blocks(editorName).findIndex(b => b.id === block.id)
 }
 

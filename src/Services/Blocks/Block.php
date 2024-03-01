@@ -143,18 +143,19 @@ class Block
     public ?InlineRepeater $inlineRepeater = null;
 
     /**
-     * @param TwillBlockComponent $componentClass
+     * @param class-string<TwillBlockComponent> $componentClass
      */
-    public static function forComponent(string $componentClass): self
+    public static function forComponent(string $componentClass, string $source = self::SOURCE_APP): self
     {
         $class = new self(
             file: null,
             type: 'block',
-            source: $componentClass::getBlockGroup(),
+            source: $source,
             name: $componentClass::getBlockIdentifier(),
             componentClass: $componentClass
         );
 
+        $class->group = $componentClass::getBlockGroup();
         $class->title = $componentClass::getBlockTitle();
         $class->icon = $componentClass::getBlockIcon();
         $class->titleField = $componentClass::getBlockTitleField();
@@ -172,7 +173,6 @@ class Block
      * @param $type
      * @param $source
      * @param $name
-     * @param string $renderNamespace
      *   Mainly for packages, but this will get the preview/render view file from that namespace.
      * @return static
      */
@@ -204,6 +204,11 @@ class Block
             $this->componentClass,
             $this->inlineRepeater
         );
+    }
+
+    public function getPosition(): float|int|string
+    {
+        return $this->componentClass && is_callable([$this->componentClass, 'getPosition']) ? $this->componentClass::getPosition() : 0;
     }
 
     /**

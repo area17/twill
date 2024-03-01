@@ -173,6 +173,7 @@
     restoreUrl: '{{ $restoreUrl ?? '' }}',
     availableBlocks: {},
     blocks: {},
+    allAvailableBlocks: {!! json_encode($allBlocks ?? []) !!},
     blockPreviewUrl: '{{ $blockPreviewUrl ?? '' }}',
     repeaters: {!! json_encode(($form_fields['repeaters'] ?? []) + ($form_fields['blocksRepeaters'] ?? [])) !!},
     fields: [],
