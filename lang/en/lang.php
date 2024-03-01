@@ -36,6 +36,7 @@ return [
         'source-title' => 'Available items',
     ],
     'dam' => [
+        'add-new' => 'Add new',
         'close-nav' => 'Close navigation',
         'expand-nav' => 'Expand navigation',
         'submit-search' => 'Submit search'

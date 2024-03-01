@@ -1,11 +1,11 @@
 <template>
   <div
-    class="damNav__wrapper"
-    :class="[{ 'damNav__wrapper--open': isOpen }]"
+    class="dam-nav__wrapper"
+    :class="[{ 'dam-nav__wrapper--open': isOpen }]"
     @click.prevent="onClickOutside"
   >
-    <div class="damNav" ref="nav">
-      <div class="damNav__header">
+    <div class="dam-nav" ref="nav">
+      <div class="dam-nav__header">
         <h1>
           <component :is="appLink ? 'a' : 'span'" :href="appLink">
             {{ appName }}
@@ -20,7 +20,7 @@
               ? $trans('dam.close-nav', 'Close navigation')
               : $trans('dam.expand-nav', 'Expand navigation')
           "
-          class="damNav__toggle"
+          class="dam-nav__toggle"
           @click="togglePanel"
           ><span
             aria-hidden="true"
@@ -30,18 +30,18 @@
         ></a17-button>
         <a17-button
           :aria-label="$trans('dam.close-nav', 'Close navigation')"
-          class="damNav__close"
+          class="dam-nav__close"
           @click="isOpen = false"
           ><span v-svg aria-hidden="true" symbol="close"></span
         ></a17-button>
       </div>
       <div
-        class="damNav__body"
+        class="dam-nav__body"
         :class="{ scrolled: isScrolledToBottom }"
         ref="navBody"
         @scroll="handleScroll"
       >
-        <div class="damNav__search">
+        <div class="dam-nav__search">
           <input
             type="search"
             class="form__input form__input--small"
@@ -72,9 +72,9 @@
               <li
                 v-for="(item, i) in section.items"
                 :key="i"
-                class="damNav__listItem"
+                class="dam-nav__listItem"
                 :class="{
-                  'damNav__listItem--open': expandedSections.includes(
+                  'dam-nav__listItem--open': expandedSections.includes(
                     `section_${index}_${i}`
                   )
                 }"
@@ -83,9 +83,9 @@
                   :is="item.url ? 'a' : 'button'"
                   :href="item.url"
                   :class="[
-                    'damNav__link',
+                    'dam-nav__link',
                     {
-                      'damNav__link--active': item.active
+                      'dam-nav__link--active': item.active
                     }
                   ]"
                   :id="`navItem_${index}_${i}`"
@@ -107,7 +107,7 @@
                     v-svg
                     symbol="dropdown_default"
                     aria-hidden="true"
-                    class="damNav__icon"
+                    class="dam-nav__icon"
                   >
                   </span>
                   <span
@@ -115,9 +115,9 @@
                     v-svg
                     :symbol="item.icon ? item.icon : section.icon"
                     aria-hidden="true"
-                    class="damNav__icon"
+                    class="dam-nav__icon"
                   ></span>
-                  <span class="damNav__item">
+                  <span class="dam-nav__item">
                     <span v-if="item.text" class="f--regular">{{
                       item.text
                     }}</span>
@@ -138,14 +138,14 @@
                       :is="childItem.url ? 'a' : 'button'"
                       :href="childItem.url"
                       :class="[
-                        'damNav__link',
+                        'dam-nav__link',
                         {
-                          'damNav__link--active': childItem.active
+                          'dam-nav__link--active': childItem.active
                         }
                       ]"
                     >
                       <span v-svg symbol="nested" aria-hidden="true"></span>
-                      <span class="damNav__item">
+                      <span class="dam-nav__item">
                         <span v-if="childItem.text" class="f--regular">{{
                           childItem.text
                         }}</span>
@@ -169,7 +169,7 @@
   import { getCurrentLocale } from '@/utils/locale'
 
   export default {
-    name: 'A17DamNavigation',
+    name: 'A17dam-navigation',
     props: {
       appLink: {
         type: String,
@@ -264,9 +264,6 @@
       } else {
         this.isOpen = JSON.parse(sideNavOpen)
       }
-
-      // TODO: Move this class to DAM template
-      document.body.classList.add('body--hasSideNav')
     }
   }
 </script>
@@ -274,6 +271,8 @@
 <style lang="scss">
   body.body--hasSideNav {
     .a17 {
+      width: auto;
+
       @include breakpoint('medium+') {
         padding-left: rem-calc(74);
       }
@@ -286,13 +285,22 @@
     .icon svg {
       pointer-events: none;
     }
+
+    .app {
+      display: flex;
+      flex-flow: row;
+    }
+  }
+
+  .dam__content {
+    flex: 0 1 100%;
   }
 </style>
 
 <style lang="scss" scoped>
   @import '~styles/setup/_mixins-colors-vars.scss';
 
-  .damNav__wrapper {
+  .dam-nav__wrapper {
     opacity: 0;
     visibility: hidden;
     transition: all 300ms ease;
@@ -304,7 +312,7 @@
     }
   }
 
-  .damNav__wrapper--open {
+  .dam-nav__wrapper--open {
     opacity: 1;
     visibility: visible;
 
@@ -314,17 +322,17 @@
       inset: 0;
       z-index: $zindex__overlay;
 
-      .damNav {
+      .dam-nav {
         width: rem-calc(312);
       }
 
-      .damNav__header h1,
-      .damNav__body {
+      .dam-nav__header h1,
+      .dam-nav__body {
         opacity: 1;
         visibility: visible;
       }
 
-      .damNav__header {
+      .dam-nav__header {
         border-bottom: 1px solid $color__grey--85;
       }
     }
@@ -335,7 +343,7 @@
     }
   }
 
-  .damNav {
+  .dam-nav {
     background: $color__black;
     position: fixed;
     top: 0;
@@ -358,7 +366,7 @@
     }
   }
 
-  .damNav__header {
+  .dam-nav__header {
     padding: rem-calc(16) rem-calc(36) rem-calc(16) rem-calc(16);
     color: $color__white;
     border-bottom: 1px solid $color__grey--85;
@@ -385,7 +393,7 @@
       text-decoration: none;
     }
 
-    .damNav__toggle {
+    .dam-nav__toggle {
       width: rem-calc(36);
       height: rem-calc(36);
       color: $color__grey--54;
@@ -409,7 +417,7 @@
       }
     }
 
-    .damNav__close {
+    .dam-nav__close {
       color: $color__grey--54;
       width: rem-calc(20);
       height: rem-calc(20);
@@ -425,7 +433,7 @@
     }
   }
 
-  .damNav__body {
+  .dam-nav__body {
     padding: rem-calc(20) rem-calc(16);
     flex-grow: 1;
     overflow-y: auto;
@@ -457,7 +465,7 @@
       }
     }
 
-    .damNav__listItem {
+    .dam-nav__listItem {
       border-radius: 2px;
       overflow: hidden;
 
@@ -471,11 +479,11 @@
       }
     }
 
-    .damNav__listItem--open {
+    .dam-nav__listItem--open {
       background: $color__black--90;
 
-      > .damNav__link .icon,
-      > .damNav__link .f--regular {
+      > .dam-nav__link .icon,
+      > .dam-nav__link .f--regular {
         color: $color__white;
       }
 
@@ -501,7 +509,7 @@
     }
   }
 
-  .damNav__link {
+  .dam-nav__link {
     padding: rem-calc(4);
     display: flex;
     flex-flow: row;
@@ -515,16 +523,16 @@
     cursor: pointer;
 
     &:hover,
-    &.damNav__link--active {
+    &.dam-nav__link--active {
       background: $color__black--90;
 
       .f--regular,
-      .damNav__icon {
+      .dam-nav__icon {
         color: $color__white;
       }
     }
 
-    &.damNav__link--active {
+    &.dam-nav__link--active {
       background: $color__grey--85;
     }
 
@@ -533,7 +541,7 @@
     }
   }
 
-  .damNav__icon {
+  .dam-nav__icon {
     flex-shrink: 0;
     margin-right: rem-calc(8);
     width: rem-calc(20);
@@ -544,7 +552,7 @@
     pointer-events: none;
   }
 
-  .damNav__item {
+  .dam-nav__item {
     width: 100%;
     display: flex;
     flex-flow: row;
@@ -556,7 +564,7 @@
     }
   }
 
-  .damNav__search {
+  .dam-nav__search {
     position: relative;
     margin-bottom: rem-calc(-20);
 
@@ -565,11 +573,11 @@
     }
   }
 
-  .damNav__search .form__input {
+  .dam-nav__search .form__input {
     padding-right: rem-calc(36);
   }
 
-  .damNav__search .button {
+  .dam-nav__search .button {
     position: absolute;
     right: rem-calc(8);
     top: rem-calc(8);

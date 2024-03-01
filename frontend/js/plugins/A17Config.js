@@ -40,6 +40,7 @@ import a17Wysiwyg from '@/components/Wysiwyg.vue'
 import a17WysiwygTipTap from '@/components/WysiwygTiptap.vue'
 import Sticky from '@/directives/sticky'
 // Digital Asset Manager
+import a17DamHeader from '@/components/dam/DamHeader.vue'
 import a17DamNavigation from '@/components/dam/DamNavigation.vue'
 // Directives
 import SvgSprite from '@/directives/svg'
@@ -84,10 +85,13 @@ const A17Config = {
     Vue.component('a17-filefield', a17FileField)
     Vue.component('a17-colorfield', a17ColorField)
     Vue.component('a17-avatar', a17Avatar)
-    Vue.component('a17-dam-navigation', a17DamNavigation)
 
     // Media Library
     Vue.component('a17-medialibrary', a17MediaLibrary)
+
+    // Digital Asset Manager
+    Vue.component('a17-dam-header', a17DamHeader)
+    Vue.component('a17-dam-navigation', a17DamNavigation)
 
     // Globale Vue mixin : Use global mixins sparsely and carefully!
     Vue.mixin({
