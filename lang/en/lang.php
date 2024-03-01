@@ -37,8 +37,11 @@ return [
     ],
     'dam' => [
         'add-new' => 'Add new',
+        'apply' => 'Apply',
+        'clear' => 'Clear',
         'close-nav' => 'Close navigation',
         'expand-nav' => 'Expand navigation',
+        'user-nav' => 'Toggle user menu',
         'submit-search' => 'Submit search'
     ],
     'dashboard' => [

@@ -1,59 +1,71 @@
 <template>
-  <div class="dam-header">
-    <div class="dam-header__title">
-      <h1>{{ customTitle ? customTitle : title }}</h1>
+  <div>
+    <div class="dam-header">
+      <div class="dam-header__title">
+        <h1>{{ customTitle ? customTitle : title }}</h1>
+      </div>
+      <div class="dam-header__action">
+        <div ref="form">
+          <a17-filter @submit="submitSearch"> </a17-filter>
+        </div>
+        <a17-button variant="validate" size="small">{{
+          $trans('dam.add-new', 'Add new')
+        }}</a17-button>
+        <div v-if="userData && usersManagement">
+          <a17-dropdown ref="userDropdown" position="bottom-right" :offset="8">
+            <button
+              :aria-label="$trans('dam.user-nav')"
+              @click.prevent="$refs.userDropdown.toggle()"
+              class="dam-header__dropdown"
+            >
+              <a17-avatar
+                v-if="userData.name || userData.thumbnail"
+                :name="userData.name ?? null"
+                :thumbnail="userData.thumbnail ?? null"
+              />
+              <span
+                symbol="dropdown_module"
+                class="icon icon--dropdown_module"
+                aria-hidden="true"
+              >
+                <svg>
+                  <title>dropdown_module</title>
+                  <use
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    xlink:href="#icon--dropdown_module"
+                  ></use>
+                </svg>
+              </span>
+            </button>
+            <div slot="dropdown__content">
+              <a
+                v-if="userData.can_access_user_management"
+                :href="userData.user_management_route"
+                >{{ $trans('nav.cms-users') }}</a
+              >
+              <a :href="userData.edit_profile_route">{{
+                $trans('nav.profile')
+              }}</a>
+              <a href="#" data-logout-btn>{{ $trans('nav.logout') }}</a>
+            </div>
+          </a17-dropdown>
+        </div>
+      </div>
     </div>
-    <div class="dam-header__action">
-      <div ref="form">
-        <a17-filter @submit="submitSearch"> </a17-filter>
-      </div>
-      <a17-button variant="validate" size="small">{{
-        $trans('dam.add-new', 'Add new')
+    <div v-if="filters" class="dam-filters">
+      <a17-button
+        v-for="(item, i) in filters"
+        :key="i"
+        class="dam-filters__toggle"
+        variant="ghost"
+        >{{ item.label }}<span v-svg symbol="dropdown_module"></span
+      ></a17-button>
+      <a17-button variant="ghost">{{
+        $trans('dam.apply', 'Apply')
       }}</a17-button>
-
-      <div v-if="userData && usersManagement">
-        <a17-dropdown ref="userDropdown" position="bottom-right" :offset="8">
-          <button
-            @click.prevent="$refs.userDropdown.toggle()"
-            class="dam-header__dropdown"
-          >
-            <!-- {{
-              userData.role === 'SUPERADMIN'
-                ? $trans('nav.admin')
-                : userData.name
-            }} -->
-            <a17-avatar
-              v-if="userData.name || userData.thumbnail"
-              :name="userData.name ?? null"
-              :thumbnail="userData.thumbnail ?? null"
-            />
-            <span
-              symbol="dropdown_module"
-              class="icon icon--dropdown_module"
-              aria-hidden="true"
-            >
-              <svg>
-                <title>dropdown_module</title>
-                <use
-                  xmlns:xlink="http://www.w3.org/1999/xlink"
-                  xlink:href="#icon--dropdown_module"
-                ></use>
-              </svg>
-            </span>
-          </button>
-          <div slot="dropdown__content">
-            <a
-              v-if="userData.can_access_user_management"
-              :href="userData.user_management_route"
-              >{{ $trans('nav.cms-users') }}</a
-            >
-            <a :href="userData.edit_profile_route">{{
-              $trans('nav.profile')
-            }}</a>
-            <a href="#" data-logout-btn>{{ $trans('nav.logout') }}</a>
-          </div>
-        </a17-dropdown>
-      </div>
+      <a17-button variant="ghost">{{
+        $trans('dam.clear', 'Clear')
+      }}</a17-button>
     </div>
   </div>
 </template>
@@ -77,6 +89,10 @@
       },
       currentUser: {
         type: String,
+        default: null
+      },
+      filters: {
+        type: Array,
         default: null
       },
       usersManagement: {
@@ -115,7 +131,7 @@
     display: flex;
     flex-flow: row;
     width: 100%;
-    background: $color__border--light;
+    background: $color__border;
     border-bottom: 1px solid $color__border;
     padding: rem-calc(20);
     justify-content: space-between;
@@ -157,6 +173,27 @@
 
     &:hover {
       filter: brightness(0.9);
+    }
+  }
+
+  .dam-filters {
+    padding: rem-calc(20);
+    display: flex;
+    flex-flow: row wrap;
+    gap: rem-calc(20);
+    background: $color__black--5;
+    border-bottom: 1px solid $color__black--10;
+  }
+
+  .dam-filters__toggle {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    border: none;
+    background: $color__border;
+
+    .icon {
+      margin-left: rem-calc(10);
     }
   }
 </style>
