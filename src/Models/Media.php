@@ -49,10 +49,10 @@ class Media extends Model
     {
         $filename = pathinfo($filename, PATHINFO_FILENAME);
         if (Str::endsWith($filename, '@2x')) {
-            $filename = substr($filename, 0, -2);
+            $filename = substr($filename, 0, -3);
         }
 
-        return ucwords(preg_replace('/[^a-zA-Z0-9]/', ' ', sanitizeFilename($filename)));
+        return Str::ucfirst(preg_replace('/-_/', ' ', sanitizeFilename($filename)));
     }
 
     public function canDeleteSafely()
