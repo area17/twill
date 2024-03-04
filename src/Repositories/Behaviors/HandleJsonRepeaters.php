@@ -82,7 +82,7 @@ trait HandleJsonRepeaters
 
             $repeater = $repeatersList[$repeaterName]
                 ?? $repeatersList['dynamic-repeater-' . $repeaterName]
-                ?? $repeatersList[$this->jsonRepeaters[$repeaterName]]
+                ?? $repeatersList[$this->jsonRepeaters[$repeaterName] ?? null]
                 ?? null;
 
             if (!$repeater) {
