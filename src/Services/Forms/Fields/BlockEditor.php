@@ -14,6 +14,7 @@ class BlockEditor extends BaseFormField
     protected bool $isSettings = false;
 
     protected bool $withoutSeparator = false;
+    protected bool $usingDefaultOrder = false;
 
     public static function make(): static
     {
@@ -54,6 +55,14 @@ class BlockEditor extends BaseFormField
         // For backward compatibility, clear the list of excludeBlocks in case both ->excludeBlocks()->blocks() were called
         $this->excludeBlocks = [];
         $this->blocks = $blocks;
+
+        return $this;
+    }
+
+
+    public function usingDefaultOrder(bool $usingDefaultOrder = true): static
+    {
+        $this->usingDefaultOrder = $usingDefaultOrder;
 
         return $this;
     }

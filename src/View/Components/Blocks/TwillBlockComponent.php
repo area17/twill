@@ -112,11 +112,6 @@ abstract class TwillBlockComponent extends Component
         return Str::slug(Str::before(static::class, '\\'));
     }
 
-    public static function getPosition(): float|int|string
-    {
-        return 0;
-    }
-
     public static function getBlockIcon(): string
     {
         return 'text';

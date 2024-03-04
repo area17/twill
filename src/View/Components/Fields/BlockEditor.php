@@ -21,6 +21,7 @@ class BlockEditor extends TwillFormComponent
         public ?string $group = null,
         public ?string $trigger = null,
         public bool $isSettings = false,
+        public bool $usingDefaultOrder = false,
     ) {
         parent::__construct(
             name: $name,
@@ -46,6 +47,7 @@ class BlockEditor extends TwillFormComponent
             $groups,
             $this->isSettings,
             $this->excludeBlocks ?? null,
+            $this->usingDefaultOrder
         )->pluck('name')->all();
     }
 

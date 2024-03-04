@@ -139,6 +139,11 @@ class TwillBlocks
         $this->globallyExcludedBlocks[] = $blocks;
     }
 
+    public function setGloballyExcludedBlocks(array $exclude = []): void
+    {
+        $this->globallyExcludedBlocks = [];
+    }
+
     public function getGloballyExcludedBlocks(): array
     {
         return $this->globallyExcludedBlocks;
@@ -342,7 +347,7 @@ class TwillBlocks
         return $this->cropConfigs;
     }
 
-    public function generateListOfAllBlocks(bool $settingsOnly = false)
+    public function generateListOfAllBlocks(bool $settingsOnly = false): Collection
     {
         return once(function () use ($settingsOnly) {
             /** @var Collection $blockList */
@@ -352,11 +357,14 @@ class TwillBlocks
                 $blockList = TwillBlocks::getBlocks();
             }
 
+            $customOrder = array_flip(config('twill.block_editor.block_rules.order', []));
+            $disabledBlocks = array_flip(config('twill.block_editor.block_rules.disable', []));
+
             $appBlocksList = $blockList->filter(function (Block $block) {
                 return $block->source !== Block::SOURCE_TWILL;
             });
 
-            return $blockList->filter(function (Block $block) use ($appBlocksList) {
+            return $blockList->filter(function (Block $block) use ($disabledBlocks, $appBlocksList) {
                 if ($block->group === Block::SOURCE_TWILL) {
                     if (!collect(config('twill.block_editor.use_twill_blocks'))->contains($block->name)) {
                         return false;
@@ -372,16 +380,21 @@ class TwillBlocks
                         return false;
                     }
                 }
-                return true;
-            })->sortBy(function (Block $b) {
-                // Blocks are by default sorted by the order they have been found in directories, but we can allow individual blocks to override this behavior
-                return $b->getPosition();
-            })->values();
+                return isset($disabledBlocks[$block->name]) || isset($disabledBlocks[ltrim($block->componentClass, '\\')]);
+            })->sortBy(function (Block $b) use ($customOrder) {
+                // Sort blocks by custom order then by group and then by name
+                return ($customOrder[$b->name] ?? $customOrder[ltrim($b->componentClass, '\\')] ?? PHP_INT_MAX) . '-' . $b->group . '-' . $b->name;
+            }, SORT_NATURAL)->values();
         });
     }
 
-    public function generateListOfAvailableBlocks(?array $blocks = null, ?array $groups = null, bool $settingsOnly = false, array|callable $excludeBlocks = []): Collection
-    {
+    public function generateListOfAvailableBlocks(
+        ?array $blocks = null,
+        ?array $groups = null,
+        bool $settingsOnly = false,
+        array|callable $excludeBlocks = [],
+        bool $defaultOrder = false
+    ): Collection {
         $globalExcludeBlocks = TwillBlocks::getGloballyExcludedBlocks();
 
         $matchBlock = function ($matcher, $block, $someFn = null) {
@@ -393,7 +406,7 @@ class TwillBlocks
             }
             return null;
         };
-        return $this->generateListOfAllBlocks($settingsOnly)->filter(
+        $finalList = $this->generateListOfAllBlocks($settingsOnly)->filter(
             function (Block $block) use ($blocks, $groups, $excludeBlocks, $globalExcludeBlocks, $matchBlock) {
                 if ($matchBlock($excludeBlocks, $block)) {
                     return false;
@@ -420,5 +433,16 @@ class TwillBlocks
                 return true;
             }
         );
+        if (! $defaultOrder) {
+            if (! empty($blocks)) {
+                $blocks = array_flip($blocks);
+                $finalList = $finalList->sortBy(fn(Block $block) => $blocks[$block->name] ?? $blocks[ltrim($block->componentClass, '\\')] ?? PHP_INT_MAX, SORT_NUMERIC);
+            }
+            if (! empty($groups)) {
+                $groups = array_flip($groups);
+                $finalList = $finalList->sortBy(fn(Block $block) => $groups[$block->group] ?? PHP_INT_MAX, SORT_NUMERIC);
+            }
+        }
+        return $finalList;
     }
 }

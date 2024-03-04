@@ -206,11 +206,6 @@ class Block
         );
     }
 
-    public function getPosition(): float|int|string
-    {
-        return $this->componentClass && is_callable([$this->componentClass, 'getPosition']) ? $this->componentClass::getPosition() : 0;
-    }
-
     /**
      * Gets the first match being a block or repeater.
      */
