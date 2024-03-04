@@ -28,7 +28,7 @@ trait HandleJsonRepeaters
      */
     public function prepareFieldsBeforeCreateHandleJsonRepeaters($fields)
     {
-        foreach ($this->jsonRepeaters as $repeater) {
+        foreach ($this->getJsonRepeaters() as $repeater) {
             if (isset($fields['repeaters'][$repeater])) {
                 $fields[$repeater] = $fields['repeaters'][$repeater];
             }
@@ -44,7 +44,7 @@ trait HandleJsonRepeaters
      */
     public function prepareFieldsBeforeSaveHandleJsonRepeaters($object, $fields)
     {
-        foreach ($this->jsonRepeaters as $repeater) {
+        foreach ($this->getJsonRepeaters() as $repeater) {
             if (isset($fields['repeaters'][$repeater])) {
                 $fields[$repeater] = $fields['repeaters'][$repeater];
             }
@@ -60,7 +60,7 @@ trait HandleJsonRepeaters
      */
     public function getFormFieldsHandleJsonRepeaters($object, $fields)
     {
-        foreach ($this->jsonRepeaters as $repeater) {
+        foreach ($this->getJsonRepeaters() as $repeater) {
             if (isset($fields[$repeater]) && ! empty($fields[$repeater])) {
                 $fields = $this->getJsonRepeater($fields, $repeater, $fields[$repeater]);
             }
@@ -80,7 +80,10 @@ trait HandleJsonRepeaters
         foreach ($serializedData as $index => $repeaterItem) {
             $id = $repeaterItem['id'] ?? $index;
 
-            $repeater = $repeatersList[$repeaterName] ?? $repeatersList['dynamic-repeater-' . $repeaterName] ?? null;
+            $repeater = $repeatersList[$repeaterName]
+                ?? $repeatersList['dynamic-repeater-' . $repeaterName]
+                ?? $repeatersList[$this->jsonRepeaters[$repeaterName]]
+                ?? null;
 
             if (!$repeater) {
                 // There is no repeater found. This can be due to code removal but a database left-over.
@@ -117,5 +120,19 @@ trait HandleJsonRepeaters
         $fields['repeaterBrowsers'][$repeaterName] = $repeatersBrowsers;
 
         return $fields;
+    }
+
+    private function getJsonRepeaters(): array
+    {
+        if ($this->isKeyValueRepeaters()) {
+            return array_keys($this->jsonRepeaters);
+        } else {
+            return $this->jsonRepeaters;
+        }
+    }
+
+    private function isKeyValueRepeaters(): bool
+    {
+        return count(array_filter(array_keys($this->jsonRepeaters), 'is_string')) === count($this->jsonRepeaters);
     }
 }
