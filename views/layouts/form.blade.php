@@ -1,21 +1,20 @@
-@php use A17\Twill\Facades\TwillBlocks; @endphp
 @extends('twill::layouts.main')
 
 @section('appTypeClass', 'body--form')
 
 @push('extra_css')
     @if(app()->isProduction())
-        <link href="{{ twillAsset('main-form.css') }}" rel="preload" as="style" crossorigin />
+        <link href="{{ twillAsset('main-form.css') }}" rel="preload" as="style" crossorigin/>
     @endif
 
     @unless(config('twill.dev_mode', false))
-        <link href="{{ twillAsset('main-form.css') }}" rel="stylesheet" crossorigin />
+        <link href="{{ twillAsset('main-form.css') }}" rel="stylesheet" crossorigin/>
     @endunless
 @endpush
 
 @push('extra_js_head')
     @if(app()->isProduction())
-        <link href="{{ twillAsset('main-form.js') }}" rel="preload" as="script" crossorigin />
+        <link href="{{ twillAsset('main-form.js') }}" rel="preload" as="script" crossorigin/>
     @endif
 @endpush
 
@@ -28,7 +27,7 @@
     $controlLanguagesPublication = $controlLanguagesPublication ?? true;
     $disableContentFieldset = $disableContentFieldset ?? false;
     $editModalTitle = ($createWithoutModal ?? false) ? twillTrans('twill::lang.modal.create.title') : null;
-    $item = isset($item) ? $item : null;
+    $item = $item ?? null;
 
     // TODO: cache and move out of view
     if (config('twill.enabled.permissions-management')) {
@@ -137,7 +136,7 @@
                                             :items-in-selects-tables="$users"
                                             label-key="name"
                                             name-pattern="user_%id%_permission"
-                                            :list-user="true" />
+                                            :list-user="true"/>
                                     </x-twill::formFieldset>
                                 @endcan
                             @endif
@@ -156,8 +155,7 @@
     </a17-modal>
     <a17-editor v-if="editor" ref="editor"
                 bg-color="{{ config('twill.block_editor.background_color') ?? '#FFFFFF' }}"></a17-editor>
-    <a17-previewer ref="preview"
-                   :breakpoints-config="{{ json_encode(config('twill.preview.breakpoints')) }}"></a17-previewer>
+    <a17-previewer ref="preview" :breakpoints-config="{{ json_encode(config('twill.preview.breakpoints')) }}"></a17-previewer>
     <a17-dialog ref="warningContentEditor" modal-title="{{ twillTrans('twill::lang.form.dialogs.delete.title') }}"
                 confirm-label="{{ twillTrans('twill::lang.form.dialogs.delete.confirm') }}">
         <p class="modal--tiny-title">
@@ -236,9 +234,9 @@
                 const checked = mutation.payload.value
                 if (!isNaN(groupId)) {
                     const users = groupUserMapping[groupId]
-                    users.forEach(function(userId) {
+                    users.forEach(function (userId) {
                         // If the user's permission is <= view, it will be updated
-                        const currentPermission = state['form']['fields'].find(function(e) {
+                        const currentPermission = state['form']['fields'].find(function (e) {
                             return e.name === `user_${userId}_permission`
                         }).value
                         if (currentPermission === '' || currentPermission === 'view-item') {
