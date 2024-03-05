@@ -78,7 +78,6 @@ class SettingController extends Controller
             'editableTitle' => false,
             'customTitle' => ucfirst($section) . ' settings',
             'section' => $section,
-            'allBlocks' => TwillBlocks::generateListOfAllBlocks()->keyBy('name'),
             'form_fields' => $formFields,
             'formBuilder' => Form::make(),
             'saveUrl' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'settings.update', $section),

@@ -2262,7 +2262,6 @@ abstract class ModuleController extends Controller
                 'translateTitle' => $this->titleIsTranslatable(),
                 'permalink' => $this->getIndexOption('permalink', $item),
                 'createWithoutModal' => ! $itemId && $this->getIndexOption('skipCreateModal'),
-                'allBlocks' => TwillBlocks::generateListOfAllBlocks()->keyBy('name'),
                 'form_fields' => $this->repository->getFormFields($item),
                 'baseUrl' => $baseUrl,
                 'localizedPermalinkBase' => $localizedPermalinkBase,

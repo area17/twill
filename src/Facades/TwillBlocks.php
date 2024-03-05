@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static Collection<Block>getSettingsBlocks
  * @method static Collection<Block>getRepeaters
  * @method static registerManualBlock(string $blockClass, string $source = Block::SOURCE_APP)
+ * @method static Collection<Block>generateListOfAllBlocks(bool $settingsOnly = false)
+ * @method static Collection<Block>getListOfUsedBlocks()
  * @method static Collection<Block>generateListOfAvailableBlocks(?array $blocks = null, ?array $groups = null, bool $settingsOnly = false, array|callable $excludeBlocks = [], bool $defaultOrder = false)
  */
 class TwillBlocks extends Facade

@@ -1,6 +1,5 @@
 @php
-    $blocks = \A17\Twill\Facades\TwillBlocks::getBlockCollection()
-        ->collect()
+    $blocks = \A17\Twill\Facades\TwillBlocks::getListOfUsedBlocks()
         ->reject(function ($block) {
             return $block->compiled ?? false;
         });
@@ -26,4 +25,3 @@
     window['{{ config('twill.js_namespace') }}'].STORE.form.availableRepeaters = {!! \A17\Twill\Facades\TwillBlocks::getAvailableRepeaters() ?? '{}' !!}
 
 </script>
-

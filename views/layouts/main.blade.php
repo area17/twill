@@ -145,6 +145,7 @@
     window.STORE.browsers.selected = {}
 
     @stack('vuexStore')
+
 </script>
 <script src="{{ twillAsset('chunk-vendors.js') }}"></script>
 <script src="{{ twillAsset('chunk-common.js') }}"></script>
