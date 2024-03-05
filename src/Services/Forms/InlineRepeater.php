@@ -150,7 +150,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         return $this;
     }
 
-    public function buttonAsLink(bool $buttonAsLink): static
+    public function buttonAsLink(bool $buttonAsLink = true): static
     {
         $this->buttonAsLink = $buttonAsLink;
 
