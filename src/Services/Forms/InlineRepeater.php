@@ -29,6 +29,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         private ?int $max = null,
         private ?string $titleField = null,
         private ?bool $hideTitlePrefix = false,
+        private ?bool $buttonAsLink = false
     ) {
     }
 
@@ -149,6 +150,13 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         return $this;
     }
 
+    public function buttonAsLink(bool $buttonAsLink): static
+    {
+        $this->buttonAsLink = $buttonAsLink;
+
+        return $this;
+    }
+
     public function renderForm(): View
     {
         return view('twill::partials.form.renderer.block_form', [
@@ -201,6 +209,10 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
 
         if ($this->max) {
             $repeater->max($this->max);
+        }
+
+        if ($this->buttonAsLink) {
+            $repeater->buttonAsLink($this->buttonAsLink);
         }
 
         $repeater->renderForBlocks = $this->renderForBlocks ?? false;
