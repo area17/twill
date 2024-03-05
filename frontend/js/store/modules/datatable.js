@@ -231,7 +231,7 @@ const actions = {
         page: state.page,
         offset: state.offset,
         columns: getters.visibleColumnsNames,
-        filter: state.filter
+        filter: JSON.stringify(state.filter)
       }
 
       api.get(params, function (resp) {
