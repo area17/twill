@@ -225,10 +225,6 @@
     window['{{ config('twill.js_namespace') }}'].STORE.groupUserMapping = {!! isset($groupUserMapping) ? json_encode($groupUserMapping) : '[]' !!};
 @stop
 
-@push('vuexStore')
-    window['{{config('twill.js_namespace')}}'].STORE.form.allAvailableBlocks = {!! TwillBlocks::getListOfUsedBlocks() !!}
-@endpush
-
 @prepend('extra_js')
     @includeWhen(config('twill.block_editor.inline_blocks_templates', true), 'twill::partials.form.utils._blocks_templates')
     <script src="{{ twillAsset('main-form.js') }}" crossorigin></script>

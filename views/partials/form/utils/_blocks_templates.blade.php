@@ -2,7 +2,8 @@
     $blocks = \A17\Twill\Facades\TwillBlocks::getListOfUsedBlocks()
         ->reject(function ($block) {
             return $block->compiled ?? false;
-        });
+        })->values()
+        ->merge(\A17\Twill\Facades\TwillBlocks::getBlockCollection()->getRepeaters());
 @endphp
 
 @foreach ($blocks as $block)
@@ -22,6 +23,6 @@
 
 <script>
     window['{{ config('twill.js_namespace') }}'].TWILL_BLOCKS_COMPONENTS = {!! $names->toJson() !!}
-    window['{{ config('twill.js_namespace') }}'].STORE.form.availableRepeaters = {!! \A17\Twill\Facades\TwillBlocks::getAvailableRepeaters() ?? '{}' !!}
+    window['{{ config('twill.js_namespace') }}'].STORE.form.availableRepeaters = {!! (string)\A17\Twill\Facades\TwillBlocks::getAvailableRepeaters() ?: '{}' !!}
 
 </script>

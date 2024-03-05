@@ -3,6 +3,7 @@
 namespace A17\Twill\Facades;
 
 use A17\Twill\Services\Blocks\Block;
+use A17\Twill\Services\Blocks\BlockCollection;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array getGloballyExcludedBlocks
  * @method static void setGloballyExcludedBlocks(array $exclude = [])
  * @method static Collection<Block>getBlocks
+ * @method static BlockCollection getBlockCollection
  * @method static Collection<Block>getSettingsBlocks
  * @method static Collection<Block>getRepeaters
  * @method static registerManualBlock(string $blockClass, string $source = Block::SOURCE_APP)

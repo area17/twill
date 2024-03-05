@@ -95,13 +95,11 @@ class TwillBlocks
         }
     }
 
-    public function getAvailableRepeaters(): string
+    public function getAvailableRepeaters(): Collection
     {
-        $baseList = $this->getBlockCollection()->getRepeaters()->mapWithKeys(function (Block $repeater) {
+        return $this->getBlockCollection()->getRepeaters()->mapWithKeys(function (Block $repeater) {
             return [$repeater->name => $repeater->toList()];
         });
-
-        return $baseList->toJson();
     }
 
     public function registerComponentBlocks(string $namespace, string $path): void
