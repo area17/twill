@@ -294,6 +294,16 @@
 
   .dam__content {
     flex: 0 1 100%;
+    display: flex;
+    flex-flow: column;
+    height: 100vh;
+  }
+
+  .dam__page {
+    display: flex;
+    flex-flow: row;
+    flex: 0 1 100%;
+    overflow-y: auto;
   }
 </style>
 

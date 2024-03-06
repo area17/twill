@@ -42,6 +42,7 @@ import Sticky from '@/directives/sticky'
 // Digital Asset Manager
 import a17DamHeader from '@/components/dam/DamHeader.vue'
 import a17DamNavigation from '@/components/dam/DamNavigation.vue'
+import a17DamSidebar from '@/components/dam/DamSidebar.vue'
 // Directives
 import SvgSprite from '@/directives/svg'
 import Tooltip from '@/directives/tooltip'
@@ -92,6 +93,7 @@ const A17Config = {
     // Digital Asset Manager
     Vue.component('a17-dam-header', a17DamHeader)
     Vue.component('a17-dam-navigation', a17DamNavigation)
+    Vue.component('a17-dam-sidebar', a17DamSidebar)
 
     // Globale Vue mixin : Use global mixins sparsely and carefully!
     Vue.mixin({
