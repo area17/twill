@@ -77,7 +77,7 @@ return [
             'unpublish' => 'Despublicar',
         ],
         'filter' => [
-            'all-items' => 'Tdos os itens',
+            'all-items' => 'Todos os itens',
             'draft' => 'Rascunho',
             'mine' => 'Meus',
             'published' => 'Publicado',
@@ -167,5 +167,7 @@ return [
         'update-disabled-user-and-create-new' => 'Atualizar utilizador desabilitado e criar outro',
         'user-image' => 'Imagem',
         'users' => 'Utilizadores',
+        'language' => 'Idioma',
+        'language-placeholder' => 'Idioma',
     ],
 ];

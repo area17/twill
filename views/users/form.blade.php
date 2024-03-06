@@ -12,6 +12,7 @@
 
     <x-twill::input
         name="email"
+        :placeholder="twillTrans('twill::lang.user-management.email')"
         :label="twillTrans('twill::lang.user-management.email')"
     />
 
