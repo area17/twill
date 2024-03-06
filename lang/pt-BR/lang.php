@@ -77,7 +77,7 @@ return [
             'unpublish' => 'Despublicar',
         ],
         'filter' => [
-            'all-items' => 'Tdos os itens',
+            'all-items' => 'Todos os itens',
             'draft' => 'Rascunho',
             'mine' => 'Meus',
             'published' => 'Publicado',
