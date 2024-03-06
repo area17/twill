@@ -222,6 +222,7 @@ return [
         'no',
         'pl',
         'pt',
+        'pt-BR',
         'ru',
         'sl',
         'tr',
