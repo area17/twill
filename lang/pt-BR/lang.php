@@ -167,5 +167,7 @@ return [
         'update-disabled-user-and-create-new' => 'Atualizar usuário desabilitado e criar outro',
         'user-image' => 'Imagem',
         'users' => 'Usuários',
+        'language' => 'Idioma',
+        'language-placeholder' => 'Idioma',
     ],
 ];
