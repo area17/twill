@@ -51,11 +51,12 @@ abstract class TwillFormComponent extends Component
     {
         $name = $customName ?? $this->name;
         if ($this->renderForBlocks) {
+            $extra = $this->getExtraName();
             if ($asAttributes) {
-                return "name: fieldName('$name')";
+                return "name: fieldName('$name', '$extra')";
             }
 
-            return ":name=\"fieldName('$name')\"";
+            return ":name=\"fieldName('$name', '$extra')\"";
         }
 
         if ($asAttributes) {
@@ -66,4 +67,9 @@ abstract class TwillFormComponent extends Component
     }
 
     abstract public function render(): View;
+
+    public function getExtraName(): string
+    {
+        return '';
+    }
 }
