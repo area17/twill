@@ -918,6 +918,7 @@ abstract class ModuleController extends Controller
                         ->sortKey($indexColumn['sortKey'] ?? null)
                         ->optional($indexColumn['optional'] ?? false)
                         ->relation($indexColumn['relationship'])
+                        ->sortable($indexColumn['sort'] ?? false)
                 );
             } elseif ($indexColumn['present'] ?? false) {
                 $columns->add(
