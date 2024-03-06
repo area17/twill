@@ -53,6 +53,7 @@ return [
         'expand-nav' => 'Expand navigation',
         'file-size' => 'File size',
         'less' => 'Less',
+        'loading' => 'Loading',
         'meta-title' => 'Meta data',
         'more' => 'More',
         'submit-search' => 'Submit search',

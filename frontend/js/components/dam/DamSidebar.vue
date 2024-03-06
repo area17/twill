@@ -467,7 +467,10 @@
           </template>
         </form>
       </div>
-      <div class="dam-sidebar__inner dam-sidebar__action">
+      <div
+        v-if="getDownloadLink"
+        class="dam-sidebar__inner dam-sidebar__action"
+      >
         <a17-button
           :href="getDownloadLink"
           el="a"
@@ -738,9 +741,10 @@
       getDownloadLink: function() {
         if (this.hasMultipleMedias) {
           return 'zip file url here'
-        } else {
+        } else if (this.firstMedia) {
           return this.firstMedia.original
         }
+        return null
       },
       hasPreview: function() {
         const extension = this.firstMedia.name
@@ -939,6 +943,9 @@
             }
           }
         )
+      },
+      open: function() {
+        this.isOpen = true
       }
     }
   }
@@ -1009,7 +1016,8 @@
     }
   }
 
-  .dam-sidebar__inner {
+  .dam-sidebar__inner,
+  .dam-sidebar .mediasidebar__inner {
     padding: rem-calc(20);
   }
 
@@ -1043,6 +1051,7 @@
   .dam-sidebar__name {
     overflow: hidden;
     text-overflow: ellipsis;
+    width: 100%;
   }
 
   .dam-sidebar__metadatas {
