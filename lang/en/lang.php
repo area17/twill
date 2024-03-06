@@ -38,6 +38,7 @@ return [
     'dam' => [
         'add' => 'Add',
         'add-new' => 'Add new',
+        'all-assets' => 'All assets',
         'apply' => 'Apply',
         'cancel' => 'Cancel',
         'clear' => 'Clear',
@@ -52,6 +53,7 @@ return [
         'edit' => 'Edit',
         'expand-nav' => 'Expand navigation',
         'file-size' => 'File size',
+        'layout' => 'Layout',
         'less' => 'Less',
         'loading' => 'Loading',
         'meta-title' => 'Meta data',
@@ -61,6 +63,7 @@ return [
         'remove' => 'Remove',
         'tags' => 'Tags',
         'title' => 'Title',
+        'toggle-layout' => 'Toggle layout menu',
         'upload-date' => 'Upload date',
         'user-nav' => 'Toggle user menu',
         'view' => 'View',

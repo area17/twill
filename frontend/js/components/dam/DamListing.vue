@@ -1,16 +1,5 @@
 <template>
   <div class="dam-listing">
-    <footer
-      class="dam-listing__footer"
-      v-if="selectedMedias.length && showInsert && connector"
-    >
-      <a17-button v-if="canInsert" variant="action" @click="saveAndClose">{{
-        btnLabel
-      }}</a17-button>
-      <a17-button v-else variant="action" :disabled="true">{{
-        btnLabel
-      }}</a17-button>
-    </footer>
     <div class="dam-listing__list" ref="list">
       <a17-dam-uploader
         ref="uploader"
@@ -19,6 +8,50 @@
         @clear="clearSelectedMedias"
         :type="currentTypeObject"
       />
+      <div class="dam-listing__title">
+        <h2 class="f--small">{{ listTitle }} ({{ mediaItems.length }})</h2>
+        <a17-dropdown
+          ref="layoutDropdown"
+          position="bottom-right"
+          :offset="4"
+          :clickable="true"
+          :min-width="235"
+        >
+          <button
+            @click.prevent="$refs.layoutDropdown.toggle()"
+            :aria-label="$trans('dam.toggle-layout', 'Toggle layout menu')"
+          >
+            <span
+              symbol="preferences"
+              class="icon icon--preferences"
+              aria-hidden="true"
+            >
+              <svg>
+                <use
+                  xmlns:xlink="http://www.w3.org/1999/xlink"
+                  xlink:href="#icon--preferences"
+                ></use>
+              </svg>
+            </span>
+          </button>
+          <div slot="dropdown__content">
+            <a17-checkbox
+              :label="'Hide file name'"
+              :initialValue="true"
+              :value="1"
+              inStore="value"
+            />
+            <a17-radiogroup
+              name="layoutSelection"
+              radioClass="layout"
+              :label="$trans('dam.layout', 'Layout')"
+              :radios="layoutRadios"
+              :initialValue="'grid'"
+              @change="updateLayout"
+            />
+          </div>
+        </a17-dropdown>
+      </div>
       <div class="dam-listing__list-items">
         <a17-itemlist
           v-if="type === 'file'"
@@ -192,6 +225,21 @@
         return !this.selectedMedias.some(
           sMedia => !!this.usedMedias.find(uMedia => uMedia.id === sMedia.id)
         )
+      },
+      layoutRadios: function() {
+        return [
+          {
+            value: 'grid',
+            label: 'Grid'
+          },
+          {
+            value: 'list',
+            label: 'List'
+          }
+        ]
+      },
+      listTitle: function() {
+        return this.$trans('dam.all-assets', 'All assets')
       },
       ...mapState({
         connector: state => state.mediaLibrary.connector,
@@ -505,10 +553,7 @@
 
         this.lastScrollTop = list.scrollTop
       },
-      saveAndClose: function() {
-        this.$store.commit(MEDIA_LIBRARY.SAVE_MEDIAS, this.selectedMedias)
-        this.close()
-      }
+      updateLayout: function() {}
     },
     created() {
       if (!this.gridLoaded) this.reloadGrid()
@@ -517,9 +562,6 @@
 
       // empty selected medias (to avoid bugs when adding)
       this.selectedMedias = []
-
-      // temporarily pass medias as prop for testing
-      // this.selectedMedias = this.medias
 
       // in replace mode : select the media to replace when opening
       if (this.connector && this.indexToReplace > -1) {
@@ -534,6 +576,28 @@
   }
 </script>
 
+<style lang="scss">
+  .dam-listing__title .dropdown__scroller {
+    padding: rem-calc(20) rem-calc(16) rem-calc(12) rem-calc(16);
+
+    > div {
+      display: flex;
+      flex-flow: column;
+      gap: rem-calc(24);
+    }
+
+    .input__label {
+      color: $color__grey--54;
+      margin-bottom: rem-calc(12);
+    }
+
+    .radioGroup__item {
+      padding-top: rem-calc(12);
+      padding-bottom: rem-calc(12);
+    }
+  }
+</style>
+
 <style lang="scss" scoped>
   .dam-listing {
     position: relative;
@@ -546,6 +610,7 @@
   .dam-listing__list {
     flex: 1 1 auto;
     overflow-y: auto;
+    padding: rem-calc(20);
   }
 
   .dam-listing__list-items {
@@ -557,5 +622,24 @@
 
   .dam__add {
     display: none;
+  }
+
+  .dam-listing__title {
+    padding: rem-calc(20) 0;
+    color: $color__grey--54;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+  }
+
+  .dam-listing__title .dropdown {
+    button {
+      @include btn-reset;
+      color: $color__grey--54;
+    }
+  }
+
+  .dam-listing__title .dropdown .dropdown__inner .input {
+    padding: 0;
   }
 </style>

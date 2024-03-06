@@ -173,7 +173,7 @@
         }
 
         if (!this.clickable) this.close()
-        else if (!this.$el.querySelector('[data-dropdown-content]').contains(target) && this.clickable) this.close()
+        else if (this.$el.querySelector('[data-dropdown-content]') && !this.$el.querySelector('[data-dropdown-content]').contains(target) && this.clickable) this.close()
       },
       open: function (onShow) {
         if (this.active) return
