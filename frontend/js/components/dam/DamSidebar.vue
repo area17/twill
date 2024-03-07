@@ -17,13 +17,34 @@
             }}</a>
           </p>
 
+          <div class="dam-sidebar__gallery">
+            <template v-if="hasSingleMedia">
+              <a
+                v-if="isImage && hasPreview"
+                :href="firstMedia.original"
+                :data-pswp-width="firstMedia.width"
+                :data-pswp-height="firstMedia.height"
+                :data-pswp-video-src="isVideo ? firstMedia.original : null"
+                :data-pswp-type="isVideo ? 'video' : 'image'"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <img
+                  :src="firstMedia.thumbnail"
+                  class="dam-sidebar__img"
+                  :alt="firstMedia.name"
+                />
+              </a>
+              <img
+                v-else-if="isImage"
+                :src="firstMedia.thumbnail"
+                class="dam-sidebar__img"
+                :alt="firstMedia.name"
+              />
+            </template>
+          </div>
+
           <template v-if="hasSingleMedia">
-            <img
-              v-if="isImage"
-              :src="firstMedia.thumbnail"
-              class="dam-sidebar__img"
-              :alt="firstMedia.original"
-            />
             <p class="dam-sidebar__name">{{ firstMedia.name }}</p>
 
             <h2 class="visually-hidden" id="metaTitle">
@@ -259,7 +280,7 @@
                 @blur="blur"
               />
             </template> -->
-            <template v-for="field in singleOnlyMetadatas">
+            <template v-for="(field, i) in singleOnlyMetadatas">
               <a17-locale
                 type="a17-textfield"
                 v-bind:key="field.name"
@@ -281,7 +302,7 @@
                 @blur="blur"
               />
               <a17-textfield
-                v-bind:key="field.name"
+                v-bind:key="field.name + i"
                 v-else-if="isImage && (field.type === 'text' || !field.type)"
                 :label="field.label"
                 :name="field.name"
@@ -400,7 +421,7 @@
             </div>
           </template>
 
-          <template v-for="field in singleAndMultipleMetadatas">
+          <template v-for="(field, i) in singleAndMultipleMetadatas">
             <a17-locale
               type="a17-textfield"
               v-bind:key="field.name"
@@ -426,7 +447,7 @@
             />
 
             <a17-textfield
-              v-bind:key="field.name"
+              v-bind:key="field.name + i"
               v-else-if="
                 isImage &&
                   (field.type === 'text' || !field.type) &&
@@ -507,6 +528,8 @@
 <script>
   import isEqual from 'lodash/isEqual'
   import { mapState } from 'vuex'
+  import PhotoSwipeLightbox from 'photoswipe/lightbox'
+  import 'photoswipe/style.css'
 
   import a17Langswitcher from '@/components/LangSwitcher'
   import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
@@ -563,6 +586,7 @@
           'codec',
           'copyrightNotice'
         ],
+        lightbox: null,
         listExpanded: false,
         loading: false,
         focused: false,
@@ -753,8 +777,16 @@
           .toLowerCase()
         return (
           Extensions.img.extensions.includes(extension) ||
-          Extensions.vid.extensions.includes(extension)
+          Extensions.vid.extensions.includes(extension) ||
+          extension === 'jpeg'
         )
+      },
+      isVideo: function() {
+        const extension = this.firstMedia.name
+          .split('.')
+          .pop()
+          .toLowerCase()
+        return Extensions.vid.extensions.includes(extension)
       },
       ...mapState({
         mediasLoading: state => state.mediaLibrary.loading,
@@ -943,9 +975,27 @@
             }
           }
         )
-      },
-      open: function() {
-        this.isOpen = true
+      }
+    },
+    mounted() {
+      if (!this.lightbox) {
+        this.lightbox = new PhotoSwipeLightbox({
+          gallery: '.dam-sidebar__gallery',
+          children: 'a',
+          pswpModule: () => import('photoswipe'),
+          paddingTop: 60,
+          paddingBottom: 60,
+          zoomSVG: '',
+          closeSVG:
+            '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M3 3L17 17M17 3L3 17" stroke="white" stroke-width="1.5" stroke-miterlimit="10"/> </svg>'
+        })
+        this.lightbox.init()
+      }
+    },
+    unmounted() {
+      if (this.lightbox) {
+        this.lightbox.destroy()
+        this.lightbox = null
       }
     }
   }
@@ -978,6 +1028,20 @@
       height: rem-calc(28);
       margin-top: rem-calc(4);
       padding: 0 rem-calc(10);
+    }
+  }
+
+  .pswp__button--zoom {
+    display: none;
+  }
+
+  .pswp__button--close {
+    width: rem-calc(36);
+    height: rem-calc(36);
+    margin: rem-calc(8) rem-calc(8) 0 0;
+
+    @include breakpoint('medium+') {
+      margin: rem-calc(20) rem-calc(20) 0 0;
     }
   }
 </style>

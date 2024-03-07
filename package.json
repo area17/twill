@@ -37,6 +37,8 @@
     "fine-uploader-wrappers": "^1.1.0",
     "flatpickr": "4.6.13",
     "lodash": "^4.17.21",
+    "photoswipe": "^5.4.3",
+    "photoswipe-video-plugin": "^1.0.2",
     "quill": "^1.3.7",
     "smartcrop": "^2.0.5",
     "tinycolor2": "1.6.0",
