@@ -82,44 +82,44 @@
         this._uploader =
           this.uploaderConfig.endpointType === 's3'
             ? new FineUploaderS3({
-                options: {
-                  ...sharedConfig,
-                  validation: {
-                    ...this.uploaderValidation
+              options: {
+                ...sharedConfig,
+                validation: {
+                  ...this.uploaderValidation
+                },
+                objectProperties: {
+                  key: id => {
+                    return (
+                      this.unique_folder_name +
+                      '/' +
+                      sanitizeFilename(this._uploader.methods.getName(id))
+                    )
                   },
-                  objectProperties: {
-                    key: id => {
-                      return (
-                        this.unique_folder_name +
-                        '/' +
-                        sanitizeFilename(this._uploader.methods.getName(id))
-                      )
-                    },
-                    region: this.uploaderConfig.endpointRegion,
-                    bucket: this.uploaderConfig.endpointBucket,
-                    acl: this.uploaderConfig.acl
-                  },
-                  request: {
-                    endpoint: this.uploaderConfig.endpoint,
-                    accessKey: this.uploaderConfig.accessKey
-                  },
-                  signature: {
-                    endpoint: this.uploaderConfig.signatureEndpoint,
-                    version: 4,
-                    customHeaders: {
-                      'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
-                    }
-                  },
-                  uploadSuccess: {
-                    endpoint: this.uploaderConfig.successEndpoint,
-                    customHeaders: {
-                      'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
-                    }
+                  region: this.uploaderConfig.endpointRegion,
+                  bucket: this.uploaderConfig.endpointBucket,
+                  acl: this.uploaderConfig.acl
+                },
+                request: {
+                  endpoint: this.uploaderConfig.endpoint,
+                  accessKey: this.uploaderConfig.accessKey
+                },
+                signature: {
+                  endpoint: this.uploaderConfig.signatureEndpoint,
+                  version: 4,
+                  customHeaders: {
+                    'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
+                  }
+                },
+                uploadSuccess: {
+                  endpoint: this.uploaderConfig.successEndpoint,
+                  customHeaders: {
+                    'X-CSRF-TOKEN': this.uploaderConfig.csrfToken
                   }
                 }
-              })
+              }
+            })
             : this.uploaderConfig.endpointType === 'azure'
-            ? new FineUploaderAzure({
+              ? new FineUploaderAzure({
                 options: {
                   ...sharedConfig,
                   validation: {
@@ -158,7 +158,7 @@
                   }
                 }
               })
-            : new FineUploaderTraditional({
+              : new FineUploaderTraditional({
                 options: {
                   ...sharedConfig,
                   validation: {
@@ -276,8 +276,8 @@
       _onErrorCallback(id, name, errorReason, xhr) {
         const index = id
           ? this.loadingMedias.findIndex(
-              m => m.id === this._uploader.methods.getUuid(id)
-            )
+            m => m.id === this._uploader.methods.getUuid(id)
+          )
           : -1
 
         if (index >= 0) {
