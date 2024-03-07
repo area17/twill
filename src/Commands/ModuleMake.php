@@ -383,13 +383,21 @@ class ModuleMake extends Command
 
     private function addCapsuleToConfigFile(string $name): void
     {
-        $newEntry = [
-            'name' => $name,
+        $newEntry = <<<PHP
+'capsules' => [
+    'list' => [
+        [
+            ...
+            
+            'name' => '$name',
             'enabled' => true,
-        ];
+        ],
+    ],
+]
+PHP;
 
         $this->warn('Add the following capsule entry to config/twill.php:');
-        $this->box($this->getFormattedArray($newEntry));
+        $this->box($newEntry);
     }
 
     private function addEntryToNavigationFile(string $key, array $value): void
@@ -408,19 +416,29 @@ class ModuleMake extends Command
                 $message = <<<PHP
 use A17\Twill\Facades\TwillNavigation;
 use A17\Twill\View\Components\Navigation\NavigationLink;
-
-TwillNavigation::addLink(
-    NavigationLink::make()->forModule('$key')
-);
+\r\n
+public function boot()
+{
+    ...
+    
+    TwillNavigation::addLink(
+        NavigationLink::make()->forModule('$key')
+    );
+}
 PHP;
             } elseif ($value['singleton'] ?? false) {
                 $message = <<<PHP
 use A17\Twill\Facades\TwillNavigation;
 use A17\Twill\View\Components\Navigation\NavigationLink;
-
-TwillNavigation::addLink(
-    NavigationLink::make()->forSingleton('$key')
-);
+\r\n
+public function boot()
+{
+    ...
+    
+    TwillNavigation::addLink(
+        NavigationLink::make()->forSingleton('$key')
+    );
+}
 PHP;
             }
             $this->box($message ?? '');
