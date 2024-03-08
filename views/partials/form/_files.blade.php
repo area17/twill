@@ -1,4 +1,4 @@
-@if ($translated ?? true)
+@if (!$disableTranslate ?? true)
     <a17-locale
         type="a17-filefield"
         :attributes="{

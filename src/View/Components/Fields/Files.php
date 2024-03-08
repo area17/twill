@@ -13,13 +13,13 @@ class Files extends TwillFormComponent
         bool $renderForBlocks = false,
         bool $renderForModal = false,
         string $note = null,
-        bool $translated = false,
         // Component specific
         public int $max = 1,
         public int $filesizeMax = 0,
         public bool $buttonOnTop = false,
         public ?string $itemLabel = null,
         public ?string $fieldNote = null,
+        public bool $disableTranslate = false
     ) {
         $itemLabel = $itemLabel ?? strtolower($label);
         $this->itemLabel = $itemLabel;
@@ -30,12 +30,16 @@ class Files extends TwillFormComponent
             note: $note ?? 'Add' . ($max > 1 ? " up to $max $itemLabel" : ' one ' . Str::singular($itemLabel)),
             renderForBlocks: $renderForBlocks,
             renderForModal: $renderForModal,
-            translated: $translated
         );
     }
 
     public function render(): View
     {
         return view('twill::partials.form._files', $this->data());
+    }
+
+    public function getExtraName(): string
+    {
+        return $this->disableTranslate ? '[' . config('app.locale') . ']' : '';
     }
 }
