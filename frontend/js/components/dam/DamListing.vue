@@ -36,32 +36,34 @@
           </button>
           <div slot="dropdown__content">
             <a17-checkbox
-              :label="'Hide file name'"
-              :initialValue="true"
-              :value="1"
+              :label="$trans('dam.hide-name', 'Hide file name')"
+              :initialValue="hideNames"
+              value="hide_names"
               inStore="value"
+              @change="hideNames = !hideNames"
             />
             <a17-radiogroup
               name="layoutSelection"
               radioClass="layout"
               :label="$trans('dam.layout', 'Layout')"
               :radios="layoutRadios"
-              :initialValue="'grid'"
+              :initialValue="gridView ? 'grid' : 'list'"
               @change="updateLayout"
             />
           </div>
         </a17-dropdown>
       </div>
       <div class="dam-listing__list-items">
-        <a17-itemlist
-          v-if="type === 'file'"
+        <a17-mediagrid
+          v-if="gridView"
           :items="renderedMediaItems"
           :selected-items="selectedMedias"
           :used-items="usedMedias"
+          :hide-names="hideNames"
           @change="updateSelectedMedias"
           @shiftChange="updateSelectedMedias"
         />
-        <a17-mediagrid
+        <a17-itemlist
           v-else
           :items="renderedMediaItems"
           :selected-items="selectedMedias"
@@ -110,7 +112,7 @@
       'a17-mediagrid': a17MediaGrid,
       'a17-itemlist': a17ItemList,
       'a17-dam-sidebar': a17DamSidebar,
-      'a17-spinner': a17Spinner
+      'a17-spinner': a17Spinner,
     },
     props: {
       btnLabelSingle: {
@@ -171,12 +173,18 @@
         page: this.initialPage,
         tags: [],
         lastScrollTop: 0,
-        gridLoaded: false
+        gridLoaded: false,
+        gridView: true,
+        hideNames: true
       }
     },
     computed: {
       renderedMediaItems: function() {
         return this.mediaItems.map(item => {
+          item.fileExtension = item.name
+            .split('.')
+            .pop()
+            .toLowerCase();
           item.disabled =
             (this.filesizeMax > 0 && item.filesizeInMb > this.filesizeMax) ||
             (this.widthMin > 0 && item.width < this.widthMin) ||
@@ -230,11 +238,11 @@
         return [
           {
             value: 'grid',
-            label: 'Grid'
+            label: this.$trans('dam.grid', 'Grid')
           },
           {
             value: 'list',
-            label: 'List'
+            label: this.$trans('dam.list', 'List')
           }
         ]
       },
@@ -247,7 +255,7 @@
         filesizeMax: state => state.mediaLibrary.filesizeMax,
         widthMin: state => state.mediaLibrary.widthMin,
         heightMin: state => state.mediaLibrary.heightMin,
-        type: state => state.mediaLibrary.type, // image, video, file
+        type: state => state.mediaLibrary.type,
         types: state => state.mediaLibrary.types,
         strict: state => state.mediaLibrary.strict,
         selected: state => state.mediaLibrary.selected,
@@ -258,6 +266,12 @@
       type: function() {
         this.clearMediaItems()
         this.gridLoaded = false
+      },
+      gridView(newVal) {
+        localStorage.setItem('gridView', JSON.stringify(newVal))
+      },
+      hideNames(newVal) {
+        // TODO: Set showFileName in store
       }
     },
     methods: {
@@ -553,7 +567,9 @@
 
         this.lastScrollTop = list.scrollTop
       },
-      updateLayout: function() {}
+      updateLayout: function() {
+        this.gridView = !this.gridView
+      }
     },
     created() {
       if (!this.gridLoaded) this.reloadGrid()
@@ -572,7 +588,7 @@
           this.selectedMedias.push(mediaInitSelect)
         }
       }
-    }
+    },
   }
 </script>
 
@@ -596,6 +612,47 @@
       padding-bottom: rem-calc(12);
     }
   }
+
+  .dam-listing__list-items {
+    .mediagrid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: auto;
+      height: auto;
+      line-height: normal;
+      gap: rem-calc(16);
+
+      @include breakpoint('small+') {
+        grid-template-columns: repeat(3, 1fr);
+        gap: rem-calc(20);
+      }
+
+      @include breakpoint('medium+') {
+        grid-template-columns: repeat(4, 1fr);
+      }
+
+      @include breakpoint('large+') {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+
+    .mediagrid__item {
+      width: auto;
+      padding-bottom: 0;
+      background: $color__light;
+      aspect-ratio: 1/1;
+    }
+
+    .mediagrid__button {
+      position: relative;
+      top: auto;
+      left: auto;
+      right: auto;
+      bottom: auto;
+      width: 100%;
+      height: 100%;
+    }
+ }
 </style>
 
 <style lang="scss" scoped>
@@ -608,9 +665,14 @@
   }
 
   .dam-listing__list {
+    container: damlist / inline-size;
     flex: 1 1 auto;
     overflow-y: auto;
     padding: rem-calc(20);
+
+    .itemlist {
+      padding: 0;
+    }
   }
 
   .dam-listing__list-items {
@@ -619,6 +681,20 @@
     width: 100%;
     min-height: 100%;
   }
+
+  // @include breakpoint('large+') {
+  //   @container damlist (width > 1600px) {
+  //     .mediagrid {
+  //       grid-template-columns: repeat(6, 1fr);
+  //     }
+  //   }
+
+  //   @container damlist (width < 880px) {
+  //     .mediagrid {
+  //       grid-template-columns: repeat(4, 1fr);
+  //     }
+  //   }
+  // }
 
   .dam__add {
     display: none;

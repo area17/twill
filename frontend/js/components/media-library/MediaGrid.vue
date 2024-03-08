@@ -15,8 +15,10 @@
         @click.exact="toggleSelection(item)"
         @click.shift.exact="shiftToggleSelection(item)">
           <img :src="item.thumbnail" class="mediagrid__img" />
+          <span v-if="item.fileExtension" class="mediagrid__label">{{ item.fileExtension }}</span>
         </span>
-        <p v-if="showFileName" :title="item.name" class="mediagrid__name">{{ item.name }}</p>
+        {{  !hideNames }} {{ showFileName || hideNames }}
+        <p v-if="showFileName ? showFileName : !hideNames" :title="item.name" class="mediagrid__name">{{ item.name }}</p>
     </div>
   </div>
 </template>
@@ -29,6 +31,12 @@
   export default {
     name: 'A17Mediagrid',
     mixins: [mediaItemsMixin],
+    props: {
+      hideNames: {
+        type: Boolean,
+        default: true
+      }
+    },
     computed: {
       ...mapState({
         showFileName: state => state.mediaLibrary.showFileName
@@ -283,4 +291,23 @@
   .mediagrid__progressError {
     color:$color__error;
   }
+
+  .mediagrid__label {
+      border-radius: 2px;
+      display: inline-block;
+      height: rem-calc(16);
+      font-size: rem-calc(11);
+      color: $color__background;
+      text-transform: uppercase;
+      background: $color__icons;
+      padding: 0 rem-calc(5);
+      position: relative;
+      user-select: none;
+      letter-spacing: 0;
+      display: flex;
+      align-items: center;
+      position: absolute;
+      top: rem-calc(8);
+      left: rem-calc(8);
+    }
 </style>

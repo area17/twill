@@ -1054,6 +1054,7 @@
     margin-left: auto;
     display: none;
     flex-flow: column;
+    flex-shrink: 0;
 
     @include breakpoint('medium+') {
       display: flex;
