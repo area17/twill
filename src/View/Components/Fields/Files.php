@@ -13,6 +13,7 @@ class Files extends TwillFormComponent
         bool $renderForBlocks = false,
         bool $renderForModal = false,
         string $note = null,
+        bool $translated = false,
         // Component specific
         public int $max = 1,
         public int $filesizeMax = 0,
@@ -28,7 +29,8 @@ class Files extends TwillFormComponent
             label: $label,
             note: $note ?? 'Add' . ($max > 1 ? " up to $max $itemLabel" : ' one ' . Str::singular($itemLabel)),
             renderForBlocks: $renderForBlocks,
-            renderForModal: $renderForModal
+            renderForModal: $renderForModal,
+            translated: $translated
         );
     }
 
