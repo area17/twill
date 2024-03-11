@@ -88,6 +88,14 @@ class BlockHelpersTest extends TestCase
         $this->assertCount(1, $available);
         $this->assertContains(AppBlock::class, $available);
 
+
+        $available = TwillBlocks::generateListOfAvailableBlocks(
+            blocks: fn (Block $block) => $block->name == 'group-block2' ? true : ($block->source == Block::SOURCE_TWILL ? false : null)
+        )->pluck('componentClass');
+        $this->assertCount(2, $available);
+        $this->assertEquals([AppBlock::class, GroupBlock2::class], $available->all());
+
+
         TwillBlocks::setGloballyExcludedBlocks();
 
         config(['twill.block_editor.block_rules.order' =>  ['group-block2', AppBlock::class, 'group-block']]);

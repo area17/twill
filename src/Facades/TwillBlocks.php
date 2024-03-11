@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static registerManualBlock(string $blockClass, string $source = Block::SOURCE_APP)
  * @method static Collection<Block>generateListOfAllBlocks(bool $settingsOnly = false)
  * @method static Collection<Block>getListOfUsedBlocks()
- * @method static Collection<Block>generateListOfAvailableBlocks(?array $blocks = null, ?array $groups = null, bool $settingsOnly = false, array|callable $excludeBlocks = [], bool $defaultOrder = false)
+ * @method static Collection<Block>generateListOfAvailableBlocks(array|callable $blocks = null, ?array $groups = null, bool $settingsOnly = false, array|callable $excludeBlocks = null, bool $defaultOrder = false)
  */
 class TwillBlocks extends Facade
 {

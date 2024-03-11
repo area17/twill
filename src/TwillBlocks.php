@@ -398,11 +398,11 @@ class TwillBlocks
     }
 
     public function generateListOfAvailableBlocks(
-        ?array $blocks = null,
+        array|callable $blocks = null,
         ?array $groups = null,
         bool $settingsOnly = false,
-        array|callable $excludeBlocks = [],
-        bool $defaultOrder = false
+        array|callable $excludeBlocks = null,
+        bool $defaultOrder = false,
     ): Collection {
         $globalExcludeBlocks = $this->getGloballyExcludedBlocks();
 
@@ -443,7 +443,7 @@ class TwillBlocks
             }
         );
         if (! $defaultOrder) {
-            if (! empty($blocks)) {
+            if (! empty($blocks) && is_array($blocks)) {
                 $blocks = array_flip($blocks);
                 $finalList = $finalList->sortBy(fn(Block $block) => $blocks[$block->name] ?? $blocks[ltrim($block->componentClass, '\\')] ?? PHP_INT_MAX, SORT_NUMERIC);
             }

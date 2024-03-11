@@ -14,8 +14,8 @@ class BlockEditor extends TwillFormComponent
         bool $renderForBlocks = false,
         bool $renderForModal = false,
         // Component specific
-        public array $blocks = [],
-        public mixed $excludeBlocks = [],
+        public mixed $blocks = [],
+        public mixed $excludeBlocks = null,
         public array $groups = [],
         public bool $withoutSeparator = false,
         public ?string $group = null,

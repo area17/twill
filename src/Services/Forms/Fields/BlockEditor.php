@@ -6,10 +6,11 @@ use A17\Twill\Services\Blocks\Block;
 
 class BlockEditor extends BaseFormField
 {
-    protected array $blocks = [];
+    /** @var callable|array */
+    protected mixed $blocks = [];
     protected array $groups = [];
 
-    protected mixed $excludeBlocks = [];
+    protected mixed $excludeBlocks = null;
 
     protected bool $isSettings = false;
 
@@ -50,7 +51,7 @@ class BlockEditor extends BaseFormField
     /**
      * Default is all, but using this method you can limit the block types the field can use.
      */
-    public function blocks(array $blocks): static
+    public function blocks(array|callable $blocks): static
     {
         // For backward compatibility, clear the list of excludeBlocks in case both ->excludeBlocks()->blocks() were called
         $this->excludeBlocks = [];
@@ -59,7 +60,6 @@ class BlockEditor extends BaseFormField
         return $this;
     }
 
-
     public function usingDefaultOrder(bool $usingDefaultOrder = true): static
     {
         $this->usingDefaultOrder = $usingDefaultOrder;
@@ -67,7 +67,7 @@ class BlockEditor extends BaseFormField
         return $this;
     }
 
-    public function getBlocks(): array
+    public function getBlocks(): mixed
     {
         return $this->blocks;
     }
