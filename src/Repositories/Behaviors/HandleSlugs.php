@@ -4,6 +4,7 @@ namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Contracts\TwillModelContract;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 trait HandleSlugs
@@ -12,12 +13,18 @@ trait HandleSlugs
     {
         if (property_exists($this->model, 'slugAttributes')) {
             $object->twillSlugData = [];
+            $submittedLanguages = Collection::make($fields['languages'] ?? []);
+
             foreach (getLocales() as $locale) {
+                $submittedLanguage = Arr::first($submittedLanguages->filter(function ($lang) use ($locale) {
+                    return $lang['value'] === $locale;
+                }));
+
                 if (isset($fields['slug'][$locale]) && !empty($fields['slug'][$locale])) {
                     $currentSlug = [];
                     $currentSlug['slug'] = $fields['slug'][$locale];
                     $currentSlug['locale'] = $locale;
-                    $currentSlug['active'] = !$this->model->isTranslatable() || $object->translate($locale)?->active ?? false;
+                    $currentSlug['active'] = $submittedLanguage['published'] ?? false;
                     $currentSlug = $this->getSlugParameters($object, $fields, $currentSlug);
                     $object->twillSlugData[] = $currentSlug;
                 } else {
@@ -31,7 +38,7 @@ trait HandleSlugs
                     if (!empty(Arr::join($slugData, '-'))) {
                         $object->twillSlugData[] = [
                             'slug' => Str::slug(Arr::join($slugData, '-')),
-                            'active' => $this->model->isTranslatable() ? $object->translate($locale)->active : 1,
+                            'active' => $submittedLanguage['published'] ?? false,
                             'locale' => $locale
                         ];
                     }
