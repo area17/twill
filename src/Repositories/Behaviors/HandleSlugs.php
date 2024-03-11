@@ -24,7 +24,7 @@ trait HandleSlugs
                     $currentSlug = [];
                     $currentSlug['slug'] = $fields['slug'][$locale];
                     $currentSlug['locale'] = $locale;
-                    $currentSlug['active'] = $submittedLanguage['published'] ?? false;
+                    $currentSlug['active'] = $submittedLanguage['published'] ?? true;
                     $currentSlug = $this->getSlugParameters($object, $fields, $currentSlug);
                     $object->twillSlugData[] = $currentSlug;
                 } else {
@@ -38,7 +38,7 @@ trait HandleSlugs
                     if (!empty(Arr::join($slugData, '-'))) {
                         $object->twillSlugData[] = [
                             'slug' => Str::slug(Arr::join($slugData, '-')),
-                            'active' => $submittedLanguage['published'] ?? false,
+                            'active' => $submittedLanguage['published'] ?? 1,
                             'locale' => $locale
                         ];
                     }
