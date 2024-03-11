@@ -219,56 +219,14 @@ if (! function_exists('twillModel')) {
 
 if (! function_exists('generate_list_of_available_blocks')) {
     /**
-     * @param array $blocks
-     * @param array $groups
-     * @return array
+     * TODO remove in v4
+     * @deprecated use TwillBlocks::generateListOfAvailableBlocks instead
      */
-    function generate_list_of_available_blocks($blocks, $groups, bool $settingsOnly = false, array $excludeBlocks = []): array
+    function generate_list_of_available_blocks(?array $blocks = null, ?array $groups = null, bool $settingsOnly = false, array|callable $excludeBlocks = []): array
     {
-        if ($settingsOnly) {
-            $blockList = TwillBlocks::getSettingsBlocks();
-        } else {
-            $blockList = TwillBlocks::getBlocks();
-        }
+        trigger_deprecation('area17/twill', '3.3', __FUNCTION__ . ' is deprecated and will be removed in 4.x, use TwillBlocks::generateListOfAvailableBlocks instead');
 
-        $appBlocksList = $blockList->filter(function (Block $block) {
-            return $block->source !== A17\Twill\Services\Blocks\Block::SOURCE_TWILL;
-        });
-
-        $finalBlockList = $blockList->filter(
-            function (Block $block) use ($blocks, $groups, $appBlocksList, $excludeBlocks) {
-                if ($block->group === A17\Twill\Services\Blocks\Block::SOURCE_TWILL) {
-                    if (! collect(config('twill.block_editor.use_twill_blocks'))->contains($block->name)) {
-                        return false;
-                    }
-
-                    /** @var \Illuminate\Support\Collection<Block> $appBlocksList */
-                    if (
-                        count($appBlocksList) > 0 && $appBlocksList->contains(
-                            function ($appBlock) use ($block) {
-                                return $appBlock->name === $block->name;
-                            }
-                        )
-                    ) {
-                        return false;
-                    }
-                }
-
-                if (in_array($block->name, $excludeBlocks)) {
-                    return false;
-                }
-
-                return (filled($blocks) ? collect($blocks)->contains($block->name) || collect($blocks)->contains(ltrim($block->componentClass, '\\')) : true)
-                    && (filled($groups) ? collect($groups)->contains($block->group) : true);
-            }
-        );
-
-        // Sort them by the original definition
-        return $finalBlockList->sortBy(function (Block $b) use ($blocks) {
-            return collect($blocks)->search(function ($id, $key) use ($b) {
-                return $id == $b->name || $id == ltrim($b->componentClass, '\\');
-            });
-        })->values()->toArray();
+        return TwillBlocks::generateListOfAvailableBlocks($blocks, $groups, $settingsOnly, $excludeBlocks)->all();
     }
 }
 

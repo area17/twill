@@ -27,7 +27,7 @@
     $controlLanguagesPublication = $controlLanguagesPublication ?? true;
     $disableContentFieldset = $disableContentFieldset ?? false;
     $editModalTitle = ($createWithoutModal ?? false) ? twillTrans('twill::lang.modal.create.title') : null;
-    $item = isset($item) ? $item : null;
+    $item = $item ?? null;
 
     // TODO: cache and move out of view
     if (config('twill.enabled.permissions-management')) {
@@ -237,7 +237,7 @@
                     users.forEach(function (userId) {
                         // If the user's permission is <= view, it will be updated
                         const currentPermission = state['form']['fields'].find(function (e) {
-                            return e.name == `user_${userId}_permission`
+                            return e.name === `user_${userId}_permission`
                         }).value
                         if (currentPermission === '' || currentPermission === 'view-item') {
                             const field = {

@@ -95,4 +95,11 @@ return [
             'repeaters' => resource_path('views/twill/repeaters'),
         ],
     ],
+    'blocks' => [],
+    'block_rules' => [
+        // List of block identifiers to globally disallow
+        'disable' => [],
+        // List of block identifiers to order blocks by if no order is provided
+        'order' => [],
+    ]
 ];

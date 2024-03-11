@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Repositories\SettingRepository;
 use A17\Twill\Services\Forms\Form;
 use Illuminate\Config\Repository as Config;
