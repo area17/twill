@@ -450,25 +450,6 @@ trait HandleBlocks
         return Collection::make($block['content']['browsers'])->mapWithKeys(function ($ids, $relation) use ($block) {
             if ($this->hasRelatedTable() && $block->getRelated($relation)->isNotEmpty()) {
                 $items = $this->getFormFieldsForRelatedBrowser($block, $relation);
-                foreach ($items as &$item) {
-                    if (!isset($item['edit'])) {
-                        try {
-                            $item['edit'] = moduleRoute(
-                                $relation,
-                                config('twill.block_editor.browser_route_prefixes.' . $relation),
-                                'edit',
-                                $item['id']
-                            );
-                        } catch (RouteNotFoundException $e) {
-                            report($e);
-                            Log::notice(
-                                "Twill warning: The url for the \"{$relation}\" browser items can't " .
-                                "be resolved. You might be missing a {$relation} key in your " .
-                                'twill.block_editor.browser_route_prefixes configuration.'
-                            );
-                        }
-                    }
-                }
             } else {
                 try {
                     $relationRepository = $this->getModelRepository($relation);
