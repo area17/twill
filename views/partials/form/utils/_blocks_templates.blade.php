@@ -20,7 +20,7 @@ do {
 
 @php
     $alreadyRenderedBlocks = $alreadyRenderedBlocks->merge($blocksToRender);
-} while (!empty($blocksToRender));
+} while (!$blocksToRender->isEmpty());
 @endphp
 
 {{-- The order here is important as the renderform above may regiser repeaters. --}}
