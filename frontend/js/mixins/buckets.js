@@ -1,3 +1,5 @@
+import { mapState } from 'vuex'
+
 export default {
   props: {
     buckets: {
@@ -13,7 +15,10 @@ export default {
     }
   },
   computed: {
-    bucketClasses: function () {
+    ...mapState({
+      dataSources: state => state.buckets.dataSources.content_types
+    }),
+    bucketClasses() {
       return {
         selected: this.type !== 'bucket' && this.inBuckets,
         single: this.singleBucket
@@ -21,21 +26,19 @@ export default {
     }
   },
   methods: {
-    addToBucket: function (bucketId = this.bucket) {
+    addToBucket(bucketId = this.bucket) {
       this.$emit('add-to-bucket', this.item, bucketId)
     },
-    inBucketById: function (id) {
+    inBucketById(id) {
       const index = this.buckets.findIndex(b => b.id === id)
 
       if (index === -1) return
 
-      const find = this.buckets[index].children.find((c) => {
-        return c.id === this.item.id && c.content_type.value === this.item.content_type.value
+      return this.buckets[index].children.some((c) => {
+        return c.id === this.item.id && c.type === this.item.type
       })
-
-      return !!find
     },
-    restrictedBySource: function (id) {
+    restrictedBySource(id) {
       const bucket = this.buckets.find((b) => b.id === id)
       if (!bucket) return false
 
@@ -43,8 +46,8 @@ export default {
       if (!bucket.hasOwnProperty('acceptedSources')) return true
       if (bucket.acceptedSources.length === 0) return true
 
-      const currentSource = this.item.content_type.value
-      return bucket.acceptedSources.findIndex((source) => source === currentSource) !== -1
+      const currentSource = this.dataSources.find((source) => source.type === this.item.type);
+      return bucket.acceptedSources.findIndex((source) => source === currentSource.value) !== -1
     }
   }
 }

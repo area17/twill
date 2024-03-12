@@ -21,7 +21,7 @@ const state = {
 }
 
 const getters = {
-  currentSource: state => state.source.content_type
+  currentSource: state => state.dataSources.selected
 }
 
 const mutations = {
@@ -80,7 +80,7 @@ const actions = {
       bucket.children.forEach((child) => {
         children.push({
           id: child.id,
-          type: child.content_type.value,
+          type: child.type,
           starred: child.starred
         })
       })

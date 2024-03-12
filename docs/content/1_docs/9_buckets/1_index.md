@@ -21,6 +21,7 @@ Then, define your buckets' configuration:
                 'name' => 'Home primary feature',
                 'bucketables' => [
                     [
+                        'repository' => GuidesRepository::class,
                         'module' => 'guides',
                         'name' => 'Guides',
                         'scopes' => ['published' => true],
@@ -32,6 +33,7 @@ Then, define your buckets' configuration:
                 'name' => 'Home secondary features',
                 'bucketables' => [
                     [
+                        'repository' => GuidesRepository::class,
                         'module' => 'guides',
                         'name' => 'Guides',
                         'scopes' => ['published' => true],
@@ -45,7 +47,7 @@ Then, define your buckets' configuration:
 ```
 
 You can allow mixing modules in a single bucket by adding more modules to the `bucketables` array.
-Each `bucketable` should have its [model morph map](https://laravel.com/docs/10.x/eloquent-relationships#polymorphic-relationships) defined because features are stored in a polymorphic table.
+We recommend that each `bucketable` model be in the [morph map](https://laravel.com/docs/10.x/eloquent-relationships#polymorphic-relationships) because features are stored in a polymorphic table.
 
 In your AppServiceProvider, you can do it like the following:
 
@@ -55,7 +57,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 public function boot()
 {
     Relation::morphMap([
-        'guides' => 'App\Models\Guide',
+        'guides' => App\Models\Guide::class,
     ]);
 }
 ```
@@ -66,7 +68,7 @@ Finally, add a link to your buckets page in your CMS navigation:
 return [
    'featured' => [
        'title' => 'Features',
-       'route' => 'admin.featured.homepage',
+       'route' => 'twill.featured.homepage',
        'primary_navigation' => [
            'homepage' => [
                'title' => 'Homepage',
