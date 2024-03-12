@@ -250,7 +250,7 @@ trait HandleBrowsers
         }
 
         $relatedType = $object->getRelation('pivot')->related_type;
-        $relation = strpos($relatedType, '\\')
+        $relation = str_contains($relatedType, '\\')
             ? getModuleNameByModel($relatedType)
             : $relatedType;
 
