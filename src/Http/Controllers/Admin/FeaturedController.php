@@ -40,31 +40,30 @@ class FeaturedController extends Controller
         $featuredSection = $this->config->get("twill.buckets.$featuredSectionKey");
         $filters = json_decode($request->get('filter'), true) ?? [];
 
-        $featuredSources = $this->getFeaturedSources($request, $featuredSection, $filters['search'] ?? '');
+        $featuredSources = $this->getFeaturedSources($request, $featuredSection, $filters['search'] ?? '', $request->get('content_type'));
 
         $contentTypes = Collection::make($featuredSources)->map(function ($source, $sourceKey) {
             return [
                 'label' => $source['name'],
                 'value' => $sourceKey,
+                'type' => $source['type'],
             ];
-        })->values()->toArray();
+        })->values()->all();
+
+        $firstSource = Arr::first($featuredSources);
 
         if ($request->has('content_type')) {
-            $source = $featuredSources[$request->get('content_type')] ?? null;
+            $source = $firstSource;
 
             return [
                 'source' => [
-                    'content_type' => Arr::first($contentTypes, function ($contentTypeItem) use ($request) {
-                        return $contentTypeItem['value'] == $request->get('content_type');
-                    }),
                     'items' => $source['items'],
                 ],
                 'maxPage' => $source['maxPage'],
             ];
         }
 
-        $buckets = $this->getFeaturedItemsByBucket($featuredSection, $featuredSectionKey);
-        $firstSource = Arr::first($featuredSources);
+        $buckets = $this->getFeaturedItemsByBucket($featuredSection);
 
         $routePrefix = 'featured';
 
@@ -79,7 +78,6 @@ class FeaturedController extends Controller
             ],
             'items' => $buckets,
             'source' => [
-                'content_type' => Arr::first($contentTypes),
                 'items' => $firstSource['items'],
             ],
             'maxPage' => $firstSource['maxPage'],
@@ -94,14 +92,11 @@ class FeaturedController extends Controller
 
     /**
      * @param array $featuredSection
-     * @param string $featuredSectionKey
      * @return array
      */
-    private function getFeaturedItemsByBucket($featuredSection, $featuredSectionKey)
+    private function getFeaturedItemsByBucket($featuredSection)
     {
-        $bucketRouteConfig = $this->config->get('twill.bucketsRoutes') ?? [$featuredSectionKey => 'featured'];
-        return Collection::make($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use ($featuredSectionKey, $bucketRouteConfig) {
-            $routePrefix = $bucketRouteConfig[$featuredSectionKey];
+        return collect($featuredSection['buckets'])->map(function ($bucket, $bucketKey) {
             return [
                 'id' => $bucketKey,
                 'name' => $bucket['name'],
@@ -109,24 +104,20 @@ class FeaturedController extends Controller
                 'acceptedSources' => Collection::make($bucket['bucketables'])->pluck('module'),
                 'withToggleFeatured' => $bucket['with_starred_items'] ?? false,
                 'toggleFeaturedLabels' => $bucket['starred_items_labels'] ?? [],
-                'children' => Feature::where('bucket_key', $bucketKey)->with('featured')->get()->map(function ($feature) use ($bucket) {
+                'children' => Feature::where('bucket_key', $bucketKey)->with('featured')->get()->map(function ($feature) {
                     if (($item = $feature->featured) != null) {
-                        $forModuleRepository = collect($bucket['bucketables'])->where('module', $feature->featured_type)->first()['repository'] ?? null;
-                        $repository = $this->getRepository($feature->featured_type, $forModuleRepository);
+                        $repository = getModelRepository($item);
                         $withImage = classHasTrait($repository, HandleMedias::class);
 
                         return [
-                            'id' => $item->id,
-                            'name' => $item->titleInBucket ?? $item->title,
-                            'edit' => $item->adminEditUrl ?? '',
-                            'starred' => $feature->starred ?? false,
-                            'content_type' => [
-                                'label' => ucfirst($feature->featured_type),
-                                'value' => $feature->featured_type,
-                            ],
-                        ] + ($withImage ? [
-                            'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
-                        ] : []);
+                                'id' => $item->id,
+                                'name' => $item->titleInBucket ?? $item->title,
+                                'edit' => $item->adminEditUrl ?? '',
+                                'starred' => $feature->starred ?? false,
+                                'type' => $feature->featured_type,
+                            ] + ($withImage ? [
+                                'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
+                            ] : []);
                     }
                 })->reject(function ($item) {
                     return is_null($item);
@@ -141,15 +132,18 @@ class FeaturedController extends Controller
      * @param string|null $search
      * @return array
      */
-    private function getFeaturedSources(Request $request, $featuredSection, $search = null)
+    private function getFeaturedSources(Request $request, $featuredSection, string $search = null, string $contentType = null)
     {
-        $fetchedModules = [];
         $featuredSources = [];
 
-        Collection::make($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use (&$fetchedModules, $search, $request) {
-            return Collection::make($bucket['bucketables'])->mapWithKeys(function ($bucketable) use (&$fetchedModules, $search, $request) {
-
+        foreach ($featuredSection['buckets'] as $bucket) {
+            foreach ($bucket['bucketables'] as $bucketable) {
                 $module = $bucketable['module'];
+
+                if ((!empty($contentType) && $module !== $contentType) || isset($featuredSources[$module])) {
+                    continue;
+                }
+
                 $repository = $this->getRepository($module, $bucketable['repository'] ?? null);
                 $translated = classHasTrait($repository, HandleTranslations::class);
                 $withImage = classHasTrait($repository, HandleMedias::class);
@@ -159,45 +153,42 @@ class FeaturedController extends Controller
                     $scopes[$searchField] = $search;
                 }
 
-                $items = $fetchedModules[$module] ?? $repository->get(
-                    $bucketable['with'] ?? [],
-                    ($bucketable['scopes'] ?? []) + ($scopes ?? []),
-                    $bucketable['orders'] ?? [],
-                    $bucketable['per_page'] ?? $request->get('offset') ?? 10,
-                    true
-                )->appends('bucketable', $module);
+                $items = null;
+                if (!empty($contentType) || empty($featuredSources)) {
+                    $items = $repository->get(
+                        $bucketable['with'] ?? [],
+                        ($bucketable['scopes'] ?? []) + ($scopes ?? []),
+                        $bucketable['orders'] ?? [],
+                        $bucketable['per_page'] ?? $request->get('offset') ?? 10,
+                        true
+                    )->appends('bucketable', $module);
+                }
 
-                $fetchedModules[$module] = $items;
+                $morphClass = $repository->getBaseModel()->getMorphClass();
 
-                return [$module => [
+                $featuredSources[$module] = [
                     'name' => $bucketable['name'] ?? ucfirst($module),
-                    'items' => $items,
-                    'translated' => $translated,
-                    'withImage' => $withImage,
-                ]];
-            });
-        })->each(function ($bucketables, $bucket) use (&$featuredSources) {
-            $bucketables->each(function ($bucketableData, $bucketable) use (&$featuredSources) {
-                $featuredSources[$bucketable]['name'] = $bucketableData['name'];
-                $featuredSources[$bucketable]['maxPage'] = $bucketableData['items']->lastPage();
-                $featuredSources[$bucketable]['offset'] = $bucketableData['items']->perPage();
-                $featuredSources[$bucketable]['items'] = $bucketableData['items']->map(function ($item) use ($bucketableData, $bucketable) {
-                    return [
-                        'id' => $item->id,
-                        'name' => $item->titleInBucket ?? $item->title,
-                        'edit' => $item->adminEditUrl ?? '',
-                        'content_type' => [
-                            'label' => $bucketableData['name'],
-                            'value' => $bucketable,
-                        ],
-                    ] + ($bucketableData['translated'] ? [
-                        'languages' => $item->getActiveLanguages(),
-                    ] : []) + ($bucketableData['withImage'] ? [
-                        'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
-                    ] : []);
-                })->toArray();
-            });
-        });
+                    'type' => $morphClass,
+                    'maxPage' => $items?->lastPage(),
+                    'offset' => $items?->perPage(),
+                    'items' => $items?->map(function ($item) use ($morphClass, $translated, $withImage) {
+                        return [
+                                'id' => $item->id,
+                                'name' => $item->titleInBucket ?? $item->title,
+                                'edit' => $item->adminEditUrl ?? '',
+                                'type' => $morphClass,
+                            ] + ($translated ? [
+                                'languages' => $item->getActiveLanguages(),
+                            ] : []) + ($withImage ? [
+                                'thumbnail' => $item->defaultCmsImage(['w' => 100, 'h' => 100]),
+                            ] : []);
+                    })->all(),
+                ];
+                if ($contentType === $module) {
+                    break 2;
+                }
+            }
+        }
 
         return $featuredSources;
     }

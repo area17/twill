@@ -65,11 +65,18 @@ if (!function_exists('getRepositoryByModuleName')) {
 if (!function_exists('getModelRepository')) {
     function getModelRepository($relation, $model = null)
     {
+        if ($relation instanceof TwillModelContract) {
+            $model = get_class($relation);
+        }
         if (!$model) {
             $model = ucfirst(Str::singular($relation));
         }
+        if ($model instanceof TwillModelContract) {
+            $model = get_class($model);
+        }
+        $model = class_basename($model);
 
-        $repository = config('twill.namespace') . '\\Repositories\\' . ucfirst($model) . 'Repository';
+        $repository = config('twill.namespace') . '\\Repositories\\' . $model . 'Repository';
 
         if (!class_exists($repository)) {
             try {
