@@ -117,4 +117,9 @@ trait HasRelated
     {
         $this->relatedItems()->delete();
     }
+
+    public function setRelatedCache($browser, $items): void
+    {
+        $this->relatedCache[$browser] = $items;
+    }
 }
