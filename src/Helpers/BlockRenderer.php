@@ -12,6 +12,7 @@ use A17\Twill\Services\Blocks\RenderData;
 use Exception;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
 
 /**
@@ -118,6 +119,16 @@ class BlockRenderer
         );
 
         $block->setRelation('children', self::getChildren($children));
+
+        foreach ($data['browsers'] as $browserName => $browserItems) {
+            $browserData = collect();
+            foreach ($browserItems as $browserItem) {
+                $className = Relation::getMorphedModel($browserItem['endpointType']) ?? $browserItem['endpointType'];
+                $browserData->push((new $className())->find($browserItem['id']));
+            }
+
+            $block->setRelatedCache($browserName, $browserData);
+        }
 
         $block->medias = self::getMedias($data);
 
