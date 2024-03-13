@@ -17,7 +17,11 @@ if (! function_exists('moduleRoute')) {
 
         // Nested module, pass in current parameters for deeply nested modules
         if (Str::contains($moduleName, '.')) {
-            $parameters = array_merge(Route::current()->parameters(), $parameters);
+            if (Str::endsWith(request()->route()->getName(), 'restoreRevision')) {
+                $parameters = array_merge(request()->except('revisionId'), $parameters);
+            } else {
+                $parameters = array_merge(Route::current()->parameters(), $parameters);
+            }
         }
 
         // Create base route name
