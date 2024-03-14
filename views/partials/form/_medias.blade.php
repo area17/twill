@@ -3,7 +3,7 @@
         type="a17-mediafield-translated"
         :attributes="{
             label: '{{ $label }}',
-            cropContext: '{{ $name }}',
+            cropContext: '{{ !$renderForBlocks ? $name : 'block_' . $name }}',
             max: {{ $max }},
             widthMin: {{ $widthMin }},
             heightMin: {{ $heightMin }},
@@ -38,7 +38,7 @@
     <a17-inputframe @if($renderForBlocks) :fixed-error-key="$parent.blockFieldName !== undefined ? $parent.blockFieldName('{{$name}}') : ''" @endif label="{{ $label }}" name="medias.{{ $name }}" @if ($required) :required="true" @endif @if ($fieldNote) note="{{ $fieldNote }}" @endif>
         @if($multiple) <a17-slideshow @else <a17-mediafield @endif
             {!! $formFieldName() !!}
-            crop-context="{{ $name }}"
+            crop-context="{{ !$renderForBlocks ? $name : 'block_' . $name }}"
             :width-min="{{ $widthMin }}"
             :height-min="{{ $heightMin }}"
             @if($multiple) :max="{{ $max }}" @endif
