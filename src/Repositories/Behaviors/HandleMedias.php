@@ -79,11 +79,7 @@ trait HandleMedias
 
                 $locale = $locale ?? config('app.locale');
 
-                if (
-                    array_key_exists($role, $this->model->getMediasParams())
-                    || array_key_exists($role, TwillBlocks::getAllCropConfigs())
-                    || array_key_exists($role, config('twill.settings.crops', []))
-                ) {
+                if ($this->hasRole($role) || $this->hasJsonRepeaterRole($role)) {
                     Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
                         if (isset($media['crops']) && !empty($media['crops'])) {
@@ -211,5 +207,22 @@ trait HandleMedias
 
             $newObject->medias()->attach($media->id, $newPushData);
         }
+    }
+
+    private function hasRole($role): bool
+    {
+        return array_key_exists($role, $this->model->getMediasParams())
+        || array_key_exists($role, TwillBlocks::getAllCropConfigs())
+        || array_key_exists($role, config('twill.settings.crops', []));
+    }
+
+    private function hasJsonRepeaterRole($role): bool
+    {
+        if (! Str::contains($role, '|')) {
+            return false;
+        }
+
+        $role = last(explode('|', $role));
+        return $this->hasRole($role);
     }
 }
