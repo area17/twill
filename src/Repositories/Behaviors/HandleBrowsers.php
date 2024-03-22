@@ -243,20 +243,17 @@ trait HandleBrowsers
      * @param $object
      * @return mixed|string
      */
-    private function getAdminEditUrl($object): mixed
+    public function getAdminEditUrl($object): mixed
     {
         if (!empty($object->adminEditUrl)) {
             return $object->adminEditUrl;
         }
 
-        $relatedType = $object->getRelation('pivot')->related_type;
-        $relation = str_contains($relatedType, '\\')
-            ? getModuleNameByModel($relatedType)
-            : $relatedType;
+        $module = getModuleNameByModel($object);
 
         return moduleRoute(
-            $relation,
-            config('twill.block_editor.browser_route_prefixes.' . $relation),
+            $module,
+            config('twill.block_editor.browser_route_prefixes.' . $module),
             'edit',
             $object->id
         );

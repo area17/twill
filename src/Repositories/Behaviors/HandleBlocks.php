@@ -465,16 +465,11 @@ trait HandleBlocks
 
                 $items = Collection::make(array_values($sortedRelatedItems))->filter(function ($value) {
                     return is_object($value);
-                })->map(function ($relatedElement) use ($relation) {
+                })->map(function ($relatedElement) {
                     return [
                             'id' => $relatedElement->id,
                             'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
-                            'edit' => moduleRoute(
-                                $relation,
-                                config('twill.block_editor.browser_route_prefixes.' . $relation),
-                                'edit',
-                                $relatedElement->id
-                            ),
+                            'edit' => $this->getAdminEditUrl($relatedElement),
                         ] + (classHasTrait($relatedElement, HasMedias::class) ? [
                             'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
                         ] : []);

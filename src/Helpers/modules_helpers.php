@@ -51,7 +51,11 @@ if (!function_exists('getModelByModuleName')) {
 if (!function_exists('getModuleNameByModel')) {
     function getModuleNameByModel($model)
     {
-        return Str::plural(lcfirst(class_basename($model)));
+        try {
+            return TwillCapsules::getCapsuleForModel($model)->getModule();
+        } catch (NoCapsuleFoundException) {
+            return Str::plural(lcfirst(class_basename($model)));
+        }
     }
 }
 
