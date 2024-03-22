@@ -201,12 +201,7 @@ trait HandleBrowsers
                     return [
                             'id' => $relatedElement->id,
                             'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
-                            'edit' => $relatedElement->adminEditUrl ?? moduleRoute(
-                                $moduleName ?? $relation,
-                                $routePrefix ?? '',
-                                'edit',
-                                $relatedElement->id
-                            ),
+                            'edit' => $this->getAdminEditUrl($relatedElement),
                             'endpointType' => $relatedElement->getMorphClass(),
                         ] + (classHasTrait($relatedElement, HasMedias::class) ? [
                             'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100, 'fit' => 'crop']),
