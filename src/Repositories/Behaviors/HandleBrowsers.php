@@ -230,14 +230,33 @@ trait HandleBrowsers
                     'id' => $relatedElement->id,
                     'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
                     'endpointType' => $relatedElement->getMorphClass(),
-                ] + (empty($relatedElement->adminEditUrl) ? [] : [
-                    'edit' => $relatedElement->adminEditUrl,
-                ]) + (classHasTrait($relatedElement, HasMedias::class) ? [
+                    'edit' => $this->getAdminEditUrl($relatedElement),
+                ] + (classHasTrait($relatedElement, HasMedias::class) ? [
                     'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100, 'fit' => 'crop']),
                 ] : []) : [];
         })->reject(function ($item) {
             return empty($item);
         })->values()->toArray();
+    }
+
+    /**
+     * @param $object
+     * @return mixed|string
+     */
+    public function getAdminEditUrl($object): mixed
+    {
+        if (!empty($object->adminEditUrl)) {
+            return $object->adminEditUrl;
+        }
+
+        $module = getModuleNameByModel($object);
+
+        return moduleRoute(
+            $module,
+            config('twill.block_editor.browser_route_prefixes.' . $module),
+            'edit',
+            $object->id
+        );
     }
 
     /**
