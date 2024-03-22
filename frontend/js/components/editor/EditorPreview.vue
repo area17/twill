@@ -11,7 +11,8 @@
       <draggable class="editorPreview__content"
                  ref="previewContent"
                  :value="blocks"
-                 :options="{ group: 'editorBlocks', handle: handle }"
+                 group="editorBlocks"
+                 :handle="handle"
                  @add="onAdd(add, edit, $event)"
                  @update="onUpdate">
         <template v-for="savedBlock in blocks">
