@@ -3,11 +3,14 @@
 namespace A17\Twill\Services\Forms;
 
 use A17\Twill\Services\Forms\Contracts\CanHaveSubfields;
+use A17\Twill\Services\Forms\Traits\HasSubFields;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 
 class Form extends Collection implements CanHaveSubfields
 {
+    use HasSubFields;
+
     public ?Fieldsets $fieldsets = null;
 
     private ?Form $sideForm = null;
@@ -111,27 +114,7 @@ class Form extends Collection implements CanHaveSubfields
 
     public function registerDynamicRepeaters(): void
     {
-        // We have to loop over all of the fields/fieldsets.
-        foreach ($this as $field) {
-            if ($field instanceof InlineRepeater) {
-                $field->register();
-            }
-            if ($field instanceof CanHaveSubfields) {
-                $field->registerDynamicRepeaters();
-            }
-        }
-
-        if ($this->fieldsets) {
-            foreach ($this->fieldsets as $fieldset) {
-                foreach ($fieldset->fields as $field) {
-                    if ($field instanceof InlineRepeater) {
-                        $field->register();
-                    }
-                    if ($field instanceof CanHaveSubfields) {
-                        $field->registerDynamicRepeaters();
-                    }
-                }
-            }
-        }
+        $this->registerDynamicRepeatersFor($this);
+        $this->fieldsets?->registerDynamicRepeaters();
     }
 }
