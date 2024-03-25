@@ -188,20 +188,13 @@ trait HandleBrowsers
     ) {
         $fields = $this->getRelatedElementsAsCollection($object, $relation);
 
-        $isMorphTo = method_exists($object, $relation) && $object->$relation() instanceof MorphTo;
-
         if ($fields->isNotEmpty()) {
             return $fields->map(
-                function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName, $isMorphTo) {
-                    if ($isMorphTo && !$moduleName) {
-                        // @todo: Maybe there is an existing helper for this?
-                        $moduleName = Str::plural(Arr::last(explode('\\', get_class($relatedElement))));
-                    }
-
+                function ($relatedElement) use ($titleKey, $routePrefix, $moduleName) {
                     return [
                             'id' => $relatedElement->id,
                             'name' => $relatedElement->titleInBrowser ?? $relatedElement->$titleKey,
-                            'edit' => $this->getAdminEditUrl($relatedElement),
+                            'edit' => $this->getAdminEditUrl($relatedElement, $routePrefix, $moduleName),
                             'endpointType' => $relatedElement->getMorphClass(),
                         ] + (classHasTrait($relatedElement, HasMedias::class) ? [
                             'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100, 'fit' => 'crop']),
@@ -238,17 +231,17 @@ trait HandleBrowsers
      * @param $object
      * @return mixed|string
      */
-    public function getAdminEditUrl($object): mixed
+    public function getAdminEditUrl($object, $routePrefix = null, $moduleName = null): mixed
     {
         if (!empty($object->adminEditUrl)) {
             return $object->adminEditUrl;
         }
 
-        $module = getModuleNameByModel($object);
+        $moduleName = $moduleName ?? getModuleNameByModel($object);
 
         return moduleRoute(
-            $module,
-            config('twill.block_editor.browser_route_prefixes.' . $module),
+            $moduleName,
+            $routePrefix ?? config('twill.block_editor.browser_route_prefixes.' . $moduleName),
             'edit',
             $object->id
         );
