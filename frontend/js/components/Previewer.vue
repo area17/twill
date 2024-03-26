@@ -140,7 +140,9 @@
         if (rootRefs.editor) rootRefs.editor.open()
       },
       restoreRevision: function () {
-        window.location.href = this.restoreRevisionUrl + '?revisionId=' + this.currentRevision.id
+        const parsedUrl = new URL(this.restoreRevisionUrl)
+        parsedUrl.searchParams.append('revisionId', this.currentRevision.id)
+        window.location.href = parsedUrl.toString()
       },
       resizePreview: function (size) {
         this.activeBreakpoint = parseInt(size)

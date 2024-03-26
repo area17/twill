@@ -374,9 +374,8 @@ abstract class ModuleRepository
                 $query = $this->model->onlyTrashed()->whereIn('id', $ids);
                 $objects = $query->get();
 
-                $query->forceDelete();
-
                 $objects->each(function ($object) {
+                    $object->forceDelete();
                     $this->afterDelete($object);
                 });
             } catch (Exception $exception) {

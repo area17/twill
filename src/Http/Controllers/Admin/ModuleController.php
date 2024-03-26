@@ -918,6 +918,7 @@ abstract class ModuleController extends Controller
                         ->sortKey($indexColumn['sortKey'] ?? null)
                         ->optional($indexColumn['optional'] ?? false)
                         ->relation($indexColumn['relationship'])
+                        ->sortable($indexColumn['sort'] ?? false)
                 );
             } elseif ($indexColumn['present'] ?? false) {
                 $columns->add(
@@ -2432,7 +2433,14 @@ abstract class ModuleController extends Controller
                     }
                 }
 
-                $model = (new $modelClass())->findOrFail(request()->route()->parameter($singularName));
+                if (Str::endsWith(request()->route()->getName(), 'restoreRevision') && count($moduleParts) > 1) {
+                    // if it's a revision route and a nested module, get id from query
+                    $itemId = request()->query($singularName);
+                } else {
+                    $itemId = request()->route()->parameter($singularName);
+                }
+
+                $model = (new $modelClass())->findOrFail($itemId);
                 $hasSlug = Arr::has(class_uses($modelClass), HasSlug::class);
 
                 $base .= $name . '/' . ($hasSlug ? $model->slug : $model->id) . '/';

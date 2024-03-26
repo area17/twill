@@ -28,7 +28,7 @@ trait HandleJsonRepeaters
      */
     public function prepareFieldsBeforeCreateHandleJsonRepeaters($fields)
     {
-        foreach ($this->jsonRepeaters as $repeater) {
+        foreach ($this->getJsonRepeaters() as $repeater) {
             if (isset($fields['repeaters'][$repeater])) {
                 $fields[$repeater] = $fields['repeaters'][$repeater];
             }
@@ -44,9 +44,17 @@ trait HandleJsonRepeaters
      */
     public function prepareFieldsBeforeSaveHandleJsonRepeaters($object, $fields)
     {
-        foreach ($this->jsonRepeaters as $repeater) {
+        foreach ($this->getJsonRepeaters() as $repeater) {
             if (isset($fields['repeaters'][$repeater])) {
                 $fields[$repeater] = $fields['repeaters'][$repeater];
+
+                foreach ($fields['repeaters'][$repeater] as $index => $repeaterItem) {
+                    if (isset($repeaterItem['medias']) && !empty($repeaterItem['medias'])) {
+                        foreach ($repeaterItem['medias'] as $role => $medias) {
+                            $fields['medias'][getJsonRepeaterMediaRole($role, $repeater, $index)] = $medias;
+                        }
+                    }
+                }
             }
         }
 
@@ -60,7 +68,7 @@ trait HandleJsonRepeaters
      */
     public function getFormFieldsHandleJsonRepeaters($object, $fields)
     {
-        foreach ($this->jsonRepeaters as $repeater) {
+        foreach ($this->getJsonRepeaters() as $repeater) {
             if (isset($fields[$repeater]) && ! empty($fields[$repeater])) {
                 $fields = $this->getJsonRepeater($fields, $repeater, $fields[$repeater]);
             }
@@ -73,6 +81,7 @@ trait HandleJsonRepeaters
     {
         $repeatersFields = [];
         $repeatersBrowsers = [];
+        $repeatersMedias = [];
         /** @var \A17\Twill\Services\Blocks\Block[] $repeatersList */
         $repeatersList = TwillBlocks::getRepeaters()->keyBy('name');
         $repeaters = [];
@@ -80,7 +89,10 @@ trait HandleJsonRepeaters
         foreach ($serializedData as $index => $repeaterItem) {
             $id = $repeaterItem['id'] ?? $index;
 
-            $repeater = $repeatersList[$repeaterName] ?? $repeatersList['dynamic-repeater-' . $repeaterName] ?? null;
+            $repeater = $repeatersList[$repeaterName]
+                ?? $repeatersList['dynamic-repeater-' . $repeaterName]
+                ?? $repeatersList[$this->jsonRepeaters[$repeaterName] ?? null]
+                ?? null;
 
             if (!$repeater) {
                 // There is no repeater found. This can be due to code removal but a database left-over.
@@ -110,12 +122,38 @@ trait HandleJsonRepeaters
                     'value' => $value,
                 ];
             }
+
+            if (isset($repeaterItem['medias']) && !empty($repeaterItem['medias'])) {
+                $mediaKeys = array_keys($repeaterItem['medias']);
+
+                foreach ($mediaKeys as $mediaKey) {
+                    $key = getJsonRepeaterMediaRole($mediaKey, $repeaterName, $index);
+                    if (isset($fields['medias'][$key])) {
+                        $repeatersMedias["blocks[$id][$mediaKey]"] = $fields['medias'][$key];
+                    }
+                }
+            }
         }
 
         $fields['repeaters'][$repeaterName] = $repeaters;
         $fields['repeaterFields'][$repeaterName] = $repeatersFields;
         $fields['repeaterBrowsers'][$repeaterName] = $repeatersBrowsers;
+        $fields['repeaterMedias'][$repeaterName] = $repeatersMedias;
 
         return $fields;
+    }
+
+    private function getJsonRepeaters(): array
+    {
+        if ($this->isKeyValueRepeaters()) {
+            return array_keys($this->jsonRepeaters);
+        } else {
+            return $this->jsonRepeaters;
+        }
+    }
+
+    private function isKeyValueRepeaters(): bool
+    {
+        return count(array_filter(array_keys($this->jsonRepeaters), 'is_string')) === count($this->jsonRepeaters);
     }
 }

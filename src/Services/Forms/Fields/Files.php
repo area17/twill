@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
+use A17\Twill\Services\Forms\Fields\Traits\CanDisableTranslate;
 use A17\Twill\Services\Forms\Fields\Traits\CanHaveButtonOnTop;
 use A17\Twill\Services\Forms\Fields\Traits\HasFieldNote;
 use A17\Twill\Services\Forms\Fields\Traits\HasMax;
@@ -14,6 +15,7 @@ class Files extends BaseFormField
     use HasMax;
     use HasFieldNote;
     use CanHaveButtonOnTop;
+    use CanDisableTranslate;
 
     protected ?string $itemLabel = null;
 

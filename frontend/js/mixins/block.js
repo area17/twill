@@ -18,8 +18,9 @@ export default {
     open: function () {
       this.opened = true
     },
-    fieldName: function (id) {
-      return this.name + '[' + id + ']' // output : nameOfBlock[UniqID][name]
+    fieldName: function (id, extra = null) {
+      const fieldName = this.name + '[' + id + ']' // output : nameOfBlock[UniqID][name]
+      return extra ? fieldName + extra : fieldName
     },
     repeaterName: function (id) {
       return this.name.replace('[', '-').replace(']', '') + '|' + id // nameOfBlock-UniqID|name
