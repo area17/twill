@@ -22,26 +22,44 @@
     "docs": "https://twillcms.com/docs/",
     "chat": "https://discord.gg/cnWk7EFv8R"
   },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:area17/laravel-translatable.git"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:area17/laravel-nestedset.git"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:ifox/tags.git"
+    },
+    {
+      "type": "vcs",
+      "url": "git@github.com:StevePorter92/laravel-activitylog.git"
+    }
+  ],
   "require": {
     "php": "^8.0",
     "ext-json": "*",
     "ext-pdo": "*",
-    "astrotomic/laravel-translatable": "^v11.12",
-    "cartalyst/tags": "^12.0|^13.0",
+    "astrotomic/laravel-translatable": "^v11.12 || dev-laravel-11-support",
+    "cartalyst/tags": "^12.0 || ^13.0 || dev-laravel-11-support",
     "doctrine/dbal": "^3.0",
     "guzzlehttp/guzzle": "^7.0",
     "imgix/imgix-php": "^3.0",
-    "kalnoy/nestedset": "^6.0",
-    "laravel/framework": "^9.0|^10.0",
+    "kalnoy/nestedset": "^6.0 || dev-laravel-11-support",
+    "laravel/framework": "^9.0 || ^10.0 || ^11.0",
     "laravel/socialite": "^5.3",
     "laravel/ui": "^4.0",
     "league/flysystem-aws-s3-v3": "^3.0",
-    "league/glide-laravel": "^1.0",
+    "league/glide-symfony": "^1.0 || ^2.0",
     "matthewbdaly/laravel-azure-storage": "^2.0",
     "myclabs/php-enum": "^1.5",
     "pragmarx/google2fa-qrcode": "^2.0",
-    "spatie/laravel-activitylog": "^4.0",
-    "spatie/laravel-analytics": "^4.0|^5.0",
+    "spatie/laravel-activitylog": "^4.0 || dev-feat/support-laravel-11",
+    "spatie/laravel-analytics": "^4.0 || ^5.0",
     "spatie/once": "^3.0"
   },
   "require-dev": {
@@ -49,12 +67,12 @@
     "chillerlan/php-qrcode": "~4.0",
     "friendsofphp/php-cs-fixer": "^3.0",
     "nette/php-generator": "^4.0.3",
-    "nunomaduro/collision": "^6.0|^7.0|^8.0",
+    "nunomaduro/collision": "^6.0 || ^7.0 || ^8.0",
     "nunomaduro/larastan": "^2.0",
-    "orchestra/testbench": "^7.8|^8.0",
-    "orchestra/testbench-dusk": "^7.8|^8.0",
+    "orchestra/testbench": "^7.8 || ^8.0 || ^9.0",
+    "orchestra/testbench-dusk": "^7.8 || ^8.0 || ^9.0",
     "phpunit/php-invoker": "^3.1",
-    "phpunit/phpunit": "~9.0",
+    "phpunit/phpunit": "~9.0 || ~10.0",
     "rector/rector": "^0.12.15",
     "spatie/invade": "^1.1",
     "squizlabs/php_codesniffer": "*",

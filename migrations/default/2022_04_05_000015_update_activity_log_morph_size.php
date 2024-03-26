@@ -21,11 +21,11 @@ return new class extends Migration
                 $tableName,
                 function (Blueprint $table) use ($connection, $tableName) {
                     if ($connection->hasColumn($tableName, 'subject_id')) {
-                        $table->bigInteger('subject_id')->change();
+                        $table->bigInteger('subject_id')->nullable()->change();
                     }
 
                     if ($connection->hasColumn($tableName, 'causer_id')) {
-                        $table->bigInteger('causer_id')->change();
+                        $table->bigInteger('causer_id')->nullable()->change();
                     }
                 }
             );
@@ -47,11 +47,11 @@ return new class extends Migration
                 $tableName,
                 function (Blueprint $table) use ($connection, $tableName) {
                     if ($connection->hasColumn($tableName, 'subject_id')) {
-                        $table->integer('subject_id')->change();
+                        $table->integer('subject_id')->nullable()->change();
                     }
 
                     if ($connection->hasColumn($tableName, 'causer_id')) {
-                        $table->integer('causer_id')->change();
+                        $table->integer('causer_id')->nullable()->change();
                     }
                 }
             );
