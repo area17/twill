@@ -1,7 +1,11 @@
 <template>
   <a17-accordion :open="open" @toggleVisibility="notifyOpen">
-    <span slot="accordion__title"><slot></slot> <span class="f--small f--note">({{ revisions.length }})</span></span>
-    <div slot="accordion__value">{{ $trans('publisher.last-edit') }} <timeago :auto-update="1" :datetime="new Date(revisions[0].datetime)"></timeago></div>
+    <template v-slot:accordion__title>
+      <span><slot></slot> <span class="f--small f--note">({{ revisions.length }})</span></span>
+    </template>
+    <template v-slot:accordion__value>
+      <div>{{ $trans('publisher.last-edit') }} <timeago :auto-update="1" :datetime="new Date(revisions[0].datetime)"></timeago></div>
+    </template>
     <div class="revaccordion__scroller">
       <ul class="revaccordion__list">
         <li class="revaccordion__item" v-for="revision in revisions" :key="revision.id">

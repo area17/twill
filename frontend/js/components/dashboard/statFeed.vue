@@ -9,14 +9,16 @@
             <div class="statFeed__dropdown">
               <a17-dropdown ref="statPeriodDropdown" position="bottom-right">
                 <a17-button variant="ghost" @click="$refs.statPeriodDropdown.toggle()">{{ selectedPeriodLabel }} <span v-svg class="statFeed__dropdownIcon" symbol="dropdown_module"></span></a17-button>
-                <div slot="dropdown__content">
-                  <template v-for="(period, index) in periods">
-                    <button type="button"
-                            v-if="period.value !== selectedPeriod"
-                            :key="index"
-                            @click="selectPeriod(period.value)">{{ period.label }}</button>
-                  </template>
-                </div>
+                <template v-slot:dropdown__content>
+                  <div>
+                    <template v-for="(period, index) in periods">
+                      <button type="button"
+                              v-if="period.value !== selectedPeriod"
+                              :key="index"
+                              @click="selectPeriod(period.value)">{{ period.label }}</button>
+                    </template>
+                  </div>
+                </template>
               </a17-dropdown>
             </div>
           </div>

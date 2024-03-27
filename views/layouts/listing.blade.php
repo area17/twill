@@ -37,88 +37,101 @@
                 <a17-filter v-on:submit="filterListing" v-bind:closed="hasBulkIds"
                             initial-search-value="{{ $filters['search'] ?? '' }}" :clear-option="true"
                             v-on:clear="clearFiltersAndReloadDatas">
-                    <a17-table-filters slot="navigation"></a17-table-filters>
+                    <template v-slot:navigation>
+                        <a17-table-filters></a17-table-filters>
+                    </template>
+
 
                     @php /** @var \A17\Twill\Services\Listings\Filters\BasicFilter $filter */ @endphp
                     @if (count($hiddenFilters) > 0)
-                        <div slot="hidden-filters">
-                            @foreach($hiddenFilters as $filter)
-                                @php
-                                    $options = $filter->getOptions($repository)->map(function($label, $value) use($filter) {
-                                            if ($value === \A17\Twill\Services\Listings\Filters\BasicFilter::OPTION_ALL) {
-                                                $label = twillTrans('twill::lang.listing.filters.all-label', ['label' => $filter->getLabel() ?? '']);
-                                            }
-                                            return [
-                                                'value' => $value,
-                                                'label' => $label,
-                                            ];
-                                        })->values()->toArray();
+                        <template v-slot:hidden-filters>
+                            <div>
+                                @foreach($hiddenFilters as $filter)
+                                    @php
+                                        $options = $filter->getOptions($repository)->map(function($label, $value) use($filter) {
+                                                if ($value === \A17\Twill\Services\Listings\Filters\BasicFilter::OPTION_ALL) {
+                                                    $label = twillTrans('twill::lang.listing.filters.all-label', ['label' => $filter->getLabel() ?? '']);
+                                                }
+                                                return [
+                                                    'value' => $value,
+                                                    'label' => $label,
+                                                ];
+                                            })->values()->toArray();
 
-                                    $currentValue = $requestFilter[$filter->getQueryString()] ?? $filter->getDefaultValue();
+                                        $currentValue = $requestFilter[$filter->getQueryString()] ?? $filter->getDefaultValue();
 
-                                    $selectedIndex = array_search($currentValue, array_column($options, 'value'), true);
-                                @endphp
-                                <a17-vselect
-                                    name="{{ $filter->getQueryString() }}"
-                                    :options="{{ json_encode($options) }}"
-                                    @if ($selectedIndex !== false)
-                                        :selected="{{ json_encode($options[$selectedIndex]) }}"
-                                    @endif
-                                    placeholder="All {{ strtolower(\Illuminate\Support\Str::plural($filter->getQueryString())) }}"
-                                    ref="filterDropdown[{{ $loop->index }}]"
-                                ></a17-vselect>
-                            @endforeach
-                        </div>
+                                        $selectedIndex = array_search($currentValue, array_column($options, 'value'), true);
+                                    @endphp
+                                    <a17-vselect
+                                        name="{{ $filter->getQueryString() }}"
+                                        :options="{{ json_encode($options) }}"
+                                        @if ($selectedIndex !== false)
+                                            :selected="{{ json_encode($options[$selectedIndex]) }}"
+                                        @endif
+                                        placeholder="All {{ strtolower(\Illuminate\Support\Str::plural($filter->getQueryString())) }}"
+                                        ref="filterDropdown[{{ $loop->index }}]"
+                                    ></a17-vselect>
+                                @endforeach
+                            </div>
+                        </template>
                     @else
                         @hasSection('hiddenFilters')
-                            <div slot="hidden-filters">
-                                @yield('hiddenFilters')
-                            </div>
+                            <template v-slot:hidden-filters>
+                                <div>
+                                    @yield('hiddenFilters')
+                                </div>
+                            </template>
                         @endif
                     @endif
 
                     @if($create)
-                        <div slot="additional-actions">
-                            <a17-button
-                                variant="validate"
-                                size="small"
-                                @if($skipCreateModal) href={{$createUrl ?? ''}} el="a" @endif
-                                @if(!$skipCreateModal) v-on:click="create" @endif
-                            >
-                                {{ twillTrans('twill::lang.listing.add-new-button') }}
-                            </a17-button>
-                            @foreach($filterLinks as $link)
-                                <a17-button el="a" href="{{ $link['url'] ?? '#' }}"
-                                            download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}"
-                                            target="{{ $link['target'] ?? '' }}"
-                                            variant="small secondary">{{ $link['label'] }}</a17-button>
-                            @endforeach
-                        </div>
+                        <template v-slot:additional-actions>
+                            <div>
+                                <a17-button
+                                    variant="validate"
+                                    size="small"
+                                    @if($skipCreateModal) href={{$createUrl ?? ''}} el="a" @endif
+                                    @if(!$skipCreateModal) v-on:click="create" @endif
+                                >
+                                    {{ twillTrans('twill::lang.listing.add-new-button') }}
+                                </a17-button>
+                                @foreach($filterLinks as $link)
+                                    <a17-button el="a" href="{{ $link['url'] ?? '#' }}"
+                                                download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}"
+                                                target="{{ $link['target'] ?? '' }}"
+                                                variant="small secondary">{{ $link['label'] }}</a17-button>
+                                @endforeach
+                            </div>
+                        </template>
                     @elseif(isset($filterLinks) && count($filterLinks))
-                        <div slot="additional-actions">
-                            @foreach($filterLinks as $link)
-                                <a17-button el="a" href="{{ $link['url'] ?? '#' }}"
-                                            download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}"
-                                            target="{{ $link['target'] ?? '' }}"
-                                            variant="small secondary">{{ $link['label'] }}</a17-button>
-                            @endforeach
-                        </div>
+                        <template v-slot:additional-actions>
+                            <div>
+                                @foreach($filterLinks as $link)
+                                    <a17-button el="a" href="{{ $link['url'] ?? '#' }}"
+                                                download="{{ $link['download'] ?? '' }}" rel="{{ $link['rel'] ?? '' }}"
+                                                target="{{ $link['target'] ?? '' }}"
+                                                variant="small secondary">{{ $link['label'] }}</a17-button>
+                                @endforeach
+                            </div>
+                        </template>
                     @endif
 
                     @if(isset($additionalTableActions) && count($additionalTableActions))
-                        <div slot="additional-actions">
-                            @foreach($additionalTableActions as $additionalTableAction)
-                                <a17-button
-                                    variant="{{ $additionalTableAction['variant'] ?? 'primary' }}"
-                                    size="{{ $additionalTableAction['size'] ?? 'small' }}"
-                                    el="{{ $additionalTableAction['type'] ?? 'button' }}"
-                                    href="{{ $additionalTableAction['link'] ?? '#' }}"
-                                    target="{{ $additionalTableAction['target'] ?? '_self' }}"
-                                >
-                                    {{ $additionalTableAction['name'] }}
-                                </a17-button>
-                            @endforeach
-                        </div>
+                        <template v-slot:additional-actions>
+                            <div>
+                                @foreach($additionalTableActions as $additionalTableAction)
+                                    <a17-button
+                                        variant="{{ $additionalTableAction['variant'] ?? 'primary' }}"
+                                        size="{{ $additionalTableAction['size'] ?? 'small' }}"
+                                        el="{{ $additionalTableAction['type'] ?? 'button' }}"
+                                        href="{{ $additionalTableAction['link'] ?? '#' }}"
+                                        target="{{ $additionalTableAction['target'] ?? '_self' }}"
+                                    >
+                                        {{ $additionalTableAction['name'] }}
+                                    </a17-button>
+                                @endforeach
+                            </div>
+                        </template>
                     @endif
                 </a17-filter>
             </div>

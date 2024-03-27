@@ -9,14 +9,16 @@
           :maxHeight="270">
             <span class="editorSidebar__counter f--tiny"
                   @click="toggleBlockDropdown">{{ blockIndex + 1 }}</span>
-          <div slot="dropdown__content">
-            <button type="button"
-                    v-for="n in blocksLength"
-                    @click="moveBlock(n - 1)"
-                    :key="n">
-              {{ n }}
-            </button>
-          </div>
+          <template v-slot:dropdown__content>
+            <div>
+              <button type="button"
+                      v-for="n in blocksLength"
+                      @click="moveBlock(n - 1)"
+                      :key="n">
+                {{ n }}
+              </button>
+            </div>
+          </template>
         </a17-dropdown>
         {{ block.title }}
       </div>

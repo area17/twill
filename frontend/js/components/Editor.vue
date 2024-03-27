@@ -10,11 +10,13 @@
             <a17-button class="editorDropdown__trigger" @click="$refs.editorDropdown.toggle()">
               {{ currentEditorLabel }} <span v-svg symbol="dropdown_module"></span>
             </a17-button>
-            <div slot="dropdown__content">
-              <button type="button" class="editorDropdown" @click="updateEditorName(editorName.value)" v-for="editorName in editorNames" :key="editorName.value">
-                {{ editorName.label }}
-              </button>
-            </div>
+            <template v-slot:dropdown__content>
+              <div>
+                <button type="button" class="editorDropdown" @click="updateEditorName(editorName.value)" v-for="editorName in editorNames" :key="editorName.value">
+                  {{ editorName.label }}
+                </button>
+              </div>
+            </template>
           </a17-dropdown>
     </template>
     <a17-blocks-list :editor-name="editorName" v-slot="{

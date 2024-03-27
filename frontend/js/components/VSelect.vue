@@ -23,7 +23,9 @@
               @input="updateValue"
               @search="getOptions"
           >
-            <span slot="no-options">{{ emptyText }}</span>
+            <template v-slot:no-options>
+              <span>{{ emptyText }}</span>
+            </template>
           </v-select>
         </div>
       </div>

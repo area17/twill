@@ -1,14 +1,18 @@
 <template>
   <a17-accordion :open="open" @toggleVisibility="notifyOpen">
-    <span slot="accordion__title"><slot></slot></span>
-    <div slot="accordion__value">
-      <template v-if="startDate">
-        {{ startDateForDisplay | formatDateWithFormat(localizedDateDisplayFormat) }}
-      </template>
-      <template v-else>
-        {{ defaultStartDate }}
-      </template>
-    </div>
+    <template v-slot:accordion__title>
+      <span><slot></slot></span>
+    </template>
+    <template v-slot:accordion__value>
+      <div>
+        <template v-if="startDate">
+          {{ startDateForDisplay | formatDateWithFormat(localizedDateDisplayFormat) }}
+        </template>
+        <template v-else>
+          {{ defaultStartDate }}
+        </template>
+      </div>
+    </template>
     <div class="accordion__fields">
       <a17-datepicker
         name="publish_date"
