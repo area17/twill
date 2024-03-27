@@ -2,6 +2,12 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.2.1
+
+### Fixed
+- Fix datatable and buckets filters error caused by Axios breaking changes in 0.28.0 by @zeezo887 in https://github.com/area17/twill/pull/2520
+
+
 ## 3.2.0
 
 ### Added
