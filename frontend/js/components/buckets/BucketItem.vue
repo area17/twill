@@ -25,12 +25,14 @@
       <a17-dropdown v-if="!singleBucket" ref="bucketDropdown" class="item__dropdown bucket__action" position="bottom-right" title="Featured in" :clickable="true">
         <a17-button variant="icon" @click="$refs.bucketDropdown.toggle()"><span v-svg symbol="more-dots"></span>
         </a17-button>
-        <div v-if="restricted" slot="dropdown__content" class="item__dropdown__content">
-          <a17-radiogroup name="bucketsSelection" radioClass="bucket" :radios="dropDownBuckets" :initialValue="selectedBuckets()[0]" @change="updateBucket"/>
-        </div>
-        <div v-else slot="dropdown__content" class="item__dropdown__content">
-          <a17-checkboxgroup name="bucketsSelection" :options="dropDownBuckets" :selected="selectedBuckets()" @change="updateBucket"/>
-        </div>
+        <template v-slot:dropdown__content>
+          <div v-if="restricted" class="item__dropdown__content">
+            <a17-radiogroup name="bucketsSelection" radioClass="bucket" :radios="dropDownBuckets" :initialValue="selectedBuckets()[0]" @change="updateBucket"/>
+          </div>
+          <div v-else class="item__dropdown__content">
+            <a17-checkboxgroup name="bucketsSelection" :options="dropDownBuckets" :selected="selectedBuckets()" @change="updateBucket"/>
+          </div>
+        </template>
       </a17-dropdown>
       <a17-button class="bucket__action" icon="close" @click="removeFromBucket()">
         <span v-svg symbol="close_icon"></span>

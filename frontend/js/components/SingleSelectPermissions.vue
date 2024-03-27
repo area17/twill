@@ -2,15 +2,19 @@
   <div class="multiselectorPermissions">
     <div class="multiselectorPermissions__filter" v-if="searchable">
       <a17-filter @submit="submitFilter" :full-width="true">
-        <div slot="additional-actions" v-if="groups.length && listUser" class="multiselectorPermissions__groups">
-          <a17-dropdown class="multiselectorPermissions__dd" ref="groupDropdown"
-                        position="bottom-right" :clickable="true">
-            <button class="multiselectorPermissions__button" @click="$refs.groupDropdown.toggle()" type="button">Groups</button>
-            <div slot="dropdown__content">
-              <a17-checkboxgroup name="permissionsGroups" :selected="activeGroups" :options="groups" @change="updateUserPermission" />
-            </div>
-          </a17-dropdown>
-        </div>
+        <template v-slot:additional-actions>
+          <div v-if="groups.length && listUser" class="multiselectorPermissions__groups">
+            <a17-dropdown class="multiselectorPermissions__dd" ref="groupDropdown"
+                          position="bottom-right" :clickable="true">
+              <button class="multiselectorPermissions__button" @click="$refs.groupDropdown.toggle()" type="button">Groups</button>
+              <template v-slot:dropdown__content>
+                <div>
+                  <a17-checkboxgroup name="permissionsGroups" :selected="activeGroups" :options="groups" @change="updateUserPermission" />
+                </div>
+              </template>
+            </a17-dropdown>
+          </div>
+        </template>
       </a17-filter>
     </div>
     <div class="multiselectorPermissions__items">

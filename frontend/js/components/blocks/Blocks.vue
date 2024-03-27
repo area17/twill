@@ -23,57 +23,61 @@
                               :with-actions="!isSettings"
                               @expand="setOpened"
                               v-if="availableBlocks.length">
-                <template v-for="availableBlock in availableBlocks">
-                  <button
-                    class="blocks__addButton"
-                    type="button"
-                    slot="dropdown-add"
-                    :key="availableBlock.component"
-                    @click="handleBlockAdd(add, availableBlock, blockIndex + 1)"
-                  >
+                <template v-slot:dropdown-add>
+                  <template v-for="availableBlock in availableBlocks">
+                    <button
+                      class="blocks__addButton"
+                      type="button"
+                      :key="availableBlock.component"
+                      @click="handleBlockAdd(add, availableBlock, blockIndex + 1)"
+                    >
                     <span
                       class="blocks__icon"
                       v-svg
                       :symbol="availableBlock.icon"
                     ></span>
-                    <span class="blocks__title">{{ availableBlock.title }}</span>
+                      <span class="blocks__title">{{ availableBlock.title }}</span>
+                    </button>
+                  </template>
+                </template>
+                <template v-slot:dropdown-action>
+                  <div>
+                    <button type="button"
+                            v-if="opened"
+                            @click="collapseAllBlocks()">
+                            {{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}
+                    </button>
+                    <button type="button"
+                            v-else
+                            @click="expandAllBlocks()">
+                            {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
+                    </button>
+                    <button type="button"
+                            v-if="editor && !editorName.includes('|')"
+                            @click="openInEditor(edit, blockIndex, editorName)">
+                            {{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}
+                    </button>
+                    <button type="button"
+                            @click="handleClone(cloneBlock, blockIndex, block)">
+                            {{ $trans('fields.block-editor.clone-block', 'Clone block') }}
+                    </button>
+                    <button type="button"
+                            @click="handleDuplicateBlock(duplicate)">
+                            {{ $trans('fields.block-editor.create-another', 'Create another') }}
+                    </button>
+                    <button type="button"
+                            @click="handleDeleteBlock(remove)">
+                            {{ $trans('fields.block-editor.delete', 'Delete') }}
+                    </button>
+                  </div>
+                </template>
+                <template v-slot:dropdown-numbers>
+                  <button type="button"
+                          v-for="n in savedBlocks.length"
+                          @click="move(n - 1)"
+                          :key="n">{{ n }}
                   </button>
                 </template>
-                <div slot="dropdown-action">
-                  <button type="button"
-                          v-if="opened"
-                          @click="collapseAllBlocks()">
-                          {{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}
-                  </button>
-                  <button type="button"
-                          v-else
-                          @click="expandAllBlocks()">
-                          {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
-                  </button>
-                  <button type="button"
-                          v-if="editor && !editorName.includes('|')"
-                          @click="openInEditor(edit, blockIndex, editorName)">
-                          {{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}
-                  </button>
-                  <button type="button"
-                          @click="handleClone(cloneBlock, blockIndex, block)">
-                          {{ $trans('fields.block-editor.clone-block', 'Clone block') }}
-                  </button>
-                  <button type="button"
-                          @click="handleDuplicateBlock(duplicate)">
-                          {{ $trans('fields.block-editor.create-another', 'Create another') }}
-                  </button>
-                  <button type="button"
-                          @click="handleDeleteBlock(remove)">
-                          {{ $trans('fields.block-editor.delete', 'Delete') }}
-                  </button>
-                </div>
-                <button slot="dropdown-numbers"
-                        type="button"
-                        v-for="n in savedBlocks.length"
-                        @click="move(n - 1)"
-                        :key="n">{{ n }}
-                </button>
               </a17-blockeditor-item>
             </a17-blockeditor-model>
           </div>
@@ -93,28 +97,30 @@
                       @click="$refs.blocksDropdown.toggle()">{{ trigger }}
           </a17-button>
 
-          <div slot="dropdown__content">
-            <template v-for="availableBlock in availableBlocks">
-              <a17-blockeditor-model :editor-name="editorName"
-                               :block="availableBlock"
-                               :key="availableBlock.component"
-                               v-slot="{ add, block }">
-                <button
-                  class="blocks__addButton"
-                  type="button"
-                  :key="availableBlock.component"
-                  @click="handleBlockAdd(add, block)"
-                >
-                  <span
-                    class="blocks__icon"
-                    v-svg
-                    :symbol="availableBlock.icon"
-                  ></span>
-                  <span class="blocks__title">{{ availableBlock.title }}</span>
-                </button>
-              </a17-blockeditor-model>
-            </template>
-          </div>
+          <template v-slot:dropdown__content>
+            <div>
+              <template v-for="availableBlock in availableBlocks">
+                <a17-blockeditor-model :editor-name="editorName"
+                                 :block="availableBlock"
+                                 :key="availableBlock.component"
+                                 v-slot="{ add, block }">
+                  <button
+                    class="blocks__addButton"
+                    type="button"
+                    :key="availableBlock.component"
+                    @click="handleBlockAdd(add, block)"
+                  >
+                    <span
+                      class="blocks__icon"
+                      v-svg
+                      :symbol="availableBlock.icon"
+                    ></span>
+                    <span class="blocks__title">{{ availableBlock.title }}</span>
+                  </button>
+                </a17-blockeditor-model>
+              </template>
+            </div>
+          </template>
         </a17-dropdown>
         <div class="blocks__secondaryActions" v-if="!editorName.includes('|')">
           <a href="#"

@@ -4,36 +4,42 @@
       <div class="medialibrary__frame">
         <div class="medialibrary__header" ref="form">
           <a17-filter @submit="submitFilter" :clearOption="true" @clear="clearFilters">
-            <ul class="secondarynav secondarynav--desktop" slot="navigation" v-if="types.length">
-              <li class="secondarynav__item" v-for="navType in types" :key="navType.value"
-                  :class="{ 's--on': type === navType.value, 's--disabled' : type !== navType.value && strict }">
-                <a href="#" @click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span><span
-                  v-if="navType.total > 0" class="secondarynav__number">({{ navType.total }})</span></a>
-              </li>
-            </ul>
+            <template v-slot:navigation>
+              <ul class="secondarynav secondarynav--desktop" v-if="types.length">
+                <li class="secondarynav__item" v-for="navType in types" :key="navType.value"
+                    :class="{ 's--on': type === navType.value, 's--disabled' : type !== navType.value && strict }">
+                  <a href="#" @click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span><span
+                    v-if="navType.total > 0" class="secondarynav__number">({{ navType.total }})</span></a>
+                </li>
+              </ul>
 
-            <div class="secondarynav secondarynav--mobile secondarynav--dropdown" slot="navigation">
-              <a17-dropdown ref="secondaryNavDropdown" position="bottom-left" width="full" :offset="0">
-                <a17-button class="secondarynav__button" variant="dropdown-transparent" size="small"
-                            @click="$refs.secondaryNavDropdown.toggle()" v-if="selectedType">
-                  <span class="secondarynav__link">{{ selectedType.text }}</span><span class="secondarynav__number">{{ selectedType.total }}</span>
-                </a17-button>
-                <div slot="dropdown__content">
-                  <ul>
-                    <li v-for="navType in types" :key="navType.value" class="secondarynav__item">
-                      <a href="#" v-on:click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span><span
-                        class="secondarynav__number">{{ navType.total }}</span></a>
-                    </li>
-                  </ul>
-                </div>
-              </a17-dropdown>
-            </div>
+              <div class="secondarynav secondarynav--mobile secondarynav--dropdown">
+                <a17-dropdown ref="secondaryNavDropdown" position="bottom-left" width="full" :offset="0">
+                  <a17-button class="secondarynav__button" variant="dropdown-transparent" size="small"
+                              @click="$refs.secondaryNavDropdown.toggle()" v-if="selectedType">
+                    <span class="secondarynav__link">{{ selectedType.text }}</span><span class="secondarynav__number">{{ selectedType.total }}</span>
+                  </a17-button>
+                  <template v-slot:dropdown__content>
+                    <div>
+                      <ul>
+                        <li v-for="navType in types" :key="navType.value" class="secondarynav__item">
+                          <a href="#" v-on:click.prevent="updateType(navType.value)"><span class="secondarynav__link">{{ navType.text }}</span><span
+                            class="secondarynav__number">{{ navType.total }}</span></a>
+                        </li>
+                      </ul>
+                    </div>
+                  </template>
+                </a17-dropdown>
+              </div>
+            </template>
 
-            <div slot="hidden-filters">
-              <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags"
-                           :placeholder="$trans('media-library.filter-select-label', 'Filter by tag')" :searchable="true" maxHeight="175px"/>
-              <a17-checkbox class="medialibrary__filter-item" ref="unused" name="unused" :initial-value="0" :value="1" :label="$trans('media-library.unused-filter-label', 'Show unused only')"/>
-            </div>
+            <template v-slot:hidden-filters>
+              <div>
+                <a17-vselect class="medialibrary__filter-item" ref="filter" name="tag" :options="tags"
+                             :placeholder="$trans('media-library.filter-select-label', 'Filter by tag')" :searchable="true" maxHeight="175px"/>
+                <a17-checkbox class="medialibrary__filter-item" ref="unused" name="unused" :initial-value="0" :value="1" :label="$trans('media-library.unused-filter-label', 'Show unused only')"/>
+              </div>
+            </template>
           </a17-filter>
         </div>
         <div class="medialibrary__inner">

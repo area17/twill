@@ -17,12 +17,14 @@
                   {{ $trans('previewer.last-edit') }} <timeago :auto-update="1" :datetime="new Date(revisions[0].datetime)"></timeago> <span v-svg symbol="dropdown_module"></span>
                 </template>
               </a17-button>
-              <div slot="dropdown__content">
-                <button type="button" class="previewerRevision" :class="{ 'previewerRevision--active' : currentRevision.id === revision.id }" @click="toggleRevision(revision.id)" v-for="revision in revisions"  :key="revision.id">
-                  <span class="previewerRevision__author">{{ revision.author }}</span>
-                  <span class="previewerRevision__datetime"><span class="tag" v-if="revision.label">{{ revision.label }}</span> {{ revision.datetime | formatDate }}</span>
-                </button>
-              </div>
+              <template v-slot:dropdown__content>
+                <div>
+                  <button type="button" class="previewerRevision" :class="{ 'previewerRevision--active' : currentRevision.id === revision.id }" @click="toggleRevision(revision.id)" v-for="revision in revisions"  :key="revision.id">
+                    <span class="previewerRevision__author">{{ revision.author }}</span>
+                    <span class="previewerRevision__datetime"><span class="tag" v-if="revision.label">{{ revision.label }}</span> {{ revision.datetime | formatDate }}</span>
+                  </button>
+                </div>
+              </template>
             </a17-dropdown>
           </div>
 

@@ -14,9 +14,11 @@
         in-store="currentValue"
     >
         @if($addNew)
-            <div slot="addModal">
-                @partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
-            </div>
+            <template v-slot:addModal>
+                <div>
+                    @partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
+                </div>
+            </template>
         @endif
     </a17-multiselect>
 @else
@@ -38,9 +40,9 @@
         @if ($pushTags ?? false) pushTags="{{ $pushTags }}" @endif
     >
         @if($addNew)
-            <div slot="addModal">
-                @partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
-            </div>
+            <template v-slot:addModal>
+                <div>@partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])</div>
+            </template>
         @endif
     </a17-vselect>
 @endif

@@ -14,14 +14,16 @@
               @click="$refs.languageManagerDropdown.toggle()">
         {{currentValue.length }} {{ $trans('lang-manager.published') }} <span v-svg symbol="dropdown_module"></span>
       </button>
-      <div slot="dropdown__content" class="languageManager__dropdown-content">
-        <a17-checkboxgroup name="langManager"
-                           :options="languages"
-                           :selected="currentValue"
-                           :min="1"
-                           @change="changeValue"
-                           />
-      </div>
+      <template v-slot:dropdown__content>
+        <div class="languageManager__dropdown-content">
+          <a17-checkboxgroup name="langManager"
+                             :options="languages"
+                             :selected="currentValue"
+                             :min="1"
+                             @change="changeValue"
+                             />
+        </div>
+      </template>
     </a17-dropdown>
   </div>
 </template>

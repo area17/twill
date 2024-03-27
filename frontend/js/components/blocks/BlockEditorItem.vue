@@ -5,9 +5,9 @@
       <div class="block__toggle">
         <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown && withActions" :maxHeight="270">
           <span class="block__counter f--tiny" @click="$refs[moveDropdown].toggle()">{{ index + 1 }}</span>
-          <div slot="dropdown__content">
-            <slot name="dropdown-numbers"/>
-          </div>
+          <template v-slot:dropdown__content>
+            <div><slot name="dropdown-numbers"/></div>
+          </template>
         </a17-dropdown>
         <span class="block__counter f--tiny" v-else-if="withActions">{{ index + 1 }}</span>
         <span class="block__title">{{ blockTitle }}</span>
@@ -17,9 +17,9 @@
         <a17-dropdown :ref="addDropdown" position="bottom-right" :maxHeight="430" @open="hover = true" @close="hover = false" v-if="withAddDropdown">
           <a17-button variant="icon" data-action @click="$refs[addDropdown].toggle()"><span v-svg symbol="add"></span>
           </a17-button>
-          <div slot="dropdown__content">
-            <slot name="dropdown-add"/>
-          </div>
+          <template v-slot:dropdown__content>
+            <div><slot name="dropdown-add"/></div>
+          </template>
         </a17-dropdown>
 
         <a17-button variant="icon" data-action @click="toggleExpand()" :aria-expanded="visible ? 'true' : 'false'"><span
@@ -28,9 +28,9 @@
         <a17-dropdown :ref="actionsDropdown" position="bottom-right" @open="hover = true" @close="hover = false">
           <a17-button variant="icon" @click="$refs[actionsDropdown].toggle()"><span v-svg symbol="more-dots"></span>
           </a17-button>
-          <div slot="dropdown__content">
-            <slot name="dropdown-action"/>
-          </div>
+          <template v-slot:dropdown__content>
+            <div><slot name="dropdown-action"/></div>
+          </template>
         </a17-dropdown>
       </div>
     </div>

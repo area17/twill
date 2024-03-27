@@ -15,12 +15,12 @@
         in-store="value"
     >
         @if($addNew)
-            <div slot="addModal">
+            <template v-slot:addModal>
                 @php
                     unset($note, $placeholder, $emptyText, $default, $required, $inModal, $addNew, $options);
                 @endphp
-                @partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
-            </div>
+                <div>@partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])</div>
+            </template>
         @endif
     </a17-singleselect>
 @elseif ($native ?? false)
@@ -39,12 +39,12 @@
         in-store="value"
     >
         @if($addNew)
-            <div slot="addModal">
+            <template v-slot:addModal>
                 @php
                     unset($note, $placeholder, $emptyText, $default, $required, $inModal, $addNew, $options);
                 @endphp
-                @partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
-            </div>
+                <div>@partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])</div>
+            </template>
         @endif
     </a17-select>
 @else
@@ -67,12 +67,12 @@
         in-store="inputValue"
     >
         @if($addNew)
-            <div slot="addModal">
+            <template v-slot:addModal>
                 @php
                     unset($note, $placeholder, $emptyText, $default, $required, $inModal, $addNew, $options);
                 @endphp
-                @partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
-            </div>
+                <div>@partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])</div>
+            </template>
         @endif
     </a17-vselect>
 @endif

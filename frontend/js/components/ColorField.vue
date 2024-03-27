@@ -19,9 +19,11 @@
       />
       <a17-dropdown ref="colorDropdown" class="form__field--color" position="bottom-right" :arrow="true" :offset="15" :minWidth="300" :clickable="true" :sideOffset="15" @close="saveIntoStore">
         <span class="form__field--colorBtn" :style="bcgStyle" @click="$refs.colorDropdown.toggle()"></span>
-        <div slot="dropdown__content">
-          <a17-colorpicker :color="value" @change="updateValueFromPicker"></a17-colorpicker>
-        </div>
+        <template v-slot:dropdown__content>
+          <div>
+            <a17-colorpicker :color="value" @change="updateValueFromPicker"></a17-colorpicker>
+          </div>
+        </template>
       </a17-dropdown>
     </div>
   </a17-inputframe>

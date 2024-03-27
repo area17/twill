@@ -11,24 +11,28 @@
               :size="blockSize"
               :opened="opened"
           >
-            <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"
-                        v-if="hasRemainingBlocks">
-              <span v-svg symbol="add"></span>
-            </a17-button>
-            <div slot="dropdown-action">
-              <button type="button" @click="collapseAllBlocks()" v-if="opened">
-                {{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}
-              </button>
-              <button v-else type="button" @click="expandAllBlocks()">
-                {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
-              </button>
-              <button type="button" @click="duplicateBlock(index)" v-if="hasRemainingBlocks">
-                {{ $trans('fields.block-editor.clone-block', 'Clone block') }}
-              </button>
-              <button type="button" @click="deleteBlock(index)">
-                {{ $trans('fields.block-editor.delete', 'Delete') }}
-              </button>
-            </div>
+            <template v-slot:block-actions>
+              <a17-button variant="icon" data-action @click="duplicateBlock(index)"
+                          v-if="hasRemainingBlocks">
+                <span v-svg symbol="add"></span>
+              </a17-button>
+            </template>
+            <template v-slot:dropdown-action>
+              <div>
+                <button type="button" @click="collapseAllBlocks()" v-if="opened">
+                  {{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}
+                </button>
+                <button v-else type="button" @click="expandAllBlocks()">
+                  {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
+                </button>
+                <button type="button" @click="duplicateBlock(index)" v-if="hasRemainingBlocks">
+                  {{ $trans('fields.block-editor.clone-block', 'Clone block') }}
+                </button>
+                <button type="button" @click="deleteBlock(index)">
+                  {{ $trans('fields.block-editor.delete', 'Delete') }}
+                </button>
+              </div>
+            </template>
           </a17-blockeditor-item>
         </div>
       </transition-group>
