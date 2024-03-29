@@ -154,13 +154,14 @@
 
             <template v-if="this.toolbar.wrappers">
               <br/>
-              <template v-for="wrapper in this.toolbar.wrappers">
+              <!-- eslint-disable vue/no-v-for-template-key -->
+              <template v-for="wrapper in this.toolbar.wrappers" :key="wrapper.id">
                 <wysiwyg-menu-bar-btn :icon-url="wrapper.icon"
-                                      :key="wrapper.id"
                                       :isActive="editor.isActive(wrapper.class)"
                                       :label="wrapper.label"
                                       @btn:click="editor.commands['set' + wrapper.id]()"/>
               </template>
+              <!-- eslint-enable -->
             </template>
 
           </div>

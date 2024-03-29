@@ -24,11 +24,12 @@
                               @expand="setOpened"
                               v-if="availableBlocks.length">
                 <template v-slot:dropdown-add>
-                  <template v-for="availableBlock in availableBlocks">
+                  <!-- eslint-disable vue/no-v-for-template-key -->
+                  <template v-for="availableBlock in availableBlocks"
+                            :key="availableBlock.component">
                     <button
                       class="blocks__addButton"
                       type="button"
-                      :key="availableBlock.component"
                       @click="handleBlockAdd(add, availableBlock, blockIndex + 1)"
                     >
                     <span
@@ -39,6 +40,7 @@
                       <span class="blocks__title">{{ availableBlock.title }}</span>
                     </button>
                   </template>
+                  <!-- eslint-enable -->
                 </template>
                 <template v-slot:dropdown-action>
                   <div>
@@ -99,10 +101,11 @@
 
           <template v-slot:dropdown__content>
             <div>
-              <template v-for="availableBlock in availableBlocks">
+              <!-- eslint-disable vue/no-v-for-template-key -->
+              <template v-for="availableBlock in availableBlocks"
+                        :key="availableBlock.component">
                 <a17-blockeditor-model :editor-name="editorName"
                                  :block="availableBlock"
-                                 :key="availableBlock.component"
                                  v-slot="{ add, block }">
                   <button
                     class="blocks__addButton"
@@ -119,6 +122,7 @@
                   </button>
                 </a17-blockeditor-model>
               </template>
+              <!-- eslint-enable -->
             </div>
           </template>
         </a17-dropdown>

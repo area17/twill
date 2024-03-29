@@ -15,9 +15,10 @@
                  :handle="handle"
                  @add="onAdd(add, edit, $event)"
                  @update="onUpdate">
-        <template v-for="savedBlock in blocks">
+        <!-- eslint-disable vue/no-v-for-template-key -->
+        <template v-for="savedBlock in blocks"
+                  :key="savedBlock.id">
           <a17-blockeditor-model :block="savedBlock"
-                           :key="savedBlock.id"
                            :editor-name="editorName"
                            v-slot="{ block, isActive, blockIndex, move, remove, edit, unEdit, cloneBlock }">
             <a17-editor-block-preview :ref="block.id"
@@ -34,6 +35,7 @@
                                       @scroll-to="scrollToActive"/>
           </a17-blockeditor-model>
         </template>
+        <!-- eslint-enable -->
       </draggable>
       <a17-spinner v-if="loading"
                    :visible="true">{{ $trans('fields.block-editor.loading', 'Loading') }}&hellip;

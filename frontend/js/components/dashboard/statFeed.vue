@@ -25,9 +25,9 @@
       </div>
     </header>
     <div class="box__body">
-      <template  v-for="(fact, index) in factsForSelectedPeriod">
-      <a :key="index"
-         :href="fact.url" class="statFeed__item"
+      <!-- eslint-disable vue/no-v-for-template-key -->
+      <template v-for="(fact, index) in factsForSelectedPeriod" :key="index">
+      <a :href="fact.url" class="statFeed__item"
          target="_blank">
         <h3 class="statFeed__numb f--heading" :class="trending(index)">{{ fact.figure }}</h3>
         <div class="statFeed__info">
@@ -39,6 +39,7 @@
         </div>
       </a>
       </template>
+      <!-- eslint-enable -->
     </div>
     <footer class="box__footer statFeed__footer">
       <a href="https://analytics.google.com/analytics/web" class="f--external" target="_blank">Google Analytics</a>

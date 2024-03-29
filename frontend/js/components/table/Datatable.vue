@@ -40,16 +40,20 @@
           </thead>
           <template v-if="draggable">
             <draggable class="datatable__drag" :tag="'tbody'" v-model="rows" v-bind="dragOptions">
-              <template v-for="(row, index) in rows">
-                <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"/>
+              <!-- eslint-disable vue/no-v-for-template-key -->
+              <template v-for="(row, index) in rows" :key="row.id">
+                <a17-tablerow :row="row" :index="index" :columns="visibleColumns"/>
               </template>
+              <!-- eslint-enable -->
             </draggable>
           </template>
 
           <tbody v-else>
-          <template v-for="(row, index) in rows">
-            <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"/>
+          <!-- eslint-disable vue/no-v-for-template-key -->
+          <template v-for="(row, index) in rows" :key="row.id">
+            <a17-tablerow :row="row" :index="index" :columns="visibleColumns"/>
           </template>
+          <!-- eslint-enable -->
           </tbody>
         </a17-table>
 
