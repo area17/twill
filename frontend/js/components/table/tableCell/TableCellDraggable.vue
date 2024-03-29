@@ -1,4 +1,4 @@
-<template functional>
+<template>
   <span class="tablecell__handle"></span>
 </template>
 
