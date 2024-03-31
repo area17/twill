@@ -5,7 +5,6 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\User;
-use A17\Twill\Models\Group;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleOauth;
 use A17\Twill\Repositories\Behaviors\HandleUserPermissions;
@@ -79,10 +78,11 @@ class UserRepository extends ModuleRepository
         $browserFields = parent::getFormFieldsForBrowser($object, $relation, $routePrefix, $titleKey, $moduleName);
 
         if (TwillPermissions::enabled()) {
+            $everyoneGroup = twillModel('group')::getEveryoneGroup();
             foreach ($browserFields as $index => $browserField) {
                 if (
-                    $browserField['id'] === Group::getEveryoneGroup()->id &&
-                    $browserField['name'] === Group::getEveryoneGroup()->name
+                    $browserField['id'] === $everyoneGroup->id &&
+                    $browserField['name'] === $everyoneGroup->name
                 ) {
                     $browserFields[$index]['edit'] = false;
                     $browserFields[$index]['deletable'] = false;

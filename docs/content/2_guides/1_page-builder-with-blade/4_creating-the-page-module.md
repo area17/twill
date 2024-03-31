@@ -254,7 +254,7 @@ return new class extends Migration
 ```
 
 This file will create the minimum required tables and columns that Twill uses to provide the CMS functionality. Later in
-the guide we may add some more fields to the database, but will will do that in a new migration.
+the guide we may add some more fields to the database, but we will do that in a new migration.
 
 Once you are more experienced with Twill, you may want to add fields at this moment, before you run the migrate command.
 That way, you do not have to immediately add a new migration file.
