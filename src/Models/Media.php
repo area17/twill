@@ -52,7 +52,7 @@ class Media extends Model
             $filename = substr($filename, 0, -3);
         }
 
-        return Str::ucfirst(preg_replace('/-_/', ' ', sanitizeFilename($filename)));
+        return Str::ucfirst(preg_replace('/[-_]/', ' ', $filename));
     }
 
     public function canDeleteSafely()
