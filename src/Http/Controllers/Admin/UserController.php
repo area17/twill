@@ -5,10 +5,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Enums\PermissionLevel;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Contracts\TwillModelContract;
-use A17\Twill\Models\Group;
 use A17\Twill\Models\Permission;
-use A17\Twill\Models\Role;
-use A17\Twill\Models\User;
 use A17\Twill\Services\Listings\Columns\Image;
 use A17\Twill\Services\Listings\Columns\Text;
 use A17\Twill\Services\Listings\Filters\QuickFilter;
@@ -99,7 +96,7 @@ class UserController extends ModuleController
 
         TwillPermissions::showUserSecondaryNavigation();
 
-        $this->filters['role'] = User::getRoleColumnName();
+        $this->filters['role'] = twillModel('user')::getRoleColumnName();
     }
 
     public function getIndexTableColumns(): TableColumns
@@ -137,7 +134,7 @@ class UserController extends ModuleController
         );
         $tableColumns->add(
             Text::make()
-                ->field(User::getRoleColumnName())
+                ->field(twillModel('user')::getRoleColumnName())
                 ->title('Role')
                 ->customRender(function (TwillModelContract $user) {
                     if (TwillPermissions::enabled()) {
@@ -325,7 +322,7 @@ class UserController extends ModuleController
     private function getGroupPermissionMapping()
     {
         if (config('twill.enabled.permissions-management')) {
-            return Group::with('permissions')->get()
+            return twillModel('group')::with('permissions')->get()
                 ->mapWithKeys(function ($group) {
                     return [$group->id => $group->permissions];
                 })->toArray();
@@ -338,7 +335,7 @@ class UserController extends ModuleController
     {
         if (config('twill.enabled.permissions-management')) {
             // Forget first one because it's the "Everyone" group and we don't want to show it inside admin.
-            return Group::with('permissions')->pluck('name', 'id')->forget(1);
+            return twillModel('group')::with('permissions')->pluck('name', 'id')->forget(1);
         }
 
         return [];
@@ -347,7 +344,7 @@ class UserController extends ModuleController
     private function getRoleList()
     {
         if (config('twill.enabled.permissions-management')) {
-            return Role::accessible()->published()->get()->map(function ($role) {
+            return twillModel('role')::accessible()->published()->get()->map(function ($role) {
                 return ['value' => $role->id, 'label' => $role->name];
             })->toArray();
         }

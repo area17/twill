@@ -2,6 +2,7 @@
 
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillCapsules;
+use A17\Twill\Models\Model;
 use A17\Twill\Services\Blocks\Block;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
@@ -208,6 +209,7 @@ if (! function_exists('fix_directory_separator')) {
 }
 
 if (! function_exists('twillModel')) {
+    /** @return class-string<Model>|Model It returns a class string but this is for the correct type hints */
     function twillModel($model): string
     {
         return config("twill.models.$model")
