@@ -53,11 +53,7 @@ trait HandleMedias
             return;
         }
 
-        $object->medias()->sync([]);
-
-        $this->getMedias($fields)->each(function ($media) use ($object) {
-            $object->medias()->attach($media['id'], Arr::except($media, ['id']));
-        });
+        $object->medias()->sync($this->getMedias($fields)->map(fn ($media) => Arr::except($media, ['id']) + ['media_id' => $media['id']]));
     }
 
     /**

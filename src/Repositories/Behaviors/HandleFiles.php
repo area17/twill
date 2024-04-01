@@ -47,11 +47,7 @@ trait HandleFiles
             return;
         }
 
-        $object->files()->sync([]);
-
-        $this->getFiles($fields)->each(function ($file) use ($object) {
-            $object->files()->attach($file['id'], Arr::except($file, ['id']));
-        });
+        $object->files()->sync($this->getFiles($fields)->map(fn ($file) => Arr::except($file, ['id']) + ['file_id' => $file['id']]));
     }
 
     /**
