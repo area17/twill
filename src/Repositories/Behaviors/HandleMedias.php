@@ -26,10 +26,10 @@ trait HandleMedias
         $mediasFromFields = $this->getMedias($fields);
 
         $mediasFromFields->each(function ($media) use ($object, $mediasCollection) {
-            $newMedia = Media::withTrashed()->find(is_array($media['id']) ? Arr::first($media['id']) : $media['id']);
+            $newMedia = Media::withTrashed()->find($media['media_id']);
             $pivot = $newMedia->newPivot(
                 $object,
-                Arr::except($media, ['id']),
+                $media,
                 config('twill.mediables_table', 'twill_mediables'),
                 true
             );
@@ -53,7 +53,7 @@ trait HandleMedias
             return;
         }
 
-        $object->medias()->sync($this->getMedias($fields)->map(fn ($media) => Arr::except($media, ['id']) + ['media_id' => $media['id']]));
+        $object->medias()->sync($this->getMedias($fields));
     }
 
     /**
@@ -85,7 +85,7 @@ trait HandleMedias
                         if (isset($media['crops']) && !empty($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
                                 $medias->push([
-                                    'id' => $media['id'],
+                                    'media_id' => $media['id'],
                                     'crop' => $cropName,
                                     'role' => $role,
                                     'locale' => $locale,
@@ -100,7 +100,7 @@ trait HandleMedias
                         } else {
                             foreach ($this->getCrops($role) as $cropName => $cropDefinitions) {
                                 $medias->push([
-                                    'id' => $media['id'],
+                                    'media_id' => $media['id'],
                                     'crop' => $cropName,
                                     'role' => $role,
                                     'locale' => $locale,
