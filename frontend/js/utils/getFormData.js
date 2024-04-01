@@ -27,8 +27,7 @@ export const isBlockField = (name, id) => {
 }
 
 export const stripOutBlockNamespace = (name, id) => {
-  const nameWithoutBlock = name.replace('blocks[' + id + '][', '')
-  return nameWithoutBlock.match(/]/gi).length > 1 ? nameWithoutBlock.replace(']', '') : nameWithoutBlock.slice(0, -1)
+  return name.replace('blocks[' + id + '][', '').replace(']', '')
 }
 
 export const buildBlock = (block, rootState, isRepeater = false, isInsideRepeater = isRepeater) => {
@@ -81,7 +80,7 @@ export const buildBlock = (block, rootState, isRepeater = false, isInsideRepeate
   }
   return isInsideRepeater
     ? { ...content, ...base, repeater_target_id: block.repeater_target_id, blocks, repeaters}
-    : { ...base, content, is_repeater: isRepeater, type: block.type, editor_name: block.name, blocks: {...blocks, ...repeaters} }
+    : { ...base, content, is_repeater: isRepeater, type: block.type, editor_name: block.name?.split('|').pop(), blocks: {...blocks, ...repeaters} }
 }
 
 export const isBlockEmpty = (blockData) => {
