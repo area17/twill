@@ -35,7 +35,7 @@
       </div>
     </div>
     <div class="block__content" v-if="visible">
-      <component v-bind:is="`${block.type}`" :name="componentName(block.id)" v-bind="block.attributes" :key="`form_${block.type}_${block.id}`">
+      <component v-bind:is="`${block.type}`" v-bind="block.attributes" :name="componentName(block.id)" :key="`form_${block.type}_${block.id}`">
         <!-- dynamic components -->
       </component>
       <!-- Block validation input frame, to display errors -->
@@ -46,8 +46,6 @@
 
 <script>
   import { mapGetters,mapState } from 'vuex'
-
-  import a17VueFilters from '@/utils/filters.js'
 
   export default {
     name: 'A17BlockEditorItem',
@@ -85,7 +83,6 @@
         withAddDropdown: true
       }
     },
-    filters: a17VueFilters,
     computed: {
       titleFieldValue: function () {
         const fieldValue = this.blockFieldValue(this.block.titleField)

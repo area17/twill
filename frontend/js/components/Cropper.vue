@@ -2,7 +2,7 @@
   <div class="cropper">
     <header class="cropper__header">
       <ul v-if="multiCrops" class="cropper__breakpoints">
-        <li v-for="(crop, key, index) in cropOptions" :key="key" :class="{ 's--active' : toggleBreakpoint === index }" @click="changeCrop(key, index)">{{ key | capitalize }}</li>
+        <li v-for="(crop, key, index) in cropOptions" :key="key" :class="{ 's--active' : toggleBreakpoint === index }" @click="changeCrop(key, index)">{{ capitalize(key) }}</li>
       </ul>
     </header>
     <div class="cropper__content">
@@ -12,7 +12,7 @@
     </div>
     <footer class="cropper__footer">
       <ul v-if="ratiosByContext.length > 1" class="cropper__ratios">
-        <li class="f--small" v-for="ratio in ratiosByContext" @click="changeRatio(ratio)" :key="ratio.name" :class="{ 's--active' : currentRatioName === ratio.name }">{{ ratio.name | capitalize }}</li>
+        <li class="f--small" v-for="ratio in ratiosByContext" @click="changeRatio(ratio)" :key="ratio.name" :class="{ 's--active' : currentRatioName === ratio.name }">{{ capitalize(ratio.name) }}</li>
       </ul>
       <span class="cropper__values f--small hide--xsmall" :class="cropperWarning">{{ cropValues.original.width }} &times; {{ cropValues.original.height }}</span>
       <slot></slot>
@@ -28,7 +28,7 @@
 
   import cropperMixin from '@/mixins/cropper'
   import { cropConversion } from '@/utils/cropper'
-  import a17VueFilters from '@/utils/filters.js'
+  import { capitalize } from '@/utils/filters.js'
 
   export default {
     name: 'a17Cropper',
@@ -109,7 +109,6 @@
         allCrops: state => state.mediaLibrary.crops
       })
     },
-    filters: a17VueFilters,
     mounted: function () {
       const opts = this.cropperOpts
       const imageBox = this.$refs.cropImage
@@ -141,6 +140,7 @@
       })
     },
     methods: {
+      capitalize,
       initAspectRatio: function () {
         const filtered = this.ratiosByContext
         const filter = filtered.find((r) => r.name === this.currentRatioName)

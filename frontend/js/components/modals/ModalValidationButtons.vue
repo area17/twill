@@ -3,7 +3,7 @@
     <a17-inputframe>
       <template v-if="mode === 'create'">
         <a17-button type="submit" name="create" variant="validate" :disabled="isDisabled">{{ $trans('modal.create.button', 'Create') }}</a17-button>
-        <a17-button type="submit" name="create-another" v-on:click.native="$event.currentTarget.focus()" v-if="!isDisabled" variant="aslink-grey"><span>{{ $trans('modal.create.create-another', 'Create and add another') }}</span></a17-button>
+        <a17-button type="submit" name="create-another" v-on:click="$event.currentTarget.focus()" v-if="!isDisabled" variant="aslink-grey"><span>{{ $trans('modal.create.create-another', 'Create and add another') }}</span></a17-button>
       </template>
       <a17-button type="submit" name="update" v-else-if="mode === 'update'" variant="validate" :disabled="isDisabled">{{ $trans('modal.update.button', 'Update') }}</a17-button>
       <a17-button type="submit" name="done" v-else variant="validate" :disabled="isDisabled">{{ $trans('modal.done.button', 'Done') }}</a17-button>

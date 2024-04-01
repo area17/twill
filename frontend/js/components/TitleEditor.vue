@@ -24,9 +24,9 @@
         </span>
       </h2>
       <a v-if="(permalink || customPermalink) && !showModal" :href="fullUrl" target="_blank" class="titleEditor__permalink f--small">
-        <span class="f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
+        <span class="f--note f--external f--underlined--o">{{ prettierUrl(visibleUrl) }}</span>
       </a>
-      <span v-if="showModal" class="titleEditor__permalink f--small f--note f--external f--underlined--o">{{ visibleUrl | prettierUrl }}</span>
+      <span v-if="showModal" class="titleEditor__permalink f--small f--note f--external f--underlined--o">{{ prettierUrl(visibleUrl) }}</span>
 
       <!-- Editing modal -->
       <a17-modal class="modal--form" ref="editModal" :title="modalTitle" :forceLock="disabled">
@@ -49,7 +49,7 @@
   import a17ModalValidationButtons from '@/components/modals/ModalValidationButtons.vue'
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
-  import a17VueFilters from '@/utils/filters.js'
+  import { prettierUrl } from '@/utils/filters.js'
 
   export default {
     name: 'A17TitleEditor',
@@ -159,14 +159,14 @@
         'fieldValueByName'
       ])
     },
-    filters: a17VueFilters,
     methods: {
       update: function () {
         this.$refs.editModal.hide()
       },
       lockModal: function (newValue) {
         this.disabled = newValue
-      }
+      },
+      prettierUrl
     }
   }
 </script>

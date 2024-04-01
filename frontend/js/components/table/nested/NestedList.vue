@@ -1,8 +1,8 @@
 <template>
   <draggable class="nested__dropArea"
+             v-bind="draggableOptions"
              :class="nestedDropAreaClasses"
              v-model="rows"
-             v-bind="draggableOptions"
              :tag="'ul'"
              :component-data="draggableGetComponentData">
     <li class="nested-datatable__item"

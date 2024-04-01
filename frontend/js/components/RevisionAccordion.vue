@@ -13,7 +13,7 @@
             <span class="revaccordion__author">{{ revision.author }}</span>
             <span class="revaccordion__datetime">
               <span class="tag" v-if="revision.label">{{  revision.label }}</span>
-              {{ revision.datetime | formatDate }}
+              {{ formatDate(revision.datetime) }}
             </span>
           </a>
         </li>
@@ -25,7 +25,7 @@
 <script>
   import a17Accordion from '@/components/Accordion.vue'
   import VisibilityMixin from '@/mixins/toggleVisibility'
-  import a17VueFilters from '@/utils/filters.js'
+  import { formatDate } from '@/utils/filters.js'
 
   export default {
     name: 'A17Revisions',
@@ -40,8 +40,8 @@
         }
       }
     },
-    filters: a17VueFilters,
     methods: {
+      formatDate,
       notifyOpen: function (newValue) {
         this.$emit('open', newValue, this.$options.name)
       },

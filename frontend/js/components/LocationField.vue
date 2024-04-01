@@ -327,9 +327,11 @@
               if (results[1]) {
                 self.address = results[1].formatted_address
               } else {
+                // eslint-disable-next-line
                 console.error('Geocoding - No results found')
               }
             } else {
+              // eslint-disable-next-line
               console.error('Geocoding - Geocoder failed due to: ' + status)
             }
           })

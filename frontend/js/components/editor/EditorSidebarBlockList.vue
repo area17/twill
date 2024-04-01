@@ -3,7 +3,8 @@
     <!-- eslint-disable vue/no-mutating-props -->
     <draggable class="editorSidebar__blocks"
                :class="editorSidebarClasses"
-               v-model="blocks"
+               :modelValue="blocks"
+               @update:modelValue="blocks = $event"
                :options="{
                     group: {
                       name: 'editorBlocks',

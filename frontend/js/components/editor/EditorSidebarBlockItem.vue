@@ -32,9 +32,9 @@
       <a17-inputframe label=""
                       :name="`block.${block.id}`"/>
       <template>
-        <component :name="`blocks[${block.id}]`"
+        <component v-bind="setBlockAttributes(block.attributes)"
+                   :name="`blocks[${block.id}]`"
                    v-bind:is="`${block.type}`"
-                   v-bind="setBlockAttributes(block.attributes)"
                    key="`editor_${block.type}_${block.id}`"/>
       </template>
 

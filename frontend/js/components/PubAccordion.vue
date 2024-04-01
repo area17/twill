@@ -6,7 +6,7 @@
     <template v-slot:accordion__value>
       <div>
         <template v-if="startDate">
-          {{ startDateForDisplay | formatDateWithFormat(localizedDateDisplayFormat) }}
+          {{ formatDateWithFormat(startDateForDisplay, localizedDateDisplayFormat) }}
         </template>
         <template v-else>
           {{ defaultStartDate }}
@@ -53,7 +53,7 @@
 
   import VisibilityMixin from '@/mixins/toggleVisibility'
   import { PUBLICATION } from '@/store/mutations'
-  import a17VueFilters from '@/utils/filters.js'
+  import { formatDateWithFormat } from '@/utils/filters.js'
   import { getTimeFormatForCurrentLocale, isCurrentLocale24HrFormatted } from '@/utils/locale'
 
   import a17Accordion from './Accordion.vue'
@@ -88,7 +88,6 @@
         default: isCurrentLocale24HrFormatted()
       }
     },
-    filters: a17VueFilters,
     computed: {
       ...mapState({
         startDate: state => state.publication.startDate,
@@ -135,7 +134,8 @@
         accordions.forEach(function (accordion) {
           accordion.style.overflow = ''
         })
-      }
+      },
+      formatDateWithFormat
     }
   }
 </script>

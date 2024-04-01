@@ -9,9 +9,11 @@ export function globalError (component = null, error = { message: '', value: nul
 
   const statusCode = error?.value?.response?.status ?? error?.response?.status ?? null
 
+  // eslint-disable-next-line
   console.error(errorMessage)
 
   if (error?.value && error.value?.response) {
+    // eslint-disable-next-line
     console.error(error.value.response?.data)
   }
 

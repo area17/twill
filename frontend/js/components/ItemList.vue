@@ -40,7 +40,7 @@
                 v-for="(extraColumn, index) in extraColumns"
                 :key="index"
                 :class="rowClass(extraColumn)">
-              <template v-if="extraColumn === 'size'">{{ item[extraColumn] | uppercase}}</template>
+              <template v-if="extraColumn === 'size'">{{ uppercase(item[extraColumn]) }}</template>
               <template v-else>{{ item[extraColumn] }}</template>
             </td>
           </template>
@@ -59,7 +59,7 @@
 <script>
   import A17Avatar from '@/components/Avatar.vue'
   import mediaItemsMixin from '@/mixins/mediaLibrary/mediaItems'
-  import a17VueFilters from '@/utils/filters.js'
+  import { uppercase } from '@/utils/filters.js'
 
   export default {
     name: 'A17Itemlist',
@@ -73,7 +73,6 @@
       'a17-avatar': A17Avatar
     },
     mixins: [mediaItemsMixin],
-    filters: a17VueFilters,
     computed: {
       allItems: function () {
         return this.items.map((item) => {
@@ -124,6 +123,7 @@
       }
     },
     methods: {
+      uppercase,
       rowClass: function (item) {
         return 'itemlist__cell--' + item
       },

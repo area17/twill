@@ -287,6 +287,7 @@
         this.uploadProgress(uploadProgress)
       },
       _onDropError (errorCode, errorData) {
+        // eslint-disable-next-line
         console.error(errorCode, errorData)
       },
       _onProcessingDroppedFilesComplete (files) {

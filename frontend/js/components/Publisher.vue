@@ -37,7 +37,6 @@
   import a17Switcher from '@/components/Switcher.vue'
   import a17UserInfo from '@/components/UserInfo.vue'
   import { PUBLICATION } from '@/store/mutations'
-  import a17VueFilters from '@/utils/filters.js'
   import { getTimeFormatForCurrentLocale, isCurrentLocale24HrFormatted } from '@/utils/locale'
 
   export default {
@@ -84,7 +83,6 @@
         }
       }
     },
-    filters: a17VueFilters,
     computed: {
       localizedDateDisplayFormat() {
         if (this.dateDisplayFormat) {

@@ -2,11 +2,11 @@
   <a17-blocks-list :editor-name="editorName" v-slot="{ savedBlocks, availableBlocks, moveBlock, moveBlockToEditor, cloneBlock }">
     <div class="blocks">
       <draggable class="blocks__container"
+                 v-bind="dragOptions"
                  :value="savedBlocks"
                  group="blocks"
                  :move="handleOnMove"
-                 @end="handleOnEnd(moveBlock, moveBlockToEditor)"
-                 v-bind="dragOptions">
+                 @end="handleOnEnd(moveBlock, moveBlockToEditor)">
         <transition-group name="draggable_list"
                           tag='div'>
           <div class="blocks__item"

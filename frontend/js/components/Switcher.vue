@@ -17,7 +17,7 @@
   import { mapState } from 'vuex'
 
   import { PUBLICATION } from '@/store/mutations'
-  import a17VueFilters from '@/utils/filters.js'
+  import { lowercase } from '@/utils/filters.js'
 
   export default {
     name: 'A17Toggle',
@@ -50,12 +50,11 @@
         default: 'Scheduled'
       }
     },
-    filters: a17VueFilters,
     computed: {
       switcherClasses: function () {
         return [
           this.isChecked ? 'switcher--active' : '',
-          this.formatTextEnabled ? `switcher--${this.$options.filters.lowercase(this.formatTextEnabled)}` : ''
+          this.formatTextEnabled ? `switcher--${lowercase(this.formatTextEnabled)}` : ''
         ]
       },
       isChecked: function () {
