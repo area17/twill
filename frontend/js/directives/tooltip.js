@@ -5,7 +5,7 @@ export const defaultOptions = {
 }
 
 export default {
-  install (Vue, opts = {}) {
+  install (app, opts = {}) {
     const vtooltip = {
       options: defaultOptions,
       bind: function (el, binding, vnode) {
@@ -31,6 +31,6 @@ export default {
       }
     }
 
-    Vue.directive('tooltip', vtooltip)
+    app.directive('tooltip', vtooltip)
   }
 }

@@ -5,11 +5,11 @@
 
 export function addSvg (el, binding, vnode) {
   const classNames = ['icon']
-  const id = binding.expression || vnode.data.attrs.symbol
+  const id = binding.expression || vnode.props.symbol
   let svg = el
 
   // span or svg ?
-  if (vnode.tag === 'span') {
+  if (vnode.type === 'span') {
     // add SVG element
     svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
     el.appendChild(svg)

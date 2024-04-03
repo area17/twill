@@ -5,7 +5,7 @@ export const defaultOptions = {
 }
 
 export default {
-  install (Vue, opts = {}) {
+  install (app, opts = {}) {
     const vsticky = {
       options: defaultOptions,
       bind: function (el, binding, vnode) {
@@ -25,6 +25,6 @@ export default {
       }
     }
 
-    Vue.directive('sticky', vsticky)
+    app.directive('sticky', vsticky)
   }
 }

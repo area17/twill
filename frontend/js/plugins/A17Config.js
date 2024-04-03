@@ -50,44 +50,44 @@ import { locales } from '@/utils/locale'
 const isProd = process.env.NODE_ENV === 'production'
 
 const A17Config = {
-  install (Vue, opts) {
+  install (app, opts) {
     // Globals components
-    Vue.component('a17-button', a17Button)
-    Vue.component('a17-infotip', a17Infotip)
-    Vue.component('a17-slideshow', a17Slideshow)
-    Vue.component('a17-browserfield', a17BrowserField)
-    Vue.component('a17-textfield', a17Textfield)
-    Vue.component('a17-hiddenfield', a17HiddenField)
-    Vue.component('a17-wysiwyg', a17Wysiwyg)
-    Vue.component('a17-wysiwyg-tiptap', a17WysiwygTipTap)
-    Vue.component('a17-inputframe', a17Inputframe)
-    Vue.component('a17-mediafield', a17MediaField)
-    Vue.component('a17-mediafield-translated', a17MediaFieldTranslated)
-    Vue.component('a17-radio', a17Radio)
-    Vue.component('a17-radiogroup', a17RadioGroup)
-    Vue.component('a17-checkbox', a17Checkbox)
-    Vue.component('a17-singlecheckbox', a17SingleCheckbox)
-    Vue.component('a17-checkboxgroup', a17CheckboxGroup)
-    Vue.component('a17-singleselect-permissions', A17SingleSelectPermissions)
-    Vue.component('a17-multiselect', a17Multiselect)
-    Vue.component('a17-singleselect', a17Singleselect)
-    Vue.component('a17-select', a17Select)
-    Vue.component('a17-vselect', a17VSelect)
-    Vue.component('a17-locale', a17Locale)
-    Vue.component('a17-dropdown', a17Dropdown)
-    Vue.component('a17-buttonbar', a17Buttonbar)
-    Vue.component('a17-modal', a17Modal)
-    Vue.component('a17-dialog', a17Dialog)
-    Vue.component('a17-datepicker', a17DatePicker)
-    Vue.component('a17-filefield', a17FileField)
-    Vue.component('a17-colorfield', a17ColorField)
-    Vue.component('a17-avatar', a17Avatar)
+    app.component('a17-button', a17Button)
+    app.component('a17-infotip', a17Infotip)
+    app.component('a17-slideshow', a17Slideshow)
+    app.component('a17-browserfield', a17BrowserField)
+    app.component('a17-textfield', a17Textfield)
+    app.component('a17-hiddenfield', a17HiddenField)
+    app.component('a17-wysiwyg', a17Wysiwyg)
+    app.component('a17-wysiwyg-tiptap', a17WysiwygTipTap)
+    app.component('a17-inputframe', a17Inputframe)
+    app.component('a17-mediafield', a17MediaField)
+    app.component('a17-mediafield-translated', a17MediaFieldTranslated)
+    app.component('a17-radio', a17Radio)
+    app.component('a17-radiogroup', a17RadioGroup)
+    app.component('a17-checkbox', a17Checkbox)
+    app.component('a17-singlecheckbox', a17SingleCheckbox)
+    app.component('a17-checkboxgroup', a17CheckboxGroup)
+    app.component('a17-singleselect-permissions', A17SingleSelectPermissions)
+    app.component('a17-multiselect', a17Multiselect)
+    app.component('a17-singleselect', a17Singleselect)
+    app.component('a17-select', a17Select)
+    app.component('a17-vselect', a17VSelect)
+    app.component('a17-locale', a17Locale)
+    app.component('a17-dropdown', a17Dropdown)
+    app.component('a17-buttonbar', a17Buttonbar)
+    app.component('a17-modal', a17Modal)
+    app.component('a17-dialog', a17Dialog)
+    app.component('a17-datepicker', a17DatePicker)
+    app.component('a17-filefield', a17FileField)
+    app.component('a17-colorfield', a17ColorField)
+    app.component('a17-avatar', a17Avatar)
 
     // Media Library
-    Vue.component('a17-medialibrary', a17MediaLibrary)
+    app.component('a17-medialibrary', a17MediaLibrary)
 
-    // Globale Vue mixin : Use global mixins sparsely and carefully!
-    Vue.mixin({
+    // Globale app mixin : Use global mixins sparsely and carefully!
+    app.mixin({
       methods: {
         openFreeMediaLibrary: function () {
           this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_CONNECTOR, null) // reset connector
@@ -105,11 +105,10 @@ const A17Config = {
     })
 
     // Configurations
-    Vue.config.productionTip = isProd
-    Vue.config.devtools = !isProd
-    Vue.prototype.$http = axios
+    app.config.devtools = !isProd
+    app.config.globalProperties.$http = axios
 
-    window.$trans = Vue.prototype.$trans = function (key, defaultValue) {
+    window.$trans = app.config.globalProperties.$trans = function (key, defaultValue) {
       return get(window[process.env.VUE_APP_NAME].twillLocalization.lang, key, defaultValue)
     }
 
@@ -122,16 +121,16 @@ const A17Config = {
     })
 
     // Plugins
-    Vue.use(VueTimeago, {
+    app.use(VueTimeago, {
       name: 'timeago', // component name
       locale: window[process.env.VUE_APP_NAME].twillLocalization.locale,
       locales: mapValues(locales, 'date-fns')
     })
 
     // Directives
-    Vue.use(SvgSprite)
-    Vue.use(Tooltip)
-    Vue.use(Sticky)
+    app.use(SvgSprite)
+    app.use(Tooltip)
+    app.use(Sticky)
   }
 }
 

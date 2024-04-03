@@ -1,7 +1,7 @@
 import { addSvg, removeSvg } from '@/utils/svg.js'
 
 export default {
-  install (Vue, opts = {}) {
+  install (app, opts = {}) {
     const dir = {
       bind (el, binding, vnode) {
         addSvg(el, binding, vnode)
@@ -16,6 +16,6 @@ export default {
         // removeSvg(el)
       }
     }
-    Vue.directive('svg', dir)
+    app.directive('svg', dir)
   }
 }

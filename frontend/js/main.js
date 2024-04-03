@@ -1,7 +1,7 @@
 // import global style
 import 'styles/app.scss'
 // General behaviors
-import Vue from 'vue'
+import { createApp } from "vue"
 import navToggle from '@/behaviors/navToggle'
 import showEnvLine from '@/behaviors/showEnvLine'
 import logoutButton from '@/behaviors/logoutButton'
@@ -10,6 +10,8 @@ import merge from 'lodash/merge'
 // Alpine js
 import Alpine from 'alpinejs'
 import mask from '@alpinejs/mask'
+// Plugins
+import A17Config from "@/plugins/A17Config";
 
 const A17Init = function () {
   navToggle()
@@ -35,7 +37,15 @@ Alpine.start()
 if (!window[process.env.VUE_APP_NAME]) {
   window[process.env.VUE_APP_NAME] = {}
 }
-window[process.env.VUE_APP_NAME].vheader = new Vue({ el: '#headerUser' })
+
+const app = createApp({})
+
+// configuration
+app.use(A17Config)
+
+app.mount('#headerUser')
+
+window[process.env.VUE_APP_NAME].vheader = app
 
 // Search
 /* eslint-disable no-new */

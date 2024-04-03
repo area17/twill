@@ -232,7 +232,7 @@
     <script src="{{ twillAsset('main-form.js') }}" crossorigin></script>
     <script>
         const groupUserMapping = {!! isset($groupUserMapping) ? json_encode($groupUserMapping) : '[]' !!};
-        window['{{ config('twill.js_namespace') }}'].vm.$store.subscribe((mutation, state) => {
+        window['{{ config('twill.js_namespace') }}'].store.subscribe((mutation, state) => {
             if (mutation.type === 'updateFormField' && mutation.payload.name.endsWith('group_authorized')) {
                 const groupId = mutation.payload.name.replace('_group_authorized', '')
                 const checked = mutation.payload.value
@@ -248,7 +248,7 @@
                                 name: `user_${userId}_permission`,
                                 value: checked ? 'view-item' : ''
                             }
-                            window['{{ config('twill.js_namespace') }}'].vm.$store.commit('updateFormField', field)
+                            window['{{ config('twill.js_namespace') }}'].store.commit('updateFormField', field)
                         }
                     })
                 }

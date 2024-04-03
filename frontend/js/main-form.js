@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import { mapState, mapGetters } from 'vuex'
 import store from '@/store'
 import { FORM, PUBLICATION } from '@/store/mutations'
@@ -63,10 +63,6 @@ import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 import sortBy from 'lodash/sortBy'
 
-// configuration
-Vue.use(A17Config)
-Vue.use(A17Notif)
-
 store.registerModule('form', form)
 store.registerModule('publication', publication)
 store.registerModule('blocks', blocks)
@@ -78,43 +74,7 @@ store.registerModule('parents', parents)
 store.registerModule('attributes', attributes)
 store.registerModule('permissions', permissions)
 
-// Form components
-Vue.component('a17-fieldset', a17Fieldset)
-Vue.component('a17-publisher', a17Publisher)
-Vue.component('a17-title-editor', a17TitleEditor)
-Vue.component('a17-blocks', a17Blocks)
-Vue.component('a17-page-nav', a17PageNav)
-Vue.component('a17-langswitcher', a17Langswitcher)
-Vue.component('a17-sticky-nav', a17StickyNav)
-Vue.component('a17-spinner', a17Spinner)
-
-// Browser
-Vue.component('a17-repeater', a17Repeater)
-Vue.component('a17-browser', a17Browser)
-
-// Form : connector fields
-Vue.component('a17-connectorfield', a17ConnectorField)
-
-// Form: map component
-Vue.component('a17-locationfield', a17LocationField)
-
-// Preview
-Vue.component('a17-overlay', a17Overlay)
-Vue.component('a17-previewer', a17Previewer)
-
-// Editor
-Vue.component('a17-editor', a17Editor)
-
-// Add attributes
-Vue.component('a17-modal-add', a17ModalAdd)
-
-registerCustomComponents()
-
-/* eslint-disable no-new */
-/* eslint no-unused-vars: "off" */
-window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
-  store, // inject store to all children
-  el: '#app',
+const app = createApp({
   mixins: [formatPermalink, editorMixin, retrySubmitMixin],
   data: function () {
     return {
@@ -241,6 +201,49 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
     openMediaLibrary()
   }
 })
+
+app.use(store)
+// configuration
+app.use(A17Config)
+app.use(A17Notif)
+
+// Form components
+app.component('a17-fieldset', a17Fieldset)
+app.component('a17-publisher', a17Publisher)
+app.component('a17-title-editor', a17TitleEditor)
+app.component('a17-blocks', a17Blocks)
+app.component('a17-page-nav', a17PageNav)
+app.component('a17-langswitcher', a17Langswitcher)
+app.component('a17-sticky-nav', a17StickyNav)
+app.component('a17-spinner', a17Spinner)
+
+// Browser
+app.component('a17-repeater', a17Repeater)
+app.component('a17-browser', a17Browser)
+
+// Form : connector fields
+app.component('a17-connectorfield', a17ConnectorField)
+
+// Form: map component
+app.component('a17-locationfield', a17LocationField)
+
+// Preview
+app.component('a17-overlay', a17Overlay)
+app.component('a17-previewer', a17Previewer)
+
+// Editor
+app.component('a17-editor', a17Editor)
+
+// Add attributes
+app.component('a17-modal-add', a17ModalAdd)
+
+registerCustomComponents(app)
+
+app.mount('#app')
+/* eslint-disable no-new */
+/* eslint no-unused-vars: "off" */
+window[process.env.VUE_APP_NAME].vm = window.vm = app
+window[process.env.VUE_APP_NAME].store = window.store = store
 
 // DOM Ready general actions
 document.addEventListener('DOMContentLoaded', main)
