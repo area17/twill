@@ -96,7 +96,7 @@
       },
       emptyText: {
         default () {
-          return this.$trans('select.empty-text', 'Sorry, no matching options.')
+          return window.$trans('select.empty-text', 'Sorry, no matching options.')
         }
       },
       options: {

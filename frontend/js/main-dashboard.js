@@ -30,7 +30,7 @@ const app = createApp({
     'a17-feed': A17GenericFeed
   },
   created: function () {
-    openMediaLibrary()
+    openMediaLibrary(this)
   }
 })
 

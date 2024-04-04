@@ -38,7 +38,7 @@
       placeholder: {
         type: String,
         default () {
-          return this.$trans('filter.search-placeholder', 'Search')
+          return window.$trans('filter.search-placeholder', 'Search')
         }
       },
       closed: {

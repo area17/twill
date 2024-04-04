@@ -103,25 +103,25 @@
       modalTitlePrefix: {
         type: String,
         default: function () {
-          return this.$trans('media-library.title', 'Media Library')
+          return window.$trans('media-library.title', 'Media Library')
         }
       },
       btnLabelSingle: {
         type: String,
         default: function () {
-          return this.$trans('media-library.insert', 'Insert')
+          return window.$trans('media-library.insert', 'Insert')
         }
       },
       btnLabelUpdate: {
         type: String,
         default: function () {
-          return this.$trans('media-library.update', 'Update')
+          return window.$trans('media-library.update', 'Update')
         }
       },
       btnLabelMulti: {
         type: String,
         default: function () {
-          return this.$trans('media-library.insert', 'Insert')
+          return window.$trans('media-library.insert', 'Insert')
         }
       },
       initialPage: {

@@ -99,7 +99,7 @@ const app = createApp({
     if (window[process.env.VUE_APP_NAME].openCreate) this.create()
   },
   created: function () {
-    openMediaLibrary()
+    openMediaLibrary(this)
 
     let reload = false
     const pageOffset = getStorage(this.localStorageKey + '_page-offset')

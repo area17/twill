@@ -47,7 +47,6 @@ import { MEDIA_LIBRARY } from '@/store/mutations'
 import { globalError } from '@/utils/errors'
 import { locales } from '@/utils/locale'
 
-const isProd = process.env.NODE_ENV === 'production'
 
 const A17Config = {
   install (app, opts) {
@@ -105,7 +104,6 @@ const A17Config = {
     })
 
     // Configurations
-    app.config.devtools = !isProd
     app.config.globalProperties.$http = axios
 
     window.$trans = app.config.globalProperties.$trans = function (key, defaultValue) {

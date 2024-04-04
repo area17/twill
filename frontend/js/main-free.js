@@ -28,7 +28,7 @@ const app = createApp({
     'a17-browser': a17Browser
   },
   created: function () {
-    openMediaLibrary()
+    openMediaLibrary(this)
   }
 })
 

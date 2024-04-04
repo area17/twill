@@ -68,7 +68,7 @@
       defaultStartDate: {
         type: String,
         default: function () {
-          return this.$trans('publisher.immediate')
+          return window.$trans('publisher.immediate')
         }
       },
       defaultEndDate: {

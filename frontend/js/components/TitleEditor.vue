@@ -63,7 +63,7 @@
       modalTitle: {
         type: String,
         default: function () {
-          return this.$trans('modal.update.title')
+          return window.$trans('modal.update.title')
         }
       },
       warningMessage: {

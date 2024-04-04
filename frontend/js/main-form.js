@@ -198,7 +198,7 @@ const app = createApp({
     this.unSubscribe()
   },
   created: function () {
-    openMediaLibrary()
+    openMediaLibrary(this)
   }
 })
 

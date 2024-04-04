@@ -28,7 +28,7 @@ const app = createApp({
     'a17-buckets': a17Buckets
   },
   created: function () {
-    openMediaLibrary()
+    openMediaLibrary(this)
   }
 })
 

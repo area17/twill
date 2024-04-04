@@ -34,7 +34,7 @@
       revisionTitle: {
         type: String,
         default: function () {
-          return this.$trans('previewer.revision-history')
+          return window.$trans('previewer.revision-history')
         }
       },
       forceClose: {
