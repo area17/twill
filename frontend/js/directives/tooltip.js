@@ -8,7 +8,7 @@ export default {
   install (app, opts = {}) {
     const vtooltip = {
       options: defaultOptions,
-      bind: function (el, binding, vnode) {
+      beforeMount: function (el, binding, vnode) {
         if (!el._tooltip) {
           const tooltip = el._tooltip = new Tooltip(el, vtooltip.options)
           tooltip._vueEl = el
@@ -22,7 +22,7 @@ export default {
           tooltip._vueEl = el
         }
       },
-      inserted: function (el, binding, vnode) {
+      mounted: function (el, binding, vnode) {
       },
       unbind: function (el, binding, vnode) {
         if (el._tooltip) {

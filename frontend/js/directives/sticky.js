@@ -8,7 +8,7 @@ export default {
   install (app, opts = {}) {
     const vsticky = {
       options: defaultOptions,
-      bind: function (el, binding, vnode) {
+      beforeMount: function (el, binding, vnode) {
         const sticky = el._sticky = new Sticky(el, vsticky.options)
         sticky._vueEl = el
       },
@@ -17,7 +17,7 @@ export default {
         el._sticky.refresh()
       },
 
-      inserted: function (el, binding, vnode) {
+      mounted: function (el, binding, vnode) {
       },
 
       unbind: function (el, binding, vnode) {

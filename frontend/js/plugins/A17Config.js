@@ -105,6 +105,7 @@ const A17Config = {
 
     // Configurations
     app.config.globalProperties.$http = axios
+    app.config.compilerOptions.whitespace = 'condense'
 
     window.$trans = app.config.globalProperties.$trans = function (key, defaultValue) {
       return get(window[process.env.VUE_APP_NAME].twillLocalization.lang, key, defaultValue)
