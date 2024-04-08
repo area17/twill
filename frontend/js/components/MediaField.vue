@@ -309,7 +309,7 @@
               this.cropSrc = src
             }
           } catch (error) {
-            // eslint-disable-next-line
+            // eslint-disable-next-line no-console
             console.error(error)
 
             // fallback on displaying the thumbnail
@@ -388,7 +388,7 @@
             })
             this.cropMedia({ values: defaultCrops })
           }, (error) => {
-            // eslint-disable-next-line
+            // eslint-disable-next-line no-console
             console.error(error)
             this.cropMedia({ values: defaultCrops })
           })
@@ -434,7 +434,7 @@
           this.initImg().then(() => {
             imgLoaded()
           }, (error) => {
-            // eslint-disable-next-line
+            // eslint-disable-next-line no-console
             console.error(error)
             this.showDefaultThumbnail()
 
@@ -453,7 +453,7 @@
                 })
 
                 imgTag.addEventListener('error', (e) => {
-                  // eslint-disable-next-line
+                  // eslint-disable-next-line no-console
                   console.error(e)
                   this.showDefaultThumbnail()
                 })
