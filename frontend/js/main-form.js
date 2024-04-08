@@ -194,7 +194,7 @@ const app = createApp({
       this.watchForFormUpdates('repeaters', 'repeaters')
     })
   },
-  beforeDestroy: function () {
+  beforeUnmount: function () {
     this.unSubscribe()
   },
   created: function () {

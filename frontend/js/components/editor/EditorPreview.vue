@@ -213,7 +213,7 @@
         this.getAllPreviews()
       })
     },
-    beforeDestroy () {
+    beforeUnmount () {
       this.dispose()
     },
     watch: {

@@ -102,7 +102,7 @@
         })
       }
     },
-    beforeDestroy () {
+    beforeUnmount () {
       this.unselectBlock()
     }
   }

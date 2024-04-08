@@ -356,7 +356,7 @@
           })
       }
     },
-    beforeDestroy: function () {
+    beforeUnmount: function () {
       if (typeof google !== 'undefined') google.maps.event.clearListeners(this.autocompletePlace, 'place_changed', this.onPlaceChanged)
     }
   }

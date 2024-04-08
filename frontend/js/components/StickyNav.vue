@@ -140,7 +140,7 @@
       this.refresh()
       this.init()
     },
-    beforeDestroy: function () {
+    beforeUnmount: function () {
       this.dispose()
     }
   }

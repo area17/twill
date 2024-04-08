@@ -162,7 +162,7 @@
         }
       }
     },
-    beforeDestroy: function () {
+    beforeUnmount: function () {
       if (this.$el.parentNode) {
         if (this.active) this.unbindKeyboard()
         this.$el.parentNode.removeChild(this.$el)

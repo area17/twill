@@ -247,7 +247,7 @@
     mounted: function () {
       this.initEvents()
     },
-    beforeDestroy: function () {
+    beforeUnmount: function () {
       this.disposeEvents()
     }
   }

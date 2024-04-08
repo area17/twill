@@ -149,7 +149,7 @@
 
       this.addListeners()
     },
-    beforeDestroy: function () {
+    beforeUnmount: function () {
       const self = this
 
       if (!this.fields.length) return

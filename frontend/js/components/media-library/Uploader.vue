@@ -317,7 +317,7 @@
         }
       })
     },
-    beforeDestroy () {
+    beforeUnmount () {
       this._qqDropzone && this._qqDropzone.dispose()
     }
   }

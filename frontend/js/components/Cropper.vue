@@ -217,7 +217,7 @@
         return cropConversion(data, this.currentMedia, this.cropValues.natural)
       }
     },
-    beforeDestroy: function () {
+    beforeUnmount: function () {
       this.cropper.destroy()
     }
   }

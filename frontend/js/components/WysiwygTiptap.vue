@@ -647,9 +647,6 @@
     },
     beforeUnmount () {
       this.editor.destroy()
-    },
-    beforeDestroy () {
-      this.editor.destroy()
     }
   }
 </script>

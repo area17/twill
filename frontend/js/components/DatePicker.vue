@@ -219,7 +219,7 @@
 
       this.isMobile = self.flatPicker.isMobile
     },
-    beforeDestroy: function () {
+    beforeUnmount: function () {
       const self = this
       self.flatPicker.destroy()
     }
