@@ -48,7 +48,6 @@
 </template>
 
 <script>
-  import parseJson from 'date-fns/parse'
   import { mapState } from 'vuex'
 
   import VisibilityMixin from '@/mixins/toggleVisibility'
@@ -57,6 +56,7 @@
   import { getTimeFormatForCurrentLocale, isCurrentLocale24HrFormatted } from '@/utils/locale'
 
   import a17Accordion from './Accordion.vue'
+  import { parseISO } from "date-fns";
 
   export default {
     name: 'A17Pubaccordion',
@@ -94,13 +94,13 @@
         endDate: state => state.publication.endDate
       }),
       startDateForDisplay() {
-        return parseJson(this.startDate + 'Z').toISOString()
+        return parseISO(this.startDate + 'Z')
       },
       localizedDateDisplayFormat() {
         if (this.dateDisplayFormat) {
           return this.dateDisplayFormat
         }
-        return 'MMM, DD, YYYY, ' + getTimeFormatForCurrentLocale(this.date_24h)
+        return 'MMM, dd, yyyy, ' + getTimeFormatForCurrentLocale(this.date_24h)
       }
     },
     methods: {

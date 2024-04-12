@@ -21,7 +21,7 @@
 </template>
 
 <script>
-  import compareAsc from 'date-fns/compare_asc'
+  import { compareAsc } from 'date-fns'
 
   import TableCellMixin from '@/mixins/tableCell'
   import { formatDatatableDate } from '@/utils/filters.js'

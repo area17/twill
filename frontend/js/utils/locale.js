@@ -14,73 +14,74 @@ import { Slovenian } from 'flatpickr/dist/l10n/sl.js'
 import { Spanish } from 'flatpickr/dist/l10n/es.js'
 import { Turkish } from 'flatpickr/dist/l10n/tr.js'
 import { Ukrainian } from 'flatpickr/dist/l10n/uk.js'
+import { enUS, ar, bs, cs, de, es, fr, it, nl, pl, pt, ru, sl, tr, uk, zhCN } from 'date-fns/locale'
 
 export const locales = {
   en: {
-    'date-fns': require('date-fns/locale/en')
+    'date-fns': enUS
   },
   ar: {
-    'date-fns': require('date-fns/locale/ar'),
+    'date-fns': ar,
     flatpickr: Arabic
   },
   bs: {
-    'date-fns': require('date-fns/locale/en'), // TODO: update date-fns to add support for bs
+    'date-fns': bs,
     flatpickr: Bosnian
   },
   cs: {
-    'date-fns': require('date-fns/locale/cs'),
+    'date-fns': cs,
     flatpickr: Czech
   },
   de: {
-    'date-fns': require('date-fns/locale/de'),
+    'date-fns': de,
     flatpickr: German
   },
   es: {
-    'date-fns': require('date-fns/locale/es'),
+    'date-fns': es,
     flatpickr: Spanish
   },
   fr: {
-    'date-fns': require('date-fns/locale/fr'),
+    'date-fns': fr,
     flatpickr: French
   },
   it: {
-    'date-fns': require('date-fns/locale/it'),
+    'date-fns': it,
     flatpickr: Italian
   },
   nl: {
-    'date-fns': require('date-fns/locale/nl'),
+    'date-fns': nl,
     flatpickr: Dutch
   },
   no: {
-    'date-fns': require('date-fns/locale/en'), // TODO: update date-fns to add support for no
+    'date-fns': enUS, // TODO: update date-fns to add support for no
     flatpickr: Norwegian
   },
   pl: {
-    'date-fns': require('date-fns/locale/pl'),
+    'date-fns': pl,
     flatpickr: Polish
   },
   pt: {
-    'date-fns': require('date-fns/locale/pt'),
+    'date-fns': pt,
     flatpickr: Portuguese
   },
   ru: {
-    'date-fns': require('date-fns/locale/ru'),
+    'date-fns': ru,
     flatpickr: Russian
   },
   sl: {
-    'date-fns': require('date-fns/locale/sl'),
+    'date-fns': sl,
     flatpickr: Slovenian
   },
   tr: {
-    'date-fns': require('date-fns/locale/tr'),
+    'date-fns': tr,
     flatpickr: Turkish
   },
   uk: {
-    'date-fns': require('date-fns/locale/en'), // TODO: update date-fns to add support for uk
+    'date-fns': uk,
     flatpickr: Ukrainian
   },
   'zh-Hans': {
-    'date-fns': require('date-fns/locale/zh_cn'),
+    'date-fns': zhCN,
     flatpickr: Mandarin
   }
 }
@@ -101,6 +102,6 @@ export function getTimeFormatForCurrentLocale (force24h = false) {
   if (isCurrentLocale24HrFormatted() || force24h) {
     return 'HH:mm'
   } else {
-    return 'hh:mm A'
+    return 'hh:mm a'
   }
 }

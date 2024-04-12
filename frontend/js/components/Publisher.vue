@@ -88,7 +88,7 @@
         if (this.dateDisplayFormat) {
           return this.dateDisplayFormat
         }
-        return 'MMM, DD, YYYY, ' + getTimeFormatForCurrentLocale(this.date_24h)
+        return 'MMM, dd, yyyy, ' + getTimeFormatForCurrentLocale(this.date_24h)
       },
       reviewProcessCompleteValues: function () {
         const values = []

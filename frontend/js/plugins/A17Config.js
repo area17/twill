@@ -3,7 +3,7 @@ import axios from 'axios'
 import get from 'lodash/get'
 import mapValues from 'lodash/mapValues'
 // Plugins
-import VueTimeago from 'vue-timeago'
+import VueTimeago from 'vue-timeago3'
 
 import a17Avatar from '@/components/Avatar.vue'
 import a17BrowserField from '@/components/BrowserField.vue'
@@ -45,7 +45,7 @@ import Tooltip from '@/directives/tooltip'
 import { MEDIA_LIBRARY } from '@/store/mutations'
 // Error handler
 import { globalError } from '@/utils/errors'
-import { locales } from '@/utils/locale'
+import { getCurrentLocale, locales } from '@/utils/locale'
 
 
 const A17Config = {
@@ -122,8 +122,7 @@ const A17Config = {
     // Plugins
     app.use(VueTimeago, {
       name: 'timeago', // component name
-      locale: window[process.env.VUE_APP_NAME].twillLocalization.locale,
-      locales: mapValues(locales, 'date-fns')
+      locale: mapValues(locales, 'date-fns')[getCurrentLocale()],
     })
 
     // Directives

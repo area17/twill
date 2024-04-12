@@ -15,7 +15,7 @@
 <script>
   import 'flatpickr/dist/flatpickr.css'
 
-  import parse from 'date-fns/parse'
+  import { parse } from 'date-fns'
   import FlatPickr from 'flatpickr'
 
   import FormStoreMixin from '@/mixins/formStore'
@@ -149,15 +149,15 @@
           parseDate: function (date, format) {
             const fullFormat = 'yyyy-MM-dd HH:mm:ss';
             if (date.length === fullFormat.length) {
-              return parse(date + 'Z', fullFormat + 'X', Date.UTC());
+              return parse(date + 'Z', fullFormat + 'X', Date.UTC(0, 0));
             }
             const fullFormatNoSeconds = 'yyyy-MM-dd HH:mm';
             if (date.length === fullFormatNoSeconds.length) {
-              return parse(date + 'Z', fullFormat + 'X', Date.UTC());
+              return parse(date + 'Z', fullFormat + 'X', Date.UTC(0, 0));
             }
             const fullFormatNoTime = 'yyyy-MM-dd';
             if (date.length === fullFormatNoTime.length) {
-              return parse(date, fullFormatNoTime, Date.UTC());
+              return parse(date, fullFormatNoTime, Date.UTC(0, 0));
             }
 
             // Hope for the best..

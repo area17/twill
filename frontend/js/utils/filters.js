@@ -1,13 +1,15 @@
-import dateFormat from 'date-fns/format'
+import { format as dateFormat, parseISO} from 'date-fns'
 
 import config from '@/store/modules/config'
 import { getCurrentLocale, getTimeFormatForCurrentLocale,locales } from '@/utils/locale'
+import { isString } from 'lodash'
+import { enUS } from "date-fns/locale";
 
 function dateFormatLocale (date, format) {
   const locale = locales[getCurrentLocale()]
 
-  return dateFormat(date, format, {
-    locale: locale !== undefined && locale.hasOwnProperty('date-fns') ? locale['date-fns'] : require('date-fns/locale/en')
+  return dateFormat(isString(date) ? parseISO(date) : date, format, {
+    locale: locale !== undefined && locale.hasOwnProperty('date-fns') ? locale['date-fns'] : enUS
   })
 }
 
@@ -49,7 +51,7 @@ export function capitalize (value) {
 export function formatDate (value) {
   if (!value) return ''
 
-  return dateFormatLocale(value, 'MMM, DD, YYYY, ' + getTimeFormatForCurrentLocale())
+  return dateFormatLocale(value, 'MMM, dd, yyyy, ' + getTimeFormatForCurrentLocale())
 }
 
 export function formatDateWithFormat (value, format) {
@@ -58,13 +60,13 @@ export function formatDateWithFormat (value, format) {
 }
 
 export function formatDatatableDate (value) {
-  const datepickerFormat = config.state.publishDateDisplayFormat.length > 0 ? config.state.publishDateDisplayFormat : 'MMM DD, YYYY'
+  const datepickerFormat = config.state.publishDateDisplayFormat.length > 0 ? config.state.publishDateDisplayFormat : 'MMM dd, yyyy'
   if (!value) value = new Date()
   return dateFormatLocale(value, datepickerFormat)
 }
 
 export function formatCalendarDate (value) {
-  const datepickerFormat = 'MMM, DD, YYYY, ' + getTimeFormatForCurrentLocale()
+  const datepickerFormat = 'MMM, dd, yyyy, ' + getTimeFormatForCurrentLocale()
   if (!value) value = new Date()
   return dateFormatLocale(value, datepickerFormat)
 }
