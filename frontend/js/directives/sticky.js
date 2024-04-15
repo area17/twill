@@ -13,7 +13,7 @@ export default {
         sticky._vueEl = el
       },
 
-      componentUpdated: function (el, binding, vnode) {
+      updated: function (el, binding, vnode) {
         el._sticky.refresh()
       },
 

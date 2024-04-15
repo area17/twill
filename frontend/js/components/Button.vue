@@ -1,5 +1,10 @@
 <script>
+  import { h } from 'vue'
+
   export default {
+    compatConfig: {
+      RENDER_FUNCTION: false
+    },
     name: 'A17Button',
     props: {
       el: {
@@ -64,44 +69,41 @@
         this.$emit('click')
       }
     },
-    render: function (createElement) {
+    render: function () {
       const elOpts = {
         class: this.buttonClasses,
-        attrs: {},
-        on: {
-          click: (event) => {
-            this.onClick(event)
-          }
+        onClick: (event) => {
+          this.onClick(event)
         }
       }
 
       // button
       if (this.el === 'button') {
-        elOpts.attrs.type = this.type
+        elOpts.type = this.type
 
         if (this.disabled) {
-          elOpts.attrs.disabled = this.disabled
+          elOpts.disabled = this.disabled
         }
       }
 
       // a:href
       if (this.el === 'a' && this.href) {
-        elOpts.attrs.href = this.href
+        elOpts.href = this.href
 
         if (this.target) {
-          elOpts.attrs.target = this.target
+          elOpts.target = this.target
         }
 
         if (this.download) {
-          elOpts.attrs.download = this.download
+          elOpts.download = this.download
         }
 
         if (this.rel) {
-          elOpts.attrs.rel = this.rel
+          elOpts.rel = this.rel
         }
       }
 
-      return createElement(this.el, elOpts, this.$slots.default)
+      return h(this.el, elOpts, this.$slots.default())
     }
   }
 </script>

@@ -17,6 +17,9 @@
   import a17Accordion from './Accordion.vue'
 
   export default {
+    compatConfig: {
+      WATCH_ARRAY: false
+    },
     name: 'A17Checkboxaccordion',
     components: {
       'a17-accordion': a17Accordion

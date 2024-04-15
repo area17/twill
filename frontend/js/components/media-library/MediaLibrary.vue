@@ -301,7 +301,7 @@
             })
           }
 
-          this.$set(this.mediaItems, index, media)
+          this.mediaItems[index] = media
           this.selectedMedias.unshift(media)
         } else {
           // add media in first position of the available media

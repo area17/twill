@@ -22,7 +22,7 @@ const getters = {
 const mutations = {
   [ATTRIBUTES.EMPTY_OPTIONS] (state, name) {
     if (state.options[name]) {
-      Vue.delete(state.options, name)
+      delete state.options[name]
     }
   },
   [ATTRIBUTES.UPDATE_OPTIONS] (state, attributes) {
@@ -34,7 +34,7 @@ const mutations = {
     if (state.options[name]) {
       currentOptions = state.options[name]
 
-      Vue.delete(state.options, name)
+      delete state.options[name]
     }
 
     // Make sure there is no duplicates
@@ -47,7 +47,7 @@ const mutations = {
       })
     }
 
-    Vue.set(state.options, name, currentOptions)
+    state.options[name] = currentOptions
   }
 }
 

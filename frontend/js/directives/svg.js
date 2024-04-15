@@ -6,7 +6,7 @@ export default {
       beforeMount (el, binding, vnode) {
         addSvg(el, binding, vnode)
       },
-      componentUpdated: function (el, binding, vnode, oldVnode) {
+      updated: function (el, binding, vnode, oldVnode) {
         removeSvg(el)
         addSvg(el, binding, vnode)
       },

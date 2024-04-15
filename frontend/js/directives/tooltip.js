@@ -14,7 +14,7 @@ export default {
           tooltip._vueEl = el
         }
       },
-      componentUpdated: function (el, binding, vnode, oldVnode) {
+      updated: function (el, binding, vnode, oldVnode) {
         if (el._tooltip) {
           el._tooltip.dispose()
 
