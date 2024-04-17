@@ -5,8 +5,6 @@
  * create, delete reoder blocks of different types of content to create complex pages
  */
 
-import Vue from 'vue'
-
 import ACTIONS from '@/store/actions'
 import { buildBlock, isBlockEmpty } from '@/utils/getFormData.js'
 

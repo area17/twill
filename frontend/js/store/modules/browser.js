@@ -1,5 +1,3 @@
-import Vue from 'vue'
-
 import ACTIONS from '@/store/actions'
 
 import { BROWSER } from '../mutations'

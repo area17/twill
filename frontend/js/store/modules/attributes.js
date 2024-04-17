@@ -4,8 +4,6 @@
  * Create new attributes (categories, tags...) in forms
  */
 
-import Vue from 'vue'
-
 import { ATTRIBUTES } from '../mutations'
 
 const state = {

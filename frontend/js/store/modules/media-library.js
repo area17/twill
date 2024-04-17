@@ -5,7 +5,6 @@
  */
 
 import cloneDeep from 'lodash/cloneDeep'
-import Vue from 'vue'
 
 import ACTIONS from '@/store/actions'
 
