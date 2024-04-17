@@ -48,11 +48,6 @@
 </template>
 
 <script>
-  import Vue from 'vue'
-  import Trend from 'vuetrend'
-
-  Vue.use(Trend)
-
   export default {
     name: 'A17StatFeed',
     props: {

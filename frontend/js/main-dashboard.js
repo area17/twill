@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import store from '@/store'
+import Trend from 'vue3trend'
 
 // General shared behaviors
 import main from '@/main'
@@ -39,6 +40,7 @@ store.registerModule('language', language)
 store.registerModule('form', form)
 
 app.use(store)
+app.use(Trend)
 
 // configuration
 app.use(A17Config)
