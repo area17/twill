@@ -73,7 +73,7 @@
 
 <script>
   import debounce from 'lodash/debounce'
-  import draggable from 'vuedraggable'
+  import { VueDraggableNext } from 'vue-draggable-next'
   import { mapState } from 'vuex'
 
   import a17Spinner from '@/components/Spinner.vue'
@@ -94,7 +94,7 @@
       'a17-tablerow': a17Tablerow,
       'a17-paginate': a17Paginate,
       'a17-spinner': a17Spinner,
-      draggable
+      draggable: VueDraggableNext
     },
     mixins: [DatatableMixin, DraggableMixin],
     data: function () {

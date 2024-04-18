@@ -43,10 +43,10 @@
     "tinycolor2": "1.6.0",
     "truncate-utf8-bytes": "1.0.2",
     "vue": "^3.4.21",
+    "vue-draggable-next": "^2.2.1",
     "vue-select": "^4.0.0-beta.6",
     "vue-timeago3": "^2.3.2",
     "vue3trend": "^1.0.0",
-    "vuedraggable": "2.24.3",
     "vuex": "^4.0.0"
   },
   "devDependencies": {

@@ -47,7 +47,7 @@
 <script>
   import debounce from 'lodash/debounce'
   import tinyColor from 'tinycolor2'
-  import draggable from 'vuedraggable'
+  import { VueDraggableNext } from 'vue-draggable-next'
 
   import A17BlockEditorModel from '@/components/blocks/BlockEditorModel'
   import A17EditorBlockPreview from '@/components/editor/EditorPreviewBlockItem'
@@ -72,7 +72,7 @@
     },
     mixins: [DraggableMixin, BlockEditorMixin],
     components: {
-      draggable,
+      draggable: VueDraggableNext,
       'a17-editor-block-preview': A17EditorBlockPreview,
       'a17-blockeditor-model': A17BlockEditorModel,
       'a17-spinner': A17Spinner

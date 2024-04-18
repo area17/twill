@@ -71,7 +71,7 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
+  import { VueDraggableNext } from 'vue-draggable-next'
   import { mapState } from 'vuex'
 
   import BlockEditorItem from '@/components/blocks/BlockEditorItem.vue'
@@ -85,7 +85,7 @@
     components: {
       A17StandaloneBrowser,
       'a17-blockeditor-item': BlockEditorItem,
-      draggable
+      draggable: VueDraggableNext
     },
     mixins: [draggableMixin],
     props: {

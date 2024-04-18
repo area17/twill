@@ -139,21 +139,12 @@ const config = {
     plugins
   },
   chainWebpack: (config) => {
-    config.resolve.alias.set('vue', '@vue/compat')
-
-    config.module
-      .rule('vue')
-      .use('vue-loader')
-      .tap((options) => {
-        return {
-          ...options,
-          compilerOptions: {
-            compatConfig: {
-              MODE: 3
-            }
-          }
-        }
+    config.plugin('define').tap((definitions) => {
+      Object.assign(definitions[0], {
+        __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true'
       })
+      return definitions
+    })
   }
 }
 

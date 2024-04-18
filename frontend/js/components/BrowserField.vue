@@ -37,7 +37,7 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
+  import { VueDraggableNext } from 'vue-draggable-next'
   import { mapGetters,mapState } from 'vuex'
 
   import draggableMixin from '@/mixins/draggable'
@@ -49,7 +49,7 @@
     name: 'A17BrowserField',
     components: {
       'a17-browseritem': Browseritem,
-      draggable
+      draggable: VueDraggableNext
     },
     mixins: [draggableMixin],
     props: {

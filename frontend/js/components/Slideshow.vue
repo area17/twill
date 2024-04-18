@@ -36,7 +36,7 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
+  import { VueDraggableNext } from 'vue-draggable-next'
   import { mapState } from 'vuex'
 
   import draggableMixin from '@/mixins/draggable'
@@ -47,7 +47,7 @@
   export default {
     name: 'A17Slideshow',
     components: {
-      draggable
+      draggable: VueDraggableNext
     },
     mixins: [draggableMixin, mediaLibrayMixin, mediaFieldMixin],
     props: {

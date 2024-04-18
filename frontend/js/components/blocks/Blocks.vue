@@ -140,7 +140,7 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
+  import { VueDraggableNext } from 'vue-draggable-next'
   import { mapGetters,mapState } from 'vuex'
 
   import BlockEditorItem from '@/components/blocks/BlockEditorItem.vue'
@@ -154,7 +154,7 @@
       'a17-blockeditor-item': BlockEditorItem,
       'a17-blockeditor-model': BlockEditorModel,
       'a17-blocks-list': BlocksList,
-      draggable
+      draggable: VueDraggableNext
     },
     mixins: [DraggableMixin, EditorMixin],
     props: {

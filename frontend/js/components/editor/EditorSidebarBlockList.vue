@@ -30,7 +30,7 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
+  import { VueDraggableNext } from 'vue-draggable-next'
 
   import { DraggableMixin } from '@/mixins'
 
@@ -48,7 +48,7 @@
     },
     mixins: [DraggableMixin],
     components: {
-      draggable
+      draggable: VueDraggableNext
     },
     computed: {
       editorSidebarClasses () {

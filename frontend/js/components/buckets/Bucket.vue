@@ -79,7 +79,7 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
+  import { VueDraggableNext } from 'vue-draggable-next'
   import { mapGetters,mapState } from 'vuex'
 
   import Fieldset from '@/components/Fieldset.vue'
@@ -132,7 +132,7 @@
       'a17-paginate': Paginate,
       'a17-filter': Filter,
       'a17-vselect': VSelect,
-      draggable
+      draggable: VueDraggableNext
     },
     data: function () {
       return {
