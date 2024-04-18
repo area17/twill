@@ -90,7 +90,7 @@ export default {
     }
   },
   render () {
-    return this.$scopedSlots.default({
+    return this.$slots.default({
       block: this.block,
       blockIndex: this.blockIndex,
       add: this.add,

@@ -66,8 +66,8 @@
       },
       isRequired: {
         type: Boolean,
-        default: function () {
-          return this.attributes.required || false
+        default: function (props) {
+          return props.attributes.required || false
         }
       }
     },
