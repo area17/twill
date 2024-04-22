@@ -177,7 +177,7 @@
       margin-left:9px;
     }
 
-    div {
+    :slotted(div) {
       display:inline-block;
 
       button:not(.button--validate), a{

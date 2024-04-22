@@ -231,7 +231,7 @@
     }
   }
 
-  .stickyNav__actions > div {
+  .stickyNav__actions > :slotted(div) {
     display:flex;
 
     .button {

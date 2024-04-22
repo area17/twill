@@ -69,9 +69,9 @@
     render: function () {
       const elOpts = {
         class: this.buttonClasses,
-        onClick: (event) => {
-          this.onClick(event)
-        }
+        // onClick: (event) => {
+        //   this.onClick(event)
+        // }
       }
 
       // button
@@ -183,7 +183,7 @@
     font-weight:600;
     padding: 0 15px;
 
-    .icon {
+    :deep(.icon) {
       vertical-align: baseline;
       top: 3px;
       position: relative;
@@ -382,7 +382,7 @@
     color: $color__icons;
     @include monospaced-figures('off'); // dont use monospaced figures here
 
-    .icon {
+    :deep(.icon) {
       transition: color .25s linear;
     }
 
@@ -391,12 +391,12 @@
       border-color: $color__text;
       color: $color__text;
 
-      .icon {
+      :deep(.icon) {
         color: $color__text;
       }
     }
 
-    .icon {
+    :deep(.icon) {
       // vertical-align: top;
       // height: 100%;
       display: block;
@@ -420,7 +420,7 @@
       color: $color__button_greyed;
       background: $color__button_greyed--bg;
 
-      .icon {
+      :deep(.icon) {
         color: $color__button_greyed;
       }
 

@@ -280,6 +280,7 @@
     }
 
     > button,
+    > :slotted(button),
     .dropdown,
     .dropdown > button {
       display: inline-block;
@@ -289,7 +290,8 @@
   }
 
   .block__actions {
-    button[data-action] {
+    button[data-action],
+    :slotted(button)[data-action] {
       visibility: hidden;
     }
 
@@ -308,7 +310,8 @@
       }
     }
 
-    button[data-action] {
+    button[data-action],
+    :slotted(button)[data-action] {
       visibility: visible;
       display: inline-block;
     }
@@ -316,7 +319,8 @@
 
   .block__header:hover,
   .block--focus .block__header {
-    button[data-action] {
+    button[data-action],
+    :slotted(button)[data-action] {
       display: inline-block;
     }
   }
