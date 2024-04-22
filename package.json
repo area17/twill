@@ -28,7 +28,6 @@
     "@tiptap/pm": "^2.2.4",
     "@tiptap/starter-kit": "^2.2.4",
     "@tiptap/vue-3": "^2.2.4",
-    "@vue/compat": "^3.1.0",
     "alpinejs": "^3.13.5",
     "axios": "^0.28.0",
     "core-js": "^3.35.1",

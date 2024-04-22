@@ -2,9 +2,6 @@
   import { h } from 'vue'
 
   export default {
-    compatConfig: {
-      RENDER_FUNCTION: false
-    },
     name: 'A17Button',
     props: {
       el: {

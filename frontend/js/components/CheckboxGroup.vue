@@ -16,9 +16,6 @@
   import InputframeMixin from '@/mixins/inputFrame'
 
   export default {
-    compatConfig: {
-      WATCH_ARRAY: false
-    },
     name: 'A17CheckboxGroup',
     props: {
       name: {
