@@ -8,7 +8,7 @@
           <v-select
               :multiple="multiple"
               :placeholder="placeholder"
-              :value="value"
+              :model-value="value"
               :options="currentOptions"
               :searchable="searchable"
               :selectable="selectable"
@@ -20,7 +20,7 @@
               :requiredValue="required"
               :maxHeight="maxHeight"
               :disabled="disabled"
-              @input="updateValue"
+              @update:modelValue="updateValue"
               @search="getOptions"
           >
             <template v-slot:no-options>
