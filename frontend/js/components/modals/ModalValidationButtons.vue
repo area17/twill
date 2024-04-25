@@ -112,7 +112,7 @@
         }
 
         const requiredFields = this.fields.filter((field) => {
-          return field.getAttribute('required')
+          return field.hasAttribute('required')
         })
 
         // There are no required fields, so buttons are enabled
