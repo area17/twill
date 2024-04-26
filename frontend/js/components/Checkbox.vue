@@ -16,6 +16,7 @@
   export default {
     name: 'A17Checkbox',
     mixins: [randKeyMixin],
+    emits: ['change'],
     props: {
       value: {
         default: ''

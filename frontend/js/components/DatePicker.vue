@@ -4,7 +4,7 @@
     <div class="datePicker__group" :ref="refs.flatPicker">
       <div class="form__field datePicker__field">
         <input type="text" :name="name" :id="uniqId" :required="required" :placeholder="placeHolder" data-input
-               @blur="onBlur" @input.stop="onInput" v-model="date" :disabled="disabled">
+               @blur="onBlur" @input="onInput" v-model="date" :disabled="disabled">
         <a href="#" v-if="clear" class="datePicker__reset" :class="{ 'datePicker__reset--cleared' : !date }"
            @click.prevent="onClear"><span v-svg symbol="close_icon"></span></a>
       </div>
@@ -26,6 +26,7 @@
   export default {
     name: 'A17DatePicker',
     mixins: [randKeyMixin, InputframeMixin, FormStoreMixin],
+    emits: ['input', 'open', 'close', 'blur'],
     props: {
       /* @see: https://chmln.github.io/flatpickr/options/ */
       name: { // FlatPicker hidden input name

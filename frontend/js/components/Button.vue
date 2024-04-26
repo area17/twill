@@ -3,6 +3,7 @@
 
   export default {
     name: 'A17Button',
+    emits: ['click'],
     props: {
       el: {
         type: String,
@@ -69,9 +70,9 @@
     render: function () {
       const elOpts = {
         class: this.buttonClasses,
-        // onClick: (event) => {
-        //   this.onClick(event)
-        // }
+        onClick: (event) => {
+          this.onClick(event)
+        }
       }
 
       // button
