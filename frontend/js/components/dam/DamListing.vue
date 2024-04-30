@@ -34,23 +34,25 @@
               </svg>
             </span>
           </button>
-          <div slot="dropdown__content">
-            <a17-checkbox
-              :label="$trans('dam.hide-name', 'Hide file name')"
-              :initialValue="hideNames"
-              value="hide_names"
-              inStore="value"
-              @change="hideNames = !hideNames"
-            />
-            <a17-radiogroup
-              name="layoutSelection"
-              radioClass="layout"
-              :label="$trans('dam.layout', 'Layout')"
-              :radios="layoutRadios"
-              :initialValue="gridView ? 'grid' : 'list'"
-              @change="updateLayout"
-            />
-          </div>
+          <template v-slot:dropdown__content>
+            <div>
+              <a17-checkbox
+                :label="$trans('dam.hide-name', 'Hide file name')"
+                :initialValue="hideNames"
+                value="hide_names"
+                inStore="value"
+                @change="hideNames = !hideNames"
+              />
+              <a17-radiogroup
+                name="layoutSelection"
+                radioClass="layout"
+                :label="$trans('dam.layout', 'Layout')"
+                :radios="layoutRadios"
+                :initialValue="gridView ? 'grid' : 'list'"
+                @change="updateLayout"
+              />
+            </div>
+          </template>
         </a17-dropdown>
       </div>
       <div class="dam-listing__list-items">
@@ -118,19 +120,19 @@
       btnLabelSingle: {
         type: String,
         default: function() {
-          return this.$trans('media-library.insert', 'Insert')
+          return window.$trans('media-library.insert', 'Insert')
         }
       },
       btnLabelUpdate: {
         type: String,
         default: function() {
-          return this.$trans('media-library.update', 'Update')
+          return window.$trans('media-library.update', 'Update')
         }
       },
       btnLabelMulti: {
         type: String,
         default: function() {
-          return this.$trans('media-library.insert', 'Insert')
+          return window.$trans('media-library.insert', 'Insert')
         }
       },
       initialPage: {

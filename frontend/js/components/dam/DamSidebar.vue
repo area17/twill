@@ -62,7 +62,7 @@
               </li>
               <li class="f--small" v-if="firstMedia.size" id="meta__size">
                 {{ $trans('dam.file-size', 'File size') }}:
-                {{ firstMedia.size | uppercase }}
+                {{ uppercase(firstMedia.size) }}
               </li>
               <li class="f--small" v-if="firstMedia.creator" id="meta__creator">
                 {{ $trans('dam.creator', 'Creator') }}:
@@ -199,7 +199,7 @@
               <a17-langswitcher :in-modal="true" :all-published="true" />
             </div>
 
-            <!-- 
+            <!--
             <a17-locale
               type="a17-textfield"
               v-if="isImage && translatableMetadatas.includes('alt_text')"
@@ -280,10 +280,10 @@
                 @blur="blur"
               />
             </template> -->
-            <template v-for="(field, i) in singleOnlyMetadatas">
+            <!-- eslint-disable vue/no-v-for-template-key -->
+            <template v-for="(field, i) in singleOnlyMetadatas" :key="field.name + i">
               <a17-locale
                 type="a17-textfield"
-                v-bind:key="field.name"
                 v-if="
                   isImage &&
                     (field.type === 'text' || !field.type) &&
@@ -302,7 +302,6 @@
                 @blur="blur"
               />
               <a17-textfield
-                v-bind:key="field.name + i"
                 v-else-if="isImage && (field.type === 'text' || !field.type)"
                 :label="field.label"
                 :name="field.name"
@@ -316,7 +315,6 @@
               <div
                 class="dam-sidebar__checkbox"
                 v-if="isImage && field.type === 'checkbox'"
-                v-bind:key="field.name"
               >
                 <a17-checkbox
                   :label="field.label"
@@ -328,19 +326,20 @@
               </div>
             </template>
           </template>
+          <!-- eslint-enable -->
 
           <template
             v-if="
               singleAndMultipleMetadatas.some(field => field.type === 'list')
             "
           >
-            <template v-for="field in singleAndMultipleMetadatas">
+            <!-- eslint-disable vue/no-v-for-template-key -->
+            <template v-for="field in singleAndMultipleMetadatas" :key="field.name">
               <div
                 v-if="
                   field.type === 'list' && getSharedItems(field.name).length
                 "
                 class="dam-sidebar__editable"
-                v-bind:key="field.name"
               >
                 <div class="dam-sidebar__editable-header">
                   <h3 class="f--small">{{ field.label }}</h3>
@@ -366,6 +365,7 @@
                 </ul>
               </div>
             </template>
+            <!-- eslint-enable -->
           </template>
 
           <template
@@ -389,7 +389,8 @@
                   </a17-button>
                 </div>
                 <ul class="dam-sidebar__tags-static">
-                  <template v-for="(field, i) in singleAndMultipleMetadatas">
+                  <!-- eslint-disable vue/no-v-for-template-key -->
+                  <template v-for="(field, i) in singleAndMultipleMetadatas" :key="field.name">
                     <template v-if="field.type === 'tags'">
                       <li
                         v-for="(tag, tagIndex) in getSharedItems(field.name)"
@@ -399,10 +400,12 @@
                       </li>
                     </template>
                   </template>
+                  <!-- eslint-enable -->
                 </ul>
               </template>
-              <template v-else v-for="field in singleAndMultipleMetadatas">
-                <div v-if="field.type === 'tags'" v-bind:key="field.name">
+              <!-- eslint-disable vue/no-v-for-template-key -->
+              <template v-else v-for="field in singleAndMultipleMetadatas" :key="field.name">
+                <div v-if="field.type === 'tags'">
                   <a17-vselect
                     :label="field.label"
                     :name="field.name"
@@ -418,13 +421,14 @@
                   />
                 </div>
               </template>
+              <!-- eslint-enable -->
             </div>
           </template>
 
-          <template v-for="(field, i) in singleAndMultipleMetadatas">
+          <!-- eslint-disable vue/no-v-for-template-key -->
+          <template v-for="(field, i) in singleAndMultipleMetadatas" :key="field.name + i">
             <a17-locale
               type="a17-textfield"
-              v-bind:key="field.name"
               v-if="
                 isImage &&
                   (field.type === 'text' || !field.type) &&
@@ -447,7 +451,6 @@
             />
 
             <a17-textfield
-              v-bind:key="field.name + i"
               v-else-if="
                 isImage &&
                   (field.type === 'text' || !field.type) &&
@@ -467,7 +470,6 @@
 
             <div
               class="dam-sidebar__checkbox"
-              v-bind:key="field.name"
               v-if="
                 isImage &&
                   field.type === 'checkbox' &&
@@ -486,6 +488,7 @@
               />
             </div>
           </template>
+          <!-- eslint-enable -->
         </form>
       </div>
       <div
@@ -535,7 +538,7 @@
   import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
   import api from '@/store/api/media-library'
   import { NOTIFICATION } from '@/store/mutations'
-  import a17VueFilters from '@/utils/filters.js'
+  import { uppercase } from '@/utils/filters.js'
   import FormDataAsObj from '@/utils/formDataAsObj.js'
   import Extensions from '@/components/files/Extensions.js'
 
@@ -596,7 +599,6 @@
         isOpen: true
       }
     },
-    filters: a17VueFilters,
     watch: {
       medias: function() {
         this.fieldsRemovedFromBulkEditing = []
@@ -795,6 +797,7 @@
       })
     },
     methods: {
+      uppercase,
       replaceMedia: function() {
         // Open confirm dialog if any
         if (this.$root.$refs.replaceWarningMediaLibrary) {

@@ -47,7 +47,7 @@
     },
     methods: {
       initUploader: function() {
-        const buttonEl = this.$refs.uploaderBrowseButton
+        const buttonEl = this.$refs.uploaderBrowseButton.$el
         const sharedConfig = {
           debug: true,
           maxConnections: 5,
@@ -176,7 +176,7 @@
       },
       replaceMedia: function(id) {
         this.media_to_replace_id = id
-        const qqinputs = this.$refs.uploaderBrowseButton.querySelectorAll(
+        const qqinputs = this.$refs.uploaderBrowseButton.$el.querySelectorAll(
           '[name = "qqfile"]'
         )
         qqinputs[Array.from(qqinputs).length - 1].click()
@@ -320,6 +320,7 @@
         this.uploadProgress(uploadProgress)
       },
       _onDropError(errorCode, errorData) {
+        // eslint-disable-next-line
         console.error(errorCode, errorData)
       },
       _onProcessingDroppedFilesComplete(files) {
@@ -337,7 +338,7 @@
       // Init uploader
       this.initUploader()
     },
-    beforeDestroy() {
+    beforeUnmount() {
       this._qqDropzone && this._qqDropzone.dispose()
     }
   }

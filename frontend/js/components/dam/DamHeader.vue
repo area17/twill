@@ -37,17 +37,19 @@
                 </svg>
               </span>
             </button>
-            <div slot="dropdown__content">
-              <a
-                v-if="userData.can_access_user_management"
-                :href="userData.user_management_route"
+            <template v-slot:dropdown__content>
+              <div>
+                <a
+                  v-if="userData.can_access_user_management"
+                  :href="userData.user_management_route"
                 >{{ $trans('nav.cms-users') }}</a
-              >
-              <a :href="userData.edit_profile_route">{{
-                $trans('nav.profile')
-              }}</a>
-              <a href="#" data-logout-btn>{{ $trans('nav.logout') }}</a>
-            </div>
+                >
+                <a :href="userData.edit_profile_route">{{
+                    $trans('nav.profile')
+                  }}</a>
+                <a href="#" data-logout-btn>{{ $trans('nav.logout') }}</a>
+              </div>
+            </template>
           </a17-dropdown>
         </div>
       </div>
