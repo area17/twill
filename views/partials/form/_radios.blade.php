@@ -18,9 +18,9 @@
     in-store="value"
 >
     @if($addNew)
-        <div slot="addModal">
-            @partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])
-        </div>
+        <template v-slot:addModal>
+            <div>@partialView(($formModuleName ?? null), 'create', ['renderForModal' => true, 'fieldsInModal' => true])</div>
+        </template>
     @endif
 </a17-singleselect>
 

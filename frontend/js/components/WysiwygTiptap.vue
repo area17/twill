@@ -154,13 +154,14 @@
 
             <template v-if="this.toolbar.wrappers">
               <br/>
-              <template v-for="wrapper in this.toolbar.wrappers">
+              <!-- eslint-disable vue/no-v-for-template-key -->
+              <template v-for="wrapper in this.toolbar.wrappers" :key="wrapper.id">
                 <wysiwyg-menu-bar-btn :icon-url="wrapper.icon"
-                                      :key="wrapper.id"
                                       :isActive="editor.isActive(wrapper.class)"
                                       :label="wrapper.label"
                                       @btn:click="editor.commands['set' + wrapper.id]()"/>
               </template>
+              <!-- eslint-enable -->
             </template>
 
           </div>
@@ -246,7 +247,7 @@
 
 <script>
   import debounce from 'lodash/debounce'
-  import {Editor, EditorContent, getMarkAttributes, mergeAttributes, Node} from '@tiptap/vue-2'
+  import {Editor, EditorContent, getMarkAttributes, mergeAttributes, Node} from '@tiptap/vue-3'
   import StarterKit from '@tiptap/starter-kit'
   import Underline from '@tiptap/extension-underline'
   import Table from '@tiptap/extension-table'
@@ -263,8 +264,6 @@
   import LocaleMixin from '@/mixins/locale'
   import {Link} from "@tiptap/extension-link";
   import {Placeholder} from "@tiptap/extension-placeholder";
-  import {HardBreak} from "@tiptap/extension-hard-break";
-  import {HorizontalRule} from "@tiptap/extension-horizontal-rule";
   import {TextAlign} from '@tiptap/extension-text-align';
 
   export default {
@@ -538,7 +537,6 @@
 
       const content = this.value || ''
       const extensions = [
-        HardBreak,
         TextAlign.configure({
           types: ['heading','paragraph'],
         }),
@@ -623,9 +621,6 @@
             extensions.push(TableRow)
             break
           }
-          case 'hr': {
-            extensions.push(HorizontalRule)
-          }
         }
       })
 
@@ -635,6 +630,7 @@
         listItem: this.toolbar.ordered || this.toolbar.bullet || false,
         code: this.toolbar.code ?? false,
         codeBlock: this.toolbar.codeBlock ?? false,
+        horizontalRule: this.toolbar.hr ?? false,
       }))
 
       this.editor = new Editor({
@@ -650,9 +646,6 @@
       this.updateCounter()
     },
     beforeUnmount () {
-      this.editor.destroy()
-    },
-    beforeDestroy () {
       this.editor.destroy()
     }
   }

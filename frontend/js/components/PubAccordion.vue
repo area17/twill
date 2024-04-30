@@ -1,14 +1,18 @@
 <template>
   <a17-accordion :open="open" @toggleVisibility="notifyOpen">
-    <span slot="accordion__title"><slot></slot></span>
-    <div slot="accordion__value">
-      <template v-if="startDate">
-        {{ startDateForDisplay | formatDateWithFormat(localizedDateDisplayFormat) }}
-      </template>
-      <template v-else>
-        {{ defaultStartDate }}
-      </template>
-    </div>
+    <template v-slot:accordion__title>
+      <span><slot></slot></span>
+    </template>
+    <template v-slot:accordion__value>
+      <div>
+        <template v-if="startDate">
+          {{ formatDateWithFormat(startDateForDisplay, localizedDateDisplayFormat) }}
+        </template>
+        <template v-else>
+          {{ defaultStartDate }}
+        </template>
+      </div>
+    </template>
     <div class="accordion__fields">
       <a17-datepicker
         name="publish_date"
@@ -44,15 +48,15 @@
 </template>
 
 <script>
-  import parseJson from 'date-fns/parse'
   import { mapState } from 'vuex'
 
   import VisibilityMixin from '@/mixins/toggleVisibility'
   import { PUBLICATION } from '@/store/mutations'
-  import a17VueFilters from '@/utils/filters.js'
+  import { formatDateWithFormat } from '@/utils/filters.js'
   import { getTimeFormatForCurrentLocale, isCurrentLocale24HrFormatted } from '@/utils/locale'
 
   import a17Accordion from './Accordion.vue'
+  import { parseISO } from "date-fns";
 
   export default {
     name: 'A17Pubaccordion',
@@ -64,7 +68,7 @@
       defaultStartDate: {
         type: String,
         default: function () {
-          return this.$trans('publisher.immediate')
+          return window.$trans('publisher.immediate')
         }
       },
       defaultEndDate: {
@@ -84,20 +88,19 @@
         default: isCurrentLocale24HrFormatted()
       }
     },
-    filters: a17VueFilters,
     computed: {
       ...mapState({
         startDate: state => state.publication.startDate,
         endDate: state => state.publication.endDate
       }),
       startDateForDisplay() {
-        return parseJson(this.startDate + 'Z').toISOString()
+        return parseISO(this.startDate + 'Z')
       },
       localizedDateDisplayFormat() {
         if (this.dateDisplayFormat) {
           return this.dateDisplayFormat
         }
-        return 'MMM, DD, YYYY, ' + getTimeFormatForCurrentLocale(this.date_24h)
+        return 'MMM, dd, yyyy, ' + getTimeFormatForCurrentLocale(this.date_24h)
       }
     },
     methods: {
@@ -131,7 +134,8 @@
         accordions.forEach(function (accordion) {
           accordion.style.overflow = ''
         })
-      }
+      },
+      formatDateWithFormat
     }
   }
 </script>

@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import store from '@/store'
 
 // General shared behaviors
@@ -19,28 +19,31 @@ import browser from '@/store/modules/browser'
 import a17Fieldset from '@/components/Fieldset.vue'
 import a17Browser from '@/components/Browser.vue'
 
-// configuration
-Vue.use(A17Config)
-Vue.use(A17Notif)
-
 store.registerModule('form', form)
 store.registerModule('browser', browser)
 
-registerCustomComponents()
-
-/* eslint-disable no-new */
-/* eslint no-unused-vars: "off" */
-window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
-  store, // inject store to all children
-  el: '#app',
+const app = createApp({
   components: {
     'a17-fieldset': a17Fieldset,
     'a17-browser': a17Browser
   },
   created: function () {
-    openMediaLibrary()
+    openMediaLibrary(this)
   }
 })
+
+app.use(store)
+
+// configuration
+app.use(A17Config)
+app.use(A17Notif)
+
+registerCustomComponents(app)
+
+app.mount('#app')
+/* eslint-disable no-new */
+/* eslint no-unused-vars: "off" */
+window[process.env.VUE_APP_NAME].vm = window.vm = app
 
 // DOM Ready general actions
 document.addEventListener('DOMContentLoaded', main)

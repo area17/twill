@@ -5,8 +5,6 @@
  * create, delete reoder blocks of different types of content to create complex pages
  */
 
-import Vue from 'vue'
-
 import ACTIONS from '@/store/actions'
 import { buildBlock, isBlockEmpty } from '@/utils/getFormData.js'
 
@@ -76,7 +74,7 @@ const mutations = {
       updated.push(newBlock) // or add a new blocks at the end of the list
     }
 
-    Vue.set(state.blocks, editorName, updated)
+    state.blocks[editorName] = updated
   },
   [BLOCKS.MOVE_BLOCK] (state, { editorName, newIndex, oldIndex }) {
     const updated = state.blocks[editorName] || []
@@ -90,29 +88,29 @@ const mutations = {
 
     updated.splice(newIndex, 0, updated.splice(oldIndex, 1)[0])
 
-    Vue.set(state.blocks, editorName, updated)
+    state.blocks[editorName] = updated
   },
   [BLOCKS.DELETE_BLOCK] (state, { editorName, index }) {
     const id = state.blocks[editorName][index].id
     const updated = state.blocks[editorName] || []
 
     if (id) {
-      Vue.delete(state.previews, id)
+      delete state.previews[id]
     }
 
     updated.splice(index, 1)
 
-    Vue.set(state.blocks, editorName, updated)
+    state.blocks[editorName] = updated
   },
   [BLOCKS.DUPLICATE_BLOCK] (state, { editorName, index, block, id }) {
     const updated = state.blocks[editorName] || []
 
     updated.splice(index, 0, { ...block, id, name: editorName })
 
-    Vue.set(state.blocks, editorName, updated)
+    state.blocks[editorName] = updated
   },
   [BLOCKS.REORDER_BLOCKS] (state, { editorName, value }) {
-    Vue.set(state.blocks, editorName, value)
+    state.blocks[editorName] = value
   },
   [BLOCKS.ACTIVATE_BLOCK] (state, { editorName, index }) {
     if (state.blocks[editorName] && state.blocks[editorName][index]) {
@@ -122,7 +120,7 @@ const mutations = {
     }
   },
   [BLOCKS.ADD_BLOCK_PREVIEW] (state, data) {
-    Vue.set(state.previews, data.id, data.html)
+    state.previews[data.id] = data.html
   },
   [BLOCKS.UPDATE_PREVIEW_LOADING] (state, loading) {
     state.loading = !state.loading

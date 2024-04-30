@@ -1,5 +1,3 @@
-import Vue from 'vue'
-
 import ACTIONS from '@/store/actions'
 
 import { BROWSER } from '../mutations'
@@ -51,14 +49,14 @@ const mutations = {
   },
   [BROWSER.DESTROY_ITEMS] (state, itemToDestroy) {
     if (state.selected[itemToDestroy.name]) {
-      Vue.delete(state.selected, itemToDestroy.name)
+      delete state.selected[itemToDestroy.name]
     }
   },
   [BROWSER.DESTROY_ITEM] (state, itemToDestroy) {
     if (state.selected[itemToDestroy.name]) {
       state.selected[itemToDestroy.name].splice(itemToDestroy.index, 1)
 
-      if (state.selected[itemToDestroy.name].length === 0) Vue.delete(state.selected, itemToDestroy.name)
+      if (state.selected[itemToDestroy.name].length === 0) delete state.selected[itemToDestroy.name]
 
       state.connector = null
     }

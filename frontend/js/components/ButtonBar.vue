@@ -41,8 +41,8 @@
     border-radius: 2px;
     display: flex;
 
-    > a,
-    > button {
+    > :slotted(a),
+    > :slotted(button) {
       @include btn-reset;
       height: $toolbar__height - 2px;
       line-height: $toolbar__height - 2px;
@@ -80,14 +80,14 @@
       }
     }
 
-    > a:first-child,
-    > button:first-child {
+    > :slotted(a):first-child,
+    > :slotted(button):first-child {
       border-top-left-radius: $border__radius;
       border-bottom-left-radius: $border__radius;
     }
 
-    > a:last-child,
-    > button:last-child {
+    > :slotted(a):last-child,
+    > :slotted(button):last-child {
       border-top-right-radius: $border__radius;
       border-bottom-right-radius: $border__radius;
       border-right: 0 none;

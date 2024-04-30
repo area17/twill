@@ -13,11 +13,11 @@
 </template>
 
 <script>
-  import compareAsc from 'date-fns/compare_asc'
   import { mapState } from 'vuex'
 
   import { PUBLICATION } from '@/store/mutations'
-  import a17VueFilters from '@/utils/filters.js'
+  import { lowercase } from '@/utils/filters.js'
+  import { parseISO, compareAsc } from "date-fns";
 
   export default {
     name: 'A17Toggle',
@@ -50,20 +50,19 @@
         default: 'Scheduled'
       }
     },
-    filters: a17VueFilters,
     computed: {
       switcherClasses: function () {
         return [
           this.isChecked ? 'switcher--active' : '',
-          this.formatTextEnabled ? `switcher--${this.$options.filters.lowercase(this.formatTextEnabled)}` : ''
+          this.formatTextEnabled ? `switcher--${lowercase(this.formatTextEnabled)}` : ''
         ]
       },
       isChecked: function () {
         return this.published
       },
       formatTextEnabled: function () {
-        const scoreStart = compareAsc(this.startDate, new Date())
-        const scoreEnd = compareAsc(this.endDate, new Date())
+        const scoreStart = compareAsc(this.startDate ? parseISO(this.startDate): null, new Date())
+        const scoreEnd = compareAsc(this.endDate ? parseISO(this.endDate): null, new Date())
 
         if (this.endDate && scoreEnd < 0) return this.textExpired
         else if (this.startDate && scoreStart > 0) return this.textScheduled

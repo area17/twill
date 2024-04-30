@@ -287,6 +287,7 @@
         this.uploadProgress(uploadProgress)
       },
       _onDropError (errorCode, errorData) {
+        // eslint-disable-next-line no-console
         console.error(errorCode, errorData)
       },
       _onProcessingDroppedFilesComplete (files) {
@@ -316,7 +317,7 @@
         }
       })
     },
-    beforeDestroy () {
+    beforeUnmount () {
       this._qqDropzone && this._qqDropzone.dispose()
     }
   }

@@ -10,13 +10,15 @@
               {{ $trans('dashboard.create-new', 'Create new') }}
               <span class="shortcutCreator__trigger"><span v-svg symbol="dropdown_module"></span></span>
             </a17-button>
-            <div slot="dropdown__content">
-              <ul>
-                <template v-for="(entity, index) in entities">
-                  <li :key="index" v-if="entity.createUrl"><a :href="entity.createUrl">{{ entity.singular }}</a></li>
-                </template>
-              </ul>
-            </div>
+            <template v-slot:dropdown__content>
+              <div>
+                <ul>
+                  <template v-for="(entity, index) in entities">
+                    <li :key="index" v-if="entity.createUrl"><a :href="entity.createUrl">{{ entity.singular }}</a></li>
+                  </template>
+                </ul>
+              </div>
+            </template>
           </a17-dropdown>
         </div>
         <div class="shortcutCreator__listing">

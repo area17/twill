@@ -20,12 +20,14 @@
                 </svg>
             </span>
         </a>
-        <div slot="dropdown__content">
-            @if ($currentUser->can('access-user-management'))
-                <a href="{{ route($user_management_route) }}">{{ twillTrans('twill::lang.nav.cms-users') }}</a>
-            @endif
-            <a href="{{ route(config('twill.admin_route_name_prefix') . 'users.edit', $currentUser->id) }}">{{ twillTrans('twill::lang.nav.profile') }}</a>
-            <a href="#" data-logout-btn>{{ twillTrans('twill::lang.nav.logout') }}</a>
-        </div>
+        <template v-slot:dropdown__content>
+            <div>
+                @if ($currentUser->can('access-user-management'))
+                    <a href="{{ route($user_management_route) }}">{{ twillTrans('twill::lang.nav.cms-users') }}</a>
+                @endif
+                <a href="{{ route(config('twill.admin_route_name_prefix') . 'users.edit', $currentUser->id) }}">{{ twillTrans('twill::lang.nav.profile') }}</a>
+                <a href="#" data-logout-btn>{{ twillTrans('twill::lang.nav.logout') }}</a>
+            </div>
+        </template>
     </a17-dropdown>
 @endif

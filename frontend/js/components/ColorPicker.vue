@@ -27,6 +27,7 @@
 
   export default {
     name: 'a17ColorPicker',
+    emits: ['change'],
     props: {
       color: {
         type: String,

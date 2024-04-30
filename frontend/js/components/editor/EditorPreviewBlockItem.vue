@@ -30,14 +30,16 @@
                 <span v-svg
                       symbol="drag"></span>
           </button>
-          <div slot="dropdown__content">
-            <button type="button"
-                    v-for="n in blocksLength"
-                    @click="moveBlock(n - 1)"
-                    :key="n">
-              {{ n }}
-            </button>
-          </div>
+          <template v-slot:dropdown__content>
+            <div>
+              <button type="button"
+                      v-for="n in blocksLength"
+                      @click="moveBlock(n - 1)"
+                      :key="n">
+                {{ n }}
+              </button>
+            </div>
+          </template>
         </a17-dropdown>
         <button type="button"
                 @click="deleteBlock">
@@ -100,7 +102,7 @@
         })
       }
     },
-    beforeDestroy () {
+    beforeUnmount () {
       this.unselectBlock()
     }
   }

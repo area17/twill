@@ -20,7 +20,7 @@
   </a17-inputframe>
 </template>
 <script>
-  import draggable from 'vuedraggable'
+  import { VueDraggableNext } from 'vue-draggable-next'
   import { mapGetters,mapState } from 'vuex'
 
   import draggableMixin from '@/mixins/draggable'
@@ -35,7 +35,7 @@
     name: 'A17FileField',
     components: {
       'a17-fileitem': fileItem,
-      draggable
+      draggable: VueDraggableNext
     },
     mixins: [draggableMixin, mediaLibraryMixin, localeMixin, inputframeMixin],
     props: {

@@ -5,7 +5,6 @@
  */
 
 import cloneDeep from 'lodash/cloneDeep'
-import Vue from 'vue'
 
 import ACTIONS from '@/store/actions'
 
@@ -122,11 +121,7 @@ const mutations = {
     })
   },
   [MEDIA_LIBRARY.UPDATE_MEDIAS] (state, { mediaRole, index, media }) {
-    Vue.set(
-      state.selected[mediaRole],
-      index,
-      media
-    )
+    state.selected[mediaRole][index] = media
   },
   [MEDIA_LIBRARY.SAVE_MEDIAS] (state, medias) {
     if (state.connector) {
@@ -153,13 +148,13 @@ const mutations = {
   [MEDIA_LIBRARY.DESTROY_SPECIFIC_MEDIA] (state, media) {
     if (state.selected[media.name]) {
       state.selected[media.name].splice(media.index, 1)
-      if (state.selected[media.name].length === 0) Vue.delete(state.selected, media.name)
+      if (state.selected[media.name].length === 0) delete state.selected[media.name]
     }
 
     state.connector = null
   },
   [MEDIA_LIBRARY.DESTROY_MEDIAS] (state, connector) {
-    if (state.selected[connector]) Vue.delete(state.selected, connector)
+    if (state.selected[connector]) delete state.selected[connector]
 
     state.connector = null
   },
@@ -195,9 +190,9 @@ const mutations = {
   [MEDIA_LIBRARY.ERROR_UPLOAD_MEDIA] (state, media) {
     state.loading.forEach(function (m, index) {
       if (m.id === media.id) {
-        Vue.set(state.loading[index], 'progress', 0)
-        Vue.set(state.loading[index], 'error', true)
-        Vue.set(state.loading[index], 'errorMessage', media.errorMessage)
+        state.loading[index].progress = 0
+        state.loading[index].error = true
+        state.loading[index].errorMessage = media.errorMessage
       }
     })
   },
@@ -248,8 +243,7 @@ const mutations = {
     }
 
     if (metadatas.media.hasOwnProperty('index')) {
-      const media = setMetatadas(cloneDeep(medias[metadatas.media.index]))
-      Vue.set(medias, metadatas.media.index, media)
+      medias[metadatas.media.index] = setMetatadas(cloneDeep(medias[metadatas.media.index]))
     }
   },
   [MEDIA_LIBRARY.DESTROY_MEDIA_CONNECTOR] (state) {
@@ -279,7 +273,7 @@ const mutations = {
     }
 
     const newMedia = addCrop(cloneDeep(media))
-    Vue.set(state.selected[key], index, newMedia)
+    state.selected[key][index] = newMedia
   },
   [MEDIA_LIBRARY.ADD_MEDIAS] (state, { medias }) {
     state.selected = Object.assign({}, state.selected, medias)

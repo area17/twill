@@ -1,6 +1,6 @@
 <template>
   <div class="content">
-    <draggable class="content__content" v-model="blocks" :options="dragOptions">
+    <draggable class="content__content" v-bind="dragOptions" v-model="blocks">
       <transition-group name="draggable_list" tag='div'>
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
           <a17-blockeditor-item
@@ -11,24 +11,28 @@
               :size="blockSize"
               :opened="opened"
           >
-            <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"
-                        v-if="hasRemainingBlocks">
-              <span v-svg symbol="add"></span>
-            </a17-button>
-            <div slot="dropdown-action">
-              <button type="button" @click="collapseAllBlocks()" v-if="opened">
-                {{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}
-              </button>
-              <button v-else type="button" @click="expandAllBlocks()">
-                {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
-              </button>
-              <button type="button" @click="duplicateBlock(index)" v-if="hasRemainingBlocks">
-                {{ $trans('fields.block-editor.clone-block', 'Clone block') }}
-              </button>
-              <button type="button" @click="deleteBlock(index)">
-                {{ $trans('fields.block-editor.delete', 'Delete') }}
-              </button>
-            </div>
+            <template v-slot:block-actions>
+              <a17-button variant="icon" data-action @click="duplicateBlock(index)"
+                          v-if="hasRemainingBlocks">
+                <span v-svg symbol="add"></span>
+              </a17-button>
+            </template>
+            <template v-slot:dropdown-action>
+              <div>
+                <button type="button" @click="collapseAllBlocks()" v-if="opened">
+                  {{ $trans('fields.block-editor.collapse-all', 'Collapse all') }}
+                </button>
+                <button v-else type="button" @click="expandAllBlocks()">
+                  {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
+                </button>
+                <button type="button" @click="duplicateBlock(index)" v-if="hasRemainingBlocks">
+                  {{ $trans('fields.block-editor.clone-block', 'Clone block') }}
+                </button>
+                <button type="button" @click="deleteBlock(index)">
+                  {{ $trans('fields.block-editor.delete', 'Delete') }}
+                </button>
+              </div>
+            </template>
           </a17-blockeditor-item>
         </div>
       </transition-group>
@@ -67,7 +71,7 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
+  import { VueDraggableNext } from 'vue-draggable-next'
   import { mapState } from 'vuex'
 
   import BlockEditorItem from '@/components/blocks/BlockEditorItem.vue'
@@ -81,7 +85,7 @@
     components: {
       A17StandaloneBrowser,
       'a17-blockeditor-item': BlockEditorItem,
-      draggable
+      draggable: VueDraggableNext
     },
     mixins: [draggableMixin],
     props: {

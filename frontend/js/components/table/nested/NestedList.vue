@@ -1,8 +1,8 @@
 <template>
   <draggable class="nested__dropArea"
+             v-bind="draggableOptions"
              :class="nestedDropAreaClasses"
              v-model="rows"
-             :options="draggableOptions"
              :tag="'ul'"
              :component-data="draggableGetComponentData">
     <li class="nested-datatable__item"
@@ -24,8 +24,7 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
-
+  import { VueDraggableNext } from 'vue-draggable-next'
   import { DatatableMixin, DraggableMixin, NestedDraggableMixin } from '@/mixins/index'
   import { DATATABLE } from '@/store/mutations'
 
@@ -35,7 +34,7 @@
     name: 'a17-nested-list',
     components: {
       'a17-nested-item': NestedItem,
-      draggable
+      draggable: VueDraggableNext
     },
     mixins: [DatatableMixin, DraggableMixin, NestedDraggableMixin],
     props: {

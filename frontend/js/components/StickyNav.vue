@@ -17,7 +17,6 @@
 
 <script>
   import debounce from 'lodash/debounce'
-  import Vue from 'vue'
 
   import scrollToY from '@/utils/scrollToY.js'
 
@@ -51,7 +50,7 @@
           const fieldset = self.fieldset[index]
           const pos = fieldset ? (fieldset.getBoundingClientRect().top + self.lastScrollPos) : 0
 
-          Vue.set(item, 'position', pos)
+          item.position = pos
         })
       },
       setActiveItems: function () {
@@ -62,16 +61,16 @@
         this.navItems.forEach(function (item, index) {
           const isActive = ((item.position - self.topOffset) < self.lastScrollPos)
 
-          Vue.set(item, 'active', false)
+          item.active = false
           if (isActive && index > 0) itemToActivate = index
         })
 
         // no active, let fallback on the first one or the last one the user clicked
         if (this.clickedFieldset >= 0){
-          Vue.set(self.navItems[self.clickedFieldset], 'active', true)
+          self.navItems[self.clickedFieldset].active = true
         }
         else if (self.navItems[itemToActivate] !== undefined) {
-          Vue.set(self.navItems[itemToActivate], 'active', true)
+          self.navItems[itemToActivate].active = true
         }
       },
       refresh: function () {
@@ -140,7 +139,7 @@
       this.refresh()
       this.init()
     },
-    beforeDestroy: function () {
+    beforeUnmount: function () {
       this.dispose()
     }
   }
@@ -232,7 +231,7 @@
     }
   }
 
-  .stickyNav__actions > div {
+  .stickyNav__actions > :slotted(div) {
     display:flex;
 
     .button {

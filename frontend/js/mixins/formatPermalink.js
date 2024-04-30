@@ -1,10 +1,9 @@
 import { mapState } from 'vuex'
 
 import { FORM } from '@/store/mutations'
-import a17VueFilters from '@/utils/filters.js'
+import { slugify } from '@/utils/filters.js'
 
 export default {
-  filters: a17VueFilters,
   computed: {
     ...mapState({
       currentLocale: state => state.language.active
@@ -25,7 +24,7 @@ export default {
           text = newValue
         }
 
-        const slug = this.$options.filters.slugify(text)
+        const slug = slugify(text)
 
         const field = {
           name: permalinkRef.attributes ? permalinkRef.attributes.name : permalinkRef.name,

@@ -11,10 +11,12 @@
                             position="bottom-right" :title="$trans('listing.columns.show')" :clickable="true" :offset="-10">
                 <button class="datatable__setupButton" @click="$refs.setupDropdown.toggle()">
                   <span v-svg symbol="preferences"></span></button>
-                <div slot="dropdown__content">
-                  <a17-checkboxgroup name="visibleColumns" :options="checkboxesColumns" :selected="visibleColumnsNames"
-                                     @change="updateActiveColumns" :min="2"/>
-                </div>
+                <template v-slot:dropdown__content>
+                  <div>
+                    <a17-checkboxgroup name="visibleColumns" :options="checkboxesColumns" :selected="visibleColumnsNames"
+                                       @change="updateActiveColumns" :min="2"/>
+                  </div>
+                </template>
               </a17-dropdown>
             </div>
             <div class="datatable__stickyTable">
@@ -37,17 +39,21 @@
           <a17-tablehead :columns="visibleColumns" ref="thead"/>
           </thead>
           <template v-if="draggable">
-            <draggable class="datatable__drag" :tag="'tbody'" v-model="rows" :options="dragOptions">
-              <template v-for="(row, index) in rows">
-                <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"/>
+            <draggable class="datatable__drag" v-bind="dragOptions" :tag="'tbody'" v-model="rows">
+              <!-- eslint-disable vue/no-v-for-template-key -->
+              <template v-for="(row, index) in rows" :key="row.id">
+                <a17-tablerow :row="row" :index="index" :columns="visibleColumns"/>
               </template>
+              <!-- eslint-enable -->
             </draggable>
           </template>
 
           <tbody v-else>
-          <template v-for="(row, index) in rows">
-            <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"/>
+          <!-- eslint-disable vue/no-v-for-template-key -->
+          <template v-for="(row, index) in rows" :key="row.id">
+            <a17-tablerow :row="row" :index="index" :columns="visibleColumns"/>
           </template>
+          <!-- eslint-enable -->
           </tbody>
         </a17-table>
 
@@ -67,7 +73,7 @@
 
 <script>
   import debounce from 'lodash/debounce'
-  import draggable from 'vuedraggable'
+  import { VueDraggableNext } from 'vue-draggable-next'
   import { mapState } from 'vuex'
 
   import a17Spinner from '@/components/Spinner.vue'
@@ -88,7 +94,7 @@
       'a17-tablerow': a17Tablerow,
       'a17-paginate': a17Paginate,
       'a17-spinner': a17Spinner,
-      draggable
+      draggable: VueDraggableNext
     },
     mixins: [DatatableMixin, DraggableMixin],
     data: function () {
@@ -241,7 +247,7 @@
     mounted: function () {
       this.initEvents()
     },
-    beforeDestroy: function () {
+    beforeUnmount: function () {
       this.disposeEvents()
     }
   }

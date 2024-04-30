@@ -11,12 +11,14 @@
       <draggable class="editorPreview__content"
                  ref="previewContent"
                  :value="blocks"
-                 :options="{ group: 'editorBlocks', handle: handle }"
+                 group="editorBlocks"
+                 :handle="handle"
                  @add="onAdd(add, edit, $event)"
                  @update="onUpdate">
-        <template v-for="savedBlock in blocks">
+        <!-- eslint-disable vue/no-v-for-template-key -->
+        <template v-for="savedBlock in blocks"
+                  :key="savedBlock.id">
           <a17-blockeditor-model :block="savedBlock"
-                           :key="savedBlock.id"
                            :editor-name="editorName"
                            v-slot="{ block, isActive, blockIndex, move, remove, edit, unEdit, cloneBlock }">
             <a17-editor-block-preview :ref="block.id"
@@ -33,6 +35,7 @@
                                       @scroll-to="scrollToActive"/>
           </a17-blockeditor-model>
         </template>
+        <!-- eslint-enable -->
       </draggable>
       <a17-spinner v-if="loading"
                    :visible="true">{{ $trans('fields.block-editor.loading', 'Loading') }}&hellip;
@@ -44,7 +47,7 @@
 <script>
   import debounce from 'lodash/debounce'
   import tinyColor from 'tinycolor2'
-  import draggable from 'vuedraggable'
+  import { VueDraggableNext } from 'vue-draggable-next'
 
   import A17BlockEditorModel from '@/components/blocks/BlockEditorModel'
   import A17EditorBlockPreview from '@/components/editor/EditorPreviewBlockItem'
@@ -69,7 +72,7 @@
     },
     mixins: [DraggableMixin, BlockEditorMixin],
     components: {
-      draggable,
+      draggable: VueDraggableNext,
       'a17-editor-block-preview': A17EditorBlockPreview,
       'a17-blockeditor-model': A17BlockEditorModel,
       'a17-spinner': A17Spinner
@@ -210,7 +213,7 @@
         this.getAllPreviews()
       })
     },
-    beforeDestroy () {
+    beforeUnmount () {
       this.dispose()
     },
     watch: {

@@ -4,7 +4,7 @@
       <a17-button :disabled="disabled" type="button" variant="ghost" @click="openMediaLibrary(remainingSlides)">{{ addLabel }}</a17-button>
       <span class="slideshow__note f--small"><slot></slot></span>
     </div>
-    <draggable class="slideshow__content" v-model="slides" :options="dragOptions" v-if="slides.length">
+    <draggable class="slideshow__content" v-bind="dragOptions" v-model="slides" v-if="slides.length">
       <transition-group name="draggable_list" tag='div'>
         <div class="slide" v-for="(slide, index) in slides" :key="`${slide.id}_${index}`">
             <div class="slide__handle" v-if="!disabled">
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
+  import { VueDraggableNext } from 'vue-draggable-next'
   import { mapState } from 'vuex'
 
   import draggableMixin from '@/mixins/draggable'
@@ -47,7 +47,7 @@
   export default {
     name: 'A17Slideshow',
     components: {
-      draggable
+      draggable: VueDraggableNext
     },
     mixins: [draggableMixin, mediaLibrayMixin, mediaFieldMixin],
     props: {

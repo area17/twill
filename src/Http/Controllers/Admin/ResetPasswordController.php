@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\Twill\Models\User;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
@@ -82,7 +81,7 @@ class ResetPasswordController extends Controller
 
     protected function sendResetResponse(Request $request, $response)
     {
-        $user = User::where('email', $request->input('email'))->first();
+        $user = twillModel('user')::where('email', $request->input('email'))->first();
         if (!$user->isActivated()) {
             $user->registered_at = Carbon::now();
             $user->save();
@@ -156,12 +155,12 @@ class ResetPasswordController extends Controller
         $clearToken = DB::table($this->config->get('auth.passwords.twill_users.table', 'twill_password_resets'))->where('token', $token)->first();
 
         if ($clearToken) {
-            return User::where('email', $clearToken->email)->first();
+            return twillModel('user')::where('email', $clearToken->email)->first();
         }
 
         foreach (DB::table($this->config->get('auth.passwords.twill_users.table', 'twill_password_resets'))->get() as $passwordReset) {
             if (Hash::check($token, $passwordReset->token)) {
-                return User::where('email', $passwordReset->email)->first();
+                return twillModel('user')::where('email', $passwordReset->email)->first();
             }
         }
 

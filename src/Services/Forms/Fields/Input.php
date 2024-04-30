@@ -58,6 +58,8 @@ class Input extends BaseFormField
 
     protected ?int $rows;
 
+    protected ?float $step;
+
     public static function make(): static
     {
         return new self(
@@ -105,6 +107,16 @@ class Input extends BaseFormField
     public function rows(int $rows): static
     {
         $this->rows = $rows;
+
+        return $this;
+    }
+
+    /**
+     * Sets the step size.
+     */
+    public function step(float $step): static
+    {
+        $this->step = $step;
 
         return $this;
     }

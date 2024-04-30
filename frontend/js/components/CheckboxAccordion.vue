@@ -1,7 +1,11 @@
 <template>
   <a17-accordion :open="open" @toggleVisibility="notifyOpen">
-    <span slot="accordion__title"><slot></slot></span>
-    <div slot="accordion__value">{{ currentLabel }}</div>
+    <template v-slot:accordion__title>
+      <span><slot></slot></span>
+    </template>
+    <template v-slot:accordion__value>
+      <div>{{ currentLabel }}</div>
+    </template>
     <a17-checkboxgroup :name="name" :options="options" @change="changeValue" :selected="currentValue" :min="1"></a17-checkboxgroup>
   </a17-accordion>
 </template>

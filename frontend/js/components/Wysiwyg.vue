@@ -327,7 +327,7 @@
         this.initQuill(localOptions)
       }
     },
-    beforeDestroy () {
+    beforeUnmount () {
       this.quill = null
     }
   }

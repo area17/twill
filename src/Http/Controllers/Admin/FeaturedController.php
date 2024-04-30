@@ -164,7 +164,7 @@ class FeaturedController extends Controller
                     ($bucketable['scopes'] ?? []) + ($scopes ?? []),
                     $bucketable['orders'] ?? [],
                     $bucketable['per_page'] ?? $request->get('offset') ?? 10,
-                    $forcePagination = true
+                    true
                 )->appends('bucketable', $module);
 
                 $fetchedModules[$module] = $items;

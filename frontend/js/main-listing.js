@@ -1,4 +1,4 @@
-import Vue from 'vue'
+import { createApp } from 'vue'
 import store from '@/store'
 import { DATATABLE, MODALEDITION, FORM } from '@/store/mutations'
 import ACTIONS from '@/store/actions'
@@ -38,23 +38,7 @@ import { getStorage } from '@/utils/localeStorage.js'
 // mixins
 import { FormatPermalinkMixin } from '@/mixins'
 
-// configuration
-Vue.use(A17Config)
-Vue.use(A17Notif)
-
-store.registerModule('datatable', datatable)
-store.registerModule('language', language)
-store.registerModule('form', form)
-store.registerModule('modalEdition', modalEdition)
-store.registerModule('attributes', attributes)
-
-registerCustomComponents()
-
-/* eslint-disable no-new */
-/* eslint no-unused-vars: "off" */
-window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
-  store, // inject store to all children
-  el: '#app',
+const app = createApp({
   components: {
     'a17-fieldset': a17Fieldset,
     'a17-filter': a17Filter,
@@ -115,7 +99,7 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
     if (window[process.env.VUE_APP_NAME].openCreate) this.create()
   },
   created: function () {
-    openMediaLibrary()
+    openMediaLibrary(this)
 
     let reload = false
     const pageOffset = getStorage(this.localStorageKey + '_page-offset')
@@ -135,6 +119,25 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
     }
   }
 })
+
+store.registerModule('datatable', datatable)
+store.registerModule('language', language)
+store.registerModule('form', form)
+store.registerModule('modalEdition', modalEdition)
+store.registerModule('attributes', attributes)
+
+app.use(store)
+// configuration
+app.use(A17Config)
+app.use(A17Notif)
+
+registerCustomComponents(app)
+
+app.mount('#app')
+
+/* eslint-disable no-new */
+/* eslint no-unused-vars: "off" */
+window[process.env.VUE_APP_NAME].vm = window.vm = app
 
 // DOM Ready general actions
 document.addEventListener('DOMContentLoaded', main)

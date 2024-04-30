@@ -83,8 +83,7 @@ trait HandleRevisions
 
         $fields = json_decode($object->revisions->where('id', $revisionId)->first()->payload, true);
 
-        $hydratedObject = $this->hydrateObject($this->model->newInstance(), $fields);
-        $hydratedObject->id = $id;
+        $hydratedObject = $this->hydrateObject($this->model->newInstance()->setAttribute('id', $id), $fields);
 
         return $hydratedObject;
     }
