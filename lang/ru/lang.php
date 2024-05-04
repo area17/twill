@@ -1,5 +1,7 @@
 <?php
-    /*
+return [
+    'auth' => [
+        /*
     |--------------------------------------------------------------------------
     | 5 Steps to Contribute a New Twill Localization at Ease
     |--------------------------------------------------------------------------
@@ -9,34 +11,59 @@
     | 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
     | 5. Run the command "php artisan twill:lang" to sync all lang files.
     */
-
-
-return [
-    'auth' => [
         'back-to-login' => 'Вернуться к авторизации',
         'choose-password' => 'Введите пароль',
         'email' => 'Email',
         'forgot-password' => 'Восстановить пароль',
         'login' => 'Войти',
-        'login-title' => 'Войти',
+        'login-title' => 'Авторизация',
         'password' => 'Пароль',
         'password-confirmation' => 'Повторите пароль',
-        'reset-send' => 'Отправить ссылку на восстановление пароля',
+        'reset-send' => 'Отправить ссылку для сброса пароля',
+        'oauth-link-title' => 'Введите пароль, чтобы связать :provider с вашей учетной записью',
+        'otp' => 'Одноразовый пароль',
+        'reset-password' => 'Сброс пароля',
+        'verify-login' => 'Подтверждение авторизации',
+        'auth-causer' => 'Аутентификация',
     ],
     'buckets' => [
-        'intro' => 'Что вы хотите показать сегодня?',
-        'none-available' => 'Нет доступных вариантов.',
-        'publish' => 'Публикация',
-        'source-title' => 'Доступные варианты',
+        'intro' => 'Что бы вы хотели предложить в качестве рекомендаций?',
+        'none-available' => 'Нет доступных элементов.',
+        'publish' => 'Опубликовать',
+        'source-title' => 'Доступные элементы',
+        'none-featured' => 'Нет избранных элементов.',
     ],
     'dashboard' => [
         'all-activity' => 'Вся активность',
         'create-new' => 'Создать',
-        'empty-message' => 'У вас еще нет активности.',
+        'empty-message' => 'У вас еще не было активности.',
         'my-activity' => 'Моя активность',
         'my-drafts' => 'Мои черновики',
         'search-placeholder' => 'Поиск всего...',
         'statitics' => 'Статистика',
+        'search' => [
+            'loading' => 'Загрузка…',
+            'no-result' => 'Результаты не найдены.',
+            'last-edit' => 'Последнее изменение',
+        ],
+        'activities' => [
+            'created' => 'Создано',
+            'updated' => 'Изменено',
+            'unpublished' => 'Неопубликовано',
+            'published' => 'Опубликовано',
+            'featured' => 'Избранное',
+            'unfeatured' => 'Не избранное',
+            'restored' => 'Восстановлено',
+            'deleted' => 'Удалено',
+            'login' => 'Авторизация',
+            'logout' => 'Выход из аккаунта',
+        ],
+        'activity-row' => [
+            'edit' => 'Изменить',
+            'view-permalink' => 'Посмотреть постоянную ссылку',
+            'by' => ' ',
+        ],
+        'unknown-author' => 'Неизвестно',
     ],
     'dialog' => [
         'cancel' => 'Отмена',
@@ -46,23 +73,28 @@ return [
     'editor' => [
         'cancel' => 'Отмена',
         'delete' => 'Удалить',
+        'done' => 'Готово',
+        'title' => 'Редактор контента',
     ],
     'emails' => [
         'all-rights-reserved' => 'Все права защищены.',
         'hello' => 'Привет!',
-        'problems' => 'Если у вас не нажимается кнопка ":actionText", скопируйте ссылку, и вставьте в браузер: [:url](:url)',
+        'problems' => 'Если у вас не нажимается кнопка ":actionText", скопируйте ссылку ниже и вставьте ее в браузер: [:url](:url)',
         'regards' => 'С уважением,',
     ],
     'fields' => [
         'block-editor' => [
             'add-content' => 'Добавить содержимое',
-            'collapse-all' => 'Раскрыть все',
+            'collapse-all' => 'Свернуть все',
             'create-another' => 'Создать другой',
             'delete' => 'Удалить',
-            'expand-all' => 'Скрыть',
+            'expand-all' => 'Раскрыть все',
             'loading' => 'Загрузка',
             'open-in-editor' => 'Открыть в редакторе',
             'preview' => 'Предварительный просмотр',
+            'add-item' => 'Добавить элемент',
+            'clone-block' => 'Клонировать блок',
+            'select-existing' => 'Выбрать существующие',
         ],
         'browser' => [
             'add-label' => 'Добавить',
@@ -81,7 +113,7 @@ return [
         'medias' => [
             'btn-label' => 'Прикрепить изображение',
             'crop' => 'Кадрировать',
-            'crop-edit' => 'Изменить кадрирование картинки',
+            'crop-edit' => 'Изменить кадрирование изображения',
             'crop-list' => 'кадрировать',
             'crop-save' => 'Обновить',
             'delete' => 'Удалить',
@@ -89,6 +121,9 @@ return [
             'edit-close' => 'Скрыть описание',
             'edit-info' => 'Изменить описание',
             'original-dimensions' => 'Оригинал',
+            'alt-text' => 'Текст-подсказка',
+            'caption' => 'Подпись',
+            'video-url' => 'URL-адрес видео (необязательно)',
         ],
     ],
     'filter' => [
@@ -105,12 +140,13 @@ return [
         'dialogs' => [
             'delete' => [
                 'confirm' => 'Удалить',
-                'confirmation' => 'Вы уверены?</br> Это действие нельзя отменить.',
+                'confirmation' => 'Вы уверены?<br />Это действие нельзя отменить.',
                 'delete-content' => 'Удалить контент',
                 'title' => 'Удалить контент',
             ],
         ],
         'editor' => 'Редактор',
+        'options' => 'Параметры',
     ],
     'listing' => [
         'add-new-button' => 'Добавить',
@@ -120,6 +156,7 @@ return [
             'published' => 'Опубликовано',
             'show' => 'Показать',
             'thumbnail' => 'Превью',
+            'featured' => 'Избранное',
         ],
         'dialogs' => [
             'delete' => [
@@ -129,34 +166,95 @@ return [
                 'title' => 'Удалить элемент',
             ],
             'destroy' => [
-                'confirm' => 'Уничтожить',
-                'destroy-permanently' => 'Уничтожить навсегда',
+                'confirm' => 'Удалить',
+                'destroy-permanently' => 'Удалить навсегда',
                 'disclaimer' => 'Элемент нельзя будет восстановить.',
-                'title' => 'Уничтожить элемент',
+                'title' => 'Удалить элемент',
             ],
         ],
         'dropdown' => [
             'delete' => 'Удалить',
-            'destroy' => 'Уничтожить',
+            'destroy' => 'Удалить',
             'duplicate' => 'Дублировать',
             'edit' => 'Изменить',
             'publish' => 'Опубликовать',
-            'feature' => 'Выделить',
+            'feature' => 'В избранное',
             'restore' => 'Восстановить',
-            'unfeature' => 'Убрать с выделенных',
-            'unpublish' => 'Отменить публикацию',
+            'unfeature' => 'Убрать из избранного',
+            'unpublish' => 'Снять с публикации',
         ],
         'filter' => [
-            'all-items' => 'Все',
+            'all-items' => 'Все элементы',
             'draft' => 'Черновики',
             'mine' => 'Мои',
             'published' => 'Опубликованные',
             'trash' => 'Удаленные',
+            'yes' => 'Да',
+            'not-set' => 'Без значения',
+            'no' => 'Нет',
         ],
         'languages' => 'Языки',
-        'listing-empty-message' => 'Ничего нет.',
+        'listing-empty-message' => 'Элементов пока нет.',
         'paginate' => [
             'rows-per-page' => 'Строк на странице:',
+        ],
+        'filters' => [
+            'all-label' => 'Все :label',
+        ],
+        'bulk-selected-item' => 'элемент выбран',
+        'bulk-selected-items' => 'выбрано элементов',
+        'force-delete' => [
+            'success' => ':modelTitle удален!',
+            'error' => ':modelTitle не был удален. Что-то пошло не так!',
+        ],
+        'bulk-delete' => [
+            'error' => 'Элементы :modelTitle не были отправлены в корзину. Что-то пошло не так!',
+            'success' => 'Элементы :modelTitle отправлены в корзину!',
+        ],
+        'publish' => [
+            'unpublished' => ':modelTitle снят с публикации!',
+            'published' => ':modelTitle опубликован!',
+            'error' => ':modelTitle не был опубликован. Что-то пошло не так!',
+        ],
+        'bulk-featured' => [
+            'unfeatured' => 'Элементы :modelTitle удалены из избранного!',
+            'featured' => 'Элементы :modelTitle добавлены в избранное!',
+            'error' => 'Элементы :modelTitle не были добавлены в избранное. Что-то пошло не так!',
+        ],
+        'bulk-publish' => [
+            'unpublished' => 'Элементы :modelTitle сняты с публикации!',
+            'published' => 'Элементы :modelTitle опубликованы!',
+            'error' => 'Элементы :modelTitle не были опубликованы. Что-то пошло не так!',
+        ],
+        'bulk-actions' => 'Массовые действия',
+        'reorder' => [
+            'success' => 'Позиция :modelTitle изменена!',
+            'error' => 'Позиция :modelTitle не была изменена. Что-то пошло не так!',
+        ],
+        'restore' => [
+            'success' => ':modelTitle восстановлен!',
+            'error' => ':modelTitle не был восстановлен. Что-то пошло не так!',
+        ],
+        'bulk-restore' => [
+            'success' => 'Элементы :modelTitle восстановлены!',
+            'error' => 'Элементы :modelTitle не бьли восстановлены. Что-то пошло не так!',
+        ],
+        'bulk-force-delete' => [
+            'success' => 'Элементы :modelTitle были удалены!',
+            'error' => 'Элементы :modelTitle не были удалены. Что-то пошло не так!',
+        ],
+        'delete' => [
+            'success' => ':modelTitle отправлен в корзину!',
+            'error' => ':modelTitle не был отправлен в корзину. Что-то пошло не так!',
+        ],
+        'duplicate' => [
+            'success' => ':modelTitle успешно клонирован!',
+            'error' => ':modelTitle не был клонирован. Что-то пошло не так!',
+        ],
+        'featured' => [
+            'unfeatured' => ':modelTitle удален из избранного!',
+            'featured' => ':modelTitle добавлен в избранное!',
+            'error' => ':modelTitle не был добавлен в избранное. Что-то пошло не так!',
         ],
     ],
     'main' => [
@@ -171,21 +269,53 @@ return [
         'filter-select-label' => 'Фильтровать по тегу',
         'images' => 'Изображения',
         'sidebar' => [
-            'alt-text' => 'Alt',
+            'alt-text' => 'Текст-подсказка',
             'clear' => 'Снять выделение',
             'dimensions' => 'Уровни',
-            'empty-text' => 'Файлы не выделены',
-            'files-selected' => 'файлов выделено',
+            'empty-text' => 'Файлы не выбраны',
+            'files-selected' => 'файлов выбрано',
             'tags' => 'Теги',
+            'caption' => 'Подпись',
         ],
         'title' => 'Медиа библиотека',
         'update' => 'Обновить',
         'unused-filter-label' => 'Показать только неиспользуемые',
+        'dialogs' => [
+            'delete' => [
+                'allow-delete-one-media' => 'Этот файл используется и не может быть удален. Вы хотите удалить остальные?',
+                'dont-allow-delete-one-media' => 'Этот файл используется и не может быть удален.',
+                'delete-media-title' => 'Удалить медиа',
+                'delete-media-desc' => 'Вы уверены ?<br />Это изменение не может быть отменено.',
+                'delete-media-confirm' => 'Удалить',
+                'title' => 'Вы уверены?',
+                'allow-delete-multiple-medias' => 'Некоторые файлы используются и не могут быть удалены. Вы хотите удалить остальные?',
+                'dont-allow-delete-multiple-medias' => 'Эти файлы используются и не могут быть удалены.',
+            ],
+            'replace' => [
+                'replace-media-title' => 'Заменить медиа',
+                'replace-media-desc' => 'Вы уверены ?<br />Это изменение не может быть отменено.',
+                'replace-media-confirm' => 'Заменить',
+            ],
+        ],
+        'types' => [
+            'multiple' => [
+                'video' => 'видео',
+                'file' => 'файлы',
+                'image' => 'изображения',
+            ],
+            'single' => [
+                'image' => 'изображение',
+                'video' => 'видео',
+                'file' => 'файл',
+            ],
+        ],
+        'insert' => 'Вставить',
+        'no-tags-found' => 'Извините, теги не найдены.',
     ],
     'modal' => [
         'create' => [
             'button' => 'Создать',
-            'create-another' => 'Создать и добавить другую',
+            'create-another' => 'Создать и добавить еще',
             'title' => 'Добавить новый',
         ],
         'permalink-field' => 'Постоянная ссылка',
@@ -193,6 +323,9 @@ return [
         'update' => [
             'button' => 'Обновить',
             'title' => 'Обновить',
+        ],
+        'done' => [
+            'button' => 'Готово',
         ],
     ],
     'nav' => [
@@ -202,16 +335,20 @@ return [
         'media-library' => 'Медиа библиотека',
         'settings' => 'Настройки',
         'close-menu' => 'Закрыть меню',
-        'profile' => 'Profile',
+        'profile' => 'Профиль',
+        'open-live-site' => 'Открыть сайт',
     ],
     'notifications' => [
         'reset' => [
             'action' => 'Сброс пароля',
             'content' => 'Вы получили это письмо, потому что мы получили запрос на сброс пароля. Если вы не запрашивали сброс пароля, никаких дальнейших действий не требуется.',
+            'subject' => ' :appName| Сбросить пароль|',
         ],
         'welcome' => [
             'content' => 'Вы получили это письмо, потому что для вас была создана учетная запись :name.',
             'title' => 'Добро пожаловать',
+            'action' => 'Введите пароль',
+            'subject' => ' :appName| Добро пожаловать|',
         ],
     ],
     'overlay' => [
@@ -225,6 +362,10 @@ return [
         'restore' => 'Восстановить',
         'revision-history' => 'История изменений',
         'title' => 'Предпросмотр изменений',
+        'past-revision' => 'Прошлые',
+        'unsaved' => 'Предпросмотр ваших несохраненных изменений',
+        'drag-and-drop' => 'Перетаскивайте содержимое из левой панели',
+        'single-view' => 'Одиночный просмотр',
     ],
     'publisher' => [
         'cancel' => 'Отмена',
@@ -246,6 +387,28 @@ return [
         'update' => 'Обновить',
         'update-close' => 'Обновить и закрыть',
         'update-new' => 'Обновить и создать еще',
+        'languages-published' => 'Опубликовано',
+        'restore-draft-close' => 'Восстановить как черновик и закрыть',
+        'restore-live-close' => 'Восстановить как опубликованное и закрыть',
+        'restore-message' => 'В данный момент вы редактируете старую редакцию этого контента (сохраненную :user :date). При необходимости внесите изменения и нажмите кнопку восстановления, чтобы сохранить новую редакцию.',
+        'draft-revisions-available' => 'Вы просматриваете опубликованную версию этого материала. Доступны более новые черновые редакции.',
+        'editing-draft-revision' => 'Вы редактируете черновую редакцию этого материала. Внесите необходимые изменения и нажмите кнопку "Сохранить как ревизию" или "Опубликовать".',
+        'published-on' => 'Опубликовано',
+        'restore-draft' => 'Восстановить как черновик',
+        'restore-draft-new' => 'Восстановить как черновик и добавить новый',
+        'restore-live' => 'Восстановить как опубликованное',
+        'restore-live-new' => 'Восстановить как опубликованное и добавить еще',
+        'restore-success' => 'Редакция восстановлена.',
+        'revisions' => 'Редакции',
+        'parent-page' => 'Родительская страница',
+        'visibility' => 'Видимость',
+        'scheduled' => 'Запланировано',
+        'expired' => 'Истекло',
+        'unsaved-changes' => 'Имеются несохраненные изменения',
+        'draft-revision' => 'Сохранить как черновик',
+        'draft-revision-close' => 'Сохранить как черновик и закрыть',
+        'draft-revision-new' => 'Сохранить как черновик и добавить еще',
+        'review-status' => 'Статус ревью',
     ],
     'select' => [
         'empty-text' => 'Нет соответствующих параметров.',
@@ -284,5 +447,35 @@ return [
         'update-disabled-user-and-create-new' => 'Обновить отключенного пользователя и создать еще',
         'user-image' => 'Изображение',
         'users' => 'Пользователи',
+        '2fa-description' => 'Пожалуйста, отсканируйте этот QR-код с помощью приложения, совместимого с Google Authenticator, и введите свой одноразовый пароль ниже. Список совместимых приложений можно посмотреть <a href=":link" target="_blank" rel="noopener">здесь</a>.',
+        'force-2fa-disable-description' => 'Введите показанный текст в поле, чтобы отключить 2FA для этого пользователя',
+        'force-2fa-disable-challenge' => 'Отключить 2FA для :user',
+        'pending' => 'В ожидании',
+        'activation-pending' => 'Ожидание активации',
+        '2fa-disable' => 'Введите одноразовый пароль, чтобы отключить двухфакторную аутентификацию',
+        'force-2fa-disable' => 'Отключить 2FA',
+    ],
+    'settings' => [
+        'update' => 'Обновить',
+        'cancel' => 'Отмена',
+        'fieldset-label' => 'Редактировать настройки',
+    ],
+    'lang-manager' => [
+        'published' => 'Опубликовано',
+    ],
+    'lang-switcher' => [
+        'edit-in' => 'Редактировать',
+    ],
+    'permissions' => [
+        'groups' => [
+            'title' => 'Группы',
+            'published' => 'Включено',
+            'draft' => 'Отключено',
+        ],
+        'roles' => [
+            'title' => 'Роли',
+            'published' => 'Включено',
+            'draft' => 'Отключено',
+        ],
     ],
 ];
