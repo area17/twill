@@ -61,6 +61,8 @@ return [
         'loading' => 'Loading',
         'meta-title' => 'Meta data',
         'more' => 'More',
+        'search' => 'Search',
+        'selected' => 'selected',
         'submit-search' => 'Submit search',
         'replace' => 'Replace',
         'remove' => 'Remove',

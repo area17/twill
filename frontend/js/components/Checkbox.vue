@@ -53,7 +53,7 @@
         default: false
       },
       count: {
-        type: String,
+        type: [String, Number],
         default: ''
       }
     },

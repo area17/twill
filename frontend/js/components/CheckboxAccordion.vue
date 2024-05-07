@@ -65,7 +65,7 @@
     computed: {
       currentLabel: function() {
         return (
-          this.currentValue.length +
+          (!this.currentValue ? '0' : this.currentValue.length) +
           ' ' +
           (this.selectedLabel
             ? this.selectedLabel

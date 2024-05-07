@@ -1,16 +1,17 @@
 <template>
-  <div class="dam-filters__wrap">
+  <div class="dam-filters__wrap" @keydown="handleKey">
     <a17-button
       :class="['dam-filters__toggle', { 'dam-filters__toggle--open': isOpen }]"
       variant="ghost"
       :aria-expanded="isOpen ? 'true' : 'false'"
       @click="handleClick"
+      ref="trigger"
       >{{ label }}<span v-svg symbol="dropdown_module"></span
     ></a17-button>
     <div class="dam-filters__dropdown">
       <div v-if="hasSearch" class="dam-filters__dropdown-search">
         <label :for="`search_${uid}`" class="visually-hidden"
-          >Search {{ label }}</label
+          >{{ $trans('dam.search', 'Search') }} {{ label }}</label
         >
         <div>
           <input
@@ -31,16 +32,16 @@
           :key="index"
           :options="subItem.items"
           :updateLang="false"
-          selected-label="selected"
-          name=""
+          :selectedLabel="$trans('dam.selected', 'Selected')"
+          ref="checkboxAccordion"
           >{{ subItem.label }}</a17-checkboxaccordion
         >
       </div>
       <div class="dam-filters__dropdown-footer">
-        <a17-button variant="ghost">{{
+        <a17-button variant="ghost" @click="clearFilters">{{
           $trans('dam.clear', 'Clear')
         }}</a17-button>
-        <a17-button variant="ghost">{{
+        <a17-button variant="ghost" @click="applyFilters">{{
           $trans('dam.apply', 'Apply')
         }}</a17-button>
       </div>
@@ -75,7 +76,8 @@
     data: function() {
       return {
         isOpen: false,
-        searchValue: null
+        searchValue: null,
+        selectedFilters: []
       }
     },
     computed: {
@@ -83,13 +85,38 @@
         return this.label.replace(' ', '-').toLowerCase()
       },
       placeholder() {
-        return 'Search ' + this.label.toLowerCase()
+        return (
+          this.$trans('dam.search', 'Search') + ' ' + this.label.toLowerCase()
+        )
       }
     },
     watch: {},
     methods: {
+      applyFilters() {
+        this.$refs.checkboxAccordion.forEach(checkboxAccordion => {
+          this.selectedFilters.push(...checkboxAccordion.currentValue)
+        })
+
+        console.log('Selected filters: ', this.selectedFilters)
+      },
+      clearFilters() {
+        this.$refs.checkboxAccordion.forEach(checkboxAccordion => {
+          checkboxAccordion.currentValue = null
+          setTimeout(() => {
+            checkboxAccordion.currentValue = []
+          }, 10)
+        })
+      },
       handleClick() {
         this.isOpen = !this.isOpen
+      },
+      handleKey(e) {
+        if (e.code === 'Escape') {
+          this.isOpen = false
+          setTimeout(() => {
+            this.$refs.trigger.$el.focus()
+          }, 10)
+        }
       },
       onSearchInput() {}
     },
