@@ -53,19 +53,28 @@
       </div>
     </div>
     <div v-if="filters" class="dam-filters">
-      <a17-button
+      <!-- <a17-button
         v-for="(item, i) in filters"
         :key="i"
         class="dam-filters__toggle"
         variant="ghost"
         >{{ item.label }}<span v-svg symbol="dropdown_module"></span
-      ></a17-button>
-      <a17-button variant="ghost">{{
+      ></a17-button> -->
+
+      <a17-dam-filter-dropdown
+        v-for="(item, i) in filters"
+        :key="i"
+        :label="item.label"
+        :items="item.items"
+      >
+      </a17-dam-filter-dropdown>
+
+      <!-- <a17-button variant="ghost">{{
         $trans('dam.apply', 'Apply')
       }}</a17-button>
       <a17-button variant="ghost">{{
         $trans('dam.clear', 'Clear')
-      }}</a17-button>
+      }}</a17-button> -->
     </div>
   </div>
 </template>
@@ -75,12 +84,14 @@
 
   import A17Avatar from '@/components/Avatar.vue'
   import a17Filter from '@/components/Filter.vue'
+  import A17DamFilterDropdown from '@/components/dam/DamFilterDropdown.vue'
 
   export default {
     name: 'A17Medialibrary',
     components: {
       'a17-avatar': A17Avatar,
-      'a17-filter': a17Filter
+      'a17-filter': a17Filter,
+      'a17-dam-filter-dropdown': A17DamFilterDropdown
     },
     props: {
       customTitle: {
@@ -183,17 +194,5 @@
     gap: rem-calc(20);
     background: $color__black--5;
     border-bottom: 1px solid $color__black--10;
-  }
-
-  .dam-filters__toggle {
-    display: flex;
-    flex-flow: row;
-    align-items: center;
-    border: none;
-    background: $color__border;
-
-    .icon {
-      margin-left: rem-calc(10);
-    }
   }
 </style>
