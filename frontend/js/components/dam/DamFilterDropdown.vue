@@ -1,12 +1,15 @@
 <template>
-  <div class="dam-filters__wrap" @keydown="handleKey">
+  <div class="dam-filters__wrap">
     <a17-button
       :class="['dam-filters__toggle', { 'dam-filters__toggle--open': isOpen }]"
-      variant="ghost"
       :aria-expanded="isOpen ? 'true' : 'false'"
       @click="handleClick"
       ref="trigger"
-      >{{ label }}<span v-svg symbol="dropdown_module"></span
+      >{{ label }}
+      <span
+        ><span class="count"
+          >{{ totalChecked }} {{ $trans('dam.selected', 'selected') }}</span
+        ><span v-svg symbol="dropdown_module"></span></span
     ></a17-button>
     <div class="dam-filters__dropdown">
       <div v-if="hasSearch" class="dam-filters__dropdown-search">
@@ -34,6 +37,7 @@
           :updateLang="false"
           :selectedLabel="$trans('dam.selected', 'Selected')"
           ref="checkboxAccordion"
+          @selectionChanged="updateSelectedFilters"
           >{{ subItem.label }}</a17-checkboxaccordion
         >
       </div>
@@ -88,24 +92,27 @@
         return (
           this.$trans('dam.search', 'Search') + ' ' + this.label.toLowerCase()
         )
+      },
+      totalChecked() {
+        return this.selectedFilters.length
       }
     },
     watch: {},
     methods: {
       applyFilters() {
-        this.$refs.checkboxAccordion.forEach(checkboxAccordion => {
-          this.selectedFilters.push(...checkboxAccordion.currentValue)
-        })
-
         console.log('Selected filters: ', this.selectedFilters)
       },
       clearFilters() {
-        this.$refs.checkboxAccordion.forEach(checkboxAccordion => {
-          checkboxAccordion.currentValue = null
-          setTimeout(() => {
-            checkboxAccordion.currentValue = []
-          }, 10)
-        })
+        this.selectedFilters = []
+
+        if (this.$refs.checkboxAccordion) {
+          this.$refs.checkboxAccordion.forEach(checkboxAccordion => {
+            checkboxAccordion.currentValue = null
+            setTimeout(() => {
+              checkboxAccordion.currentValue = []
+            }, 10)
+          })
+        }
       },
       handleClick() {
         this.isOpen = !this.isOpen
@@ -118,9 +125,21 @@
           }, 10)
         }
       },
-      onSearchInput() {}
+      onSearchInput() {},
+      updateSelectedFilters(selectedItems) {
+        this.selectedFilters = selectedItems.flat()
+      }
     },
-    mounted() {}
+    mounted() {
+      document.addEventListener('keydown', e => {
+        this.handleKey(e)
+      })
+    },
+    unmounted() {
+      document.removeEventListener('keydown', e => {
+        this.handleKey(e)
+      })
+    }
   }
 </script>
 
@@ -130,11 +149,38 @@
       border-bottom: none;
     }
 
+    .accordion {
+      @include breakpoint('small-') {
+        border-bottom: 1px solid $color__border;
+        background: none;
+      }
+    }
+
     .accordion__trigger {
       height: auto;
+      padding: rem-calc(18) rem-calc(24) rem-calc(18) rem-calc(0);
+
+      @include breakpoint('small-') {
+        background: none !important;
+
+        .icon {
+          right: 0;
+        }
+      }
 
       @include breakpoint('medium+') {
         padding: rem-calc(12) rem-calc(44) rem-calc(12) rem-calc(20);
+      }
+    }
+
+    .accordion__list {
+      @include breakpoint('small-') {
+        padding: 0 0 rem-calc(8) 0;
+        border: none;
+
+        .checkboxGroup__item {
+          padding: rem-calc(12) 0;
+        }
       }
     }
   }
@@ -142,7 +188,16 @@
 
 <style lang="scss" scoped>
   .dam-filters__wrap {
-    position: relative;
+    border-top: 1px solid $color__border;
+
+    &:first-child {
+      border-top: none;
+    }
+
+    @include breakpoint('medium+') {
+      position: relative;
+      border: none;
+    }
   }
 
   .dam-filters__toggle {
@@ -150,10 +205,37 @@
     flex-flow: row;
     align-items: center;
     border: none;
-    background: $color__border;
+    background: $color__background;
+    width: 100%;
+    border-radius: 0;
+    padding: rem-calc(19) rem-calc(16);
+    height: auto;
+    line-height: normal;
+    justify-content: space-between;
+
+    @include breakpoint('medium+') {
+      background: $color__border;
+      border-radius: rem-calc(36);
+      padding: rem-calc(8) rem-calc(16);
+      border: 1px solid transparent;
+
+      .count {
+        display: none;
+      }
+    }
 
     .icon {
       margin-left: rem-calc(10);
+    }
+
+    &--open {
+      @include breakpoint('small-') {
+        background: none;
+      }
+
+      @include breakpoint('medium+') {
+        border: 1px solid $color__black--90;
+      }
     }
 
     &--open .icon {
@@ -163,10 +245,17 @@
     &--open + .dam-filters__dropdown {
       visibility: visible;
       opacity: 1;
+      height: auto;
+      max-height: 100svh;
     }
   }
 
   .dam-filters__dropdown {
+    padding: 0 rem-calc(16);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s linear;
+
     @include breakpoint('medium+') {
       background: $color__background;
       border-radius: 2px;
@@ -179,10 +268,16 @@
       visibility: hidden;
       opacity: 0;
       transition: all 0.25s linear;
+      padding: 0;
+      height: auto;
+      overflow: visible;
     }
   }
 
   .dam-filters__dropdown-search {
+    padding-bottom: rem-calc(16);
+    border-bottom: 1px solid $color__modal--header;
+
     @include breakpoint('medium+') {
       padding: rem-calc(16);
       border-bottom: 1px solid $color__border--light;
@@ -205,6 +300,8 @@
   }
 
   .dam-filters__dropdown-footer {
+    display: none;
+
     @include breakpoint('medium+') {
       border-top: 1px solid $color__border;
       background: $color__light;

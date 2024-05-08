@@ -53,6 +53,7 @@ return [
         'edit' => 'Edit',
         'expand-nav' => 'Expand navigation',
         'file-size' => 'File size',
+        'filter' => 'Filter by',
         'grid' => 'Grid',
         'hide-name' => 'Hide file name',
         'layout' => 'Layout',

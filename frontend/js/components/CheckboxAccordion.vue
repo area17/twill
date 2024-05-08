@@ -80,6 +80,8 @@
         if (this.updateLang) {
           this.$store.commit(LANGUAGE.PUBLISH_LANG, newValue)
         }
+
+        this.$emit('selectionChanged', this.currentValue)
       },
       notifyOpen: function(newValue) {
         this.$emit('open', newValue, this.$options.name)

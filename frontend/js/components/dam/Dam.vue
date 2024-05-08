@@ -100,7 +100,10 @@
     flex: 0 1 100%;
     display: flex;
     flex-flow: column;
-    height: 100vh;
+
+    @include breakpoint('medium+') {
+      height: 100vh;
+    }
   }
 
   .dam__page {
