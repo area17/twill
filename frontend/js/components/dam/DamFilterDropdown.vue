@@ -29,7 +29,10 @@
           <span v-svg symbol="search"></span>
         </div>
       </div>
-      <div v-if="items && items.length > 1">
+      <div
+        v-if="items && items.length > 1"
+        class="dam-filters__dropdown-content"
+      >
         <template v-for="(subItem, index) in items">
           <a17-checkboxaccordion
             v-if="subItem.items && subItem.items.length"
@@ -136,6 +139,8 @@
             }, 10)
           })
         }
+
+        this.isOpen = false
       },
       handleClick() {
         this.isOpen = !this.isOpen
@@ -222,10 +227,17 @@
 
     .input {
       margin-top: 0;
+      padding-bottom: rem-calc(8);
+
+      @include breakpoint('medium+') {
+        padding-bottom: 0;
+      }
     }
 
     .checkBoxGroup {
-      padding: 0 rem-calc(16);
+      @include breakpoint('medium+') {
+        padding: 0 rem-calc(16);
+      }
     }
 
     .checkboxGroup__item {
@@ -234,8 +246,12 @@
   }
 
   .dam-filters__dropdown-color {
-    padding: rem-calc(16);
-    padding-top: 0;
+    padding: 0 0 rem-calc(12) 0;
+
+    @include breakpoint('medium+') {
+      padding: rem-calc(16);
+      padding-top: 0;
+    }
 
     .form__field {
       padding: rem-calc(8) rem-calc(16) rem-calc(8) rem-calc(8);
@@ -261,6 +277,10 @@
 
     &:first-child {
       border-top: none;
+    }
+
+    &:last-child {
+      border-bottom: 1px solid $color__border;
     }
 
     @include breakpoint('medium+') {
@@ -315,7 +335,10 @@
       visibility: visible;
       opacity: 1;
       height: auto;
-      max-height: 100svh;
+
+      @include breakpoint('small-') {
+        max-height: 100svh;
+      }
     }
   }
 
@@ -333,20 +356,25 @@
       box-shadow: 0px 1px 3.5px 0px rgba(0, 0, 0, 0.3);
       width: auto;
       max-width: rem-calc(320);
+      max-height: calc(100svh - 228px);
       z-index: 20;
       margin-top: rem-calc(8);
       visibility: hidden;
       opacity: 0;
-      transition: all 0.25s linear;
+      transition: opacity 0.25s linear, visibility 0.25s linear;
       padding: 0;
       height: auto;
       overflow: visible;
+      overflow-y: auto;
+      display: flex;
+      flex-flow: column;
     }
   }
 
   .dam-filters__dropdown-search {
     padding-bottom: rem-calc(16);
     border-bottom: 1px solid $color__modal--header;
+    flex-shrink: 0;
 
     @include breakpoint('medium+') {
       padding: rem-calc(16);
@@ -370,8 +398,16 @@
     }
   }
 
+  .dam-filters__dropdown-content {
+    @include breakpoint('medium+') {
+      height: 100%;
+      overflow-y: auto;
+    }
+  }
+
   .dam-filters__dropdown-footer {
     display: none;
+    flex-shrink: 0;
 
     @include breakpoint('medium+') {
       border-top: 1px solid $color__border;

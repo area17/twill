@@ -87,14 +87,24 @@
         </div>
         <div class="dam-filters__modal-content">
           <a17-dam-filter-dropdown
-            v-for="(item, i) in filters"
+            v-for="(item, i) in filtersToDisplay"
             :key="i"
             :label="item.label"
             :items="item.items"
             :hasSearch="item.searchable"
+            :advanced="item.advanced"
             ref="filterDropdown"
           >
           </a17-dam-filter-dropdown>
+
+          <a17-button variant="ghost" @click="toggleAdvanced">
+            <template v-if="!showAdvanced">{{
+              $trans('dam.show-advanced', 'Show advanced')
+            }}</template>
+            <template v-else>{{
+              $trans('dam.hide-advanced', 'hide advanced')
+            }}</template>
+          </a17-button>
         </div>
         <div class="dam-filters__modal-footer">
           <a17-button variant="ghost" @click="clearFilters">{{
@@ -144,7 +154,8 @@
     data: function() {
       return {
         filtersModalOpen: false,
-        isMobile: false
+        isMobile: false,
+        showAdvanced: false
       }
     },
     computed: {
@@ -160,6 +171,13 @@
       },
       userData() {
         return JSON.parse(this.currentUser)
+      },
+      filtersToDisplay() {
+        if (!this.isMobile && !this.showAdvanced) {
+          return this.filters.filter(item => item.advanced !== true)
+        }
+
+        return this.filters
       }
     },
     watch: {
@@ -205,6 +223,9 @@
             .replace(/"/g, '')
           this.isMobile = mq === 'xsmall' || mq === 'small'
         }
+      },
+      toggleAdvanced() {
+        this.showAdvanced = !this.showAdvanced
       }
     },
     mounted() {
@@ -338,6 +359,7 @@
     align-items: center;
     background: $color__border;
     border-bottom: 1px solid $color__modal--header;
+    flex-shrink: 0;
 
     .f--regular {
       font-weight: 600;
@@ -355,14 +377,22 @@
 
   .dam-filters__modal-content {
     background: $color__light;
-    border-bottom: 1px solid $color__border;
+    overflow-y: auto;
+    height: 100%;
+
+    > .button {
+      @include breakpoint('small-') {
+        display: none;
+      }
+    }
 
     @include breakpoint('medium+') {
       background: none;
       display: flex;
       flex-flow: row wrap;
       gap: rem-calc(20);
-      border: none;
+      overflow-y: visible;
+      height: auto;
     }
   }
 
