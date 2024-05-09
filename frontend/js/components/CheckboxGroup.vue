@@ -14,6 +14,7 @@
           @change="changeValue"
           :initialValue="currentValue"
           :disabled="checkbox.disabled || disabled"
+          :color="checkbox.hex"
         ></a17-checkbox>
       </li>
     </ul>

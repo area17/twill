@@ -91,6 +91,7 @@
             :key="i"
             :label="item.label"
             :items="item.items"
+            :hasSearch="item.searchable"
             ref="filterDropdown"
           >
           </a17-dam-filter-dropdown>

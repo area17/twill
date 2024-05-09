@@ -11,7 +11,10 @@
       :disabled="disabled"
       v-model="checkedValue"
     />
-    <label class="checkbox__label" :for="uniqId"
+    <label
+      class="checkbox__label"
+      :for="uniqId"
+      :style="color ? `--swatch:${color}` : null"
       >{{ label }}
       <span v-if="count" class="checkbox__count f--small">{{ count }}</span>
       <span class="checkbox__icon">
@@ -55,6 +58,10 @@
       count: {
         type: [String, Number],
         default: ''
+      },
+      color: {
+        type: String,
+        default: null
       }
     },
     computed: {
@@ -188,5 +195,24 @@
     .checkbox__input:checked + .checkbox__label .checkbox__icon {
       opacity: 0;
     }
+  }
+
+  .checkbox__label[style*='--swatch'] {
+    padding-right: rem-calc(24);
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: rem-calc(16);
+      height: rem-calc(16);
+      border-radius: rem-calc(2);
+      right: 0;
+      top: 2px;
+      background-color: var(--swatch);
+    }
+  }
+
+  .checkbox__label[style*='--swatch: #FFFFFF;']::after {
+    border: 1px solid $color__fborder;
   }
 </style>

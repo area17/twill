@@ -30,16 +30,33 @@
         </div>
       </div>
       <div v-if="items && items.length > 1">
-        <a17-checkboxaccordion
-          v-for="(subItem, index) in items"
-          :key="index"
-          :options="subItem.items"
-          :updateLang="false"
-          :selectedLabel="$trans('dam.selected', 'Selected')"
-          ref="checkboxAccordion"
-          @selectionChanged="updateSelectedFilters"
-          >{{ subItem.label }}</a17-checkboxaccordion
-        >
+        <template v-for="(subItem, index) in items">
+          <a17-checkboxaccordion
+            v-if="subItem.items && subItem.items.length"
+            :key="index"
+            :options="subItem.items"
+            :updateLang="false"
+            :selectedLabel="$trans('dam.selected', 'Selected')"
+            ref="checkboxAccordion"
+            @selectionChanged="updateSelectedFilters"
+            >{{ subItem.label }}</a17-checkboxaccordion
+          >
+        </template>
+        <a17-checkboxgroup
+          v-if="!hasNestedItems(items)"
+          :name="label"
+          :options="items"
+          ref="checkboxGroup"
+          @change="updateSelectedFilters"
+        ></a17-checkboxgroup>
+
+        <div v-if="customColorCheckbox" class="dam-filters__dropdown-color">
+          <a17-colorfield
+            name="customColor"
+            ref="colorField"
+            :disabled="!isCustomColorChecked"
+          ></a17-colorfield>
+        </div>
       </div>
       <div class="dam-filters__dropdown-footer">
         <a17-button variant="ghost" @click="clearFilters">{{
@@ -55,11 +72,13 @@
 
 <script>
   import a17CheckboxAccordion from '@/components/CheckboxAccordion.vue'
+  import a17ColorField from '@/components/ColorField.vue'
 
   export default {
     name: 'A17DamFilterDropdown',
     components: {
-      'a17-checkboxaccordion': a17CheckboxAccordion
+      'a17-checkboxaccordion': a17CheckboxAccordion,
+      'a17-colorfield': a17ColorField
     },
     props: {
       label: {
@@ -68,7 +87,7 @@
       },
       hasSearch: {
         type: Boolean,
-        default: true
+        default: false
       },
       items: {
         type: Array,
@@ -79,6 +98,8 @@
     },
     data: function() {
       return {
+        customColorCheckbox: null,
+        isCustomColorChecked: false,
         isOpen: false,
         searchValue: null,
         selectedFilters: []
@@ -105,7 +126,9 @@
       clearFilters() {
         this.selectedFilters = []
 
-        if (this.$refs.checkboxAccordion) {
+        if (this.$refs.checkboxGroup) {
+          this.$refs.checkboxGroup.updateValue([])
+        } else if (this.$refs.checkboxAccordion) {
           this.$refs.checkboxAccordion.forEach(checkboxAccordion => {
             checkboxAccordion.currentValue = null
             setTimeout(() => {
@@ -125,12 +148,31 @@
           }, 10)
         }
       },
+      hasNestedItems(items) {
+        for (const value of Object.values(items)) {
+          if (value && typeof value === 'object' && 'items' in value) {
+            return true
+          }
+        }
+        return false
+      },
       onSearchInput() {},
       updateSelectedFilters(selectedItems) {
         this.selectedFilters = selectedItems.flat()
+
+        this.isCustomColorChecked =
+          this.customColorCheckbox && selectedItems.includes('custom')
       }
     },
     mounted() {
+      const colorCheckbox = this.$el.querySelector(
+        'input[name="Color"][value="custom"]'
+      )
+
+      if (colorCheckbox) {
+        this.customColorCheckbox = colorCheckbox
+      }
+
       document.addEventListener('keydown', e => {
         this.handleKey(e)
       })
@@ -169,19 +211,46 @@
       }
 
       @include breakpoint('medium+') {
-        padding: rem-calc(12) rem-calc(44) rem-calc(12) rem-calc(20);
+        padding: rem-calc(12) rem-calc(44) rem-calc(12) rem-calc(16);
       }
     }
 
     .accordion__list {
-      @include breakpoint('small-') {
-        padding: 0 0 rem-calc(8) 0;
-        border: none;
+      padding: 0 0 rem-calc(8) 0;
+      border: none;
+    }
 
-        .checkboxGroup__item {
-          padding: rem-calc(12) 0;
-        }
-      }
+    .input {
+      margin-top: 0;
+    }
+
+    .checkBoxGroup {
+      padding: 0 rem-calc(16);
+    }
+
+    .checkboxGroup__item {
+      padding: rem-calc(12) 0;
+    }
+  }
+
+  .dam-filters__dropdown-color {
+    padding: rem-calc(16);
+    padding-top: 0;
+
+    .form__field {
+      padding: rem-calc(8) rem-calc(16) rem-calc(8) rem-calc(8);
+      height: auto;
+      line-height: normal;
+    }
+
+    .form__field input {
+      height: auto;
+      line-height: normal;
+    }
+
+    .form__field--colorBtn {
+      width: rem-calc(16);
+      height: rem-calc(16);
     }
   }
 </style>
@@ -262,7 +331,8 @@
       position: absolute;
       border: 1px solid $color__border--light;
       box-shadow: 0px 1px 3.5px 0px rgba(0, 0, 0, 0.3);
-      width: rem-calc(320);
+      width: auto;
+      max-width: rem-calc(320);
       z-index: 20;
       margin-top: rem-calc(8);
       visibility: hidden;
@@ -281,6 +351,7 @@
     @include breakpoint('medium+') {
       padding: rem-calc(16);
       border-bottom: 1px solid $color__border--light;
+      width: rem-calc(288);
     }
 
     div {

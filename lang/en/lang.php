@@ -48,6 +48,7 @@ return [
         'copyright-notice' => 'Copyright notice',
         'created-date' => 'Created date',
         'creator' => 'Creator',
+        'custom' => 'Custom',
         'delete' => 'Delete',
         'duration' => 'Duration',
         'edit' => 'Edit',
