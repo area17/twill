@@ -24,7 +24,6 @@
             :id="`search_${uid}`"
             :value="searchValue"
             :placeholder="placeholder"
-            @input="onSearchInput"
           />
           <span v-svg symbol="search"></span>
         </div>
@@ -32,8 +31,9 @@
       <div
         v-if="items && items.length > 1"
         class="dam-filters__dropdown-content"
+        ref="content"
       >
-        <template v-for="(subItem, index) in items">
+        <template v-for="(subItem, index) in filterItems">
           <a17-checkboxaccordion
             v-if="subItem.items && subItem.items.length"
             :key="index"
@@ -48,17 +48,19 @@
         <a17-checkboxgroup
           v-if="!hasNestedItems(items)"
           :name="label"
-          :options="items"
+          :options="filterItems"
           ref="checkboxGroup"
           @change="updateSelectedFilters"
         ></a17-checkboxgroup>
-
         <div v-if="customColorCheckbox" class="dam-filters__dropdown-color">
           <a17-colorfield
             name="customColor"
             ref="colorField"
             :disabled="!isCustomColorChecked"
           ></a17-colorfield>
+        </div>
+        <div v-if="loading" class="loading">
+          {{ $trans('dam.loading', 'Loading') }}
         </div>
       </div>
       <div class="dam-filters__dropdown-footer">
@@ -97,13 +99,24 @@
         default() {
           return []
         }
+      },
+      totalPages: {
+        type: Number,
+        default: 1
       }
     },
     data: function() {
       return {
         customColorCheckbox: null,
+        controller: null,
+        loadedItems: [],
+        endpoint: null,
+        hasTriggeredFetch: false,
         isCustomColorChecked: false,
         isOpen: false,
+        loading: false,
+        page: 2,
+        searchParams: new URLSearchParams(window.location.search),
         searchValue: null,
         selectedFilters: []
       }
@@ -119,12 +132,27 @@
       },
       totalChecked() {
         return this.selectedFilters.length
+      },
+      filterItems() {
+        return [...this.items, ...this.loadedItems]
+      },
+      filterName() {
+        return this.label.replace(' ', '-').toLowerCase()
       }
     },
     watch: {},
     methods: {
       applyFilters() {
         console.log('Selected filters: ', this.selectedFilters)
+
+        if (this.selectedFilters.length > 0) {
+          this.searchParams.set(this.filterName, this.selectedFilters.join('|'))
+        } else {
+          this.searchParams.delete(this.filterName)
+        }
+
+        this.searchParams.delete('page')
+        this.isOpen = false
       },
       clearFilters() {
         this.selectedFilters = []
@@ -142,6 +170,47 @@
 
         this.isOpen = false
       },
+      async fetchItems(opts) {
+        try {
+          if (this.controller) {
+            this.controller.abort()
+          }
+        } catch (err) {}
+
+        this.controller = new AbortController()
+        const signal = this.controller.signal
+
+        try {
+          const response = await fetch(
+            `${this.endpoint}?selectedFilters=${new URLSearchParams(
+              window.location.search
+            ).get(this.filterName)}&page=${this.page++}&search=${
+              this.searchValue
+            }`,
+            { method: 'GET', signal }
+          )
+
+          if (!response.ok) {
+            throw new Error('Network response was not ok')
+          }
+
+          const data = await response.json()
+
+          if (data) {
+            this.updateList(data.items, opts)
+
+            if (data.isLastPage) {
+              this.loading = false
+              this.$refs.content.removeEventListener(
+                'scroll',
+                this.handleScroll
+              )
+            }
+          }
+        } catch (error) {
+          console.error(error)
+        }
+      },
       handleClick() {
         this.isOpen = !this.isOpen
       },
@@ -153,6 +222,15 @@
           }, 10)
         }
       },
+      handleScroll() {
+        const scrollPosition = this.$refs.content.scrollTop
+        const listHeight = this.$refs.content.clientHeight
+
+        if (!this.hasTriggeredFetch && scrollPosition + listHeight) {
+          this.hasTriggeredFetch = true
+          this.fetchItems({ type: 'loadmore' })
+        }
+      },
       hasNestedItems(items) {
         for (const value of Object.values(items)) {
           if (value && typeof value === 'object' && 'items' in value) {
@@ -161,7 +239,13 @@
         }
         return false
       },
-      onSearchInput() {},
+      updateList(data, opts) {
+        this.loadedItems = [...this.loadedItems, ...data]
+
+        setTimeout(() => {
+          this.hasTriggeredFetch = false
+        }, 1)
+      },
       updateSelectedFilters(selectedItems) {
         this.selectedFilters = selectedItems.flat()
 
@@ -181,6 +265,11 @@
       document.addEventListener('keydown', e => {
         this.handleKey(e)
       })
+
+      if (this.totalPages > 1) {
+        this.loading = true
+        this.$refs.content.addEventListener('scroll', this.handleScroll, false)
+      }
     },
     unmounted() {
       document.removeEventListener('keydown', e => {
@@ -402,6 +491,13 @@
     @include breakpoint('medium+') {
       height: 100%;
       overflow-y: auto;
+    }
+
+    .loading {
+      display: block;
+      width: 100%;
+      padding: rem-calc(18) 0;
+      text-align: center;
     }
   }
 
