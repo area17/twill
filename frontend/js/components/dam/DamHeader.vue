@@ -52,7 +52,7 @@
         </div>
       </div>
     </div>
-    <div v-if="filters" class="dam-filters">
+    <div v-if="filters" class="dam-filters" ref="filterDropdowns">
       <a17-button
         variant="ghost"
         class="dam-filters__mobileToggle"
@@ -94,6 +94,7 @@
             :hasSearch="item.searchable"
             :advanced="item.advanced"
             ref="filterDropdown"
+            @filtersApplied="updateAppliedFilters"
           >
           </a17-dam-filter-dropdown>
 
@@ -116,6 +117,32 @@
         </div>
       </div>
     </div>
+    <div
+      v-if="filters"
+      class="dam-filters dam-filters__applied"
+      :class="{ 'dam-filters__applied--visible': appliedFilters.length }"
+    >
+      <div class="dam-filters__header">
+        <h2 id="appliedHeading">
+          {{ $trans('nav.applied-filters', 'Applied filters') }}
+        </h2>
+        <div class="dam-filters-action">
+          <button class="f--link-underlined--o" @click="resetFilters">
+            {{ $trans('nav.reset', 'Reset') }}
+          </button>
+          <button class="f--link-underlined--o" @click="applyFilters">
+            {{ $trans('nav.apply', 'Apply') }}
+          </button>
+        </div>
+      </div>
+      <a17-checkboxgroup
+        :ariaLabelledby="'appliedHeading'"
+        :name="'appliedFilters'"
+        :options="appliedFilters"
+        ref="appliedCheckboxGroup"
+        @change="handleAppliedFiltersChange"
+      ></a17-checkboxgroup>
+    </div>
   </div>
 </template>
 
@@ -125,6 +152,7 @@
   import A17Avatar from '@/components/Avatar.vue'
   import a17Filter from '@/components/Filter.vue'
   import A17DamFilterDropdown from '@/components/dam/DamFilterDropdown.vue'
+  import Checkbox from '../Checkbox.vue'
 
   export default {
     name: 'A17Medialibrary',
@@ -153,6 +181,7 @@
     },
     data: function() {
       return {
+        appliedFilters: [],
         filtersModalOpen: false,
         isMobile: false,
         showAdvanced: false
@@ -226,10 +255,68 @@
       },
       toggleAdvanced() {
         this.showAdvanced = !this.showAdvanced
+      },
+      updateAppliedFilters(selectedFilters) {
+        if (this.appliedFilters.length) {
+          this.appliedFilters = this.appliedFilters.filter(appliedFilter => {
+            return selectedFilters.includes(appliedFilter)
+          })
+        }
+
+        // Filter out selectedFilters that are already in appliedFilters
+        const newFilters = selectedFilters.filter(
+          filter =>
+            !this.appliedFilters.some(
+              appliedFilter => appliedFilter.value === filter.value
+            )
+        )
+
+        // Concatenate newFilters with appliedFilters
+        this.appliedFilters = this.appliedFilters.concat(newFilters)
+
+        const filterValues = this.appliedFilters.map(filter => {
+          return filter.value
+        })
+        this.$refs.appliedCheckboxGroup.updateValue(filterValues)
+      },
+      handleAppliedFiltersChange(changedFilters) {
+        this.$refs.filterDropdowns
+          .querySelectorAll('input[type="checkbox"]')
+          .forEach(checkbox => {
+            if (!changedFilters.includes(checkbox.value)) {
+              checkbox.checked = false
+            } else {
+              checkbox.checked = true
+            }
+          })
+      },
+      resetFilters() {
+        this.appliedFilters = []
+        this.clearFilters()
+      },
+      bindInputs() {
+        const inputs = this.$el.querySelectorAll('input')
+
+        inputs.forEach(input => {
+          input.addEventListener('change', e => {
+            if (input.type === 'checkbox') {
+              // Find other checkboxes with the same value
+              const sameValueCheckboxes = this.$el.querySelectorAll(
+                `input[type="checkbox"][value="${input.value}"]`
+              )
+
+              // Toggle checked status for each checkbox
+              sameValueCheckboxes.forEach(checkbox => {
+                checkbox.checked = input.checked
+              })
+            }
+          })
+        })
       }
     },
     mounted() {
       this.getMediaQuery()
+      this.bindInputs()
 
       window.addEventListener('resize', this.getMediaQuery)
     },
@@ -238,6 +325,18 @@
     }
   }
 </script>
+
+<style lang="scss">
+  .input-wrapper-appliedFilters {
+    ul {
+      @include breakpoint('medium+') {
+        display: flex;
+        flex-direction: row wrap;
+        gap: rem-calc(20);
+      }
+    }
+  }
+</style>
 
 <style lang="scss" scoped>
   .dam-header {
@@ -412,5 +511,38 @@
     @include breakpoint('medium+') {
       display: none;
     }
+  }
+
+  .dam-filters__header {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: rem-calc(16);
+    justify-content: space-between;
+  }
+
+  .dam-filters-action {
+    display: flex;
+    flex-direction: row;
+    gap: rem-calc(16);
+
+    button {
+      @include btn-reset;
+      color: $color__link;
+      border: none;
+      padding: 0;
+    }
+  }
+
+  .dam-filters__applied {
+    display: none;
+
+    &--visible {
+      display: flex;
+    }
+  }
+
+  .input-wrapper-appliedFilters {
+    margin-top: 0;
   }
 </style>

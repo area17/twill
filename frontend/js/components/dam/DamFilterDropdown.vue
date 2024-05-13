@@ -143,8 +143,7 @@
     watch: {},
     methods: {
       applyFilters() {
-        // eslint-disable-next-line
-        console.log('Selected filters: ', this.selectedFilters)
+        this.$emit('filtersApplied', this.selectedFilters)
 
         if (this.selectedFilters.length > 0) {
           this.searchParams.set(this.filterName, this.selectedFilters.join('|'))
@@ -248,7 +247,15 @@
         }, 1)
       },
       updateSelectedFilters(selectedItems) {
-        this.selectedFilters = selectedItems.flat()
+        // Find corresponding object from items array
+        const selectedFilters = selectedItems.map(selectedItem => {
+          const matchedItem = this.items.find(
+            item => item.value === selectedItem
+          )
+          return { label: matchedItem.label, value: selectedItem }
+        })
+
+        this.selectedFilters = selectedFilters
 
         this.isCustomColorChecked =
           this.customColorCheckbox && selectedItems.includes('custom')
