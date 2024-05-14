@@ -135,7 +135,9 @@ jobs:
           mkdir ./frontend/js/components/blocks/customs
 
       - name: Build twill.
-        run: ./vendor/bin/testbench twill:build --forTesting
+        run: |
+          ./vendor/bin/testbench migrate
+          ./vendor/bin/testbench twill:build --forTesting
 
       - name: Upgrade Chrome
         uses: browser-actions/setup-chrome@latest
