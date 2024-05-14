@@ -3,8 +3,7 @@
              v-bind="draggableOptions"
              :class="nestedDropAreaClasses"
              v-model="rows"
-             :tag="'ul'"
-             :component-data="draggableGetComponentData">
+             :tag="'ul'">
     <li class="nested-datatable__item"
         v-for="(row, index) in rows"
         :class="haveChildren(row.children)"

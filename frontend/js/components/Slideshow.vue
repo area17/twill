@@ -5,7 +5,7 @@
       <span class="slideshow__note f--small"><slot></slot></span>
     </div>
     <draggable class="slideshow__content" v-bind="dragOptions" v-model="slides" v-if="slides.length">
-      <transition-group name="draggable_list" tag='div'>
+      <transition-group name="draggable_list">
         <div class="slide" v-for="(slide, index) in slides" :key="`${slide.id}_${index}`">
             <div class="slide__handle" v-if="!disabled">
               <div class="slide__handle--drag"></div>

@@ -10,7 +10,7 @@
       </div>
       <draggable class="editorPreview__content"
                  ref="previewContent"
-                 :value="blocks"
+                 :model-value="blocks"
                  group="editorBlocks"
                  :handle="handle"
                  @add="onAdd(add, edit, $event)"
