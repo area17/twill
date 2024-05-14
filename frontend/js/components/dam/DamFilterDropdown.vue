@@ -122,7 +122,10 @@
       }
     },
     computed: {
-      uid() {
+      filterItems() {
+        return [...this.items, ...this.loadedItems]
+      },
+      filterName() {
         return this.label.replace(' ', '-').toLowerCase()
       },
       placeholder() {
@@ -133,17 +136,14 @@
       totalChecked() {
         return this.selectedFilters.length
       },
-      filterItems() {
-        return [...this.items, ...this.loadedItems]
-      },
-      filterName() {
+      uid() {
         return this.label.replace(' ', '-').toLowerCase()
       }
     },
     watch: {},
     methods: {
       applyFilters() {
-        this.$emit('filtersApplied', this.selectedFilters)
+        this.$emit('filtersApplied', this.selectedFilters, this.uid)
 
         if (this.selectedFilters.length > 0) {
           this.searchParams.set(this.filterName, this.selectedFilters.join('|'))
@@ -156,6 +156,7 @@
       },
       clearFilters() {
         this.selectedFilters = []
+        this.$emit('filtersApplied', this.selectedFilters, this.uid)
 
         if (this.$refs.checkboxGroup) {
           this.$refs.checkboxGroup.updateValue([])
@@ -247,11 +248,22 @@
         }, 1)
       },
       updateSelectedFilters(selectedItems) {
+        // console.log(selectedItems)
+
         // Find corresponding object from items array
         const selectedFilters = selectedItems.map(selectedItem => {
-          const matchedItem = this.items.find(
-            item => item.value === selectedItem
-          )
+          let matchedItem
+          if (this.hasNestedItems(this.items)) {
+            this.items.forEach(list => {
+              if (!matchedItem && list.items) {
+                matchedItem = list.items.find(
+                  item => item.value === selectedItem
+                )
+              }
+            })
+          } else {
+            matchedItem = this.items.find(item => item.value === selectedItem)
+          }
           return { label: matchedItem.label, value: selectedItem }
         })
 
