@@ -78,7 +78,7 @@ abstract class TestCase extends OrchestraTestCase
         cleanupTestState(self::applicationBasePath());
     }
 
-    protected function onNotSuccessfulTest(Throwable $t): void
+    protected function onNotSuccessfulTest(Throwable $t): never
     {
         // When a test fails it doesnt run teardown.
         $this->tearDown();
