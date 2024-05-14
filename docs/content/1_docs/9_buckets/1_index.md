@@ -66,11 +66,11 @@ Finally, add a link to your buckets page in your CMS navigation:
 return [
    'featured' => [
        'title' => 'Features',
-       'route' => 'admin.featured.homepage',
+       'route' => 'twill.featured.homepage',
        'primary_navigation' => [
            'homepage' => [
                'title' => 'Homepage',
-               'route' => 'admin.featured.homepage',
+               'route' => 'twill.featured.homepage',
            ],
        ],
    ],
