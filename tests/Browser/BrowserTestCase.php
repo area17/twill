@@ -97,7 +97,7 @@ class BrowserTestCase extends TestCase
         parent::tearDown();
     }
 
-    protected function onNotSuccessfulTest(Throwable $t): void
+    protected function onNotSuccessfulTest(Throwable $t): never
     {
         cleanupTestState(self::applicationBasePath());
         parent::onNotSuccessfulTest($t);
