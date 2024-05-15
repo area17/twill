@@ -73,6 +73,7 @@ class BrowserTestCase extends TestCase
         $app['config']->set('twill.enabled.users-2fa', true);
         $app['config']->set('twill.enabled.users-image', true);
         $app['config']->set('twill.auth_login_redirect_path', '/twill');
+        $app['config']->set('twill.models.user', User::class);
         $app['config']->set('translatable.locales', ['en', 'fr', 'pt-BR']);
     }
 
