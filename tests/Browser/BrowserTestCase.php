@@ -213,6 +213,7 @@ class BrowserTestCase extends TestCase
     {
         if (DuskOptions::shouldUsesWithoutUI()) {
             DuskOptions::withoutUI();
+            DuskOptions::noSandbox();
         } elseif ($this->hasHeadlessDisabled()) {
             DuskOptions::withUI();
         }
