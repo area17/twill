@@ -175,9 +175,28 @@
         }, 10)
       },
       applyFilters() {
-        this.$refs.filterDropdown.forEach(el => {
-          el.applyFilters()
-        })
+        // TODO: Refactor this
+        const values = []
+
+        // Collect all checked checkbox values
+        this.$refs.filterDropdowns
+          .querySelectorAll('input[type="checkbox"]:checked')
+          .forEach(checkbox => {
+            values.push(checkbox.value)
+          })
+
+        // Iterate through appliedFilters and remove unmatched values
+        for (const key in this.appliedFilters) {
+          if (this.appliedFilters.hasOwnProperty(key)) {
+            this.appliedFilters[key] = this.appliedFilters[key].filter(
+              filter => {
+                return values.includes(filter.value)
+              }
+            )
+          }
+        }
+
+        this.appliedFilters = { ...this.appliedFilters }
       },
       clearFilters() {
         this.$refs.filterDropdown.forEach(el => {
@@ -261,21 +280,21 @@
         this.clearFilters()
       },
       bindInputs() {
-        // const inputs = this.$el.querySelectorAll('input')
-        // inputs.forEach(input => {
-        //   input.addEventListener('change', e => {
-        //     if (input.type === 'checkbox') {
-        //       // Find other checkboxes with the same value
-        //       const sameValueCheckboxes = this.$el.querySelectorAll(
-        //         `input[type="checkbox"][value="${input.value}"]`
-        //       )
-        //       // Toggle checked status for each checkbox
-        //       sameValueCheckboxes.forEach(checkbox => {
-        //         checkbox.checked = input.checked
-        //       })
-        //     }
-        //   })
-        // })
+        const inputs = this.$el.querySelectorAll('input')
+        inputs.forEach(input => {
+          input.addEventListener('change', e => {
+            if (input.type === 'checkbox') {
+              // Find other checkboxes with the same value
+              const sameValueCheckboxes = this.$el.querySelectorAll(
+                `input[type="checkbox"][value="${input.value}"]`
+              )
+              // Toggle checked status for each checkbox
+              sameValueCheckboxes.forEach(checkbox => {
+                checkbox.checked = input.checked
+              })
+            }
+          })
+        })
       }
     },
     mounted() {

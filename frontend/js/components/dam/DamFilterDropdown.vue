@@ -248,8 +248,6 @@
         }, 1)
       },
       updateSelectedFilters(selectedItems) {
-        // console.log(selectedItems)
-
         // Find corresponding object from items array
         const selectedFilters = selectedItems.map(selectedItem => {
           let matchedItem
