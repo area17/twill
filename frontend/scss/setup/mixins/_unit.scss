@@ -1,0 +1,57 @@
+@use "sass:math";
+
+@function strip-units($number) {
+  @return math.div($number, ($number * 0 + 1));
+}
+
+@function rem-calc($values) {
+  $rem-values: ();
+  $count: length($values);
+  $base: 100%;
+
+  // If the base font size is a %, then multiply it by 16px
+  // This is because 100% font size = 16px in most all browsers
+  @if unit($base) == '%' {
+    $base: (math.div($base, 100%)) * 16px;
+  }
+
+  // Using rem as base allows correct scaling
+  @if unit($base) == 'rem' {
+    $base: strip-units($base) * 16px;
+  }
+
+  @if $count == 1 {
+    @return -px-to-rem($values, $base);
+  }
+
+  @for $i from 1 through $count {
+    $rem-values: append($rem-values, -px-to-rem(nth($values, $i), $base));
+  }
+
+  @return $rem-values;
+}
+
+@function -px-to-rem($value, $base: null) {
+  // Check if the value is a number
+  @if type-of($value) != 'number' {
+    @warn inspect($value) + ' was passed to rem-calc(), which is not a number.';
+    @return $value;
+  }
+
+  // Transform em into rem if someone hands over 'em's
+  @if unit($value) == 'em' {
+    $value: strip-units($value) * 1rem;
+  }
+
+  // Calculate rem if units for $value is not rem or em
+  @if unit($value) != 'rem' {
+    $value: math.div(strip-units($value), strip-units($base)) * 1rem;
+  }
+
+  // Turn 0rem into 0
+  @if $value == 0rem {
+    $value: 0;
+  }
+
+  @return $value;
+}

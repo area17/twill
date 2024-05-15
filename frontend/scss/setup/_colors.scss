@@ -4,14 +4,14 @@ $color__yellow: #f2f034;
 $color__orange: #fffcb1;
 $color__orangeDark: #b39946;
 $color__green: #1d9f3c;
-$color__lightGreen: #D3ECD9;
-$color__green--hover: #1A8F36;
-$color__lightBlue: #E7F4FB;
+$color__lightGreen: #d3ecd9;
+$color__green--hover: #1a8f36;
+$color__lightBlue: #e7f4fb;
 $color__translucentBlue: #f4f9fd;
 $color__translucentBlue--hover: #eaf4fa;
-$color__blue: #148DDB;
-$color__darkBlue: #3278B8;
-$color__darkBlue--hover: #2D6CA6;
+$color__blue: #148ddb;
+$color__darkBlue: #3278b8;
+$color__darkBlue--hover: #2d6ca6;
 
 // Colors - Grayscale
 $color__black: #000;
@@ -22,7 +22,7 @@ $color__black--89: #1c1c1c;
 $color__black--85: #262626;
 $color__black--80: #333;
 $color__black--72: #474747;
-$color__black--70: #4D4D4D;
+$color__black--70: #4d4d4d;
 $color__black--61: #636363;
 $color__black--60: #666;
 $color__black--50: #808080;
@@ -42,6 +42,9 @@ $color__black--3: #f7f7f7;
 $color__black--2-5: #fafafa;
 $color__black--2: #fbfbfb;
 $color__white: #fff;
+
+$color__grey--85: #252525;
+$color__grey--54: #757575;
 
 // Colors by usage - use these!
 $color__background: $color__white;
@@ -125,25 +128,25 @@ $color__overlay--header: $color__black;
 $color__overlay--background: $color__black--80;
 
 $color__header: $color__black;
-$color__header--sep:$color__black--80;
+$color__header--sep: $color__black--80;
 $color__header--light: $color__black--50;
 $color__nav: $color__black--85;
 
-$color__login--btn:$color__black--80;
+$color__login--btn: $color__black--80;
 
-$color__bulk--background:$color__lightBlue;
+$color__bulk--background: $color__lightBlue;
 
-$color__block-bg:$color__translucentBlue;
-$color__block-bg--hover:$color__translucentBlue--hover;
+$color__block-bg: $color__translucentBlue;
+$color__block-bg--hover: $color__translucentBlue--hover;
 
-$color__stats:#853bb7;
+$color__stats: #853bb7;
 
-$color_editor--active:$color__blue;
+$color_editor--active: $color__blue;
 
 /**** Env Colors ****/
-$color__env--staging: #3679B6;
-$color__env--dev: #269E41;
-$color__env--prod: #E31A22;
+$color__env--staging: #3679b6;
+$color__env--dev: #269e41;
+$color__env--prod: #e31a22;
 
 /**** Notif Colors ****/
 $color__notif--default: $color__black--20;
@@ -153,15 +156,15 @@ $color__notif--error: rgba(#ff0000, 0.97);
 /**** Buckets Colors ****/
 $color__bucket--1: #7ca4a2;
 $color__bucket--2: #70769f;
-$color__bucket--3: #E37A75;
+$color__bucket--3: #e37a75;
 $colors__bucket--list: $color__bucket--1 $color__bucket--2 $color__bucket--3;
 
 /**** Wysiwyg ****/
-$color__wysiwyg-codeText:#333;
-$color__wysiwyg-codeBg:#f6f8fa;
+$color__wysiwyg-codeText: #333;
+$color__wysiwyg-codeBg: #f6f8fa;
 
 /**** User ****/
 $color__user-orange: #ff7a00;
 $color__user-blue: $color__blue;
-$color__user-purple: #793CB8;
-$color__user-red: #FF0000;
+$color__user-purple: #793cb8;
+$color__user-red: #ff0000;

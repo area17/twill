@@ -39,6 +39,8 @@ import a17VSelect from '@/components/VSelect.vue'
 import a17Wysiwyg from '@/components/Wysiwyg.vue'
 import a17WysiwygTipTap from '@/components/WysiwygTiptap.vue'
 import Sticky from '@/directives/sticky'
+// Digital Asset Manager
+import a17Dam from '@/components/dam/Dam.vue'
 // Directives
 import SvgSprite from '@/directives/svg'
 import Tooltip from '@/directives/tooltip'
@@ -50,7 +52,7 @@ import { locales } from '@/utils/locale'
 const isProd = process.env.NODE_ENV === 'production'
 
 const A17Config = {
-  install (Vue, opts) {
+  install(Vue, opts) {
     // Globals components
     Vue.component('a17-button', a17Button)
     Vue.component('a17-infotip', a17Infotip)
@@ -85,6 +87,9 @@ const A17Config = {
 
     // Media Library
     Vue.component('a17-medialibrary', a17MediaLibrary)
+
+    // Digital Asset Manager
+    Vue.component('a17-dam', a17Dam)
 
     // Globale Vue mixin : Use global mixins sparsely and carefully!
     Vue.mixin({

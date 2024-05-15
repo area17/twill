@@ -1,8 +1,21 @@
 <template>
   <a17-inputframe :error="error" :note="note" :label="label" :name="name">
     <ul class="checkboxGroup" :class="checkboxClasses">
-      <li class="checkboxGroup__item" v-for="checkbox in options" :key="checkbox.value">
-        <a17-checkbox :name="name" :value="checkbox.value" :label="checkbox.label" @change="changeValue" :initialValue="currentValue" :disabled="checkbox.disabled || disabled"></a17-checkbox>
+      <li
+        class="checkboxGroup__item"
+        v-for="checkbox in options"
+        :key="checkbox.value"
+      >
+        <a17-checkbox
+          :name="name"
+          :value="checkbox.value"
+          :label="checkbox.label"
+          :count="checkbox.count"
+          @change="changeValue"
+          :initialValue="currentValue"
+          :disabled="checkbox.disabled || disabled"
+          :color="checkbox.hex"
+        ></a17-checkbox>
       </li>
     </ul>
   </a17-inputframe>
@@ -28,19 +41,19 @@
       },
       options: {
         type: Array,
-        default: function () { return [] }
+        default: function() {
+          return []
+        }
       }
     },
     mixins: [InputframeMixin, CheckboxMixin, FormStoreMixin],
     computed: {
-      checkboxClasses: function () {
-        return [
-          this.inline ? 'checkboxGroup--inline' : ''
-        ]
+      checkboxClasses: function() {
+        return [this.inline ? 'checkboxGroup--inline' : '']
       }
     },
     methods: {
-      formatValue: function (newVal, oldval) {
+      formatValue: function(newVal, oldval) {
         const self = this
         if (!newVal) return
         if (!oldval) return
@@ -54,20 +67,21 @@
           }
         }
       },
-      updateFromStore: function (newValue) { // called from the formStore mixin
+      updateFromStore: function(newValue) {
+        // called from the formStore mixin
         this.updateValue(newValue)
       },
-      updateValue: function (newValue) {
+      updateValue: function(newValue) {
         this.checkedValue = newValue
       },
-      changeValue: function (newValue) {
+      changeValue: function(newValue) {
         if (!isEqual(newValue, this.currentValue)) {
           this.updateValue(newValue)
         }
       }
     },
-    mounted: function () {
-      if ((this.max + this.min) > 0) {
+    mounted: function() {
+      if (this.max + this.min > 0) {
         this.$watch('currentValue', this.formatValue, {
           immediate: true
         })
@@ -77,22 +91,21 @@
 </script>
 
 <style lang="scss" scoped>
-
   .checkboxGroup {
-    color:$color__text;
+    color: $color__text;
   }
 
   .checkboxGroup--inline {
-    display:flex;
+    display: flex;
     flex-flow: row wrap;
-    overflow:hidden;
+    overflow: hidden;
   }
 
   .checkboxGroup--inline .checkboxGroup__item {
-    margin-right:20px;
+    margin-right: 20px;
   }
 
   .checkboxGroup__item {
-    padding:7px 0 8px 0;
+    padding: 7px 0 8px 0;
   }
 </style>

@@ -2,7 +2,13 @@
   <a17-accordion :open="open" @toggleVisibility="notifyOpen">
     <span slot="accordion__title"><slot></slot></span>
     <div slot="accordion__value">{{ currentLabel }}</div>
-    <a17-checkboxgroup :name="name" :options="options" @change="changeValue" :selected="currentValue" :min="1"></a17-checkboxgroup>
+    <a17-checkboxgroup
+      :name="name"
+      :options="options"
+      @change="changeValue"
+      :selected="currentValue"
+      :min="1"
+    ></a17-checkboxgroup>
   </a17-accordion>
 </template>
 
@@ -20,7 +26,9 @@
     mixins: [VisibilityMixin],
     props: {
       value: {
-        default: function () { return [] }
+        default: function() {
+          return []
+        }
       },
       title: {
         type: String,
@@ -31,30 +39,51 @@
         default: ''
       },
       options: {
-        default: function () { return [] }
+        default: function() {
+          return []
+        }
+      },
+      selectedLabel: {
+        type: String,
+        default: ''
+      },
+      updateLang: {
+        type: Boolean,
+        default: true
       }
     },
-    data: function () {
+    data: function() {
       return {
         currentValue: this.value
       }
     },
     watch: {
-      value: function (newValue) {
+      value: function(newValue) {
         this.currentValue = newValue
       }
     },
     computed: {
-      currentLabel: function () {
-        return this.currentValue.length + ' ' + this.$trans('publisher.languages-published')
+      currentLabel: function() {
+        return (
+          (!this.currentValue ? '0' : this.currentValue.length) +
+          ' ' +
+          (this.selectedLabel
+            ? this.selectedLabel
+            : this.$trans('publisher.languages-published'))
+        )
       }
     },
     methods: {
-      changeValue: function (newValue) {
+      changeValue: function(newValue) {
         this.currentValue = newValue
-        this.$store.commit(LANGUAGE.PUBLISH_LANG, newValue)
+
+        if (this.updateLang) {
+          this.$store.commit(LANGUAGE.PUBLISH_LANG, newValue)
+        }
+
+        this.$emit('selectionChanged', this.currentValue)
       },
-      notifyOpen: function (newValue) {
+      notifyOpen: function(newValue) {
         this.$emit('open', newValue, this.$options.name)
       }
     }
