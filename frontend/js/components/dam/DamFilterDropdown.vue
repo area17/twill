@@ -143,6 +143,7 @@
     watch: {},
     methods: {
       applyFilters() {
+        // eslint-disable-next-line
         console.log('Selected filters: ', this.selectedFilters)
 
         if (this.selectedFilters.length > 0) {
