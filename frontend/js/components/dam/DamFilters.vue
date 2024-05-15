@@ -78,7 +78,7 @@
           <button class="f--link-underlined--o" @click="resetFilters">
             {{ $trans('nav.reset', 'Reset') }}
           </button>
-          <button class="f--link-underlined--o" @click="applyFilters">
+          <button class="f--link-underlined--o" @click="applyAppliedFilters">
             {{ $trans('nav.apply', 'Apply') }}
           </button>
         </div>
@@ -174,7 +174,7 @@
           this.$refs.openFiltersBtn.$el.focus()
         }, 10)
       },
-      applyFilters() {
+      applyAppliedFilters() {
         // TODO: Refactor this
         const values = []
 
@@ -197,6 +197,13 @@
         }
 
         this.appliedFilters = { ...this.appliedFilters }
+      },
+      applyFilters() {
+        this.$refs.filterDropdown.forEach(el => {
+          el.applyFilters()
+        })
+
+        this.closeFiltersModal()
       },
       clearFilters() {
         this.$refs.filterDropdown.forEach(el => {
