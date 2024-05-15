@@ -31,12 +31,11 @@
     <div class="editorSidebar__body">
       <a17-inputframe label=""
                       :name="`block.${block.id}`"/>
-      <template>
-        <component v-bind="setBlockAttributes(block.attributes)"
-                   :name="`blocks[${block.id}]`"
-                   v-bind:is="`${block.type}`"
-                   key="`editor_${block.type}_${block.id}`"/>
-      </template>
+
+      <component v-bind="setBlockAttributes(block.attributes)"
+                 :name="`blocks[${block.id}]`"
+                 v-bind:is="`${block.type}`"
+                 key="`editor_${block.type}_${block.id}`"/>
 
     </div>
   </div>

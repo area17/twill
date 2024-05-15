@@ -13,6 +13,13 @@ export default {
       default: 0
     }
   },
+  emits: [
+    'block:select',
+    'block:unselect',
+    'block:delete',
+    'block:move',
+    'block:clone'
+  ],
   methods: {
     selectBlock () {
       this.$emit('block:select')

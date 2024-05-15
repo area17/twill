@@ -1,6 +1,15 @@
 import cloneDeep from 'lodash/cloneDeep'
 
 export default {
+  emits: [
+    'block:save',
+    'block:cancel',
+    'block:select',
+    'block:unselect',
+    'block:delete',
+    'block:move',
+    'block:clone'
+  ],
   props: {
     editorName: {
       type: String,

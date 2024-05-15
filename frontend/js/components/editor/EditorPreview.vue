@@ -71,6 +71,7 @@
       }
     },
     mixins: [DraggableMixin, BlockEditorMixin],
+    emits: ['blocks:move'],
     components: {
       draggable: VueDraggableNext,
       'a17-editor-block-preview': A17EditorBlockPreview,

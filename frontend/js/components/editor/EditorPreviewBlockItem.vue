@@ -65,6 +65,7 @@
       }
     },
     mixins: [BlockEditorItemMixin],
+    emits: ['scroll-to'],
     components: {
       'a17-editor-iframe': EditorIframe
     },
