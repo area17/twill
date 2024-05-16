@@ -21,6 +21,7 @@
 
   export default {
     name: 'A17Toggle',
+    emits: ['change'],
     props: {
       name: {
         type: String,

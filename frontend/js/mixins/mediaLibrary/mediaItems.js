@@ -1,6 +1,7 @@
 import { mapState } from 'vuex'
 
 export default {
+  emits: ['change', 'shiftChange'],
   props: {
     items: {
       type: Array,

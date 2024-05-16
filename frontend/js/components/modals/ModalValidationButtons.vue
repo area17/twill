@@ -23,6 +23,7 @@
 
   export default {
     name: 'A17ModalValidationButtons',
+    emits: ['disable'],
     props: {
       publishedName: {
         type: String,

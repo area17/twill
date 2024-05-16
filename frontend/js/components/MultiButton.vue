@@ -25,6 +25,7 @@
 
   export default {
     name: 'A17Multibutton',
+    emits: ['button-clicked'],
     props: {
       type: {
         default: 'button'

@@ -43,6 +43,7 @@
       }
     },
     mixins: [cropperMixin],
+    emits: ['crop-end'],
     data: function () {
       return {
         cropper: null,

@@ -24,6 +24,7 @@
 <script>
   export default {
     name: 'A17Dropdown',
+    emits: ['open', 'close'],
     props: {
       title: {
         type: String,

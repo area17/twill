@@ -47,6 +47,7 @@
 
   export default {
     name: 'A17Wysiwyg',
+    emits: ['change', 'input', 'focus', 'blur', 'ready'],
     mixins: [InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
     props: {
       editSource: {

@@ -26,6 +26,7 @@
 <script>
   export default {
     name: 'WysiwygMenuBarButton',
+    emits: ['btn:click'],
     props: {
       icon: {
         type: String,

@@ -25,6 +25,7 @@
 
   export default {
     name: 'A17Modal',
+    emits: ['open', 'close', 'esc-key'],
     props: {
       title: {
         type: String,

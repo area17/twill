@@ -26,6 +26,7 @@
 
   export default {
     name: 'A17Overlay',
+    emits: ['open', 'close', 'esc-key'],
     props: {
       title: {
         type: String,

@@ -1,4 +1,5 @@
 export default {
+  emits: ['toggleVisibility'],
   props: {
     open: {
       type: Boolean,

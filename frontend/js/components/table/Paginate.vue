@@ -27,6 +27,7 @@
 <script>
   export default {
     name: 'A17Paginate',
+    emits: ['changePage', 'changeOffset'],
     props: {
       value: {
         type: Number,

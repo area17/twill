@@ -30,6 +30,7 @@
 
   export default {
     name: 'A17Filter',
+    emits: ['submit', 'clear'],
     props: {
       initialSearchValue: {
         type: String,

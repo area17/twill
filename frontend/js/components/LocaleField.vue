@@ -43,6 +43,7 @@
 
   export default {
     name: 'A17Locale',
+    emits: ['blur', 'focus', 'localize', 'change'],
     props: {
       type: {
         type: String,

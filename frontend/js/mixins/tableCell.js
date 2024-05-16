@@ -1,4 +1,12 @@
 export default {
+  emits: [
+    'update',
+    'editInPlace',
+    'restoreRow',
+    'destroyRow',
+    'deleteRow',
+    'duplicateRow'
+  ],
   props: {
     col: {
       type: Object,

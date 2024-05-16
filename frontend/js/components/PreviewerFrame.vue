@@ -6,6 +6,7 @@
 <script>
   export default {
     name: 'A17previewerFrame',
+    emits: ['scrollDoc'],
     props: {
       size: {
         type: Number,

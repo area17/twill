@@ -49,6 +49,7 @@
   export default {
     components: { A17Dropdown },
     name: 'a17BucketItem',
+    emits: ['remove-from-bucket', 'toggle-featured-in-bucket'],
     props: {
       bucket: {
         type: String

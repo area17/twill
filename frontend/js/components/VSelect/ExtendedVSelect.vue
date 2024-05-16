@@ -6,6 +6,7 @@
 
   export default {
     extends: vSelect,
+    emits: ['search'],
     props: {
       /**
        * Enable/Disable deselect the option by double select it

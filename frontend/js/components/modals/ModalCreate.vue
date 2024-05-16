@@ -29,6 +29,7 @@
   export default {
     name: 'A17ModalCreate',
     mixins: [retrySubmitMixin],
+    emits: ['reload'],
     props: {
       formCreate: {
         type: String,
