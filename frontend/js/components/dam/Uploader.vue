@@ -17,6 +17,7 @@
 
   export default {
     name: 'A17DamUploader',
+    emits: ['loaded', 'clear'],
     props: {
       type: {
         type: Object,

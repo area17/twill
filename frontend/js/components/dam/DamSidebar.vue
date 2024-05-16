@@ -535,6 +535,7 @@
 
   export default {
     name: 'A17DamSidebar',
+    emits: ['triggerMediaReplace', 'delete', 'clear', 'tagUpdated'],
     components: {
       'a17-mediasidebar-upload': a17MediaSidebarUpload,
       'a17-langswitcher': a17Langswitcher

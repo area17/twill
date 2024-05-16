@@ -22,7 +22,7 @@
       'a17-accordion': a17Accordion
     },
     mixins: [VisibilityMixin],
-    emits: ['open'],
+    emits: ['open', 'selectionChanged'],
     props: {
       value: {
         default: function () { return [] }

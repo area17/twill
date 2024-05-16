@@ -81,6 +81,7 @@
 
   export default {
     name: 'A17DamFilterDropdown',
+    emits: ['filtersApplied'],
     components: {
       'a17-checkboxaccordion': a17CheckboxAccordion,
       'a17-colorfield': a17ColorField
