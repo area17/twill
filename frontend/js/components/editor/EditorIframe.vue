@@ -26,6 +26,7 @@
 
   export default {
     name: 'A17editorIframe',
+    emits: ['loaded'],
     props: {
       block: {
         type: Object,

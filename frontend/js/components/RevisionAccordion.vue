@@ -29,6 +29,7 @@
 
   export default {
     name: 'A17Revisions',
+    emits: ['open'],
     components: {
       'a17-accordion': a17Accordion
     },

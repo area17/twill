@@ -60,6 +60,7 @@
 
   export default {
     name: 'A17Pubaccordion',
+    emits: ['open'],
     components: {
       'a17-accordion': a17Accordion
     },

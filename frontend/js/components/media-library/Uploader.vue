@@ -18,6 +18,7 @@
 
   export default {
     name: 'A17Uploader',
+    emits: ['clear', 'loaded'],
     props: {
       type: {
         type: Object,

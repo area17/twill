@@ -147,6 +147,7 @@
 
   export default {
     name: 'A17MediaSidebar',
+    emits: ['triggerMediaReplace', 'delete', 'clear', 'tagUpdated'],
     components: {
       'a17-mediasidebar-upload': a17MediaSidebarUpload,
       'a17-langswitcher': a17Langswitcher

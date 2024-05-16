@@ -28,6 +28,7 @@
 
   export default {
     name: 'A17Select',
+    emits: ['change'],
     mixins: [randKeyMixin, InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin, AttributesMixin],
     props: {
       size: {

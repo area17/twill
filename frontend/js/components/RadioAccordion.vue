@@ -21,6 +21,7 @@
       'a17-accordion': a17Accordion
     },
     mixins: [VisibilityMixin],
+    emits: ['change', 'open'],
     props: {
       value: {
         default: ''

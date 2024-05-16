@@ -45,6 +45,7 @@
 
   export default {
     name: 'TableCellActions',
+    emits: ['update'],
     mixins: [TableCellMixin],
     methods: {
       update: function (colName) {

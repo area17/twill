@@ -22,6 +22,7 @@
 
   export default {
     name: 'A17Parents',
+    emits: ['open'],
     components: {
       'a17-accordion': a17Accordion
     },

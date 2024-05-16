@@ -39,6 +39,7 @@
 
   export default {
     name: 'A17Singleselect',
+    emits: ['change'],
     mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin, ConfirmationMixin],
     props: {
       name: {

@@ -49,6 +49,7 @@
   import randKeyMixin from '@/mixins/randKey'
   export default {
     name: 'A17VueSelect',
+    emits: ['change'],
     mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
     props: {
       placeholder: {

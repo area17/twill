@@ -48,6 +48,7 @@
 
   export default {
     name: 'A17Locationfield',
+    emits: ['focus'],
     mixins: [InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
     props: {
       type: {
