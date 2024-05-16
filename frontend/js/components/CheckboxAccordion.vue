@@ -36,6 +36,14 @@
       },
       options: {
         default: function () { return [] }
+      },
+      selectedLabel: {
+        type: String,
+        default: ''
+      },
+      updateLang: {
+        type: Boolean,
+        default: true
       }
     },
     data: function () {
@@ -50,13 +58,24 @@
     },
     computed: {
       currentLabel: function () {
-        return this.currentValue.length + ' ' + this.$trans('publisher.languages-published')
+        return (
+          (!this.currentValue ? '0' : this.currentValue.length) +
+          ' ' +
+          (this.selectedLabel
+            ? this.selectedLabel
+            : this.$trans('publisher.languages-published'))
+        )
       }
     },
     methods: {
       changeValue: function (newValue) {
         this.currentValue = newValue
-        this.$store.commit(LANGUAGE.PUBLISH_LANG, newValue)
+
+        if (this.updateLang) {
+          this.$store.commit(LANGUAGE.PUBLISH_LANG, newValue)
+        }
+
+        this.$emit('selectionChanged', this.currentValue)
       },
       notifyOpen: function (newValue) {
         this.$emit('open', newValue, this.$options.name)
