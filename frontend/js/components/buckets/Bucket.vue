@@ -48,7 +48,7 @@
               </h3>
             </template>
             <draggable v-if="bucket.children.length > 0" class="buckets__list buckets__draggable" v-bind="dragOptions"
-                       @change="sortBucket($event, index)" :value="bucket.children" :tag="'table'">
+                       @change="sortBucket($event, index)" :model-value="bucket.children" :tag="'table'">
               <transition-group name="fade_scale_list" tag='tbody'>
                 <a17-bucket-item v-for="(child, index) in bucket.children" :key="`${child.id}_${index}`" :item="child"
                                  :restricted="restricted" :draggable="bucket.children.length > 1"

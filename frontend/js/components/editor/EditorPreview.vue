@@ -10,7 +10,7 @@
       </div>
       <draggable class="editorPreview__content"
                  ref="previewContent"
-                 :value="blocks"
+                 :model-value="blocks"
                  group="editorBlocks"
                  :handle="handle"
                  @add="onAdd(add, edit, $event)"
@@ -71,6 +71,7 @@
       }
     },
     mixins: [DraggableMixin, BlockEditorMixin],
+    emits: ['blocks:move'],
     components: {
       draggable: VueDraggableNext,
       'a17-editor-block-preview': A17EditorBlockPreview,

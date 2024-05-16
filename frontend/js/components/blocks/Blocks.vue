@@ -3,12 +3,11 @@
     <div class="blocks">
       <draggable class="blocks__container"
                  v-bind="dragOptions"
-                 :value="savedBlocks"
+                 :model-value="savedBlocks"
                  group="blocks"
                  :move="handleOnMove"
                  @end="handleOnEnd(moveBlock, moveBlockToEditor)">
-        <transition-group name="draggable_list"
-                          tag='div'>
+        <transition-group name="draggable_list">
           <div class="blocks__item"
                v-for="savedBlock in savedBlocks"
                :key="savedBlock.id">

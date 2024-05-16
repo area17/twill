@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <draggable class="content__content" v-bind="dragOptions" v-model="blocks">
-      <transition-group name="draggable_list" tag='div'>
+      <transition-group name="draggable_list">
         <div class="content__item" v-for="(block, index) in blocks" :key="block.id">
           <a17-blockeditor-item
               ref="blockList"

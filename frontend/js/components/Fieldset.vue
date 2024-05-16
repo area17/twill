@@ -41,7 +41,7 @@
   }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 
   .fieldset {
     border-radius: 2px;
