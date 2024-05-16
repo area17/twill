@@ -19,24 +19,7 @@
 
           <div class="dam-sidebar__gallery">
             <template v-if="hasSingleMedia">
-              <a
-                v-if="isImage && hasPreview"
-                :href="firstMedia.original"
-                :data-pswp-width="firstMedia.width"
-                :data-pswp-height="firstMedia.height"
-                :data-pswp-video-src="isVideo ? firstMedia.original : null"
-                :data-pswp-type="isVideo ? 'video' : 'image'"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <img
-                  :src="firstMedia.thumbnail"
-                  class="dam-sidebar__img"
-                  :alt="firstMedia.name"
-                />
-              </a>
               <img
-                v-else-if="isImage"
                 :src="firstMedia.thumbnail"
                 class="dam-sidebar__img"
                 :alt="firstMedia.name"
@@ -153,19 +136,27 @@
 
           <a17-buttonbar
             class="dam-sidebar__buttonbar"
-            v-if="hasMedia && !hasMultipleMedias"
+            :class="{ 'dam-sidebar__buttonbar--hidden': hasMultipleMedias }"
+            v-if="hasMedia"
           >
             <!-- Actions -->
             <button type="button" :aria-label="$trans('dam.edit', 'Edit')">
               <span v-svg symbol="edit" aria-hidden="true"></span>
             </button>
-            <button
-              v-if="hasPreview"
-              type="button"
+            <a
+              v-if="isImage && hasPreview"
+              :href="firstMedia.original"
+              :data-pswp-width="firstMedia.width"
+              :data-pswp-height="firstMedia.height"
+              :data-pswp-video-src="isVideo ? firstMedia.original : null"
+              :data-pswp-type="isVideo ? 'video' : 'image'"
+              target="_blank"
+              rel="noreferrer"
+              class="pswp-lightbox"
               :aria-label="$trans('dam.view', 'View')"
             >
               <span v-svg symbol="preview" aria-hidden="true"></span>
-            </button>
+            </a>
             <button
               v-if="hasSingleMedia"
               :aria-label="$trans('dam.replace', 'Replace')"
@@ -639,10 +630,10 @@
             )
             ? this.firstMedia.metadatas.default[name]
             : type === 'object'
-              ? {}
-              : type === 'boolean'
-                ? false
-                : ''
+            ? {}
+            : type === 'boolean'
+            ? false
+            : ''
         }
       },
       captionValues() {
@@ -983,8 +974,7 @@
     mounted() {
       if (!this.lightbox) {
         this.lightbox = new PhotoSwipeLightbox({
-          gallery: '.dam-sidebar__gallery',
-          children: 'a',
+          gallery: '.dam-sidebar__inner .pswp-lightbox',
           pswpModule: () => import('photoswipe'),
           paddingTop: 60,
           paddingBottom: 60,
@@ -1165,6 +1155,10 @@
   .dam-sidebar .dam-sidebar__buttonbar {
     display: inline-block;
     margin-top: rem-calc(20);
+
+    &--hidden {
+      display: none;
+    }
   }
 
   .dam-sidebar__form {

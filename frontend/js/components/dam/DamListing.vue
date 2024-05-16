@@ -114,7 +114,7 @@
       'a17-mediagrid': a17MediaGrid,
       'a17-itemlist': a17ItemList,
       'a17-dam-sidebar': a17DamSidebar,
-      'a17-spinner': a17Spinner,
+      'a17-spinner': a17Spinner
     },
     props: {
       btnLabelSingle: {
@@ -186,7 +186,7 @@
           item.fileExtension = item.name
             .split('.')
             .pop()
-            .toLowerCase();
+            .toLowerCase()
           item.disabled =
             (this.filesizeMax > 0 && item.filesizeInMb > this.filesizeMax) ||
             (this.widthMin > 0 && item.width < this.widthMin) ||
@@ -590,7 +590,7 @@
           this.selectedMedias.push(mediaInitSelect)
         }
       }
-    },
+    }
   }
 </script>
 
@@ -654,7 +654,7 @@
       width: 100%;
       height: 100%;
     }
- }
+  }
 </style>
 
 <style lang="scss" scoped>
@@ -669,8 +669,11 @@
   .dam-listing__list {
     container: damlist / inline-size;
     flex: 1 1 auto;
-    overflow-y: auto;
     padding: rem-calc(20);
+
+    @include breakpoint('medium+') {
+      overflow-y: auto;
+    }
 
     .itemlist {
       padding: 0;

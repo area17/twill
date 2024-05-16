@@ -110,7 +110,7 @@
     display: flex;
     flex-flow: row;
     flex: 0 1 100%;
-    overflow-y: auto;
+    overflow-y: visible;
   }
 </style>
 

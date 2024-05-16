@@ -1,6 +1,10 @@
 <template>
   <a17-inputframe :error="error" :note="note" :label="label" :name="name">
-    <ul class="checkboxGroup" :class="checkboxClasses">
+    <ul
+      class="checkboxGroup"
+      :class="checkboxClasses"
+      :aria-labelledby="ariaLabelledby"
+    >
       <li
         class="checkboxGroup__item"
         v-for="checkbox in options"
@@ -44,6 +48,10 @@
         default: function() {
           return []
         }
+      },
+      ariaLabelledby: {
+        type: String,
+        default: null
       }
     },
     data () {
