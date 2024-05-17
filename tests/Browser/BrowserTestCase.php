@@ -133,8 +133,12 @@ class BrowserTestCase extends TestCase
     {
         $this->restoreAndCleanupDistBackup();
 
+        if (!file_exists($dirToCopy = __DIR__ . '/../../dist')) {
+            return;
+        }
+
         // Make a backup of the dist folder.
-        $dirToCopy = __DIR__ . '/../../dist';
+
         $dirToCopyBackup = __DIR__ . '/../../dist-backup';
 
         shell_exec("cp -r $dirToCopy $dirToCopyBackup");
