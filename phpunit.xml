@@ -32,7 +32,7 @@
     <env name="DB_DATABASE" value="twill_testing_3x"/>
     <env name="LOG_CHANNEL" value="single"/>
     <env name="DB_USERNAME" value="root"/>
-    <env name="DB_PASSWORD" value=""/>
+    <env name="DB_PASSWORD" value="root"/>
   </php>
   <source>
     <include>
