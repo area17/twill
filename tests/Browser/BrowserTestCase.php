@@ -190,7 +190,7 @@ class BrowserTestCase extends TestCase
 
     protected static function getBasePathStatic(): string
     {
-        return __DIR__ . '/../../vendor/orchestra/testbench-core/laravel';
+        return __DIR__ . '/../../vendor/orchestra/testbench-dusk/laravel';
     }
 
     public static function applicationBasePath(): string
@@ -200,7 +200,7 @@ class BrowserTestCase extends TestCase
 
     protected function getBasePath(): string
     {
-        return __DIR__ . '/../../vendor/orchestra/testbench-core/laravel';
+        return __DIR__ . '/../../vendor/orchestra/testbench-dusk/laravel';
     }
 
     /**
