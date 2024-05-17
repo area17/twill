@@ -7,7 +7,7 @@ use A17\Twill\Models\User;
 use A17\Twill\RouteServiceProvider;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
-use App\Providers\AppServiceProvider;
+// use App\Providers\AppServiceProvider;
 use Carbon\Carbon;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverDimension;
@@ -48,7 +48,7 @@ class BrowserTestCase extends TestCase
         ];
 
         if ($this->example && file_exists(app_path('Providers/AppServiceProvider.php'))) {
-            $list[] = AppServiceProvider::class;
+            // $list[] = AppServiceProvider::class;
         }
 
         return $list;
