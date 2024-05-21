@@ -106,10 +106,6 @@ class BrowserTestCase extends TestCase
 
     public function setUp(): void
     {
-        $loader = new ClassLoader();
-        $loader->addPsr4('App\\', 'vendor/orchestra/testbench-dusk/laravel/app');
-        $loader->register();
-
         $dbPath = self::getBasePathStatic() . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR;
         copy($dbPath . 'database.sqlite.example', $dbPath . 'database.sqlite');
 
@@ -122,6 +118,10 @@ class BrowserTestCase extends TestCase
                 $this->getBasePath()
             );
         }
+        
+        $loader = new ClassLoader();
+        $loader->addPsr4('App\\', 'vendor/orchestra/testbench-dusk/laravel/app');
+        $loader->register();
 
         // Run the rest of the setup.
         parent::setUp();
