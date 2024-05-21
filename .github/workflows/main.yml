@@ -149,9 +149,9 @@ jobs:
 
       - name: Start Chrome Driver
         run: ./vendor/laravel/dusk/bin/chromedriver-linux &
-        
+
       - name: Execute all tests
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit --stop-on-error
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
 
