@@ -92,10 +92,6 @@ abstract class TestCase extends OrchestraTestCase
      */
     public function setUp(): void
     {
-        $loader = new ClassLoader();
-        $loader->addPsr4('App\\', 'vendor/orchestra/testbench-core/laravel/app');
-        $loader->register();
-
         if ($this->example) {
             $this->installPresetFiles(
                 $this->example,
@@ -103,6 +99,10 @@ abstract class TestCase extends OrchestraTestCase
                 $this->getBasePath()
             );
         }
+
+        $loader = new ClassLoader();
+        $loader->addPsr4('App\\', 'vendor/orchestra/testbench-core/laravel/app');
+        $loader->register();
 
         // Enforce the url for testing to be 'http://twill.test' for certain assertions.
         // This is different from the one in phpunit.xml because that one is used for laravel dusk.
