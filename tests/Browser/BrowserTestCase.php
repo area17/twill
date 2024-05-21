@@ -118,10 +118,6 @@ class BrowserTestCase extends TestCase
                 $this->getBasePath()
             );
         }
-        
-        $loader = new ClassLoader();
-        $loader->addPsr4('App\\', 'vendor/orchestra/testbench-dusk/laravel/app');
-        $loader->register();
 
         // Run the rest of the setup.
         parent::setUp();
