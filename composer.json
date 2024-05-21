@@ -70,7 +70,7 @@
       "A17\\Twill\\Tests\\Integration\\": "tests/integration",
       "A17\\Twill\\Tests\\Browser\\": "tests/Browser",
       "A17\\Docs\\": "docs/generator",
-      "App\\": "vendor/orchestra/testbench-core/laravel/app"
+      "App\\": "vendor/orchestra/testbench-dusk/laravel/app"
     }
   },
   "scripts": {

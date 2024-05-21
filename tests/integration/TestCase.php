@@ -553,4 +553,19 @@ abstract class TestCase extends OrchestraTestCase
     public function loadConfig()
     {
     }
+
+    protected static function getBasePathStatic(): string
+    {
+        return __DIR__ . '/../../vendor/orchestra/testbench-core/laravel';
+    }
+
+    public static function applicationBasePath(): string
+    {
+        return self::getBasePathStatic();
+    }
+
+    protected function getBasePath(): string
+    {
+        return __DIR__ . '/../../vendor/orchestra/testbench-core/laravel';
+    }
 }
