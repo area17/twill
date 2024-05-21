@@ -9,6 +9,7 @@ use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
 use App\Providers\AppServiceProvider;
 use Carbon\Carbon;
+use Composer\Autoload\ClassLoader;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverDimension;
 use Illuminate\Support\Facades\DB;
@@ -105,6 +106,10 @@ class BrowserTestCase extends TestCase
 
     public function setUp(): void
     {
+        $loader = new ClassLoader();
+        $loader->addPsr4('App\\', 'vendor/orchestra/testbench-dusk/laravel/app');
+        $loader->register();
+
         $dbPath = self::getBasePathStatic() . DIRECTORY_SEPARATOR . 'database' . DIRECTORY_SEPARATOR;
         copy($dbPath . 'database.sqlite.example', $dbPath . 'database.sqlite');
 

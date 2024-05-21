@@ -9,6 +9,7 @@ use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
 use Carbon\Carbon;
+use Composer\Autoload\ClassLoader;
 use Exception;
 use Faker\Factory as Faker;
 use Faker\Generator;
@@ -91,6 +92,10 @@ abstract class TestCase extends OrchestraTestCase
      */
     public function setUp(): void
     {
+        $loader = new ClassLoader();
+        $loader->addPsr4('App\\', 'vendor/orchestra/testbench-core/laravel/app');
+        $loader->register();
+
         if ($this->example) {
             $this->installPresetFiles(
                 $this->example,
