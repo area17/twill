@@ -20,7 +20,7 @@ abstract class BaseFormField implements CanRenderForBlocks
         protected ?bool $required = false,
         protected ?bool $disabled = false,
         protected mixed $default = null,
-        protected mixed $connectedTo = null,
+        protected ?array $connectedTo = null,
         /**
          * A list of mandatory properties in order of their component
          * constructor.

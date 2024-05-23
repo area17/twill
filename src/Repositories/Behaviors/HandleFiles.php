@@ -25,8 +25,8 @@ trait HandleFiles
         $filesFromFields = $this->getFiles($fields);
 
         $filesFromFields->each(function ($file) use ($object, $filesCollection) {
-            $newFile = File::withTrashed()->find($file['id']);
-            $pivot = $newFile->newPivot($object, Arr::except($file, ['id']), 'fileables', true);
+            $newFile = File::withTrashed()->find($file['file_id']);
+            $pivot = $newFile->newPivot($object, $file, 'fileables', true);
             $newFile->setRelation('pivot', $pivot);
             $filesCollection->push($newFile);
         });
@@ -47,11 +47,7 @@ trait HandleFiles
             return;
         }
 
-        $object->files()->sync([]);
-
-        $this->getFiles($fields)->each(function ($file) use ($object) {
-            $object->files()->attach($file['id'], Arr::except($file, ['id']));
-        });
+        $object->files()->sync($this->getFiles($fields));
     }
 
     /**
@@ -78,7 +74,7 @@ trait HandleFiles
                 ) {
                     Collection::make($filesForRole)->each(function ($file) use (&$files, $role, $locale) {
                         $files->push([
-                            'id' => $file['id'],
+                            'file_id' => $file['id'],
                             'role' => $role,
                             'locale' => $locale,
                         ]);
