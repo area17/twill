@@ -310,7 +310,7 @@
         })
       }
     },
-    beforeDestroy () {
+    beforeUnmount () {
       if (this.type === 'textarea') window.removeEventListener('resize', this.resizeTextarea)
     }
   }

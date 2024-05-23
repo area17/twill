@@ -9,9 +9,11 @@
     </header>
     <div class="box__body">
       <table class="activityFeed__table" v-if="rows.data.length > 0">
-        <template v-for="(row, index) in rows.data">
-          <a17-activity-row :row="row" :index="index" :columns="columns" :key="row.id"></a17-activity-row>
+        <!-- eslint-disable vue/no-v-for-template-key -->
+        <template v-for="(row, index) in rows.data" :key="row.id">
+          <a17-activity-row :row="row" :index="index" :columns="columns"></a17-activity-row>
         </template>
+        <!-- eslint-enable -->
       </table>
       <template v-else>
         <div class="activityFeed__empty">

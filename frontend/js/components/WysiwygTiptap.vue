@@ -154,13 +154,14 @@
 
             <template v-if="this.toolbar.wrappers">
               <br/>
-              <template v-for="wrapper in this.toolbar.wrappers">
+              <!-- eslint-disable vue/no-v-for-template-key -->
+              <template v-for="wrapper in this.toolbar.wrappers" :key="wrapper.id">
                 <wysiwyg-menu-bar-btn :icon-url="wrapper.icon"
-                                      :key="wrapper.id"
                                       :isActive="editor.isActive(wrapper.class)"
                                       :label="wrapper.label"
                                       @btn:click="editor.commands['set' + wrapper.id]()"/>
               </template>
+              <!-- eslint-enable -->
             </template>
 
           </div>
@@ -246,7 +247,7 @@
 
 <script>
   import debounce from 'lodash/debounce'
-  import {Editor, EditorContent, getMarkAttributes, mergeAttributes, Node} from '@tiptap/vue-2'
+  import {Editor, EditorContent, getMarkAttributes, mergeAttributes, Node} from '@tiptap/vue-3'
   import StarterKit from '@tiptap/starter-kit'
   import Underline from '@tiptap/extension-underline'
   import Table from '@tiptap/extension-table'
@@ -645,9 +646,6 @@
       this.updateCounter()
     },
     beforeUnmount () {
-      this.editor.destroy()
-    },
-    beforeDestroy () {
       this.editor.destroy()
     }
   }

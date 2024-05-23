@@ -26,6 +26,7 @@
 
   export default {
     name: 'A17editorIframe',
+    emits: ['loaded'],
     props: {
       block: {
         type: Object,
@@ -77,7 +78,7 @@
     mounted () {
       window.addEventListener('resize', this.resize)
     },
-    beforeDestroy () {
+    beforeUnmount () {
       window.removeEventListener('resize', this.resize)
     }
   }

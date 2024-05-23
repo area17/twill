@@ -4,7 +4,7 @@
     <div class="datePicker__group" :ref="refs.flatPicker">
       <div class="form__field datePicker__field">
         <input type="text" :name="name" :id="uniqId" :required="required" :placeholder="placeHolder" data-input
-               @blur="onBlur" v-model="date" :disabled="disabled">
+               @blur="onBlur" @input="onInput" v-model="date" :disabled="disabled">
         <a href="#" v-if="clear" class="datePicker__reset" :class="{ 'datePicker__reset--cleared' : !date }"
            @click.prevent="onClear"><span v-svg symbol="close_icon"></span></a>
       </div>
@@ -15,7 +15,7 @@
 <script>
   import 'flatpickr/dist/flatpickr.css'
 
-  import parse from 'date-fns/parse'
+  import { parse } from 'date-fns'
   import FlatPickr from 'flatpickr'
 
   import FormStoreMixin from '@/mixins/formStore'
@@ -26,6 +26,7 @@
   export default {
     name: 'A17DatePicker',
     mixins: [randKeyMixin, InputframeMixin, FormStoreMixin],
+    emits: ['input', 'open', 'close', 'blur'],
     props: {
       /* @see: https://chmln.github.io/flatpickr/options/ */
       name: { // FlatPicker hidden input name
@@ -149,15 +150,15 @@
           parseDate: function (date, format) {
             const fullFormat = 'yyyy-MM-dd HH:mm:ss';
             if (date.length === fullFormat.length) {
-              return parse(date + 'Z', fullFormat + 'X', Date.UTC());
+              return parse(date + 'Z', fullFormat + 'X', Date.UTC(0, 0));
             }
             const fullFormatNoSeconds = 'yyyy-MM-dd HH:mm';
             if (date.length === fullFormatNoSeconds.length) {
-              return parse(date + 'Z', fullFormat + 'X', Date.UTC());
+              return parse(date + 'Z', fullFormat + 'X', Date.UTC(0, 0));
             }
             const fullFormatNoTime = 'yyyy-MM-dd';
             if (date.length === fullFormatNoTime.length) {
-              return parse(date, fullFormatNoTime, Date.UTC());
+              return parse(date, fullFormatNoTime, Date.UTC(0, 0));
             }
 
             if (self.isValidTime(date)) {
@@ -228,7 +229,7 @@
 
       this.isMobile = self.flatPicker.isMobile
     },
-    beforeDestroy: function () {
+    beforeUnmount: function () {
       const self = this
       self.flatPicker.destroy()
     }

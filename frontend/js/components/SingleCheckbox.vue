@@ -26,6 +26,7 @@
 
   export default {
     name: 'A17SingleCheckbox',
+    emits: ['change'],
     mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, ConfirmationMixin],
     props: {
       name: {

@@ -8,7 +8,7 @@
           <v-select
               :multiple="multiple"
               :placeholder="placeholder"
-              :value="value"
+              :model-value="value"
               :options="currentOptions"
               :searchable="searchable"
               :selectable="selectable"
@@ -20,10 +20,12 @@
               :requiredValue="required"
               :maxHeight="maxHeight"
               :disabled="disabled"
-              @input="updateValue"
+              @update:modelValue="updateValue"
               @search="getOptions"
           >
-            <span slot="no-options">{{ emptyText }}</span>
+            <template v-slot:no-options>
+              <span>{{ emptyText }}</span>
+            </template>
           </v-select>
         </div>
       </div>
@@ -47,6 +49,7 @@
   import randKeyMixin from '@/mixins/randKey'
   export default {
     name: 'A17VueSelect',
+    emits: ['change'],
     mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
     props: {
       placeholder: {
@@ -94,7 +97,7 @@
       },
       emptyText: {
         default () {
-          return this.$trans('select.empty-text', 'Sorry, no matching options.')
+          return window.$trans('select.empty-text', 'Sorry, no matching options.')
         }
       },
       options: {

@@ -16,7 +16,7 @@
         <ul class="media__metadatas" v-if="!disabled">
           <li class="media__name" @click="openMediaLibrary(1, mediaKey, index)"><strong :title="media.name">{{
             media.name }}</strong></li>
-          <li class="f--small" v-if="media.size">File size: {{ media.size | uppercase }}</li>
+          <li class="f--small" v-if="media.size">File size: {{ uppercase(media.size) }}</li>
           <li class="f--small" v-if="media.width + media.height">{{ $trans('fields.medias.original-dimensions') }}: {{ media.width }}&nbsp;&times;&nbsp;{{
             media.height }}
           </li>
@@ -43,12 +43,14 @@
           <a17-dropdown ref="dropDown" position="right">
             <a17-button size="icon" variant="icon" @click="$refs.dropDown.toggle()">
               <span v-svg symbol="more-dots"></span></a17-button>
-            <div slot="dropdown__content">
-              <a :href="media.original" download><span v-svg symbol="download"></span>{{ $trans('fields.medias.download') }}</a>
-              <button type="button" @click="openCropMedia" v-if="activeCrop"><span v-svg symbol="crop"></span>{{ $trans('fields.medias.crop') }}
-              </button>
-              <button type="button" @click="deleteMediaClick"><span v-svg symbol="trash"></span>{{ $trans('fields.medias.delete') }}</button>
-            </div>
+            <template v-slot:dropdown__content>
+              <div>
+                <a :href="media.original" download><span v-svg symbol="download"></span>{{ $trans('fields.medias.download') }}</a>
+                <button type="button" @click="openCropMedia" v-if="activeCrop"><span v-svg symbol="crop"></span>{{ $trans('fields.medias.crop') }}
+                </button>
+                <button type="button" @click="deleteMediaClick"><span v-svg symbol="trash"></span>{{ $trans('fields.medias.delete') }}</button>
+              </div>
+            </template>
           </a17-dropdown>
         </div>
       </div>
@@ -103,7 +105,7 @@
   import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
   import { MEDIA_LIBRARY } from '@/store/mutations'
   import { cropConversion } from '@/utils/cropper'
-  import a17VueFilters from '@/utils/filters.js'
+  import { uppercase } from '@/utils/filters.js'
 
   const IS_SAFARI = navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1
 
@@ -130,7 +132,7 @@
       btnLabel: {
         type: String,
         default () {
-          return this.$trans('fields.medias.btn-label', 'Attach image')
+          return window.$trans('fields.medias.btn-label', 'Attach image')
         }
       },
       hover: {
@@ -190,7 +192,6 @@
         }
       }
     },
-    filters: a17VueFilters,
     computed: {
       ...mapState({
         useWysiwyg: state => state.mediaLibrary.config.useWysiwyg,
@@ -277,6 +278,7 @@
       }
     },
     methods: {
+      uppercase,
       // crop
       canvasCrop () {
         const data = this.media.crops[Object.keys(this.media.crops)[0]]
@@ -307,6 +309,7 @@
               this.cropSrc = src
             }
           } catch (error) {
+            // eslint-disable-next-line no-console
             console.error(error)
 
             // fallback on displaying the thumbnail
@@ -385,6 +388,7 @@
             })
             this.cropMedia({ values: defaultCrops })
           }, (error) => {
+            // eslint-disable-next-line no-console
             console.error(error)
             this.cropMedia({ values: defaultCrops })
           })
@@ -430,6 +434,7 @@
           this.initImg().then(() => {
             imgLoaded()
           }, (error) => {
+            // eslint-disable-next-line no-console
             console.error(error)
             this.showDefaultThumbnail()
 
@@ -448,6 +453,7 @@
                 })
 
                 imgTag.addEventListener('error', (e) => {
+                  // eslint-disable-next-line no-console
                   console.error(e)
                   this.showDefaultThumbnail()
                 })

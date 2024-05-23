@@ -55,28 +55,32 @@
                 }
             @endphp
             <a17-sticky-nav data-sticky-target="navbar" :items="{{ json_encode($additionalFieldsets) }}">
-                <a17-title-editor name="{{ $titleFormKey }}" thumbnail="{{ $titleThumbnail ?? '' }}"
-                                  :editable-title="{{ json_encode($editableTitle ?? true) }}"
-                                  :control-languages-publication="{{ json_encode($controlLanguagesPublication) }}"
-                                  custom-title="{{ $customTitle ?? '' }}"
-                                  custom-permalink="{{ $customPermalink ?? '' }}"
-                                  localized-permalinkbase="{{ json_encode($localizedPermalinkBase ?? '') }}"
-                                  localized-custom-permalink="{{ json_encode($localizedCustomPermalink ?? '') }}"
-                                  slot="title" @if($createWithoutModal ?? false) :show-modal="true"
-                                  @endif @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif>
-                    <template slot="modal-form">
-                        @partialView(($moduleName ?? null), 'create')
-                    </template>
-                </a17-title-editor>
-                <div slot="actions">
-                    <a17-langswitcher
-                        :all-published="{{ json_encode(!$controlLanguagesPublication) }}"></a17-langswitcher>
-                    <a17-button v-if="editor" type="button" variant="editor" size="small"
-                                @click="openEditor(-1)">
-                        <span v-svg
-                              symbol="editor"></span>{{ twillTrans('twill::lang.form.editor') }}
-                    </a17-button>
-                </div>
+                <template v-slot:title>
+                    <a17-title-editor name="{{ $titleFormKey }}" thumbnail="{{ $titleThumbnail ?? '' }}"
+                                      :editable-title="{{ json_encode($editableTitle ?? true) }}"
+                                      :control-languages-publication="{{ json_encode($controlLanguagesPublication) }}"
+                                      custom-title="{{ $customTitle ?? '' }}"
+                                      custom-permalink="{{ $customPermalink ?? '' }}"
+                                      localized-permalinkbase="{{ json_encode($localizedPermalinkBase ?? '') }}"
+                                      localized-custom-permalink="{{ json_encode($localizedCustomPermalink ?? '') }}"
+                                      @if($createWithoutModal ?? false) :show-modal="true"
+                                      @endif @if(isset($editModalTitle)) modal-title="{{ $editModalTitle }}" @endif>
+                        <template v-slot:modal-form>
+                            @partialView(($moduleName ?? null), 'create')
+                        </template>
+                    </a17-title-editor>
+                </template>
+                <template v-slot:actions>
+                    <div>
+                        <a17-langswitcher
+                            :all-published="{{ json_encode(!$controlLanguagesPublication) }}"></a17-langswitcher>
+                        <a17-button v-if="editor" type="button" variant="editor" size="small"
+                                    @click="openEditor(-1)">
+                            <span v-svg
+                                  symbol="editor"></span>{{ twillTrans('twill::lang.form.editor') }}
+                        </a17-button>
+                    </div>
+                </template>
             </a17-sticky-nav>
         </div>
         <form action="{{ $saveUrl }}" novalidate method="POST" @if($customForm) ref="customForm"
@@ -228,7 +232,7 @@
     <script src="{{ twillAsset('main-form.js') }}" crossorigin></script>
     <script>
         const groupUserMapping = {!! isset($groupUserMapping) ? json_encode($groupUserMapping) : '[]' !!};
-        window['{{ config('twill.js_namespace') }}'].vm.$store.subscribe((mutation, state) => {
+        window['{{ config('twill.js_namespace') }}'].store.subscribe((mutation, state) => {
             if (mutation.type === 'updateFormField' && mutation.payload.name.endsWith('group_authorized')) {
                 const groupId = mutation.payload.name.replace('_group_authorized', '')
                 const checked = mutation.payload.value
@@ -244,7 +248,7 @@
                                 name: `user_${userId}_permission`,
                                 value: checked ? 'view-item' : ''
                             }
-                            window['{{ config('twill.js_namespace') }}'].vm.$store.commit('updateFormField', field)
+                            window['{{ config('twill.js_namespace') }}'].store.commit('updateFormField', field)
                         }
                     })
                 }

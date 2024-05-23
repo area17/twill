@@ -10,6 +10,7 @@
 
   export default {
     name: 'A17Radio',
+    emits: ['change'],
     mixins: [randKeyMixin],
     props: {
       customClass: {

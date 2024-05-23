@@ -9,23 +9,25 @@
             <div class="statFeed__dropdown">
               <a17-dropdown ref="statPeriodDropdown" position="bottom-right">
                 <a17-button variant="ghost" @click="$refs.statPeriodDropdown.toggle()">{{ selectedPeriodLabel }} <span v-svg class="statFeed__dropdownIcon" symbol="dropdown_module"></span></a17-button>
-                <div slot="dropdown__content">
-                  <template v-for="(period, index) in periods">
-                    <button type="button"
-                            v-if="period.value !== selectedPeriod"
-                            :key="index"
-                            @click="selectPeriod(period.value)">{{ period.label }}</button>
-                  </template>
-                </div>
+                <template v-slot:dropdown__content>
+                  <div>
+                    <template v-for="(period, index) in periods">
+                      <button type="button"
+                              v-if="period.value !== selectedPeriod"
+                              :key="index"
+                              @click="selectPeriod(period.value)">{{ period.label }}</button>
+                    </template>
+                  </div>
+                </template>
               </a17-dropdown>
             </div>
           </div>
       </div>
     </header>
     <div class="box__body">
-      <template  v-for="(fact, index) in factsForSelectedPeriod">
-      <a :key="index"
-         :href="fact.url" class="statFeed__item"
+      <!-- eslint-disable vue/no-v-for-template-key -->
+      <template v-for="(fact, index) in factsForSelectedPeriod" :key="index">
+      <a :href="fact.url" class="statFeed__item"
          target="_blank">
         <h3 class="statFeed__numb f--heading" :class="trending(index)">{{ fact.figure }}</h3>
         <div class="statFeed__info">
@@ -37,6 +39,7 @@
         </div>
       </a>
       </template>
+      <!-- eslint-enable -->
     </div>
     <footer class="box__footer statFeed__footer">
       <a href="https://analytics.google.com/analytics/web" class="f--external" target="_blank">Google Analytics</a>
@@ -45,11 +48,6 @@
 </template>
 
 <script>
-  import Vue from 'vue'
-  import Trend from 'vuetrend'
-
-  Vue.use(Trend)
-
   export default {
     name: 'A17StatFeed',
     props: {

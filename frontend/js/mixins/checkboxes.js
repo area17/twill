@@ -19,6 +19,7 @@ export default {
       default: function () { return [] }
     }
   },
+  emits: ['change'],
   data: function () {
     return {
       currentValue: this.selected

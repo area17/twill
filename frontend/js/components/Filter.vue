@@ -30,6 +30,7 @@
 
   export default {
     name: 'A17Filter',
+    emits: ['submit', 'clear'],
     props: {
       initialSearchValue: {
         type: String,
@@ -38,7 +39,7 @@
       placeholder: {
         type: String,
         default () {
-          return this.$trans('filter.search-placeholder', 'Search')
+          return window.$trans('filter.search-placeholder', 'Search')
         }
       },
       closed: {
@@ -177,7 +178,7 @@
       margin-left:9px;
     }
 
-    div {
+    :slotted(div) {
       display:inline-block;
 
       button:not(.button--validate), a{

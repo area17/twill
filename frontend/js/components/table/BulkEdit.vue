@@ -9,19 +9,21 @@
           <a17-dropdown ref="bulkActionsDown" position="bottom-left" width="full" :offset="0">
             <a17-button variant="dropdown" size="small" @click="$refs.bulkActionsDown.toggle()">{{ $trans('listing.bulk-actions') }}</a17-button>
 
-            <div slot="dropdown__content">
-              <ul>
-                <li>
-                  <button v-if="bulkPublishable()" @click="bulkPublish">{{ $trans('listing.dropdown.publish') }}</button>
-                  <button v-if="bulkPublishable(true)" @click="bulkUnpublish">{{ $trans('listing.dropdown.unpublish') }}</button>
-                  <button v-if="bulkFeaturable()" @click="bulkFeature">{{ $trans('listing.dropdown.feature') }}</button>
-                  <button v-if="bulkFeaturable(true)" @click="bulkUnFeature">{{ $trans('listing.dropdown.unfeature') }}</button>
-                  <button v-if="bulkDeletable()" @click="bulkDelete">{{ $trans('listing.dropdown.delete') }}</button>
-                  <button v-if="bulkRestorable()" @click="bulkRestore">{{ $trans('listing.dropdown.restore') }}</button>
-                  <button v-if="bulkDestroyable()" @click="bulkDestroy">{{ $trans('listing.dropdown.destroy') }}</button>
-                </li>
-              </ul>
-            </div>
+            <template v-slot:dropdown__content>
+              <div>
+                <ul>
+                  <li>
+                    <button v-if="bulkPublishable()" @click="bulkPublish">{{ $trans('listing.dropdown.publish') }}</button>
+                    <button v-if="bulkPublishable(true)" @click="bulkUnpublish">{{ $trans('listing.dropdown.unpublish') }}</button>
+                    <button v-if="bulkFeaturable()" @click="bulkFeature">{{ $trans('listing.dropdown.feature') }}</button>
+                    <button v-if="bulkFeaturable(true)" @click="bulkUnFeature">{{ $trans('listing.dropdown.unfeature') }}</button>
+                    <button v-if="bulkDeletable()" @click="bulkDelete">{{ $trans('listing.dropdown.delete') }}</button>
+                    <button v-if="bulkRestorable()" @click="bulkRestore">{{ $trans('listing.dropdown.restore') }}</button>
+                    <button v-if="bulkDestroyable()" @click="bulkDestroy">{{ $trans('listing.dropdown.destroy') }}</button>
+                  </li>
+                </ul>
+              </div>
+            </template>
           </a17-dropdown>
         </div>
         <a17-button variant="ghost" @click="clearBulkSelect">{{ $trans('listing.bulk-clear') }}</a17-button>

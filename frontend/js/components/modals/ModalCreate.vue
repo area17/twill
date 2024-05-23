@@ -29,6 +29,7 @@
   export default {
     name: 'A17ModalCreate',
     mixins: [retrySubmitMixin],
+    emits: ['reload'],
     props: {
       formCreate: {
         type: String,
@@ -37,13 +38,13 @@
       publishedLabel: {
         type: String,
         default () {
-          return this.$trans('main.published', 'Live')
+          return window.$trans('main.published', 'Live')
         }
       },
       draftLabel: {
         type: String,
         default () {
-          return this.$trans('main.draft', 'Draft')
+          return window.$trans('main.draft', 'Draft')
         }
       }
     },

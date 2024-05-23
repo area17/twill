@@ -40,13 +40,15 @@
         <div class="buckets__container col--even">
           <a17-fieldset v-for="(bucket, index) in buckets" :class="'buckets__fieldset buckets__fieldset--'+(index+1)"
                         :key="bucket.id" :name="'bucket_'+bucket.id" :activeToggle="false">
-            <h3 slot="header" class="buckets__fieldset__header">
-              <span><span v-if="buckets.length > 1"
-                          class="buckets__number">{{ (index + 1) }}</span> {{ bucket.name }}</span> <span
-              class="buckets__size-infos">{{ bucket.children.length }} / {{ bucket.max }}</span>
-            </h3>
+            <template v-slot:header>
+              <h3 class="buckets__fieldset__header">
+                <span><span v-if="buckets.length > 1"
+                            class="buckets__number">{{ (index + 1) }}</span> {{ bucket.name }}</span> <span
+                class="buckets__size-infos">{{ bucket.children.length }} / {{ bucket.max }}</span>
+              </h3>
+            </template>
             <draggable v-if="bucket.children.length > 0" class="buckets__list buckets__draggable" v-bind="dragOptions"
-                       @change="sortBucket($event, index)" :value="bucket.children" :tag="'table'">
+                       @change="sortBucket($event, index)" :model-value="bucket.children" :tag="'table'">
               <transition-group name="fade_scale_list" tag='tbody'>
                 <a17-bucket-item v-for="(child, index) in bucket.children" :key="`${child.id}_${index}`" :item="child"
                                  :restricted="restricted" :draggable="bucket.children.length > 1"
@@ -77,7 +79,7 @@
 </template>
 
 <script>
-  import draggable from 'vuedraggable'
+  import { VueDraggableNext } from 'vue-draggable-next'
   import { mapGetters,mapState } from 'vuex'
 
   import Fieldset from '@/components/Fieldset.vue'
@@ -130,7 +132,7 @@
       'a17-paginate': Paginate,
       'a17-filter': Filter,
       'a17-vselect': VSelect,
-      draggable
+      draggable: VueDraggableNext
     },
     data: function () {
       return {

@@ -1,7 +1,11 @@
 <template>
   <a17-accordion :open="open" @toggleVisibility="notifyOpen">
-    <span slot="accordion__title"><slot></slot></span>
-    <div slot="accordion__value" v-html="currentLabel"></div>
+    <template v-slot:accordion__title>
+      <span><slot></slot></span>
+    </template>
+    <template v-slot:accordion__value>
+      <div v-html="currentLabel"></div>
+    </template>
     <div class="accordion__fields">
       <a17-select name="parent_id" :options="options" :selected="currentValue" size="small" @change="updateSelected"></a17-select>
     </div>
@@ -18,6 +22,7 @@
 
   export default {
     name: 'A17Parents',
+    emits: ['open'],
     components: {
       'a17-accordion': a17Accordion
     },

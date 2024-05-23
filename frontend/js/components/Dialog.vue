@@ -18,19 +18,19 @@
       modalTitle: {
         type: String,
         default: function () {
-          return this.$trans('dialog.title')
+          return window.$trans('dialog.title')
         }
       },
       confirmLabel: {
         type: String,
         default: function () {
-          return this.$trans('dialog.ok')
+          return window.$trans('dialog.ok')
         }
       },
       cancelLabel: {
         type: String,
         default: function () {
-          return this.$trans('dialog.cancel')
+          return window.$trans('dialog.cancel')
         }
       }
     },

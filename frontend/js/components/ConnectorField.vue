@@ -83,7 +83,7 @@
       toggleVisibility: function (value) {
 
         if (this.$refs.fieldContainer) {
-          this.$slots.default.forEach((child) => {
+          this.$slots.default().forEach((child) => {
             // Base input fields.
             if (
               child.componentInstance !== undefined &&
@@ -100,7 +100,7 @@
               child.componentInstance.$slots !== undefined &&
               child.componentInstance.$slots.default !== undefined
             ) {
-              child.componentInstance.$slots.default.forEach((subChild) => {
+              child.componentInstance.$slots.default().forEach((subChild) => {
                 if (subChild.componentInstance && subChild.componentInstance.destroyValue) {
                   subChild.componentInstance.destroyValue()
                 }

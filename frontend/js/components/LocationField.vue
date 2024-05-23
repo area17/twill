@@ -48,6 +48,7 @@
 
   export default {
     name: 'A17Locationfield',
+    emits: ['focus'],
     mixins: [InputMixin, InputframeMixin, LocaleMixin, FormStoreMixin],
     props: {
       type: {
@@ -327,9 +328,11 @@
               if (results[1]) {
                 self.address = results[1].formatted_address
               } else {
+                // eslint-disable-next-line no-console
                 console.error('Geocoding - No results found')
               }
             } else {
+              // eslint-disable-next-line no-console
               console.error('Geocoding - Geocoder failed due to: ' + status)
             }
           })
@@ -354,7 +357,7 @@
           })
       }
     },
-    beforeDestroy: function () {
+    beforeUnmount: function () {
       if (typeof google !== 'undefined') google.maps.event.clearListeners(this.autocompletePlace, 'place_changed', this.onPlaceChanged)
     }
   }

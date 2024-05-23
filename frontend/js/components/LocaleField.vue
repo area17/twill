@@ -4,9 +4,9 @@
       <div class="locale__item" v-for="language in languages" :key="language.value">
         <component
             v-bind:is="`${type}`"
+            v-bind="attributesPerLang(language.value)"
             v-if="language.value === currentLocale.value || isCustomForm || keepInDom"
             :data-lang="language.value"
-            v-bind="attributesPerLang(language.value)"
             :name="`${attributes.name}[${language.value}]`"
             :fieldName="attributes.name"
             :locale="language"
@@ -22,9 +22,9 @@
     </template>
     <template v-else>
       <component v-bind:is="`${type}`"
+                 v-bind="attributesNoLang()"
                  :name="attributes.name"
                  ref="field"
-                 v-bind="attributesNoLang()"
                  @change="updateValue(false, ...arguments)"
                  @blur="$emit('blur')"
                  @focus="$emit('focus')"
@@ -43,6 +43,7 @@
 
   export default {
     name: 'A17Locale',
+    emits: ['blur', 'focus', 'localize', 'change'],
     props: {
       type: {
         type: String,
@@ -66,8 +67,8 @@
       },
       isRequired: {
         type: Boolean,
-        default: function () {
-          return this.attributes.required || false
+        default: function (props) {
+          return props.attributes.required || false
         }
       }
     },

@@ -1,4 +1,5 @@
 export default {
+  emits: ['add-to-bucket'],
   props: {
     buckets: {
       type: Array,

@@ -11,18 +11,20 @@
             <a17-dropdown ref="previewRevisionsDropdown" position="bottom-left" :maxWidth="400" :maxHeight="300">
               <a17-button class="previewer__trigger" @click="$refs.previewRevisionsDropdown.toggle()">
                 <template v-if="activeRevision" >
-                  {{ currentRevision.datetime | formatDate }} ({{ currentRevision.author }}) <span v-svg symbol="dropdown_module"></span>
+                  {{ formatDate(currentRevision.datetime) }} ({{ currentRevision.author }}) <span v-svg symbol="dropdown_module"></span>
                 </template>
                 <template v-else>
                   {{ $trans('previewer.last-edit') }} <timeago :auto-update="1" :datetime="new Date(revisions[0].datetime)"></timeago> <span v-svg symbol="dropdown_module"></span>
                 </template>
               </a17-button>
-              <div slot="dropdown__content">
-                <button type="button" class="previewerRevision" :class="{ 'previewerRevision--active' : currentRevision.id === revision.id }" @click="toggleRevision(revision.id)" v-for="revision in revisions"  :key="revision.id">
-                  <span class="previewerRevision__author">{{ revision.author }}</span>
-                  <span class="previewerRevision__datetime"><span class="tag" v-if="revision.label">{{ revision.label }}</span> {{ revision.datetime | formatDate }}</span>
-                </button>
-              </div>
+              <template v-slot:dropdown__content>
+                <div>
+                  <button type="button" class="previewerRevision" :class="{ 'previewerRevision--active' : currentRevision.id === revision.id }" @click="toggleRevision(revision.id)" v-for="revision in revisions"  :key="revision.id">
+                    <span class="previewerRevision__author">{{ revision.author }}</span>
+                    <span class="previewerRevision__datetime"><span class="tag" v-if="revision.label">{{ revision.label }}</span> {{ formatDate(revision.datetime) }}</span>
+                  </button>
+                </div>
+              </template>
             </a17-dropdown>
           </div>
 
@@ -63,7 +65,7 @@
   import A17PreviewerFrame from '@/components/PreviewerFrame.vue'
   import ACTIONS from '@/store/actions'
   import { FORM, NOTIFICATION,REVISION } from '@/store/mutations'
-  import a17VueFilters from '@/utils/filters.js'
+  import { formatDate } from '@/utils/filters.js'
 
   export default {
     name: 'A17Previewer',
@@ -98,7 +100,6 @@
         ]
       }
     },
-    filters: a17VueFilters,
     computed: {
       activeRevision: function () {
         return Object.keys(this.currentRevision).length
@@ -114,6 +115,7 @@
       })
     },
     methods: {
+      formatDate,
       open: function (previewId = 0) {
         const self = this
         const desktopWidth = this.breakpoints.find(item => item.name === 'preview-desktop').size

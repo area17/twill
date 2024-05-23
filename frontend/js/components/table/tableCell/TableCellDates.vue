@@ -4,8 +4,8 @@
     <span v-if="formatDateLabel.length > 0"
           class="tablecell__datePub"
           :class="{ 's--expired' : formatDateLabel === textExpired }">
-      {{ startDate | formatDatatableDate }}
-      <template v-if="endDate">- {{ endDate | formatDatatableDate }}</template>
+      {{ formatDatatableDate(startDate) }}
+      <template v-if="endDate">- {{ formatDatatableDate(endDate) }}</template>
       <br>
       <span>{{ formatDateLabel }}</span>
     </span>
@@ -14,17 +14,17 @@
         —
       </template>
       <template v-else>
-      {{ startDate | formatDatatableDate }}
+      {{ formatDatatableDate(startDate) }}
       </template>
     </span>
   </span>
 </template>
 
 <script>
-  import compareAsc from 'date-fns/compare_asc'
+  import { compareAsc } from 'date-fns'
 
   import TableCellMixin from '@/mixins/tableCell'
-  import a17VueFilters from '@/utils/filters.js'
+  import { formatDatatableDate } from '@/utils/filters.js'
 
   export default {
     name: 'A17TableCellDates',
@@ -53,7 +53,9 @@
         return this.row.hasOwnProperty('publish_end_date') ? this.row.publish_end_date : ''
       }
     },
-    filters: a17VueFilters
+    methods: {
+      formatDatatableDate
+    }
   }
 </script>
 

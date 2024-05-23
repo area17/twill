@@ -25,6 +25,7 @@
 
   export default {
     name: 'A17Modal',
+    emits: ['open', 'close', 'esc-key'],
     props: {
       title: {
         type: String,
@@ -162,7 +163,7 @@
         }
       }
     },
-    beforeDestroy: function () {
+    beforeUnmount: function () {
       if (this.$el.parentNode) {
         if (this.active) this.unbindKeyboard()
         this.$el.parentNode.removeChild(this.$el)

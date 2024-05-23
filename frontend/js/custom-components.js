@@ -1,17 +1,16 @@
-import Vue from 'vue'
 import BlockMixin from '@/mixins/block'
 
 // Blocks
-const registerBlockComponent = (name, component) => {
-  return !Vue.options.components[name]
-    ? Vue.component(name, component)
+const registerBlockComponent = (app, name, component) => {
+  return !app.component(name)
+    ? app.component(name, component)
     : false
 }
 
-const registerCustomComponents = () => {
+const registerCustomComponents = (app) => {
   if (typeof window[process.env.VUE_APP_NAME].TWILL_BLOCKS_COMPONENTS !== 'undefined') {
     window[process.env.VUE_APP_NAME].TWILL_BLOCKS_COMPONENTS.map(componentName => {
-      return registerBlockComponent(componentName, {
+      return registerBlockComponent(app, componentName, {
         template: '#' + componentName,
         mixins: [BlockMixin]
       })
@@ -24,13 +23,13 @@ const registerCustomComponents = () => {
   const importedCustomBlocks = require.context('@/components/blocks/customs/', false, /\.(js|vue)$/i)
   importedCustomBlocks.keys().map(block => {
     const componentName = extractComponentNameFromContextKey(block.replace(/customs\//, ''))
-    return registerBlockComponent(componentName, importedCustomBlocks(block).default)
+    return registerBlockComponent(app, componentName, importedCustomBlocks(block).default)
   })
 
   const importedTwillBlocks = require.context('@/components/blocks/', false, /\.(js|vue)$/i)
   importedTwillBlocks.keys().map(block => {
     const componentName = extractComponentNameFromContextKey(block)
-    return registerBlockComponent(componentName, importedTwillBlocks(block).default)
+    return registerBlockComponent(app, componentName, importedTwillBlocks(block).default)
   })
 
   // Custom form components
@@ -38,14 +37,14 @@ const registerCustomComponents = () => {
   importedComponents.keys().map(block => {
     // eslint-disable-next-line
     const componentName = extractComponentNameFromContextKey(block)
-    return Vue.component(componentName, importedComponents(block).default)
+    return app.component(componentName, importedComponents(block).default)
   })
 
   // Vendor form components
   const importedVendorComponents = require.context('@/components/customs-vendor/', true, /\.(js|vue)$/i)
   importedVendorComponents.keys().map(block => {
     const componentName = extractComponentNameFromContextKey(block)
-    return Vue.component(componentName, importedVendorComponents(block).default)
+    return app.component(componentName, importedVendorComponents(block).default)
   })
 }
 

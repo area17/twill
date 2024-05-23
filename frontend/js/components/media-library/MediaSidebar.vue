@@ -12,7 +12,7 @@
           <img v-if="isImage" :src="firstMedia.thumbnail" class="mediasidebar__img" :alt="firstMedia.original"/>
           <p class="mediasidebar__name">{{ firstMedia.name }}</p>
           <ul class="mediasidebar__metadatas">
-            <li class="f--small" v-if="firstMedia.size" >File size: {{ firstMedia.size | uppercase }}</li>
+            <li class="f--small" v-if="firstMedia.size" >File size: {{ uppercase(firstMedia.size) }}</li>
             <li class="f--small" v-if="isImage && (firstMedia.width + firstMedia.height)">
               {{ $trans('media-library.sidebar.dimensions', 'Dimensions') }}: {{ firstMedia.width }} &times; {{ firstMedia.height }}
             </li>
@@ -142,11 +142,12 @@
   import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
   import api from '@/store/api/media-library'
   import { NOTIFICATION } from '@/store/mutations'
-  import a17VueFilters from '@/utils/filters.js'
+  import { uppercase } from '@/utils/filters.js'
   import FormDataAsObj from '@/utils/formDataAsObj.js'
 
   export default {
     name: 'A17MediaSidebar',
+    emits: ['triggerMediaReplace', 'delete', 'clear', 'tagUpdated'],
     components: {
       'a17-mediasidebar-upload': a17MediaSidebarUpload,
       'a17-langswitcher': a17Langswitcher
@@ -184,7 +185,6 @@
         fieldsRemovedFromBulkEditing: []
       }
     },
-    filters: a17VueFilters,
     watch: {
       medias: function () {
         this.fieldsRemovedFromBulkEditing = []
@@ -279,6 +279,7 @@
       })
     },
     methods: {
+      uppercase,
       replaceMedia: function () {
         // Open confirm dialog if any
         if (this.$root.$refs.replaceWarningMediaLibrary) {

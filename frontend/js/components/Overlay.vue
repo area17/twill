@@ -26,6 +26,7 @@
 
   export default {
     name: 'A17Overlay',
+    emits: ['open', 'close', 'esc-key'],
     props: {
       title: {
         type: String,
@@ -34,7 +35,7 @@
       revisionTitle: {
         type: String,
         default: function () {
-          return this.$trans('previewer.revision-history')
+          return window.$trans('previewer.revision-history')
         }
       },
       forceClose: {
@@ -130,7 +131,7 @@
         }
       }
     },
-    beforeDestroy: function () {
+    beforeUnmount: function () {
       if (this.$el.parentNode) {
         if (this.active) window.removeEventListener('keyup', this.keyPressed)
         this.$el.parentNode.removeChild(this.$el)

@@ -15,6 +15,7 @@
 <script>
   export default {
     name: 'A17Table',
+    emits: ['scroll'],
     props: {
       xScroll: {
         type: Number,

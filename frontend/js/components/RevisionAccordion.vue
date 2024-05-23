@@ -1,7 +1,11 @@
 <template>
   <a17-accordion :open="open" @toggleVisibility="notifyOpen">
-    <span slot="accordion__title"><slot></slot> <span class="f--small f--note">({{ revisions.length }})</span></span>
-    <div slot="accordion__value">{{ $trans('publisher.last-edit') }} <timeago :auto-update="1" :datetime="new Date(revisions[0].datetime)"></timeago></div>
+    <template v-slot:accordion__title>
+      <span><slot></slot> <span class="f--small f--note">({{ revisions.length }})</span></span>
+    </template>
+    <template v-slot:accordion__value>
+      <div>{{ $trans('publisher.last-edit') }} <timeago :auto-update="1" :datetime="new Date(revisions[0].datetime)"></timeago></div>
+    </template>
     <div class="revaccordion__scroller">
       <ul class="revaccordion__list">
         <li class="revaccordion__item" v-for="revision in revisions" :key="revision.id">
@@ -9,7 +13,7 @@
             <span class="revaccordion__author">{{ revision.author }}</span>
             <span class="revaccordion__datetime">
               <span class="tag" v-if="revision.label">{{  revision.label }}</span>
-              {{ revision.datetime | formatDate }}
+              {{ formatDate(revision.datetime) }}
             </span>
           </a>
         </li>
@@ -21,10 +25,11 @@
 <script>
   import a17Accordion from '@/components/Accordion.vue'
   import VisibilityMixin from '@/mixins/toggleVisibility'
-  import a17VueFilters from '@/utils/filters.js'
+  import { formatDate } from '@/utils/filters.js'
 
   export default {
     name: 'A17Revisions',
+    emits: ['open'],
     components: {
       'a17-accordion': a17Accordion
     },
@@ -36,8 +41,8 @@
         }
       }
     },
-    filters: a17VueFilters,
     methods: {
+      formatDate,
       notifyOpen: function (newValue) {
         this.$emit('open', newValue, this.$options.name)
       },

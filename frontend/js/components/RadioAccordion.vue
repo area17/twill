@@ -1,7 +1,11 @@
 <template>
   <a17-accordion :open="open" @toggleVisibility="notifyOpen">
-    <span slot="accordion__title"><slot></slot></span>
-    <div slot="accordion__value">{{ currentLabel }}</div>
+    <template v-slot:accordion__title>
+      <span><slot></slot></span>
+    </template>
+    <template v-slot:accordion__value>
+      <div>{{ currentLabel }}</div>
+    </template>
     <a17-radiogroup :name="name" :radios="radios" @change="changeValue" :initialValue="currentValue"></a17-radiogroup>
   </a17-accordion>
 </template>
@@ -17,6 +21,7 @@
       'a17-accordion': a17Accordion
     },
     mixins: [VisibilityMixin],
+    emits: ['change', 'open'],
     props: {
       value: {
         default: ''

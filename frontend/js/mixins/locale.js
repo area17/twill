@@ -1,6 +1,7 @@
 import { mapState } from 'vuex'
 
 export default {
+  emits: ['localize'],
   props: {
     locale: {
       default: null

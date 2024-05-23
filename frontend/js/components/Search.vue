@@ -67,7 +67,7 @@
       placeholder: {
         type: String,
         default () {
-          return this.$trans('dashboard.search-placeholder', 'Search everything…')
+          return window.$trans('dashboard.search-placeholder', 'Search everything…')
         }
       },
       endpoint: {

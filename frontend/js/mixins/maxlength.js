@@ -1,4 +1,5 @@
 export default {
+  emits: ['localize'],
   props: {
     maxlength: {
       type: Number,
