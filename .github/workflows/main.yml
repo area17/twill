@@ -68,8 +68,6 @@ jobs:
         php: [8.3, 8.2, 8.1, 8.0]
         laravel: [9.*, 10.*, 11.*]
         exclude:
-          - laravel: 9.*
-            php: 8.0
           - laravel: 10.*
             php: 8.0
           - laravel: 11.*
@@ -122,6 +120,15 @@ jobs:
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:^3.0" --no-interaction --no-update
           composer install --prefer-dist --no-interaction --no-plugins
+
+      - name: Patch TestCase files for PHP < 8.1
+        run: |
+          if php -r 'exit(version_compare(PHP_VERSION, "8.1.0", "<") ? 0 : 1);'; then
+            for file in tests/integration/TestCase.php tests/Browser/BrowserTestCase.php; do
+              sed -i 's/protected function onNotSuccessfulTest(Throwable \$t): never/protected function onNotSuccessfulTest(Throwable \$t): void/' "$file";
+              echo "Patched $file for PHP < 8.1";
+            done
+          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v1
