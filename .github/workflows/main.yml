@@ -157,6 +157,11 @@ jobs:
       - name: Prepare Testbench Dusk
         run: ./vendor/bin/testbench-dusk package:discover
 
+      - name: Set PHPUnit config for Laravel 9
+        if: matrix.laravel == '9.*'
+        run: |
+          cp phpunit-legacy.xml phpunit.xml
+
       - name: Execute all tests
         run: vendor/bin/phpunit --stop-on-error
         env:
