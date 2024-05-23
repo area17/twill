@@ -9,7 +9,6 @@ use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
 use App\Providers\AppServiceProvider;
 use Carbon\Carbon;
-use Composer\Autoload\ClassLoader;
 use Facebook\WebDriver\Remote\RemoteWebDriver;
 use Facebook\WebDriver\WebDriverDimension;
 use Illuminate\Support\Facades\DB;
