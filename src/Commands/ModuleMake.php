@@ -386,8 +386,8 @@ class ModuleMake extends Command
         $newEntry = <<<PHP
 'capsules' => [
     'list' => [
+        ...
         [
-            ...
             
             'name' => '$name',
             'enabled' => true,
