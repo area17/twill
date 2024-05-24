@@ -9,7 +9,6 @@ use A17\Twill\Helpers\FlashLevel;
 use A17\Twill\Models\Behaviors\HasSlug;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Contracts\TwillSchedulableModel;
-use A17\Twill\Models\Group;
 use A17\Twill\Repositories\ModuleRepository;
 use A17\Twill\Services\Breadcrumbs\Breadcrumbs;
 use A17\Twill\Services\Forms\Fields\BaseFormField;
@@ -919,6 +918,7 @@ abstract class ModuleController extends Controller
                         ->sortKey($indexColumn['sortKey'] ?? null)
                         ->optional($indexColumn['optional'] ?? false)
                         ->relation($indexColumn['relationship'])
+                        ->sortable($indexColumn['sort'] ?? false)
                 );
             } elseif ($indexColumn['present'] ?? false) {
                 $columns->add(
@@ -1937,7 +1937,7 @@ abstract class ModuleController extends Controller
                         BasicFilter::make()
                             ->queryString($queryString)
                             ->options($value)
-                            ->apply(function (Builder $builder, int $value) use ($filterKey) {
+                            ->apply(function (Builder $builder, mixed $value) use ($filterKey) {
                                 $builder->where($filterKey, '=', $value);
                             })
                     );
@@ -2418,17 +2418,18 @@ abstract class ModuleController extends Controller
         foreach ($moduleParts as $index => $name) {
             if (array_key_last($moduleParts) !== $index) {
                 $singularName = Str::singular($name);
-                $modelClass = config('twill.namespace') . '\\Models\\' . Str::studly($singularName);
+                $modelName = Str::studly($singularName);
+                $modelClass = config('twill.namespace') . '\\Models\\' . $modelName;
 
                 if (! @class_exists($modelClass)) {
                     // First try to construct it based on the last.
                     $modelClass = config('twill.namespace') .
                         '\\Models\\' .
-                        implode('', array_merge($prev + [99 => Str::studly($singularName)]));
+                        implode('', array_merge($prev, [$modelName]));
 
                     // Last option is to search for a capsule model.
                     if (! class_exists($modelClass)) {
-                        $modelClass = TwillCapsules::getCapsuleForModel($name)->getModel();
+                        $modelClass = TwillCapsules::getCapsuleForModel($modelName)->getModel();
                     }
                 }
 
@@ -2437,7 +2438,7 @@ abstract class ModuleController extends Controller
 
                 $base .= $name . '/' . ($hasSlug ? $model->slug : $model->id) . '/';
 
-                $prev[] = Str::studly($singularName);
+                $prev[] = $modelName;
             } else {
                 $base .= $name;
             }
@@ -2673,7 +2674,7 @@ abstract class ModuleController extends Controller
     protected function getGroupUserMapping()
     {
         if (config('twill.enabled.permissions-management')) {
-            return Group::with('users')->get()
+            return twillModel('group')::with('users')->get()
                 ->mapWithKeys(function ($group) {
                     return [$group->id => $group->users()->pluck('id')->toArray()];
                 })->toArray();

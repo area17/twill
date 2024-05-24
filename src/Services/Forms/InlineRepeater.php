@@ -27,6 +27,9 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         private ?bool $allowBrowse = false,
         private ?array $browser = null,
         private ?int $max = null,
+        private ?string $titleField = null,
+        private ?bool $hideTitlePrefix = false,
+        protected ?array $connectedTo = null,
     ) {
     }
 
@@ -40,6 +43,20 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
     public function selectTriggerText(string $selectTrigger): static
     {
         $this->selectTrigger = $selectTrigger;
+
+        return $this;
+    }
+
+    public function titleField(string $field): static
+    {
+        $this->titleField = $field;
+
+        return $this;
+    }
+
+    public function hideTitlePrefix(bool $hide = true): static
+    {
+        $this->hideTitlePrefix = $hide;
 
         return $this;
     }
@@ -160,6 +177,8 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         $repeaterBlock->trigger = $this->trigger ?? 'Add ' . $this->label;
         $repeaterBlock->selectTrigger = $this->selectTrigger ?? 'Select ' . $this->label;
         $repeaterBlock->group = 'dynamic';
+        $repeaterBlock->titleField = $this->titleField;
+        $repeaterBlock->hideTitlePrefix = $this->hideTitlePrefix;
 
         return $repeaterBlock;
     }
@@ -184,6 +203,9 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         if ($this->max) {
             $repeater->max($this->max);
         }
+        if ($this->connectedTo) {
+            $repeater->connectedTo($this->connectedTo['fieldName'], $this->connectedTo['fieldValues'], $this->connectedTo);
+        }
 
         $repeater->renderForBlocks = $this->renderForBlocks ?? false;
         return $repeater->render();
@@ -199,5 +221,17 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
                 $field->registerDynamicRepeaters();
             }
         }
+    }
+
+
+    public function connectedTo(string $fieldName, mixed $fieldValues, array $options = []): static
+    {
+        $this->connectedTo = [
+            'fieldName' => $fieldName,
+            'fieldValues' => $fieldValues,
+            ...$options,
+        ];
+
+        return $this;
     }
 }

@@ -374,9 +374,8 @@ abstract class ModuleRepository
                 $query = $this->model->onlyTrashed()->whereIn('id', $ids);
                 $objects = $query->get();
 
-                $query->forceDelete();
-
                 $objects->each(function ($object) {
+                    $object->forceDelete();
                     $this->afterDelete($object);
                 });
             } catch (Exception $exception) {
@@ -633,7 +632,46 @@ abstract class ModuleRepository
 
     public function updateMultiSelect(TwillModelContract $object, array $fields, string $relationship): void
     {
-        $object->$relationship()->sync($fields[$relationship] ?? []);
+        // get the current list of items
+        $items = $fields[$relationship];
+
+        if (blank($items)) {
+            // let's just delete all the items
+            $object->$relationship()->sync([]);
+
+            return;
+        }
+
+        $newItems = [];
+
+        $position = 1;
+
+        foreach ($items as $key => $item) {
+            if (is_numeric($item)) {
+                // if it's not an array of pivot fields already, set the position
+                $newItems[$item] = ['position' => $position];
+            } else {
+                if (is_array($item)) {
+                    // if it's an array of pivot fields and no position is set, set the position
+                    if (!isset($item['position'])) {
+                        $item['position'] = $position;
+                    }
+                }
+
+                // go with whatever we have from the request
+                $newItems[$key] = $item;
+            }
+
+            $position++;
+        }
+
+        try {
+            $object->$relationship()->sync($newItems);
+        } catch (\Throwable $e) {
+            // If an error occurs, maybe because the pivot table doesn't have the 'position' column,
+            // we will just keep the old implementation
+            $object->$relationship()->sync($fields[$relationship]);
+        }
     }
 
     public function addRelationFilterScope(

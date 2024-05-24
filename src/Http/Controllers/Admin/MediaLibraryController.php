@@ -234,8 +234,10 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
      */
     public function singleUpdate()
     {
+        $id = $this->request->input('id');
+
         $this->repository->update(
-            $this->request->input('id'),
+            $id,
             array_merge([
                 'alt_text' => $this->request->get('alt_text', null),
                 'caption' => $this->request->get('caption', null),
@@ -243,7 +245,10 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             ], $this->getExtraMetadatas()->toArray())
         );
 
+        $items = $this->getIndexItems(['id' => $id]);
+
         return $this->responseFactory->json([
+            'item' => $items->first()->toCmsArray(),
             'tags' => $this->repository->getTagsList(),
         ], 200);
     }

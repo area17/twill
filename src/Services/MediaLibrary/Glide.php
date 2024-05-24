@@ -2,13 +2,15 @@
 
 namespace A17\Twill\Services\MediaLibrary;
 
+use Carbon\Carbon;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use League\Glide\Responses\LaravelResponseFactory;
+use League\Flysystem\Filesystem;
+use League\Glide\Responses\SymfonyResponseFactory;
 use League\Glide\ServerFactory;
 use League\Glide\Signatures\SignatureFactory;
 use League\Glide\Urls\UrlBuilderFactory;
@@ -66,11 +68,29 @@ class Glide implements ImageServiceInterface
             $baseUrl = $this->request->getScheme() . '://' . $baseUrl;
         }
 
+        $sourceFileSystem = $this->config->get('twill.glide.source');
+        $cacheFileSystem = $this->config->get('twill.glide.cache');
+
+        if (
+            $this->config->get('twill.glide.use_source_disk', false) ||
+            $this->config->get('twill.glide.use_cache_disk', false)
+        ) {
+            if ($this->config->get('twill.glide.use_source_disk', false)) {
+                $sourceDiskInstance = Storage::disk($this->config->get('twill.glide.source_disk'));
+                $sourceFileSystem = new Filesystem($sourceDiskInstance->getAdapter());
+            }
+
+            if ($this->config->get('twill.glide.use_cache_disk', false)) {
+                $cacheDiskInstance = Storage::disk($this->config->get('twill.glide.cache_disk'));
+                $cacheFileSystem = new Filesystem($cacheDiskInstance->getAdapter());
+            }
+        }
+
         $this->server = ServerFactory::create([
-            'response' => new LaravelResponseFactory($this->request),
-            'source' => $this->config->get('twill.glide.source'),
+            'response' => new SymfonyResponseFactory($this->request),
+            'source' => $sourceFileSystem,
             'source_path_prefix' => $this->config->get('twill.glide.source_path_prefix'),
-            'cache' => $this->config->get('twill.glide.cache'),
+            'cache' => $cacheFileSystem,
             'cache_path_prefix' => $this->config->get('twill.glide.cache_path_prefix'),
             'base_url' => $baseUrl,
             'presets' => $this->config->get('twill.glide.presets', []),
@@ -103,6 +123,12 @@ class Glide implements ImageServiceInterface
     public function getUrl($id, array $params = [])
     {
         $defaultParams = config('twill.glide.default_params');
+
+        $keepTransparency = config('twill.glide.keep_transparency', false);
+
+        if ($keepTransparency && Str::endsWith($id, ['.png', '.gif'])) {
+            $defaultParams['fm'] = null;
+        }
 
         return $this->getOriginalMediaUrl($id) ??
             $this->urlBuilder->getUrl($id, array_replace($defaultParams, $params));
@@ -264,7 +290,7 @@ class Glide implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @return string
+     * @return ?string
      */
     private function getOriginalMediaUrl($id)
     {
@@ -275,6 +301,24 @@ class Glide implements ImageServiceInterface
             return null;
         }
 
-        return Storage::disk(config('twill.media_library.disk'))->url($id);
+        if ($this->config->get('twill.glide.use_streamed_response_for_original_media', false)) {
+            return $this->urlBuilder->getUrl($id);
+        }
+
+        if (
+            $this->config->get('twill.glide.use_source_disk', false) &&
+            $this->config->get('twill.glide.use_temporary_url_for_original_media', false)
+        ) {
+            if (Storage::disk(config('twill.glide.source_disk'))->providesTemporaryUrls()) {
+                return Storage::disk(config('twill.glide.source_disk'))->temporaryUrl(
+                    $id,
+                    Carbon::now()->addSeconds($this->config->get('twill.glide.temporary_url_expiration', 3600))
+                );
+            }
+
+            return Storage::disk($this->config->get('twill.glide.source_disk'))->url($id);
+        }
+
+        return Storage::disk($this->config->get('twill.media_library.disk'))->url($id);
     }
 }

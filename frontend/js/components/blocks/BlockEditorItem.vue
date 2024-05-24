@@ -176,7 +176,7 @@
 <style lang="scss" scoped>
   .block__content {
     display: none;
-    padding: 15px;
+    padding: 25px 15px 15px 15px;
     background: $color__background;
   }
 
@@ -220,6 +220,7 @@
     display: inline-block;
     line-height: 25px;
     margin-right: 10px;
+    flex-shrink: 0;
     background: $color__background;
     color: $color__text--light;
     @include monospaced-figures('off'); // dont use monospaced figures here
@@ -330,10 +331,6 @@
     > .browserField {
       margin: -15px;
       border: 0 none;
-    }
-
-    ::v-deep(.input) {
-      margin-top: 15px;
     }
 
     ::v-deep(.block__body) {

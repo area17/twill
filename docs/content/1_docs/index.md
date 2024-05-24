@@ -6,7 +6,7 @@ Twill is an open source Laravel package that helps developers rapidly create a c
 
 Twill is an [AREA 17](https://area17.com) product. It was crafted with the belief that content management should be a creative, productive, and enjoyable experience for both publishers and developers.
 
-![Twill 3.0 logo](assets/twill_cms_three_logo.png)
+![Twill CMS logo](assets/twill_cms_logo.png)
 
 ## Benefits
 

@@ -64,12 +64,6 @@ trait HasRevisions
 
     protected function getRevisionModel(): string
     {
-        $revision = config('twill.namespace') . "\Models\Revisions\\" . class_basename($this) . "Revision";
-
-        if (@class_exists($revision)) {
-            return $revision;
-        }
-
-        return TwillCapsules::getCapsuleForModel(class_basename($this))->getRevisionModel();
+        return TwillCapsules::guessRelatedModelClass('Revision', $this);
     }
 }

@@ -1,5 +1,5 @@
 <p align="center">
-    <a href="https://twillcms.com" target="_blank"><img src="docs/_templates/assets/twill_cms_three_logo_white.png" width="400"></a>
+    <a href="https://twillcms.com" target="_blank"><img src="docs/_templates/assets/twill_cms_logo_white.png" width="400"></a>
 </p>
 <p align="center">
     <img alt="Packagist PHP Version" src="https://img.shields.io/packagist/dependency-v/area17/twill/php">  
@@ -66,6 +66,6 @@ The Twill software is licensed under the [Apache 2.0 license](https://www.apache
 By using the Twill UI, you agree that any application which incorporates it shall prominently display the message “Made with Twill” in a legible manner in the footer of the admin console. This message must open a link to [twillcms.com](https://twillcms.com) when clicked or touched. For permission to remove the attribution, contact us at [hello@twill.io](hello@twill.io).
 
 # Trademark
-Twill and the Twill logo are trademarks of AREA 17. You may not display or invoke the Twill name or logo in a manner that implies a relationship or affiliation with, sponsorship, promotion, or endorsement by Twill or AREA 17, except as authorized by the terms of attribution. 
+Twill CMS and the Twill CMS logo are trademarks of AREA 17. You may not display or invoke the Twill CMS name or logo in a manner that implies a relationship or affiliation with, sponsorship, promotion, or endorsement by Twill CMS or AREA 17, except as authorized by the terms of attribution. 
 
 Copyright © AREA 17

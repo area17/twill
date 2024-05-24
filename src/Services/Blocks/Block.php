@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
+use Illuminate\Container\Container;
 
 class Block
 {
@@ -672,7 +673,8 @@ class Block
         $data['inEditor'] = $inEditor;
 
         $view = $this->getBlockView($blockViewMappings);
-        $data = $this->getData($data, $this->renderData->block);
+
+        $data = Container::getInstance()->call([$this, 'getData'], ['data' => $data, 'block' => $this->renderData->block]);
 
         $data['block'] = $this->renderData->block;
         $data['renderData'] = $this->renderData;
@@ -684,11 +686,15 @@ class Block
         try {
             return view($view, $data)->render();
         } catch (Exception $e) {
+            if (config('twill.strict')) {
+                throw $e;
+            }
             if (config('twill.debug')) {
                 $error = $e->getMessage() . ' in ' . $e->getFile();
 
                 return View::make('twill::errors.block', ['view' => $view, 'error' => $error])->render();
             }
+            report($e);
         }
 
         return '';

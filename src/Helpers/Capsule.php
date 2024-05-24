@@ -101,7 +101,7 @@ class Capsule
     public function loadTranslations(): void
     {
         $callback = function (Translator $translator) {
-            $translator->addNamespace($this->getLanguagesPath(), 'twill:capsules:' . $this->getModule());
+            $translator->addNamespace('twill:capsules:' . $this->getModule(), $this->getLanguagesPath());
         };
 
         App()->afterResolving('translator', $callback);
@@ -109,13 +109,6 @@ class Capsule
         if (app()->resolved('translator')) {
             $callback(App::make('translator'));
         }
-    }
-
-    public function getBasePath(string $path): string
-    {
-        $exploded = explode(DIRECTORY_SEPARATOR, $path);
-
-        return implode(DIRECTORY_SEPARATOR, array_pop($exploded));
     }
 
     public function getModule(): string
@@ -142,7 +135,7 @@ class Capsule
     {
         $explodedNamespace = explode('\\', $this->namespace);
 
-        return implode('\\', array_pop($explodedNamespace));
+        return implode('\\', array_slice($explodedNamespace, 0, -1));
     }
 
     public function getDatabaseNamespace(): string
