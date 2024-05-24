@@ -146,7 +146,7 @@
 
     @stack('vuexStore')
 
-    window['{{config('twill.js_namespace')}}'].STORE.form.allAvailableBlocks = {!! (string)TwillBlocks::getListOfUsedBlocks() ?: '{}' !!}
+    window['{{config('twill.js_namespace')}}'].STORE.form.allAvailableBlocks = {!! (string)\A17\Twill\Facades\TwillBlocks::getListOfUsedBlocks() ?: '{}' !!}
 
 </script>
 <script src="{{ twillAsset('chunk-vendors.js') }}"></script>
