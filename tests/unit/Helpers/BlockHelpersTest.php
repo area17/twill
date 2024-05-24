@@ -7,6 +7,7 @@ use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Forms\Form;
 use A17\Twill\Tests\Unit\TestCase;
 use A17\Twill\View\Components\Blocks\TwillBlockComponent;
+use Illuminate\Support\Once;
 use Spatie\Once\Cache;
 
 class GroupBlock extends TwillBlockComponent {
@@ -100,7 +101,11 @@ class BlockHelpersTest extends TestCase
 
         config(['twill.block_editor.block_rules.order' =>  ['group-block2', AppBlock::class, 'group-block']]);
 
-        Cache::getInstance()->flush();
+        if (class_exists(Once::class)) {
+            Once::flush();
+        } else {
+            Cache::getInstance()->flush();
+        }
 
         $available = TwillBlocks::generateListOfAvailableBlocks()->pluck('componentClass')->filter();
         // Ensure correct order
@@ -108,7 +113,11 @@ class BlockHelpersTest extends TestCase
 
         config(['twill.block_editor.block_rules.disable' =>  ['group-block2', AppBlock::class]]);
 
-        Cache::getInstance()->flush();
+        if (class_exists(Once::class)) {
+            Once::flush();
+        } else {
+            Cache::getInstance()->flush();
+        }
 
         $available = TwillBlocks::generateListOfAvailableBlocks()->pluck('componentClass')->filter();
         $this->assertEquals([GroupBlock::class], $available->all());
