@@ -97,13 +97,6 @@ trait HasTranslation
             ->with('translations');
     }
 
-    /**
-     * @param Builder $query
-     * @param string $translationField
-     * @param $value
-     * @param string|null $locale
-     * @return Builder
-     */
     public function scopeOrWhereTranslationLike(Builder $query, string $translationField, $value, ?string $locale = null): Builder
     {
         return $this->scopeWhereTranslation($query, $translationField, $value, $locale, 'orWhereHas', getLikeOperator());
