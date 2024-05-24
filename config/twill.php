@@ -284,6 +284,14 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | This parameter will throw errors if some error occurs instead of failing
+    | silently (eg. when rendering blocks)
+    |--------------------------------------------------------------------------
+    */
+    'strict' => env('TWILL_STRICT', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Base classes for automatic generation of Modules and Capsules
     |--------------------------------------------------------------------------
     |

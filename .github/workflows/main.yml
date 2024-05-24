@@ -66,15 +66,21 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         php: [8.3, 8.2, 8.1, 8.0]
-        laravel: [9.*, 10.*]
+        laravel: [9.*, 10.*, 11.*]
         exclude:
           - laravel: 10.*
             php: 8.0
+          - laravel: 11.*
+            php: 8.0
+          - laravel: 11.*
+            php: 8.1
         include:
           - laravel: 9.*
             testbench: 7.*
           - laravel: 10.*
             testbench: 8.*
+          - laravel: 11.*
+            testbench: 9.*
 
     steps:
       - name: Set timezone?
@@ -115,6 +121,15 @@ jobs:
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:^3.0" --no-interaction --no-update
           composer install --prefer-dist --no-interaction --no-plugins
 
+      - name: Patch TestCase files for PHP < 8.1
+        run: |
+          if php -r 'exit(version_compare(PHP_VERSION, "8.1.0", "<") ? 0 : 1);'; then
+            for file in tests/integration/TestCase.php tests/Browser/BrowserTestCase.php; do
+              sed -i 's/protected function onNotSuccessfulTest(Throwable \$t): never/protected function onNotSuccessfulTest(Throwable \$t): void/' "$file";
+              echo "Patched $file for PHP < 8.1";
+            done
+          fi
+
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -130,6 +145,8 @@ jobs:
 
       - name: Build twill.
         run: ./vendor/bin/testbench twill:build --forTesting
+        env:
+          CACHE_STORE: array
 
       - name: Upgrade Chrome
         uses: browser-actions/setup-chrome@latest
@@ -137,8 +154,16 @@ jobs:
       - name: Upgrade Chrome Driver
         run: ./vendor/bin/testbench dusk:chrome-driver --detect
 
+      - name: Prepare Testbench Dusk
+        run: ./vendor/bin/testbench-dusk package:discover
+
+      - name: Set PHPUnit config for Laravel 9
+        if: matrix.laravel == '9.*'
+        run: |
+          cp phpunit-legacy.xml phpunit.xml
+
       - name: Execute all tests
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit --stop-on-error
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
 
