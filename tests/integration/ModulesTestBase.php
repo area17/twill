@@ -54,6 +54,7 @@ abstract class ModulesTestBase extends TestCase
     {
         parent::setUp();
 
+        config()->push('twill.block_editor.use_twill_blocks', 'twill-quote');
         $this->actingAs($this->superAdmin, 'twill_users');
     }
 
@@ -200,12 +201,12 @@ abstract class ModulesTestBase extends TestCase
         );
     }
 
-    protected function editAuthor(): void
+    protected function editAuthor(bool $withBlock = false): void
     {
         $this->httpRequestAssert(
             "/twill/personnel/authors/{$this->author->id}",
             'PUT',
-            $this->getUpdateAuthorData()
+            $withBlock ? $this->getUpdateAuthorWithBlock() : $this->getUpdateAuthorData()
         );
 
         $this->assertNothingWrongHappened();
