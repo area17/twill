@@ -172,7 +172,7 @@ return [
     |--------------------------------------------------------------------------
     |
      */
-    'auth_login_redirect_path' => '/',
+    'auth_login_redirect_path' => null,
 
     'templates_on_frontend_domain' => false,
 
