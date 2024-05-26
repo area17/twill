@@ -6,7 +6,9 @@ use App\Models\Author;
 use App\Models\Category;
 use App\Models\Translations\AuthorTranslation;
 use App\Models\Translations\CategoryTranslation;
+use Illuminate\Support\Once;
 use Illuminate\Support\Str;
+use Spatie\Once\Cache;
 
 abstract class ModulesTestBase extends TestCase
 {
@@ -55,6 +57,12 @@ abstract class ModulesTestBase extends TestCase
         parent::setUp();
 
         config()->push('twill.block_editor.use_twill_blocks', 'twill-quote');
+
+        if (class_exists(Once::class)) {
+            Once::flush();
+        } else {
+            Cache::getInstance()->flush();
+        }
         $this->actingAs($this->superAdmin, 'twill_users');
     }
 
