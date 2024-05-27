@@ -17,7 +17,8 @@ export const TableCellSpecificColumns = [
   'published',
   'thumbnail',
   'publish_start_date',
-  'nested'
+  'nested',
+  'scheduled_status'
 ]
 
 export const TableCellPrefix = 'a17-table-cell-'
@@ -43,5 +44,6 @@ export default {
   [TableCellPrefix + 'languages']: TableCellLanguages,
   [TableCellPrefix + 'published']: TableCellPublished,
   [TableCellPrefix + 'nested']: TableCellNested,
-  [TableCellPrefix + 'thumbnail']: TableCellThumbnail
+  [TableCellPrefix + 'thumbnail']: TableCellThumbnail,
+  [TableCellPrefix + 'scheduled_status']: TableCellDates,
 }
