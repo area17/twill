@@ -97,7 +97,7 @@ class BrowserTestCase extends TestCase
         parent::tearDown();
     }
 
-    protected function onNotSuccessfulTest(Throwable $t): void
+    protected function onNotSuccessfulTest(Throwable $t): never
     {
         cleanupTestState(self::applicationBasePath());
         parent::onNotSuccessfulTest($t);
@@ -190,7 +190,7 @@ class BrowserTestCase extends TestCase
 
     protected static function getBasePathStatic(): string
     {
-        return __DIR__ . '/../../vendor/orchestra/testbench-core/laravel';
+        return __DIR__ . '/../../vendor/orchestra/testbench-dusk/laravel';
     }
 
     public static function applicationBasePath(): string
@@ -200,7 +200,7 @@ class BrowserTestCase extends TestCase
 
     protected function getBasePath(): string
     {
-        return __DIR__ . '/../../vendor/orchestra/testbench-core/laravel';
+        return __DIR__ . '/../../vendor/orchestra/testbench-dusk/laravel';
     }
 
     /**
@@ -212,6 +212,7 @@ class BrowserTestCase extends TestCase
     {
         if (DuskOptions::shouldUsesWithoutUI()) {
             DuskOptions::withoutUI();
+            DuskOptions::noSandbox();
         } elseif ($this->hasHeadlessDisabled()) {
             DuskOptions::withUI();
         }
