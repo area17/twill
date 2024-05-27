@@ -37,6 +37,8 @@ class NavigationLink extends Component
     private ?string $module = null;
     private ?string $moduleAction = null;
 
+    private array $moduleNameExceptions = [];
+
     public static function make(): self
     {
         return new self();
@@ -167,7 +169,7 @@ class NavigationLink extends Component
     {
         // There are some exceptions which not convert properly to plural if already in plural mode. If it is one of
         // these, we skip.
-        $exceptions = ['menus'];
+        $exceptions = array_merge(['menus'], $this->moduleNameExceptions);
 
         if (in_array($moduleName, $exceptions)) {
             $routeMatcher = $moduleName;
@@ -266,5 +268,12 @@ class NavigationLink extends Component
             'target_blank' => $this->isTargetBlank(),
             'attributes' => $this->customAttributes,
         ]);
+    }
+
+    public function addModuleNameException(string $exception): self
+    {
+        $this->moduleNameExceptions[] = $exception;
+
+        return $this;
     }
 }
