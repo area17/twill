@@ -42,7 +42,8 @@
     "pragmarx/google2fa-qrcode": "^2.0",
     "spatie/laravel-activitylog": "^4.0",
     "spatie/laravel-analytics": "^4.0 || ^5.0",
-    "spatie/once": "^3.0"
+    "spatie/once": "^3.0",
+    "symfony/deprecation-contracts": "^3"
   },
   "require-dev": {
     "area17/phptorch": "dev-main",
@@ -50,7 +51,7 @@
     "friendsofphp/php-cs-fixer": "^3.0",
     "nette/php-generator": "^4.0.3",
     "nunomaduro/collision": "^6.0 || ^7.0 || ^8.0",
-    "nunomaduro/larastan": "^2.0",
+    "larastan/larastan": "^2.0",
     "orchestra/testbench": "^7.8 || ^8.0 || ^9.0",
     "orchestra/testbench-dusk": "^7.8 || ^8.0 || ^9.0",
     "phpunit/php-invoker": "^3.1 || ^4.0",

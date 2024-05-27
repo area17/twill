@@ -1,6 +1,8 @@
 <?php
 
 use A17\Twill\Models\Contracts\TwillModelContract;
+use A17\Twill\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use A17\Twill\Models\Permission;
 use A17\Twill\Repositories\ModuleRepository;
@@ -10,7 +12,7 @@ use A17\Twill\Exceptions\ModuleNotFoundException;
 use A17\Twill\Exceptions\NoCapsuleFoundException;
 
 if (!function_exists('getAllModules')) {
-    function getAllModules()
+    function getAllModules(): Collection
     {
         $repositories = collect(app(FileSystem::class)->glob(app_path('Repositories') . '/*.php'))->map(function ($repository) {
             $re = "/(?<=Repositories\/).+(?=\.php)/";
@@ -32,7 +34,8 @@ if (!function_exists('getAllModules')) {
 }
 
 if (!function_exists('getModelByModuleName')) {
-    function getModelByModuleName($moduleName)
+    /** @return class-string<TwillModelContract> */
+    function getModelByModuleName(string $moduleName): string
     {
         $model = config('twill.namespace') . '\\Models\\' . Str::studly(Str::singular($moduleName));
 
@@ -49,21 +52,21 @@ if (!function_exists('getModelByModuleName')) {
 }
 
 if (!function_exists('getModuleNameByModel')) {
-    function getModuleNameByModel($model)
+    function getModuleNameByModel($model): string
     {
         return Str::plural(lcfirst(class_basename($model)));
     }
 }
 
 if (!function_exists('getRepositoryByModuleName')) {
-    function getRepositoryByModuleName($moduleName)
+    function getRepositoryByModuleName(string $moduleName): ModuleRepository
     {
         return getModelRepository(class_basename(getModelByModuleName($moduleName)));
     }
 }
 
 if (!function_exists('getModelRepository')) {
-    function getModelRepository($relation, $model = null)
+    function getModelRepository(string $relation, $model = null): ModuleRepository
     {
         if (!$model) {
             $model = ucfirst(Str::singular($relation));
@@ -103,7 +106,7 @@ if (!function_exists('getModelController')) {
 }
 
 if (!function_exists('updatePermissionOptions')) {
-    function updatePermissionOptions($options, $user, $item)
+    function updatePermissionOptions(array|ArrayAccess $options, User $user, TwillModelContract $item): ArrayAccess|array
     {
         $permissions = [];
 
@@ -148,6 +151,9 @@ if (!function_exists('updatePermissionOptions')) {
 }
 
 if (!function_exists('updatePermissionGroupOptions')) {
+    /**
+     * TODO why is this a noop?
+     */
     function updatePermissionGroupOptions($options, $item, $group)
     {
         return $options;
@@ -155,7 +161,7 @@ if (!function_exists('updatePermissionGroupOptions')) {
 }
 
 if (!function_exists('isUserGroupPermissionItemExists')) {
-    function isUserGroupPermissionItemExists($user, $item, $permission)
+    function isUserGroupPermissionItemExists(User $user, TwillModelContract $item, $permission): bool
     {
         foreach ($user->publishedGroups as $group) {
             if (in_array($permission, $group->permissions()->ofItem($item)->get()->pluck('name')->all())) {
@@ -168,7 +174,7 @@ if (!function_exists('isUserGroupPermissionItemExists')) {
 }
 
 if (!function_exists('isUserGroupPermissionModuleExists')) {
-    function isUserGroupPermissionModuleExists($user, $moduleName, $permission)
+    function isUserGroupPermissionModuleExists(User $user, string $moduleName, string $permission): bool
     {
         foreach ($user->publishedGroups as $group) {
             if ($moduleName === 'global') {

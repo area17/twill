@@ -46,7 +46,7 @@ if (config('twill.enabled.block-editor')) {
 if (config('twill.enabled.buckets')) {
     $bucketsRoutes = config('twill.bucketsRoutes') ?? Collection::make(config('twill.buckets'))->mapWithKeys(function ($bucketSection, $bucketSectionKey) {
         return [$bucketSectionKey => 'featured'];
-    })->toArray();
+    });
 
     foreach ($bucketsRoutes as $bucketSectionKey => $routePrefix) {
         Route::group(['prefix' => str_replace('.', '/', $routePrefix), 'as' => $routePrefix . '.'], function () use ($bucketSectionKey) {

@@ -61,7 +61,7 @@ class Wysiwyg extends TwillFormComponent
                         false
                     ),
                 ];
-            })->toArray() : null;
+            })->all() : null;
         }
     }
 
