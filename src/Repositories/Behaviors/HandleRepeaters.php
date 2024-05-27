@@ -239,13 +239,13 @@ trait HandleRepeaters
                     $newRelation = $relationRepository->create($relationField);
                 }
 
-                $currentIdList[] = (int)$newRelation['id'];
-
                 $pivotFieldData = $this->encodePivotFields(collect($relationField)->only($pivotFields)->all());
 
                 $object->{$relation}()->attach($newRelation['id'], $pivotFieldData);
 
-                $latestAttached = $object->{$relation}()->withPivot('id')->orderByPivot('id', 'desc')->get()->last();
+                $latestAttached = $object->{$relation}()->withPivot('id')->orderByPivot('id', 'asc')->get()->last();
+
+                $currentIdList[] = $latestAttached->pivot->id;
 
                 TwillUtil::registerRepeaterId($frontEndId, $latestAttached->pivot->id);
             }
@@ -256,7 +256,7 @@ trait HandleRepeaters
             foreach ($current as $existingRelation) {
                 if (! in_array((int)$existingRelation->pivot->id, $currentIdList, true)) {
                     // The pivot table is treated differently.
-                    $object->{$relation}()->detach($existingRelation->pivot->id);
+                    $object->{$relation}()->detach($existingRelation->id);
                 }
             }
         }
