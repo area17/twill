@@ -31,6 +31,8 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         private ?int $max = null,
         private ?string $titleField = null,
         private ?bool $hideTitlePrefix = false,
+        private ?bool $buttonAsLink = false,
+        protected ?array $connectedTo = null,
     ) {
     }
 
@@ -151,6 +153,13 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         return $this;
     }
 
+    public function buttonAsLink(bool $buttonAsLink = true): static
+    {
+        $this->buttonAsLink = $buttonAsLink;
+
+        return $this;
+    }
+
     public function renderForm(): View
     {
         return view('twill::partials.form.renderer.block_form', [
@@ -204,6 +213,13 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         if ($this->max) {
             $repeater->max($this->max);
         }
+        if ($this->connectedTo) {
+            $repeater->connectedTo($this->connectedTo['fieldName'], $this->connectedTo['fieldValues'], $this->connectedTo);
+        }
+
+        if ($this->buttonAsLink) {
+            $repeater->buttonAsLink($this->buttonAsLink);
+        }
 
         $repeater->renderForBlocks = $this->renderForBlocks ?? false;
         return $repeater->render();
@@ -213,5 +229,17 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
     {
         $this->register();
         $this->registerDynamicRepeatersFor($this->fields);
+    }
+
+
+    public function connectedTo(string $fieldName, mixed $fieldValues, array $options = []): static
+    {
+        $this->connectedTo = [
+            'fieldName' => $fieldName,
+            'fieldValues' => $fieldValues,
+            ...$options,
+        ];
+
+        return $this;
     }
 }

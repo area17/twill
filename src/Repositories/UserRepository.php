@@ -14,6 +14,7 @@ use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Database\DatabaseManager as DB;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Hash;
 
 class UserRepository extends ModuleRepository
 {
@@ -128,7 +129,7 @@ class UserRepository extends ModuleRepository
         $this->sendWelcomeEmail($user);
 
         if (!empty($fields['reset_password']) && !empty($fields['new_password'])) {
-            $user->password = bcrypt($fields['new_password']);
+            $user->password = Hash::make($fields['new_password']);
 
             if (!$user->isActivated()) {
                 $user->registered_at = Carbon::now();
