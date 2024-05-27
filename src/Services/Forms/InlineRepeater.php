@@ -30,6 +30,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         private ?string $titleField = null,
         private ?bool $hideTitlePrefix = false,
         private ?bool $buttonAsLink = false
+        protected ?array $connectedTo = null,
     ) {
     }
 
@@ -210,6 +211,9 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         if ($this->max) {
             $repeater->max($this->max);
         }
+        if ($this->connectedTo) {
+            $repeater->connectedTo($this->connectedTo['fieldName'], $this->connectedTo['fieldValues'], $this->connectedTo);
+        }
 
         if ($this->buttonAsLink) {
             $repeater->buttonAsLink($this->buttonAsLink);
@@ -229,5 +233,17 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
                 $field->registerDynamicRepeaters();
             }
         }
+    }
+
+
+    public function connectedTo(string $fieldName, mixed $fieldValues, array $options = []): static
+    {
+        $this->connectedTo = [
+            'fieldName' => $fieldName,
+            'fieldValues' => $fieldValues,
+            ...$options,
+        ];
+
+        return $this;
     }
 }

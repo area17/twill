@@ -9,6 +9,7 @@ use A17\Twill\Tests\Integration\Behaviors\CopyBlocks;
 use A17\Twill\TwillServiceProvider;
 use A17\Twill\ValidationServiceProvider;
 use Carbon\Carbon;
+use Composer\Autoload\ClassLoader;
 use Exception;
 use Faker\Factory as Faker;
 use Faker\Generator;
@@ -78,7 +79,7 @@ abstract class TestCase extends OrchestraTestCase
         cleanupTestState(self::applicationBasePath());
     }
 
-    protected function onNotSuccessfulTest(Throwable $t): void
+    protected function onNotSuccessfulTest(Throwable $t): never
     {
         // When a test fails it doesnt run teardown.
         $this->tearDown();
@@ -98,6 +99,10 @@ abstract class TestCase extends OrchestraTestCase
                 $this->getBasePath()
             );
         }
+
+        $loader = new ClassLoader();
+        $loader->addPsr4('App\\', 'vendor/orchestra/testbench-core/laravel/app');
+        $loader->register();
 
         // Enforce the url for testing to be 'http://twill.test' for certain assertions.
         // This is different from the one in phpunit.xml because that one is used for laravel dusk.
@@ -547,5 +552,20 @@ abstract class TestCase extends OrchestraTestCase
 
     public function loadConfig()
     {
+    }
+
+    protected static function getBasePathStatic(): string
+    {
+        return __DIR__ . '/../../vendor/orchestra/testbench-core/laravel';
+    }
+
+    public static function applicationBasePath(): string
+    {
+        return self::getBasePathStatic();
+    }
+
+    protected function getBasePath(): string
+    {
+        return __DIR__ . '/../../vendor/orchestra/testbench-core/laravel';
     }
 }
