@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Models\Feature;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
