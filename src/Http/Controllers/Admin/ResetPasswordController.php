@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Facades\TwillRoutes;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
@@ -59,7 +60,7 @@ class ResetPasswordController extends Controller
         $this->viewFactory = $viewFactory;
         $this->config = $config;
 
-        $this->redirectTo = $this->config->get('twill.auth_login_redirect_path', '/');
+        $this->redirectTo = TwillRoutes::getAuthRedirectPath();
         $this->middleware('twill_guest');
     }
 

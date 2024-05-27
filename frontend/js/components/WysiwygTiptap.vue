@@ -630,6 +630,7 @@
         code: this.toolbar.code ?? false,
         codeBlock: this.toolbar.codeBlock ?? false,
         horizontalRule: this.toolbar.hr ?? false,
+        heading: this.toolbar.header ? { levels: this.headingOptions } : false,
       }))
 
       this.editor = new Editor({

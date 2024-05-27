@@ -97,6 +97,11 @@ trait HasTranslation
             ->with('translations');
     }
 
+    public function scopeOrWhereTranslationLike(Builder $query, string $translationField, $value, ?string $locale = null): Builder
+    {
+        return $this->scopeWhereTranslation($query, $translationField, $value, $locale, 'orWhereHas', getLikeOperator());
+    }
+
     /**
      * Checks if this model has active translations.
      *

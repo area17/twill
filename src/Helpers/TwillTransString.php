@@ -22,6 +22,11 @@ class TwillTransString implements \Stringable, \JsonSerializable
         return (string)trans($this->key, $this->replace, $locale);
     }
 
+    public static function __set_state(array $state)
+    {
+        return new self($state['key'], $state['replace']);
+    }
+
     public function jsonSerialize(): string
     {
         return (string)$this;
