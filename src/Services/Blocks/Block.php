@@ -686,11 +686,15 @@ class Block
         try {
             return view($view, $data)->render();
         } catch (Exception $e) {
+            if (config('twill.strict')) {
+                throw $e;
+            }
             if (config('twill.debug')) {
                 $error = $e->getMessage() . ' in ' . $e->getFile();
 
                 return View::make('twill::errors.block', ['view' => $view, 'error' => $error])->render();
             }
+            report($e);
         }
 
         return '';
