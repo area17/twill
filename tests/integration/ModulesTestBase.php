@@ -56,7 +56,7 @@ abstract class ModulesTestBase extends TestCase
     {
         parent::setUp();
 
-        config()->push('twill.block_editor.use_twill_blocks', 'twill-quote');
+        config()->push('twill.block_editor.use_twill_blocks', 'quote');
 
         if (class_exists(Once::class)) {
             Once::flush();
