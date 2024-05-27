@@ -170,7 +170,7 @@
     baseUrl: '{{ $baseUrl ?? '' }}',
     saveUrl: '{{ $saveUrl }}',
     previewUrl: '{{ $previewUrl ?? '' }}',
-    restoreUrl: '{{ $restoreUrl ?? '' }}',
+    restoreUrl: '{!! $restoreUrl ?? ''  !!}',
     availableBlocks: {},
     blocks: {},
     blockPreviewUrl: '{{ $blockPreviewUrl ?? '' }}',
