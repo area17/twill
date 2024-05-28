@@ -17,6 +17,7 @@ class Select extends BaseFormField
     use Unpackable;
 
     protected bool $searchable = false;
+    protected bool $clearable = false;
 
     public static function make(): static
     {
@@ -37,17 +38,11 @@ class Select extends BaseFormField
     }
 
     /**
-     * Adds an empty option as the first option
-     *
-     * @param string $label
-     * @return $this
+     * If the field should be clearable.
      */
-    public function withEmptyOption(string $label = ''): static
+    public function clearable(bool $clearable = true): static
     {
-        if ($this->options === null) {
-            $this->options = Options::make();
-        }
-        $this->options->prepend(Option::make('', $label));
+        $this->clearable = $clearable;
 
         return $this;
     }

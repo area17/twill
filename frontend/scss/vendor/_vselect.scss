@@ -130,6 +130,11 @@ $multiSelectHeight: 45px;
       padding-left: 0;
     }
 
+    .vs__clear {
+      margin-right: 35px;
+      margin-top: 2px;
+    }
+
     .vs__selected-options {
       padding: 0 30px 0 15px;
     }
@@ -406,15 +411,15 @@ $multiSelectHeight: 45px;
 
         .close,
         .vs__deselect {
-          top:2px;
-          right:2px;
-          background-color:transparent;
+          top: 11px;
+          right: 2px;
+          background-color: transparent;
           background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIj48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiNhNmE2YTYiIGQ9Ik0yIDJsNiA2TTggMkwyIDgiLz48L3N2Zz4=);
-          color:$color__fborder--hover;
+          color: $color__fborder--hover;
 
           span,
           svg {
-            display:none
+            display: none
           }
         }
       }
