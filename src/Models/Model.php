@@ -2,7 +2,6 @@
 
 namespace A17\Twill\Models;
 
-use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\IsTranslatable;
 use A17\Twill\Models\Contracts\TwillLinkableModel;
@@ -16,8 +15,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use A17\Twill\Models\Behaviors\BaseTwillModelScopes;
 
 abstract class Model extends BaseModel implements TaggableInterface, TwillModelContract, TwillSchedulableModel, TwillLinkableModel
 {
@@ -25,54 +24,13 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
     use SoftDeletes;
     use TaggableTrait;
     use IsTranslatable;
+    use BaseTwillModelScopes;
 
     public $timestamps = true;
 
     protected function isTranslationModel(): bool
     {
         return Str::endsWith(get_class($this), 'Translation');
-    }
-
-    public function scopePublished($query): Builder
-    {
-        return $query->where("{$this->getTable()}.published", true);
-    }
-
-    public function scopeAccessible($query): Builder
-    {
-        if (! TwillPermissions::enabled()) {
-            return $query;
-        }
-
-        $model = get_class($query->getModel());
-        $moduleName = TwillPermissions::getPermissionModule(getModuleNameByModel($model));
-
-        if ($moduleName && ! Auth::user()->isSuperAdmin()) {
-            // Get all permissions the logged in user has regards to the model.
-            $allPermissions = Auth::user()->allPermissions();
-            $allModelPermissions = (clone $allPermissions)->ofModel($model);
-
-            // If the user has any module permissions, or global manage all modules permissions, all items will be return
-            if (
-                (clone $allModelPermissions)->module()
-                    ->whereIn('name', Permission::available(Permission::SCOPE_MODULE))
-                    ->exists()
-                || (clone $allPermissions)->global()->where('name', 'manage-modules')->exists()
-            ) {
-                return $query;
-            }
-
-            // If the module is submodule, skip the scope.
-            if (strpos($moduleName, '.')) {
-                return $query;
-            }
-
-            $authorizedItemsIds = $allModelPermissions->moduleItem()->pluck('permissionable_id');
-
-            return $query->whereIn($this->getTable() . '.id', $authorizedItemsIds);
-        }
-
-        return $query;
     }
 
     public function scopePublishedInListings($query): Builder
@@ -83,6 +41,11 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
         }
 
         return $query->published()->visible();
+    }
+
+    public function scopeOnlyTrashed(Builder $query): Builder
+    {
+        return $query->onlyTrashed();
     }
 
     /**
@@ -116,16 +79,6 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
     public function setPublishStartDateAttribute($value): void
     {
         $this->attributes['publish_start_date'] = $value ?? Carbon::now();
-    }
-
-    public function scopeDraft($query): Builder
-    {
-        return $query->where("{$this->getTable()}.published", false);
-    }
-
-    public function scopeOnlyTrashed($query): Builder
-    {
-        return $query->onlyTrashed();
     }
 
     public function getFillable(): array

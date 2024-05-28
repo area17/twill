@@ -15,9 +15,11 @@ trait HasSlug
 
     protected static function bootHasSlug(): void
     {
-        static::restoring(function ($model) {
-            $model->restoreSlugs();
-        });
+        if (method_exists(static::class, 'restoring')) {
+            static::restoring(function ($model) {
+                $model->restoreSlugs();
+            });
+        }
 
         static::saved(function ($model) {
             $model->handleSlugsOnSave();
