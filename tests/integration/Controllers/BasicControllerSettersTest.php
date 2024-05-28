@@ -26,7 +26,7 @@ class BasicControllerSettersTest extends ModulesTestBase
         $this->assertEquals(!$default, $controller->getIndexOptionTest($indexOption));
     }
 
-    public function simplePropertyOptions(): array
+    public static function simplePropertyOptions(): array
     {
         return [
             'create' => [

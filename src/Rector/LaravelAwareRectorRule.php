@@ -3,8 +3,8 @@
 namespace A17\Twill\Rector;
 
 use Illuminate\Foundation\Application;
-use Rector\Core\Contract\Rector\ConfigurableRectorInterface;
-use Rector\Core\Rector\AbstractRector;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
+use Rector\Rector\AbstractRector;
 
 abstract class LaravelAwareRectorRule extends AbstractRector implements ConfigurableRectorInterface
 {

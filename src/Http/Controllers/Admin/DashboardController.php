@@ -136,9 +136,17 @@ class DashboardController extends Controller
                     $date = $item->created_at->toIso8601String();
                 }
 
+                $parentRelationship = $module['parentRelationship'] ?? null;
+                $parent = $item->$parentRelationship;
+
                 return [
                     'id' => $item->id,
-                    'href' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $item->id),
+                    'href' => moduleRoute(
+                        $module['name'],
+                        $module['routePrefix'] ?? null,
+                        'edit',
+                        array_merge($parentRelationship ? [$parent->id] : [], [$item->id])
+                    ),
                     'thumbnail' => method_exists($item, 'defaultCmsImage') ? $item->defaultCmsImage(['w' => 100, 'h' => 100]) : null,
                     'published' => $item->published,
                     'activity' => twillTrans('twill::lang.dashboard.search.last-edit'),
@@ -510,6 +518,8 @@ class DashboardController extends Controller
                 'singular' => $module['label_singular'] ?? Str::singular($module['name']),
             ];
 
+            $isNestedModule = Str::contains($module['name'], '.');
+
             return [
                 'label' => ucfirst($moduleOptions['label']),
                 'singular' => ucfirst($moduleOptions['singular']),
@@ -517,12 +527,12 @@ class DashboardController extends Controller
                     'all',
                     $module['countScope'] ?? []
                 ) : null,
-                'url' => moduleRoute(
+                'url' => !$isNestedModule ? moduleRoute(
                     $module['name'],
                     $module['routePrefix'] ?? null,
                     'index'
-                ),
-                'createUrl' => $moduleOptions['create'] ? moduleRoute(
+                ) : null,
+                'createUrl' => ($moduleOptions['create'] && !$isNestedModule) ? moduleRoute(
                     $module['name'],
                     $module['routePrefix'] ?? null,
                     'index',
@@ -544,12 +554,20 @@ class DashboardController extends Controller
             if ($repository->hasBehavior('revisions')) {
                 $query->mine();
             }
+            $parentRelationship = $module['parentRelationship'] ?? null;
 
-            return $query->get()->map(function ($draft) use ($module) {
+            return $query->get()->map(function ($draft) use ($module, $parentRelationship) {
+                $parent = $draft->$parentRelationship;
+
                 return [
                     'type' => ucfirst($module['label_singular'] ?? Str::singular($module['name'])),
                     'name' => $draft->titleInDashboard ?? $draft->title,
-                    'url' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', [$draft->id]),
+                    'url' => moduleRoute(
+                        $module['name'],
+                        $module['routePrefix'] ?? null,
+                        'edit',
+                        array_merge($parentRelationship ? [$parent->id] : [], [$draft->id])
+                    )
                 ];
             });
         })->collapse()->values();
@@ -557,6 +575,19 @@ class DashboardController extends Controller
 
     private function getRepository(string $module, string $forModule = null): ModuleRepository
     {
-        return $this->app->make($forModule ?? $this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($module)) . 'Repository');
+        $moduleName = '';
+
+        if (!$forModule) {
+            if (Str::contains($module, '.')) {
+                $parts = explode('.', $module);
+                foreach ($parts as $part) {
+                    $moduleName .= ucfirst(Str::singular($part));
+                }
+            } else {
+                $moduleName = ucfirst(Str::singular($module));
+            }
+        }
+
+        return $this->app->make($forModule ?? $this->config->get('twill.namespace') . "\Repositories\\" . $moduleName . 'Repository');
     }
 }
