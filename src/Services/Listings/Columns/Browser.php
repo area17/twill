@@ -27,4 +27,17 @@ class Browser extends TableColumn
             ->pluck($this->field)
             ->join(', ');
     }
+
+    public function getKey(): string
+    {
+        if ($this->key === null) {
+            throw new ColumnMissingPropertyException();
+        }
+
+        if (null === $this->browser) {
+            throw new ColumnMissingPropertyException('Browser column missing browser value: ' . $this->field);
+        }
+
+        return "$this->browser.$this->key";
+    }
 }

@@ -7,6 +7,7 @@ use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Forms\Contracts\CanHaveSubfields;
 use A17\Twill\Services\Forms\Contracts\CanRenderForBlocks;
 use A17\Twill\Services\Forms\Fields\Repeater;
+use A17\Twill\Services\Forms\Traits\HasSubFields;
 use A17\Twill\Services\Forms\Traits\RenderForBlocks;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
@@ -15,6 +16,7 @@ use Illuminate\Support\Str;
 class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
 {
     use RenderForBlocks;
+    use HasSubFields;
 
     protected function __construct(
         private ?string $name = null,
@@ -29,6 +31,8 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         private ?int $max = null,
         private ?string $titleField = null,
         private ?bool $hideTitlePrefix = false,
+        private ?bool $buttonAsLink = false,
+        protected ?array $connectedTo = null,
     ) {
     }
 
@@ -149,6 +153,13 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         return $this;
     }
 
+    public function buttonAsLink(bool $buttonAsLink = true): static
+    {
+        $this->buttonAsLink = $buttonAsLink;
+
+        return $this;
+    }
+
     public function renderForm(): View
     {
         return view('twill::partials.form.renderer.block_form', [
@@ -202,6 +213,13 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         if ($this->max) {
             $repeater->max($this->max);
         }
+        if ($this->connectedTo) {
+            $repeater->connectedTo($this->connectedTo['fieldName'], $this->connectedTo['fieldValues'], $this->connectedTo);
+        }
+
+        if ($this->buttonAsLink) {
+            $repeater->buttonAsLink($this->buttonAsLink);
+        }
 
         $repeater->renderForBlocks($this->renderForBlocks ?? false);
         return $repeater->render();
@@ -209,13 +227,19 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
 
     public function registerDynamicRepeaters(): void
     {
-        foreach ($this->fields as $field) {
-            if ($field instanceof self) {
-                $field->register();
-            }
-            if ($field instanceof CanHaveSubfields) {
-                $field->registerDynamicRepeaters();
-            }
-        }
+        $this->register();
+        $this->registerDynamicRepeatersFor($this->fields);
+    }
+
+
+    public function connectedTo(string $fieldName, mixed $fieldValues, array $options = []): static
+    {
+        $this->connectedTo = [
+            'fieldName' => $fieldName,
+            'fieldValues' => $fieldValues,
+            ...$options,
+        ];
+
+        return $this;
     }
 }
