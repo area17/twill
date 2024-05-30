@@ -229,7 +229,7 @@
         this.saveIntoStore()
         this.$emit('change', value)
       },
-      getOptions: debounce(function (search, loading) {
+      getOptions: function (search, loading) {
         if (!this.isAjax()) return true
         loading(true)
         this.$http.get(this.ajaxUrl, { params: { q: search } }).then((resp) => {
@@ -249,7 +249,7 @@
           // error callback
           loading(false)
         })
-      }, 500)
+      }
     }
   }
 </script>

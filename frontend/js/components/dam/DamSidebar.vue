@@ -140,9 +140,14 @@
             v-if="hasMedia"
           >
             <!-- Actions -->
-            <button type="button" :aria-label="$trans('dam.edit', 'Edit')">
+            <a
+              :href="firstMedia.editUrl"
+              target="_blank"
+              rel="noreferrer"
+              :aria-label="$trans('dam.edit', 'Edit')"
+            >
               <span v-svg symbol="edit" aria-hidden="true"></span>
-            </button>
+            </a>
             <a
               v-if="isImage && hasPreview"
               :href="firstMedia.original"
@@ -190,7 +195,7 @@
               <a17-langswitcher :in-modal="true" :all-published="true" />
             </div>
 
-            <!-- 
+            <!--
             <a17-locale
               type="a17-textfield"
               v-if="isImage && translatableMetadatas.includes('alt_text')"
@@ -345,14 +350,14 @@
                     :key="i"
                     class="f--small"
                   >
-                    <a17-button el="a" variant="aslink" :href="link.url"
-                      ><span>{{ link.title }}</span></a17-button
+                    <a17-button el="a" variant="aslink" :href="link.edit" target="_blank"
+                      ><span>{{ link.name }}</span></a17-button
                     >
-                    <a17-button variant="aslink-grey"
-                      ><span>{{
-                        $trans('dam.remove', 'Remove')
-                      }}</span></a17-button
-                    >
+<!--                    <a17-button variant="aslink-grey"-->
+<!--                      ><span>{{-->
+<!--                        $trans('dam.remove', 'Remove')-->
+<!--                      }}</span></a17-button-->
+<!--                    >-->
                   </li>
                 </ul>
               </div>
@@ -383,7 +388,7 @@
                   <template v-for="(field, i) in singleAndMultipleMetadatas">
                     <template v-if="field.type === 'tags'">
                       <li
-                        v-for="(tag, tagIndex) in getSharedItems(field.name)"
+                        v-for="(tag, tagIndex) in getSharedItems(field.name, field.key)"
                         v-bind:key="`tag_${i}_${tagIndex}`"
                       >
                         {{ tag }}
@@ -397,14 +402,14 @@
                   <a17-vselect
                     :label="field.label"
                     :name="field.name"
+                    :options="tagEndpoints[field.name].options"
                     :multiple="field.multiple"
                     :selected="getSharedItems(field.name)"
-                    :searchable="true"
+                    :searchable="field.searchable ?? false"
                     :emptyText="`Sorry, no ${field.name} found.`"
-                    :taggable="true"
+                    :taggable="field.taggable ?? false"
                     :pushTags="true"
-                    :endpoint="type.disciplineEndpoint"
-                    @change="save"
+                    :endpoint="tagEndpoints[field.name].endpoint"
                     maxHeight="175px"
                   />
                 </div>
@@ -480,10 +485,17 @@
         </form>
       </div>
       <div
-        v-if="getDownloadLink"
         class="dam-sidebar__inner dam-sidebar__action"
       >
         <a17-button
+          @click="save"
+          v-if="editTagsOpen"
+          variant="validate"
+        >Update</a17-button
+        >
+
+        <a17-button
+          v-else-if="getDownloadLink"
           :href="getDownloadLink"
           el="a"
           variant="action"
@@ -716,8 +728,8 @@
         )
       },
       getSharedItems: function() {
-        return function(fieldName) {
-          return this.medias
+        return function(fieldName, key = null) {
+          const fieldValues = this.medias
             .map(media => media[fieldName] || [])
             .reduce((allItems, currentItems) => {
               if (Array.isArray(allItems) && Array.isArray(currentItems)) {
@@ -730,6 +742,12 @@
               }
               return []
             })
+
+          if (key) {
+            return fieldValues.map(value => value[key])
+          } else {
+            return fieldValues
+          }
         }
       },
 
@@ -782,7 +800,8 @@
       ...mapState({
         mediasLoading: state => state.mediaLibrary.loading,
         useWysiwyg: state => state.mediaLibrary.config.useWysiwyg,
-        wysiwygOptions: state => state.mediaLibrary.config.wysiwygOptions
+        wysiwygOptions: state => state.mediaLibrary.config.wysiwygOptions,
+        tagEndpoints: state => state.mediaLibrary.tagEndpoints
       })
     },
     methods: {

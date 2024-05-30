@@ -21,6 +21,8 @@
 
     window['{{ config('twill.js_namespace') }}'].STORE.browser = {}
     window['{{ config('twill.js_namespace') }}'].STORE.browser.selected = {}
+
+    @yield('extraStore')
 @stop
 
 @push('extra_js')

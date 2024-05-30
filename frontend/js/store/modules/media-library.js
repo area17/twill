@@ -86,7 +86,11 @@ const state = {
    * An index used when mediaLibrary is open to replace a file
    * @type {number}
    */
-  indexToReplace: -1
+  indexToReplace: -1,
+
+  endpoint: window[process.env.VUE_APP_NAME].STORE.medias.endpoint || '',
+
+  tagEndpoints: window[process.env.VUE_APP_NAME].STORE.medias.tagEndPoints || {}
 }
 
 // getters

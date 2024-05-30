@@ -53,6 +53,11 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     protected $customFields = [];
 
     /**
+     * @var array
+     */
+    protected $customTagFields = [];
+
+    /**
      * @var Illuminate\Routing\ResponseFactory
      */
     protected $responseFactory;
@@ -79,6 +84,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         );
         $this->endpointType = $this->config->get('twill.media_library.endpoint_type');
         $this->customFields = $this->config->get('twill.media_library.extra_metadatas_fields');
+        $this->customTagFields = $this->config->get('twill.media_library.extra_tag_fields');
     }
 
     public function setUpController(): void
@@ -236,11 +242,15 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     {
         $this->repository->update(
             $this->request->input('id'),
-            array_merge([
+            array_merge(
+                [
                 'alt_text' => $this->request->get('alt_text', null),
                 'caption' => $this->request->get('caption', null),
                 'tags' => $this->request->get('tags', null),
-            ], $this->getExtraMetadatas()->toArray())
+                ],
+                $this->getExtraMetadatas()->toArray(),
+                $this->getExtraTagFields()->toArray()
+            )
         );
 
         return $this->responseFactory->json([
@@ -333,6 +343,22 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     private function getExtraMetadatas()
     {
         return Collection::make($this->customFields)->mapWithKeys(function ($field) {
+            $fieldInRequest = $this->request->get($field['name']);
+
+            if (isset($field['type']) && $field['type'] === 'checkbox') {
+                return [$field['name'] => $fieldInRequest ? Arr::first($fieldInRequest) : false];
+            }
+
+            return [$field['name'] => $fieldInRequest];
+        });
+    }
+
+    /**
+     * @return Collection
+     */
+    private function getExtraTagFields()
+    {
+        return Collection::make($this->customTagFields)->mapWithKeys(function ($field) {
             $fieldInRequest = $this->request->get($field['name']);
 
             if (isset($field['type']) && $field['type'] === 'checkbox') {

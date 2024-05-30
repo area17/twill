@@ -195,9 +195,6 @@
           return type.value === this.type
         })
       },
-      endpoint: function() {
-        return this.currentTypeObject.endpoint
-      },
       btnLabel: function() {
         let type = this.$trans(
           'media-library.types.single.' + this.type,
@@ -257,7 +254,8 @@
         types: state => state.mediaLibrary.types,
         strict: state => state.mediaLibrary.strict,
         selected: state => state.mediaLibrary.selected,
-        indexToReplace: state => state.mediaLibrary.indexToReplace
+        indexToReplace: state => state.mediaLibrary.indexToReplace,
+        endpoint: state => state.mediaLibrary.endpoint,
       })
     },
     watch: {
