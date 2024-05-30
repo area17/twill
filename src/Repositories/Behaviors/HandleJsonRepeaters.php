@@ -47,6 +47,14 @@ trait HandleJsonRepeaters
         foreach ($this->getJsonRepeaters() as $repeater) {
             if (isset($fields['repeaters'][$repeater])) {
                 $fields[$repeater] = $fields['repeaters'][$repeater];
+
+                foreach ($fields['repeaters'][$repeater] as $index => $repeaterItem) {
+                    if (isset($repeaterItem['medias']) && !empty($repeaterItem['medias'])) {
+                        foreach ($repeaterItem['medias'] as $role => $medias) {
+                            $fields['medias'][getJsonRepeaterMediaRole($role, $repeater, $index)] = $medias;
+                        }
+                    }
+                }
             }
         }
 
@@ -73,6 +81,7 @@ trait HandleJsonRepeaters
     {
         $repeatersFields = [];
         $repeatersBrowsers = [];
+        $repeatersMedias = [];
         /** @var \A17\Twill\Services\Blocks\Block[] $repeatersList */
         $repeatersList = TwillBlocks::getRepeaters()->keyBy('name');
         $repeaters = [];
@@ -113,11 +122,23 @@ trait HandleJsonRepeaters
                     'value' => $value,
                 ];
             }
+
+            if (isset($repeaterItem['medias']) && !empty($repeaterItem['medias'])) {
+                $mediaKeys = array_keys($repeaterItem['medias']);
+
+                foreach ($mediaKeys as $mediaKey) {
+                    $key = getJsonRepeaterMediaRole($mediaKey, $repeaterName, $index);
+                    if (isset($fields['medias'][$key])) {
+                        $repeatersMedias["blocks[$id][$mediaKey]"] = $fields['medias'][$key];
+                    }
+                }
+            }
         }
 
         $fields['repeaters'][$repeaterName] = $repeaters;
         $fields['repeaterFields'][$repeaterName] = $repeatersFields;
         $fields['repeaterBrowsers'][$repeaterName] = $repeatersBrowsers;
+        $fields['repeaterMedias'][$repeaterName] = $repeatersMedias;
 
         return $fields;
     }
