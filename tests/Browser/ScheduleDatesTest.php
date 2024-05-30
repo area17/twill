@@ -105,7 +105,7 @@ class ScheduleDatesTest extends BrowserTestCase
         );
     }
 
-    public function timesDataProvider(): array
+    public static function timesDataProvider(): array
     {
         return [
             'winterAMPM' => [

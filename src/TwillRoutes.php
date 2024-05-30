@@ -395,4 +395,11 @@ class TwillRoutes
             )
             ->middleware(['web', 'twill_auth:twill_users', 'can:list']);
     }
+
+
+    public function getAuthRedirectPath(): string
+    {
+        return config('twill.auth_login_redirect_path')
+            ?? rtrim(config('twill.admin_app_url') ?: '', '/') . '/' . ltrim(config('twill.admin_app_path') ?? 'admin', '/');
+    }
 }

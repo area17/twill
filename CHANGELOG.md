@@ -2,6 +2,54 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.3.0
+
+### Added
+
+- Laravel 11 support by [@ifox](https://github.com/ifox) in https://github.com/area17/twill/pull/2473
+- Add support for `medias` fields in JSON repeaters by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2554
+- Add support for multiple JSON repeaters (of the same type) in one form by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2517
+- Add support for nested module on the dashboard by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2547
+- Add `connectedTo` for inline repeater and documentation about `connectedTo` by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2565
+- Add error reporting to block rendering by [@AidasK](https://github.com/AidasK) in https://github.com/area17/twill/pull/2580
+- Allow `buttonAsLink` option on inline repeaters by [@danieldevine](https://github.com/danieldevine) in https://github.com/area17/twill/pull/2522
+- Allow singular capsules on navigation by [@antonioribeiro](https://github.com/antonioribeiro) in https://github.com/area17/twill/pull/2572
+
+### Fixed
+
+- Tags in media library are not refreshed while updating & browsing images by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2523
+- Clicking cancel in the block editor deletes all the unsaved blocks by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2578
+- Allow single deletion in form builder inline repeater by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2504
+- Allow deleting media after records bulk destroy by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2519
+- Allow case-insensitive search for translated models for postgres by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2528
+- 404 error when restoring revision in nested modules by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2541
+- Fix alt text stripping accents and single quotes by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2514
+- Changing twill user password in admin to use the laravel algo by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2582
+- Undefined variable $formBuilder error when extending form layout in custom pages by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2577
+- Error with time-picker when `allowInput` is true by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2576
+- Don't delete and recreate existing `mediables` and `fileables` by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2567
+- Make `twillTrans` exportable so it can be used in config by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2563
+- Table builder `Browser` column overrides parent module field by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2506
+- Disable heading extension if it's not in the Tiptap toolbar by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2511
+- Relation field of datatable does not allow sorting by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2526
+- Default login redirect to admin url by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2569
+- Different datetime parsing for publish date on listing and edit screen by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2510
+- Fix created at is null in slug table by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2588
+
+### Docs
+
+- Fix typo by [@k-msalehi](https://github.com/k-msalehi) in https://github.com/area17/twill/pull/2564
+- Change `admin.` route to `twill.` by [@LucaRed](https://github.com/LucaRed) in https://github.com/area17/twill/pull/2585
+- Prettify instructions and add the capsules>list array keys to improve DX by [@antonioribeiro](https://github.com/antonioribeiro) in https://github.com/area17/twill/pull/2527
+- Update twill version during installation by [@Mavv3006](https://github.com/Mavv3006) in https://github.com/area17/twill/pull/2584
+
+### Chores
+
+- Refactor form services to avoid repeating code by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2553
+- Bump express from 4.18.2 to 4.19.2 by [@dependabot](https://github.com/dependabot) in https://github.com/area17/twill/pull/2560
+- Bump webpack-dev-middleware from 5.3.3 to 5.3.4 by [@dependabot](https://github.com/dependabot) in https://github.com/area17/twill/pull/2556
+- Bump follow-redirects from 1.15.5 to 1.15.6 by [@dependabot](https://github.com/dependabot) in https://github.com/area17/twill/pull/2545
+
 ## 3.2.1
 
 ### Fixed
