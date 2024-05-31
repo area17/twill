@@ -41,6 +41,7 @@ import a17WysiwygTipTap from '@/components/WysiwygTiptap.vue'
 import Sticky from '@/directives/sticky'
 // Digital Asset Manager
 import a17Dam from '@/components/dam/Dam.vue'
+import a17DamBrowser from '@/components/dam/DamBrowser.vue'
 // Directives
 import SvgSprite from '@/directives/svg'
 import Tooltip from '@/directives/tooltip'
@@ -90,6 +91,7 @@ const A17Config = {
 
     // Digital Asset Manager
     Vue.component('a17-dam', a17Dam)
+    Vue.component('a17-dambrowser', a17DamBrowser)
 
     // Globale Vue mixin : Use global mixins sparsely and carefully!
     Vue.mixin({

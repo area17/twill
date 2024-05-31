@@ -58,6 +58,11 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     protected $customTagFields = [];
 
     /**
+     * @var array
+     */
+    protected $customBrowsers = [];
+
+    /**
      * @var Illuminate\Routing\ResponseFactory
      */
     protected $responseFactory;
@@ -85,6 +90,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         $this->endpointType = $this->config->get('twill.media_library.endpoint_type');
         $this->customFields = $this->config->get('twill.media_library.extra_metadatas_fields');
         $this->customTagFields = $this->config->get('twill.media_library.extra_tag_fields');
+        $this->customBrowsers = $this->config->get('twill.media_library.browsers');
     }
 
     public function setUpController(): void
@@ -301,6 +307,38 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         ], 200);
     }
 
+    public function updateBrowser()
+    {
+
+        $this->repository->update(
+            $this->request->input('id'),
+            $this->getBrowsers()->toArray(),
+        );
+
+        $media = $this->repository->getById($this->request->input('id'));
+
+        return $this->responseFactory->json(
+            Collection::make(config('twill.media_library.browsers'))->mapWithKeys(function ($field) use ($media) {
+                return [
+                    $field['name'] => $media->{$field['name']}->map(function ($item) use ($field) {
+                        return [
+                            'id' => $item->id,
+                            'name' => $item->title,
+                            'edit' => moduleRoute(
+                                $field['name'],
+                                '',
+                                'edit',
+                                $item->id
+                            ),
+                            'endpointType' => $item->getMorphClass(),
+                        ];
+                    })
+                ];
+            })->toArray(),
+            200
+        );
+    }
+
     /**
      * @return mixed
      */
@@ -361,9 +399,17 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         return Collection::make($this->customTagFields)->mapWithKeys(function ($field) {
             $fieldInRequest = $this->request->get($field['name']);
 
-            if (isset($field['type']) && $field['type'] === 'checkbox') {
-                return [$field['name'] => $fieldInRequest ? Arr::first($fieldInRequest) : false];
-            }
+            return [$field['name'] => $fieldInRequest];
+        });
+    }
+
+    /**
+     * @return Collection
+     */
+    private function getBrowsers()
+    {
+        return Collection::make($this->customBrowsers)->mapWithKeys(function ($field) {
+            $fieldInRequest = $this->request->get($field['name']);
 
             return [$field['name'] => $fieldInRequest];
         });

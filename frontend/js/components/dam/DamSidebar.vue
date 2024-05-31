@@ -325,28 +325,21 @@
             </template>
           </template>
 
-          <template
-            v-if="
-              singleAndMultipleMetadatas.some(field => field.type === 'list')
-            "
-          >
-            <template v-for="field in singleAndMultipleMetadatas">
+          <template v-for="field in browserFields">
               <div
-                v-if="
-                  field.type === 'list' && getSharedItems(field.name).length
-                "
+                v-if="getBrowserItem(field.name).length"
                 class="dam-sidebar__editable"
                 v-bind:key="field.name"
               >
                 <div class="dam-sidebar__editable-header">
                   <h3 class="f--small">{{ field.label }}</h3>
-                  <a17-button variant="aslink">
+                  <a17-button variant="aslink" @click="openBrowser(field)">
                     <span class="f--small">{{ $trans('dam.add', 'Add') }}</span>
                   </a17-button>
                 </div>
                 <ul>
                   <li
-                    v-for="(link, i) in getSharedItems(field.name)"
+                    v-for="(link, i) in getBrowserItem(field.name)"
                     :key="i"
                     class="f--small"
                   >
@@ -362,7 +355,7 @@
                 </ul>
               </div>
             </template>
-          </template>
+
 
           <template
             v-if="
@@ -525,6 +518,11 @@
         >
       </a17-inputframe>
     </a17-modal>
+
+
+    <a17-modal class="modal--browser" ref="damBrowser" mode="medium" :force-close="true">
+      <a17-dambrowser @saveAndClose="saveBrowser"></a17-dambrowser>
+    </a17-modal>
   </aside>
 </template>
 
@@ -537,7 +535,7 @@
   import a17Langswitcher from '@/components/LangSwitcher'
   import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
   import api from '@/store/api/media-library'
-  import { NOTIFICATION } from '@/store/mutations'
+  import {BROWSER, NOTIFICATION} from '@/store/mutations'
   import a17VueFilters from '@/utils/filters.js'
   import FormDataAsObj from '@/utils/formDataAsObj.js'
   import Extensions from '@/components/files/Extensions.js'
@@ -750,6 +748,11 @@
           }
         }
       },
+      getBrowserItem: function() {
+        return function(fieldName) {
+          return this.firstMedia.browsers[fieldName];
+        }
+      },
 
       sharedKeywords: function() {
         return this.getSharedItems('keywords')
@@ -801,7 +804,9 @@
         mediasLoading: state => state.mediaLibrary.loading,
         useWysiwyg: state => state.mediaLibrary.config.useWysiwyg,
         wysiwygOptions: state => state.mediaLibrary.config.wysiwygOptions,
-        tagEndpoints: state => state.mediaLibrary.tagEndpoints
+        tagEndpoints: state => state.mediaLibrary.tagEndpoints,
+        currentBrowser: state => state.browser.connector,
+        browserFields: state => state.mediaLibrary.browserFields
       })
     },
     methods: {
@@ -973,6 +978,59 @@
                 })
               })
             }
+          },
+          error => {
+            this.loading = false
+
+            if (error.data.message) {
+              this.$store.commit(NOTIFICATION.SET_NOTIF, {
+                message: error.data.message,
+                variant: 'error'
+              })
+            }
+          }
+        )
+      },
+      openBrowser: function (item) {
+        const selected = {
+          browsers: {
+            [item.name]: this.getBrowserItem(item.name)
+          }
+        }
+        this.$store.commit(BROWSER.ADD_BROWSERS, selected)
+
+        this.$store.commit(BROWSER.UPDATE_BROWSER_MAX, item.max || 100)
+        this.$store.commit(BROWSER.UPDATE_BROWSER_CONNECTOR, item.name)
+        this.$store.commit(BROWSER.DESTROY_BROWSER_ENDPOINTS)
+
+        this.$store.commit(BROWSER.UPDATE_BROWSER_ENDPOINT, {
+          value: item.endpoint,
+          label: item.name
+        })
+
+        this.$store.commit(BROWSER.UPDATE_BROWSER_TITLE, item.browserTitle)
+
+        this.$refs.damBrowser.open(true)
+      },
+      saveBrowser: function (items) {
+        if (this.loading) return
+
+        this.loading = true
+
+        const data = {
+          [this.currentBrowser]: items,
+          id: this.firstMedia.id
+        }
+
+        api.update(
+          this.firstMedia.updateBrowserUrl,
+          data,
+          resp => {
+            this.loading = false
+
+            this.$refs.damBrowser.close()
+            if (resp.data) this.$emit('browserUpdated', this.firstMedia, resp.data)
+
           },
           error => {
             this.loading = false

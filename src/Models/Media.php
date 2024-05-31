@@ -80,6 +80,7 @@ class Media extends Model
             }),
             'deleteUrl' => $this->canDeleteSafely() ? moduleRoute('medias', 'media-library', 'destroy', $this->id) : null,
             'updateUrl' => route(config('twill.admin_route_name_prefix') . 'media-library.medias.single-update'),
+            'updateBrowserUrl' => route(config('twill.admin_route_name_prefix') . 'media-library.medias.update-browser'),
             'updateBulkUrl' => route(config('twill.admin_route_name_prefix') . 'media-library.medias.bulk-update'),
             'deleteBulkUrl' => route(config('twill.admin_route_name_prefix') . 'media-library.medias.bulk-delete'),
             'metadatas' => [
@@ -98,6 +99,23 @@ class Media extends Model
                     'video' => null,
                 ],
             ],
+            'browsers' => Collection::make(config('twill.media_library.browsers'))->mapWithKeys(function ($field) {
+                return [
+                    $field['name'] => $this->{$field['name']}->map(function ($item) use ($field) {
+                        return [
+                            'id' => $item->id,
+                            'name' => $item->title,
+                            'edit' => moduleRoute(
+                                $field['name'],
+                                '',
+                                'edit',
+                                $item->id
+                            ),
+                            'endpointType' => $item->getMorphClass(),
+                        ];
+                    })
+                ];
+            })->toArray()
         ];
     }
 

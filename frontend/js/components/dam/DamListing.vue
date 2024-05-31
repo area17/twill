@@ -82,6 +82,7 @@
       @clear="clearSelectedMedias"
       @delete="deleteSelectedMedias"
       @tagUpdated="reloadTags"
+      @browserUpdated="updateMediaBrowser"
       :type="currentTypeObject"
       :translatableMetadatas="translatableMetadatas"
       @triggerMediaReplace="replaceMedia"
@@ -271,6 +272,17 @@
       }
     },
     methods: {
+      updateMediaBrowser: function (media, data) {
+        const index = this.mediaItems.findIndex(function(item) {
+          return item.id === media.id
+        })
+
+        if (index > -1) {
+          media.browsers = data
+
+          this.$set(this.mediaItems, index, media)
+        }
+      },
       replaceMedia: function({ id }) {
         this.$refs.uploader.replaceMedia(id)
       },

@@ -90,7 +90,9 @@ const state = {
 
   endpoint: window[process.env.VUE_APP_NAME].STORE.medias.endpoint || '',
 
-  tagEndpoints: window[process.env.VUE_APP_NAME].STORE.medias.tagEndPoints || {}
+  tagEndpoints: window[process.env.VUE_APP_NAME].STORE.medias.tagEndPoints || {},
+
+  browserFields: window[process.env.VUE_APP_NAME].STORE.medias.browserFields || {},
 }
 
 // getters
