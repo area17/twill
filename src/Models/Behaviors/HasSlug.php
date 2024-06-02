@@ -203,9 +203,9 @@ trait HasSlug
 
         $datas[$this->getForeignKey()] = $this->id;
 
-        $id = $this->getSlugModelClass()::insertGetId($datas);
+        $slugModel = \Illuminate\Database\Eloquent\Model::unguarded(fn () => $this->getSlugModelClass()::create($datas));
 
-        $this->disableLocaleSlugs($slugParams['locale'], $id);
+        $this->disableLocaleSlugs($slugParams['locale'], $slugModel->getKey());
     }
 
     public function disableLocaleSlugs(string $locale, int $except_slug_id = 0): void

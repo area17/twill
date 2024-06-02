@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Storage;
 use Aws\S3\S3Client;
 use Aws\S3\PostObjectV4;
+use Illuminate\Support\Str;
 
 if (!function_exists('s3Endpoint')) {
     /**
@@ -60,13 +61,11 @@ if (!function_exists('replaceAccents')) {
     /**
      * @param string $str
      * @return bool|string
+     * @deprecated Use Str::ascii instead
      */
     function replaceAccents($str)
     {
-        if (function_exists('mb_convert_encoding')) {
-            return mb_convert_encoding($str, 'ASCII', 'UTF-8');
-        }
-        return iconv('UTF-8', 'ASCII//TRANSLIT', $str);
+        return Str::ascii($str);
     }
 }
 
@@ -77,7 +76,7 @@ if (!function_exists('sanitizeFilename')) {
      */
     function sanitizeFilename($filename)
     {
-        $sanitizedFilename = replaceAccents($filename);
+        $sanitizedFilename = Str::ascii($filename);
 
         $invalid = array(
             ' ' => '-',
@@ -87,8 +86,8 @@ if (!function_exists('sanitizeFilename')) {
 
         $sanitizedFilename = str_replace(array_keys($invalid), array_values($invalid), $sanitizedFilename);
 
-        $sanitizedFilename = preg_replace('#[^A-Za-z0-9-\. ]#', '', $sanitizedFilename); // Remove all non-alphanumeric except .
-        $sanitizedFilename = preg_replace('#\.(?=.*\.)#', '', $sanitizedFilename); // Remove all but last .
+        $sanitizedFilename = preg_replace('#[^A-Za-z0-9-. ]#', '', $sanitizedFilename); // Remove all non-alphanumeric except .
+        $sanitizedFilename = preg_replace('#\.(?=.*\.)#', '-', $sanitizedFilename); // Remove all but last .
         $sanitizedFilename = preg_replace('#-+#', '-', $sanitizedFilename); // Replace any more than one - in a row
         $sanitizedFilename = str_replace('-.', '.', $sanitizedFilename); // Remove last - if at the end
         $sanitizedFilename = strtolower($sanitizedFilename); // Lowercase
