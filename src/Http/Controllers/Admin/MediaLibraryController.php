@@ -378,7 +378,7 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     /**
      * @return Collection
      */
-    private function getExtraMetadatas()
+    protected function getExtraMetadatas()
     {
         return Collection::make($this->customFields)->mapWithKeys(function ($field) {
             $fieldInRequest = $this->request->get($field['name']);
@@ -394,11 +394,14 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
     /**
      * @return Collection
      */
-    private function getExtraTagFields()
+    protected function getExtraTagFields($bulk = false)
     {
-        return Collection::make($this->customTagFields)->mapWithKeys(function ($field) {
+        return Collection::make($this->customTagFields)->mapWithKeys(function ($field) use ($bulk) {
             $fieldInRequest = $this->request->get($field['name']);
 
+            if ($bulk) {
+                return ["bulk_tags_{$field['name']}" => $fieldInRequest];
+            }
             return [$field['name'] => $fieldInRequest];
         });
     }

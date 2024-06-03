@@ -31,8 +31,22 @@
                 ]
             );
         }
+
+        $tagfields = [
+            ['name' => 'tags', 'label' => 'Keywords', 'multiple' => true, 'searchable' => true, 'taggable' => true]
+        ];
+
+        foreach (config('twill.media_library.extra_tag_fields') as $field) {
+            $tagfields[] = [
+                'name' => $field['name'],
+                'label' => $field['label'],
+                'multiple' => $field['multiple'] ?? false,
+                'key' => 'label'
+            ];
+        }
     @endphp
     window['{{ config('twill.js_namespace') }}'].STORE.medias.browserFields = {!! json_encode($mediaBrowsers) !!}
+    window['{{ config('twill.js_namespace') }}'].STORE.medias.tagFields = {!! json_encode($tagfields) !!}
 
     window['{{ config('twill.js_namespace') }}'].STORE.browser = {}
     window['{{ config('twill.js_namespace') }}'].STORE.browser.selected = {}

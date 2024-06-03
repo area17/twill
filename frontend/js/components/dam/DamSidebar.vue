@@ -357,11 +357,7 @@
             </template>
 
 
-          <template
-            v-if="
-              singleAndMultipleMetadatas.some(field => field.type === 'tags')
-            "
-          >
+          <template>
             <div
               :class="[
                 'dam-sidebar__tags',
@@ -378,20 +374,18 @@
                   </a17-button>
                 </div>
                 <ul class="dam-sidebar__tags-static">
-                  <template v-for="(field, i) in singleAndMultipleMetadatas">
-                    <template v-if="field.type === 'tags'">
-                      <li
-                        v-for="(tag, tagIndex) in getSharedItems(field.name, field.key)"
-                        v-bind:key="`tag_${i}_${tagIndex}`"
-                      >
-                        {{ tag }}
-                      </li>
-                    </template>
+                  <template v-for="(field, i) in tagFields">
+                    <li
+                      v-for="(tag, tagIndex) in getSharedItems(field.name, field.key)"
+                      v-bind:key="`tag_${i}_${tagIndex}`"
+                    >
+                      {{ tag }}
+                    </li>
                   </template>
                 </ul>
               </template>
-              <template v-else v-for="field in singleAndMultipleMetadatas">
-                <div v-if="field.type === 'tags'" v-bind:key="field.name">
+              <template v-else v-for="field in tagFields">
+                <div v-bind:key="field.name">
                   <a17-vselect
                     :label="field.label"
                     :name="field.name"
@@ -806,7 +800,8 @@
         wysiwygOptions: state => state.mediaLibrary.config.wysiwygOptions,
         tagEndpoints: state => state.mediaLibrary.tagEndpoints,
         currentBrowser: state => state.browser.connector,
-        browserFields: state => state.mediaLibrary.browserFields
+        browserFields: state => state.mediaLibrary.browserFields,
+        tagFields: state => state.mediaLibrary.tagFields
       })
     },
     methods: {
@@ -963,20 +958,12 @@
           data,
           resp => {
             this.loading = false
+            this.editTagsOpen = false
 
-            // Refresh the select filter displaying all tags
-            if (resp.data.tags) this.$emit('tagUpdated', resp.data.tags)
-
-            // Bulk update : Refresh tags
-            if (this.hasMultipleMedias && resp.data.items) {
-              // Update the tags of all the selected medias
-              this.medias.forEach(function(media) {
-                resp.data.items.some(function(mediaFromResp) {
-                  if (mediaFromResp.id === media.id)
-                    media.tags = mediaFromResp.tags // replace tags with the one from the response
-                  return mediaFromResp.id === media.id
-                })
-              })
+            if (!this.hasMultipleMedias) {
+              if (resp.data) this.$emit('tagFieldsUpdated', this.firstMedia, resp.data)
+            } else if (this.hasMultipleMedias && resp.data.items) {
+              this.$emit('bulkTagsUpdated', resp.data.items)
             }
           },
           error => {

@@ -82,7 +82,9 @@
       @clear="clearSelectedMedias"
       @delete="deleteSelectedMedias"
       @tagUpdated="reloadTags"
+      @tagFieldsUpdated="updateTags"
       @browserUpdated="updateMediaBrowser"
+      @bulkTagsUpdated="updateMedias"
       :type="currentTypeObject"
       :translatableMetadatas="translatableMetadatas"
       @triggerMediaReplace="replaceMedia"
@@ -518,6 +520,37 @@
       },
       reloadTags: function(tags = []) {
         this.tags = tags
+      },
+      updateTags: function(media, data) {
+        const index = this.mediaItems.findIndex(function(item) {
+          return item.id === media.id
+        })
+
+        if (index > -1) {
+          Object.keys(data).forEach(key => {
+            if (media.hasOwnProperty(key)) {
+              media[key] = data[key]
+            }
+          })
+
+          this.$set(this.mediaItems, index, media)
+        }
+      },
+      updateMedias: function(medias) {
+        medias.forEach(media => {
+          const index = this.mediaItems.findIndex(function(item) {
+            return item.id === media.id
+          })
+
+          this.mediaItems.splice(index, 1, media)
+
+          // Let's update selected medias too
+          const selectedMediaIndex = this.selectedMedias.findIndex(function(item) {
+            return item.id === media.id
+          })
+
+          this.selectedMedias.splice(selectedMediaIndex, 1, media)
+        })
       },
       submitFilter: function(formData) {
         const self = this
