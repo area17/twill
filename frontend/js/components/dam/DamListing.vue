@@ -85,6 +85,7 @@
       @tagFieldsUpdated="updateTags"
       @browserUpdated="updateMediaBrowser"
       @bulkTagsUpdated="updateMedias"
+      @bulkBrowsersUpdated="updateMedias"
       :type="currentTypeObject"
       :translatableMetadatas="translatableMetadatas"
       @triggerMediaReplace="replaceMedia"

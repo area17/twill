@@ -255,7 +255,6 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
                 'tags' => $this->request->get('tags', null),
                 ],
                 $this->getExtraMetadatas()->toArray(),
-                $this->getExtraTagFields()->toArray()
             )
         );
 
@@ -307,38 +306,6 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
         ], 200);
     }
 
-    public function updateBrowser()
-    {
-
-        $this->repository->update(
-            $this->request->input('id'),
-            $this->getBrowsers()->toArray(),
-        );
-
-        $media = $this->repository->getById($this->request->input('id'));
-
-        return $this->responseFactory->json(
-            Collection::make(config('twill.media_library.browsers'))->mapWithKeys(function ($field) use ($media) {
-                return [
-                    $field['name'] => $media->{$field['name']}->map(function ($item) use ($field) {
-                        return [
-                            'id' => $item->id,
-                            'name' => $item->title,
-                            'edit' => moduleRoute(
-                                $field['name'],
-                                '',
-                                'edit',
-                                $item->id
-                            ),
-                            'endpointType' => $item->getMorphClass(),
-                        ];
-                    })
-                ];
-            })->toArray(),
-            200
-        );
-    }
-
     /**
      * @return mixed
      */
@@ -386,33 +353,6 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
             if (isset($field['type']) && $field['type'] === 'checkbox') {
                 return [$field['name'] => $fieldInRequest ? Arr::first($fieldInRequest) : false];
             }
-
-            return [$field['name'] => $fieldInRequest];
-        });
-    }
-
-    /**
-     * @return Collection
-     */
-    protected function getExtraTagFields($bulk = false)
-    {
-        return Collection::make($this->customTagFields)->mapWithKeys(function ($field) use ($bulk) {
-            $fieldInRequest = $this->request->get($field['name']);
-
-            if ($bulk) {
-                return ["bulk_tags_{$field['name']}" => $fieldInRequest];
-            }
-            return [$field['name'] => $fieldInRequest];
-        });
-    }
-
-    /**
-     * @return Collection
-     */
-    private function getBrowsers()
-    {
-        return Collection::make($this->customBrowsers)->mapWithKeys(function ($field) {
-            $fieldInRequest = $this->request->get($field['name']);
 
             return [$field['name'] => $fieldInRequest];
         });

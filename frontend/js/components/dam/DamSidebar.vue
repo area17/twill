@@ -327,7 +327,6 @@
 
           <template v-for="field in browserFields">
               <div
-                v-if="getBrowserItem(field.name).length"
                 class="dam-sidebar__editable"
                 v-bind:key="field.name"
               >
@@ -339,7 +338,7 @@
                 </div>
                 <ul>
                   <li
-                    v-for="(link, i) in getBrowserItem(field.name)"
+                    v-for="(link, i) in getSharedBrowserItems(field.name)"
                     :key="i"
                     class="f--small"
                   >
@@ -742,12 +741,23 @@
           }
         }
       },
-      getBrowserItem: function() {
+      getSharedBrowserItems: function() {
         return function(fieldName) {
-          return this.firstMedia.browsers[fieldName];
+          return this.medias
+            .map(media => media.browsers[fieldName] || [])
+            .reduce((allItems, currentItems) => {
+              if (Array.isArray(allItems) && Array.isArray(currentItems)) {
+                return allItems.filter(item => {
+                  if (typeof item === 'object') {
+                    return currentItems.some(obj => isEqual(obj, item))
+                  }
+                  return currentItems.includes(item)
+                })
+              }
+              return []
+            })
         }
       },
-
       sharedKeywords: function() {
         return this.getSharedItems('keywords')
       },
@@ -981,7 +991,7 @@
       openBrowser: function (item) {
         const selected = {
           browsers: {
-            [item.name]: this.getBrowserItem(item.name)
+            [item.name]: this.getSharedBrowserItems(item.name)
           }
         }
         this.$store.commit(BROWSER.ADD_BROWSERS, selected)
@@ -1006,17 +1016,31 @@
 
         const data = {
           [this.currentBrowser]: items,
-          id: this.firstMedia.id
+        }
+
+        let url;
+
+        if (this.hasMultipleMedias) {
+          data.ids = this.mediasIds
+          url = this.firstMedia.updateBulkBrowserUrl
+        } else {
+          data.id = this.firstMedia.id
+          url = this.firstMedia.updateBrowserUrl
         }
 
         api.update(
-          this.firstMedia.updateBrowserUrl,
+          url,
           data,
           resp => {
             this.loading = false
 
             this.$refs.damBrowser.close()
-            if (resp.data) this.$emit('browserUpdated', this.firstMedia, resp.data)
+
+            if (!this.hasMultipleMedias) {
+              if (resp.data) this.$emit('browserUpdated', this.firstMedia, resp.data)
+            } else if (this.hasMultipleMedias && resp.data.items) {
+              this.$emit('bulkBrowsersUpdated', resp.data.items)
+            }
 
           },
           error => {
