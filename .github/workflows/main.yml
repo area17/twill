@@ -38,7 +38,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:10.*" "doctrine/dbal:^3.0" --no-interaction --no-update
+          composer require "laravel/framework:11.*" --no-interaction --no-update
           composer install
 
       - name: Execute tests
@@ -118,7 +118,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:^3.0" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
           composer install --prefer-dist --no-interaction --no-plugins
 
       - name: Patch TestCase files for PHP < 8.1
@@ -133,7 +133,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '18.x'
+          node-version: '20.x'
 
       - name: Build npm dependencies.
         run: |
