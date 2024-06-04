@@ -72,6 +72,8 @@ jobs:
           - laravel: 9.*
             dbal: 4.*
           - laravel: 10.*
+            dbal: 4.*
+          - laravel: 10.*
             php: 8.0
           - laravel: 11.*
             php: 8.0
