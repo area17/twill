@@ -65,8 +65,10 @@ trait HasRelated
      *
      * @param array<int, Model|array> $items
      */
-    public function saveRelated(array|Collection $items, string $browserName): void
+    public function saveRelated(array|Collection|Model $items, string $browserName): void
     {
+        $items = collect($items);
+
         /** @var Collection<int, RelatedItem> $itemsToProcess */
         $itemsToProcess = $this->relatedItems()->where('browser_name', $browserName)->get();
 
