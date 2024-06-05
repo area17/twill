@@ -3,7 +3,7 @@
     "scripts": {
         "dev": "vuepress dev src",
         "build": "vuepress build src",
-        "prod": "export VUEPRESS_BASE=docs && npm run build && mkdir -p docs/api && cp -R ../docs-api/build/* docs/api"
+        "prod": "export VUEPRESS_BASE=docs/2.x && npm run build && mkdir -p docs/api && cp -R ../docs-api/build/* docs/api"
     },
     "dependencies": {
         "@vuepress/plugin-google-analytics": "1.3.1",

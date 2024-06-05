@@ -81,7 +81,6 @@
     },
     methods: {
       toggleVisibility: function (value) {
-
         if (this.$refs.fieldContainer) {
           this.$slots.default.forEach((child) => {
             // Base input fields.

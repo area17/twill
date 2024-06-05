@@ -2,6 +2,30 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 2.13.0 (2023-04-13)
+
+### Added
+
+- Laravel 10 support by @antonioribeiro in https://github.com/area17/twill/pull/2155
+- Allow disabling automatic navigation on a Capsule package by @antonioribeiro in https://github.com/area17/twill/pull/2113
+- Allow creating blocks and repeaters inside Capsules by @antonioribeiro in https://github.com/area17/twill/pull/2082
+- Singleton - Add support of capsules inside the seed method by @cambad in https://github.com/area17/twill/pull/2180
+
+### Fixed
+
+- Fix nested repeater being duplicated by @brunEdo in https://github.com/area17/twill/pull/2211
+- Fix for VSelect component to use float values by @eudaco in https://github.com/area17/twill/pull/2024
+- #1957: Fix connected fields keepalive. by @haringsrob in https://github.com/area17/twill/pull/2047
+- Backport connected fields. by @haringsrob in https://github.com/area17/twill/pull/2059
+- Missing .env line for disabling S3 storage by @DarthMikke in https://github.com/area17/twill/pull/2162
+
+### Improved
+
+- Update index.md by @alexfraundorf-com in https://github.com/area17/twill/pull/2055
+- Update architecture-concepts.md by @alexfraundorf-com in https://github.com/area17/twill/pull/2054
+- it-IT translation enhancements by @LucaRed in https://github.com/area17/twill/pull/1929
+- it translation: fixes by @LucaRed in https://github.com/area17/twill/pull/2201
+
 ## 2.12.4 (2023-01-04)
 
 - Revert listAll change as it may conflict with method overrides.
