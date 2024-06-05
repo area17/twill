@@ -51,6 +51,7 @@ trait HasRelated
                 /** @var \A17\Twill\Models\Model $model */
                 if ($model = $item->related) {
                     $model->setRelation('pivot', $item);
+                    $item->unsetRelation('related');
 
                     return $model;
                 }
@@ -79,7 +80,7 @@ trait HasRelated
             }
 
             $firstMatchKey = $itemsToProcess
-                ->where(fn ($item) => $item->related_id === $id && $item->related_type === $type)
+                ->where(fn (RelatedItem $item) => $item->related_id == $id && $item->related_type === $type)
                 // We should only have one item always as you cannot select the same items twice.
                 ->keys()
                 ->first();
