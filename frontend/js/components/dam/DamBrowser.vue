@@ -23,170 +23,170 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+  import { mapState } from 'vuex'
 
-import { BROWSER } from '@/store/mutations'
-import FormDataAsObj from '@/utils/formDataAsObj.js'
+  import { BROWSER } from '@/store/mutations'
+  import FormDataAsObj from '@/utils/formDataAsObj.js'
 
-import a17Filter from '@/components/Filter.vue'
-import a17ItemList from '@/components/ItemList.vue'
+  import a17Filter from '@/components/Filter.vue'
+  import a17ItemList from '@/components/ItemList.vue'
 
-export default {
-  name: 'A17DamBrowser',
-  components: {
-    'a17-filter': a17Filter,
-    'a17-itemlist': a17ItemList
-  },
-  props: {
-    btnLabel: {
-      type: String,
-      default: 'Insert'
+  export default {
+    name: 'A17DamBrowser',
+    components: {
+      'a17-filter': a17Filter,
+      'a17-itemlist': a17ItemList
     },
-    btnMultiLabel: {
-      type: String,
-      default: 'Insert files'
-    },
-    initialPage: {
-      type: Number,
-      default: 1
-    }
-  },
-  data () {
-    return {
-      maxPage: 20,
-      fullItems: [],
-      listHeight: 0,
-      page: this.initialPage
-    }
-  },
-  computed: {
-    currentEndpoint () {
-      return this.endpoints.find(endpoint => endpoint.value === this.endpoint)
-    },
-    multiSources () {
-      return this.endpoints.length > 0
-    },
-    selectedItems: {
-      get () {
-        return this.selected[this.connector] || []
+    props: {
+      btnLabel: {
+        type: String,
+        default: 'Insert'
       },
-      set (items) {
-        this.$store.commit(BROWSER.SAVE_ITEMS, items)
+      btnMultiLabel: {
+        type: String,
+        default: 'Insert files'
+      },
+      initialPage: {
+        type: Number,
+        default: 1
       }
     },
-    ...mapState({
-      connector: state => state.browser.connector,
-      max: state => state.browser.max,
-      endpoint: state => state.browser.endpoint,
-      endpointName: state => state.browser.endpointName,
-      endpoints: state => state.browser.endpoints,
-      browserTitle: state => state.browser.title,
-      browserNote: state => state.browser.note,
-      selected: state => state.browser.selected
-    })
-  },
-  methods: {
-    updateSelectedItems (item) {
-      const keysToTest = this.multiSources ? ['id', 'endpointType'] : ['id']
-      const availableItem = this.fullItems.some(sItem => keysToTest.every(key => sItem[key] === item[key]))
-
-      if (!availableItem) return
-
-      const alreadySelected = this.selectedItems.some(sItem => keysToTest.every(key => sItem[key] === item[key]))
-
-      // not already selected
-      if (!alreadySelected) {
-        if (this.max === 1) this.clearSelectedItems()
-
-        // tbd: maybe show an alert to say that max size is reached ?
-        if (this.selectedItems.length >= this.max && this.max > 0) return
-
-        this.selectedItems = [...this.selectedItems, item]
-      } else {
-        // Remove one item from the selected item
-        const itemIndex = this.selectedItems.findIndex(sItem => keysToTest.every(key => sItem[key] === item[key]))
-        if (itemIndex < 0) return
-        const items = [...this.selectedItems]
-        items.splice(itemIndex, 1)
-        this.selectedItems = items
+    data () {
+      return {
+        maxPage: 20,
+        fullItems: [],
+        listHeight: 0,
+        page: this.initialPage
       }
     },
-    getFormData (form) {
-      let data = FormDataAsObj(form)
-
-      if (data) {
-        data.page = this.page
-      } else {
-        data = { page: this.page }
-      }
-
-      return data
-    },
-    clearSelectedItems () {
-      this.selectedItems = []
-    },
-    clearFullItems () {
-      this.fullItems.splice(0)
-    },
-    reloadList (hardReload = false) {
-      if (hardReload) {
-        this.page = 1
-      }
-
-      const form = this.$refs.form
-      const list = this.$refs.list
-      const formdata = this.getFormData(form)
-
-      this.$http.get(this.endpoint, { params: formdata }).then((resp) => {
-        // add items here
-        if (hardReload) {
-          this.clearFullItems()
+    computed: {
+      currentEndpoint () {
+        return this.endpoints.find(endpoint => endpoint.value === this.endpoint)
+      },
+      multiSources () {
+        return this.endpoints.length > 0
+      },
+      selectedItems: {
+        get () {
+          return this.selected[this.connector] || []
+        },
+        set (items) {
+          this.$store.commit(BROWSER.SAVE_ITEMS, items)
         }
-
-        this.fullItems.push(...resp.data.data)
-
-        // re-listen for scroll position if height changed
-        this.$nextTick(() => {
-          if (this.listHeight !== list.scrollHeight) {
-            this.listHeight = list.scrollHeight
-            list.addEventListener('scroll', this.scrollToPaginate)
-          }
-        })
-      }, function (resp) {
-        // error callback
+      },
+      ...mapState({
+        connector: state => state.browser.connector,
+        max: state => state.browser.max,
+        endpoint: state => state.browser.endpoint,
+        endpointName: state => state.browser.endpointName,
+        endpoints: state => state.browser.endpoints,
+        browserTitle: state => state.browser.title,
+        browserNote: state => state.browser.note,
+        selected: state => state.browser.selected
       })
     },
-    submitFilter () {
-      // when changing filters, reset the page to 1
-      this.page = 1
-      this.clearFullItems()
-      this.reloadList()
-    },
-    scrollToPaginate () {
-      const list = this.$refs.list
+    methods: {
+      updateSelectedItems (item) {
+        const keysToTest = this.multiSources ? ['id', 'endpointType'] : ['id']
+        const availableItem = this.fullItems.some(sItem => keysToTest.every(key => sItem[key] === item[key]))
 
-      if (list.scrollTop + list.clientHeight > this.listHeight - 10) {
-        list.removeEventListener('scroll', this.scrollToPaginate)
+        if (!availableItem) return
 
-        if (this.maxPage > this.page) {
-          this.page = this.page + 1
-          this.reloadList()
+        const alreadySelected = this.selectedItems.some(sItem => keysToTest.every(key => sItem[key] === item[key]))
+
+        // not already selected
+        if (!alreadySelected) {
+          if (this.max === 1) this.clearSelectedItems()
+
+          // tbd: maybe show an alert to say that max size is reached ?
+          if (this.selectedItems.length >= this.max && this.max > 0) return
+
+          this.selectedItems = [...this.selectedItems, item]
+        } else {
+          // Remove one item from the selected item
+          const itemIndex = this.selectedItems.findIndex(sItem => keysToTest.every(key => sItem[key] === item[key]))
+          if (itemIndex < 0) return
+          const items = [...this.selectedItems]
+          items.splice(itemIndex, 1)
+          this.selectedItems = items
         }
+      },
+      getFormData (form) {
+        let data = FormDataAsObj(form)
+
+        if (data) {
+          data.page = this.page
+        } else {
+          data = { page: this.page }
+        }
+
+        return data
+      },
+      clearSelectedItems () {
+        this.selectedItems = []
+      },
+      clearFullItems () {
+        this.fullItems.splice(0)
+      },
+      reloadList (hardReload = false) {
+        if (hardReload) {
+          this.page = 1
+        }
+
+        const form = this.$refs.form
+        const list = this.$refs.list
+        const formdata = this.getFormData(form)
+
+        this.$http.get(this.endpoint, { params: formdata }).then((resp) => {
+          // add items here
+          if (hardReload) {
+            this.clearFullItems()
+          }
+
+          this.fullItems.push(...resp.data.data)
+
+          // re-listen for scroll position if height changed
+          this.$nextTick(() => {
+            if (this.listHeight !== list.scrollHeight) {
+              this.listHeight = list.scrollHeight
+              list.addEventListener('scroll', this.scrollToPaginate)
+            }
+          })
+        }, function (resp) {
+        // error callback
+        })
+      },
+      submitFilter () {
+        // when changing filters, reset the page to 1
+        this.page = 1
+        this.clearFullItems()
+        this.reloadList()
+      },
+      scrollToPaginate () {
+        const list = this.$refs.list
+
+        if (list.scrollTop + list.clientHeight > this.listHeight - 10) {
+          list.removeEventListener('scroll', this.scrollToPaginate)
+
+          if (this.maxPage > this.page) {
+            this.page = this.page + 1
+            this.reloadList()
+          }
+        }
+      },
+      saveAndClose () {
+        this.$emit('saveAndClose', this.selectedItems.map(item => item.id));
+      },
+      changeBrowserSource (source) {
+        this.$store.commit(BROWSER.UPDATE_BROWSER_ENDPOINT, source)
+        this.reloadList(true)
       }
     },
-    saveAndClose () {
-      this.$emit('saveAndClose', this.selectedItems.map(item => item.id));
-    },
-    changeBrowserSource (source) {
-      this.$store.commit(BROWSER.UPDATE_BROWSER_ENDPOINT, source)
-      this.reloadList(true)
+    mounted () {
+      // bind scroll on the feed
+      this.reloadList()
     }
-  },
-  mounted () {
-    // bind scroll on the feed
-    this.reloadList()
   }
-}
 </script>
 
 <style lang="scss" scoped>

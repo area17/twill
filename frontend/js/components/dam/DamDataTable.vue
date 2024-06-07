@@ -188,8 +188,8 @@
             : '',
           col.name === 'thumbnail' ? 'tablehead__cell--thumb' : '',
           col.name === 'thumbnail' &&
-          col.variation &&
-          col.variation === 'rounded'
+            col.variation &&
+            col.variation === 'rounded'
             ? 'tablehead__cell--thumb-rounded'
             : '',
           col.name === 'draggable' ? 'tablehead__cell--draggable' : '',

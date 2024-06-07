@@ -37,8 +37,6 @@
 </template>
 
 <script>
-  import debounce from 'lodash/debounce'
-
   // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
   import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue'
   import AttributesMixin from '@/mixins/addAttributes'
