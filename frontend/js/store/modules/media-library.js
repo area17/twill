@@ -95,6 +95,8 @@ const state = {
   browserFields: window[process.env.VUE_APP_NAME].STORE.medias.browserFields || {},
 
   tagFields: window[process.env.VUE_APP_NAME].STORE.medias.tagFields || {},
+
+  filterData: {}
 }
 
 // getters
@@ -291,6 +293,23 @@ const mutations = {
   },
   [MEDIA_LIBRARY.ADD_MEDIAS] (state, { medias }) {
     state.selected = Object.assign({}, state.selected, medias)
+  },
+  [MEDIA_LIBRARY.SET_FILTER_DATA] (state, payload) {
+    const filters = {}
+
+    for (const key in payload) {
+      if (Array.isArray(payload[key])) {
+        filters[key] = payload[key].map(item => item.value)
+      } else {
+        const deepFilters = {}
+        for (const deepKey in payload[key]) {
+          deepFilters[deepKey] = payload[key][deepKey].map(item => item.value)
+        }
+
+        filters[key] = deepFilters
+      }
+    }
+    state.filterData = filters;
   }
 }
 

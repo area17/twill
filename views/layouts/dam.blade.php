@@ -18,7 +18,6 @@
 @section('initialStore')
     window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(config('twill.settings.crops') ?? []) !!}
     window['{{ config('twill.js_namespace') }}'].STORE.medias.selected = {}
-    window['{{ config('twill.js_namespace') }}'].STORE.medias.endpoint = '{{ route(config('twill.admin_route_name_prefix') . 'media-library.medias.index') }}'
     window['{{ config('twill.js_namespace') }}'].STORE.medias.browserFields = {}
 
     @php

@@ -260,7 +260,8 @@
         selected: state => state.mediaLibrary.selected,
         indexToReplace: state => state.mediaLibrary.indexToReplace,
         endpoint: state => state.mediaLibrary.endpoint,
-      })
+        filterData: state => state.mediaLibrary.filterData,
+      }),
     },
     watch: {
       type: function() {
@@ -272,6 +273,9 @@
       },
       hideNames(newVal) {
         // TODO: Set showFileName in store
+      },
+      filterData(newData) {
+        this.submitFilter()
       }
     },
     methods: {
@@ -487,13 +491,10 @@
       reloadGrid: function() {
         this.loading = true
 
-        const form = this.$refs.form
-        const formdata = this.getFormData(form)
-
         // see api/media-library for actual ajax
         api.get(
           this.endpoint,
-          formdata,
+          this.filterData,
           resp => {
             // add medias here
             resp.data.items.forEach(item => {
@@ -553,7 +554,7 @@
           this.selectedMedias.splice(selectedMediaIndex, 1, media)
         })
       },
-      submitFilter: function(formData) {
+      submitFilter: function() {
         const self = this
         const el = this.$refs.list
         // when changing filters, reset the page to 1

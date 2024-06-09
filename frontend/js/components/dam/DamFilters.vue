@@ -38,9 +38,11 @@
             :key="i"
             :label="item.label"
             :items="item.items"
+            :name="item.name"
             :hasSearch="item.searchable"
             :advanced="item.advanced"
             ref="filterDropdown"
+            :isMobile="isMobile"
             @filtersApplied="updateAppliedFilters"
           >
           </a17-dam-filter-dropdown>
@@ -97,9 +99,10 @@
 <script>
   import { mapGetters } from 'vuex'
   import A17DamFilterDropdown from '@/components/dam/DamFilterDropdown.vue'
+  import {MEDIA_LIBRARY} from "@/store/mutations";
 
   export default {
-    name: 'A17Medialibrary',
+    name: 'DamFilters',
     components: {
       'a17-dam-filter-dropdown': A17DamFilterDropdown
     },
@@ -111,7 +114,7 @@
     },
     data: function() {
       return {
-        appliedFilters: [],
+        appliedFilters: {},
         filtersModalOpen: false,
         isMobile: false,
         showAdvanced: false
@@ -142,9 +145,17 @@
         let flattenedFilters = []
 
         for (const dropdownName in this.appliedFilters) {
-          flattenedFilters = flattenedFilters.concat(
-            this.appliedFilters[dropdownName]
-          )
+          if (Array.isArray(this.appliedFilters[dropdownName])) {
+            flattenedFilters = flattenedFilters.concat(
+              this.appliedFilters[dropdownName]
+            )
+          } else {
+            for (const tagName in this.appliedFilters[dropdownName]) {
+              flattenedFilters = flattenedFilters.concat(
+                this.appliedFilters[dropdownName][tagName]
+              )
+            }
+          }
         }
 
         return flattenedFilters
@@ -228,41 +239,10 @@
         this.$set(
           this.appliedFilters,
           dropdownName,
-          this.appliedFilters[dropdownName] || []
+          newFilters
         )
 
-        const appliedFiltersForDropdown = this.appliedFilters[dropdownName]
-
-        // Remove filters that are not present in the new filters array
-        this.appliedFilters[dropdownName] = appliedFiltersForDropdown.filter(
-          applied => {
-            return newFilters.some(filter => filter.value === applied.value)
-          }
-        )
-
-        // Remove any previously applied filters that are not in the new filters array
-        for (let i = appliedFiltersForDropdown.length - 1; i >= 0; i--) {
-          const appliedFilter = appliedFiltersForDropdown[i]
-          if (
-            !newFilters.some(filter => filter.value === appliedFilter.value)
-          ) {
-            appliedFiltersForDropdown.splice(i, 1)
-          }
-        }
-
-        // Add new filters that are not already applied
-        newFilters.forEach(filter => {
-          if (
-            !appliedFiltersForDropdown.some(
-              applied => applied.value === filter.value
-            )
-          ) {
-            appliedFiltersForDropdown.push(filter)
-          }
-        })
-
-        // Ensure Vue detects the change in this.appliedFilters
-        this.$set(this.appliedFilters, dropdownName, appliedFiltersForDropdown)
+        this.$store.commit(MEDIA_LIBRARY.SET_FILTER_DATA, this.appliedFilters)
 
         // Set applied checkbox values
         const filterValues = this.flattenedAppliedFilters.map(filter => {

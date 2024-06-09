@@ -8,7 +8,7 @@
       >{{ label }}
       <span
         ><span class="count"
-          >{{ totalChecked }} {{ $trans('dam.selected', 'selected') }}</span
+          > {{ totalCheckedText }} </span
         ><span v-svg symbol="dropdown_module"></span></span
     ></a17-button>
     <div class="dam-filters__dropdown">
@@ -29,24 +29,25 @@
         </div>
       </div>
       <div
-        v-if="items && items.length > 1"
+        v-if="items && items.length > 0"
         class="dam-filters__dropdown-content"
         ref="content"
       >
-        <template v-for="(subItem, index) in filterItems">
+        <template v-for="(subItem) in filterItems">
           <a17-checkboxaccordion
             v-if="subItem.items && subItem.items.length"
-            :key="index"
+            :name="subItem.name"
+            :key="subItem.name"
             :options="subItem.items"
             :updateLang="false"
             :selectedLabel="$trans('dam.selected', 'Selected')"
             ref="checkboxAccordion"
-            @selectionChanged="updateSelectedFilters"
+            @selectionChanged="(data) => updateSelectedFilters(data, subItem.name)"
             >{{ subItem.label }}</a17-checkboxaccordion
           >
         </template>
         <a17-checkboxgroup
-          v-if="!hasNestedItems(items)"
+          v-if="!hasNestedItems()"
           :name="label"
           :options="filterItems"
           ref="checkboxGroup"
@@ -90,6 +91,10 @@
         type: String,
         required: true
       },
+      name: {
+        type: String,
+        required: true
+      },
       hasSearch: {
         type: Boolean,
         default: false
@@ -103,6 +108,10 @@
       totalPages: {
         type: Number,
         default: 1
+      },
+      isMobile: {
+        type: Boolean,
+        default: false
       }
     },
     data: function() {
@@ -137,7 +146,11 @@
         return this.selectedFilters.length
       },
       uid() {
-        return this.label.replace(' ', '-').toLowerCase()
+        return this.name
+      },
+      totalCheckedText() {
+        return this.isMobile ? `${this.totalChecked} ${this.$trans('dam.selected', 'selected')}`
+          : (this.totalChecked > 0 ? `(${this.totalChecked})` : '')
       }
     },
     watch: {},
@@ -155,7 +168,7 @@
         this.isOpen = false
       },
       clearFilters() {
-        this.selectedFilters = []
+        this.selectedFilters = this.hasNestedItems() ? {} : [];
         this.$emit('filtersApplied', this.selectedFilters, this.uid)
 
         if (this.$refs.checkboxGroup) {
@@ -232,8 +245,8 @@
           this.fetchItems({ type: 'loadmore' })
         }
       },
-      hasNestedItems(items) {
-        for (const value of Object.values(items)) {
+      hasNestedItems() {
+        for (const value of Object.values(this.items)) {
           if (value && typeof value === 'object' && 'items' in value) {
             return true
           }
@@ -247,11 +260,11 @@
           this.hasTriggeredFetch = false
         }, 1)
       },
-      updateSelectedFilters(selectedItems) {
+      updateSelectedFilters(selectedItems, name = null) {
         // Find corresponding object from items array
         const selectedFilters = selectedItems.map(selectedItem => {
           let matchedItem
-          if (this.hasNestedItems(this.items)) {
+          if (this.hasNestedItems()) {
             this.items.forEach(list => {
               if (!matchedItem && list.items) {
                 matchedItem = list.items.find(
@@ -265,7 +278,12 @@
           return { label: matchedItem.label, value: selectedItem }
         })
 
-        this.selectedFilters = selectedFilters
+        if (this.hasNestedItems()) {
+          this.selectedFilters[name] = selectedFilters
+        } else {
+          this.selectedFilters = selectedFilters
+        }
+
 
         this.isCustomColorChecked =
           this.customColorCheckbox && selectedItems.includes('custom')
@@ -275,6 +293,8 @@
       const colorCheckbox = this.$el.querySelector(
         'input[name="Color"][value="custom"]'
       )
+
+      this.selectedFilters = this.hasNestedItems() ? {} : [];
 
       if (colorCheckbox) {
         this.customColorCheckbox = colorCheckbox
@@ -414,10 +434,6 @@
       border-radius: rem-calc(36);
       padding: rem-calc(8) rem-calc(16);
       border: 1px solid transparent;
-
-      .count {
-        display: none;
-      }
     }
 
     .icon {
@@ -431,6 +447,10 @@
 
       @include breakpoint('medium+') {
         border: 1px solid $color__black--90;
+
+        .count {
+          display: none;
+        }
       }
     }
 
