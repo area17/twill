@@ -108,7 +108,7 @@ class Media extends Model
                             'name' => $item->title,
                             'edit' => moduleRoute(
                                 $field['name'],
-                                '',
+                                $field['prefix'] ?? null,
                                 'edit',
                                 $item->id
                             ),
