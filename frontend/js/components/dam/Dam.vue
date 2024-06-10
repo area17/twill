@@ -14,10 +14,7 @@
       ></a17-dam-header>
 
       <div class="dam__page">
-        <a17-dam-listing
-          :authorized="authorized"
-          :extra-metadatas="extraMetadatas"
-        />
+        <slot/>
       </div>
     </div>
   </div>
@@ -26,14 +23,12 @@
 <script>
   import a17DamNavigation from '@/components/dam/DamNavigation.vue'
   import a17DamHeader from '@/components/dam/DamHeader.vue'
-  import a17DamListing from '@/components/dam/DamListing.vue'
 
   export default {
     name: 'A17Dam',
     components: {
       'a17-dam-navigation': a17DamNavigation,
       'a17-dam-header': a17DamHeader,
-      'a17-dam-listing': a17DamListing
     },
     props: {
       authorized: {

@@ -2,9 +2,19 @@
 
 @section('appTypeClass', 'body--hasSideNav')
 
+@push('extra_css')
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-form.css') }}" rel="preload" as="style" crossorigin/>
+    @endif
+
+    @unless(config('twill.dev_mode', false))
+        <link href="{{ twillAsset('main-form.css') }}" rel="stylesheet" crossorigin/>
+    @endunless
+@endpush
+
 @push('extra_js_head')
-    @if (app()->isProduction())
-        <link href="{{ twillAsset('main-free.js') }}" rel="preload" as="script" crossorigin />
+    @if(app()->isProduction())
+        <link href="{{ twillAsset('main-form.js') }}" rel="preload" as="script" crossorigin/>
     @endif
 @endpush
 
@@ -53,6 +63,7 @@
     @yield('extraStore')
 @stop
 
-@push('extra_js')
-    <script src="{{ twillAsset('main-free.js') }}" crossorigin></script>
-@endpush
+
+@prepend('extra_js')
+    <script src="{{ twillAsset('main-form.js') }}" crossorigin></script>
+@endprepend
