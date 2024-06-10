@@ -491,10 +491,16 @@
       reloadGrid: function() {
         this.loading = true
 
+        const form = this.$refs.form
+        const formdata = this.getFormData(form)
+
         // see api/media-library for actual ajax
         api.get(
           this.endpoint,
-          this.filterData,
+          {
+            ...formdata,
+            ...this.filterData
+          },
           resp => {
             // add medias here
             resp.data.items.forEach(item => {
