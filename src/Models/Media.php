@@ -98,7 +98,9 @@ class Media extends Model
                     'video' => null,
                 ],
             ],
-            'browsers' => Collection::make(config('twill.media_library.browsers'))->mapWithKeys(function ($field) {
+            'browsers' => Collection::make(config('twill.media_library.browsers'))->filter(function($field){
+                return method_exists($this, $field['name']);
+            })->mapWithKeys(function ($field) {
                 return [
                     $field['name'] => $this->{$field['name']}?->map(function ($item) use ($field) {
                         return [
@@ -115,7 +117,9 @@ class Media extends Model
                     })
                 ];
             })->toArray()
-        ] + Collection::make(config('twill.media_library.extra_tag_fields'))->mapWithKeys(function ($field) {
+        ] + Collection::make(config('twill.media_library.extra_tag_fields'))->filter(function($field){
+            return method_exists($this, $field['name']);
+        })->mapWithKeys(function ($field) {
             return [
                 $field['name'] => $this->{$field['name']}?->map(function ($item) {
                     return [
