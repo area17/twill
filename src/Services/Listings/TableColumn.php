@@ -257,6 +257,6 @@ abstract class TableColumn
             return $renderFunction($model);
         }
 
-        return $model->{$this->field} ?? '';
+        return data_get($model, $this->field) ?? '';
     }
 }
