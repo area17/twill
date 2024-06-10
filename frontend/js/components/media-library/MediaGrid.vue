@@ -17,7 +17,6 @@
           <img :src="item.thumbnail" class="mediagrid__img" />
           <span v-if="item.fileExtension" class="mediagrid__label">{{ item.fileExtension }}</span>
         </span>
-        {{  !hideNames }} {{ showFileName || hideNames }}
         <p v-if="showFileName ? showFileName : !hideNames" :title="item.name" class="mediagrid__name">{{ item.name }}</p>
     </div>
   </div>
