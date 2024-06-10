@@ -100,7 +100,7 @@ class Media extends Model
             ],
             'browsers' => Collection::make(config('twill.media_library.browsers'))->mapWithKeys(function ($field) {
                 return [
-                    $field['name'] => $this->{$field['name']}->map(function ($item) use ($field) {
+                    $field['name'] => $this->{$field['name']}?->map(function ($item) use ($field) {
                         return [
                             'id' => $item->id,
                             'name' => $item->title,
@@ -117,7 +117,7 @@ class Media extends Model
             })->toArray()
         ] + Collection::make(config('twill.media_library.extra_tag_fields'))->mapWithKeys(function ($field) {
             return [
-                $field['name'] => $this->{$field['name']}->map(function ($item) {
+                $field['name'] => $this->{$field['name']}?->map(function ($item) {
                     return [
                         'value' => $item->id,
                         'label' => $item->title
