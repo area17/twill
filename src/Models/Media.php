@@ -42,7 +42,7 @@ class Media extends Model
 
     public function getDimensionsAttribute()
     {
-        return $this->width . 'x' . $this->height;
+        return $this->width . '×' . $this->height;
     }
 
     public function altTextFrom($filename)
