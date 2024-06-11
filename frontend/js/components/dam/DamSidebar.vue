@@ -142,8 +142,6 @@
             <!-- Actions -->
             <a
               :href="firstMedia.editUrl"
-              target="_blank"
-              rel="noreferrer"
               :aria-label="$trans('dam.edit', 'Edit')"
             >
               <span v-svg symbol="edit" aria-hidden="true"></span>
@@ -523,6 +521,8 @@
   import isEqual from 'lodash/isEqual'
   import { mapState } from 'vuex'
   import PhotoSwipeLightbox from 'photoswipe/lightbox'
+  import PhotoSwipeVideoPlugin from 'photoswipe-video-plugin/dist/photoswipe-video-plugin.esm';
+
   import 'photoswipe/style.css'
 
   import a17Langswitcher from '@/components/LangSwitcher'
@@ -1067,6 +1067,10 @@
           closeSVG:
             '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"> <path d="M3 3L17 17M17 3L3 17" stroke="white" stroke-width="1.5" stroke-miterlimit="10"/> </svg>'
         })
+
+        // eslint-disable-next-line
+        const videoPlugin = new PhotoSwipeVideoPlugin(this.lightbox, {});
+
         this.lightbox.init()
       }
     },

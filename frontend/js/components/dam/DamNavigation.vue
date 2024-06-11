@@ -2,7 +2,7 @@
   <div
     class="dam-nav__wrapper"
     :class="[{ 'dam-nav__wrapper--open': isOpen }]"
-    @click.prevent="onClickOutside"
+    @click="onClickOutside"
   >
     <div class="dam-nav" ref="nav">
       <div class="dam-nav__header">
