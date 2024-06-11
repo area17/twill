@@ -299,11 +299,11 @@ const mutations = {
 
     for (const key in payload) {
       if (Array.isArray(payload[key])) {
-        filters[key] = payload[key].map(item => item.value)
+        filters[key] = payload[key].map(item => item.value.replace(`${key}-`, ''))
       } else {
         const deepFilters = {}
         for (const deepKey in payload[key]) {
-          deepFilters[deepKey] = payload[key][deepKey].map(item => item.value)
+          deepFilters[deepKey] = payload[key][deepKey].map(item => item.value.replace(`${deepKey}-`, ''))
         }
 
         filters[key] = deepFilters

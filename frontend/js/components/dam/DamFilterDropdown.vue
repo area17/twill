@@ -40,6 +40,7 @@
             :key="subItem.name"
             :options="subItem.items"
             :updateLang="false"
+            :min="0"
             :selectedLabel="$trans('dam.selected', 'Selected')"
             ref="checkboxAccordion"
             @selectionChanged="(data) => updateSelectedFilters(data, subItem.name)"
@@ -48,7 +49,7 @@
         </template>
         <a17-checkboxgroup
           v-if="!hasNestedItems()"
-          :name="label"
+          :name="name"
           :options="filterItems"
           ref="checkboxGroup"
           @change="updateSelectedFilters"

@@ -186,7 +186,6 @@
         }, 10)
       },
       applyAppliedFilters() {
-        // TODO: Refactor this
         const values = []
 
         // Collect all checked checkbox values
@@ -198,16 +197,25 @@
 
         // Iterate through appliedFilters and remove unmatched values
         for (const key in this.appliedFilters) {
-          if (this.appliedFilters.hasOwnProperty(key)) {
+          if (Array.isArray(this.appliedFilters[key])) {
             this.appliedFilters[key] = this.appliedFilters[key].filter(
               filter => {
                 return values.includes(filter.value)
               }
             )
+          } else {
+            for (const deepKey in this.appliedFilters[key]) {
+              this.appliedFilters[key][deepKey] = this.appliedFilters[key][deepKey].filter(
+                filter => {
+                  return values.includes(filter.value)
+                }
+              )
+            }
           }
         }
 
         this.appliedFilters = { ...this.appliedFilters }
+        this.$store.commit(MEDIA_LIBRARY.SET_FILTER_DATA, this.appliedFilters)
       },
       applyFilters() {
         this.$refs.filterDropdown.forEach(el => {
@@ -235,7 +243,6 @@
         this.showAdvanced = !this.showAdvanced
       },
       updateAppliedFilters(newFilters, dropdownName) {
-        // Initialize the applied filters for the specified dropdown
         this.$set(
           this.appliedFilters,
           dropdownName,
@@ -263,7 +270,7 @@
           })
       },
       resetFilters() {
-        this.appliedFilters = []
+        this.appliedFilters = {}
         this.clearFilters()
       },
       bindInputs() {
