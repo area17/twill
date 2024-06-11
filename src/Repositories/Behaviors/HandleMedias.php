@@ -26,10 +26,10 @@ trait HandleMedias
         $mediasFromFields = $this->getMedias($fields);
 
         $mediasFromFields->each(function ($media) use ($object, $mediasCollection) {
-            $newMedia = Media::withTrashed()->find(is_array($media['id']) ? Arr::first($media['id']) : $media['id']);
+            $newMedia = Media::withTrashed()->find($media['media_id']);
             $pivot = $newMedia->newPivot(
                 $object,
-                Arr::except($media, ['id']),
+                $media,
                 config('twill.mediables_table', 'twill_mediables'),
                 true
             );
@@ -53,11 +53,7 @@ trait HandleMedias
             return;
         }
 
-        $object->medias()->sync([]);
-
-        $this->getMedias($fields)->each(function ($media) use ($object) {
-            $object->medias()->attach($media['id'], Arr::except($media, ['id']));
-        });
+        $object->medias()->sync($this->getMedias($fields));
     }
 
     /**
@@ -79,17 +75,13 @@ trait HandleMedias
 
                 $locale = $locale ?? config('app.locale');
 
-                if (
-                    array_key_exists($role, $this->model->getMediasParams())
-                    || array_key_exists($role, TwillBlocks::getAllCropConfigs())
-                    || array_key_exists($role, config('twill.settings.crops', []))
-                ) {
+                if ($this->hasRole($role) || $this->hasJsonRepeaterRole($role)) {
                     Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
                         if (isset($media['crops']) && !empty($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
                                 $medias->push([
-                                    'id' => $media['id'],
+                                    'media_id' => $media['id'],
                                     'crop' => $cropName,
                                     'role' => $role,
                                     'locale' => $locale,
@@ -104,7 +96,7 @@ trait HandleMedias
                         } else {
                             foreach ($this->getCrops($role) as $cropName => $cropDefinitions) {
                                 $medias->push([
-                                    'id' => $media['id'],
+                                    'media_id' => $media['id'],
                                     'crop' => $cropName,
                                     'role' => $role,
                                     'locale' => $locale,
@@ -211,5 +203,22 @@ trait HandleMedias
 
             $newObject->medias()->attach($media->id, $newPushData);
         }
+    }
+
+    private function hasRole($role): bool
+    {
+        return array_key_exists($role, $this->model->getMediasParams())
+        || array_key_exists($role, TwillBlocks::getAllCropConfigs())
+        || array_key_exists($role, config('twill.settings.crops', []));
+    }
+
+    private function hasJsonRepeaterRole($role): bool
+    {
+        if (! Str::contains($role, '|')) {
+            return false;
+        }
+
+        $role = last(explode('|', $role));
+        return $this->hasRole($role);
     }
 }
