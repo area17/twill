@@ -7,7 +7,7 @@
       :options="options"
       @change="changeValue"
       :selected="currentValue"
-      :min="1"
+      :min="min"
     ></a17-checkboxgroup>
   </a17-accordion>
 </template>
@@ -50,6 +50,10 @@
       updateLang: {
         type: Boolean,
         default: true
+      },
+      min: {
+        type: Number,
+        default: 1
       }
     },
     data: function() {
