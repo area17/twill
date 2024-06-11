@@ -142,8 +142,6 @@
             <!-- Actions -->
             <a
               :href="firstMedia.editUrl"
-              target="_blank"
-              rel="noreferrer"
               :aria-label="$trans('dam.edit', 'Edit')"
             >
               <span v-svg symbol="edit" aria-hidden="true"></span>
