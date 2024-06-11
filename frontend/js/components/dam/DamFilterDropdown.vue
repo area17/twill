@@ -148,13 +148,11 @@
         )
       },
       totalChecked() {
-        console.log('jsjs')
         if (this.hasNestedItems) {
           let totalCount = 0;
 
-          for (let key in this.selectedFilters) {
+          for (const key in this.selectedFilters) {
             totalCount += this.selectedFilters[key].length;
-            console.log(totalCount)
           }
 
           return totalCount;
