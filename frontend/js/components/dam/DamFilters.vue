@@ -39,6 +39,7 @@
             :label="item.label"
             :items="item.items"
             :name="item.name"
+            :hasNestedItems="item.hasNestedItems"
             :hasSearch="item.searchable"
             :advanced="item.advanced"
             ref="filterDropdown"

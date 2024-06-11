@@ -48,7 +48,7 @@
           >
         </template>
         <a17-checkboxgroup
-          v-if="!hasNestedItems()"
+          v-if="!hasNestedItems"
           :name="name"
           :options="filterItems"
           ref="checkboxGroup"
@@ -113,6 +113,10 @@
       isMobile: {
         type: Boolean,
         default: false
+      },
+      hasNestedItems: {
+        type: Boolean,
+        default: false
       }
     },
     data: function() {
@@ -144,7 +148,19 @@
         )
       },
       totalChecked() {
-        return this.selectedFilters.length
+        console.log('jsjs')
+        if (this.hasNestedItems) {
+          let totalCount = 0;
+
+          for (let key in this.selectedFilters) {
+            totalCount += this.selectedFilters[key].length;
+            console.log(totalCount)
+          }
+
+          return totalCount;
+        } else {
+          return this.selectedFilters.length
+        }
       },
       uid() {
         return this.name
@@ -169,7 +185,7 @@
         this.isOpen = false
       },
       clearFilters() {
-        this.selectedFilters = this.hasNestedItems() ? {} : [];
+        this.selectedFilters = this.hasNestedItems ? {} : [];
         this.$emit('filtersApplied', this.selectedFilters, this.uid)
 
         if (this.$refs.checkboxGroup) {
@@ -246,14 +262,6 @@
           this.fetchItems({ type: 'loadmore' })
         }
       },
-      hasNestedItems() {
-        for (const value of Object.values(this.items)) {
-          if (value && typeof value === 'object' && 'items' in value) {
-            return true
-          }
-        }
-        return false
-      },
       updateList(data, opts) {
         this.loadedItems = [...this.loadedItems, ...data]
 
@@ -265,7 +273,7 @@
         // Find corresponding object from items array
         const selectedFilters = selectedItems.map(selectedItem => {
           let matchedItem
-          if (this.hasNestedItems()) {
+          if (this.hasNestedItems) {
             this.items.forEach(list => {
               if (!matchedItem && list.items) {
                 matchedItem = list.items.find(
@@ -279,12 +287,15 @@
           return { label: matchedItem.label, value: selectedItem }
         })
 
-        if (this.hasNestedItems()) {
-          this.selectedFilters[name] = selectedFilters
+        if (this.hasNestedItems) {
+          this.$set(
+            this.selectedFilters,
+            name,
+            selectedFilters
+          )
         } else {
           this.selectedFilters = selectedFilters
         }
-
 
         this.isCustomColorChecked =
           this.customColorCheckbox && selectedItems.includes('custom')
@@ -295,7 +306,7 @@
         'input[name="Color"][value="custom"]'
       )
 
-      this.selectedFilters = this.hasNestedItems() ? {} : [];
+      this.selectedFilters = this.hasNestedItems ? {} : [];
 
       if (colorCheckbox) {
         this.customColorCheckbox = colorCheckbox
