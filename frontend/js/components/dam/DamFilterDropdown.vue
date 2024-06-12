@@ -137,7 +137,18 @@
     },
     computed: {
       filterItems() {
-        return [...this.items, ...this.loadedItems]
+        return [...this.items, ...this.loadedItems].map(item => {
+          if (this.hasNestedItems) {
+            item.items = item.items.map(newItem => {
+              newItem.value = `${item.name}-${newItem.value}`
+              return newItem
+            })
+          } else {
+            item.value = `${this.name}-${item.value}`
+          }
+
+          return item
+        })
       },
       filterName() {
         return this.label.replace(' ', '-').toLowerCase()
