@@ -184,7 +184,7 @@
       applyFilters() {
         if (this.isCustomColorChecked) {
           const index = this.selectedFilters.findIndex(filter => filter.value === 'colors-custom')
-          this.selectedFilters[index].hex = this.$refs.colorField.value
+          this.selectedFilters[index].hex = 'custom-' + this.$refs.colorField.value
         }
         this.$emit('filtersApplied', this.selectedFilters, this.uid)
 
