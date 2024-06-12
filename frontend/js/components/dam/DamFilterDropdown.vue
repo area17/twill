@@ -296,15 +296,15 @@
         }
 
         this.isCustomColorChecked =
-          this.customColorCheckbox && selectedItems.includes('custom')
+          this.customColorCheckbox && selectedItems.includes('colors-custom')
       }
     },
     mounted() {
-      const colorCheckbox = this.$el.querySelector(
-        'input[name="Color"][value="custom"]'
-      )
-
       this.selectedFilters = this.hasNestedItems ? {} : [];
+
+      const colorCheckbox = this.$el.querySelector(
+        `input[name="colors"][value="colors-custom"]`
+      )
 
       if (colorCheckbox) {
         this.customColorCheckbox = colorCheckbox
