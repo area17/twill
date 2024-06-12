@@ -182,6 +182,10 @@
     watch: {},
     methods: {
       applyFilters() {
+        if (this.isCustomColorChecked) {
+          const index = this.selectedFilters.findIndex(filter => filter.value === 'colors-custom')
+          this.selectedFilters[index].hex = this.$refs.colorField.value
+        }
         this.$emit('filtersApplied', this.selectedFilters, this.uid)
 
         if (this.selectedFilters.length > 0) {
@@ -293,7 +297,7 @@
           } else {
             matchedItem = this.items.find(item => item.value === selectedItem)
           }
-          return { label: matchedItem.label, value: selectedItem }
+          return matchedItem
         })
 
         if (this.hasNestedItems) {
