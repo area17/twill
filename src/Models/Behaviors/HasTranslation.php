@@ -80,8 +80,7 @@ trait HasTranslation
             })
             ->where($translationTable.'.'.$this->getLocaleKey(), $locale)
             ->orderBy($translationTable.'.'.$orderField, $orderType)
-            ->select($table.'.*')
-            ->with('translations');
+            ->select($table.'.*');
     }
 
     /**
@@ -102,8 +101,7 @@ trait HasTranslation
             ->groupBy("{$table}.id")
             ->groupBy("t.{$groupByField}")
             ->select("{$table}.*")
-            ->orderByRaw($orderRawString)
-            ->with('translations');
+            ->orderByRaw($orderRawString);
     }
 
     /**
