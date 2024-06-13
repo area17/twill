@@ -17,12 +17,12 @@
         </report>
     </coverage>
     <testsuites>
+        <testsuite name="Browser">
+            <directory>tests/Browser</directory>
+        </testsuite>
         <testsuite name="Unit">
             <directory>tests/unit</directory>
             <directory>tests/integration</directory>
-        </testsuite>
-        <testsuite name="Browser">
-          <directory>tests/Browser</directory>
         </testsuite>
     </testsuites>
     <logging/>
