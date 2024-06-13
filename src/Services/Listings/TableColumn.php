@@ -243,7 +243,7 @@ abstract class TableColumn
                         'slot' => $this->getRenderValue($model),
                         'isEditLink' => $this->linkToEdit,
                         'link' => $link,
-                    ])
+                    ])->render()
                 );
             }
         }
