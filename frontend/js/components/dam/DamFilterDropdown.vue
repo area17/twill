@@ -184,7 +184,7 @@
       applyFilters() {
         if (this.isCustomColorChecked) {
           const index = this.selectedFilters.findIndex(filter => filter.value === 'colors-custom')
-          this.selectedFilters[index].hex = 'custom-' + this.$refs.colorField.value
+          this.selectedFilters[index].hex = this.$refs.colorField.value
         }
         this.$emit('filtersApplied', this.selectedFilters, this.uid)
 
@@ -297,7 +297,15 @@
           } else {
             matchedItem = this.items.find(item => item.value === selectedItem)
           }
-          return matchedItem
+          const item = {
+            label: matchedItem.label,
+            value: matchedItem.value
+          }
+
+          if (this.name === 'colors') {
+            item.hex = matchedItem.hex
+          }
+          return item
         })
 
         if (this.hasNestedItems) {
