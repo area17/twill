@@ -2044,14 +2044,14 @@ abstract class ModuleController extends Controller
 
             if (array_key_exists($option, $this->authorizableOptions)) {
                 if (Str::endsWith($this->authorizableOptions[$option], '-module')) {
-                    $authorized = $this->user->can($this->authorizableOptions[$option], $this->moduleName);
+                    $authorized = $this->user?->can($this->authorizableOptions[$option], $this->moduleName) ?? true;
                 } elseif (Str::endsWith($this->authorizableOptions[$option], '-item')) {
-                    $authorized = $item ?
+                    $authorized = $this->user ? ($item ?
                         $this->user->can($this->authorizableOptions[$option], $item) :
                         $this->user->can(
                             Str::replaceLast('-item', '-module', $this->authorizableOptions[$option]),
                             $this->moduleName
-                        );
+                        )) : true;
                 }
             }
 
