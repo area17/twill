@@ -261,6 +261,7 @@
         indexToReplace: state => state.mediaLibrary.indexToReplace,
         endpoint: state => state.mediaLibrary.endpoint,
         filterData: state => state.mediaLibrary.filterData,
+        initialFilterData: state => state.mediaLibrary.initialFilterData,
       }),
     },
     watch: {
@@ -499,7 +500,8 @@
           this.endpoint,
           {
             ...formdata,
-            ...this.filterData
+            ...this.filterData,
+            ...this.initialFilterData
           },
           resp => {
             // add medias here

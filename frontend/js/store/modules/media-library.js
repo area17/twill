@@ -96,7 +96,9 @@ const state = {
 
   tagFields: window[process.env.VUE_APP_NAME].STORE.medias.tagFields || {},
 
-  filterData: {}
+  filterData: {},
+
+  initialFilterData: window[process.env.VUE_APP_NAME].STORE.medias.initialFilterData || {}
 }
 
 // getters
