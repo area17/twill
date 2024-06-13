@@ -11,6 +11,7 @@
         :current-user="currentUser"
         :users-management="usersManagement"
         :filters="filters"
+        :initial-search-value="initialSearchValue"
       ></a17-dam-header>
 
       <div class="dam__page">
@@ -66,6 +67,10 @@
       usersManagement: {
         type: Boolean,
         default: true
+      },
+      initialSearchValue: {
+        type: String,
+        default: ''
       },
       extraMetadatas: {
         type: Array,

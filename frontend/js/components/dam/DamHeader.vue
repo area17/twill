@@ -6,7 +6,7 @@
       </div>
       <div class="dam-header__action">
         <div ref="form">
-          <a17-filter @submit="submitSearch"> </a17-filter>
+          <a17-filter @submit="submitSearch" :initial-search-value="initialSearchValue" > </a17-filter>
         </div>
         <a17-button variant="validate" size="small">{{
           $trans('dam.add-new', 'Add new')
@@ -86,6 +86,10 @@
       usersManagement: {
         type: Boolean,
         default: true
+      },
+      initialSearchValue: {
+        type: String,
+        default: ''
       }
     },
     data: function() {
@@ -108,7 +112,15 @@
     },
     watch: {},
     methods: {
-      submitSearch(formData) {}
+      submitSearch(formData) {
+        // TODO: refactor this, this is a prototype for demo purposes
+        if (formData.search) {
+          window.location.href = '/admin/dam?search=' + formData.search
+        } else {
+          window.location.href = '/admin/dam'
+        }
+
+      }
     },
     mounted() {}
   }
