@@ -166,6 +166,8 @@
 @stop
 
 @section('initialStore')
+    window['{{ config('twill.js_namespace') }}'].STORE.datatable = {}
+
     window['{{ config('twill.js_namespace') }}'].STORE.form = {
     baseUrl: '{{ $baseUrl ?? '' }}',
     saveUrl: '{{ $saveUrl }}',

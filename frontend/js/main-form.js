@@ -54,6 +54,7 @@ import repeaters from '@/store/modules/repeaters'
 import parents from '@/store/modules/parents'
 import attributes from '@/store/modules/attributes'
 import permissions from '@/store/modules/permissions'
+import datatable from '@/store/modules/datatable'
 
 // mixins
 import formatPermalink from '@/mixins/formatPermalink'
@@ -63,10 +64,13 @@ import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 import sortBy from 'lodash/sortBy'
 
+import a17Datatable from '@/components/table/Datatable.vue'
+
 // configuration
 Vue.use(A17Config)
 Vue.use(A17Notif)
 
+store.registerModule('datatable', datatable)
 store.registerModule('form', form)
 store.registerModule('publication', publication)
 store.registerModule('blocks', blocks)
@@ -77,6 +81,8 @@ store.registerModule('repeaters', repeaters)
 store.registerModule('parents', parents)
 store.registerModule('attributes', attributes)
 store.registerModule('permissions', permissions)
+
+Vue.component('a17-datatable', a17Datatable)
 
 // Form components
 Vue.component('a17-fieldset', a17Fieldset)
