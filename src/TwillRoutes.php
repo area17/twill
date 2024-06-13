@@ -402,4 +402,14 @@ class TwillRoutes
         return config('twill.auth_login_redirect_path')
             ?? rtrim(config('twill.admin_app_url') ?: '', '/') . '/' . ltrim(config('twill.admin_app_path') ?? 'admin', '/');
     }
+
+    public function isTwillRequest(): bool
+    {
+        $adminAppUrl = config('twill.admin_app_url', config('app.url'));
+
+        $matchesDomain = !config('twill.admin_app_strict') || Str::endsWith(\request()->getSchemeAndHttpHost(), $adminAppUrl);
+        $matchesPath = empty(config('twill.admin_app_path')) || \request()->is(config('twill.admin_app_path', '') . '*');
+
+        return $matchesDomain && $matchesPath;
+    }
 }
