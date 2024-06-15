@@ -14,9 +14,9 @@ One to Many is one of the simpler relations to set up so let's get started:
 
 As with any relation we need to set up a database. In this example we are using our portfolio example where we will have multiple links on a project.
 
-We will set up 2 models, one is a Project model, you can do this using `php artisan twill:module Project`
+We will set up 2 models, one is a Project model, you can do this using `php artisan twill:make:module Project`
 
-And afterwards a Link model: `php artisan twill:module Link`, As the Link model is used for our hasMany, we do not have to add it to the routes or navigation files, so you can ignore that suggestion.
+And afterwards a Link model: `php artisan twill:make:module Link`, As the Link model is used for our hasMany, we do not have to add it to the routes or navigation files, so you can ignore that suggestion.
 
 In the **Link** migration we add a column to hold the `project_id` that we are creating it from.
 
