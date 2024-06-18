@@ -101,15 +101,19 @@ trait HasSlug
 
     public function restoreSlugs(): void
     {
-        $activeSlugs = $this->slugs()->withTrashed()->where('active', true)->get();
+        $activeSlugs = $this->slugs()->withTrashed()->get();
 
-        $activeSlugs->each(function ($slug) {
-            $slug->slug = $this->suffixSlugIfExisting(['locale' => $slug->locale, 'slug' => $slug->slug]);
+        $hasActive = false;
+        $activeSlugs->each(function ($slug) use (&$hasActive) {
+            if ($slug->active) {
+                $hasActive = true;
+                $slug->slug = $this->suffixSlugIfExisting(['locale' => $slug->locale, 'slug' => $slug->slug]);
+            }
             $slug->deleted_at = null;
             $slug->save();
         });
 
-        if ($activeSlugs->isEmpty()) {
+        if (!$hasActive) {
             $this->setSlugs();
         }
     }
