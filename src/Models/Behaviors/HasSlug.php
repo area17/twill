@@ -14,14 +14,24 @@ trait HasSlug
     private int $nb_variation_slug = 3;
     public array $twillSlugData = [];
 
+    private bool $twill_restoring = false;
+
     protected static function bootHasSlug(): void
     {
-        static::restoring(function ($model) {
+        static::restoring(function (self $model) {
             $model->restoreSlugs();
+            $model->twill_restoring = true;
         });
 
-        static::saved(function ($model) {
-            $model->handleSlugsOnSave();
+        static::saved(function (self $model) {
+            if (!$model->twill_restoring) {
+                $model->handleSlugsOnSave();
+            }
+            $model->twill_restoring = false;
+        });
+
+        static::deleting(function (self $model) {
+            $model->slugs()->delete();
         });
     }
 
