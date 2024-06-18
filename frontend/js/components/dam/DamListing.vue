@@ -53,7 +53,7 @@
           </div>
         </a17-dropdown>
       </div>
-      <div class="dam-listing__list-items">
+      <div class="dam-listing__list-items" @keyup.left="setCurrentMedia('previous')" @keyup.right="setCurrentMedia('next')" tabindex="0">
         <a17-mediagrid
           v-if="gridView"
           :items="renderedMediaItems"
@@ -280,6 +280,23 @@
       }
     },
     methods: {
+        setCurrentMedia: function(direction) {
+        const currentIndex = this.selectedMedias.length
+        ? this.mediaItems.findIndex(media => media.id === this.selectedMedias[0].id)
+        : -1;
+
+      if (direction === 'next') { // Arrow right
+        if (currentIndex < this.mediaItems.length - 1) {
+          this.clearSelectedMedias();
+          this.selectedMedias.push(this.mediaItems[currentIndex + 1]);
+        }
+      } else if (direction === 'previous') { // Arrow left
+        if (currentIndex > 0) {
+          this.clearSelectedMedias();
+          this.selectedMedias.push(this.mediaItems[currentIndex - 1]);
+        }
+      }
+      },
       updateMediaBrowser: function (media, data) {
         const index = this.mediaItems.findIndex(function(item) {
           return item.id === media.id
