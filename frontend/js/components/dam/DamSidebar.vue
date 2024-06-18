@@ -28,7 +28,7 @@
           </div>
 
           <template v-if="hasSingleMedia">
-            <p class="dam-sidebar__name">{{ firstMedia.name }}</p>
+            <p class="dam-sidebar__name">{{ firstMedia.title ?? firstMedia.name }}</p>
 
             <h2 class="visually-hidden" id="metaTitle">
               {{ $trans('dam.meta-title', 'Meta data') }}
