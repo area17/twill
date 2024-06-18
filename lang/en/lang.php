@@ -69,6 +69,7 @@ return [
         'selected' => 'selected',
         'submit-search' => 'Submit search',
         'replace' => 'Replace',
+        'download'=> 'Download',
         'remove' => 'Remove',
         'reset' => 'Reset',
         'show-advanced' => 'Show advanced',

@@ -175,14 +175,8 @@
             >
               <span v-svg symbol="preview" aria-hidden="true"></span>
             </a>
-            <button
-              v-if="hasSingleMedia"
-              :aria-label="$trans('dam.replace', 'Replace')"
-              type="button"
-              @click="replaceMedia"
-            >
-              <span v-svg symbol="replace" aria-hidden="true"></span>
-            </button>
+            <a v-if="hasSingleMedia" :href="firstMedia.original" download><span v-svg symbol="download"></span></a>
+
           </a17-buttonbar>
         </div>
 
