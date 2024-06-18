@@ -89,6 +89,8 @@
       :type="currentTypeObject"
       :translatableMetadatas="translatableMetadatas"
       @triggerMediaReplace="replaceMedia"
+      @nextMedia="setCurrentMedia('next')"
+      @previousMedia="setCurrentMedia('previous')"
     />
   </div>
 </template>
@@ -386,7 +388,7 @@
           this.updateSelectedMedias(media.id)
         }
       },
-      updateSelectedMedias: function(item, shift = false) {
+      updateSelectedMedias: function(item, shift = false, ctrlKey  = false) {
         const id = item.id
         const alreadySelectedMedia = this.selectedMedias.filter(function(
           media
@@ -396,7 +398,7 @@
 
         // not already selected
         if (alreadySelectedMedia.length === 0) {
-          if (this.max === 1 || !shift) this.clearSelectedMedias()
+          if (this.max === 1 || !shift || ctrlKey) this.clearSelectedMedias()
           if (this.selectedMedias.length >= this.max && this.max > 0) return
 
           if (shift && this.selectedMedias.length > 0) {

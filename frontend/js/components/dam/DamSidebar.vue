@@ -32,6 +32,9 @@
               :aria-label="$trans('dam.view', 'View')"
             >
             <img
+                tabindex="0"
+                @keyup.left="handleKeyUp('previous')"
+                @keyup.right="handleKeyUp('next')"
                 :src="firstMedia.thumbnail"
                 class="dam-sidebar__img"
                 :alt="firstMedia.name"
@@ -838,6 +841,13 @@
         this.$emit('triggerMediaReplace', {
           id: this.getMediaToReplaceId()
         })
+      },
+      handleKeyUp: function(direction){
+        if (direction === 'next') {
+            this.$emit('nextMedia')
+        }else {
+            this.$emit('previousMedia')
+        }
       },
       deleteSelectedMediasValidation: function() {
         if (this.loading) return false
