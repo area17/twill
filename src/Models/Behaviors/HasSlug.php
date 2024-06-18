@@ -6,6 +6,7 @@ use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Models\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 trait HasSlug
@@ -109,13 +110,7 @@ trait HasSlug
      */
     public function handleSlugsOnSave(): void
     {
-        if ($this->twillSlugData === []) {
-            return;
-        }
-
-        foreach (getLocales() as $locale) {
-            $this->disableLocaleSlugs($locale);
-        }
+        $this->disableLocaleSlugs();
 
         $slugParams = $this->twillSlugData !== [] ? $this->twillSlugData : $this->getSlugParams();
 
@@ -208,12 +203,14 @@ trait HasSlug
         $this->disableLocaleSlugs($slugParams['locale'], $slugModel->getKey());
     }
 
-    public function disableLocaleSlugs(string $locale, int $except_slug_id = 0): void
+    public function disableLocaleSlugs(string|array $locale = null, int $except_slug_id = 0): void
     {
-        $this->getSlugModelClass()::where($this->getForeignKey(), $this->id)
-            ->where('id', '<>', $except_slug_id)
-            ->where('locale', $locale)
-            ->update(['active' => 0]);
+        $query = $this->getSlugModelClass()::where($this->getForeignKey(), $this->id)
+            ->where('id', '<>', $except_slug_id);
+        if ($locale !== null) {
+            $query->whereIn('locale', Arr::wrap($locale));
+        }
+        $query->update(['active' => 0]);
     }
 
     private function suffixSlugIfExisting(array $slugParams): string
@@ -345,7 +342,7 @@ trait HasSlug
                 }
 
                 $slugParam = [
-                        'active' => $translation->active,
+                        'active' => $translation->active ?? true,
                         'slug' => $translation->$slugAttribute ?? $this->$slugAttribute,
                         'locale' => $translation->locale,
                     ] + $slugDependenciesAttributes;
