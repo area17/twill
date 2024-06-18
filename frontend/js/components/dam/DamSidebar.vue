@@ -19,11 +19,26 @@
 
           <div class="dam-sidebar__gallery">
             <template v-if="hasSingleMedia">
-              <img
+                <a
+              v-if="isImage && hasPreview"
+              :href="firstMedia.original"
+              :data-pswp-width="firstMedia.width"
+              :data-pswp-height="firstMedia.height"
+              :data-pswp-video-src="isVideo ? firstMedia.original : null"
+              :data-pswp-type="isVideo ? 'video' : 'image'"
+              target="_blank"
+              rel="noreferrer"
+              class="pswp-lightbox"
+              :aria-label="$trans('dam.view', 'View')"
+            >
+            <img
                 :src="firstMedia.thumbnail"
                 class="dam-sidebar__img"
                 :alt="firstMedia.name"
               />
+            </a>
+            
+              
             </template>
           </div>
 
