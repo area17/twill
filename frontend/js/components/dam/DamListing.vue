@@ -379,7 +379,7 @@
 
         // not already selected
         if (alreadySelectedMedia.length === 0) {
-          if (this.max === 1) this.clearSelectedMedias()
+          if (this.max === 1 || !shift) this.clearSelectedMedias()
           if (this.selectedMedias.length >= this.max && this.max > 0) return
 
           if (shift && this.selectedMedias.length > 0) {
