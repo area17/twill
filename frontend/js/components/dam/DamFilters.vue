@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import {mapGetters, mapState} from 'vuex'
+  import {mapGetters, mapState} from 'vuex'
   import A17DamFilterDropdown from '@/components/dam/DamFilterDropdown.vue'
   import {MEDIA_LIBRARY} from "@/store/mutations";
 
@@ -118,7 +118,8 @@ import {mapGetters, mapState} from 'vuex'
         appliedFilters: {},
         filtersModalOpen: false,
         isMobile: false,
-        showAdvanced: false
+        showAdvanced: false,
+        customColorValue: null
       }
     },
     computed: {
@@ -300,8 +301,12 @@ import {mapGetters, mapState} from 'vuex'
             const filter = this.filters.find(filter => filter.name === key);
             this.filterData[key].forEach(value => {
               let item
+              let isCustomColor = false
               if (key === 'colors') {
-                item = filter.items.find(item => item.hex === value)
+                isCustomColor = value.includes('custom-')
+                item = filter.items.find(item => {
+                  return isCustomColor ? item.label === 'Custom' : item.hex === value
+                })
               } else {
                 item = filter.items.find(item => item.value === `${key}-${value}`)
               }
@@ -312,10 +317,13 @@ import {mapGetters, mapState} from 'vuex'
               };
 
               if (key === 'colors') {
-                newItem.hex = item.hex
+                newItem.hex = isCustomColor ? value : item.hex
               }
-
               matchedItems.push(newItem)
+
+              if (isCustomColor) {
+                this.customColorValue = value.replace('custom-', '')
+              }
             })
 
             appliedFilters[key] = matchedItems
@@ -357,6 +365,13 @@ import {mapGetters, mapState} from 'vuex'
       this.applyFilterValues()
 
       window.addEventListener('resize', this.getMediaQuery)
+
+      this.$nextTick(() => {
+        if (this.customColorValue) {
+          this.$refs.filterDropdown.find(component => component.customColorCheckbox)
+            .$refs.colorField.updateValue(this.customColorValue)
+        }
+      })
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.getMediaQuery)
