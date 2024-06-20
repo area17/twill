@@ -13,7 +13,10 @@
           's--disabled': item.disabled
         }"
         @click.exact="toggleSelection(item)"
-        @click.shift.exact="shiftToggleSelection(item)">
+        @click.shift.exact="shiftToggleSelection(item)"
+        @click.meta="shiftToggleSelection(item)"
+        @click.ctrl="shiftToggleSelection(item)">
+       
           <img :src="item.thumbnail" class="mediagrid__img" />
           <span v-if="item.fileExtension" class="mediagrid__label">{{ item.fileExtension }}</span>
         </span>
