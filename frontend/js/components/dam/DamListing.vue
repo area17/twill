@@ -108,6 +108,7 @@
   import a17DamUploader from '@/components/dam/Uploader.vue'
   import a17DamSidebar from '@/components/dam/DamSidebar.vue'
   import a17Spinner from '@/components/Spinner.vue'
+  import {replaceState} from "@/utils/pushState";
 
   export default {
     name: 'A17Medialibrary',
@@ -538,6 +539,16 @@
             this.loading = false
             this.listenScrollPosition()
             this.gridLoaded = true
+
+            const url = new URL(window.location.href);
+
+            // Loop through the params object and set the query parameters
+            Object.keys(this.filterData).forEach(key => {
+              url.searchParams.set(key, JSON.stringify(this.filterData[key]));
+            });
+
+            // Update the URL without reloading the page
+            replaceState(url)
           },
           error => {
             this.$store.commit(NOTIFICATION.SET_NOTIF, {
