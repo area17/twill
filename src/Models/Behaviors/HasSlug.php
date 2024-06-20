@@ -135,6 +135,9 @@ trait HasSlug
                 $params['slug'] = Str::slug($params['slug']);
             }
 
+            if (empty($params['slug'])) {
+                continue;
+            }
             if ($this->slugs()->where('locale', $params['locale'])->where('slug', $params['slug'])->where('active', true)->doesntExist()) {
                 $this->updateOrNewSlug($params);
             }
