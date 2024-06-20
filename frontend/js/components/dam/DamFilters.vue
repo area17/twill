@@ -98,7 +98,7 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+import {mapGetters, mapState} from 'vuex'
   import A17DamFilterDropdown from '@/components/dam/DamFilterDropdown.vue'
   import {MEDIA_LIBRARY} from "@/store/mutations";
 
@@ -160,7 +160,10 @@
         }
 
         return flattenedFilters
-      }
+      },
+      ...mapState({
+        filterData: state => state.mediaLibrary.filterData,
+      })
     },
     watch: {
       filtersModalOpen(newValue) {
@@ -253,10 +256,7 @@
         this.$store.commit(MEDIA_LIBRARY.SET_FILTER_DATA, this.appliedFilters)
 
         // Set applied checkbox values
-        const filterValues = this.flattenedAppliedFilters.map(filter => {
-          return filter.value
-        })
-        this.$refs.appliedCheckboxGroup.updateValue(filterValues)
+        this.applyFilterValues()
       },
       handleAppliedFiltersChange(changedFilters) {
         this.$refs.filterDropdowns
@@ -290,11 +290,71 @@
             }
           })
         })
+      },
+      setAppliedFilters() {
+        const appliedFilters = {}
+
+        for (const key in this.filterData) {
+          if (Array.isArray(this.filterData[key])) {
+            const matchedItems = [];
+            const filter = this.filters.find(filter => filter.name === key);
+            this.filterData[key].forEach(value => {
+              let item
+              if (key === 'colors') {
+                item = filter.items.find(item => item.hex === value)
+              } else {
+                item = filter.items.find(item => item.value === `${key}-${value}`)
+              }
+
+              const newItem = {
+                value: item.value,
+                label: item.label
+              };
+
+              if (key === 'colors') {
+                newItem.hex = item.hex
+              }
+
+              matchedItems.push(newItem)
+            })
+
+            appliedFilters[key] = matchedItems
+          } else {
+            const matchedItems = {}
+            const filters = this.filters.find(filter => filter.name === key);
+            for (const deepKey in this.filterData[key]) {
+              const filter = filters.items.find(filter => filter.name === deepKey)
+              const newFilters = [];
+              this.filterData[key][deepKey].forEach(value => {
+                const item = filter.items.find(item => item.value === `${deepKey}-${value}`)
+
+                newFilters.push({
+                  value: item.value,
+                  label: item.label
+                });
+              })
+              matchedItems[deepKey] = newFilters;
+            }
+
+            appliedFilters[key] = matchedItems
+          }
+        }
+
+        this.appliedFilters = appliedFilters
+      },
+      applyFilterValues() {
+        const filterValues = this.flattenedAppliedFilters.map(filter => {
+          return filter.value
+        })
+        this.$refs.appliedCheckboxGroup.updateValue(filterValues)
       }
     },
     mounted() {
       this.getMediaQuery()
       this.bindInputs()
+
+      this.setAppliedFilters()
+      this.applyFilterValues()
 
       window.addEventListener('resize', this.getMediaQuery)
     },
