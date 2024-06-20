@@ -844,9 +844,9 @@
       },
       handleKeyUp: function(direction){
         if (direction === 'next') {
-            this.$emit('nextMedia')
+          this.$emit('nextMedia')
         }else {
-            this.$emit('previousMedia')
+          this.$emit('previousMedia')
         }
       },
       deleteSelectedMediasValidation: function() {

@@ -283,22 +283,22 @@
       }
     },
     methods: {
-        setCurrentMedia: function(direction) {
+      setCurrentMedia: function(direction) {
         const currentIndex = this.selectedMedias.length
-        ? this.mediaItems.findIndex(media => media.id === this.selectedMedias[0].id)
-        : -1;
+          ? this.mediaItems.findIndex(media => media.id === this.selectedMedias[0].id)
+          : -1;
 
-      if (direction === 'next') { // Arrow right
-        if (currentIndex < this.mediaItems.length - 1) {
-          this.clearSelectedMedias();
-          this.selectedMedias.push(this.mediaItems[currentIndex + 1]);
+        if (direction === 'next') { // Arrow right
+          if (currentIndex < this.mediaItems.length - 1) {
+            this.clearSelectedMedias();
+            this.selectedMedias.push(this.mediaItems[currentIndex + 1]);
+          }
+        } else if (direction === 'previous') { // Arrow left
+          if (currentIndex > 0) {
+            this.clearSelectedMedias();
+            this.selectedMedias.push(this.mediaItems[currentIndex - 1]);
+          }
         }
-      } else if (direction === 'previous') { // Arrow left
-        if (currentIndex > 0) {
-          this.clearSelectedMedias();
-          this.selectedMedias.push(this.mediaItems[currentIndex - 1]);
-        }
-      }
       },
       updateMediaBrowser: function (media, data) {
         const index = this.mediaItems.findIndex(function(item) {
