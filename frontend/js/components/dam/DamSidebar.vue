@@ -19,34 +19,35 @@
 
           <div class="dam-sidebar__gallery">
             <template v-if="hasSingleMedia">
-                <a
-              v-if="isImage && hasPreview"
-              :href="firstMedia.original"
-              :data-pswp-width="firstMedia.width"
-              :data-pswp-height="firstMedia.height"
-              :data-pswp-video-src="isVideo ? firstMedia.original : null"
-              :data-pswp-type="isVideo ? 'video' : 'image'"
-              target="_blank"
-              rel="noreferrer"
-              class="pswp-lightbox"
-              :aria-label="$trans('dam.view', 'View')"
-            >
-            <img
-                tabindex="0"
-                @keyup.left="handleKeyUp('previous')"
-                @keyup.right="handleKeyUp('next')"
-                :src="firstMedia.thumbnail"
-                class="dam-sidebar__img"
-                :alt="firstMedia.name"
-              />
-            </a>
-            
-              
+              <a
+                v-if="isImage && hasPreview"
+                :href="firstMedia.original"
+                :data-pswp-width="firstMedia.width"
+                :data-pswp-height="firstMedia.height"
+                :data-pswp-video-src="isVideo ? firstMedia.original : null"
+                :data-pswp-type="isVideo ? 'video' : 'image'"
+                target="_blank"
+                rel="noreferrer"
+                class="pswp-lightbox"
+                :aria-label="$trans('dam.view', 'View')"
+                ref="lightboxLink"
+              >
+                <img
+                  tabindex="0"
+                  @keyup.left="handleKeyUp('previous')"
+                  @keyup.right="handleKeyUp('next')"
+                  :src="firstMedia.thumbnail"
+                  class="dam-sidebar__img"
+                  :alt="firstMedia.name"
+                />
+              </a>
             </template>
           </div>
 
           <template v-if="hasSingleMedia">
-            <p class="dam-sidebar__name">{{ firstMedia.title ?? firstMedia.name }}</p>
+            <p class="dam-sidebar__name">
+              {{ firstMedia.title ?? firstMedia.name }}
+            </p>
 
             <h2 class="visually-hidden" id="metaTitle">
               {{ $trans('dam.meta-title', 'Meta data') }}
@@ -178,8 +179,9 @@
             >
               <span v-svg symbol="preview" aria-hidden="true"></span>
             </a>
-            <a v-if="hasSingleMedia" :href="firstMedia.original" download><span v-svg symbol="download"></span></a>
-
+            <a v-if="hasSingleMedia" :href="firstMedia.original" download
+              ><span v-svg symbol="download"></span
+            ></a>
           </a17-buttonbar>
         </div>
 
@@ -336,35 +338,35 @@
           </template>
 
           <template v-for="field in browserFields">
-              <div
-                class="dam-sidebar__editable"
-                v-bind:key="field.name"
-              >
-                <div class="dam-sidebar__editable-header">
-                  <h3 class="f--small">{{ field.label }}</h3>
-                  <a17-button variant="aslink" @click="openBrowser(field)">
-                    <span class="f--small">{{ $trans('dam.add', 'Add') }}</span>
-                  </a17-button>
-                </div>
-                <ul>
-                  <li
-                    v-for="(link, i) in getSharedBrowserItems(field.name)"
-                    :key="i"
-                    class="f--small"
-                  >
-                    <a17-button el="a" variant="aslink" :href="link.edit" target="_blank"
-                      ><span>{{ link.name }}</span></a17-button
-                    >
-<!--                    <a17-button variant="aslink-grey"-->
-<!--                      ><span>{{-->
-<!--                        $trans('dam.remove', 'Remove')-->
-<!--                      }}</span></a17-button-->
-<!--                    >-->
-                  </li>
-                </ul>
+            <div class="dam-sidebar__editable" v-bind:key="field.name">
+              <div class="dam-sidebar__editable-header">
+                <h3 class="f--small">{{ field.label }}</h3>
+                <a17-button variant="aslink" @click="openBrowser(field)">
+                  <span class="f--small">{{ $trans('dam.add', 'Add') }}</span>
+                </a17-button>
               </div>
-            </template>
-
+              <ul>
+                <li
+                  v-for="(link, i) in getSharedBrowserItems(field.name)"
+                  :key="i"
+                  class="f--small"
+                >
+                  <a17-button
+                    el="a"
+                    variant="aslink"
+                    :href="link.edit"
+                    target="_blank"
+                    ><span>{{ link.name }}</span></a17-button
+                  >
+                  <!--                    <a17-button variant="aslink-grey"-->
+                  <!--                      ><span>{{-->
+                  <!--                        $trans('dam.remove', 'Remove')-->
+                  <!--                      }}</span></a17-button-->
+                  <!--                    >-->
+                </li>
+              </ul>
+            </div>
+          </template>
 
           <template>
             <div
@@ -385,7 +387,10 @@
                 <ul class="dam-sidebar__tags-static">
                   <template v-for="(field, i) in tagFields">
                     <li
-                      v-for="(tag, tagIndex) in getSharedItems(field.name, field.key)"
+                      v-for="(tag, tagIndex) in getSharedItems(
+                        field.name,
+                        field.key
+                      )"
                       v-bind:key="`tag_${i}_${tagIndex}`"
                     >
                       {{ tag }}
@@ -480,14 +485,9 @@
           </template>
         </form>
       </div>
-      <div
-        class="dam-sidebar__inner dam-sidebar__action"
-      >
-        <a17-button
-          @click="save"
-          v-if="editTagsOpen"
-          variant="validate"
-        >Update</a17-button
+      <div class="dam-sidebar__inner dam-sidebar__action">
+        <a17-button @click="save" v-if="editTagsOpen" variant="validate"
+          >Update</a17-button
         >
 
         <a17-button
@@ -522,8 +522,12 @@
       </a17-inputframe>
     </a17-modal>
 
-
-    <a17-modal class="modal--browser" ref="damBrowser" mode="medium" :force-close="true">
+    <a17-modal
+      class="modal--browser"
+      ref="damBrowser"
+      mode="medium"
+      :force-close="true"
+    >
       <a17-dambrowser @saveAndClose="saveBrowser"></a17-dambrowser>
     </a17-modal>
   </aside>
@@ -533,14 +537,14 @@
   import isEqual from 'lodash/isEqual'
   import { mapState } from 'vuex'
   import PhotoSwipeLightbox from 'photoswipe/lightbox'
-  import PhotoSwipeVideoPlugin from 'photoswipe-video-plugin/dist/photoswipe-video-plugin.esm';
+  import PhotoSwipeVideoPlugin from 'photoswipe-video-plugin/dist/photoswipe-video-plugin.esm'
 
   import 'photoswipe/style.css'
 
   import a17Langswitcher from '@/components/LangSwitcher'
   import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
   import api from '@/store/api/media-library'
-  import {BROWSER, NOTIFICATION} from '@/store/mutations'
+  import { BROWSER, NOTIFICATION } from '@/store/mutations'
   import a17VueFilters from '@/utils/filters.js'
   import FormDataAsObj from '@/utils/formDataAsObj.js'
   import Extensions from '@/components/files/Extensions.js'
@@ -606,6 +610,16 @@
     watch: {
       medias: function() {
         this.fieldsRemovedFromBulkEditing = []
+      },
+      firstMedia(val) {
+        if (this.lightbox) {
+          const { pswp } = this.lightbox
+          if (pswp) {
+            setTimeout(() => {
+              pswp.refreshSlideContent(0)
+            }, 10)
+          }
+        }
       }
     },
     computed: {
@@ -643,10 +657,10 @@
             )
             ? this.firstMedia.metadatas.default[name]
             : type === 'object'
-              ? {}
-              : type === 'boolean'
-                ? false
-                : ''
+            ? {}
+            : type === 'boolean'
+            ? false
+            : ''
         }
       },
       captionValues() {
@@ -842,10 +856,10 @@
           id: this.getMediaToReplaceId()
         })
       },
-      handleKeyUp: function(direction){
+      handleKeyUp: function(direction) {
         if (direction === 'next') {
           this.$emit('nextMedia')
-        }else {
+        } else {
           this.$emit('previousMedia')
         }
       },
@@ -990,7 +1004,8 @@
             this.editTagsOpen = false
 
             if (!this.hasMultipleMedias) {
-              if (resp.data) this.$emit('tagFieldsUpdated', this.firstMedia, resp.data)
+              if (resp.data)
+                this.$emit('tagFieldsUpdated', this.firstMedia, resp.data)
             } else if (this.hasMultipleMedias && resp.data.items) {
               this.$emit('bulkTagsUpdated', resp.data.items)
             }
@@ -1007,7 +1022,7 @@
           }
         )
       },
-      openBrowser: function (item) {
+      openBrowser: function(item) {
         const selected = {
           browsers: {
             [item.name]: this.getSharedBrowserItems(item.name)
@@ -1028,16 +1043,16 @@
 
         this.$refs.damBrowser.open(true)
       },
-      saveBrowser: function (items) {
+      saveBrowser: function(items) {
         if (this.loading) return
 
         this.loading = true
 
         const data = {
-          [this.currentBrowser]: items,
+          [this.currentBrowser]: items
         }
 
-        let url;
+        let url
 
         if (this.hasMultipleMedias) {
           data.ids = this.mediasIds
@@ -1056,11 +1071,11 @@
             this.$refs.damBrowser.close()
 
             if (!this.hasMultipleMedias) {
-              if (resp.data) this.$emit('browserUpdated', this.firstMedia, resp.data)
+              if (resp.data)
+                this.$emit('browserUpdated', this.firstMedia, resp.data)
             } else if (this.hasMultipleMedias && resp.data.items) {
               this.$emit('bulkBrowsersUpdated', resp.data.items)
             }
-
           },
           error => {
             this.loading = false
@@ -1088,7 +1103,7 @@
         })
 
         // eslint-disable-next-line
-        const videoPlugin = new PhotoSwipeVideoPlugin(this.lightbox, {});
+        const videoPlugin = new PhotoSwipeVideoPlugin(this.lightbox, {})
 
         this.lightbox.init()
       }
