@@ -657,10 +657,10 @@
             )
             ? this.firstMedia.metadatas.default[name]
             : type === 'object'
-            ? {}
-            : type === 'boolean'
-            ? false
-            : ''
+              ? {}
+              : type === 'boolean'
+                ? false
+                : ''
         }
       },
       captionValues() {
