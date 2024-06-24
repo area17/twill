@@ -763,8 +763,8 @@
             return fieldValues.map(item => ({ name : item.label, url : this.getTagUrl(fieldName, [item.value])}) )
           } else {
             return fieldValues.map(item => ({
-                name : item.name,
-                url : this.getTagUrl(fieldName, [item.value]),
+              name : item.name,
+              url : this.getTagUrl(fieldName, [item.value]),
             }))
           }
         }
@@ -772,14 +772,14 @@
 
       getTagUrl: function(){
         return function(tagName, values) {
-            const url = new URL(window.location.href);
-            const urlParams = new URLSearchParams();
-            const tags = {
-                [tagName] : values
-            }
-            urlParams.set('tags', JSON.stringify(tags))
-            url.search = urlParams.toString();
-            return url.toString();
+          const url = new URL(window.location.href);
+          const urlParams = new URLSearchParams();
+          const tags = {
+            [tagName] : values
+          }
+          urlParams.set('tags', JSON.stringify(tags))
+          url.search = urlParams.toString();
+          return url.toString();
         }
       },
       getSharedBrowserItems: function() {
