@@ -386,14 +386,14 @@
                 </div>
                 <ul class="dam-sidebar__tags-static">
                   <template v-for="(field, i) in tagFields">
-                    <li
+                    <li class="dam-sidebar__tag"
                       v-for="(tag, tagIndex) in getSharedItems(
                         field.name,
                         field.key
                       )"
                       v-bind:key="`tag_${i}_${tagIndex}`"
                     >
-                      {{ tag }}
+                      <a class="no-underline" :href="tag.url">{{ tag.name }}</a>
                     </li>
                   </template>
                 </ul>
@@ -759,12 +759,27 @@
               }
               return []
             })
-
           if (key) {
-            return fieldValues.map(value => value[key])
+            return fieldValues.map(item => ({ name : item.label, url : this.getTagUrl(fieldName, [item.value])}) )
           } else {
-            return fieldValues
+            return fieldValues.map(item => ({
+                name : item.name,
+                url : this.getTagUrl(fieldName, [item.value]),
+            }))
           }
+        }
+      },
+
+      getTagUrl: function(){
+        return function(tagName, values) {
+            const url = new URL(window.location.href);
+            const urlParams = new URLSearchParams();
+            const tags = {
+                [tagName] : values
+            }
+            urlParams.set('tags', JSON.stringify(tags))
+            url.search = urlParams.toString();
+            return url.toString();
         }
       },
       getSharedBrowserItems: function() {
@@ -1195,6 +1210,10 @@
         text-decoration: underline;
       }
     }
+  }
+
+  .dam-sidebar__tag a {
+    text-decoration: none;
   }
 
   .dam-sidebar__inner,
