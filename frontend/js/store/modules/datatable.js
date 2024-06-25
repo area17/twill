@@ -264,6 +264,14 @@ const actions = {
       commit(NOTIFICATION.SET_NOTIF, { message: errorResp.data.error.message, variant: 'error' })
     })
   },
+  [ACTIONS.TOGGLE_STARRED] ({ commit, state, dispatch }, row) {
+    api.toggleStarred(row, function (resp) {
+      commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })
+      dispatch(ACTIONS.GET_DATATABLE)
+    }, function (errorResp) {
+      commit(NOTIFICATION.SET_NOTIF, { message: errorResp.data.error.message, variant: 'error' })
+    })
+  },
   [ACTIONS.DELETE_ROW] ({ commit, state, dispatch }, row) {
     api.delete(row, function (resp) {
       commit(NOTIFICATION.SET_NOTIF, { message: resp.data.message, variant: resp.data.variant })

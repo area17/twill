@@ -16,6 +16,7 @@ export const GET_DATATABLE = 'getDatatableDatas'
 export const SET_DATATABLE_NESTED = 'setDatatableNestedDatas'
 export const SET_DATATABLE = 'setDatatableDatas'
 export const TOGGLE_PUBLISH = 'togglePublishedData'
+export const TOGGLE_STARRED = 'toggleStarredData'
 export const DELETE_ROW = 'deleteData'
 export const DUPLICATE_ROW = 'duplicateData'
 export const RESTORE_ROW = 'restoreData'
@@ -53,6 +54,7 @@ export default {
   SET_DATATABLE_NESTED,
   SET_DATATABLE,
   TOGGLE_PUBLISH,
+  TOGGLE_STARRED,
   DELETE_ROW,
   DUPLICATE_ROW,
   RESTORE_ROW,

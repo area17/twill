@@ -7,6 +7,7 @@ import TableCellGeneric_ from './TableCellGeneric'
 import TableCellLanguages_ from './TableCellLanguages'
 import TableCellNested_ from './TableCellNested'
 import TableCellPublished_ from './TableCellPublished'
+import TableCellStarred_ from './TableCellStarred.vue'
 import TableCellThumbnail_ from './TableCellThumbnail'
 
 export const TableCellSpecificColumns = [
@@ -15,6 +16,7 @@ export const TableCellSpecificColumns = [
   'languages',
   'featured',
   'published',
+  'starred',
   'thumbnail',
   'publish_start_date',
   'nested'
@@ -29,6 +31,7 @@ export const TableCellFeatured = TableCellFeatured_
 export const TableCellDraggable = TableCellDraggable_
 export const TableCellLanguages = TableCellLanguages_
 export const TableCellPublished = TableCellPublished_
+export const TableCellStarred = TableCellStarred_
 export const TableCellGeneric = TableCellGeneric_
 export const TableCellNested = TableCellNested_
 export const TableCellThumbnail = TableCellThumbnail_
@@ -42,6 +45,7 @@ export default {
   [TableCellPrefix + 'generic']: TableCellGeneric,
   [TableCellPrefix + 'languages']: TableCellLanguages,
   [TableCellPrefix + 'published']: TableCellPublished,
+  [TableCellPrefix + 'starred']: TableCellStarred,
   [TableCellPrefix + 'nested']: TableCellNested,
   [TableCellPrefix + 'thumbnail']: TableCellThumbnail
 }

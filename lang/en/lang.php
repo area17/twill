@@ -209,6 +209,7 @@ return [
             'featured' => 'Featured',
             'name' => 'Name',
             'published' => 'Published',
+            'starred'=> 'Starred',
             'show' => 'Show',
             'thumbnail' => 'Thumbnail',
         ],
@@ -293,6 +294,11 @@ return [
             'unpublished' => ':modelTitle unpublished!',
             'published' => ':modelTitle published!',
             'error' => ':modelTitle was not published. Something wrong happened!',
+        ],
+        'starred'=> [
+            'unstarred' => ':modelTitle unstarred!',
+            'starred' => ':modelTitle starred!',
+            'error' => ':modelTitle was not starred. Something wrong happened!',
         ],
         'featured' => [
             'unfeatured' => ':modelTitle unfeatured!',

@@ -68,7 +68,8 @@
           col.name !== 'nested' &&
           col.name !== 'bulk' &&
           col.name !== 'published' &&
-          col.name !== 'thumbnail'
+          col.name !== 'thumbnail' &&
+          col.name !== 'starred'
       },
       sortColumn: function (column) {
         if (column.sortable && this.sortable) this.$emit('sortColumn', column)

@@ -98,7 +98,7 @@ export default {
     },
     cellClasses: function (col, prefix) {
       return {
-        [prefix + '--icon']: col.name === 'featured' || col.name === 'published',
+        [prefix + '--icon']: col.name === 'featured' || col.name === 'published' || col.name === 'starred',
         [prefix + '--bulk']: col.name === 'bulk',
         [prefix + '--thumb']: col.name === 'thumbnail',
         [prefix + '--draggable']: col.name === 'draggable',
@@ -120,6 +120,9 @@ export default {
           break
         case 'featured':
           this.toggleFeatured(data.row)
+          break
+        case 'starred':
+          this.toggleStarred(data.row)
           break
       }
     },
@@ -143,6 +146,16 @@ export default {
       } else {
         this.$store.commit(NOTIFICATION.SET_NOTIF, {
           message: 'You can’t publish/unpublish a deleted item, please restore it first.',
+          variant: 'error'
+        })
+      }
+    },
+    toggleStarred: function (row) {
+      if (!row.hasOwnProperty('deleted')) {
+        this.$store.dispatch(ACTIONS.TOGGLE_STARRED, row)
+      } else {
+        this.$store.commit(NOTIFICATION.SET_NOTIF, {
+          message: 'You can’t star/unstar a deleted item, please restore it first.',
           variant: 'error'
         })
       }

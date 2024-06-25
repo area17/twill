@@ -55,6 +55,18 @@ export default {
       if (errorCallback && typeof errorCallback === 'function') errorCallback(resp.response)
     })
   },
+  toggleStarred (row, callback, errorCallback) {
+    axios.put(window[process.env.VUE_APP_NAME].CMS_URLS.starred, { id: row.id, active: row.starred }).then(function (resp) {
+      if (callback && typeof callback === 'function') callback(resp)
+    }, function (resp) {
+      const error = {
+        message: 'Starred request error.',
+        value: resp
+      }
+      globalError(component, error)
+      if (errorCallback && typeof errorCallback === 'function') errorCallback(resp.response)
+    })
+  },
 
   toggleFeatured (row, callback) {
     axios.put(window[process.env.VUE_APP_NAME].CMS_URLS.feature, { id: row.id, active: row.featured }).then(function (resp) {
