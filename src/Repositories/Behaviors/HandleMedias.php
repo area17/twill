@@ -57,7 +57,7 @@ trait HandleMedias
         $mediasToUpdate = [];
         $mediasToDelete = [];
 
-        $previousMedias = $object->medias;
+        $previousMedias = $object->medias()->get();
         $medias = $this->getMedias($fields);
 
         if (!$previousMedias->isEmpty()) {
