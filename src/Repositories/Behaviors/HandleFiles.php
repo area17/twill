@@ -5,6 +5,7 @@ namespace A17\Twill\Repositories\Behaviors;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\File;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 
@@ -47,7 +48,39 @@ trait HandleFiles
             return;
         }
 
-        $object->files()->sync($this->getFiles($fields));
+        $filesToDelete = [];
+
+        $previousFiles = $object->files;
+        $files = $this->getFiles($fields);
+
+        if (!$previousFiles->isEmpty()) {
+            $previousFiles->each(function ($previousFile) use (&$files, &$filesToDelete) {
+                $matchingFile = $files->first(function ($newFile) use ($previousFile) {
+                    return $newFile['file_id'] == $previousFile->pivot->file_id
+                        && $newFile['role'] == $previousFile->pivot->role
+                        && $newFile['locale'] == $previousFile->pivot->locale;
+                });
+
+                if ($matchingFile) {
+                    $files = $files->reject(function ($newFile) use ($matchingFile) {
+                        return $newFile['file_id'] == $matchingFile['file_id']
+                            && $newFile['role'] == $matchingFile['role']
+                            && $newFile['locale'] == $matchingFile['locale'];
+                    });
+                } else {
+                    $filesToDelete[] = $previousFile->pivot->id;
+                }
+            });
+        }
+
+        $files->each(function ($file) use ($object) {
+            $object->files()->attach($file['file_id'], Arr::except($file, ['file_id']));
+        });
+
+        if (! empty($filesToDelete)) {
+            DB::table(config('twill.fileables_table', 'twill_fileables'))
+                ->whereIn('id', $filesToDelete)->delete();
+        };
     }
 
     /**

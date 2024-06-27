@@ -7,6 +7,7 @@ use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Media;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 trait HandleMedias
@@ -53,7 +54,58 @@ trait HandleMedias
             return;
         }
 
-        $object->medias()->sync($this->getMedias($fields));
+        $mediasToUpdate = [];
+        $mediasToDelete = [];
+
+        $previousMedias = $object->medias;
+        $medias = $this->getMedias($fields);
+
+        if (!$previousMedias->isEmpty()) {
+            $previousMedias->each(function ($previousMedia) use (&$medias, &$mediasToUpdate, &$mediasToDelete) {
+                $matchingMedia = $medias->first(function ($newMedia) use ($previousMedia) {
+                    return $newMedia['media_id'] == $previousMedia->pivot->media_id
+                        && $newMedia['role'] == $previousMedia->pivot->role
+                        && $newMedia['crop'] == $previousMedia->pivot->crop
+                        && $newMedia['locale'] == $previousMedia->pivot->locale;
+                });
+
+                if ($matchingMedia) {
+                    if (
+                        $matchingMedia['ratio'] != $previousMedia->pivot->ratio
+                        || $matchingMedia['crop_w'] != $previousMedia->pivot->crop_w
+                        || $matchingMedia['crop_h'] != $previousMedia->pivot->crop_h
+                        || $matchingMedia['crop_x'] != $previousMedia->pivot->crop_x
+                        || $matchingMedia['crop_y'] != $previousMedia->pivot->crop_y
+                        || json_decode($matchingMedia['metadatas']) != json_decode($previousMedia->pivot->metadatas)
+                    ) {
+                        $mediasToUpdate[$previousMedia->pivot->id] = $matchingMedia;
+                    }
+
+                    $medias = $medias->reject(function ($newMedia) use ($matchingMedia) {
+                        return $newMedia['media_id'] == $matchingMedia['media_id']
+                            && $newMedia['role'] == $matchingMedia['role']
+                            && $newMedia['crop'] == $matchingMedia['crop']
+                            && $newMedia['locale'] == $matchingMedia['locale'];
+                    });
+                } else {
+                    $mediasToDelete[] = $previousMedia->pivot->id;
+                }
+            });
+        }
+
+        $medias->each(function ($media) use ($object) {
+            $object->medias()->attach($media['media_id'], Arr::except($media, ['media_id']));
+        });
+
+        $mediablesTable = config('twill.mediables_table', 'twill_mediables');
+
+        if (! empty($mediasToDelete)) {
+            DB::table($mediablesTable)->whereIn('id', $mediasToDelete)->delete();
+        };
+
+        foreach ($mediasToUpdate as $pivotId => $media) {
+            DB::table($mediablesTable)->where('id', $pivotId)->update($media);
+        }
     }
 
     /**
