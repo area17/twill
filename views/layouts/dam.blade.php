@@ -14,7 +14,7 @@
 
 @push('extra_js_head')
     @if(app()->isProduction())
-        <link href="{{ twillAsset('main-form.js') }}" rel="preload" as="script" crossorigin/>
+        <link href="{{ twillAsset('main-dam.js') }}" rel="preload" as="script" crossorigin/>
     @endif
 @endpush
 
@@ -65,5 +65,5 @@
 
 
 @prepend('extra_js')
-    <script src="{{ twillAsset('main-form.js') }}" crossorigin></script>
+    <script src="{{ twillAsset('main-dam.js') }}" crossorigin></script>
 @endprepend

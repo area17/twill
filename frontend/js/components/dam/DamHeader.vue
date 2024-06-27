@@ -8,7 +8,7 @@
         <div ref="form">
           <a17-filter @submit="submitSearch" :initial-search-value="initialSearchValue" > </a17-filter>
         </div>
-        <a17-button variant="validate" size="small">{{
+        <a17-button variant="validate" size="small" @click="openModal">{{
           $trans('dam.add-new', 'Add new')
         }}</a17-button>
         <div v-if="userData && usersManagement">
@@ -64,7 +64,7 @@
   import A17DamFilters from '@/components/dam/DamFilters.vue'
 
   export default {
-    name: 'A17Medialibrary',
+    name: 'A17DamHeader',
     components: {
       'a17-avatar': A17Avatar,
       'a17-filter': a17Filter,
@@ -120,6 +120,9 @@
           window.location.href = '/admin/dam'
         }
 
+      },
+      openModal() {
+        this.$root.$refs.editionModal.open()
       }
     },
     mounted() {}

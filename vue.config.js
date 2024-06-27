@@ -36,7 +36,8 @@ const pages = {
   'main-dashboard': `${srcDirectory}/js/main-dashboard.js`,
   'main-form': `${srcDirectory}/js/main-form.js`,
   'main-listing': `${srcDirectory}/js/main-listing.js`,
-  'main-free': `${srcDirectory}/js/main-free.js`
+  'main-free': `${srcDirectory}/js/main-free.js`,
+  'main-dam': `${srcDirectory}/js/main-dam.js`
 }
 
 const svgConfig = (suffix = null) => {
