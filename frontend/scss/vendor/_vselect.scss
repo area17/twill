@@ -169,6 +169,7 @@ $multiSelectHeight: 45px;
       padding:0 0 0 15px;
       margin:0;
       color:$color__f--text;
+
       button {
         position: absolute;
         background-color: $color__black--35;
@@ -410,6 +411,7 @@ $multiSelectHeight: 45px;
         .vs__deselect {
           top:2px;
           right:2px;
+          transform: none;
           background-color:transparent;
           background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIj48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiNhNmE2YTYiIGQ9Ik0yIDJsNiA2TTggMkwyIDgiLz48L3N2Zz4=);
           color:$color__fborder--hover;
