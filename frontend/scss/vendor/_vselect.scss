@@ -25,6 +25,8 @@ $multiSelectHeight: 45px;
     }
 
     .vs__dropdown-menu {
+      // make sure the content expand to the longest option
+      --vs-dropdown-min-width: fit-content;
       padding:15px 0;
       border-top:1px solid $color__border--light;
       box-shadow: 0px 1px 3.5px 0px rgba(0, 0, 0, 0.30);
