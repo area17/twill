@@ -9,7 +9,7 @@
         :type="currentTypeObject"
       />
       <div class="dam-listing__title">
-        <h2 class="f--small">{{ listTitle }} ({{ mediaItems.length }})</h2>
+        <h2 class="f--small">{{ listTitle }} ({{ totalItems }})</h2>
         <a17-dropdown
           ref="layoutDropdown"
           position="bottom-right"
@@ -180,7 +180,8 @@
         lastScrollTop: 0,
         gridLoaded: false,
         gridView: true,
-        hideNames: true
+        hideNames: true,
+        totalItems: 0
       }
     },
     computed: {
@@ -530,6 +531,7 @@
                 this.mediaItems.push(item)
               }
             })
+            this.totalItems = resp.data.total
             this.maxPage = resp.data.maxPage || 1
             this.tags = resp.data.tags || []
             this.$store.commit(MEDIA_LIBRARY.UPDATE_MEDIA_TYPE_TOTAL, {
