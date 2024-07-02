@@ -538,6 +538,8 @@
               type: this.type,
               total: resp.data.total
             })
+            this.$store.commit(MEDIA_LIBRARY.SET_FILTERS, resp.data.filters)
+
             this.loading = false
             this.listenScrollPosition()
             this.gridLoaded = true

@@ -52,7 +52,7 @@
         </div>
       </div>
     </div>
-    <a17-dam-filters v-if="filters" :filters="filters"></a17-dam-filters>
+    <a17-dam-filters></a17-dam-filters>
   </div>
 </template>
 
@@ -77,10 +77,6 @@
       },
       currentUser: {
         type: String,
-        default: null
-      },
-      filters: {
-        type: Array,
         default: null
       },
       usersManagement: {

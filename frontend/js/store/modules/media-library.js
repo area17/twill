@@ -98,7 +98,9 @@ const state = {
 
   filterData: window[process.env.VUE_APP_NAME].STORE.medias.filterData || {},
 
-  initialFilterData: window[process.env.VUE_APP_NAME].STORE.medias.initialFilterData || {}
+  initialFilterData: window[process.env.VUE_APP_NAME].STORE.medias.initialFilterData || {},
+
+  filters: window[process.env.VUE_APP_NAME].STORE.medias.filters || []
 }
 
 // getters
@@ -316,6 +318,9 @@ const mutations = {
       }
     }
     state.filterData = filters;
+  },
+  [MEDIA_LIBRARY.SET_FILTERS] (state, payload) {
+    state.filters = payload;
   }
 }
 

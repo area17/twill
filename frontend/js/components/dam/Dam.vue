@@ -10,7 +10,6 @@
         :custom-title="customTitle"
         :current-user="currentUser"
         :users-management="usersManagement"
-        :filters="filters"
         :initial-search-value="initialSearchValue"
       ></a17-dam-header>
 
@@ -58,10 +57,6 @@
       },
       currentUser: {
         type: String,
-        default: null
-      },
-      filters: {
-        type: Array,
         default: null
       },
       usersManagement: {
