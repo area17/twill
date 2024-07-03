@@ -3,6 +3,7 @@
 namespace A17\Twill\Repositories;
 
 use A17\Twill\Facades\TwillBlocks;
+use A17\Twill\Models\Block;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
@@ -75,10 +76,11 @@ class BlockRepository extends ModuleRepository
         parent::afterSave($model, $fields);
     }
 
+    /** @param Block $object */
     public function afterDelete(TwillModelContract $object): void
     {
-        $object->medias()->sync([]);
-        $object->files()->sync([]);
+        $object->medias()->detach();
+        $object->files()->detach();
 
         if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
             $object->clearAllRelated();
