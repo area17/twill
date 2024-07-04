@@ -98,6 +98,8 @@ const state = {
 
   filterData: window[process.env.VUE_APP_NAME].STORE.medias.filterData || {},
 
+  filterSearchEndpoint: window[process.env.VUE_APP_NAME].STORE.medias.filterSearchEndpoint || '',
+
   initialFilterData: window[process.env.VUE_APP_NAME].STORE.medias.initialFilterData || {}
 }
 

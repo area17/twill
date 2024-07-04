@@ -41,6 +41,7 @@
             :name="item.name"
             :hasNestedItems="item.hasNestedItems"
             :hasSearch="item.searchable"
+            :searchEndpoint="searchEndpoint"
             :advanced="item.advanced"
             ref="filterDropdown"
             :isMobile="isMobile"
@@ -164,6 +165,7 @@
       },
       ...mapState({
         filterData: state => state.mediaLibrary.filterData,
+        searchEndpoint: state => state.mediaLibrary.filterSearchEndpoint
       })
     },
     watch: {
