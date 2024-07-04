@@ -98,9 +98,11 @@ const state = {
 
   filterData: window[process.env.VUE_APP_NAME].STORE.medias.filterData || {},
 
-  filterSearchEndpoint: window[process.env.VUE_APP_NAME].STORE.medias.filterSearchEndpoint || '',
+  initialFilterData: window[process.env.VUE_APP_NAME].STORE.medias.initialFilterData || {},
 
-  initialFilterData: window[process.env.VUE_APP_NAME].STORE.medias.initialFilterData || {}
+  filters: window[process.env.VUE_APP_NAME].STORE.medias.filters || [],
+
+  filterSearchEndpoint: window[process.env.VUE_APP_NAME].STORE.medias.filterSearchEndpoint || '',
 }
 
 // getters
@@ -318,6 +320,9 @@ const mutations = {
       }
     }
     state.filterData = filters;
+  },
+  [MEDIA_LIBRARY.SET_FILTERS] (state, payload) {
+    state.filters = payload;
   }
 }
 

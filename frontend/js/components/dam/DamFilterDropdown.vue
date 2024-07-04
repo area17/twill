@@ -145,17 +145,19 @@
     computed: {
       filterItems() {
         const items = this.searchValue ? [...this.searchResults]:[...this.items, ...this.loadedItems]
-        return items.map((item) => {
+        return items.map(item => {
+          const newItem = {...item}
           if (this.hasNestedItems) {
-            item.items = item.items.map((newItem) => {
-              newItem.value = `${item.name}-${newItem.value}`
-              return newItem
+            newItem.items = []
+            item.items.forEach(innerItem => {
+              const newInnerItem = {...innerItem}
+              newInnerItem.value = `${item.name}-${newInnerItem.value}`
+              newItem.items.push(newInnerItem)
             })
           } else {
-            item.value = `${this.name}-${item.value}`
+            newItem.value = `${this.name}-${item.value}`
           }
-
-          return item
+          return newItem
         })
       },
       filterName() {
@@ -328,15 +330,15 @@
         const selectedFilters = selectedItems.map((selectedItem) => {
           let matchedItem
           if (this.hasNestedItems) {
-            this.items.forEach((list) => {
-              if (!matchedItem && list.filterItems) {
-                matchedItem = list.filterItems.find(
-                  (item) => item.value === selectedItem
+            this.filterItems.forEach(list => {
+              if (!matchedItem && list.items) {
+                matchedItem = list.items.find(
+                  item => item.value === selectedItem
                 )
               }
             })
           } else {
-            matchedItem = this.filterItems.find((item) => item.value === selectedItem)
+            matchedItem = this.filterItems.find(item => item.value === selectedItem)
           }
           const item = {
             label: matchedItem.label,

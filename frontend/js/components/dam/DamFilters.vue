@@ -108,12 +108,6 @@
     components: {
       'a17-dam-filter-dropdown': A17DamFilterDropdown
     },
-    props: {
-      filters: {
-        type: Array,
-        default: null
-      }
-    },
     data: function() {
       return {
         appliedFilters: {},
@@ -165,6 +159,7 @@
       },
       ...mapState({
         filterData: state => state.mediaLibrary.filterData,
+        filters: state => state.mediaLibrary.filters,
         searchEndpoint: state => state.mediaLibrary.filterSearchEndpoint
       })
     },
@@ -296,7 +291,6 @@
       },
       setAppliedFilters() {
         const appliedFilters = {}
-
         for (const key in this.filterData) {
           if (Array.isArray(this.filterData[key])) {
             const matchedItems = [];
@@ -310,11 +304,11 @@
                   return isCustomColor ? item.label === 'Custom' : item.hex === value
                 })
               } else {
-                item = filter.items.find(item => item.value === `${key}-${value}`)
+                item = filter.items.find(item => item.value.toString() === value)
               }
 
               const newItem = {
-                value: item.value,
+                value: `${key}-${item.value}`,
                 label: item.label
               };
 
@@ -336,10 +330,10 @@
               const filter = filters.items.find(filter => filter.name === deepKey)
               const newFilters = [];
               this.filterData[key][deepKey].forEach(value => {
-                const item = filter.items.find(item => item.value === `${deepKey}-${value}`)
+                const item = filter.items.find(item => item.value.toString() === value)
 
                 newFilters.push({
-                  value: item.value,
+                  value: `${deepKey}-${item.value}`,
                   label: item.label
                 });
               })
