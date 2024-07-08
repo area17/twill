@@ -6,7 +6,7 @@
       </div>
       <div class="dam-header__action">
         <div ref="form">
-          <a17-filter @submit="submitSearch" :initial-search-value="initialSearchValue" > </a17-filter>
+          <a17-filter @submit="submitSearch" ref="filters" @searchInput="setSearch" :initial-search-value="initialSearchValue" > </a17-filter>
         </div>
         <a17-button variant="validate" size="small" @click="openModal">{{
           $trans('dam.add-new', 'Add new')
@@ -52,7 +52,7 @@
         </div>
       </div>
     </div>
-    <a17-dam-filters></a17-dam-filters>
+    <a17-dam-filters @resetFilters="clearSearch" ref="damFilters"></a17-dam-filters>
   </div>
 </template>
 
@@ -62,6 +62,7 @@
   import A17Avatar from '@/components/Avatar.vue'
   import a17Filter from '@/components/Filter.vue'
   import A17DamFilters from '@/components/dam/DamFilters.vue'
+  import {MEDIA_LIBRARY} from "@/store/mutations";
 
   export default {
     name: 'A17DamHeader',
@@ -108,14 +109,15 @@
     },
     watch: {},
     methods: {
-      submitSearch(formData) {
-        // TODO: refactor this, this is a prototype for demo purposes
-        if (formData.search) {
-          window.location.href = '/admin/dam?search=' + formData.search
-        } else {
-          window.location.href = '/admin/dam'
-        }
-
+      submitSearch() {
+        this.$refs.damFilters.applyFilters()
+      },
+      setSearch(searchValue){
+        this.$store.commit(MEDIA_LIBRARY.SET_DAM_SEARCH, { search: searchValue})
+      },
+      clearSearch(){
+        this.$store.commit(MEDIA_LIBRARY.SET_DAM_SEARCH, {})
+        this.$refs.filters.searchValue = ''
       },
       openModal() {
         this.$root.$refs.editionModal.open()

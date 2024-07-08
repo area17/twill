@@ -131,6 +131,7 @@
       },
       onSearchInput: function (event) {
         this.searchValue = event.target.value
+        this.$emit('searchInput', this.searchValue)
       },
       clear: function () {
         this.searchValue = ''

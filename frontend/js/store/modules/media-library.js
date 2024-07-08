@@ -98,6 +98,8 @@ const state = {
 
   filterData: window[process.env.VUE_APP_NAME].STORE.medias.filterData || {},
 
+  searchData : window[process.env.VUE_APP_NAME].STORE.medias.searchData || {},
+
   initialFilterData: window[process.env.VUE_APP_NAME].STORE.medias.initialFilterData || {},
 
   filters: window[process.env.VUE_APP_NAME].STORE.medias.filters || [],
@@ -299,6 +301,12 @@ const mutations = {
   },
   [MEDIA_LIBRARY.ADD_MEDIAS] (state, { medias }) {
     state.selected = Object.assign({}, state.selected, medias)
+  },
+  [MEDIA_LIBRARY.SET_DAM_SEARCH](state, searchPayload){
+    state.searchData = searchPayload
+  },
+  [MEDIA_LIBRARY.SET_SEARCH_VALUE](state, searchValue){
+    state.searchValue = searchValue
   },
   [MEDIA_LIBRARY.SET_FILTER_DATA] (state, payload) {
     const filters = {}

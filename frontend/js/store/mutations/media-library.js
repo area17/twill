@@ -26,6 +26,7 @@ export const UPDATE_REPLACE_INDEX = 'updateReplaceIndex'
 export const ADD_MEDIAS = 'addMedias'
 export const SET_FILTER_DATA = 'setFilterData'
 export const SET_FILTERS = 'setFilters'
+export const SET_DAM_SEARCH = 'setDamSearchValue'
 
 export default {
   UPDATE_MEDIA_TYPE_TOTAL,
@@ -54,5 +55,6 @@ export default {
   UPDATE_MEDIAS,
   ADD_MEDIAS,
   SET_FILTER_DATA,
-  SET_FILTERS
+  SET_FILTERS,
+  SET_DAM_SEARCH,
 }

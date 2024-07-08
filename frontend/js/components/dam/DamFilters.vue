@@ -271,6 +271,14 @@
       resetFilters() {
         this.appliedFilters = {}
         this.clearFilters()
+        this.$emit('resetFilters')
+        this.clearQueryStrings()
+      },
+      clearQueryStrings(){
+        const url  = new URL(window.location.href)
+        url.search = ''
+        window.history.replaceState({}, document.title, url.pathname + url.hash)
+        this.$store.commit(MEDIA_LIBRARY.SET_FILTER_DATA, {})
       },
       bindInputs() {
         const inputs = this.$el.querySelectorAll('input')
