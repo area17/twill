@@ -14,7 +14,7 @@
       ></a17-dam-header>
 
       <div class="dam__page">
-        <slot/>
+        <slot />
       </div>
     </div>
   </div>
@@ -28,7 +28,7 @@
     name: 'A17Dam',
     components: {
       'a17-dam-navigation': a17DamNavigation,
-      'a17-dam-header': a17DamHeader,
+      'a17-dam-header': a17DamHeader
     },
     props: {
       authorized: {
@@ -95,9 +95,11 @@
     flex: 0 1 100%;
     display: flex;
     flex-flow: column;
+    padding-top: rem-calc(100);
 
     @include breakpoint('medium+') {
       height: 100vh;
+      padding-top: 0;
     }
   }
 

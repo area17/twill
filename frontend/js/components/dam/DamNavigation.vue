@@ -1,164 +1,185 @@
 <template>
-  <div
-    class="dam-nav__wrapper"
-    :class="[{ 'dam-nav__wrapper--open': isOpen }]"
-    @click="onClickOutside"
-  >
-    <div class="dam-nav" ref="nav">
-      <div class="dam-nav__header">
-        <h1>
-          <component :is="appLink ? 'a' : 'span'" :href="appLink">
-            {{ appName }}
-            <span class="envlabel">
-              {{ envLabel }}
-            </span>
-          </component>
-        </h1>
-        <a17-button
-          :aria-label="
-            isOpen
-              ? $trans('dam.close-nav', 'Close navigation')
-              : $trans('dam.expand-nav', 'Expand navigation')
-          "
-          class="dam-nav__toggle"
-          @click="togglePanel"
-          ><span
-            aria-hidden="true"
-            v-svg
-            :symbol="isOpen ? 'pagination_left' : 'pagination_right'"
-          ></span
-        ></a17-button>
-        <a17-button
-          :aria-label="$trans('dam.close-nav', 'Close navigation')"
-          class="dam-nav__close"
-          @click="isOpen = false"
-          ><span v-svg aria-hidden="true" symbol="close"></span
-        ></a17-button>
-      </div>
-      <div
-        class="dam-nav__body"
-        :class="{ scrolled: isScrolledToBottom }"
-        ref="navBody"
-        @scroll="handleScroll"
-      >
-        <div class="dam-nav__search">
-          <input
-            type="search"
-            class="form__input form__input--small"
-            name="search"
-            :value="searchValue"
-            :placeholder="searchPlaceholder"
-            @input="onSearchInput"
-          />
+  <div>
+    <div class="dam-header__mobile">
+      <h1>
+        <component :is="appLink ? 'a' : 'span'" :href="appLink">
+          {{ appName }}
+          <span class="envlabel">
+            {{ envLabel }}
+          </span>
+        </component>
+      </h1>
+      <a17-button
+        :aria-label="$trans('dam.expand-nav', 'Expand navigation')"
+        class="dam-nav__toggle"
+        @click="togglePanel"
+        ><span class="ham__icon"> <span class="ham__line"></span> </span
+      ></a17-button>
+    </div>
+    <div
+      class="dam-nav__wrapper"
+      :class="[{ 'dam-nav__wrapper--open': isOpen }]"
+      @click="onClickOutside"
+    >
+      <div class="dam-nav" ref="nav">
+        <div class="dam-nav__header">
+          <h1>
+            <component :is="appLink ? 'a' : 'span'" :href="appLink">
+              {{ appName }}
+              <span class="envlabel">
+                {{ envLabel }}
+              </span>
+            </component>
+          </h1>
           <a17-button
-            variant="icon"
-            :aria-label="$trans('dam.submit-search', 'Submit search')"
-            ><span v-svg aria-hidden="true" symbol="search"></span
+            :aria-label="
+              isOpen
+                ? $trans('dam.close-nav', 'Close navigation')
+                : $trans('dam.expand-nav', 'Expand navigation')
+            "
+            class="dam-nav__toggle"
+            @click="togglePanel"
+            ><span
+              aria-hidden="true"
+              v-svg
+              :symbol="isOpen ? 'pagination_left' : 'pagination_right'"
+            ></span
+          ></a17-button>
+          <a17-button
+            :aria-label="$trans('dam.close-nav', 'Close navigation')"
+            class="dam-nav__close"
+            @click="isOpen = false"
+            ><span v-svg aria-hidden="true" symbol="close"></span
           ></a17-button>
         </div>
-        <div v-for="(section, index) in JSON.parse(this.sections)" :key="index">
-          <h2
-            v-if="section.title && !section.hideTitle"
-            class="f--tiny"
-            :id="`navList__${index}`"
+        <div
+          class="dam-nav__body"
+          :class="{ scrolled: isScrolledToBottom }"
+          ref="navBody"
+          @scroll="handleScroll"
+        >
+          <div class="dam-nav__search">
+            <input
+              type="search"
+              class="form__input form__input--small"
+              name="search"
+              :value="searchValue"
+              :placeholder="searchPlaceholder"
+              @input="onSearchInput"
+            />
+            <a17-button
+              variant="icon"
+              :aria-label="$trans('dam.submit-search', 'Submit search')"
+              ><span v-svg aria-hidden="true" symbol="search"></span
+            ></a17-button>
+          </div>
+          <div
+            v-for="(section, index) in JSON.parse(this.sections)"
+            :key="index"
           >
-            {{ section.title
-            }}<template v-if="section.items && section.items.length > 0">
-              ({{ section.items.length }})</template
+            <h2
+              v-if="section.title && !section.hideTitle"
+              class="f--tiny"
+              :id="`navList__${index}`"
             >
-          </h2>
-          <template v-if="section.items && section.items.length > 0">
-            <ul :aria-labelledby="`navList__${index}`">
-              <li
-                v-for="(item, i) in section.items"
-                :key="i"
-                class="dam-nav__listItem"
-                :class="{
-                  'dam-nav__listItem--open': expandedSections.includes(
-                    `section_${index}_${i}`
-                  )
-                }"
+              {{ section.title
+              }}<template v-if="section.items && section.items.length > 0">
+                ({{ section.items.length }})</template
               >
-                <component
-                  :is="item.url ? 'a' : 'button'"
-                  :href="item.url"
-                  :class="[
-                    'dam-nav__link',
-                    {
-                      'dam-nav__link--active': item.active
-                    }
-                  ]"
-                  :id="`navItem_${index}_${i}`"
-                  @click="
-                    item.items && item.items.length
-                      ? toggleSection(`section_${index}_${i}`)
-                      : null
-                  "
-                  :aria-expanded="
-                    item.items && item.items.length
-                      ? expandedSections.includes(`section_${index}_${i}`)
-                        ? 'true'
-                        : 'false'
-                      : null
-                  "
+            </h2>
+            <template v-if="section.items && section.items.length > 0">
+              <ul :aria-labelledby="`navList__${index}`">
+                <li
+                  v-for="(item, i) in section.items"
+                  :key="i"
+                  class="dam-nav__listItem"
+                  :class="{
+                    'dam-nav__listItem--open': expandedSections.includes(
+                      `section_${index}_${i}`
+                    )
+                  }"
                 >
-                  <span
-                    v-if="expandedSections.includes(`section_${index}_${i}`)"
-                    v-svg
-                    symbol="dropdown_default"
-                    aria-hidden="true"
-                    class="dam-nav__icon"
+                  <component
+                    :is="item.url ? 'a' : 'button'"
+                    :href="item.url"
+                    :class="[
+                      'dam-nav__link',
+                      {
+                        'dam-nav__link--active': item.active
+                      }
+                    ]"
+                    :id="`navItem_${index}_${i}`"
+                    @click="
+                      item.items && item.items.length
+                        ? toggleSection(`section_${index}_${i}`)
+                        : null
+                    "
+                    :aria-expanded="
+                      item.items && item.items.length
+                        ? expandedSections.includes(`section_${index}_${i}`)
+                          ? 'true'
+                          : 'false'
+                        : null
+                    "
                   >
-                  </span>
-                  <span
-                    v-else-if="item.icon || section.icon"
-                    v-svg
-                    :symbol="item.icon ? item.icon : section.icon"
-                    aria-hidden="true"
-                    class="dam-nav__icon"
-                  ></span>
-                  <span class="dam-nav__item">
-                    <span v-if="item.text" class="f--regular">{{
-                      item.text
-                    }}</span>
-                    <span v-if="item.count" class="f--small">{{
-                      formatNumber(item.count)
-                    }}</span>
-                  </span>
-                </component>
-                <ul
-                  v-if="item.items && item.items.length > 0"
-                  :aria-labelledby="`navItem_${index}_${i}`"
-                >
-                  <li
-                    v-for="(childItem, childIndex) in item.items"
-                    :key="childIndex"
-                  >
-                    <component
-                      :is="childItem.url ? 'a' : 'button'"
-                      :href="childItem.url"
-                      :class="[
-                        'dam-nav__link',
-                        {
-                          'dam-nav__link--active': childItem.active
-                        }
-                      ]"
+                    <span
+                      v-if="expandedSections.includes(`section_${index}_${i}`)"
+                      v-svg
+                      symbol="dropdown_default"
+                      aria-hidden="true"
+                      class="dam-nav__icon"
                     >
-                      <span v-svg symbol="nested" aria-hidden="true"></span>
-                      <span class="dam-nav__item">
-                        <span v-if="childItem.text" class="f--regular">{{
-                          childItem.text
-                        }}</span>
-                        <span v-if="childItem.count" class="f--small">{{
-                          formatNumber(childItem.count)
-                        }}</span>
-                      </span>
-                    </component>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </template>
+                    </span>
+                    <span
+                      v-else-if="item.icon || section.icon"
+                      v-svg
+                      :symbol="item.icon ? item.icon : section.icon"
+                      aria-hidden="true"
+                      class="dam-nav__icon"
+                    ></span>
+                    <span class="dam-nav__item">
+                      <span v-if="item.text" class="f--regular">{{
+                        item.text
+                      }}</span>
+                      <span v-if="item.count" class="f--small">{{
+                        formatNumber(item.count)
+                      }}</span>
+                    </span>
+                  </component>
+                  <ul
+                    v-if="item.items && item.items.length > 0"
+                    :aria-labelledby="`navItem_${index}_${i}`"
+                  >
+                    <li
+                      v-for="(childItem, childIndex) in item.items"
+                      :key="childIndex"
+                    >
+                      <component
+                        :is="childItem.url ? 'a' : 'button'"
+                        :href="childItem.url"
+                        :class="[
+                          'dam-nav__link',
+                          {
+                            'dam-nav__link--active': childItem.active
+                          }
+                        ]"
+                      >
+                        <span v-svg symbol="nested" aria-hidden="true"></span>
+                        <span class="dam-nav__item">
+                          <span v-if="childItem.text" class="f--regular">{{
+                            childItem.text
+                          }}</span>
+                          <span v-if="childItem.count" class="f--small">{{
+                            formatNumber(childItem.count)
+                          }}</span>
+                        </span>
+                      </component>
+                    </li>
+                  </ul>
+                </li>
+              </ul>
+            </template>
+          </div>
         </div>
       </div>
     </div>
@@ -300,6 +321,8 @@
     opacity: 0;
     visibility: hidden;
     transition: all 300ms ease;
+    position: relative;
+    z-index: $zindex__overlay;
 
     @include breakpoint('medium+') {
       transition: background-color 300ms ease;
@@ -583,5 +606,30 @@
     line-height: normal;
     border-radius: 0;
     border: none;
+  }
+
+  .dam-header__mobile {
+    height: rem-calc(100);
+    padding: rem-calc(16);
+    background: $color__black;
+    color: $color__white;
+    display: flex;
+    flex-flow: row;
+    justify-content: space-between;
+    position: absolute;
+    left: 0;
+    right: 0;
+
+    @include breakpoint('medium+') {
+      display: none;
+    }
+
+    .dam-nav__toggle {
+      padding: 0 rem-calc(10);
+      margin-top: rem-calc(-10);
+      margin-right: rem-calc(-10);
+      margin-left: rem-calc(24);
+      flex-shrink: 0;
+    }
   }
 </style>
