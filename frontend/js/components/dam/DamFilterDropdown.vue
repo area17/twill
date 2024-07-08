@@ -541,6 +541,11 @@
       vertical-align: middle;
     }
 
+    > span {
+      display: flex;
+      align-items: center;
+    }
+
     &--open {
       @include breakpoint('small-') {
         background: none;
