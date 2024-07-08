@@ -7,10 +7,11 @@
       ref="trigger"
       >{{ label }}
       <span
-        ><span class="count"> {{ totalCheckedText }} </span
+        ><span class="count" v-if="totalCheckedText"
+          >&nbsp;{{ totalCheckedText }}</span
         ><span v-svg symbol="dropdown_module"></span></span
     ></a17-button>
-    <div class="dam-filters__dropdown">
+    <div class="dam-filters__dropdown" ref="dropdown">
       <div v-if="hasSearch" class="dam-filters__dropdown-search">
         <label :for="`search_${uid}`" class="visually-hidden"
           >{{ $trans('dam.search', 'Search') }} {{ label }}</label
@@ -44,7 +45,7 @@
             :selectedLabel="$trans('dam.selected', 'Selected')"
             ref="checkboxAccordion"
             @selectionChanged="
-              (data) => updateSelectedFilters(data, subItem.name)
+              data => updateSelectedFilters(data, subItem.name)
             "
             >{{ subItem.label }}</a17-checkboxaccordion
           >
@@ -104,7 +105,7 @@
         default: false
       },
       searchEndpoint: {
-        type : String,
+        type: String
       },
       items: {
         type: Array,
@@ -125,7 +126,7 @@
         default: false
       }
     },
-    data: function () {
+    data: function() {
       return {
         customColorCheckbox: null,
         controller: null,
@@ -139,18 +140,20 @@
         searchParams: new URLSearchParams(window.location.search),
         searchValue: null,
         selectedFilters: [],
-        searchResults: [],
+        searchResults: []
       }
     },
     computed: {
       filterItems() {
-        const items = this.searchValue ? [...this.searchResults]:[...this.items, ...this.loadedItems]
+        const items = this.searchValue
+          ? [...this.searchResults]
+          : [...this.items, ...this.loadedItems]
         return items.map(item => {
-          const newItem = {...item}
+          const newItem = { ...item }
           if (this.hasNestedItems) {
             newItem.items = []
             item.items.forEach(innerItem => {
-              const newInnerItem = {...innerItem}
+              const newInnerItem = { ...innerItem }
               newInnerItem.value = `${item.name}-${newInnerItem.value}`
               newItem.items.push(newInnerItem)
             })
@@ -188,33 +191,40 @@
         return this.isMobile
           ? `${this.totalChecked} ${this.$trans('dam.selected', 'selected')}`
           : this.totalChecked > 0
-            ? `(${this.totalChecked})`
-            : ''
+          ? `(${this.totalChecked})`
+          : ''
       }
     },
     watch: {},
     methods: {
-      searchFilters(opt = {page: 1, append : false}) {
-        const self  = this
+      searchFilters(opt = { page: 1, append: false }) {
+        const self = this
         const reqData = {
-          filter : this.filterName,
-          search : this.searchValue,
-          page : opt.page
+          filter: this.filterName,
+          search: this.searchValue,
+          page: opt.page
         }
-        this.$http.get(this.searchEndpoint, {
-          params: reqData
-        }).then(function(resp) {
-          self.searchResults = opt.append ? [...self.searchResults, ...resp.data.items] : resp.data.items
-          self.hasTriggeredFetch = false
-          if (resp.data.total > 20) {
-            self.$refs.content.addEventListener('scroll', self.handleScroll)
-          }
-          if (resp.data.isLastPage) {
-            self.$refs.content.removeEventListener('scroll', self.handleScroll)
-          }
-        })
+        this.$http
+          .get(this.searchEndpoint, {
+            params: reqData
+          })
+          .then(function(resp) {
+            self.searchResults = opt.append
+              ? [...self.searchResults, ...resp.data.items]
+              : resp.data.items
+            self.hasTriggeredFetch = false
+            if (resp.data.total > 20) {
+              self.$refs.content.addEventListener('scroll', self.handleScroll)
+            }
+            if (resp.data.isLastPage) {
+              self.$refs.content.removeEventListener(
+                'scroll',
+                self.handleScroll
+              )
+            }
+          })
       },
-      debounceSearch: debounce(function (event) {
+      debounceSearch: debounce(function(event) {
         this.searchValue = event.target.value
         this.page = 1
         this.searchFilters()
@@ -222,7 +232,7 @@
       applyFilters() {
         if (this.isCustomColorChecked) {
           const index = this.selectedFilters.findIndex(
-            (filter) => filter.value === 'colors-custom'
+            filter => filter.value === 'colors-custom'
           )
           this.selectedFilters[index].hex =
             'custom-' + this.$refs.colorField.value
@@ -240,14 +250,14 @@
       },
       clearFilters() {
         this.selectedFilters = this.hasNestedItems ? {} : []
-        this.searchValue = ""
+        this.searchValue = ''
         this.searchResults = []
         this.$emit('filtersApplied', this.selectedFilters, this.uid)
 
         if (this.$refs.checkboxGroup) {
           this.$refs.checkboxGroup.updateValue([])
         } else if (this.$refs.checkboxAccordion) {
-          this.$refs.checkboxAccordion.forEach((checkboxAccordion) => {
+          this.$refs.checkboxAccordion.forEach(checkboxAccordion => {
             checkboxAccordion.currentValue = null
             setTimeout(() => {
               checkboxAccordion.currentValue = []
@@ -288,7 +298,10 @@
 
             if (data.isLastPage) {
               this.loading = false
-              this.$refs.content.removeEventListener('scroll', this.handleScroll)
+              this.$refs.content.removeEventListener(
+                'scroll',
+                this.handleScroll
+              )
             }
           }
         } catch (error) {
@@ -307,15 +320,18 @@
         }
       },
       handleScroll() {
-        const scrollPosition = this.$refs.content.scrollTop;
-        const listHeight = this.$refs.content.clientHeight;
-        const scrollHeight = this.$refs.content.scrollHeight;
-        const threshold = 100; // Trigger fetch when user is within 100px of the bottom
+        const scrollPosition = this.$refs.content.scrollTop
+        const listHeight = this.$refs.content.clientHeight
+        const scrollHeight = this.$refs.content.scrollHeight
+        const threshold = 100 // Trigger fetch when user is within 100px of the bottom
 
-        if (!this.hasTriggeredFetch && scrollPosition + listHeight >= scrollHeight - threshold) {
+        if (
+          !this.hasTriggeredFetch &&
+          scrollPosition + listHeight >= scrollHeight - threshold
+        ) {
           this.hasTriggeredFetch = true
           this.page = this.page + 1
-          this.searchFilters({page : this.page + 1, append : true})
+          this.searchFilters({ page: this.page + 1, append: true })
         }
       },
       updateList(data, opts) {
@@ -327,7 +343,7 @@
       },
       updateSelectedFilters(selectedItems, name = null) {
         // Find corresponding object from items array
-        const selectedFilters = selectedItems.map((selectedItem) => {
+        const selectedFilters = selectedItems.map(selectedItem => {
           let matchedItem
           if (this.hasNestedItems) {
             this.filterItems.forEach(list => {
@@ -338,7 +354,9 @@
               }
             })
           } else {
-            matchedItem = this.filterItems.find(item => item.value === selectedItem)
+            matchedItem = this.filterItems.find(
+              item => item.value === selectedItem
+            )
           }
           const item = {
             label: matchedItem.label,
@@ -372,8 +390,18 @@
         this.customColorCheckbox = colorCheckbox
       }
 
-      document.addEventListener('keydown', (e) => {
+      document.addEventListener('keydown', e => {
         this.handleKey(e)
+      })
+
+      document.addEventListener('click', e => {
+        if (
+          !this.$refs.dropdown.contains(e.target) &&
+          !this.$refs.trigger.$el.contains(e.target) &&
+          e.target !== this.$refs.trigger.$el
+        ) {
+          this.isOpen = false
+        }
       })
 
       if (this.totalPages > 1) {
@@ -382,7 +410,7 @@
       }
     },
     unmounted() {
-      document.removeEventListener('keydown', (e) => {
+      document.removeEventListener('keydown', e => {
         this.handleKey(e)
       })
     }
@@ -390,238 +418,239 @@
 </script>
 
 <style lang="scss">
-.dam-filters__dropdown {
-  .accordion:last-child {
-    border-bottom: none;
-  }
-
-  .accordion {
-    @include breakpoint('small-') {
-      border-bottom: 1px solid $color__border;
-      background: none;
+  .dam-filters__dropdown {
+    .accordion:last-child {
+      border-bottom: none;
     }
-  }
 
-  .accordion__trigger {
-    height: auto;
-    padding: rem-calc(18) rem-calc(24) rem-calc(18) rem-calc(0);
-
-    @include breakpoint('small-') {
-      background: none !important;
-
-      .icon {
-        right: 0;
+    .accordion {
+      @include breakpoint('small-') {
+        border-bottom: 1px solid $color__border;
+        background: none;
       }
     }
 
-    @include breakpoint('medium+') {
-      padding: rem-calc(12) rem-calc(44) rem-calc(12) rem-calc(16);
+    .accordion__trigger {
+      height: auto;
+      padding: rem-calc(18) rem-calc(24) rem-calc(18) rem-calc(0);
+
+      @include breakpoint('small-') {
+        background: none !important;
+
+        .icon {
+          right: 0;
+        }
+      }
+
+      @include breakpoint('medium+') {
+        padding: rem-calc(12) rem-calc(44) rem-calc(12) rem-calc(16);
+      }
+    }
+
+    .accordion__list {
+      padding: 0 0 rem-calc(8) 0;
+      border: none;
+    }
+
+    .input {
+      margin-top: 0;
+      padding-bottom: rem-calc(8);
+
+      @include breakpoint('medium+') {
+        padding-bottom: 0;
+      }
+    }
+
+    .checkBoxGroup {
+      @include breakpoint('medium+') {
+        padding: 0 rem-calc(16);
+      }
+    }
+
+    .checkboxGroup__item {
+      padding: rem-calc(12) 0;
     }
   }
 
-  .accordion__list {
-    padding: 0 0 rem-calc(8) 0;
-    border: none;
-  }
-
-  .input {
-    margin-top: 0;
-    padding-bottom: rem-calc(8);
+  .dam-filters__dropdown-color {
+    padding: 0 0 rem-calc(12) 0;
 
     @include breakpoint('medium+') {
-      padding-bottom: 0;
+      padding: rem-calc(16);
+      padding-top: 0;
+    }
+
+    .form__field {
+      padding: rem-calc(8) rem-calc(16) rem-calc(8) rem-calc(8);
+      height: auto;
+      line-height: normal;
+    }
+
+    .form__field input {
+      height: auto;
+      line-height: normal;
+    }
+
+    .form__field--colorBtn {
+      width: rem-calc(16);
+      height: rem-calc(16);
     }
   }
-
-  .checkBoxGroup {
-    @include breakpoint('medium+') {
-      padding: 0 rem-calc(16);
-    }
-  }
-
-  .checkboxGroup__item {
-    padding: rem-calc(12) 0;
-  }
-}
-
-.dam-filters__dropdown-color {
-  padding: 0 0 rem-calc(12) 0;
-
-  @include breakpoint('medium+') {
-    padding: rem-calc(16);
-    padding-top: 0;
-  }
-
-  .form__field {
-    padding: rem-calc(8) rem-calc(16) rem-calc(8) rem-calc(8);
-    height: auto;
-    line-height: normal;
-  }
-
-  .form__field input {
-    height: auto;
-    line-height: normal;
-  }
-
-  .form__field--colorBtn {
-    width: rem-calc(16);
-    height: rem-calc(16);
-  }
-}
 </style>
 
 <style lang="scss" scoped>
-.dam-filters__wrap {
-  border-top: 1px solid $color__border;
+  .dam-filters__wrap {
+    border-top: 1px solid $color__border;
 
-  &:first-child {
-    border-top: none;
-  }
+    &:first-child {
+      border-top: none;
+    }
 
-  &:last-child {
-    border-bottom: 1px solid $color__border;
-  }
-
-  @include breakpoint('medium+') {
-    position: relative;
-    border: none;
-  }
-}
-
-.dam-filters__toggle {
-  display: flex;
-  flex-flow: row;
-  align-items: center;
-  border: none;
-  background: $color__background;
-  width: 100%;
-  border-radius: 0;
-  padding: rem-calc(19) rem-calc(16);
-  height: auto;
-  line-height: normal;
-  justify-content: space-between;
-
-  @include breakpoint('medium+') {
-    background: $color__border;
-    border-radius: rem-calc(36);
-    padding: rem-calc(8) rem-calc(16);
-    border: 1px solid transparent;
-  }
-
-  .icon {
-    margin-left: rem-calc(10);
-  }
-
-  &--open {
-    @include breakpoint('small-') {
-      background: none;
+    &:last-child {
+      border-bottom: 1px solid $color__border;
     }
 
     @include breakpoint('medium+') {
-      border: 1px solid $color__black--90;
+      position: relative;
+      border: none;
+    }
+  }
 
-      .count {
-        display: none;
+  .dam-filters__toggle {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    border: none;
+    background: $color__background;
+    width: 100%;
+    border-radius: 0;
+    padding: rem-calc(19) rem-calc(16);
+    height: auto;
+    line-height: normal;
+    justify-content: space-between;
+
+    @include breakpoint('medium+') {
+      background: $color__border;
+      border-radius: rem-calc(36);
+      padding: rem-calc(8) rem-calc(16);
+      border: 1px solid transparent;
+    }
+
+    .icon {
+      margin-left: rem-calc(10);
+      vertical-align: middle;
+    }
+
+    &--open {
+      @include breakpoint('small-') {
+        background: none;
+      }
+
+      @include breakpoint('medium+') {
+        border: 1px solid $color__black--90;
+
+        .count {
+          display: none;
+        }
+      }
+    }
+
+    &--open .icon {
+      transform: rotate(180deg);
+    }
+
+    &--open + .dam-filters__dropdown {
+      visibility: visible;
+      opacity: 1;
+      height: auto;
+
+      @include breakpoint('small-') {
+        max-height: 100svh;
       }
     }
   }
 
-  &--open .icon {
-    transform: rotate(180deg);
-  }
+  .dam-filters__dropdown {
+    padding: 0 rem-calc(16);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.25s linear;
 
-  &--open + .dam-filters__dropdown {
-    visibility: visible;
-    opacity: 1;
-    height: auto;
-
-    @include breakpoint('small-') {
-      max-height: 100svh;
+    @include breakpoint('medium+') {
+      background: $color__background;
+      border-radius: 2px;
+      position: absolute;
+      border: 1px solid $color__border--light;
+      box-shadow: 0px 1px 3.5px 0px rgba(0, 0, 0, 0.3);
+      width: auto;
+      max-width: rem-calc(320);
+      max-height: calc(100svh - 228px);
+      z-index: 20;
+      margin-top: rem-calc(8);
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.25s linear, visibility 0.25s linear;
+      padding: 0;
+      height: auto;
+      overflow: visible;
+      overflow-y: auto;
+      display: flex;
+      flex-flow: column;
     }
   }
-}
 
-.dam-filters__dropdown {
-  padding: 0 rem-calc(16);
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.25s linear;
+  .dam-filters__dropdown-search {
+    padding-bottom: rem-calc(16);
+    border-bottom: 1px solid $color__modal--header;
+    flex-shrink: 0;
 
-  @include breakpoint('medium+') {
-    background: $color__background;
-    border-radius: 2px;
-    position: absolute;
-    border: 1px solid $color__border--light;
-    box-shadow: 0px 1px 3.5px 0px rgba(0, 0, 0, 0.3);
-    width: auto;
-    max-width: rem-calc(320);
-    max-height: calc(100svh - 228px);
-    z-index: 20;
-    margin-top: rem-calc(8);
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.25s linear, visibility 0.25s linear;
-    padding: 0;
-    height: auto;
-    overflow: visible;
-    overflow-y: auto;
-    display: flex;
-    flex-flow: column;
-  }
-}
+    @include breakpoint('medium+') {
+      padding: rem-calc(16);
+      border-bottom: 1px solid $color__border--light;
+      width: rem-calc(288);
+    }
 
-.dam-filters__dropdown-search {
-  padding-bottom: rem-calc(16);
-  border-bottom: 1px solid $color__modal--header;
-  flex-shrink: 0;
+    div {
+      position: relative;
+    }
 
-  @include breakpoint('medium+') {
-    padding: rem-calc(16);
-    border-bottom: 1px solid $color__border--light;
-    width: rem-calc(288);
+    input {
+      padding-right: rem-calc(28);
+    }
+
+    .icon {
+      color: $color__grey--54;
+      position: absolute;
+      top: rem-calc(8);
+      right: rem-calc(8);
+    }
   }
 
-  div {
-    position: relative;
+  .dam-filters__dropdown-content {
+    @include breakpoint('medium+') {
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .loading {
+      display: block;
+      width: 100%;
+      padding: rem-calc(18) 0;
+      text-align: center;
+    }
   }
 
-  input {
-    padding-right: rem-calc(28);
-  }
+  .dam-filters__dropdown-footer {
+    display: none;
+    flex-shrink: 0;
 
-  .icon {
-    color: $color__grey--54;
-    position: absolute;
-    top: rem-calc(8);
-    right: rem-calc(8);
+    @include breakpoint('medium+') {
+      border-top: 1px solid $color__border;
+      background: $color__light;
+      display: flex;
+      gap: rem-calc(16);
+      padding: rem-calc(16) rem-calc(20);
+      justify-content: flex-end;
+    }
   }
-}
-
-.dam-filters__dropdown-content {
-  @include breakpoint('medium+') {
-    height: 100%;
-    overflow-y: auto;
-  }
-
-  .loading {
-    display: block;
-    width: 100%;
-    padding: rem-calc(18) 0;
-    text-align: center;
-  }
-}
-
-.dam-filters__dropdown-footer {
-  display: none;
-  flex-shrink: 0;
-
-  @include breakpoint('medium+') {
-    border-top: 1px solid $color__border;
-    background: $color__light;
-    display: flex;
-    gap: rem-calc(16);
-    padding: rem-calc(16) rem-calc(20);
-    justify-content: flex-end;
-  }
-}
 </style>
