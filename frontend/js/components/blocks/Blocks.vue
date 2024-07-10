@@ -81,6 +81,15 @@
       </draggable>
 
       <div class="blocks__actions" v-if="!isSettings">
+        <div v-if="availableBlocks.length === 0"
+              :data-tooltip-title="$trans('fields.block-editor.no-available-blocks', 'No available blocks for this editor')"
+              data-tooltip-placement="top"
+              v-tooltip>
+          <a17-button size="small"
+                      variant="action"
+                      disabled>{{ trigger }}
+          </a17-button>
+        </div>
         <a17-dropdown ref="blocksDropdown"
                       position="top-center"
                       v-if="availableBlocks.length"

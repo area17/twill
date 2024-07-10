@@ -40,6 +40,7 @@
           <div class="editor__inner">
             <div class="editor__sidebar" ref="sidebar">
               <a17-editorsidebar
+                v-if="availableBlocks.length"
                 :editor-name="editorName"
                 :hasBlockActive="hasBlockActive"
                 :editorNames="editorNames"
@@ -48,6 +49,10 @@
               >
                 {{ $trans('fields.block-editor.add-content', 'Add content') }}
               </a17-editorsidebar>
+              <div v-else
+                   class="editor__sidebar__empty">
+                {{ $trans('fields.block-editor.no-available-blocks', 'No available blocks for this editor') }}
+              </div>
             </div>
             <div class="editor__resizer" @mousedown="resize"><span></span></div>
             <div class="editor__preview">
@@ -221,6 +226,16 @@
     background: $color__border--light;
     width: 30vw;
     min-width: 400px;
+  }
+
+  // center content in div
+  .editor__sidebar__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    font-size: 17px;
+    color: $color__text--light;
   }
 
   .editor__resizer {
