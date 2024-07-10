@@ -110,6 +110,42 @@
     overflow-y: auto;
     height: 100%;
   }
+
+  .dam__wrapper .dam__page .container {
+    padding-top: rem-calc(20);
+    padding-bottom: rem-calc(20);
+    padding-right: rem-calc(20);
+    padding-left: rem-calc(20);
+    width: auto;
+  }
+
+  .dam__page .wrapper {
+    margin: 0;
+
+    @each $name, $point in $breakpoints {
+      @include breakpoint('#{$name}') {
+        gap: rem-calc(20) rem-calc(map-get($inner-gutters, $name));
+      }
+    }
+  }
+
+  .dam__page .col--primary {
+    margin: 0;
+    width: 100%;
+
+    @include breakpoint('medium+') {
+      width: auto;
+      flex-grow: 1;
+    }
+  }
+
+  .dam__page .col--aside {
+    margin: 0 !important;
+
+    @include breakpoint('small-') {
+      width: 100%;
+    }
+  }
 </style>
 
 <style lang="scss" scoped>
