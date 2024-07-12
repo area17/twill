@@ -194,7 +194,7 @@ return [
             'no' => 'Нет',
         ],
         'languages' => 'Языки',
-        'listing-empty-message' => 'Элементов пока нет.',
+        'listing-empty-message' => 'Элементов нет.',
         'paginate' => [
             'rows-per-page' => 'Строк на странице:',
         ],
@@ -271,7 +271,7 @@ return [
         'sidebar' => [
             'alt-text' => 'Текст-подсказка',
             'clear' => 'Снять выделение',
-            'dimensions' => 'Уровни',
+            'dimensions' => 'Разрешение',
             'empty-text' => 'Файлы не выбраны',
             'files-selected' => 'файлов выбрано',
             'tags' => 'Теги',
@@ -279,7 +279,7 @@ return [
         ],
         'title' => 'Медиа библиотека',
         'update' => 'Обновить',
-        'unused-filter-label' => 'Показать только неиспользуемые',
+        'unused-filter-label' => 'Только неиспользуемые',
         'dialogs' => [
             'delete' => [
                 'allow-delete-one-media' => 'Этот файл используется и не может быть удален. Вы хотите удалить остальные?',
@@ -387,7 +387,7 @@ return [
         'update' => 'Обновить',
         'update-close' => 'Обновить и закрыть',
         'update-new' => 'Обновить и создать еще',
-        'languages-published' => 'Опубликовано',
+        'languages-published' => 'опубликовано',
         'restore-draft-close' => 'Восстановить как черновик и закрыть',
         'restore-live-close' => 'Восстановить как опубликованное и закрыть',
         'restore-message' => 'В данный момент вы редактируете старую редакцию этого контента (сохраненную :user :date). При необходимости внесите изменения и нажмите кнопку восстановления, чтобы сохранить новую редакцию.',
@@ -414,7 +414,7 @@ return [
         'empty-text' => 'Нет соответствующих параметров.',
     ],
     'uploader' => [
-        'dropzone-text' => 'или перетащите сюда файлы.',
+        'dropzone-text' => 'или перетащите файлы сюда.',
         'upload-btn-label' => 'Загрузите',
     ],
     'user-management' => [
@@ -446,7 +446,7 @@ return [
         'update-disabled-user' => 'Обновить отключенного пользователя',
         'update-disabled-user-and-create-new' => 'Обновить отключенного пользователя и создать еще',
         'user-image' => 'Изображение',
-        'users' => 'Пользователи',
+        'users' => 'Пользователи CMS',
         '2fa-description' => 'Пожалуйста, отсканируйте этот QR-код с помощью приложения, совместимого с Google Authenticator, и введите свой одноразовый пароль ниже. Список совместимых приложений можно посмотреть <a href=":link" target="_blank" rel="noopener">здесь</a>.',
         'force-2fa-disable-description' => 'Введите показанный текст в поле, чтобы отключить 2FA для этого пользователя',
         'force-2fa-disable-challenge' => 'Отключить 2FA для :user',
@@ -464,7 +464,7 @@ return [
         'published' => 'Опубликовано',
     ],
     'lang-switcher' => [
-        'edit-in' => 'Редактировать',
+        'edit-in' => 'Редактировать на',
     ],
     'permissions' => [
         'groups' => [
