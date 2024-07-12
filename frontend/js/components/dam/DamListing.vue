@@ -60,6 +60,7 @@
           :selected-items="selectedMedias"
           :used-items="usedMedias"
           :hide-names="hideNames"
+          variant="dam"
           @change="updateSelectedMedias"
           @shiftChange="updateSelectedMedias"
         />

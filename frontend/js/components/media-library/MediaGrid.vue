@@ -19,6 +19,7 @@
        
           <img :src="item.thumbnail" class="mediagrid__img" />
           <span v-if="item.fileExtension" class="mediagrid__label">{{ item.fileExtension }}</span>
+          <span v-if="variant === 'dam'" v-svg class="mediagrid__preview" symbol="preview" aria-hidden="true"></span>
         </span>
         <p v-if="showFileName ? showFileName : !hideNames" :title="item.name" class="mediagrid__name">{{ item.name }}</p>
     </div>
@@ -37,6 +38,10 @@
       hideNames: {
         type: Boolean,
         default: true
+      },
+      variant: {
+        type: String,
+        default: null
       }
     },
     computed: {
@@ -311,5 +316,22 @@
       position: absolute;
       top: rem-calc(8);
       left: rem-calc(8);
+    }
+
+    .mediagrid__preview {
+      position: absolute;
+      bottom: rem-calc(16);
+      left: rem-calc(16);
+      color: $color__icons;
+      transition: all 300ms ease;
+      opacity: 0;
+      visibility: hidden;
+
+      @media (pointer: fine) {
+        .mediagrid__button:not(.s--picked):hover & {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
     }
 </style>
