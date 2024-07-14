@@ -26,6 +26,7 @@ return [
         'reset-password' => 'Passwort zurücksetzen',
         'reset-send' => 'Link zum Zurücksetzen des Passworts senden',
         'verify-login' => 'Anmeldung bestätigen',
+        'auth-causer' => 'Authentifikation',
     ],
     'buckets' => [
         'intro' => 'Was würden Sie heute gerne vorstellen?',
@@ -56,6 +57,9 @@ return [
             'unfeatured' => 'Hervorhebung aufgehoben',
             'restored' => 'Wiederhergestellt',
             'deleted' => 'Gelöscht',
+            'login' => 'Anmeldung',
+            'logout' => 'Abmeldung',
+            'duplicated' => 'Dupliziert',
         ],
         'activity-row' => [
             'edit' => 'Bearbeiten',
@@ -145,6 +149,7 @@ return [
             ],
         ],
         'editor' => 'Editor',
+        'options' => 'Optionen',
     ],
     'lang-manager' => [
         'published' => 'Veröffentlicht',
@@ -196,6 +201,7 @@ return [
             'mine' => 'Meine',
             'published' => 'Veröffentlicht',
             'trash' => 'Papierkorb',
+            'not-set' => 'Ohne Wert',
         ],
         'filters' => [
             'all-label' => 'Alle :label',
@@ -407,6 +413,11 @@ return [
         'scheduled' => 'Geplant',
         'expired' => 'Abgelaufen',
         'unsaved-changes' => 'Es gibt nicht gespeicherte Änderungen',
+        'draft-revision' => 'Als Entwurfs-Revision abspeichern',
+        'draft-revision-close' => 'Als Entwurfs-Revision abspeichern und schließen',
+        'draft-revision-new' => 'Als Entwurfs-Revision abspeichern und weiteren erstellen',
+        'draft-revisions-available' => 'Sie betrachten die aktuell veröffentlichte Version des Inhalts. Es gibt neuere Entwurfs-Revisionen.',
+        'editing-draft-revision' => 'Sie bearbeiten aktuell eine Entwurfs-Revision dieses Inhalts. Speichern Sie die Änderungen oder Veröffentlichen Sie diese.',
     ],
     'select' => [
         'empty-text' => 'Leider keine passenden Optionen gefunden',
