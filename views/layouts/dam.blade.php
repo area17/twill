@@ -36,7 +36,7 @@
             $mediaBrowsers[] = array_merge(
                 $browser,
                 [
-                    'endpoint' => moduleRoute($browser['name'], $browser['prefix'] ?? null, 'browser', [], false),
+                    'endpoint' => moduleRoute($browser['name'], $browser['prefix'] ?? null, 'browser', ['scopes'=> ['forUser'=> true]], false),
                 ]
             );
         }
