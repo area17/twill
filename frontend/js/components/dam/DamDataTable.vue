@@ -108,7 +108,7 @@
           { label: 'Image', name: 'thumbnail' },
           { label: 'Filename', sortable: true, name: 'name' },
           { label: 'Title', name: 'title' },
-          { label: 'Description', name: 'description' },
+          { label: 'Description', name: 'description', truncate: true },
           { label: 'Type', name: 'type' },
           { label: 'File size', name: 'size' }
         ]
@@ -173,10 +173,11 @@
         return this.rows.map(row => ({
           name: row.name,
           thumbnail: row.thumbnail,
-          title: row.metadatas.default.title,
-          description: row.metadatas.default.description,
+          title: row.title,
+          description: row.description,
           type: row.fileExtension,
-          size: ''
+          size: row.size,
+          edit: row.editUrl
         }))
       }
     },
@@ -491,4 +492,16 @@
   .tablehead__cell--sorteddesc .tablehead__arrow {
     transform: rotate(180deg);
   }
+</style>
+
+<style lang="scss">
+.dam-listing {
+  .datatable {
+    .datatable__table {
+      .table {
+        margin-top: 0;
+      }
+    }
+  }
+}
 </style>

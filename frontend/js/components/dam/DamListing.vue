@@ -753,7 +753,7 @@
   }
 
   .dam-listing__list {
-    container: damlist / inline-size;
+    //container: damlist / inline-size;
     flex: 1 1 auto;
     padding: rem-calc(20);
 
