@@ -176,7 +176,8 @@
           title: row.title,
           description: row.description,
           type: row.fileExtension,
-          size: row.size
+          size: row.size,
+          edit: row.editUrl
         }))
       }
     },
@@ -494,10 +495,12 @@
 </style>
 
 <style lang="scss">
-.datatable {
-  .datatable__table {
-    .table {
-      margin-top: 0;
+.dam-listing {
+  .datatable {
+    .datatable__table {
+      .table {
+        margin-top: 0;
+      }
     }
   }
 }
