@@ -1,6 +1,6 @@
 <template>
   <a17-table-cell-html v-if="col.hasOwnProperty('html')" v-bind="childProps" @update="update" @editInPlace="editInPlace"/>
-  <span v-else>{{ row[colName] }}</span>
+  <span v-else :class="{'truncate': col.hasOwnProperty('truncate') && col.truncate}" >{{ row[colName] }}</span>
 </template>
 
 <script>
@@ -23,5 +23,11 @@
 </script>
 
 <style lang="scss" scoped>
-
+.truncate {
+  text-overflow: ellipsis;
+  display: inline-block;
+  width: 85%;
+  white-space: nowrap;
+  overflow: hidden;
+}
 </style>
