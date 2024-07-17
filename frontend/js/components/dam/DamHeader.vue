@@ -52,12 +52,12 @@
         </div>
       </div>
     </div>
-    <a17-dam-filters @resetFilters="clearSearch" ref="damFilters"></a17-dam-filters>
+    <a17-dam-filters v-if="filters.length > 0" @resetFilters="clearSearch" ref="damFilters"></a17-dam-filters>
   </div>
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+import {mapGetters, mapState} from 'vuex'
 
   import A17Avatar from '@/components/Avatar.vue'
   import a17Filter from '@/components/Filter.vue'
@@ -94,6 +94,9 @@
     },
     computed: {
       ...mapGetters(['fieldValueByName']),
+      ...mapState({
+        filters: state => state.mediaLibrary.filters
+      }),
       title() {
         // Get the title from the store
         const title = this.fieldValueByName(this.name)
