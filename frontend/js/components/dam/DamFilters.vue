@@ -312,7 +312,7 @@
                   return isCustomColor ? item.label === 'Custom' : item.hex === value
                 })
               } else {
-                item = filter.items.find(item => item.value.toString() === value)
+                item = filter.items.find(item => item.value.toString() === value.toString())
               }
 
               const newItem = {
@@ -338,8 +338,7 @@
               const filter = filters.items.find(filter => filter.name === deepKey)
               const newFilters = [];
               this.filterData[key][deepKey].forEach(value => {
-                const item = filter.items.find(item => item.value.toString() === value)
-
+                const item = filter.items.find(item => item.value.toString() === value.toString())
                 newFilters.push({
                   value: `${deepKey}-${item.value}`,
                   label: item.label
