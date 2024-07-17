@@ -57,8 +57,7 @@
 </template>
 
 <script>
-import {mapGetters, mapState} from 'vuex'
-
+  import {mapGetters, mapState} from 'vuex'
   import A17Avatar from '@/components/Avatar.vue'
   import a17Filter from '@/components/Filter.vue'
   import A17DamFilters from '@/components/dam/DamFilters.vue'
