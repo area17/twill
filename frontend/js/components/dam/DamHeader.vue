@@ -140,21 +140,21 @@
         this.$root.$refs.editionModal.open()
       },
       openEditModal() {
-          const endpoint = this.editUrl
-          this.$store.commit(MODALEDITION.UPDATE_MODAL_MODE, 'update')
-          this.$store.commit(MODALEDITION.UPDATE_MODAL_ACTION, this.updateUrl)
-          this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
+        const endpoint = this.editUrl
+        this.$store.commit(MODALEDITION.UPDATE_MODAL_MODE, 'update')
+        this.$store.commit(MODALEDITION.UPDATE_MODAL_ACTION, this.updateUrl)
+        this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
 
-          this.$store.dispatch(ACTIONS.REPLACE_FORM, endpoint).then(() => {
-            this.$nextTick(function () {
-              if (this.$root.$refs.editionModal) this.$root.$refs.editionModal.open()
-            })
-          }, (errorResponse) => {
-            this.$store.commit(NOTIFICATION.SET_NOTIF, {
-              message: 'Your content can not be edited, please retry',
-              variant: 'error'
-            })
+        this.$store.dispatch(ACTIONS.REPLACE_FORM, endpoint).then(() => {
+          this.$nextTick(function () {
+            if (this.$root.$refs.editionModal) this.$root.$refs.editionModal.open()
           })
+        }, (errorResponse) => {
+          this.$store.commit(NOTIFICATION.SET_NOTIF, {
+            message: 'Your content can not be edited, please retry',
+            variant: 'error'
+          })
+        })
       }
     },
     mounted() {}
