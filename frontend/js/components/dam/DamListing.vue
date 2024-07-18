@@ -173,7 +173,8 @@
         gridLoaded: false,
         gridView: true,
         hideNames: true,
-        totalItems: 0
+        totalItems: 0,
+        isMobile: false
       }
     },
     computed: {
@@ -384,6 +385,11 @@
         }
       },
       updateSelectedMedias: function(item, shift = false, ctrlKey  = false) {
+        if (this.isMobile) {
+          window.location.href = item.editUrl
+          return
+        }
+
         const id = item.id
         const alreadySelectedMedia = this.selectedMedias.filter(function(
           media
@@ -648,7 +654,21 @@
       },
       updateLayout: function() {
         this.gridView = !this.gridView
+      },
+      getMediaQuery() {
+        if (typeof window !== 'undefined') {
+          const mq = getComputedStyle(document.documentElement)
+            .getPropertyValue('--breakpoint')
+            .trim()
+            .replace(/"/g, '')
+          this.isMobile = mq === 'xsmall' || mq === 'small'
+        }
       }
+    },
+    mounted() {
+      this.getMediaQuery()
+
+      window.addEventListener('resize', this.getMediaQuery)
     },
     created() {
       if (!this.gridLoaded) this.reloadGrid()

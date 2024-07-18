@@ -159,6 +159,10 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
     reloadDamListing(media){
       this.$refs.damListing.addMedia(media);
     },
+    reloadPage: function () {
+      this.isFormUpdated = false
+      window.location.reload()
+    },
     submitForm: function () {
       if (this.isSubmitPrevented) {
         this.shouldRetrySubmitWhenAllowed = true

@@ -191,8 +191,8 @@
         return this.isMobile
           ? `${this.totalChecked} ${this.$trans('dam.selected', 'selected')}`
           : this.totalChecked > 0
-          ? `(${this.totalChecked})`
-          : ''
+            ? `(${this.totalChecked})`
+            : ''
       }
     },
     watch: {},

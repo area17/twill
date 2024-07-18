@@ -2,7 +2,12 @@
   <div>
     <div class="dam-header">
       <div class="dam-header__title">
-        <h1>{{ customTitle ? customTitle : title }}</h1>
+        <h1>
+          <a v-if="editUrl" @click.prevent="openEditModal" href="#">
+            <span class="f--underlined--o">{{ customTitle ? customTitle : title }}</span> <span v-svg symbol="edit"></span>
+          </a>
+          <span v-else>{{ customTitle ? customTitle : title }}</span>
+        </h1>
       </div>
       <div class="dam-header__action">
         <div ref="form">
@@ -52,7 +57,7 @@
         </div>
       </div>
     </div>
-    <a17-dam-filters @resetFilters="clearSearch" ref="damFilters"></a17-dam-filters>
+    <a17-dam-filters v-if="filters.length > 0" @resetFilters="clearSearch" ref="damFilters"></a17-dam-filters>
   </div>
 </template>
 
@@ -62,7 +67,9 @@
   import A17Avatar from '@/components/Avatar.vue'
   import a17Filter from '@/components/Filter.vue'
   import A17DamFilters from '@/components/dam/DamFilters.vue'
-  import {MEDIA_LIBRARY} from "@/store/mutations";
+  import {FORM, MEDIA_LIBRARY, MODALEDITION} from "@/store/mutations";
+  import ACTIONS from "@/store/actions";
+  import NOTIFICATION from "@/store/mutations/notification";
 
   export default {
     name: 'A17DamHeader',
@@ -87,6 +94,14 @@
       initialSearchValue: {
         type: String,
         default: ''
+      },
+      editUrl: {
+        type: String,
+        default: null
+      },
+      updateUrl: {
+        type: String,
+        default: null
       }
     },
     data: function() {
@@ -95,7 +110,8 @@
     computed: {
       ...mapGetters(['fieldValueByName']),
       ...mapState({
-        damView : state => state.mediaLibrary.damView
+        damView : state => state.mediaLibrary.damView,
+        filters: state => state.mediaLibrary.filters
       }),
       title() {
         // Get the title from the store
@@ -124,6 +140,23 @@
       },
       openModal() {
         this.damView === 'landing' ? this.$root.$refs.damMediaLibrary.open() : this.$root.$refs.editionModal.open()
+      },
+      openEditModal() {
+        const endpoint = this.editUrl
+        this.$store.commit(MODALEDITION.UPDATE_MODAL_MODE, 'update')
+        this.$store.commit(MODALEDITION.UPDATE_MODAL_ACTION, this.updateUrl)
+        this.$store.commit(FORM.UPDATE_FORM_LOADING, true)
+
+        this.$store.dispatch(ACTIONS.REPLACE_FORM, endpoint).then(() => {
+          this.$nextTick(function () {
+            if (this.$root.$refs.editionModal) this.$root.$refs.editionModal.open()
+          })
+        }, (errorResponse) => {
+          this.$store.commit(NOTIFICATION.SET_NOTIF, {
+            message: 'Your content can not be edited, please retry',
+            variant: 'error'
+          })
+        })
       }
     },
     mounted() {}
@@ -151,6 +184,10 @@
 
     h1 {
       font-weight: 600;
+
+      a {
+        text-decoration: none;
+      }
     }
   }
 

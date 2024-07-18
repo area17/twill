@@ -760,9 +760,14 @@
               return []
             })
           if (key) {
-            return fieldValues.map(item => ({ name : item.label, url : this.getTagUrl(fieldName, [item.value])}) )
+            return fieldValues.map(item => ({
+              ...item,
+              name : item.label,
+              url : this.getTagUrl(fieldName, [item.value])
+            }) )
           } else {
             return fieldValues.map(item => ({
+              ...item,
               name : item.name,
               url : this.getTagUrl(fieldName, [item.value]),
             }))

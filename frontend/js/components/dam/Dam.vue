@@ -11,6 +11,8 @@
         :current-user="currentUser"
         :users-management="usersManagement"
         :initial-search-value="initialSearchValue"
+        :edit-url="editUrl"
+        :update-url="updateUrl"
       ></a17-dam-header>
 
       <div class="dam__page">
@@ -56,6 +58,14 @@
         default: null
       },
       currentUser: {
+        type: String,
+        default: null
+      },
+      editUrl: {
+        type: String,
+        default: null
+      },
+      updateUrl: {
         type: String,
         default: null
       },
