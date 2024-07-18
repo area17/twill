@@ -112,7 +112,7 @@
   import {replaceState} from "@/utils/pushState";
 
   export default {
-    name: 'A17Medialibrary',
+    name: 'A17DamListing',
     components: {
       'a17-dam-uploader': a17DamUploader,
       'a17-mediagrid': a17MediaGrid,
