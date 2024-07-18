@@ -102,6 +102,10 @@ const state = {
 
   initialFilterData: window[process.env.VUE_APP_NAME].STORE.medias.initialFilterData || {},
 
+  damView : window[process.env.VUE_APP_NAME].STORE.medias.damView || 'landing',
+
+  attachedRelationship:  window[process.env.VUE_APP_NAME].STORE.medias.attachedRelationship || {},
+
   filters: window[process.env.VUE_APP_NAME].STORE.medias.filters || [],
 
   filterSearchEndpoint: window[process.env.VUE_APP_NAME].STORE.medias.filterSearchEndpoint || '',

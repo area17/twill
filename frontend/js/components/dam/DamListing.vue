@@ -1,13 +1,6 @@
 <template>
   <div class="dam-listing">
     <div class="dam-listing__list" ref="list">
-      <a17-dam-uploader
-        ref="uploader"
-        v-if="authorized"
-        @loaded="addMedia"
-        @clear="clearSelectedMedias"
-        :type="currentTypeObject"
-      />
       <div class="dam-listing__title">
         <h2 class="f--small">{{ listTitle }} ({{ totalItems }})</h2>
         <a17-dropdown
@@ -106,15 +99,13 @@
   import api from '../../store/api/media-library'
   import A17DamDataTable from '@/components/dam/DamDataTable.vue'
   import a17MediaGrid from '@/components/media-library/MediaGrid.vue'
-  import a17DamUploader from '@/components/dam/Uploader.vue'
   import a17DamSidebar from '@/components/dam/DamSidebar.vue'
   import a17Spinner from '@/components/Spinner.vue'
   import {replaceState} from "@/utils/pushState";
 
   export default {
-    name: 'A17Medialibrary',
+    name: 'A17DAMListing',
     components: {
-      'a17-dam-uploader': a17DamUploader,
       'a17-mediagrid': a17MediaGrid,
       'a17-dam-datatable': A17DamDataTable,
       'a17-dam-sidebar': a17DamSidebar,

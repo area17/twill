@@ -57,7 +57,7 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapState } from 'vuex'
 
   import A17Avatar from '@/components/Avatar.vue'
   import a17Filter from '@/components/Filter.vue'
@@ -94,6 +94,9 @@
     },
     computed: {
       ...mapGetters(['fieldValueByName']),
+      ...mapState({
+        damView : state => state.mediaLibrary.damView
+      }),
       title() {
         // Get the title from the store
         const title = this.fieldValueByName(this.name)
@@ -120,7 +123,7 @@
         this.$refs.filters.searchValue = ''
       },
       openModal() {
-        this.$root.$refs.editionModal.open()
+        this.damView === 'landing' ? this.$root.$refs.damMediaLibrary.open() : this.$root.$refs.editionModal.open()
       }
     },
     mounted() {}

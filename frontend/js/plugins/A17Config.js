@@ -43,6 +43,7 @@ import Sticky from '@/directives/sticky'
 import a17Dam from '@/components/dam/Dam.vue'
 import a17DamListing from '@/components/dam/DamListing.vue'
 import a17DamBrowser from '@/components/dam/DamBrowser.vue'
+import a17DamMedialibrary from '@/components/dam/DamMediaLibrary.vue'
 // Directives
 import SvgSprite from '@/directives/svg'
 import Tooltip from '@/directives/tooltip'
@@ -93,6 +94,7 @@ const A17Config = {
     // Digital Asset Manager
     Vue.component('a17-dam', a17Dam)
     Vue.component('a17-dam-listing', a17DamListing)
+    Vue.component('a17-dam-medialibrary', a17DamMedialibrary)
 
     Vue.component('a17-dambrowser', a17DamBrowser)
 

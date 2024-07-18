@@ -1,8 +1,9 @@
 <template>
   <div class="dam__add">
-    <a17-button variant="validate" size="small" ref="uploaderBrowseButton">{{
-      $trans('dam.add-new', 'Add new')
-    }}</a17-button>
+    <div class="uploader__dropzone" ref="uploaderDropzone">
+      <div class="button" ref="uploaderBrowseButton">{{ $trans('dam-uploader.upload-btn-label', 'Browse files') }}</div>
+      <div class="uploader__dropzone--desktop">{{ $trans('dam-uploader.dropzone-text', 'or drop new files here') }}</div>
+    </div>
   </div>
 </template>
 
@@ -21,6 +22,9 @@
       type: {
         type: Object,
         required: true
+      },
+      relationships: {
+        type: Object
       }
     },
     data: function() {
@@ -47,7 +51,7 @@
     },
     methods: {
       initUploader: function() {
-        const buttonEl = this.$refs.uploaderBrowseButton.$el
+        const buttonEl = this.$refs.uploaderBrowseButton
         const sharedConfig = {
           debug: true,
           maxConnections: 5,
@@ -235,7 +239,8 @@
               width: img.width,
               height: img.height,
               unique_folder_name: this.unique_folder_name,
-              media_to_replace_id: this.media_to_replace_id
+              media_to_replace_id: this.media_to_replace_id,
+              relationships : this.relationships
             },
             id
           )
@@ -336,9 +341,76 @@
     mounted() {
       // Init uploader
       this.initUploader()
+
+      // Init dropzone
+      const dropzoneEl = this.$refs.uploaderDropzone
+      this._qqDropzone && this._qqDropzone.dispose()
+      this._qqDropzone = new qq.DragAndDrop({
+        dropZoneElements: [dropzoneEl],
+        allowMultipleItems: true,
+        callbacks: {
+          dropError: this._onDropError.bind(this),
+          processingDroppedFilesComplete: this._onProcessingDroppedFilesComplete.bind(this)
+        }
+      })
     },
     beforeDestroy() {
       this._qqDropzone && this._qqDropzone.dispose()
     }
   }
 </script>
+<style lang="scss" scoped>
+
+  $height_small_btn: 35px;
+  .uploader {
+    margin: 10px;
+  }
+
+  .uploader__dropzone {
+    border: 1px dashed $color__border--hover;
+    text-align: center;
+    padding: 26px 0;
+    color: $color__text--light;
+
+    .button {
+      @include btn-reset;
+      display: inline-block;
+      height: $height_small_btn;
+      margin-right: 10px;
+      line-height: $height_small_btn - 2px;
+      border-radius: calc($height_small_btn / 2);
+      background-color: transparent;
+      border: 1px solid $color__border--hover;
+      color: $color__text--light;
+      padding: 0 20px;
+      text-align: center;
+      transition: color .2s linear, border-color .2s linear, background-color .2s linear;
+
+      &.qq-upload-button-hover,
+      &:hover {
+        border-color: $color__text;
+        color: $color__text;
+      }
+
+      &.qq-upload-button-focus,
+      &:focus {
+        border-color: $color__text;
+        color: $color__text;
+      }
+
+      &:disabled {
+        opacity: .5;
+        pointer-events: none;
+      }
+    }
+  }
+
+  .uploader__dropzone--desktop {
+    display: inline-block;
+    vertical-align: top;
+    margin-top: 8px;
+    @include breakpoint(small-) {
+      display: none;
+    }
+  }
+</style>

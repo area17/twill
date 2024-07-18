@@ -156,6 +156,9 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
       // reload datas
       this.$store.dispatch(ACTIONS.GET_DATATABLE)
     },
+    reloadDamListing(media){
+      this.$refs.damListing.addMedia(media);
+    },
     submitForm: function () {
       if (this.isSubmitPrevented) {
         this.shouldRetrySubmitWhenAllowed = true
