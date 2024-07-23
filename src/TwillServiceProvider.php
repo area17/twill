@@ -325,6 +325,7 @@ class TwillServiceProvider extends ServiceProvider
         $this->publishOptionalMigration('users-2fa');
         $this->publishOptionalMigration('users-oauth');
         $this->publishOptionalMigration('permissions-management');
+        $this->publishOptionalMigration('uuid-models-key-support');
     }
 
     private function publishOptionalMigration($feature): void
