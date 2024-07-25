@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Kalnoy\Nestedset\NodeTrait;
 use ReflectionClass;
 
 abstract class ModuleRepository
@@ -61,6 +62,10 @@ abstract class ModuleRepository
         array $appliedFilters = []
     ): LengthAwarePaginator|Collection {
         $query = $this->model->with($with);
+        
+        if (in_array(NodeTrait::class, class_uses($this->model))) {
+            $query = $query->where('parent_id', NULL);
+        }
 
         $query = $this->filter($query, $scopes);
         $query = $this->order($query, $orders);

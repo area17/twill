@@ -19,6 +19,11 @@
           :maxDepth="maxDepth"
           :draggable="draggable"
         />
+      
+        <a17-paginate v-if="maxPage > 1 || initialMaxPage > maxPage && !isEmpty" :max="maxPage" :value="page"
+          :offset="offset" :availableOffsets="[initialOffset,initialOffset*3,initialOffset*6]"
+          @changePage="updatePage" @changeOffset="updateOffset"
+        />
       </div>
     </div>
   </div>
@@ -27,9 +32,12 @@
 <script>
   import { DatatableMixin, DraggableMixin, NestedDraggableMixin } from '@/mixins/index'
   import { DATATABLE } from '@/store/mutations/index'
+  import ACTIONS from '@/store/actions'
+  import { mapState } from 'vuex'
 
   import a17Table from './../Table.vue'
   import a17Tablehead from './../TableHead.vue'
+  import a17Paginate from './../Paginate.vue'
   import NestedList from './NestedList'
 
   export default {
@@ -43,7 +51,34 @@
     components: {
       'a17-table': a17Table,
       'a17-tablehead': a17Tablehead,
+      'a17-paginate': a17Paginate,
       'a17-nested-list': NestedList
+    },
+    computed: {
+      ...mapState({
+        page: state => state.datatable.page,
+        offset: state => state.datatable.offset,
+        maxPage: state => state.datatable.maxPage,
+        initialOffset: state => state.datatable.defaultOffset,
+        initialMaxPage: state => state.datatable.defaultMaxPage
+      })
+    },
+    methods: {
+      updateOffset: function (value) {
+        this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
+        this.$store.commit(DATATABLE.UPDATE_DATATABLE_OFFSET, value)
+
+        // reload datas
+        this.$store.dispatch(ACTIONS.GET_DATATABLE)
+      },
+      updatePage: function (value) {
+        if (value !== this.page) {
+          this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, value)
+
+          // reload datas
+          this.$store.dispatch(ACTIONS.GET_DATATABLE)
+        }
+      }
     },
     beforeMount: function () {
       function findBulkColumn (column) {
@@ -93,5 +128,10 @@
   .nested-datatable__table {
     position: relative;
     width: 100%;
+
+    .paginate {
+      border: 1px solid #F2F2F2;
+      border-top: 0;
+    }
   }
 </style>
