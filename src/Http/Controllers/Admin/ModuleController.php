@@ -1769,7 +1769,7 @@ abstract class ModuleController extends Controller
                 'hiddenFilters' => $this->filters(),
                 'filterLinks' => $this->filterLinks ?? [],
                 'maxPage' => method_exists($items, 'lastPage') ? $items->lastPage() : 1,
-                'defaultMaxPage' => method_exists($items, 'total') ? ceil($items->total() / $this->perPage) : 1,
+                'defaultMaxPage' => ceil((method_exists($items, 'total') ? $items->total() : count($items)) / $this->perPage),
                 'offset' => method_exists($items, 'perPage') ? $items->perPage() : count($items),
                 'defaultOffset' => $this->perPage,
             ] + $this->getIndexUrls($this->moduleName, $this->routePrefix);

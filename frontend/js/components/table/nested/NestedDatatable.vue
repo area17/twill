@@ -20,7 +20,7 @@
           :draggable="draggable"
         />
       
-        <a17-paginate v-if="maxPage > 1 || initialMaxPage > maxPage && !isEmpty" :max="maxPage" :value="page"
+        <a17-paginate v-if="maxPage > 1 || initialMaxPage > maxPage && !isEmpty" :max="maxPage" :value="page" :isShowEverythingEnabled="true"
           :offset="offset" :availableOffsets="[initialOffset,initialOffset*3,initialOffset*6]"
           @changePage="updatePage" @changeOffset="updateOffset"
         />
