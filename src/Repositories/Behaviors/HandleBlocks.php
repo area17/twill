@@ -185,7 +185,7 @@ trait HandleBlocks
                 foreach ($validator->messages()->getMessages() as $key => $errors) {
                     foreach ($errors as $error) {
                         if ($this->errorMessageIsOnNestedBlock($key)) {
-                            $blockInfo = $this->makeBlocksValidationArrayInfoForNestedBlocks($id, $key, $formData, true);
+                            $blockInfo = $this->makeValidationInfoForNestedBlocks($id, $key, $formData, true);
 
                             $id = $blockInfo['nestedBlockId'];
                             $key = $blockInfo['nestedField'];
@@ -202,7 +202,7 @@ trait HandleBlocks
             foreach ($validator->messages()->getMessages() as $key => $errors) {
                 foreach ($errors as $error) {
                     if ($this->errorMessageIsOnNestedBlock($key)) {
-                        $blockInfo = $this->makeBlocksValidationArrayInfoForNestedBlocks($id, $key, $formData, true);
+                        $blockInfo = $this->makeValidationInfoForNestedBlocks($id, $key, $formData, true);
 
                         $id = $blockInfo['nestedBlockId'];
                         $key = $blockInfo['nestedField'];
@@ -555,7 +555,7 @@ trait HandleBlocks
         return strpos($failedKey, '.content.') !== false;
     }
 
-    public function makeBlocksValidationArrayInfoForNestedBlocks($rootBlockId, $failedKey, $formData, $translated = false)
+    public function makeValidationInfoForNestedBlocks($rootBlockId, $failedKey, $formData, $translated = false)
     {
         $blockFilter = Str::beforeLast($failedKey, '.content.');
 
