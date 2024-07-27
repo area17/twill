@@ -208,7 +208,7 @@ trait HandleBlocks
                         $key = $blockInfo['nestedField'];
                     }
 
-                    $finalValidator->getMessageBag()->add($this->makeBlocksValidationArrayName($id, $key), $error);
+                    $finalValidator->getMessageBag()->add("blocks[$id][$key]", $error);
                 }
             }
         }
@@ -548,31 +548,6 @@ trait HandleBlocks
             static::$hasRelatedTableCache = Schema::hasTable(config('twill.related_table', 'twill_related'));
         }
         return static::$hasRelatedTableCache;
-    }
-
-    protected function makeBlocksValidationArrayName($rootBlockId, $failedKey)
-    {
-        // Split the string by '.'
-        $parts = explode('.', $failedKey);
-
-        // Initialize an empty string for the result
-        $bracketNotationString = '';
-
-        // Iterate over the parts and wrap each in brackets
-        foreach ($parts as $part) {
-            // Check if the part contains nested dot notation and handle it accordingly
-            if (strpos($part, '.') !== false) {
-                $nestedParts = explode('.', $part);
-
-                foreach ($nestedParts as $nestedPart) {
-                    $bracketNotationString .= '[' . $nestedPart . ']';
-                }
-            } else {
-                $bracketNotationString .= '[' . $part . ']';
-            }
-        }
-
-        return "blocks[$rootBlockId]$bracketNotationString";
     }
 
     public function errorMessageIsOnNestedBlock($failedKey)
