@@ -233,6 +233,10 @@ class DashboardController extends Controller
 
     private function formatActivity(Activity $activity): ?array
     {
+        if (is_null($activity->subject)) {
+            return null;
+        }
+
         if ($activity->subject_type === config('twill.auth_activity_causer', 'users')) {
             return $this->formatAuthActivity($activity);
         }
@@ -240,10 +244,6 @@ class DashboardController extends Controller
         $dashboardModule = $this->config->get('twill.dashboard.modules.' . $activity->subject_type);
 
         if (! $dashboardModule || ! $dashboardModule['activity'] ?? false) {
-            return null;
-        }
-
-        if (is_null($activity->subject)) {
             return null;
         }
 
