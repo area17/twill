@@ -14,160 +14,160 @@
   </template>
   
   <script>
-    import { mapState } from 'vuex'
+  import { mapState } from 'vuex'
   
-    import htmlClasses from '@/utils/htmlClasses'
+  import htmlClasses from '@/utils/htmlClasses'
     
   
-    const html = document.documentElement
-    const htmlClass = htmlClasses.modal
+  const html = document.documentElement
+  const htmlClass = htmlClasses.modal
   
-    export default {
-      name: 'A17Modal',
-      props: {
-        title: {
-          type: String,
-          default: ''
-        },
-        mode: {
-          type: String,
-          default: ''
-        },
-        forceClose: {
-          type: Boolean,
-          default: false
-        },
-        forceLock: {
-          type: Boolean,
-          default: false
-        }
+  export default {
+    name: 'A17Modal',
+    props: {
+      title: {
+        type: String,
+        default: ''
       },
-      data: function () {
+      mode: {
+        type: String,
+        default: ''
+      },
+      forceClose: {
+        type: Boolean,
+        default: false
+      },
+      forceLock: {
+        type: Boolean,
+        default: false
+      }
+    },
+    data: function () {
+      return {
+        active: false,
+        hidden: true,
+        locked: false,
+        firstFocusableEl: null,
+        lastFocusableEl: null
+      }
+    },
+    computed: {
+      modalTitle: function () {
+        return this.title !== '' ? this.title : this.browserTitle
+      },
+      modalClasses: function () {
         return {
-          active: false,
-          hidden: true,
-          locked: false,
-          firstFocusableEl: null,
-          lastFocusableEl: null
+          'modal--active': this.active,
+          'modal--hidden': this.hidden,
+          'modal--tiny': this.mode === 'tiny',
+          'modal--medium': this.mode === 'medium',
+          'modal--wide': this.mode === 'wide'
         }
       },
-      computed: {
-        modalTitle: function () {
-          return this.title !== '' ? this.title : this.browserTitle
-        },
-        modalClasses: function () {
-          return {
-            'modal--active': this.active,
-            'modal--hidden': this.hidden,
-            'modal--tiny': this.mode === 'tiny',
-            'modal--medium': this.mode === 'medium',
-            'modal--wide': this.mode === 'wide'
+      ...mapState({
+        browserTitle: state => state.browser.title
+      })
+    },
+    watch: {
+      forceLock: function () {
+        this.locked = this.forceLock
+      }
+    },
+    methods: {
+      open: function (focusable = true) {
+        if (this.active && !this.hidden) {
+          return
+        }
+  
+        this.active = true
+        this.hidden = false
+  
+        html.classList.add(htmlClass)
+  
+        this.bindKeyboard()
+  
+        // auto focus first field
+        this.$nextTick(function () {
+          if (focusable) {
+            const focusableSelector = 'textarea, input:not([type="hidden"]), select, button[type="submit"]'
+            const focusableNodes = this.$el.querySelectorAll(focusableSelector)
+            const allFocusableNodes = this.$el.querySelectorAll(focusableSelector + ', a, button[type="button"]')
+  
+            // Trap focus inside the modal
+            this.firstFocusableEl = this.$el.querySelector('.modal__close')
+            this.lastFocusableEl = allFocusableNodes[allFocusableNodes.length - 1]
+  
+            // init focus
+            if (focusableNodes.length) focusableNodes[0].focus()
           }
-        },
-        ...mapState({
-          browserTitle: state => state.browser.title
+          this.$emit('open')
         })
       },
-      watch: {
-        forceLock: function () {
-          this.locked = this.forceLock
+      mask: function () {
+        html.classList.remove(htmlClass)
+        this.unbindKeyboard()
+        this.$emit('close')
+      },
+      hide: function () {
+        if (!this.active) return
+        if (this.locked) return
+  
+        if (this.forceClose) {
+          this.close()
+          return
+        }
+  
+        this.hidden = true
+        this.mask()
+      },
+      close: function (onClose) {
+        if (!this.active) return
+        if (this.locked) return
+  
+        this.active = false
+        this.$emit('close')
+        this.mask()
+      },
+      bindKeyboard: function () {
+        window.addEventListener('keyup', this.keyPressed)
+        document.addEventListener('keydown', this.keyDown, false)
+      },
+      unbindKeyboard: function () {
+        window.removeEventListener('keyup', this.keyPressed)
+        document.removeEventListener('keydown', this.keyDown)
+      },
+      keyPressed: function (event) {
+        if (event.which === 27 || event.keyCode === 27) {
+          this.hide()
+          this.$emit('esc-key')
         }
       },
-      methods: {
-        open: function (focusable = true) {
-          if (this.active && !this.hidden) {
-            return
-          }
-  
-          this.active = true
-          this.hidden = false
-  
-          html.classList.add(htmlClass)
-  
-          this.bindKeyboard()
-  
-          // auto focus first field
-          this.$nextTick(function () {
-            if (focusable) {
-              const focusableSelector = 'textarea, input:not([type="hidden"]), select, button[type="submit"]'
-              const focusableNodes = this.$el.querySelectorAll(focusableSelector)
-              const allFocusableNodes = this.$el.querySelectorAll(focusableSelector + ', a, button[type="button"]')
-  
-              // Trap focus inside the modal
-              this.firstFocusableEl = this.$el.querySelector('.modal__close')
-              this.lastFocusableEl = allFocusableNodes[allFocusableNodes.length - 1]
-  
-              // init focus
-              if (focusableNodes.length) focusableNodes[0].focus()
+      keyDown: function (event) {
+        // tab
+        if (event.keyCode && event.keyCode === 9) {
+          if (event.shiftKey) {
+            // backwards
+            if (document.activeElement.isEqualNode(this.firstFocusableEl)) {
+              this.lastFocusableEl.focus()
+              event.preventDefault()
             }
-            this.$emit('open')
-          })
-        },
-        mask: function () {
-          html.classList.remove(htmlClass)
-          this.unbindKeyboard()
-          this.$emit('close')
-        },
-        hide: function () {
-          if (!this.active) return
-          if (this.locked) return
-  
-          if (this.forceClose) {
-            this.close()
-            return
-          }
-  
-          this.hidden = true
-          this.mask()
-        },
-        close: function (onClose) {
-          if (!this.active) return
-          if (this.locked) return
-  
-          this.active = false
-          this.$emit('close')
-          this.mask()
-        },
-        bindKeyboard: function () {
-          window.addEventListener('keyup', this.keyPressed)
-          document.addEventListener('keydown', this.keyDown, false)
-        },
-        unbindKeyboard: function () {
-          window.removeEventListener('keyup', this.keyPressed)
-          document.removeEventListener('keydown', this.keyDown)
-        },
-        keyPressed: function (event) {
-          if (event.which === 27 || event.keyCode === 27) {
-            this.hide()
-            this.$emit('esc-key')
-          }
-        },
-        keyDown: function (event) {
-          // tab
-          if (event.keyCode && event.keyCode === 9) {
-            if (event.shiftKey) {
-              // backwards
-              if (document.activeElement.isEqualNode(this.firstFocusableEl)) {
-                this.lastFocusableEl.focus()
-                event.preventDefault()
-              }
-            } else {
-              // onwards
-              if (document.activeElement.isEqualNode(this.lastFocusableEl)) {
-                this.firstFocusableEl.focus()
-                event.preventDefault()
-              }
+          } else {
+            // onwards
+            if (document.activeElement.isEqualNode(this.lastFocusableEl)) {
+              this.firstFocusableEl.focus()
+              event.preventDefault()
             }
           }
-        }
-      },
-      beforeDestroy: function () {
-        if (this.$el.parentNode) {
-          if (this.active) this.unbindKeyboard()
-          this.$el.parentNode.removeChild(this.$el)
         }
       }
+    },
+    beforeDestroy: function () {
+      if (this.$el.parentNode) {
+        if (this.active) this.unbindKeyboard()
+        this.$el.parentNode.removeChild(this.$el)
+      }
     }
+  }
   </script>
   
   <style lang="scss" scoped>

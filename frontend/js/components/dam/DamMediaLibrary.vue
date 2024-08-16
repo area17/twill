@@ -181,7 +181,7 @@
       btnLabel: function () {
         
         if (this.mediaItems.length > 0) {
-            return 'Add '+this.mediaItems.length+' files'
+          return 'Add '+this.mediaItems.length+' files'
         }
         return 'Add files'
       },
@@ -213,11 +213,11 @@
     methods: {
       deleteMedia: function(media) {
         const index  = this.mediaItems.findIndex(function(m) {
-            return m.id === media.id
+          return m.id === media.id
         })
         if (index > -1) {
-            this.mediaItems.splice(index, 1)
-            this.$refs.uploader.removeMedia(media.id)
+          this.mediaItems.splice(index, 1)
+          this.$refs.uploader.removeMedia(media.id)
         }
        
       },
@@ -227,16 +227,16 @@
       },
       updateMetadata(event, type) { 
         if (type === 'tags') {
-            this.metadata[type] = event
+          this.metadata[type] = event
         }else {
-            const ids = Array.isArray(event) ? event.map(item => item.id) : [event.id]
-            this.metadata[type] = ids;
+          const ids = Array.isArray(event) ? event.map(item => item.id) : [event.id]
+          this.metadata[type] = ids;
         }
         
       },
       saveFiles(){
         if (this.project && this.project.length > 0) {
-            this.metadata.project = this.project[0].id;
+          this.metadata.project = this.project[0].id;
         }
         this.$refs.uploader.uploadFiles(this.metadata)
       },
@@ -259,16 +259,16 @@
        
       },
       addSavedMedia: function(media){
-          this.$emit('media-added', media)
+        this.$emit('media-added', media)
       },
       addMedia: function(media){
         const index = this.mediaItems.findIndex(function (item) {
           return item.id === media.id
         })
         if (index > -1) {
-            this.$set(this.mediaItems, index, media)
+          this.$set(this.mediaItems, index, media)
         }else {
-            this.mediaItems.push(media)
+          this.mediaItems.push(media)
         }
       },
       saveAndClose: function () {

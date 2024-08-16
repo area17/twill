@@ -14,21 +14,21 @@
   
   <script>
   
-    import mediaItemsMixin from '@/mixins/mediaLibrary/mediaItems'
+  import mediaItemsMixin from '@/mixins/mediaLibrary/mediaItems'
   
-    export default {
-      name: 'A17Mediagrid',
-      mixins: [mediaItemsMixin],
-      props: {
-      },
-      computed: {
-      },
-      methods: {
-        deleteMedia: function(media) {
-            this.$emit('deleteMedia', media)
-        }
+  export default {
+    name: 'A17Mediagrid',
+    mixins: [mediaItemsMixin],
+    props: {
+    },
+    computed: {
+    },
+    methods: {
+      deleteMedia: function(media) {
+        this.$emit('deleteMedia', media)
       }
     }
+  }
   </script>
   
   <style lang="scss" scoped>

@@ -63,8 +63,8 @@
           },
           thumbnails: {
             placeholders: {
-                waitingPath: "https://via.placeholder.com/150",
-                notAvailablePath: "https://via.placeholder.com/150"
+              waitingPath: "https://via.placeholder.com/150",
+              notAvailablePath: "https://via.placeholder.com/150"
             }
           },
           callbacks: {
@@ -220,7 +220,7 @@
 
         // Iterate over all files in the queue and set params
         this._uploader.methods.getUploads().forEach((file) => {
-            this._uploader.methods.setParams(metadata, file.id);
+          this._uploader.methods.setParams(metadata, file.id);
         });
 
         // Now you can trigger the upload
@@ -264,9 +264,9 @@
         
         // Add the preview to the imagePreviews array
         const mediaItem = {
-            id: this._uploader.methods.getUuid(id),
-            name: sanitizeFilename(name),
-            src: imagePreviewUrl, // The preview URL
+          id: this._uploader.methods.getUuid(id),
+          name: sanitizeFilename(name),
+          src: imagePreviewUrl, // The preview URL
         };
 
         this.$emit('added', mediaItem)
