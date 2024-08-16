@@ -106,7 +106,7 @@
 
 
   import a17Spinner from '@/components/Spinner.vue'
-  import { MEDIA_LIBRARY,NOTIFICATION } from '@/store/mutations'
+  import { MEDIA_LIBRARY} from '@/store/mutations'
   import a17MediaGrid from './MediaGrid.vue'
   import a17Uploader from './Uploader.vue'
   import a17DamModal from './Modal.vue'
