@@ -107,7 +107,10 @@ const state = {
   attachedRelationship:  window[process.env.VUE_APP_NAME].STORE.medias.attachedRelationship || {},
 
   filters: window[process.env.VUE_APP_NAME].STORE.medias.filters || [],
-
+  forUploadCollections: window[process.env.VUE_APP_NAME].STORE.medias.forUploadCollections || [],
+  forUploadDisciplines: window[process.env.VUE_APP_NAME].STORE.medias.forUploadDisciplines || [],
+  forUploadSectors: window[process.env.VUE_APP_NAME].STORE.medias.forUploadSectors || [],
+  projectBrowserUrl: window[process.env.VUE_APP_NAME].STORE.medias.projectBrowserUrl || '',
   filterSearchEndpoint: window[process.env.VUE_APP_NAME].STORE.medias.filterSearchEndpoint || '',
 }
 

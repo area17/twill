@@ -29,7 +29,8 @@
     },
     data: function() {
       return {
-        loadingMedias: []
+        loadingMedias: [],
+        imagePreviews: []
       }
     },
     computed: {
@@ -56,8 +57,15 @@
           debug: true,
           maxConnections: 5,
           button: buttonEl,
+          autoUpload: false,
           retry: {
             enableAuto: false
+          },
+          thumbnails: {
+            placeholders: {
+                waitingPath: "https://via.placeholder.com/150",
+                notAvailablePath: "https://via.placeholder.com/150"
+            }
           },
           callbacks: {
             onSubmit: this._onSubmitCallback.bind(this),
@@ -178,12 +186,21 @@
                 }
               })
       },
+      triggerUpload: function(){
+        this._uploader.methods.uploadStoredFiles()
+      },
       replaceMedia: function(id) {
         this.media_to_replace_id = id
         const qqinputs = this.$refs.uploaderBrowseButton.$el.querySelectorAll(
           '[name = "qqfile"]'
         )
         qqinputs[Array.from(qqinputs).length - 1].click()
+      },
+      removeMedia: function(id) {
+        this._uploader.methods.cancel(id)
+      },
+      cancelAll: function(){
+        this._uploader.methods.cancelAll()
       },
       loadingProgress: function(media) {
         this.$store.commit(MEDIA_LIBRARY.PROGRESS_UPLOAD_MEDIA, media)
@@ -198,6 +215,17 @@
       },
       uploadProgress: function(uploadProgress) {
         this.$store.commit(MEDIA_LIBRARY.PROGRESS_UPLOAD, uploadProgress)
+      },
+      uploadFiles(metadata){
+
+        // Iterate over all files in the queue and set params
+        this._uploader.methods.getUploads().forEach((file) => {
+            this._uploader.methods.setParams(metadata, file.id);
+        });
+
+        // Now you can trigger the upload
+        this._uploader.methods.uploadStoredFiles();
+
       },
       _onCompleteCallback(id, name, responseJSON, xhr) {
         const index = this.loadingMedias.findIndex(
@@ -214,6 +242,7 @@
         // reset folder name for next upload session
         this.unique_folder_name = null
         this.uploadProgress(0)
+        this.$emit('uploaded')
       },
       _onSubmitCallback(id, name) {
         this.$emit('clear')
@@ -228,6 +257,19 @@
           },
           id
         )
+
+        // Generate an image preview and add it to the array
+        const file = this._uploader.methods.getFile(id);
+        const imagePreviewUrl = URL.createObjectURL(file);
+        
+        // Add the preview to the imagePreviews array
+        const mediaItem = {
+            id: this._uploader.methods.getUuid(id),
+            name: sanitizeFilename(name),
+            src: imagePreviewUrl, // The preview URL
+        };
+
+        this.$emit('added', mediaItem)
 
         // determine the image dimensions and add it to params sent on upload success
         const imageUrl = URL.createObjectURL(this._uploader.methods.getFile(id))
