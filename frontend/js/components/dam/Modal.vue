@@ -96,9 +96,15 @@
             // Trap focus inside the modal
             this.firstFocusableEl = this.$el.querySelector('.modal__close')
             this.lastFocusableEl = allFocusableNodes[allFocusableNodes.length - 1]
-  
+
             // init focus
-            if (focusableNodes.length) focusableNodes[0].focus()
+            if (focusableNodes.length) {
+              if(this.firstFocusableEl) {
+                this.firstFocusableEl.focus()
+              } else {
+                focusableNodes[0].focus()
+              }
+            }
           }
           this.$emit('open')
         })
