@@ -63,7 +63,7 @@
           @change="updateSelectedMedias"
           @shiftChange="updateSelectedMedias"
         />
-        <a17-spinner v-if="loading" class="dam-listing__spinner"
+        <a17-spinner v-if="loading" class="dam-listing__spinner" :visible="true"
           >{{ $trans('dam.loading', 'Loading') }}&hellip;</a17-spinner
         >
       </div>
