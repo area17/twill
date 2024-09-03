@@ -307,8 +307,9 @@
       },
       updateSelectedMedias: function (item, shift = false) {
         const id = item.id
+        const type = this.type
         const alreadySelectedMedia = this.selectedMedias.filter(function (media) {
-          return media.id === id
+          return media.id === id && media.type === type
         })
 
         // not already selected
@@ -347,7 +348,9 @@
             })
 
             // Add one media to the selected media
-            if (mediaToSelect.length) this.selectedMedias.push(mediaToSelect[0])
+            if (mediaToSelect.length) this.selectedMedias.push(
+              {...mediaToSelect[0], type}
+            )
           }
         } else {
           // Remove one item from the selected media
@@ -443,7 +446,9 @@
         this.page = 1
 
         this.clearMediaItems()
-        this.clearSelectedMedias()
+        if (this.strict) {
+          this.clearSelectedMedias()
+        }
 
         if (el.scrollTop === 0) {
           self.reloadGrid()

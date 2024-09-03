@@ -17,6 +17,7 @@ import a17DatePicker from '@/components/DatePicker.vue'
 import a17Dialog from '@/components/Dialog.vue'
 import a17Dropdown from '@/components/Dropdown.vue'
 import a17FileField from '@/components/files/FileField.vue'
+import a17AssetField from '@/components/AssetField.vue'
 import a17HiddenField from '@/components/HiddenField.vue'
 import a17Infotip from '@/components/Infotip.vue'
 import a17Inputframe from '@/components/InputFrame.vue'
@@ -82,6 +83,7 @@ const A17Config = {
     Vue.component('a17-filefield', a17FileField)
     Vue.component('a17-colorfield', a17ColorField)
     Vue.component('a17-avatar', a17Avatar)
+    Vue.component('a17-assetfield', a17AssetField)
 
     // Media Library
     Vue.component('a17-medialibrary', a17MediaLibrary)

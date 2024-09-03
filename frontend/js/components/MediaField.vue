@@ -208,7 +208,7 @@
       },
       cropThumbnailClass: function () {
         if (!this.hasMedia) return {}
-        if (!this.media.crops) return {}
+        if (!this.media.crops || Object.keys(this.media.crops).length === 0) return {}
         const crop = this.media.crops[Object.keys(this.media.crops)[0]]
         return {
           'media__img--landscape': crop.width / crop.height >= 1,
