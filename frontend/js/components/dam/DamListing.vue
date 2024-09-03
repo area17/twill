@@ -687,6 +687,11 @@
           this.selectedMedias.push(mediaInitSelect)
         }
       }
+
+      const savedGridView = localStorage.getItem('gridView');
+      if (savedGridView !== null) {
+        this.gridView = JSON.parse(savedGridView);
+      }
     }
   }
 </script>

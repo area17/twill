@@ -1,7 +1,6 @@
 <template>
-  <div class="datatable">
+  <div class="datatable" ref="tableWrapper">
     <a17-table
-      :columnsWidth="columnsWidth"
       :xScroll="xScroll"
       @scroll="updateScroll"
     >
@@ -9,7 +8,7 @@
         <tr class="tablehead">
           <td
             class="tablehead__cell f--small"
-            v-for="col in visibleColumns"
+            v-for="col in filteredColumns"
             @click="sortColumn(col)"
             :key="col.name"
             :class="cellClasses(col)"
@@ -45,16 +44,16 @@
       >
         <tbody>
           <a17-tablerow
-            v-for="(row, index) in localRows"
+            v-for="(row, index) in displayRows"
             :key="row.id"
             :row="row"
             :index="index"
-            :columns="visibleColumns"
+            :columns="filteredColumns"
           />
         </tbody>
       </a17-table>
 
-      <template v-if="localRows.length <= 0">
+      <template v-if="displayRows.length <= 0">
         <div class="datatable__empty">
           <h4>{{ emptyMessage }}</h4>
         </div>
@@ -106,7 +105,7 @@
         default: () => [
           // { name: 'bulk' },
           { label: 'Image', name: 'thumbnail' },
-          { label: 'Filename', sortable: true, name: 'name' },
+          { label: 'Filename', sortable: true, name: 'name', truncate: true },
           { label: 'Title', name: 'title' },
           { label: 'Description', name: 'description', truncate: true },
           { label: 'Type', name: 'type' },
@@ -148,6 +147,7 @@
         xScroll: 0,
         columnsWidth: [],
         bulkIds: [],
+        isMobile: false,
         sortKey: null,
         sortDir: null
       }
@@ -166,6 +166,12 @@
           this.bulkIds.length > 0 && this.bulkIds.length !== this.dataIds.length
         )
       },
+      filteredColumns() {
+        if (this.isMobile) {
+          return this.visibleColumns.filter(col => col.name === 'name');
+        }
+        return this.visibleColumns;
+      },
       isEmptyDatable() {
         return this.localRows.length === 0 ? 'datatable__table--empty' : ''
       },
@@ -179,6 +185,16 @@
           size: row.size,
           edit: row.editUrl
         }))
+      },
+      displayRows() {
+        if (this.isMobile) {
+          return this.localRows.map(row => ({
+            name: row.name,
+            edit: row.edit
+          }))
+        }
+
+        return this.localRows
       }
     },
     methods: {
@@ -220,17 +236,35 @@
       getColumnWidth() {
         const newColumnsWidth = []
         const tds = this.$refs.thead.querySelectorAll('td')
+        const colgroup = this.$refs.tableWrapper.querySelector('colgroup')
+
+        if(colgroup) {
+          colgroup.querySelectorAll('col').forEach((col) => col.removeAttribute('style'))
+        }
+
         for (let index = 0; index < tds.length; index++) {
           newColumnsWidth.push(tds[index].offsetWidth)
         }
         this.columnsWidth = newColumnsWidth
       },
+      getMediaQuery() {
+        if (typeof window !== 'undefined') {
+          const mq = getComputedStyle(document.documentElement)
+            .getPropertyValue('--breakpoint')
+            .trim()
+            .replace(/"/g, '')
+          this.isMobile = mq === 'xsmall' || mq === 'small'
+        }
+      },
       updateScroll(newValue) {
         this.xScroll = newValue
       },
       resize: debounce(function() {
-        this.getColumnWidth()
-      }, 100),
+        this.getMediaQuery()
+        setTimeout(() => { 
+          this.getColumnWidth()
+        }, 10)
+      }, 200),
       initEvents() {
         window.addEventListener('resize', this.resize)
         this.resize()
@@ -253,6 +287,7 @@
     },
     mounted() {
       this.initEvents()
+      this.getMediaQuery()
     },
     beforeDestroy() {
       this.disposeEvents()
