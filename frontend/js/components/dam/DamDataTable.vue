@@ -5,34 +5,7 @@
       @scroll="updateScroll"
     >
       <thead ref="thead">
-        <tr class="tablehead">
-          <td
-            class="tablehead__cell f--small"
-            v-for="col in filteredColumns"
-            @click="sortColumn(col)"
-            :key="col.name"
-            :class="cellClasses(col)"
-          >
-            <span v-if="isDisplayedColumn(col)"
-              >{{ col.label }}
-
-              <span class="tablehead__arrow">↓</span></span
-            >
-            <a
-              v-if="col.name === 'bulk'"
-              href="#"
-              @click.prevent.stop="toggleBulkSelect()"
-              ><span
-                ><a17-checkbox
-                  name="bulkAll"
-                  :value="1"
-                  :initialValue="bulkValue"
-                  :class="{ 'checkbox--minus': checkboxMinus }"
-                ></a17-checkbox></span
-            ></a>
-          </td>
-          <td class="tablehead__spacer">&nbsp;</td>
-        </tr>
+        <a17-tablehead :columns="filteredColumns" @sortColumn="updateSort"/>
       </thead>
     </a17-table>
 
@@ -80,13 +53,18 @@
   import debounce from 'lodash/debounce'
   import a17Paginate from '@/components/table/Paginate.vue'
   import a17Table from '@/components/table/Table.vue'
+  import a17Tablehead from '@/components/table/TableHead.vue'
   import a17Tablerow from '@/components/table/TableRow.vue'
   import a17Spinner from '@/components/Spinner.vue'
+
+  import ACTIONS from '@/store/actions'
+  import { DATATABLE, MEDIA_LIBRARY } from '@/store/mutations'
 
   export default {
     name: 'A17DamDataTable',
     components: {
       'a17-table': a17Table,
+      'a17-tablehead': a17Tablehead,
       'a17-tablerow': a17Tablerow,
       'a17-paginate': a17Paginate,
       'a17-spinner': a17Spinner
@@ -103,7 +81,7 @@
       visibleColumns: {
         type: Array,
         default: () => [
-          // { name: 'bulk' },
+          { name: 'bulk' },
           { label: 'Image', name: 'thumbnail' },
           { label: 'Filename', sortable: true, name: 'name', truncate: true },
           { label: 'Title', name: 'title' },
@@ -148,8 +126,8 @@
         columnsWidth: [],
         bulkIds: [],
         isMobile: false,
-        sortKey: null,
-        sortDir: null
+        sortKey: 'name',
+        sortDir: 'asc'
       }
     },
     watch: {
@@ -177,6 +155,7 @@
       },
       localRows() {
         return this.rows.map(row => ({
+          id: row.id,
           name: row.name,
           thumbnail: row.thumbnail,
           title: row.title,
@@ -273,12 +252,19 @@
         window.removeEventListener('resize', this.resize)
       },
       updateSort(column) {
-        // Sorting logic here
-        this.$emit('sort-column', column)
+        if (!column.sortable) return
+
+        this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
+        this.$store.commit(DATATABLE.UPDATE_DATATABLE_SORT, column)
+
+        // reload datas
+        // this.$store.dispatch(ACTIONS.GET_DATATABLE)
+
+        // this.$store.commit(MEDIA_LIBRARY.SET_FILTER_DATA, {'sortKey' : this.sortKey, 'sortDir' : this.sortDir})
       },
       updateOffset(value) {
         // Offset updating logic here
-        this.$emit('update-offset', value)
+        // this.$emit('update-offset', value)
       },
       updatePage(value) {
         // Page updating logic here
