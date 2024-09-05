@@ -1,6 +1,7 @@
 <a17-locale
     type="a17-assetfield"
     :attributes="{
+        cropContext: '{{ $name }}',
         label: '{{ $label }}',
         note: '{{ $note }}',
         fieldNote: '{{ $fieldNote }}',

@@ -18,9 +18,24 @@ trait HasMedias
 
     public function getMediasParams(): array
     {
-        return (isset($this->mediasParams) && is_array($this->mediasParams))
+        $mediaParams = (isset($this->mediasParams) && is_array($this->mediasParams))
             ? $this->mediasParams
             : config('twill.default_crops');
+
+        if (isset($this->assetParams)) {
+            foreach ($this->assetParams as $role) {
+                $mediaParams[$role] = [
+                    'default' => [
+                        [
+                            'name' => $role,
+                            'ratio' => null,
+                        ],
+                    ],
+                ];
+            }
+        }
+
+        return $mediaParams;
     }
 
     public static function bootHasMedias(): void
