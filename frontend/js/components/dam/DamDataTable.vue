@@ -146,7 +146,7 @@
       },
       filteredColumns() {
         if (this.isMobile) {
-          return this.visibleColumns.filter(col => col.name === 'name');
+          return this.visibleColumns.filter(col => col.name === 'name' || col.name === 'bulk');
         }
         return this.visibleColumns;
       },
@@ -169,7 +169,8 @@
         if (this.isMobile) {
           return this.localRows.map(row => ({
             name: row.name,
-            edit: row.edit
+            edit: row.edit,
+            id: row.id
           }))
         }
 
@@ -277,7 +278,7 @@
     },
     beforeDestroy() {
       this.disposeEvents()
-    }
+    },
   }
 </script>
 
