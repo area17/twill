@@ -2,12 +2,52 @@
   <div>
     <div class="dam-header">
       <div class="dam-header__title">
-        <h1>
-          <a v-if="editUrl" @click.prevent="openEditModal" href="#">
+        <h1 v-if="!showBreadcrumb">
+          <button v-if="editUrl" @click.prevent="openEditModal">
             <span class="f--underlined--o">{{ customTitle ? customTitle : title }}</span> <span v-svg symbol="edit"></span>
-          </a>
+          </button>
           <span v-else>{{ customTitle ? customTitle : title }}</span>
         </h1>
+        <nav v-else class="breadcrumb">
+          <ul class="breadcrumb__items">
+            <!-- TODO: Pass in url instead of hard coding -->
+            <li class="breadcrumb__item"><a href="/admin/dam/collections">Collections</a></li>
+            <li class="breadcrumb__item">
+              <a17-dropdown
+                ref="infoDropdown"
+                position="bottom-left"
+                :offset="8"
+                :clickable="true"
+                :min-width="396"
+              >
+                <button
+                  @click.prevent="$refs.infoDropdown.toggle()"
+                  class="dropdown__button"
+                >
+                {{ customTitle ? customTitle : title }}
+                  <span v-svg symbol="dropdown_module"></span>
+                </button>
+                <div slot="dropdown__content">
+                  <div v-if="partner || description" class="dropdown__top">
+                    <template v-if="partner">
+                      <span class="dropdown__label">Created by</span>
+                      <span>{{ partner }}</span>
+                    </template>
+                    <p v-if="description">{{ description }}</p>
+                  </div>
+                  <div class="dropdown__bottom">
+                    <button aria-label="Copy link" @click.prevent="copyLink" data-copy="test">
+                      <span v-svg symbol="clone"></span><span>Copy link</span>
+                    </button>
+                    <button aria-label="Edit" v-if="editUrl" @click.prevent="openEditModal">
+                      <span v-svg symbol="edit"></span><span>Edit</span>
+                    </button>
+                  </div>
+                </div>
+              </a17-dropdown>
+            </li>
+          </ul>
+      </nav>
       </div>
       <div class="dam-header__action">
         <div ref="form">
@@ -102,7 +142,7 @@
       updateUrl: {
         type: String,
         default: null
-      }
+      },
     },
     data: function() {
       return {}
@@ -111,7 +151,8 @@
       ...mapGetters(['fieldValueByName']),
       ...mapState({
         damView : state => state.mediaLibrary.damView,
-        filters: state => state.mediaLibrary.filters
+        filters: state => state.mediaLibrary.filters,
+        userInfo: state => state.publication.userInfo
       }),
       title() {
         // Get the title from the store
@@ -124,10 +165,41 @@
       },
       userData() {
         return JSON.parse(this.currentUser)
+      },
+      showBreadcrumb() {
+        return this.updateUrl.includes('collections')
+      },
+      partner() {
+        // TODO: Get creator of current item
+        if (this.userInfo) {
+          return this.userInfo.user_name
+        }
+
+        return null
+      },
+      description() {
+        return this.fieldValueByName('description')
       }
     },
     watch: {},
     methods: {
+      copyLink(e) {
+        const textToCopy = e.target.getAttribute('data-copy')
+
+        navigator.clipboard.writeText(textToCopy)
+          .then(() => {
+            this.$store.commit(NOTIFICATION.SET_NOTIF, {
+              message: 'Link copied to clipboard',
+              variant: 'success'
+            })
+          })
+          .catch(err => {
+            this.$store.commit(NOTIFICATION.SET_NOTIF, {
+              message: 'Failed to copy text: ' + err,
+              variant: 'error'
+            })
+          })
+      },
       submitSearch() {
         this.$refs.damFilters.applyFilters()
       },
@@ -159,7 +231,8 @@
         })
       }
     },
-    mounted() {}
+    mounted() {
+    }
   }
 </script>
 
@@ -189,6 +262,83 @@
         text-decoration: none;
       }
     }
+  }
+
+  .breadcrumb {
+    overflow: visible;
+
+    a,
+    button {
+      color: $color__black--90;
+    }
+  }
+
+  .breadcrumb__item,
+  .breadcrumb__item span:not(.breadcrumb__link) {
+    height: auto;
+  }
+
+  .dropdown__button {
+    @include btn-reset;
+    padding: 0 0 0 rem-calc(10);
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+
+    .icon {
+      display: block;
+      padding: 0;
+      margin-left: 12px;
+    }
+  }
+
+  .dropdown--active .dropdown__button .icon {
+    transform: rotate(180deg);
+  }
+
+  .dropdown__content span {
+    padding: 0;
+    height: auto;
+    line-height: 20px;
+
+
+    &.dropdown__label {
+      color: $color__black--90;
+    }
+  }
+
+  .dropdown__content p {
+    margin-top: 8px;
+  }
+
+  .dropdown__content button {
+    display: flex;
+    align-items: center;
+    min-height: rem-calc(44);
+    line-height: normal;
+    color: $color__grey--54;
+    font-size: rem-calc(15);
+
+    span,
+    svg {
+      pointer-events: none;
+    }
+  }
+
+  .dropdown__scroller {
+    padding: 0;
+  }
+
+  .dropdown__top {
+    background: $color__background--light;
+    border-bottom: 1px solid $color__light;
+    padding: rem-calc(16);
+    margin-top: -10px;
+    color: $color__grey--54;
+  }
+
+  .dropdown__bottom {
+    margin-bottom: -6px;
   }
 
   .dam-header__action {
