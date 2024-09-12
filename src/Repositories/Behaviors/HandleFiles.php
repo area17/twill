@@ -81,6 +81,7 @@ trait HandleFiles
                             'file_id' => $file['id'],
                             'role' => $role,
                             'locale' => $locale,
+                            'position' => $index + 1
                         ];
                     });
                 }

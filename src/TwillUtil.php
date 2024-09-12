@@ -136,10 +136,34 @@ class TwillUtil
             // Now we are finally ready to attach the new records. Note that we'll disable
             // touching until after the entire operation is complete so we don't fire a
             // ton of touch operations until we are totally done syncing the records.
-            $changes = array_merge(
-                $changes,
-                $this->attachNew($records, $current, false)
-            );
+            foreach ($records as $id => $attributes) {
+                // If the ID is not in the list of existing pivot IDs, we will insert a new pivot
+                // record, otherwise, we will just update this existing record on this joining
+                // table, so that the developers will easily update these records pain free.
+                if (!in_array($id, $current)) {
+                    $this->attach($id, $attributes, false);
+
+                    $changes['attached'][] = $this->castKey($id);
+                }
+
+                // Now we'll try to update an existing pivot record with the attributes that were
+                // given to the method. If the model is actually updated we will add it to the
+                // list of updated pivot records so we return them back out to the consumer.
+                elseif (count($attributes) > 0) {
+                    if ($this->hasPivotColumn($this->updatedAt())) {
+                        $attributes = $this->addTimestampsToAttachment($attributes, true);
+                    }
+
+                    $updated = $this->newPivotQuery()->whereIn('id', $this->parseIds($id))->update(
+                        $this->castAttributes($attributes)
+                    );
+
+                    if ($updated) {
+                        $changes['updated'][] = $this->castKey($id);
+                    }
+                }
+            }
+
 
             // Once we have finished attaching or detaching the records, we will see if we
             // have done any attaching or detaching, and if we have we will touch these

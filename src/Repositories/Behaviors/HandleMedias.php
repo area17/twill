@@ -95,6 +95,7 @@ trait HandleMedias
                                     'crop_x' => $cropData['x'],
                                     'crop_y' => $cropData['y'],
                                     'metadatas' => json_encode($customMetadatas),
+                                    'position' => $index + 1,
                                 ];
                             }
                         } elseif (isset($media['type'])) {
@@ -123,6 +124,7 @@ trait HandleMedias
                                     'crop_x' => null,
                                     'crop_y' => null,
                                     'metadatas' => json_encode($customMetadatas),
+                                    'position' => $index + 1,
                                 ];
                             }
                         }
