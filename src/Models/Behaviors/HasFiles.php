@@ -19,7 +19,9 @@ trait HasFiles
             'fileable',
             config('twill.fileables_table', 'twill_fileables')
         )->withPivot(['id', 'role', 'locale'])
-            ->withTimestamps()->orderBy(config('twill.fileables_table', 'twill_fileables') . '.id', 'asc');
+            ->withTimestamps()
+            ->orderBy(config('twill.fileables_table', 'twill_fileables') . '.position', 'asc')
+            ->orderBy(config('twill.fileables_table', 'twill_fileables') . '.id', 'asc');
     }
 
     private function findFile($role, $locale)
