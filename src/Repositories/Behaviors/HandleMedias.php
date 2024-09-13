@@ -80,7 +80,7 @@ trait HandleMedias
                 if ($this->hasRole($role) || $this->hasJsonRepeaterRole($role)) {
                     Collection::make($mediasForRole)->filter(function ($media) {
                         return !isset($media['type']) || $media['type'] === 'image';
-                    })->each(function ($media) use (&$medias, $role, $locale) {
+                    })->each(function ($media, $index) use (&$medias, $role, $locale) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
                         if (isset($media['crops']) && !empty($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
@@ -110,6 +110,7 @@ trait HandleMedias
                                 'crop_x' => null,
                                 'crop_y' => null,
                                 'metadatas' => json_encode($customMetadatas),
+                                'position' => $index + 1,
                             ];
                         } else {
                             foreach ($this->getCrops($role) as $cropName => $cropDefinitions) {
@@ -177,6 +178,7 @@ trait HandleMedias
 
             $itemForForm = $item->toCmsArray();
             $itemForForm['pivot_id'] = $item->pivot->id;
+            $itemForForm['position'] = $item->pivot->position;
 
             $itemForForm['metadatas']['custom'] = json_decode($item->pivot->metadatas, true);
 
@@ -188,7 +190,7 @@ trait HandleMedias
                     'width' => $media->pivot->crop_w,
                     'height' => $media->pivot->crop_h,
                     'x' => $media->pivot->crop_x,
-                    'y' => $media->pivot->crop_y,
+                    'y' => $media->pivot->crop_y
                 ];
             }
 

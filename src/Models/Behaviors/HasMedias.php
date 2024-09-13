@@ -71,6 +71,7 @@ trait HasMedias
             'ratio',
             'metadatas',
             'locale',
+            'position',
         ])->withTimestamps()
             ->orderBy(config('twill.mediables_table', 'twill_mediables') . '.position')
             ->orderBy(config('twill.mediables_table', 'twill_mediables') . '.id');
