@@ -87,7 +87,7 @@
     },
     data: function () {
       return {
-        handle: '.slide__handle', // Drag handle override
+        handle: '.asset__handle', // Drag handle override
         hoverable: true
       }
     },
