@@ -13,9 +13,11 @@ return new class extends Migration
     {
         $twillFileablesTable = config('twill.fileables_table', 'twill_fileables');
 
-        Schema::table($twillFileablesTable, function (Blueprint $table) {
-            $table->integer('position')->default(1);
-        });
+        if (!Schema::hasColumn($twillFileablesTable, 'position')) {
+            Schema::table($twillFileablesTable, function (Blueprint $table) {
+                $table->integer('position')->default(1);
+            });
+        }
     }
 
     /**
