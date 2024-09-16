@@ -13,9 +13,11 @@ return new class extends Migration
     {
         $twillMediablesTable = config('twill.mediables_table', 'twill_mediables');
 
-        Schema::table($twillMediablesTable, function (Blueprint $table) {
-            $table->integer('position')->default(1);
-        });
+        if (!Schema::hasColumn($twillMediablesTable, 'position')) {
+            Schema::table($twillMediablesTable, function (Blueprint $table) {
+                $table->integer('position')->default(1);
+            });
+        }
     }
 
     /**
