@@ -3,18 +3,28 @@
     <div class="media__field">
       <div class="media__info" v-if="hasMedia">
         <div class="media__img">
-          <div class="media__imgFrame">
-            <div class="media__imgCentered" :style="cropThumbnailStyle">
+          <div class="media__imgFrame" :class="{'media__imgFrame--video': isVideo}">
+            <div v-if="isImage" class="media__imgCentered" :style="cropThumbnailStyle">
               <img v-if="cropSrc && showImg" :src="cropSrc" ref="mediaImg" :class="cropThumbnailClass"/>
             </div>
-            <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index)" v-if="!disabled">
+            <div class="media__videoCentered" v-else-if="isVideo">
+              <video ref="video" muted playsinline loop class="media__videoCentered__video" preload="metadata">
+                <source :src="`${media.src}#t=0.1,5`">
+              </video>
+            </div>
+            <div class="media__fileCentered" v-else>
+              <span v-svg symbol="gen"></span>
+            </div>
+            <div class="media__edit" @click="openMediaLibrary(1, mediaKey, index, media.type)" v-if="!disabled"
+                 @mouseenter="handleMouseVideoEnter"
+                 @mouseleave="handleMouseVideoLeave">
               <span class="media__edit--button"><span v-svg symbol="edit"></span></span>
             </div>
           </div>
         </div>
 
         <ul class="media__metadatas" v-if="!disabled">
-          <li class="media__name" @click="openMediaLibrary(1, mediaKey, index)"><strong :title="media.name">{{
+          <li class="media__name" @click="openMediaLibrary(1, mediaKey, index, media.type)"><strong :title="media.name">{{
             media.name }}</strong></li>
           <li class="f--small" v-if="media.size">File size: {{ media.size | uppercase }}</li>
           <li class="f--small" v-if="media.width + media.height">{{ $trans('fields.medias.original-dimensions') }}: {{ media.width }}&nbsp;&times;&nbsp;{{
@@ -35,7 +45,7 @@
         <!--Actions-->
         <a17-buttonbar class="media__actions" v-if="!disabled">
           <a :href="media.original" download><span v-svg symbol="download"></span></a>
-          <button type="button" @click="openCropMedia" v-if="activeCrop"><span v-svg symbol="crop"></span></button>
+          <button type="button" @click="openCropMedia" v-if="activeCrop && media.type === 'image'"><span v-svg symbol="crop"></span></button>
           <button type="button" @click="deleteMediaClick"><span v-svg symbol="trash"></span></button>
         </a17-buttonbar>
 
@@ -45,7 +55,7 @@
               <span v-svg symbol="more-dots"></span></a17-button>
             <div slot="dropdown__content">
               <a :href="media.original" download><span v-svg symbol="download"></span>{{ $trans('fields.medias.download') }}</a>
-              <button type="button" @click="openCropMedia" v-if="activeCrop"><span v-svg symbol="crop"></span>{{ $trans('fields.medias.crop') }}
+              <button type="button" @click="openCropMedia" v-if="activeCrop && isImage"><span v-svg symbol="crop"></span>{{ $trans('fields.medias.crop') }}
               </button>
               <button type="button" @click="deleteMediaClick"><span v-svg symbol="trash"></span>{{ $trans('fields.medias.delete') }}</button>
             </div>
@@ -61,11 +71,11 @@
 
       <!-- Metadatas options -->
       <div class="media__metadatas--options" :class="{ 's--active' : metadatas.active }" v-if="hasMedia && withAddInfo">
-        <a17-mediametadata :name='metadataName' :label="$trans('fields.medias.alt-text', 'Alt Text')" id="altText" :media="media" :maxlength="altTextMaxLength" @change="updateMetadata"/>
+        <a17-mediametadata v-if="isImage" :name='metadataName' :label="$trans('fields.medias.alt-text', 'Alt Text')" id="altText" :media="media" :maxlength="altTextMaxLength" @change="updateMetadata"/>
 
         <a17-mediametadata v-if="withCaption" :wysiwyg="useWysiwyg" :wysiwyg-options="wysiwygOptions" type='text' :name='metadataName' :label="$trans('fields.medias.caption', 'Caption')" id="caption" :media="media" :maxlength="captionMaxLength" @change="updateMetadata"/>
 
-        <a17-mediametadata v-if="withVideoUrl" :name='metadataName' :label="$trans('fields.medias.video-url', 'Video URL (optional)')" id="video" :media="media" @change="updateMetadata"/>
+        <a17-mediametadata v-if="withVideoUrl && isImage" :name='metadataName' :label="$trans('fields.medias.video-url', 'Video URL (optional)')" id="video" :media="media" @change="updateMetadata"/>
 
         <template v-for="field in extraMetadatas">
           <a17-mediametadata v-if="extraMetadatas.length > 0"
@@ -84,7 +94,7 @@
     </div>
 
     <!-- Crop modal -->
-    <a17-modal class="modal--cropper" :ref="cropModalName" :forceClose="true" :title="$trans('fields.medias.crop-edit')" mode="medium" v-if="hasMedia && activeCrop">
+    <a17-modal class="modal--cropper" :ref="cropModalName" :forceClose="true" :title="$trans('fields.medias.crop-edit')" mode="medium" v-if="hasMedia && isImage && activeCrop">
       <a17-cropper :media="media" v-on:crop-end="cropMedia" :aspectRatio="16 / 9" :context="cropContext" :key="cropperKey">
         <a17-button class="cropper__button" variant="action" @click="$refs[cropModalName].close()">{{ $trans('fields.medias.crop-save') }}</a17-button>
       </a17-cropper>
@@ -234,6 +244,14 @@
         } else {
           return {}
         }
+      },
+      isImage: function() {
+        return this.media.type === 'image'
+      },
+      isVideo : function() {
+        if (!this.media.src) return false
+        const ext = this.media.src.split('.').pop()
+        return this.media.type === 'file' && ['mp4', 'webm', 'ogg', 'mov'].includes(ext)
       },
       cropInfos: function () {
         const cropInfos = []
@@ -424,7 +442,7 @@
           }
         }
 
-        if (this.hasMedia) {
+        if (this.hasMedia && this.isImage) {
           this.cropSrc = this.media.thumbnail
 
           this.initImg().then(() => {
@@ -525,6 +543,15 @@
       destroyValue: function () {
         if (this.isSlide) return // for Slideshows : the medias are deleted when the slideshow component is destroyed (so no need to do it here)
         if (!this.isDestroyed) this.deleteMedia()
+      },
+      // video
+      handleMouseVideoEnter: function() {
+        if (!this.isVideo) return
+        this.$refs.video?.play()
+      },
+      handleMouseVideoLeave: function() {
+        if (!this.isVideo) return
+        this.$refs.video?.pause()
       }
     },
     beforeMount: function () {
@@ -621,7 +648,7 @@
   }
 
   .media--slide .media__img {
-    max-width: 120px;
+    max-width: 160px;
   }
 
   .media__crop-link {
@@ -649,7 +676,9 @@
     overflow:hidden;
   }
 
-  .media__imgCentered {
+  .media__imgCentered,
+  .media__fileCentered,
+  .media__videoCentered {
     top:0;
     bottom:0;
     left:0;
@@ -671,6 +700,22 @@
       right: 0;
       bottom: 0;
       border:1px solid rgba(0,0,0,0.05);
+    }
+  }
+
+  .media__fileCentered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .media__videoCentered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    video {
+      width: 100%;
+      height: auto;
     }
   }
 
@@ -763,7 +808,7 @@
   }
 
   .media__actions {
-    min-width:45px * 3;
+    // min-width: 45px * 3;
 
     @media screen and (max-width: 1140px) {
       display: none !important;
@@ -816,5 +861,10 @@
 <style lang="scss">
   .media .media__actions-dropDown .dropdown__content {
     margin-top: 10px;
+
+    > a, button {
+      display: inline-flex;
+      align-items: center;
+    };
   }
 </style>

@@ -19,6 +19,7 @@
                             :cropContext="cropContext"
                             :hover="hoverable"
                             :isSlide="true"
+                            :allow-file="true"
                             :withAddInfo="withAddInfo"
                             :withCaption="withCaption"
                             :withVideoUrl="withVideoUrl"
