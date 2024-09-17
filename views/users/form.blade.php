@@ -156,7 +156,7 @@
 
 
 @section('fieldsets')
-    @if(\A17\Twill\Facades\TwillPermissions::levelIs(\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM))
+    @if($permissionModules->isNotEmpty())
         @can('edit-users')
             @unless($item->isSuperAdmin() || $item->id === $currentUser->id)
                 <x-twill::formConnectedFields

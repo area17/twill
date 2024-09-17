@@ -5,12 +5,15 @@ namespace A17\Twill\Models;
 use A17\Twill\Enums\PermissionLevel;
 use A17\Twill\Exceptions\ModuleNotFoundException;
 use A17\Twill\Facades\TwillPermissions;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 
 class Permission extends BaseModel
 {
@@ -88,13 +91,42 @@ class Permission extends BaseModel
     }
 
     /**
+     * Retrieve the list of modules with specific permission levels that can be applied.
+     *
+     * @return Collection
+     */
+    public static function permissionableModulesWithLevel()
+    {
+        return collect(config('twill.permissions.modules', []))
+            ->mapWithKeys(function ($item, $key) {
+                if (is_integer($key)) {
+                    return [$item => config('twill.permissions.level', PermissionLevel::LEVEL_ROLE)];
+                }
+                return [$key => $item];
+            });
+    }
+
+    /**
+     * Retrieve the list of modules that permissions can be applied to for specific permission level.
+     *
+     * @return Collection
+     */
+    public static function permissionableModulesForLevel(string|array $level)
+    {
+        if (is_string($level)) {
+            return self::permissionableModulesWithLevel()->filter(fn($item, $key) => $item === $level)->keys();
+        }
+        return self::permissionableModulesWithLevel()->filter(fn($item, $key) => in_array($item, $level))->keys();
+    }
+
+    /**
      * Retrieve the list of modules that permissions can be applied to.
      *
      * @return Collection
      */
     public static function permissionableModules()
     {
-        return collect(config('twill.permissions.modules', []));
+        return self::permissionableModulesWithLevel()->keys();
     }
 
     /**
@@ -113,6 +145,31 @@ class Permission extends BaseModel
                 return [];
             }
         });
+    }
+
+    /**
+     * Retrieve a collection of items that belongs to models with specific permission level.
+     *
+     * @param string $level
+     * @return Collection
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public static function permissionableParentModuleItemsForLevel(string $level)
+    {
+        return self::permissionableModulesWithLevel()
+            ->filter(fn($item, $key) => $item === $level)
+            ->keys()
+            ->filter(function ($module) {
+                return !strpos($module, '.');
+            })
+            ->mapWithKeys(function ($module) {
+                try {
+                    return [$module => getRepositoryByModuleName($module)->get([], [], [], -1)];
+                } catch (ModuleNotFoundException $e) {
+                    return [];
+                }
+            });
     }
 
     /**

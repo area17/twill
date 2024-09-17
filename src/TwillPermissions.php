@@ -64,6 +64,23 @@ class TwillPermissions
         return $this->enabled() && config('twill.permissions.level') === $level;
     }
 
+    /**
+     * Check specific permission level for module
+     *
+     * @param string $module
+     * @param string $level
+     * @return bool
+     * @throws \Exception
+     */
+    public function levelForModuleIs(string $module, string $level): bool
+    {
+        if (!PermissionLevel::isValid($level)) {
+            throw new \Exception('Invalid permission level. Check TwillPermissions for available levels');
+        }
+
+        return $this->enabled() && Permission::permissionableModulesWithLevel()->get($module) === $level;
+    }
+
     public function levelIsOneOf(array $levels): bool
     {
         foreach ($levels as $level) {

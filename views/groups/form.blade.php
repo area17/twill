@@ -17,8 +17,22 @@
         :max="999"
     />
 
-    @if(\A17\Twill\Facades\TwillPermissions::levelIs(\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP))
-        <x-twill::fieldRows title="Content permissions">
+    @if(config('twill.support_subdomain_admin_routing'))
+        <x-twill::fieldRows title="Subdomain access">
+            @foreach(config('twill.app_names') as $subdomain => $subdomainTitle)
+                <x-twill::checkbox
+                    :name="'subdomain_access_' . $subdomain"
+                    :label="$subdomainTitle"
+                />
+            @endforeach
+        </x-twill::fieldRows>
+    @endif
+@stop
+
+
+@section('fieldsets')
+    @if($permissionModulesLevelGroup->isNotEmpty())
+        <a17-fieldset title='Per-module permissions' id='modules'>
             <x-twill::checkbox
                 name="manage-modules"
                 label="Manage all modules"
@@ -27,7 +41,7 @@
             <x-twill::formConnectedFields field-name="manage-modules"
                                           :fieldValues="false"
             >
-                @foreach($permissionModules as $moduleName => $moduleItems)
+                @foreach($permissionModulesLevelGroup as $moduleName)
                     <x-twill::select
                         :name="'module_' . $moduleName . '_permissions'"
                         :label="ucfirst($moduleName) . ' permissions'"
@@ -49,25 +63,12 @@
                     />
                 @endforeach
             </x-twill::formConnectedFields>
-        </x-twill::fieldRows>
+        </a17-fieldset>
     @endif
 
-    @if(config('twill.support_subdomain_admin_routing'))
-        <x-twill::fieldRows title="Subdomain access">
-            @foreach(config('twill.app_names') as $subdomain => $subdomainTitle)
-                <x-twill::checkbox
-                    :name="'subdomain_access_' . $subdomain"
-                    :label="$subdomainTitle"
-                />
-            @endforeach
-        </x-twill::fieldRows>
-    @endif
-@stop
-
-@if(\A17\Twill\Facades\TwillPermissions::levelIs(\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM))
-    @can('edit-user-groups')
-        @section('fieldsets')
-            @foreach($permissionModules as $moduleName => $moduleItems)
+    @if($permissionModulesLevelItem->isNotEmpty())
+        @can('edit-user-groups')
+            @foreach($permissionModulesLevelItem as $moduleName => $moduleItems)
                 <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
                     <x-twill::select-permissions
                         :items-in-selects-tables="$moduleItems"
@@ -76,6 +77,6 @@
                     />
                 </a17-fieldset>
             @endforeach
-        @stop
-    @endcan
-@endif
+        @endcan
+    @endif
+@stop

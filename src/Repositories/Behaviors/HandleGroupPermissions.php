@@ -27,13 +27,20 @@ trait HandleGroupPermissions
             }
 
             // Add active module permissions
-            foreach (Permission::permissionableModules() as $moduleName) {
+            foreach (Permission::permissionableModulesForLevel([PermissionLevel::LEVEL_ROLE_GROUP, PermissionLevel::LEVEL_ROLE_GROUP_ITEM]) as $moduleName) {
                 $modulePermission = $object->permissions()->module()->ofModuleName($moduleName)->first();
                 if ($modulePermission) {
                     $fields['module_' . $moduleName . '_permissions'] = $modulePermission->name;
                 } else {
                     $fields['module_' . $moduleName . '_permissions'] = 'none';
                 }
+            }
+
+            // Add LEVEL_ROLE_GROUP_ITEM permission level modules with items
+            foreach ($object->permissions()->moduleItem()->get() as $permission) {
+                $model = $permission->permissionable()->first();
+                $moduleName = getModuleNameByModel($model);
+                $fields[$moduleName . '_' . $model->id . '_permission'] = $permission->name;
             }
         } elseif (TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)) {
             // Add active item permissions

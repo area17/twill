@@ -201,12 +201,7 @@ class UserController extends ModuleController
             $titleThumbnail = $user->cmsImage($role, $crop, $params);
         }
 
-        if (TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)) {
-            $permissionsData = [
-                'permissionModules' => $this->getPermissionModules(),
-            ];
-        }
-
+        // Fetch modules with LEVEL_ROLE_GROUP_ITEM permission level
         return [
             'roleList' => $this->getRoleList(),
             'titleThumbnail' => $titleThumbnail ?? null,
@@ -214,7 +209,8 @@ class UserController extends ModuleController
             'qrCode' => $qrCode ?? null,
             'groupPermissionMapping' => $this->getGroupPermissionMapping(),
             'groupOptions' => $this->getGroups(),
-        ] + ($permissionsData ?? []);
+            'permissionModules' => Permission::permissionableParentModuleItemsForLevel(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)
+        ];
     }
 
     /**
@@ -352,15 +348,6 @@ class UserController extends ModuleController
         return collect(TwillPermissions::roles()::toArray())->map(function ($item, $key) {
             return ['value' => $key, 'label' => $item];
         })->values()->toArray();
-    }
-
-    private function getPermissionModules()
-    {
-        if (config('twill.enabled.permissions-management')) {
-            return Permission::permissionableParentModuleItems();
-        }
-
-        return [];
     }
 
     public function getSubmitOptions(Model $item): ?array
