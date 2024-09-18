@@ -45,7 +45,7 @@
         <!--Actions-->
         <a17-buttonbar class="media__actions" v-if="!disabled">
           <a :href="media.original" download><span v-svg symbol="download"></span></a>
-          <button type="button" @click="openCropMedia" v-if="activeCrop && media.type === 'image'"><span v-svg symbol="crop"></span></button>
+          <button type="button" @click="openCropMedia" v-if="activeCrop && isImage"><span v-svg symbol="crop"></span></button>
           <button type="button" @click="deleteMediaClick"><span v-svg symbol="trash"></span></button>
         </a17-buttonbar>
 
