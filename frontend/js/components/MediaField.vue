@@ -246,7 +246,9 @@
         }
       },
       isImage: function() {
-        return this.media.type === 'image'
+        if (!this.media) return false
+        const ext = this.media.original.split('.').pop()
+        return this.media.type === 'image' || ['jpg', 'jpeg', 'png', 'gif', 'svg'].includes(ext)
       },
       isVideo : function() {
         if (!this.media.src) return false
