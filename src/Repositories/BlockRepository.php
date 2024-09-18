@@ -5,6 +5,7 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Models\Block;
 use A17\Twill\Models\Contracts\TwillModelContract;
+use A17\Twill\Repositories\Behaviors\HandleAssets;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Services\Blocks\Block as BlockConfig;
@@ -18,6 +19,7 @@ class BlockRepository extends ModuleRepository
 {
     use HandleMedias;
     use HandleFiles;
+    use HandleAssets;
 
     protected Config $config;
 

@@ -72,6 +72,7 @@ trait HandleFiles
                 if (
                     in_array($role, $this->model->filesParams ?? [])
                     || in_array($role, config('twill.block_editor.files', []))
+                    || in_array($role, config('twill.block_editor.assets', []))
                     || in_array($role, $this->model->assetParams ?? [])
                 ) {
                     Collection::make($filesForRole)->filter(function ($file) {

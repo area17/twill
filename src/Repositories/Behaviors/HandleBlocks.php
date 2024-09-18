@@ -416,6 +416,20 @@ trait HandleBlocks
                     });
                 }
 
+                $assets = $blockFormFields['assets'];
+
+                if ($assets) {
+                    Collection::make($assets)->each(function ($rolesWithAssets, $locale) use (&$fields, $block) {
+                        $fields['blocksAssets'][] = Collection::make($rolesWithAssets)->mapWithKeys(
+                            function ($assets, $role) use ($locale, $block) {
+                                return [
+                                    "blocks[$block->id][$role][$locale]" => $assets,
+                                ];
+                            }
+                        )->toArray();
+                    });
+                }
+
                 if (isset($block['content']['browsers'])) {
                     $fields['blocksBrowsers'][] = $this->getBlockBrowsers($block);
                 }
@@ -431,6 +445,10 @@ trait HandleBlocks
 
             if ($fields['blocksFiles'] ?? false) {
                 $fields['blocksFiles'] = call_user_func_array('array_merge', $fields['blocksFiles'] ?? []);
+            }
+
+            if ($fields['blocksAssets'] ?? false) {
+                $fields['blocksAssets'] = call_user_func_array('array_merge', $fields['blocksAssets'] ?? []);
             }
 
             if ($fields['blocksBrowsers'] ?? false) {

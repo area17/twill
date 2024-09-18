@@ -3,6 +3,7 @@
 namespace A17\Twill\Models;
 
 use A17\Twill\Facades\TwillUtil;
+use A17\Twill\Models\Behaviors\HasAssets;
 use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPresenter;
@@ -19,6 +20,7 @@ class Block extends BaseModel implements TwillModelContract
     use HasFiles;
     use HasPresenter;
     use HasRelated;
+    use HasAssets;
 
     public $timestamps = false;
 

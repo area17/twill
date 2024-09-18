@@ -233,6 +233,7 @@ trait HandleMedias
         return array_key_exists($role, $this->model->getMediasParams())
         || array_key_exists($role, TwillBlocks::getAllCropConfigs())
         || array_key_exists($role, config('twill.settings.crops', []))
+        || in_array($role, config('twill.block_editor.assets', []))
         || in_array($role, $this->model->assetParams ?? []);
     }
 

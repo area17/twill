@@ -14,6 +14,11 @@ window['{{ config('twill.js_namespace') }}'].STORE.form.blocks = {!! json_encode
     {!! json_encode($files) !!}
 @endforeach
 
+@foreach ($form_fields['blocksAssets'] ?? [] as $name => $assets)
+    window['{{ config('twill.js_namespace') }}'].STORE.medias.selected["{{ $name }}"] =
+    {!! json_encode($assets) !!}
+@endforeach
+
 @foreach ($form_fields['blocksBrowsers'] ?? [] as $name => $browser)
     window['{{ config('twill.js_namespace') }}'].STORE.browser.selected["{{ $name }}"] =
     {!! json_encode($browser) !!}
