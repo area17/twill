@@ -6,6 +6,22 @@ use A17\Twill\Models\Media;
 
 trait HasAssets
 {
+    public function assetsObjs($role, $crop = 'default', $locale = null)
+    {
+        $locale = $locale ?? app()->getLocale();
+
+        $medias = $this->medias->filter(function ($media) use ($role, $crop, $locale) {
+            return $media->pivot->role === $role && $media->pivot->crop === $crop && $media->pivot->locale === $locale;
+        });
+
+        $files = $this->files->filter(function ($file) use ($role, $locale) {
+            return $file->pivot->role === $role && $file->pivot->locale === $locale;
+        });
+
+        $assets = $medias->merge($files);
+        return $assets->sortBy(fn($asset) => $asset->pivot->position)->values();
+    }
+
     public function assets($role, $crop = 'default', $locale = null, $params = [])
     {
         $locale = $locale ?? app()->getLocale();
