@@ -2,18 +2,8 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
-use A17\Twill\Services\Forms\Fields\Traits\CanHaveButtonOnTop;
-use A17\Twill\Services\Forms\Fields\Traits\HasFieldNote;
-use A17\Twill\Services\Forms\Fields\Traits\HasMax;
-use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
-
-class Assets extends BaseFormField
+class Assets extends Medias
 {
-    use IsTranslatable;
-    use HasMax;
-    use HasFieldNote;
-    use CanHaveButtonOnTop;
-
     public static function make(): static
     {
         $instance = new self(
