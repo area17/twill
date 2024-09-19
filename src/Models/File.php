@@ -15,6 +15,8 @@ class File extends Model
         'size',
     ];
 
+    protected $videoFilesFormats = ['mp4', 'webm', 'ogg'];
+
     public function getSizeAttribute($value)
     {
         return bytesToHuman($value);
@@ -32,6 +34,26 @@ class File extends Model
 
         return $query->whereNotIn('id', $usedIds->toArray())->get();
     }
+
+    public function scopeVideosOnly($query)
+    {
+        return $query->where(function ($query) {
+            for ($i = 0; $i < count($this->videoFilesFormats); $i++) {
+                $query->orwhere('uuid', 'like', '%' . $this->videoFilesFormats[$i]);
+            }
+        });
+    }
+
+    public function scopeFilesOnly($query)
+    {
+        return $query->where(function ($query) {
+            for ($i = 0; $i < count($this->videoFilesFormats); $i++) {
+                $query->where('uuid', 'not like', '%' . $this->videoFilesFormats[$i]);
+            }
+        });
+    }
+
+
 
     public function toCmsArray()
     {

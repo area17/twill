@@ -10,6 +10,9 @@
 
         <template v-if="hasSingleMedia">
           <img v-if="isImage" :src="firstMedia.thumbnail" class="mediasidebar__img" :alt="firstMedia.original"/>
+          <video v-else-if="isFirstMediaVideo" controls class="mediasidebar__video">
+            <source :src="`${firstMedia.src}#t=0.1`">
+          </video>
           <p class="mediasidebar__name">{{ firstMedia.name }}</p>
           <ul class="mediasidebar__metadatas">
             <li class="f--small" v-if="firstMedia.size" >File size: {{ firstMedia.size | uppercase }}</li>
@@ -205,6 +208,15 @@
       },
       isImage: function () {
         return this.type.value === 'image'
+      },
+      isFirstMediaVideo: function () {
+        const videoExtensions = ['mp4', 'webm', 'ogg']
+
+        if (this.firstMedia) {
+          const ext = this.firstMedia.original.split('.').pop()
+          return videoExtensions.includes(ext)
+        }
+        return false
       },
       sharedTags: function () {
         return this.medias.map((media) => {
@@ -479,6 +491,12 @@
     max-height: 135px;
     height: auto;
     display: block;
+    margin-bottom: 17px;
+  }
+
+  .mediasidebar__video {
+    display: block;
+    width: 100%;
     margin-bottom: 17px;
   }
 

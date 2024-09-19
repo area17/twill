@@ -123,9 +123,18 @@
 
     @if (config('twill.enabled.file-library'))
         window['{{ config('twill.js_namespace') }}'].STORE.medias.types.push({
+            value: 'video',
+            text: '{{ twillTrans('twill::lang.media-library.videos') }}',
+            total: {{ \A17\Twill\Models\File::videosOnly()->count() }},
+            endpoint: '{{ route(config('twill.admin_route_name_prefix') . 'file-library.files.index') }}',
+            tagsEndpoint: '{{ route(config('twill.admin_route_name_prefix') . 'file-library.files.tags') }}',
+            uploaderConfig: {!! json_encode($filesUploaderConfig) !!}
+        })
+
+        window['{{ config('twill.js_namespace') }}'].STORE.medias.types.push({
             value: 'file',
             text: '{{ twillTrans('twill::lang.media-library.files') }}',
-            total: {{ \A17\Twill\Models\File::count() }},
+            total: {{ \A17\Twill\Models\File::filesOnly()->count() }},
             endpoint: '{{ route(config('twill.admin_route_name_prefix') . 'file-library.files.index') }}',
             tagsEndpoint: '{{ route(config('twill.admin_route_name_prefix') . 'file-library.files.tags') }}',
             uploaderConfig: {!! json_encode($filesUploaderConfig) !!}

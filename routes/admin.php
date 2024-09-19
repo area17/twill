@@ -35,7 +35,7 @@ if (config('twill.enabled.file-library')) {
         Route::put('files/bulk-update', ['as' => 'files.bulk-update', 'uses' => 'FileLibraryController@bulkUpdate']);
         Route::put('files/bulk-delete', ['as' => 'files.bulk-delete', 'uses' => 'FileLibraryController@bulkDelete']);
         Route::get('files/tags', ['as' => 'files.tags', 'uses' => 'FileLibraryController@tags']);
-        Route::resource('files', 'FileLibraryController', ['only' => ['index', 'store', 'destroy']]);
+        Route::resource('files', 'FileLibraryController', ['only' => ['index', 'store', 'video', 'destroy']]);
     });
 }
 

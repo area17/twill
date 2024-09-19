@@ -112,6 +112,10 @@ class FileLibraryController extends ModuleController implements SignUploadListen
             $prependScope['exceptIds'] = $this->request->get('except');
         }
 
+//        if ($this->request->has('type')) {
+//            $prependScope['type'] = $this->request->get('except');
+//        }
+
         return $this->getIndexData($prependScope ?? []);
     }
 

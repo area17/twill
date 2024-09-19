@@ -24,11 +24,9 @@
         </div>
 
         <ul class="media__metadatas" v-if="!disabled">
-          <li class="media__name" @click="openMediaLibrary(1, mediaKey, index, media.type)"><strong :title="media.name">{{
-            media.name }}</strong></li>
+          <li class="media__name" @click="openMediaLibrary(1, mediaKey, index, media.type)"><strong :title="media.name">{{media.name }}</strong></li>
           <li class="f--small" v-if="media.size">File size: {{ media.size | uppercase }}</li>
-          <li class="f--small" v-if="media.width + media.height">{{ $trans('fields.medias.original-dimensions') }}: {{ media.width }}&nbsp;&times;&nbsp;{{
-            media.height }}
+          <li class="f--small" v-if="media.width + media.height">{{ $trans('fields.medias.original-dimensions') }}: {{ media.width }}&nbsp;&times;&nbsp;{{media.height }}
           </li>
           <li class="f--small media__crop-link" v-if="cropInfos && activeCrop" @click="openCropMedia">
               <p class="f--small f--note hide--xsmall"
@@ -253,7 +251,7 @@
       isVideo : function() {
         if (!this.media.src) return false
         const ext = this.media.src.split('.').pop()
-        return this.media.type === 'file' && ['mp4', 'webm', 'ogg', 'mov'].includes(ext)
+        return (this.media.type === 'file' || this.media.type === 'video' ) && ['mp4', 'webm', 'ogg', 'mov'].includes(ext)
       },
       cropInfos: function () {
         const cropInfos = []

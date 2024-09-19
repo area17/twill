@@ -274,6 +274,7 @@ return [
     ],
     'media-library' => [
         'files' => 'Files',
+        'videos' => 'Videos',
         'filter-select-label' => 'Filter by tag',
         'images' => 'Images',
         'insert' => 'Insert',
