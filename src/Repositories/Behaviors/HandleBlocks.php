@@ -376,6 +376,8 @@ trait HandleBlocks
 
                 $blockFormFields = app(BlockRepository::class)->getFormFields($block);
 
+                $blockFormFields = $this->removeAssetsFieldsFromMediasAndFiles($blockFormFields);
+
                 $medias = $blockFormFields['medias'];
 
                 if ($medias) {
@@ -550,5 +552,30 @@ trait HandleBlocks
             static::$hasRelatedTableCache = Schema::hasTable(config('twill.related_table', 'twill_related'));
         }
         return static::$hasRelatedTableCache;
+    }
+
+    private function removeAssetsFieldsFromMediasAndFiles($blockFormFields)
+    {
+        if (!$blockFormFields['assets']) {
+            return $blockFormFields;
+        }
+
+        foreach ($blockFormFields['assets'] as $assetsForLocale) {
+            foreach (array_keys($assetsForLocale) as $role) {
+                if ($blockFormFields['medias']) {
+                    unset($blockFormFields['medias'][$role]);
+                }
+
+                if ($blockFormFields['files']) {
+                    $locales = array_keys($blockFormFields['files']);
+
+                    foreach ($locales as $locale) {
+                        unset($blockFormFields['files'][$locale][$role]);
+                    }
+                }
+            }
+        }
+
+        return $blockFormFields;
     }
 }
