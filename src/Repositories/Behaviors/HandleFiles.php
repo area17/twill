@@ -78,11 +78,13 @@ trait HandleFiles
                     Collection::make($filesForRole)->filter(function ($file) {
                         return !isset($file['type']) || $file['type'] === 'file';
                     })->each(function ($file, $index) use (&$files, $role, $locale) {
+                        $customMetadatas = $file['metadatas']['custom'] ?? [];
                         $files[$file['pivot_id'] ?? uniqid('file')] = [
                             'file_id' => $file['id'],
                             'role' => $role,
                             'locale' => $locale,
-                            'position' => $index + 1
+                            'position' => $index + 1,
+                            'metadatas' => json_encode($customMetadatas),
                         ];
                     });
                 }

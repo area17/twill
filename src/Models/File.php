@@ -42,6 +42,14 @@ class File extends Model
             'original' => FileService::getUrl($this->uuid),
             'size' => $this->size,
             'filesizeInMb' => number_format($this->attributes['size'] / 1048576, 2),
+            'metadatas' => [
+                'default' => [
+                    'caption' => null
+                ],
+                'custom' => [
+                    'caption' => null
+                ],
+            ],
         ];
     }
 

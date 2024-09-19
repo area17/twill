@@ -36,11 +36,13 @@ trait HandleAssets
                 ) {
                     foreach ($filesByRole->groupBy('pivot.locale') as $locale => $filesByLocale) {
                         foreach ($filesByLocale as $item) {
-                            $fields['assets'][$locale][$role][] = $item->toCmsArray() + [
-                                'pivot_id' => $item->pivot->id,
-                                'position' => $item->pivot->position,
-                                'type' => 'file',
-                            ];
+                            $itemForForm = $item->toCmsArray();
+                            $itemForForm['pivot_id'] = $item->pivot->id;
+                            $itemForForm['position'] = $item->pivot->position;
+                            $itemForForm['metadatas']['custom'] = json_decode($item->pivot->metadatas, true);
+                            $itemForForm['type'] = 'file';
+
+                            $fields['assets'][$locale][$role][] = $itemForForm;
                         }
                     }
                 }
