@@ -98,7 +98,7 @@
         return 'gen'
       },
       handleMouseEnter: function () {
-         this.$refs.video?.play().catch(() => {})
+        this.$refs.video?.play().catch(() => {})
       },
       handleMouseLeave: function () {
         if (!this.$refs.video.paused) {
