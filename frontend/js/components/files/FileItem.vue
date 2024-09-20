@@ -7,7 +7,12 @@
       <a href="#" target="_blank"><span v-svg :symbol="getSvgIconName()"></span></a>
     </td>
     <td class="fileItem__cell fileItem__cell--name">
-      <span v-if="currentItem.hasOwnProperty('thumbnail')"><img :src="currentItem.thumbnail"/></span>
+      <span class="fileItem__cell__video" v-if="isVideo" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
+        <video ref="video" muted playsinline loop class="" preload="metadata">
+          <source :src="`${currentItem.src}#t=0.1,5`">
+        </video>
+      </span>
+      <span v-else-if="currentItem.hasOwnProperty('thumbnail')"><img :src="currentItem.thumbnail"/></span>
       <a :href="currentItem.hasOwnProperty('original') ? currentItem.original : '#'" download><span class="f--link-underlined--o">{{ currentItem.name }}</span></a>
       <input type="hidden" :name="name" :value="currentItem.id"/>
     </td>
@@ -60,6 +65,13 @@
     computed: {
       currentItem: function () {
         return this.item
+      },
+      isVideo: function () {
+        if (!this.currentItem) {
+          return false
+        }
+        const ext = this.currentItem.src.split('.').pop()
+        return this.currentItem.type === 'video' || ['mp4', 'webm', 'ogg'].includes(ext)
       }
     },
     methods: {
@@ -84,6 +96,14 @@
 
         // Default
         return 'gen'
+      },
+      handleMouseEnter: function () {
+         this.$refs.video?.play().catch(() => {})
+      },
+      handleMouseLeave: function () {
+        if (!this.$refs.video.paused) {
+          this.$refs.video.pause()
+        }
       }
     }
   }
@@ -112,6 +132,18 @@
     display: flex;
     align-items: center;
     padding: 26px 15px;
+  }
+
+  .fileItem__cell__video {
+    width: 150px;
+    align-content: center;
+    aspect-ratio: 1;
+    margin-right: 20px;
+    border: 1px solid $color__border;
+
+    video {
+      width: 100%;
+    }
   }
 
   .fileItem__cell--extension {

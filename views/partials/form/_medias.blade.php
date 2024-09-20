@@ -8,17 +8,17 @@
             widthMin: {{ $widthMin }},
             heightMin: {{ $heightMin }},
             note: '{{ $fieldNote }}',
-            @if($renderForBlocks) fixedErrorKey: $parent.blockFieldName !== undefined ? $parent.blockFieldName('{{$name}}') : '', @endif
-            @if ($disabled) disabled: true, @endif
-            @if ($extraMetadatas) extraMetadatas: {{ json_encode($extraMetadatas) }}, @endif
-            @if ($altTextMaxLength) :altTextMaxLength: {{ $altTextMaxLength }}, @endif
-            @if ($captionMaxLength) :captionMaxLength: {{ $captionMaxLength }}, @endif
+            @if($renderForBlocks ?? false) fixedErrorKey: $parent.blockFieldName !== undefined ? $parent.blockFieldName('{{$name}}') : '', @endif
+            @if ($disabled ?? false) disabled: true, @endif
+            @if ($extraMetadatas ?? false) extraMetadatas: {{ json_encode($extraMetadatas) }}, @endif
+            @if ($altTextMaxLength ?? false) :altTextMaxLength: {{ $altTextMaxLength }}, @endif
+            @if ($captionMaxLength ?? false) :captionMaxLength: {{ $captionMaxLength }}, @endif
             @if ($required) required: true, @endif
-            @if (!$withAddInfo) withAddInfo: false, @endif
-            @if (!$withVideoUrl) withVideoUrl: false, @endif
-            @if (!$withCaption) withCaption: false, @endif
+            @if (!$withAddInfo ?? false) withAddInfo: false, @endif
+            @if (!$withVideoUrl ?? false) withVideoUrl: false, @endif
+            @if (!$withCaption ?? false) withCaption: false, @endif
             @if ($buttonOnTop) buttonOnTop: true, @endif
-            @if (!$activeCrop) activeCrop: false, @endif
+            @if (!$activeCrop ?? false) activeCrop: false, @endif
             {!! $formFieldName(true) !!}
         }"
     >
@@ -41,17 +41,17 @@
             crop-context="{{ $name }}"
             :width-min="{{ $widthMin }}"
             :height-min="{{ $heightMin }}"
-            @if($multiple) :max="{{ $max }}" @endif
-            @if($disabled) disabled @endif
-            @if($extraMetadatas) :extra-metadatas="{{ json_encode($extraMetadatas) }}" @endif
-            @if($required) :required="true" @endif
-            @if(!$withAddInfo) :with-add-info="false" @endif
-            @if(!$withVideoUrl) :with-video-url="false" @endif
-            @if(!$withCaption) :with-caption="false" @endif
-            @if($altTextMaxLength) :alt-text-max-length="{{ $altTextMaxLength }}" @endif
-            @if($captionMaxLength) :caption-max-length="{{ $captionMaxLength }}" @endif
-            @if($buttonOnTop) :button-on-top="true" @endif
-            @if(!$activeCrop) :active-crop="false" @endif
+            @if($multiple ?? false) :max="{{ $max }}" @endif
+            @if($disabled ?? false) disabled @endif
+            @if($extraMetadatas ?? false) :extra-metadatas="{{ json_encode($extraMetadatas) }}" @endif
+            @if($required ?? false) :required="true" @endif
+            @if(!$withAddInfo ?? false) :with-add-info="false" @endif
+            @if(!$withVideoUrl ?? false) :with-video-url="false" @endif
+            @if(!$withCaption ?? false) :with-caption="false" @endif
+            @if($altTextMaxLength ?? false) :alt-text-max-length="{{ $altTextMaxLength }}" @endif
+            @if($captionMaxLength ?? false) :caption-max-length="{{ $captionMaxLength }}" @endif
+            @if($buttonOnTop ?? false) :button-on-top="true" @endif
+            @if(!$activeCrop ?? false) :active-crop="false" @endif
         >{{ $note }}@if($multiple) </a17-slideshow> @else </a17-mediafield> @endif
     </a17-inputframe>
 

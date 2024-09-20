@@ -7,6 +7,7 @@
         fieldNote: '{{ $fieldNote }}',
         max: {{ $max }},
         filesizeMax: {{ $filesizeMax }},
+        @if ($type ?? false) type: '{{ $type }}', @endif
         @if ($buttonOnTop) buttonOnTop: true, @endif
         {!! $formFieldName(true) !!}
     }"
