@@ -547,10 +547,10 @@
       // video
       handleMouseVideoEnter: function() {
         if (!this.isVideo) return
-        this.$refs.video?.play()
+        this.$refs.video?.play().catch(() => {})
       },
       handleMouseVideoLeave: function() {
-        if (!this.isVideo) return
+        if (!this.isVideo || this.$refs.video.paused) return
         this.$refs.video?.pause()
       }
     },
