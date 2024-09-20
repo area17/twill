@@ -111,9 +111,6 @@
         handle: '.item__handle' // Drag handle override
       }
     },
-    mounted() {
-      console.log(this.type)
-    },
     computed: {
       remainingItems: function () {
         return this.max - this.items.length
