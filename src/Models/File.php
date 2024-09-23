@@ -53,6 +53,40 @@ class File extends Model
         });
     }
 
+    public function getMetadata($name, $fallback = null)
+    {
+        $metadatas = (object) json_decode($this->pivot->metadatas);
+        $language = app()->getLocale();
+
+        if ($metadatas->$name->$language ?? false) {
+            return $metadatas->$name->$language;
+        }
+
+        $fallbackLocale = config('translatable.fallback_locale');
+
+        if (in_array($name, config('twill.media_library.translatable_metadatas_fields', [])) && config('translatable.use_property_fallback', false) && ($metadatas->$name->$fallbackLocale ?? false)) {
+            return $metadatas->$name->$fallbackLocale;
+        }
+
+        $fallbackValue = $fallback ? $this->$fallback : $this->$name;
+
+        $fallback = $fallback ?? $name;
+
+        if (in_array($fallback, config('twill.media_library.translatable_metadatas_fields', []))) {
+            $fallbackValue = $fallbackValue[$language] ?? '';
+
+            if ($fallbackValue === '' && config('translatable.use_property_fallback', false)) {
+                $fallbackValue = $this->$fallback[config('translatable.fallback_locale')] ?? '';
+            }
+        }
+
+        if (is_object($metadatas->$name ?? null)) {
+            return $fallbackValue ?? '';
+        }
+
+        return $metadatas->$name ?? $fallbackValue ?? '';
+    }
+
 
 
     public function toCmsArray()
