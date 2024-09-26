@@ -180,7 +180,10 @@ trait HandleMedias
             $itemForForm['pivot_id'] = $item->pivot->id;
             $itemForForm['position'] = $item->pivot->position;
 
-            $itemForForm['metadatas']['custom'] = json_decode($item->pivot->metadatas, true);
+            $itemMetadatas = json_decode($item->pivot->metadatas, true);
+            if (!empty($itemMetadatas)) {
+                $itemForForm['metadatas']['custom'] = $itemMetadatas;
+            }
 
             foreach ($mediasById->groupBy('pivot.crop') as $crop => $mediaByCrop) {
                 $media = $mediaByCrop->first();
