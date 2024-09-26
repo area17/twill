@@ -76,7 +76,7 @@ trait HandleFiles
                     || in_array($role, $this->model->assetParams ?? [])
                 ) {
                     Collection::make($filesForRole)->filter(function ($file) {
-                        return !isset($file['type']) || $file['type'] === 'file';
+                        return !isset($file['type']) || $file['type'] === 'file' || $file['type'] === 'video';
                     })->each(function ($file, $index) use (&$files, $role, $locale) {
                         $customMetadatas = $file['metadatas']['custom'] ?? [];
                         $files[$file['pivot_id'] ?? uniqid('file')] = [
