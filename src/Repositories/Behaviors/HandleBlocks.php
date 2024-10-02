@@ -421,15 +421,25 @@ trait HandleBlocks
                 $assets = $blockFormFields['assets'];
 
                 if ($assets) {
-                    Collection::make($assets)->each(function ($rolesWithAssets, $locale) use (&$fields, $block) {
-                        $fields['blocksAssets'][] = Collection::make($rolesWithAssets)->mapWithKeys(
-                            function ($assets, $role) use ($locale, $block) {
+                    if (config('twill.media_library.translated_asset_fields', false)) {
+                        Collection::make($assets)->each(function ($rolesWithAssets, $locale) use (&$fields, $block) {
+                            $fields['blocksAssets'][] = Collection::make($rolesWithAssets)->mapWithKeys(
+                                function ($assets, $role) use ($locale, $block) {
+                                    return [
+                                        "blocks[$block->id][$role][$locale]" => $assets,
+                                    ];
+                                }
+                            )->toArray();
+                        });
+                    } else {
+                        $fields['blocksAssets'][] = Collection::make($assets)->mapWithKeys(
+                            function ($value, $key) use ($block) {
                                 return [
-                                    "blocks[$block->id][$role][$locale]" => $assets,
+                                    "blocks[$block->id][$key]" => $value,
                                 ];
                             }
-                        )->toArray();
-                    });
+                        )->filter()->toArray();
+                    }
                 }
 
                 if (isset($block['content']['browsers'])) {

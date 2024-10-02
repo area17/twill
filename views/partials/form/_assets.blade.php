@@ -1,4 +1,4 @@
-@if (config('twill.media_library.translated_asset_fields', $translated ?? false) && ($translated ?? true))
+@if (config('twill.media_library.translated_asset_fields', false))
     <a17-locale
         type="a17-assetfield-translated"
         :attributes="{
