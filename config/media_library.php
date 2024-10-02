@@ -31,6 +31,7 @@ return [
     'init_alt_text_from_filename' => true,
     'prefix_uuid_with_local_path' => config('twill.file_library.prefix_uuid_with_local_path', false),
     'translated_form_fields' => false,
+    'translated_asset_fields' => true,
     'show_file_name' => false,
     /*
     |--------------------------------------------------------------------------

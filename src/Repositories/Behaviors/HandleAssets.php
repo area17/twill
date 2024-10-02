@@ -19,9 +19,15 @@ trait HandleAssets
                     in_array($role, $this->model->assetParams ?? [])
                     || in_array($role, config('twill.block_editor.assets', []))
                 ) {
-                    foreach ($mediasByRole->groupBy('pivot.locale') as $locale => $mediasByLocale) {
-                        foreach ($this->getMediaFormItems($mediasByLocale) as $item) {
-                            $fields['assets'][$locale][$role][] = $item + ['type' => 'image'];
+                    if (config('twill.media_library.translated_asset_fields', false)) {
+                        foreach ($mediasByRole->groupBy('pivot.locale') as $locale => $mediasByLocale) {
+                            foreach ($this->getMediaFormItems($mediasByLocale) as $item) {
+                                $fields['assets'][$locale][$role][] = $item + ['type' => 'image'];
+                            }
+                        }
+                    } else {
+                        foreach ($this->getMediaFormItems($mediasByRole) as $item) {
+                            $fields['assets'][$role][] = $item + ['type' => 'image'];
                         }
                     }
                 }
@@ -34,8 +40,23 @@ trait HandleAssets
                     in_array($role, $this->model->assetParams ?? [])
                     || in_array($role, config('twill.block_editor.assets', []))
                 ) {
-                    foreach ($filesByRole->groupBy('pivot.locale') as $locale => $filesByLocale) {
-                        foreach ($filesByLocale as $item) {
+                    if (config('twill.media_library.translated_asset_fields', false)) {
+                        foreach ($filesByRole->groupBy('pivot.locale') as $locale => $filesByLocale) {
+                            foreach ($filesByLocale as $item) {
+                                $itemForForm = $item->toCmsArray();
+                                $itemForForm['pivot_id'] = $item->pivot->id;
+                                $itemForForm['position'] = $item->pivot->position;
+                                $itemMetadatas = json_decode($item->pivot->metadatas, true);
+                                if (!empty($itemMetadatas)) {
+                                    $itemForForm['metadatas']['custom'] = $itemMetadatas;
+                                }
+                                $itemForForm['type'] = 'file';
+
+                                $fields['assets'][$locale][$role][] = $itemForForm;
+                            }
+                        }
+                    } else {
+                        foreach ($filesByRole as $item) {
                             $itemForForm = $item->toCmsArray();
                             $itemForForm['pivot_id'] = $item->pivot->id;
                             $itemForForm['position'] = $item->pivot->position;
@@ -45,7 +66,7 @@ trait HandleAssets
                             }
                             $itemForForm['type'] = 'file';
 
-                            $fields['assets'][$locale][$role][] = $itemForForm;
+                            $fields['assets'][$role][] = $itemForForm;
                         }
                     }
                 }
@@ -53,9 +74,15 @@ trait HandleAssets
         }
 
         if (isset($fields['assets'])) {
-            foreach ($fields['assets'] as $locale => $filesByLocale) {
-                foreach ($filesByLocale as $role => $filesByRole) {
-                    $fields['assets'][$locale][$role] = collect($filesByRole)->sortBy('position')->values()->toArray();
+            if (config('twill.media_library.translated_asset_fields', false)) {
+                foreach ($fields['assets'] as $locale => $filesByLocale) {
+                    foreach ($filesByLocale as $role => $filesByRole) {
+                        $fields['assets'][$locale][$role] = collect($filesByRole)->sortBy('position')->values()->toArray();
+                    }
+                }
+            } else {
+                foreach ($fields['assets'] as $role => $filesByRole) {
+                    $fields['assets'][$role] = collect($filesByRole)->sortBy('position')->values()->toArray();
                 }
             }
         }
