@@ -65,25 +65,17 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: [8.3, 8.2, 8.1, 8.0]
-        laravel: [9.*, 10.*, 11.*]
+        php: [8.3, 8.2, 8.1]
+        laravel: [10.*, 11.*]
         dbal: [3.*, 4.*]
         exclude:
-          - laravel: 9.*
-            dbal: 4.*
           - laravel: 10.*
             dbal: 4.*
-          - laravel: 10.*
-            php: 8.0
-          - laravel: 11.*
-            php: 8.0
           - laravel: 11.*
             php: 8.1
           - laravel: 11.*
             dbal: 3.*
         include:
-          - laravel: 9.*
-            testbench: 7.*
           - laravel: 10.*
             testbench: 8.*
           - laravel: 11.*
@@ -128,15 +120,6 @@ jobs:
           composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:${{ matrix.dbal }}" --no-interaction --no-update
           composer install --prefer-dist --no-interaction --no-plugins
 
-      - name: Patch TestCase files for PHP < 8.1
-        run: |
-          if php -r 'exit(version_compare(PHP_VERSION, "8.1.0", "<") ? 0 : 1);'; then
-            for file in tests/integration/TestCase.php tests/Browser/BrowserTestCase.php; do
-              sed -i 's/protected function onNotSuccessfulTest(Throwable \$t): never/protected function onNotSuccessfulTest(Throwable \$t): void/' "$file";
-              echo "Patched $file for PHP < 8.1";
-            done
-          fi
-
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
@@ -164,11 +147,6 @@ jobs:
       - name: Prepare Testbench Dusk
         run: ./vendor/bin/testbench-dusk package:discover
 
-      - name: Set PHPUnit config for Laravel 9
-        if: matrix.laravel == '9.*'
-        run: |
-          cp phpunit-legacy.xml phpunit.xml
-
       - name: Execute all tests
         run: vendor/bin/phpunit --stop-on-error
         env:
@@ -178,10 +156,21 @@ jobs:
         with:
           files: .github/clover.xml
 
-      - uses: actions/upload-artifact@v2
-        if: always()
+      - name: Replace asterisks in Laravel
+        run: echo "REPLACED_LARAVEL=${MATRIX_LARAVEL//\*/_}" >> $GITHUB_ENV
+        env:
+          MATRIX_LARAVEL: ${{ matrix.laravel }}
+
+      - name: Replace asterisks in DBAL
+        id: replace_dbal
+        run: echo "REPLACED_DBAL=${MATRIX_DBAL//\*/_}" >> $GITHUB_ENV
+        env:
+          MATRIX_DBAL: ${{ matrix.dbal }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: screenshots
+          name: screenshots-${{ matrix.os }}-${{ matrix.php }}-${{ env.REPLACED_LARAVEL }}-${{ env.REPLACED_DBAL }}
           path: |
             tests/Browser/screenshots/
             tests/Browser/console/

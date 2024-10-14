@@ -369,6 +369,14 @@ abstract class ModuleController extends Controller
      */
     protected ?array $searchColumns = null;
 
+
+    /**
+     * If you need more fine control over the search query
+     *
+     * Do not modify this directly but use the method setSearchQuery().
+     */
+    protected mixed $searchQuery = null;
+
     /**
      * Default label translation keys that can be overridden in the labels array.
      *
@@ -625,6 +633,15 @@ abstract class ModuleController extends Controller
     protected function setSearchColumns(array $searchColumns): void
     {
         $this->searchColumns = $searchColumns;
+    }
+
+    /**
+     * If you need finer control over the search query, you may provide a callback
+     * @param callable $query With the following signature: fn (Builder $query, string $searchString, array $translatedAttributes): void => $query
+     */
+    protected function setSearchQuery(callable $query): void
+    {
+        $this->searchQuery = $query;
     }
 
     /**
@@ -1841,6 +1858,7 @@ abstract class ModuleController extends Controller
             } elseif ($filterKey === 'search') {
                 $appliedFilters[] = FreeTextSearch::make()
                     ->searchFor($filterValue)
+                    ->searchQuery($this->searchQuery)
                     ->searchColumns($this->searchColumns);
             }
         }
