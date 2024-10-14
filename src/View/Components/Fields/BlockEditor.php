@@ -2,6 +2,7 @@
 
 namespace A17\Twill\View\Components\Fields;
 
+use A17\Twill\Facades\TwillBlocks;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Str;
 
@@ -13,13 +14,14 @@ class BlockEditor extends TwillFormComponent
         bool $renderForBlocks = false,
         bool $renderForModal = false,
         // Component specific
-        public array $blocks = [],
-        public array $excludeBlocks = [],
+        public mixed $blocks = [],
+        public mixed $excludeBlocks = null,
         public array $groups = [],
         public bool $withoutSeparator = false,
         public ?string $group = null,
         public ?string $trigger = null,
         public bool $isSettings = false,
+        public bool $usingDefaultOrder = false,
     ) {
         parent::__construct(
             name: $name,
@@ -31,7 +33,7 @@ class BlockEditor extends TwillFormComponent
         $this->trigger = $trigger ?? $label ?? twillTrans('twill::lang.fields.block-editor.add-content');
     }
 
-    public function render(): View
+    public function getAllowedBlocks(): array
     {
         $groups = [];
         if ($this->group) {
@@ -40,15 +42,21 @@ class BlockEditor extends TwillFormComponent
             $groups = $this->groups;
         }
 
+        return TwillBlocks::generateListOfAvailableBlocks(
+            $this->blocks ?? null,
+            $groups,
+            $this->isSettings,
+            $this->excludeBlocks ?? null,
+            $this->usingDefaultOrder
+        )->pluck('name')->all();
+    }
+
+    public function render(): View
+    {
         return view(
             'twill::partials.form._block_editor',
             array_merge($this->data(), [
-                'allowedBlocks' => generate_list_of_available_blocks(
-                    $this->blocks ?? null,
-                    $groups,
-                    $this->isSettings,
-                    $this->excludeBlocks ?? null,
-                ),
+                'allowedBlocks' => $this->getAllowedBlocks(),
                 'editorName' => [
                     'label' => $this->label,
                     'value' => $this->name,

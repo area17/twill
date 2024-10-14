@@ -84,7 +84,7 @@ abstract class Request extends FormRequest
      * @param bool $localeActive
      * @return array
      */
-    private function updateRules($rules, $fields, $locale, $localeActive = true)
+    private function updateRules($rules, $fields, $locale, $localeActive = true): array
     {
         $fieldNames = array_keys($fields);
 
@@ -93,25 +93,18 @@ abstract class Request extends FormRequest
                 $fieldRules = explode('|', $fieldRules);
             }
 
-            $fieldRules = Collection::make($fieldRules);
+            $fieldRules = collect($fieldRules);
 
-            // Remove required rules, when locale is not active
+            // Remove required rules and add nullable rules, when locale is not active
             if (! $localeActive) {
-                $hasRequiredRule = $fieldRules->contains(function ($rule) {
-                    return $this->ruleStartsWith($rule, 'required');
-                });
+                $fieldRules = $fieldRules->reject(fn ($rule) => $this->ruleStartsWith($rule, 'required'));
 
-                $fieldRules = $fieldRules->reject(function ($rule) {
-                    return $this->ruleStartsWith($rule, 'required');
-                });
-
-                // @TODO: Can be replaced with doesntContain in twill 3.x
-                if ($hasRequiredRule && !in_array($fieldRules, $fieldRules->toArray())) {
+                if (!$fieldRules->contains(fn ($rule) => $this->ruleStartsWith($rule, 'nullable'))) {
                     $fieldRules->add('nullable');
                 }
             }
 
-            $rules["{$field}.{$locale}"] = $fieldRules->map(function ($rule) use ($locale, $fieldNames) {
+            $rules["$field.$locale"] = $fieldRules->map(function ($rule) use ($locale, $fieldNames) {
                 // allows using validation rule that references other fields even for translated fields
                 if ($this->ruleStartsWith($rule, 'required_') && Str::contains($rule, $fieldNames)) {
                     foreach ($fieldNames as $fieldName) {
@@ -120,7 +113,7 @@ abstract class Request extends FormRequest
                 }
 
                 return $rule;
-            })->toArray();
+            })->all();
         }
 
         return $rules;

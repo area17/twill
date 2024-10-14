@@ -44,12 +44,18 @@ class TwillBlocks
     public static $manualBlocks = [];
 
     /**
-     * @return A17\Twill\Services\Blocks\BlockCollection
+     * @return \A17\Twill\Services\Blocks\BlockCollection
      */
     private ?BlockCollection $blockCollection = null;
 
     private array $cropConfigs = [];
 
+    private Collection $usedBlocks;
+
+    public function __construct()
+    {
+        $this->usedBlocks = collect();
+    }
     /**
      * Registers a blocks directory.
      *
@@ -89,13 +95,11 @@ class TwillBlocks
         }
     }
 
-    public function getAvailableRepeaters(): string
+    public function getAvailableRepeaters(): Collection
     {
-        $baseList = $this->getBlockCollection()->getRepeaters()->mapWithKeys(function (Block $repeater) {
+        return $this->getBlockCollection()->getRepeaters()->mapWithKeys(function (Block $repeater) {
             return [$repeater->name => $repeater->toList()];
         });
-
-        return $baseList->toJson();
     }
 
     public function registerComponentBlocks(string $namespace, string $path): void
@@ -128,6 +132,25 @@ class TwillBlocks
                 ];
             }
         }
+    }
+
+
+    protected array $globallyExcludedBlocks = [];
+
+    /** Util method to be called in a service provider to prevent some of a package's block to be opt in */
+    public function globallyExcludeBlocks(array|callable $blocks): void
+    {
+        $this->globallyExcludedBlocks[] = $blocks;
+    }
+
+    public function setGloballyExcludedBlocks(array $exclude = []): void
+    {
+        $this->globallyExcludedBlocks = $exclude;
+    }
+
+    public function getGloballyExcludedBlocks(): array
+    {
+        return $this->globallyExcludedBlocks;
     }
 
     /**
@@ -192,9 +215,9 @@ class TwillBlocks
             unset(self::$componentBlockNamespaces[$namespace]);
         }
 
-        foreach (self::$manualBlocks as $class) {
+        foreach (self::$manualBlocks as $class => $source) {
             $this->blockCollection->add(
-                Block::forComponent($class)
+                Block::forComponent($class, $source)
             );
 
             unset(self::$manualBlocks[$class]);
@@ -220,9 +243,9 @@ class TwillBlocks
         return $this->blockCollection;
     }
 
-    public function registerManualBlock(string $blockClass): void
+    public function registerManualBlock(string $blockClass, string $source = Block::SOURCE_APP): void
     {
-        self::$manualBlocks[$blockClass] = $blockClass;
+        self::$manualBlocks[$blockClass] = $source;
     }
 
     public function findByName(string $name): ?Block
@@ -326,5 +349,111 @@ class TwillBlocks
         }
 
         return $this->cropConfigs;
+    }
+
+    public function getListOfUsedBlocks(): Collection
+    {
+        return $this->usedBlocks;
+    }
+
+    public function generateListOfAllBlocks(bool $settingsOnly = false): Collection
+    {
+        return once(function () use ($settingsOnly) {
+            /** @var Collection $blockList */
+            if ($settingsOnly) {
+                $blockList = TwillBlocks::getSettingsBlocks();
+            } else {
+                $blockList = TwillBlocks::getBlocks();
+            }
+
+            $customOrder = array_flip(config('twill.block_editor.block_rules.order', []));
+            $disabledBlocks = array_flip(config('twill.block_editor.block_rules.disable', []));
+
+            $appBlocksList = $blockList->filter(function (Block $block) {
+                return $block->source !== Block::SOURCE_TWILL;
+            });
+
+            return $blockList->filter(function (Block $block) use ($disabledBlocks, $appBlocksList) {
+                if ($block->group === Block::SOURCE_TWILL) {
+                    if (!collect(config('twill.block_editor.use_twill_blocks'))->contains($block->name)) {
+                        return false;
+                    }
+
+                    if (
+                        count($appBlocksList) > 0 && $appBlocksList->contains(
+                            function ($appBlock) use ($block) {
+                                return $appBlock->name === $block->name;
+                            }
+                        )
+                    ) {
+                        return false;
+                    }
+                }
+                return !(isset($disabledBlocks[$block->name]) || isset($disabledBlocks[ltrim($block->componentClass, '\\')]));
+            })->sortBy(function (Block $b) use ($customOrder) {
+                // Sort blocks by custom order then by group and then by name
+                return ($customOrder[$b->name] ?? $customOrder[ltrim($b->componentClass, '\\')] ?? PHP_INT_MAX) . '-' . $b->group . '-' . $b->name;
+            }, SORT_NATURAL)->values();
+        });
+    }
+
+    public function generateListOfAvailableBlocks(
+        array|callable $blocks = null,
+        ?array $groups = null,
+        bool $settingsOnly = false,
+        array|callable $excludeBlocks = null,
+        bool $defaultOrder = false,
+    ): Collection {
+        $globalExcludeBlocks = $this->getGloballyExcludedBlocks();
+
+        $matchBlock = function ($matcher, $block, $someFn = null) {
+            if (is_callable($matcher)) {
+                return call_user_func($matcher, $block);
+            } elseif (!empty($matcher) && is_array($matcher)) {
+                $class = ltrim($block->componentClass, '\\');
+                return collect($matcher)->some($someFn ?: fn($ex) => $ex == $block->name || $ex == $class);
+            }
+            return null;
+        };
+        $finalList = $this->generateListOfAllBlocks($settingsOnly)->filter(
+            function (Block $block) use ($blocks, $groups, $excludeBlocks, $globalExcludeBlocks, $matchBlock) {
+                if ($matchBlock($excludeBlocks, $block)) {
+                    return false;
+                }
+
+                // Allow list of blocks and groups should have priority over globally excluded blocks (or there would be no way of allowing them)
+                if ($matchedBlock = $matchBlock($blocks, $block)) {
+                    return true;
+                }
+                if ($matchedGroup = $matchBlock($groups, $block, fn($ex) => $ex === $block->group)) {
+                    return true;
+                }
+
+                if ($matchedBlock === false || $matchedGroup === false) {
+                    return false;
+                }
+
+                foreach ($globalExcludeBlocks as $excludeBlock) {
+                    if ($matchBlock($excludeBlock, $block)) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        );
+        if (! $defaultOrder) {
+            if (! empty($blocks) && is_array($blocks)) {
+                $blocks = array_flip($blocks);
+                $finalList = $finalList->sortBy(fn(Block $block) => $blocks[$block->name] ?? $blocks[ltrim($block->componentClass, '\\')] ?? PHP_INT_MAX, SORT_NUMERIC);
+            }
+            if (! empty($groups)) {
+                $groups = array_flip($groups);
+                $finalList = $finalList->sortBy(fn(Block $block) => $groups[$block->group] ?? PHP_INT_MAX, SORT_NUMERIC);
+            }
+        }
+
+        $this->usedBlocks = $this->usedBlocks->merge($finalList->keyBy(fn(Block $block) => $block->name));
+        return $finalList;
     }
 }

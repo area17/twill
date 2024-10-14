@@ -2,15 +2,20 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
+use A17\Twill\Services\Blocks\Block;
+
 class BlockEditor extends BaseFormField
 {
-    protected array $blocks = [];
+    /** @var callable|array */
+    protected mixed $blocks = [];
+    protected array $groups = [];
 
-    protected array $excludeBlocks = [];
+    protected mixed $excludeBlocks = null;
 
     protected bool $isSettings = false;
 
     protected bool $withoutSeparator = false;
+    protected bool $usingDefaultOrder = false;
 
     public static function make(): static
     {
@@ -46,17 +51,45 @@ class BlockEditor extends BaseFormField
     /**
      * Default is all, but using this method you can limit the block types the field can use.
      */
-    public function blocks(array $blocks): static
+    public function blocks(array|callable $blocks): static
     {
+        // For backward compatibility, clear the list of excludeBlocks in case both ->excludeBlocks()->blocks() were called
+        $this->excludeBlocks = [];
         $this->blocks = $blocks;
 
         return $this;
     }
 
+    public function usingDefaultOrder(bool $usingDefaultOrder = true): static
+    {
+        $this->usingDefaultOrder = $usingDefaultOrder;
+
+        return $this;
+    }
+
+    public function getBlocks(): mixed
+    {
+        return $this->blocks;
+    }
+
+    public function groups(array $groups)
+    {
+        $this->groups = $groups;
+
+        return $this;
+    }
+
+    public function getGroups(): array
+    {
+        return $this->groups;
+    }
+
     /**
      * Use this method if you want to exclude any block types
+     *
+     * @param array<string>|callable<Block> $blocks
      */
-    public function excludeBlocks(array $blocks): static
+    public function excludeBlocks(array|callable $blocks): static
     {
         $this->excludeBlocks = $blocks;
 

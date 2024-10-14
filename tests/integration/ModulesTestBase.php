@@ -6,7 +6,9 @@ use App\Models\Author;
 use App\Models\Category;
 use App\Models\Translations\AuthorTranslation;
 use App\Models\Translations\CategoryTranslation;
+use Illuminate\Support\Once;
 use Illuminate\Support\Str;
+use Spatie\Once\Cache;
 
 abstract class ModulesTestBase extends TestCase
 {
@@ -54,6 +56,13 @@ abstract class ModulesTestBase extends TestCase
     {
         parent::setUp();
 
+        config()->push('twill.block_editor.use_twill_blocks', 'quote');
+
+        if (class_exists(Once::class)) {
+            Once::flush();
+        } else {
+            Cache::getInstance()->flush();
+        }
         $this->actingAs($this->superAdmin, 'twill_users');
     }
 
@@ -200,12 +209,12 @@ abstract class ModulesTestBase extends TestCase
         );
     }
 
-    protected function editAuthor(): void
+    protected function editAuthor(bool $withBlock = false): void
     {
         $this->httpRequestAssert(
             "/twill/personnel/authors/{$this->author->id}",
             'PUT',
-            $this->getUpdateAuthorData()
+            $withBlock ? $this->getUpdateAuthorWithBlock() : $this->getUpdateAuthorData()
         );
 
         $this->assertNothingWrongHappened();

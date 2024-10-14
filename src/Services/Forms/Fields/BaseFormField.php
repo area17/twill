@@ -12,9 +12,6 @@ abstract class BaseFormField implements CanRenderForBlocks
 {
     use RenderForBlocks;
 
-    /**
-     * @var \A17\Twill\View\Components\Fields\TwillFormComponent
-     */
     protected function __construct(
         protected string $component,
         protected ?string $name = null,
