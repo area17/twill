@@ -44,9 +44,9 @@ class Relation extends TableColumn
             throw new ColumnMissingPropertyException('Relation column missing relation value: ' . $this->field);
         }
 
-        // @todo: I feel this can be optimized.
         /** @var \Illuminate\Database\Eloquent\Collection $relation */
-        $relation = $model->{$this->relation}()->get();
+        $model->loadMissing($this->relation);
+        $relation = $model->getRelation($this->relation);
 
         return $relation->pluck($this->field)->join(', ');
     }

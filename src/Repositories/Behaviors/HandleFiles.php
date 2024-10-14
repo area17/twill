@@ -2,9 +2,10 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Facades\TwillUtil;
+use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\File;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 
@@ -25,8 +26,8 @@ trait HandleFiles
         $filesFromFields = $this->getFiles($fields);
 
         $filesFromFields->each(function ($file) use ($object, $filesCollection) {
-            $newFile = File::withTrashed()->find($file['id']);
-            $pivot = $newFile->newPivot($object, Arr::except($file, ['id']), 'fileables', true);
+            $newFile = File::withTrashed()->find($file['file_id']);
+            $pivot = $newFile->newPivot($object, $file, 'fileables', true);
             $newFile->setRelation('pivot', $pivot);
             $filesCollection->push($newFile);
         });
@@ -37,7 +38,7 @@ trait HandleFiles
     }
 
     /**
-     * @param \A17\Twill\Models\Model $object
+     * @param \A17\Twill\Models\Model|HasFiles $object
      * @param array $fields
      * @return void
      */
@@ -47,11 +48,7 @@ trait HandleFiles
             return;
         }
 
-        $object->files()->sync([]);
-
-        $this->getFiles($fields)->each(function ($file) use ($object) {
-            $object->files()->attach($file['id'], Arr::except($file, ['id']));
-        });
+        TwillUtil::syncUsingPrimaryKey($object->files(), $this->getFiles($fields));
     }
 
     /**
@@ -77,11 +74,11 @@ trait HandleFiles
                     || in_array($role, config('twill.block_editor.files', []))
                 ) {
                     Collection::make($filesForRole)->each(function ($file) use (&$files, $role, $locale) {
-                        $files->push([
-                            'id' => $file['id'],
+                        $files[$file['pivot_id'] ?? uniqid('file')] = [
+                            'file_id' => $file['id'],
                             'role' => $role,
                             'locale' => $locale,
-                        ]);
+                        ];
                     });
                 }
             }
@@ -101,8 +98,8 @@ trait HandleFiles
         if ($object->has('files')) {
             foreach ($object->files->groupBy('pivot.role') as $role => $filesByRole) {
                 foreach ($filesByRole->groupBy('pivot.locale') as $locale => $filesByLocale) {
-                    $fields['files'][$locale][$role] = $filesByLocale->map(function ($file) {
-                        return $file->toCmsArray();
+                    $fields['files'][$locale][$role] = $filesByLocale->map(function (File $file) {
+                        return $file->toCmsArray() + ['pivot_id' => $file->pivot->id];
                     });
                 }
             }
@@ -111,9 +108,13 @@ trait HandleFiles
         return $fields;
     }
 
+    /**
+     * @param HasFiles|TwillModelContract $object
+     * @param HasFiles|TwillModelContract $newObject
+     */
     public function afterDuplicateHandleFiles(TwillModelContract $object, TwillModelContract $newObject): void
     {
-        $newObject->files()->sync(
+        $newObject->files()->attach(
             $object->files->mapWithKeys(function ($file) use ($object) {
                 return [
                     $file->id => Collection::make($object->files()->getPivotColumns())->mapWithKeys(

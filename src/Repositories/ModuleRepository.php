@@ -15,6 +15,7 @@ use A17\Twill\Repositories\Behaviors\HandleFieldsGroups;
 use A17\Twill\Repositories\Behaviors\HandlePermissions;
 use A17\Twill\Repositories\Behaviors\HandleRelatedBrowsers;
 use A17\Twill\Repositories\Behaviors\HandleRepeaters;
+use A17\Twill\Services\Listings\Filters\FreeTextSearch;
 use Exception;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
@@ -152,19 +153,16 @@ abstract class ModuleRepository
         return $query->get()->pluck($column, $pluckBy);
     }
 
-    public function cmsSearch(string $search, array $fields = []): Collection
+    public function cmsSearch(string $search, array $fields = [], callable $query = null): Collection
     {
+        $searchFilter = new FreeTextSearch();
+        $searchFilter->queryString($search);
+        $searchFilter->searchColumns($fields);
+        $searchFilter->searchQuery($query);
+
         $builder = $this->model->latest();
 
-        $translatedAttributes = $this->model->getTranslatedAttributes() ?? [];
-
-        foreach ($fields as $field) {
-            if (in_array($field, $translatedAttributes, true)) {
-                $builder->orWhereTranslationLike($field, "%$search%");
-            } else {
-                $builder->orWhere($field, getLikeOperator(), "%$search%");
-            }
-        }
+        $searchFilter->applyFilter($builder);
 
         return $builder->get();
     }
@@ -374,9 +372,8 @@ abstract class ModuleRepository
                 $query = $this->model->onlyTrashed()->whereIn('id', $ids);
                 $objects = $query->get();
 
-                $query->forceDelete();
-
                 $objects->each(function ($object) {
+                    $object->forceDelete();
                     $this->afterDelete($object);
                 });
             } catch (Exception $exception) {

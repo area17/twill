@@ -36,7 +36,7 @@ class TagsHandlerTest extends ModulesTestBase
         $this->assertEquals($slug, $author->tags()->get()[0]->slug);
     }
 
-    public function slugExamples(): array
+    public static function slugExamples(): array
     {
         return [
             'default' => [

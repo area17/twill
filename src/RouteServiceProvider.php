@@ -12,7 +12,7 @@ use A17\Twill\Http\Middleware\SupportSubdomainRouting;
 use A17\Twill\Http\Middleware\ValidateBackHistory;
 use A17\Twill\Services\MediaLibrary\Glide;
 use A17\Twill\Facades\TwillRoutes;
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -29,26 +29,27 @@ class RouteServiceProvider extends ServiceProvider
         $this->registerRouteMiddlewares();
         $this->app->bind(TwillRoutes::class);
         $this->registerRouteMacros();
-        parent::boot();
     }
 
-    public function map(Router $router): void
+    public function register()
     {
-        \A17\Twill\Facades\TwillRoutes::registerRoutePatterns();
+        $this->callAfterResolving(Router::class, function (Router $router) {
+            \A17\Twill\Facades\TwillRoutes::registerRoutePatterns();
 
-        $this->mapInternalRoutes(
-            $router,
-            \A17\Twill\Facades\TwillRoutes::getRouteGroupOptions(),
-            \A17\Twill\Facades\TwillRoutes::getRouteMiddleware(),
-            \A17\Twill\Facades\TwillRoutes::supportSubdomainRouting()
-        );
+            $this->mapInternalRoutes(
+                $router,
+                \A17\Twill\Facades\TwillRoutes::getRouteGroupOptions(),
+                \A17\Twill\Facades\TwillRoutes::getRouteMiddleware(),
+                \A17\Twill\Facades\TwillRoutes::supportSubdomainRouting()
+            );
 
-        $this->mapHostRoutes(
-            $router,
-            \A17\Twill\Facades\TwillRoutes::getRouteGroupOptions(),
-            \A17\Twill\Facades\TwillRoutes::getRouteMiddleware(),
-            \A17\Twill\Facades\TwillRoutes::supportSubdomainRouting()
-        );
+            $this->mapHostRoutes(
+                $router,
+                \A17\Twill\Facades\TwillRoutes::getRouteGroupOptions(),
+                \A17\Twill\Facades\TwillRoutes::getRouteMiddleware(),
+                \A17\Twill\Facades\TwillRoutes::supportSubdomainRouting()
+            );
+        });
     }
 
     private function mapHostRoutes(

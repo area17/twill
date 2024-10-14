@@ -38,7 +38,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:10.*" "doctrine/dbal:^3.0" --no-interaction --no-update
+          composer require "laravel/framework:11.*" --no-interaction --no-update
           composer install
 
       - name: Execute tests
@@ -48,7 +48,7 @@ jobs:
         run: vendor/bin/phpcs
 
   test:
-    name: PHP ${{ matrix.php }} - LARAVEL ${{ matrix.laravel }}
+    name: PHP ${{ matrix.php }} - LARAVEL ${{ matrix.laravel }} - DBAL ${{ matrix.dbal }}
     timeout-minutes: 30
     runs-on: ${{ matrix.os }}
     services:
@@ -65,16 +65,21 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: [8.3, 8.2, 8.1, 8.0]
-        laravel: [9.*, 10.*]
+        php: [8.3, 8.2, 8.1]
+        laravel: [10.*, 11.*]
+        dbal: [3.*, 4.*]
         exclude:
           - laravel: 10.*
-            php: 8.0
+            dbal: 4.*
+          - laravel: 11.*
+            php: 8.1
+          - laravel: 11.*
+            dbal: 3.*
         include:
-          - laravel: 9.*
-            testbench: 7.*
           - laravel: 10.*
             testbench: 8.*
+          - laravel: 11.*
+            testbench: 9.*
 
     steps:
       - name: Set timezone?
@@ -106,19 +111,19 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ matrix.os }}-${{ matrix.laravel }}-${{ matrix.php }}-composer-${{ hashFiles('**/composer.lock') }}
+          key: ${{ matrix.os }}-${{ matrix.laravel }}-${{ matrix.php }}-${{ matrix.dbal }}-composer-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
-            ${{ matrix.os }}-${{ matrix.laravel }}-${{ matrix.php }}-composer-
+            ${{ matrix.os }}-${{ matrix.laravel }}-${{ matrix.php }}-${{ matrix.dbal }}-composer-
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:^3.0" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:${{ matrix.dbal }}" --no-interaction --no-update
           composer install --prefer-dist --no-interaction --no-plugins
 
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: '18.x'
+          node-version: '20.x'
 
       - name: Build npm dependencies.
         run: |
@@ -130,6 +135,8 @@ jobs:
 
       - name: Build twill.
         run: ./vendor/bin/testbench twill:build --forTesting
+        env:
+          CACHE_STORE: array
 
       - name: Upgrade Chrome
         uses: browser-actions/setup-chrome@latest
@@ -137,8 +144,11 @@ jobs:
       - name: Upgrade Chrome Driver
         run: ./vendor/bin/testbench dusk:chrome-driver --detect
 
+      - name: Prepare Testbench Dusk
+        run: ./vendor/bin/testbench-dusk package:discover
+
       - name: Execute all tests
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit --stop-on-error
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
 
@@ -146,10 +156,21 @@ jobs:
         with:
           files: .github/clover.xml
 
-      - uses: actions/upload-artifact@v2
-        if: always()
+      - name: Replace asterisks in Laravel
+        run: echo "REPLACED_LARAVEL=${MATRIX_LARAVEL//\*/_}" >> $GITHUB_ENV
+        env:
+          MATRIX_LARAVEL: ${{ matrix.laravel }}
+
+      - name: Replace asterisks in DBAL
+        id: replace_dbal
+        run: echo "REPLACED_DBAL=${MATRIX_DBAL//\*/_}" >> $GITHUB_ENV
+        env:
+          MATRIX_DBAL: ${{ matrix.dbal }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: screenshots
+          name: screenshots-${{ matrix.os }}-${{ matrix.php }}-${{ env.REPLACED_LARAVEL }}-${{ env.REPLACED_DBAL }}
           path: |
             tests/Browser/screenshots/
             tests/Browser/console/
