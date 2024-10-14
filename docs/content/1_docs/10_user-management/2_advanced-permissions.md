@@ -29,6 +29,9 @@ In addition to this we have to configure the permissions' system. There are 3 le
 Set the `twill.permissions.level` to the desired type. And also set the modules to manage in
 the `twill.permissions.modules` key.
 
+Beside setting global `twill.permissions.level` it is also possible to set per-module level by adding
+it to `twill.permissions.modules` as keyed item as shown for model `pages` in example below.
+
 ```php {7-10}
 <?php
 
@@ -37,8 +40,11 @@ return [
     'permissions-management'
   ],
   'permissions' => [
-      'level' => \A17\Twill\Enums\PermissionLevel::LEVEL_ROLE,
-      'modules' => ['blogs'],
+      'level' => \A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP,
+      'modules' => [
+        'blogs',
+        'pages' => \A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM
+      ],
   ],
 ]
 ```

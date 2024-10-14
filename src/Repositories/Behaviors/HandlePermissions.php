@@ -134,7 +134,7 @@ trait HandlePermissions
 
     private function shouldProcessPermissions($moduleName): bool
     {
-        return TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)
+        return TwillPermissions::levelForModuleIs($moduleName, PermissionLevel::LEVEL_ROLE_GROUP_ITEM)
             && TwillPermissions::getPermissionModule($moduleName);
     }
 

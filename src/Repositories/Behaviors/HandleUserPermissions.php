@@ -3,7 +3,6 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Enums\PermissionLevel;
-use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Model;
 use A17\Twill\Models\Permission;
 use A17\Twill\Models\User;
@@ -23,7 +22,7 @@ trait HandleUserPermissions
     {
         if (
             !config('twill.enabled.permissions-management') ||
-            !TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)
+            Permission::permissionableModulesForLevel(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)->isEmpty()
         ) {
             return $fields;
         }
@@ -58,7 +57,7 @@ trait HandleUserPermissions
 
         $this->addOrRemoveUserToEveryoneGroup($object);
 
-        if (TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)) {
+        if (Permission::permissionableModulesForLevel(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)->isNotEmpty()) {
             $this->updateUserItemPermissions($object, $fields);
         }
     }

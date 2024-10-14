@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Enums\PermissionLevel;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Services\Listings\Columns\Text;
@@ -67,8 +68,10 @@ class GroupController extends ModuleController
 
     protected function formData($request): array
     {
+        // Divide permissions based on level to minimize instance fetching
         return [
-            'permissionModules' => Permission::permissionableParentModuleItems(),
+            'permissionModulesLevelGroup' => Permission::permissionableModulesForLevel([PermissionLevel::LEVEL_ROLE_GROUP, PermissionLevel::LEVEL_ROLE_GROUP_ITEM]),
+            'permissionModulesLevelItem' => Permission::permissionableParentModuleItemsForLevel(PermissionLevel::LEVEL_ROLE_GROUP_ITEM),
         ];
     }
 
