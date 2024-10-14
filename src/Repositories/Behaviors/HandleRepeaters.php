@@ -601,7 +601,7 @@ trait HandleRepeaters
                 if (config('twill.media_library.translated_asset_fields', false)) {
                     Collection::make($relatedItemFormFields['assets'])->each(
                         function ($rolesWithAssets, $locale) use (&$repeatersAssets, $relation, $relationItem) {
-                            $repeatersAssets = Collection::make($rolesWithAssets)->mapWithKeys(
+                            $repeatersAssets[] = Collection::make($rolesWithAssets)->mapWithKeys(
                                 function ($assets, $role) use ($locale, $relation, $relationItem) {
                                     return [
                                         "blocks[$relation-$relationItem->id][$role][$locale]" => $assets,
@@ -669,6 +669,10 @@ trait HandleRepeaters
             $repeatersFiles = array_merge(...$repeatersFiles);
         }
 
+        if (! empty($repeatersAssets) && config('twill.media_library.translated_asset_fields', false)) {
+            $repeatersAssets = array_merge(...$repeatersAssets);
+        }
+
         $fields['repeaters'][$repeaterName] = $repeaters;
         $fields['repeaterFields'][$repeaterName] = $repeatersFields;
         $fields['repeaterMedias'][$repeaterName] = $repeatersMedias;
@@ -731,7 +735,7 @@ trait HandleRepeaters
 
     private function removeAssetsFieldsFromMediasAndFilesInRepeater(array $relatedItemFormFields): array
     {
-        if (!$relatedItemFormFields['assets']) {
+        if (empty($relatedItemFormFields['assets'])) {
             return $relatedItemFormFields;
         }
 

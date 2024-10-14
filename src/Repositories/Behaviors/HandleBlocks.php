@@ -566,7 +566,7 @@ trait HandleBlocks
 
     private function removeAssetsFieldsFromMediasAndFiles($blockFormFields)
     {
-        if (!$blockFormFields['assets']) {
+        if (empty($blockFormFields['assets'])) {
             return $blockFormFields;
         }
 
