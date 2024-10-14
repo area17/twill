@@ -1,5 +1,7 @@
 <?php
-    /*
+return [
+    'auth' => [
+        /*
     |--------------------------------------------------------------------------
     | 5 Steps to Contribute a New Twill Localization at Ease
     |--------------------------------------------------------------------------
@@ -9,10 +11,6 @@
     | 4. Download the Google Sheet as CSV, replace the original "lang/lang.csv" with the new one.
     | 5. Run the command "php artisan twill:lang" to sync all lang files.
     */
-
-
-return [
-    'auth' => [
         'back-to-login' => 'Se connecter',
         'choose-password' => 'Choisir un mot de passe',
         'email' => 'Email',
@@ -26,6 +24,7 @@ return [
         'reset-password' => 'Réinitialisation du mot de passe',
         'reset-send' => 'Envoyer un lien de réinitialisation de mot de passe',
         'verify-login' => 'Vérifier la connexion',
+        'auth-causer' => 'Authentification',
     ],
     'buckets' => [
         'intro' => 'Que souhaitez-vous mettre en avant aujourd’hui ?',
@@ -56,6 +55,8 @@ return [
             'unfeatured' => 'N’est plus mis en avant',
             'restored' => 'Restauré',
             'deleted' => 'Supprimé',
+            'login' => 'Connexion',
+            'logout' => 'Déconnexion',
         ],
         'activity-row' => [
             'edit' => 'Éditer',
@@ -93,6 +94,7 @@ return [
             'preview' => 'Prévisualiser',
             'add-item' => 'Ajouter',
             'clone-block' => 'Dupliquer le bloc',
+            'select-existing' => 'Sélectionner un élément existant',
         ],
         'browser' => [
             'add-label' => 'Ajouter des',
@@ -144,6 +146,7 @@ return [
             ],
         ],
         'editor' => 'Éditeur',
+        'options' => 'Options',
     ],
     'lang-manager' => [
         'published' => 'Publié',
@@ -193,6 +196,9 @@ return [
             'mine' => 'Mes contenus',
             'published' => 'Publié',
             'trash' => 'Corbeille',
+            'no' => 'Non',
+            'yes' => 'Oui',
+            'not-set' => 'Sans valeur',
         ],
         'languages' => 'Langues',
         'listing-empty-message' => 'Il n’y a aucun contenu pour le moment.',
@@ -252,6 +258,9 @@ return [
             'unpublished' => ':modelTitle la sélection est dépubliée !',
             'published' => ':modelTitle la sélection est publiée !',
             'error' => ':modelTitle la sélection n’a pas été publiée. Une erreur est survenue !',
+        ],
+        'filters' => [
+            'all-label' => 'Tous les :label',
         ],
     ],
     'main' => [
@@ -446,10 +455,27 @@ return [
         'update-disabled-user-and-create-new' => 'Mettre à jour l’utilisateur désactivé et créer un nouveau',
         'user-image' => 'Image',
         'users' => 'Utilisateurs',
+        'force-2fa-disable' => 'Désactiver la double authentification',
+        'force-2fa-disable-description' => 'Entrer le texte affiché dans le champ pour désactiver la double authentification pour cet utilisateur',
+        'force-2fa-disable-challenge' => 'Désactiver la double authentification pour :user',
+        'pending' => 'En attente',
+        'activation-pending' => 'Activation en attente',
     ],
     'settings' => [
         'update' => 'Mettre à jour',
         'cancel' => 'Annuler',
         'fieldset-label' => 'Éditer paramètres',
+    ],
+    'permissions' => [
+        'roles' => [
+            'title' => 'Rôles',
+            'published' => 'Activé',
+            'draft' => 'Désactivé',
+        ],
+        'groups' => [
+            'title' => 'Groupes',
+            'published' => 'Activé',
+            'draft' => 'Désactivé',
+        ],
     ],
 ];
