@@ -243,7 +243,7 @@ abstract class TableColumn
                         'slot' => $this->getRenderValue($model),
                         'isEditLink' => $this->linkToEdit,
                         'link' => $link,
-                    ])
+                    ])->render()
                 );
             }
         }
@@ -257,6 +257,6 @@ abstract class TableColumn
             return $renderFunction($model);
         }
 
-        return $model->{$this->field} ?? '';
+        return empty($this->field) ? '' : (data_get($model, $this->field) ?? '');
     }
 }
