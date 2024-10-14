@@ -159,7 +159,7 @@ jobs:
         if: matrix.laravel == '9.*'
         uses: browser-actions/setup-chrome@latest
         with:
-          chrome_version: 126
+          chrome-version: 126
 
       - name: Upgrade Chrome
         if: matrix.laravel != '9.*'
