@@ -190,10 +190,21 @@ jobs:
         with:
           files: .github/clover.xml
 
-      - uses: actions/upload-artifact@v4
-        if: always()
+      - name: Replace asterisks in Laravel
+        run: echo "REPLACED_LARAVEL=${MATRIX_LARAVEL//\*/_}" >> $GITHUB_ENV
+        env:
+          MATRIX_LARAVEL: ${{ matrix.laravel }}
+
+      - name: Replace asterisks in DBAL
+        id: replace_dbal
+        run: echo "REPLACED_DBAL=${MATRIX_DBAL//\*/_}" >> $GITHUB_ENV
+        env:
+          MATRIX_DBAL: ${{ matrix.dbal }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          name: screenshots-${{ matrix.os }}-${{ matrix.php }}-${{ matrix.laravel//\*/_ }}-${{ matrix.dbal//\*/_ }}
+          name: screenshots-${{ matrix.os }}-${{ matrix.php }}-${{ env.REPLACED_LARAVEL }}-${{ env.REPLACED_DBAL }}
           path: |
             tests/Browser/screenshots/
             tests/Browser/console/
