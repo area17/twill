@@ -570,8 +570,24 @@ trait HandleBlocks
             return $blockFormFields;
         }
 
-        foreach ($blockFormFields['assets'] as $assetsForLocale) {
-            foreach (array_keys($assetsForLocale) as $role) {
+        if (config('twill.media_library.translated_asset_fields', false)) {
+            foreach ($blockFormFields['assets'] as $assetsForLocale) {
+                foreach (array_keys($assetsForLocale) as $role) {
+                    if ($blockFormFields['medias']) {
+                        unset($blockFormFields['medias'][$role]);
+                    }
+
+                    if ($blockFormFields['files']) {
+                        $locales = array_keys($blockFormFields['files']);
+
+                        foreach ($locales as $locale) {
+                            unset($blockFormFields['files'][$locale][$role]);
+                        }
+                    }
+                }
+            }
+        } else {
+            foreach (array_keys($blockFormFields['assets']) as $role) {
                 if ($blockFormFields['medias']) {
                     unset($blockFormFields['medias'][$role]);
                 }

@@ -23,6 +23,10 @@
             window['{{ config('twill.js_namespace') }}'].STORE.medias.selected["{{ $repeater }}"] = {!! json_encode($files) !!}
         @endforeach
 
+        @foreach($form_fields['repeaterAssets'][$name] ?? [] as $repeater => $assets)
+            window['{{ config('twill.js_namespace') }}'].STORE.medias.selected["{{ $repeater }}"] = {!! json_encode($assets) !!}
+        @endforeach
+
         @foreach($form_fields['repeaterBrowsers'][$name] ?? [] as $repeater => $fields)
             window['{{ config('twill.js_namespace') }}'].STORE.browser.selected["{{ $repeater }}"] = {!! json_encode($fields) !!}
         @endforeach

@@ -531,6 +531,7 @@ trait HandleRepeaters
         $repeatersBrowsers = [];
         $repeatersMedias = [];
         $repeatersFiles = [];
+        $repeatersAssets = [];
         $relationRepository = $this->getModelRepository($relation, $modelOrRepository);
 
         $repeaterType = TwillBlocks::findRepeaterByName($repeaterName);
@@ -548,6 +549,8 @@ trait HandleRepeaters
 
             $relatedItemFormFields = $relationRepository->getFormFields($relationItem);
             $translatedFields = [];
+
+            $relatedItemFormFields = $this->removeAssetsFieldsFromMediasAndFilesInRepeater($relatedItemFormFields);
 
             if (isset($relatedItemFormFields['translations'])) {
                 foreach ($relatedItemFormFields['translations'] as $key => $values) {
@@ -594,6 +597,26 @@ trait HandleRepeaters
                 );
             }
 
+            if (isset($relatedItemFormFields['assets'])) {
+                if (config('twill.media_library.translated_asset_fields', false)) {
+                    Collection::make($relatedItemFormFields['assets'])->each(
+                        function ($rolesWithAssets, $locale) use (&$repeatersAssets, $relation, $relationItem) {
+                            $repeatersAssets = Collection::make($rolesWithAssets)->mapWithKeys(
+                                function ($assets, $role) use ($locale, $relation, $relationItem) {
+                                    return [
+                                        "blocks[$relation-$relationItem->id][$role][$locale]" => $assets,
+                                    ];
+                                }
+                            )->toArray();
+                        }
+                    );
+                } else {
+                    foreach ($relatedItemFormFields['assets'] as $key => $values) {
+                        $repeatersAssets["blocks[$relation-$relationItem->id][$key]"] = $values;
+                    }
+                }
+            }
+
             if (isset($relatedItemFormFields['browsers'])) {
                 foreach ($relatedItemFormFields['browsers'] as $key => $values) {
                     $repeatersBrowsers["blocks[$relation-$relationItem->id][$key]"] = $values;
@@ -630,6 +653,10 @@ trait HandleRepeaters
                         $repeatersBrowsers,
                         $relatedItemFormFields['repeaterBrowsers'][$childRepeaterName]
                     );
+                    $repeatersAssets = array_merge(
+                        $repeatersAssets,
+                        $relatedItemFormFields['repeaterAssets'][$childRepeaterName]
+                    );
                 }
             }
         }
@@ -646,6 +673,7 @@ trait HandleRepeaters
         $fields['repeaterFields'][$repeaterName] = $repeatersFields;
         $fields['repeaterMedias'][$repeaterName] = $repeatersMedias;
         $fields['repeaterFiles'][$repeaterName] = $repeatersFiles;
+        $fields['repeaterAssets'][$repeaterName] = $repeatersAssets;
         $fields['repeaterBrowsers'][$repeaterName] = $repeatersBrowsers;
 
         return $fields;
@@ -699,5 +727,46 @@ trait HandleRepeaters
     protected function inferModelFromRepeaterName(string $repeaterName): string
     {
         return Str::studly(Str::singular($repeaterName));
+    }
+
+    private function removeAssetsFieldsFromMediasAndFilesInRepeater(array $relatedItemFormFields): array
+    {
+        if (!$relatedItemFormFields['assets']) {
+            return $relatedItemFormFields;
+        }
+
+        if (config('twill.media_library.translated_asset_fields', false)) {
+            foreach ($relatedItemFormFields['assets'] as $assetsForLocale) {
+                foreach (array_keys($assetsForLocale) as $role) {
+                    if ($relatedItemFormFields['medias']) {
+                        unset($relatedItemFormFields['medias'][$role]);
+                    }
+
+                    if ($relatedItemFormFields['files']) {
+                        $locales = array_keys($relatedItemFormFields['files']);
+
+                        foreach ($locales as $locale) {
+                            unset($relatedItemFormFields['files'][$locale][$role]);
+                        }
+                    }
+                }
+            }
+        } else {
+            foreach (array_keys($relatedItemFormFields['assets']) as $role) {
+                if ($relatedItemFormFields['medias']) {
+                    unset($relatedItemFormFields['medias'][$role]);
+                }
+
+                if ($relatedItemFormFields['files']) {
+                    $locales = array_keys($relatedItemFormFields['files']);
+
+                    foreach ($locales as $locale) {
+                        unset($relatedItemFormFields['files'][$locale][$role]);
+                    }
+                }
+            }
+        }
+
+        return $relatedItemFormFields;
     }
 }

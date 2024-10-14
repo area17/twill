@@ -38,84 +38,84 @@
 </template>
 
 <script>
-import draggable from "vuedraggable";
-import draggableMixin from "@/mixins/draggable";
-import mediaLibraryMixin from "@/mixins/mediaLibrary/mediaLibrary";
-import inputframeMixin from "@/mixins/inputFrame";
-import mediaFieldMixin from "@/mixins/mediaField";
-import {MEDIA_LIBRARY} from "@/store/mutations";
-import {mapState} from "vuex";
+  import draggable from "vuedraggable";
+  import draggableMixin from "@/mixins/draggable";
+  import mediaLibraryMixin from "@/mixins/mediaLibrary/mediaLibrary";
+  import inputframeMixin from "@/mixins/inputFrame";
+  import mediaFieldMixin from "@/mixins/mediaField";
+  import {MEDIA_LIBRARY} from "@/store/mutations";
+  import {mapState} from "vuex";
 
-export default {
-  name: "A17AssetField",
-  components: {
-    draggable
-  },
-  mixins: [draggableMixin, mediaLibraryMixin, inputframeMixin, mediaFieldMixin],
-  props: {
-    name: {
-      type: String,
-      required: true
+  export default {
+    name: "A17AssetField",
+    components: {
+      draggable
     },
-    itemLabel: {
-      type: String,
-      default: 'asset'
-    },
-    max: {
-      type: Number,
-      default: 10
-    },
-    allowFile: {
-      type: Boolean,
-      default: true
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    buttonOnTop: {
-      type: Boolean,
-      default: false
-    },
-    required: {
-      type: Boolean,
-      default: false
-    },
-  },
-  data: function () {
-    return {
-      handle: '.asset__handle', // Drag handle override
-      hoverable: true
-    }
-  },
-  computed: {
-    addLabel: function () {
-      const itemNames = this.itemLabel + 's'
-      return 'Attach ' + itemNames
-    },
-    items: {
-      get () {
-        if (this.selectedMedias.hasOwnProperty(this.name)) {
-          return this.selectedMedias[this.name] || []
-        } else {
-          return []
-        }
+    mixins: [draggableMixin, mediaLibraryMixin, inputframeMixin, mediaFieldMixin],
+    props: {
+      name: {
+        type: String,
+        required: true
       },
-      set (value) {
-        this.$store.commit(MEDIA_LIBRARY.REORDER_MEDIAS, {
-          name: this.name,
-          medias: value
-        })
+      itemLabel: {
+        type: String,
+        default: 'asset'
+      },
+      max: {
+        type: Number,
+        default: 10
+      },
+      allowFile: {
+        type: Boolean,
+        default: true
+      },
+      disabled: {
+        type: Boolean,
+        default: false
+      },
+      buttonOnTop: {
+        type: Boolean,
+        default: false
+      },
+      required: {
+        type: Boolean,
+        default: false
+      },
+    },
+    data: function () {
+      return {
+        handle: '.asset__handle', // Drag handle override
+        hoverable: true
       }
     },
-    remainingItems: function () {
-      return Math.max(0, this.max - this.items.length)
-    },
-    ...mapState({
-      selectedMedias: state => state.mediaLibrary.selected
-    })
+    computed: {
+      addLabel: function () {
+        const itemNames = this.itemLabel + 's'
+        return 'Attach ' + itemNames
+      },
+      items: {
+        get () {
+          if (this.selectedMedias.hasOwnProperty(this.name)) {
+            return this.selectedMedias[this.name] || []
+          } else {
+            return []
+          }
+        },
+        set (value) {
+          this.$store.commit(MEDIA_LIBRARY.REORDER_MEDIAS, {
+            name: this.name,
+            medias: value
+          })
+        }
+      },
+      remainingItems: function () {
+        return Math.max(0, this.max - this.items.length)
+      },
+      ...mapState({
+        selectedMedias: state => state.mediaLibrary.selected
+      })
+    }
   }
-}
 </script>
 
 <style lang="scss" scoped>
