@@ -25,7 +25,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application strict url handeling
+    | Application strict url handling
     |--------------------------------------------------------------------------
     |
     | Setting this value to true will enable strict domain handling.
@@ -172,7 +172,7 @@ return [
     |--------------------------------------------------------------------------
     |
      */
-    'auth_login_redirect_path' => '/',
+    'auth_login_redirect_path' => null,
 
     'templates_on_frontend_domain' => false,
 
@@ -281,6 +281,14 @@ return [
     |--------------------------------------------------------------------------
     */
     'debug' => env('APP_DEBUG', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | This parameter will throw errors if some error occurs instead of failing
+    | silently (eg. when rendering blocks)
+    |--------------------------------------------------------------------------
+    */
+    'strict' => env('TWILL_STRICT', false),
 
     /*
     |--------------------------------------------------------------------------

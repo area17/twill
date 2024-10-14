@@ -159,7 +159,7 @@ return [
 ```
 
 Now with this in place, you can go back to the block editor and add your first image block! But just as before, we have
-to update the content of the preview file (`resources/views/site/blocks/text.blade.php`) so that we actually display 
+to update the content of the preview file (`resources/views/site/blocks/image.blade.php`) so that we actually display 
 the image!
 
 ```blade
