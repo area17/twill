@@ -45,6 +45,7 @@ trait HasMedias
             'mediable',
             config('twill.mediables_table', 'twill_mediables')
         )->withPivot([
+            'id',
             'crop',
             'role',
             'crop_w',

@@ -78,7 +78,7 @@
     </a17-vselect>
 @endif
 
-@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
+@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && is_null($formFieldsValue = getFormFieldsValue($form_fields, $name))))
 @push('vuexStore')
     @include('twill::partials.form.utils._selector_input_store')
 @endpush

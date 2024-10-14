@@ -20,9 +20,6 @@ class Controller extends BaseController
 
     public function __construct()
     {
-        if (Config::get('twill.bind_exception_handler', true)) {
-            App::singleton(ExceptionHandler::class, TwillHandler::class);
-        }
     }
 
     /**

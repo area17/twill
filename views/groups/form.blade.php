@@ -27,10 +27,10 @@
             <x-twill::formConnectedFields field-name="manage-modules"
                                           :fieldValues="false"
             >
-                @foreach($permissionModules as $moduleName => $moduleItems)
+                @foreach($permissionModules as $permissionModuleName => $moduleItems)
                     <x-twill::select
-                        :name="'module_' . $moduleName . '_permissions'"
-                        :label="ucfirst($moduleName) . ' permissions'"
+                        :name="'module_' . $permissionModuleName . '_permissions'"
+                        :label="ucfirst($permissionModuleName) . ' permissions'"
                         placeholder="Select a permission"
                         :options="[
                             [
@@ -39,11 +39,11 @@
                             ],
                             [
                                 'value' => 'view-module',
-                                'label' => 'View ' . $moduleName
+                                'label' => 'View ' . $permissionModuleName
                             ],
                             [
                                 'value' => 'edit-module',
-                                'label' => 'Edit ' . $moduleName
+                                'label' => 'Edit ' . $permissionModuleName
                             ]
                         ]"
                     />
@@ -67,12 +67,12 @@
 @if(\A17\Twill\Facades\TwillPermissions::levelIs(\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM))
     @can('edit-user-groups')
         @section('fieldsets')
-            @foreach($permissionModules as $moduleName => $moduleItems)
-                <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
+            @foreach($permissionModules as $permissionModuleName => $moduleItems)
+                <a17-fieldset title='{{ ucfirst($permissionModuleName) . " Permissions"}}' id='{{ $permissionModuleName }}'>
                     <x-twill::select-permissions
                         :items-in-selects-tables="$moduleItems"
                         label-key="title"
-                        :name-pattern="$moduleName . '_%id%_permission'"
+                        :name-pattern="$permissionModuleName . '_%id%_permission'"
                     />
                 </a17-fieldset>
             @endforeach
