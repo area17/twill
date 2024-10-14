@@ -8,13 +8,14 @@ export default {
     editorName: {
       type: String,
       required: true
+    },
+    availabilityId: {
+      type: String,
     }
   },
   computed: {
     availableBlocks () {
-      const splitted = this.editorName.split('|')
-      const editorName = splitted[splitted.length - 1]
-      return this.getAvailableBlocks(editorName)
+      return this.getAvailableBlocks(this.availabilityId ? this.availabilityId : this.editorName.split('|').pop())
     },
     savedBlocks () {
       return this.blocks(this.editorName)

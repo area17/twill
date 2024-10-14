@@ -221,7 +221,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
             $repeater->buttonAsLink($this->buttonAsLink);
         }
 
-        $repeater->renderForBlocks = $this->renderForBlocks ?? false;
+        $repeater->renderForBlocks($this->renderForBlocks ?? false);
         return $repeater->render();
     }
 
