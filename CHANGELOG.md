@@ -2,6 +2,11 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.3.1
+
+### Fixed
+- Fix dbal 4 conflict by [@ifox](https://github.com/ifox) in https://github.com/area17/twill/pull/2596
+
 ## 3.3.0
 
 ### Added
