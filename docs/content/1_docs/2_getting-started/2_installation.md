@@ -21,7 +21,7 @@ The starter kit setup is a basic page builder. It comes with:
 You can install it in a Laravel application using:
 
 ```bash
-composer require area17/twill:"^3.0"
+composer require area17/twill:"^3.2"
 ```
 
 :::alert=type.warning::: 
@@ -40,7 +40,7 @@ See [`examples/basic-page-builder`](https://github.com/area17/twill/tree/3.x/exa
 Twill package can be added to your application using Composer:
 
 ```bash
-composer require area17/twill:"^3.0"
+composer require area17/twill:"^3.2"
 ```
 
 :::alert=type.warning::: 

@@ -9,6 +9,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
+use function request;
+
 class TwillRoutes
 {
     /**
@@ -401,5 +403,19 @@ class TwillRoutes
     {
         return config('twill.auth_login_redirect_path')
             ?? rtrim(config('twill.admin_app_url') ?: '', '/') . '/' . ltrim(config('twill.admin_app_path') ?? 'admin', '/');
+    }
+
+    public function isTwillRequest(): bool
+    {
+        $adminAppUrl = str_replace(['http://', 'https://'], '', config('twill.admin_app_url', config('app.url')));
+        $requestHost = request()->getHttpHost();
+
+        $matchesDomain = config('twill.support_subdomain_admin_routing') ?
+                Str::startsWith($requestHost, config('twill.admin_app_subdomain', 'admin') . '.') && Str::endsWith($requestHost, '.' . $adminAppUrl)
+                : !config('twill.admin_app_strict') || $requestHost === $adminAppUrl;
+
+        $matchesPath = empty(config('twill.admin_app_path')) || request()->is(config('twill.admin_app_path', '') . '*');
+
+        return $matchesDomain && $matchesPath;
     }
 }
