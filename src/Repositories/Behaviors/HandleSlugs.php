@@ -47,16 +47,6 @@ trait HandleSlugs
         }
     }
 
-    public function afterDeleteHandleSlugs(TwillModelContract $object): void
-    {
-        $object->slugs()->delete();
-    }
-
-    public function afterRestoreHandleSlugs(TwillModelContract $object): void
-    {
-        $object->slugs()->restore();
-    }
-
     public function getFormFieldsHandleSlugs(TwillModelContract $model, array $fields): array
     {
         unset($fields['slugs']);
