@@ -161,6 +161,10 @@ jobs:
       - name: Upgrade Chrome Driver
         run: ./vendor/bin/testbench dusk:chrome-driver --detect
 
+      - name: Downgrade Chrome Driver to 126 for Laravel 9
+        if: matrix.laravel == '9.*'
+        run: ./vendor/bin/testbench dusk:chrome-driver 126
+
       - name: Prepare Testbench Dusk
         run: ./vendor/bin/testbench-dusk package:discover
 
