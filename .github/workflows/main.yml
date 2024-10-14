@@ -155,15 +155,18 @@ jobs:
         env:
           CACHE_STORE: array
 
-      - name: Upgrade Chrome
+      - name: Upgrade Chrome (Laravel 9)
+        if: matrix.laravel == '9.*'
         uses: browser-actions/setup-chrome@latest
+        with:
+          chrome_version: 126
 
+      - name: Upgrade Chrome
+        if: matrix.laravel != '9.*'
+        uses: browser-actions/setup-chrome@latest
+        
       - name: Upgrade Chrome Driver
         run: ./vendor/bin/testbench dusk:chrome-driver --detect
-
-      - name: Downgrade Chrome Driver to 126 for Laravel 9
-        if: matrix.laravel == '9.*'
-        run: ./vendor/bin/testbench dusk:chrome-driver 126
 
       - name: Prepare Testbench Dusk
         run: ./vendor/bin/testbench-dusk package:discover
