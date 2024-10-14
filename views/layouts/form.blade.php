@@ -46,7 +46,7 @@
     <div class="form" v-sticky data-sticky-id="navbar" data-sticky-offset="0" data-sticky-topoffset="12">
         <div class="navbar navbar--sticky" data-sticky-top="navbar">
             @php
-                $additionalFieldsets = $additionalFieldsets ?? isset($formBuilder) ? $formBuilder->getAdditionalFieldsets() : [];
+                $additionalFieldsets = $additionalFieldsets ?? (isset($formBuilder) ? $formBuilder->getAdditionalFieldsets() : []);
                 if(!$disableContentFieldset && isset($formBuilder) && $formBuilder->hasFieldsInBaseFieldset()) {
                     array_unshift($additionalFieldsets, [
                         'fieldset' => 'content',

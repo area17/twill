@@ -92,7 +92,7 @@
             name: 'preview-tablet-v'
           },
           {
-            size: 320,
+            size: 390,
             name: 'preview-mobile'
           }
         ]
