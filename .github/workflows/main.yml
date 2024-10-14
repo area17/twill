@@ -164,8 +164,13 @@ jobs:
       - name: Upgrade Chrome
         if: matrix.laravel != '9.*'
         uses: browser-actions/setup-chrome@latest
-        
+
+      - name: Upgrade Chrome Driver (Laravel 9)
+        if: matrix.laravel == '9.*'
+        run: ./vendor/bin/testbench dusk:chrome-driver 126
+      
       - name: Upgrade Chrome Driver
+        if: matrix.laravel != '9.*'
         run: ./vendor/bin/testbench dusk:chrome-driver --detect
 
       - name: Prepare Testbench Dusk
