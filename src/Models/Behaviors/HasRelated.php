@@ -2,10 +2,9 @@
 
 namespace A17\Twill\Models\Behaviors;
 
-use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\RelatedItem;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 trait HasRelated
@@ -52,6 +51,7 @@ trait HasRelated
                 /** @var \A17\Twill\Models\Model $model */
                 if ($model = $item->related) {
                     $model->setRelation('pivot', $item);
+                    $item->unsetRelation('related');
 
                     return $model;
                 }
@@ -63,18 +63,26 @@ trait HasRelated
     /**
      * Attach items to the model for a browser field.
      *
-     * @param array<int, TwillModelContract> $items
+     * @param array<int, Model|array> $items
      */
-    public function saveRelated(array|Collection $items, string $browserName): void
+    public function saveRelated(array|Collection|Model $items, string $browserName): void
     {
+        $items = is_array($items) || $items instanceof Collection ? $items : [$items];
+
         /** @var Collection<int, RelatedItem> $itemsToProcess */
         $itemsToProcess = $this->relatedItems()->where('browser_name', $browserName)->get();
 
         foreach ($items as $position => $item) {
+            if ($item instanceof Model) {
+                $id = $item->getKey();
+                $type = $item->getMorphClass();
+            } else {
+                $id = $item['id'];
+                $type = $item['endpointType'];
+            }
+
             $firstMatchKey = $itemsToProcess
-                ->where('related_id', $item['id'])
-                ->where('related_type', $item['endpointType'])
-                ->where('browser_name', $browserName)
+                ->where(fn (RelatedItem $item) => $item->related_id == $id && $item->related_type === $type)
                 // We should only have one item always as you cannot select the same items twice.
                 ->keys()
                 ->first();
@@ -90,8 +98,8 @@ trait HasRelated
                 RelatedItem::create([
                     'subject_id' => $this->getKey(),
                     'subject_type' => $this->getMorphClass(),
-                    'related_id' => $item['id'],
-                    'related_type' => $item['endpointType'],
+                    'related_id' => $id,
+                    'related_type' => $type,
                     'browser_name' => $browserName,
                     'position' => $position + 1,
                 ]);

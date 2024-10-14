@@ -8,6 +8,7 @@ use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -120,7 +121,11 @@ class DashboardController extends Controller
         })->map(function ($module) use ($request) {
             $repository = $this->getRepository($module['name'], $module['repository'] ?? null);
 
-            $found = $repository->cmsSearch($request->get('search'), $module['search_fields'] ?? ['title'])->take(10);
+            $found = $repository->cmsSearch(
+                $request->get('search'),
+                $module['search_fields'] ?? ['title'],
+                isset($module['parentRelationship']) ? fn($q) => $q->whereHas($module['parentRelationship']) : null
+            )->take(10);
 
             return $found->map(function ($item) use ($module) {
                 try {
@@ -136,9 +141,20 @@ class DashboardController extends Controller
                     $date = $item->created_at->toIso8601String();
                 }
 
+                if (isset($module['parentRelationship'])) {
+                    /** @var BelongsTo $parent */
+                    $parent = call_user_func([$item, $module['parentRelationship']]);
+                    $parent_id = $parent->getParentKey();
+                }
+
                 return [
                     'id' => $item->id,
-                    'href' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', $item->id),
+                    'href' => moduleRoute(
+                        $module['name'],
+                        $module['routePrefix'] ?? null,
+                        'edit',
+                        array_filter([$parent_id ?? null, $item->id])
+                    ),
                     'thumbnail' => method_exists($item, 'defaultCmsImage') ? $item->defaultCmsImage(['w' => 100, 'h' => 100]) : null,
                     'published' => $item->published,
                     'activity' => twillTrans('twill::lang.dashboard.search.last-edit'),
@@ -225,6 +241,10 @@ class DashboardController extends Controller
 
     private function formatActivity(Activity $activity): ?array
     {
+        if (is_null($activity->subject)) {
+            return null;
+        }
+
         if ($activity->subject_type === config('twill.auth_activity_causer', 'users')) {
             return $this->formatAuthActivity($activity);
         }
@@ -235,16 +255,20 @@ class DashboardController extends Controller
             return null;
         }
 
-        if (is_null($activity->subject)) {
-            return null;
-        }
-
         if (auth('twill_users')->user()->cannot('view-item', $activity->subject)) {
             return null;
         }
 
-        $parentRelationship = $dashboardModule['parentRelationship'] ?? null;
-        $parent = $activity->subject->$parentRelationship;
+        if (isset($dashboardModule['parentRelationship'])) {
+            /** @var BelongsTo $parent */
+            $parent = call_user_func([$activity->subject, $dashboardModule['parentRelationship']]);
+            $parent_id = $parent->getParentKey();
+
+            if (empty($parent_id)) {
+                // Prevent module route error
+                return null;
+            }
+        }
 
         // @todo: Improve readability of what is happening here.
         return [
@@ -261,7 +285,7 @@ class DashboardController extends Controller
                 $dashboardModule['name'],
                 $dashboardModule['routePrefix'] ?? null,
                 'edit',
-                array_merge($parentRelationship ? [$parent->id] : [], [$activity->subject_id])
+                array_filter([$parent_id ?? null, $activity->subject_id])
             ),
         ] : []) + (! is_null($activity->subject->published) ? [
             'published' => $activity->description === 'published' ? true : ($activity->description === 'unpublished' ? false : $activity->subject->published),
@@ -510,6 +534,8 @@ class DashboardController extends Controller
                 'singular' => $module['label_singular'] ?? Str::singular($module['name']),
             ];
 
+            $isNestedModule = Str::contains($module['name'], '.');
+
             return [
                 'label' => ucfirst($moduleOptions['label']),
                 'singular' => ucfirst($moduleOptions['singular']),
@@ -517,12 +543,12 @@ class DashboardController extends Controller
                     'all',
                     $module['countScope'] ?? []
                 ) : null,
-                'url' => moduleRoute(
+                'url' => !$isNestedModule ? moduleRoute(
                     $module['name'],
                     $module['routePrefix'] ?? null,
                     'index'
-                ),
-                'createUrl' => $moduleOptions['create'] ? moduleRoute(
+                ) : null,
+                'createUrl' => ($moduleOptions['create'] && !$isNestedModule) ? moduleRoute(
                     $module['name'],
                     $module['routePrefix'] ?? null,
                     'index',
@@ -545,11 +571,24 @@ class DashboardController extends Controller
                 $query->mine();
             }
 
+            if (isset($module['parentRelationship'])) {
+                $query->whereHas($module['parentRelationship']);
+            }
+
             return $query->get()->map(function ($draft) use ($module) {
+                if (isset($module['parentRelationship'])) {
+                    $parent_id = call_user_func([$draft, $module['parentRelationship']])->getParentKey();
+                }
+
                 return [
                     'type' => ucfirst($module['label_singular'] ?? Str::singular($module['name'])),
                     'name' => $draft->titleInDashboard ?? $draft->title,
-                    'url' => moduleRoute($module['name'], $module['routePrefix'] ?? null, 'edit', [$draft->id]),
+                    'url' => moduleRoute(
+                        $module['name'],
+                        $module['routePrefix'] ?? null,
+                        'edit',
+                        array_filter([$parent_id ?? null, $draft->id])
+                    )
                 ];
             });
         })->collapse()->values();
@@ -557,6 +596,19 @@ class DashboardController extends Controller
 
     private function getRepository(string $module, string $forModule = null): ModuleRepository
     {
-        return $this->app->make($forModule ?? $this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($module)) . 'Repository');
+        $moduleName = '';
+
+        if (!$forModule) {
+            if (Str::contains($module, '.')) {
+                $parts = explode('.', $module);
+                foreach ($parts as $part) {
+                    $moduleName .= ucfirst(Str::singular($part));
+                }
+            } else {
+                $moduleName = ucfirst(Str::singular($module));
+            }
+        }
+
+        return $this->app->make($forModule ?? $this->config->get('twill.namespace') . "\Repositories\\" . $moduleName . 'Repository');
     }
 }
