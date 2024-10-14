@@ -63,6 +63,8 @@ Below is a list of the methods and their purpose:
 - **setModuleName**('`yourModuleName`'): Set the name of the module you are working with.
 - **setFeatureField**('`fieldname`'): Set the field to use for featuring content.
 - **setSearchColumns**(`['title', 'year']`): Set the columns to search in.
+- **setSearchQuery**(`
+  fn (Builder $q, string $search) => $q->orWhereHas('profile', fn (Builder $q) => $q->where('first_name', 'like', "$search%")->orWhere('last_name', 'like', "$search%"))`): For finer controller over the search
 - **setPermalinkBase**('`example`'): The static permalink base to your module. Defaults to `setModuleName` when empty.
 - **setTitleColumnKey**('`title`'): Sets the field to use as title, defaults to `title`.
 - **setModelName**('`Project`'): Usually not required, but in case customization is needed you can use this method to set
@@ -240,4 +242,3 @@ protected function formData($request)
     return [];
 }
 ```
-

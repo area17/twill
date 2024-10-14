@@ -430,7 +430,7 @@ npm install vue-numeric --save
     in-store="value"
 ></a17-custom-number>
 
-@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
+@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && is_null($formFieldsValue = getFormFieldsValue($form_fields, $name))))
 @push('vuexStore')
     window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
         name: '{{ $name }}',

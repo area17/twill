@@ -369,6 +369,14 @@ abstract class ModuleController extends Controller
      */
     protected ?array $searchColumns = null;
 
+
+    /**
+     * If you need more fine control over the search query
+     *
+     * Do not modify this directly but use the method setSearchQuery().
+     */
+    protected mixed $searchQuery = null;
+
     /**
      * Default label translation keys that can be overridden in the labels array.
      *
@@ -625,6 +633,15 @@ abstract class ModuleController extends Controller
     protected function setSearchColumns(array $searchColumns): void
     {
         $this->searchColumns = $searchColumns;
+    }
+
+    /**
+     * If you need finer control over the search query, you may provide a callback
+     * @param callable $query With the following signature: fn (Builder $query, string $searchString, array $translatedAttributes): void => $query
+     */
+    protected function setSearchQuery(callable $query): void
+    {
+        $this->searchQuery = $query;
     }
 
     /**
@@ -1183,6 +1200,7 @@ abstract class ModuleController extends Controller
         $this->setBackLink();
 
         $controllerForm = $this->getForm($item);
+        $controllerForm->registerDynamicRepeaters();
 
         if ($controllerForm->hasForm()) {
             $view = 'twill::layouts.form';
@@ -1204,8 +1222,11 @@ abstract class ModuleController extends Controller
             }
         }
 
-        return View::make($view, $this->form($id))->with(
-            ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($item))]
+        $sideFieldsets = $this->getSideFieldsets($item);
+        $sideFieldsets->registerDynamicRepeaters();
+
+        return View::make($view, $this->form($id, $item))->with(
+            ['formBuilder' => $controllerForm->toFrontend($sideFieldsets)]
         );
     }
 
@@ -1237,8 +1258,6 @@ abstract class ModuleController extends Controller
         ])->first(function ($view) {
             return View::exists($view);
         });
-
-        View::share('form', $this->form(null));
 
         return View::make($view, $this->form(null))->with(
             ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($emptyModelInstance), true)]
@@ -1364,7 +1383,7 @@ abstract class ModuleController extends Controller
 
     /**
      * @param int $id
-     * @return \Illuminate\View\View
+     * @return \Illuminate\Contracts\View\View
      */
     public function restoreRevision($id)
     {
@@ -1399,8 +1418,6 @@ abstract class ModuleController extends Controller
                 twillTrans('twill::lang.publisher.restore-message', ['user' => $revision->byUser, 'date' => $date])
             );
         }
-
-        View::share('form', $this->form($id, $item));
 
         return View::make($view, $this->form($id, $item))->with(
             ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($item))]
@@ -1841,6 +1858,7 @@ abstract class ModuleController extends Controller
             } elseif ($filterKey === 'search') {
                 $appliedFilters[] = FreeTextSearch::make()
                     ->searchFor($filterValue)
+                    ->searchQuery($this->searchQuery)
                     ->searchColumns($this->searchColumns);
             }
         }
