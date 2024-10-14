@@ -32,6 +32,8 @@ class Medias extends BaseFormField
 
     protected bool $activeCrop = true;
 
+    protected bool $disableTranslate = false;
+
     public static function make(): static
     {
         $instance = new self(
@@ -134,6 +136,13 @@ class Medias extends BaseFormField
     public function hideActiveCrop(bool $hideActiveCrop = true): static
     {
         $this->activeCrop = !$hideActiveCrop;
+
+        return $this;
+    }
+
+    public function disableTranslate(): static
+    {
+        $this->disableTranslate = true;
 
         return $this;
     }
