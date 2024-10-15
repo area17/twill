@@ -6,6 +6,7 @@ use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Blocks\BlockCollection;
 use A17\Twill\Services\Forms\InlineRepeater;
 use A17\Twill\View\Components\Blocks\TwillBlockComponent;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
@@ -307,7 +308,7 @@ class TwillBlocks
     /**
      * Gets all the crop configs, also those of component blocks.
      */
-    public function getAllCropConfigs(): array
+    public function getAllCropConfigs($prefixKey = false): array
     {
         if (! $this->cropConfigs) {
             $this->cropConfigs = config()->get('twill.block_editor.crops');
@@ -323,6 +324,10 @@ class TwillBlocks
                     $this->cropConfigs = array_merge($this->cropConfigs, $crops);
                 }
             }
+        }
+
+        if ($prefixKey) {
+            return Arr::prependKeysWith($this->cropConfigs, 'block_');
         }
 
         return $this->cropConfigs;

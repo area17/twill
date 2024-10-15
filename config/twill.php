@@ -25,7 +25,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Application strict url handeling
+    | Application strict url handling
     |--------------------------------------------------------------------------
     |
     | Setting this value to true will enable strict domain handling.

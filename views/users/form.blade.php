@@ -164,12 +164,12 @@
                     :render-for-blocks="false"
                     :field-values="$item->role_id"
                 >
-                    @foreach($permissionModules as $moduleName => $moduleItems)
-                        <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
+                    @foreach($permissionModules as $permissionModuleName => $moduleItems)
+                        <a17-fieldset title='{{ ucfirst($permissionModuleName) . " Permissions"}}' id='{{ $permissionModuleName }}'>
                             <x-twill::select-permissions
                                 :items-in-selects-tables="$moduleItems"
                                 label-key="title"
-                                :name-pattern="$moduleName . '_%id%_permission'"
+                                :name-pattern="$permissionModuleName . '_%id%_permission'"
                             />
                         </a17-fieldset>
                     @endforeach
