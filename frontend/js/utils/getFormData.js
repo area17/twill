@@ -27,56 +27,60 @@ export const isBlockField = (name, id) => {
 }
 
 export const stripOutBlockNamespace = (name, id) => {
-  const nameWithoutBlock = name.replace('blocks[' + id + '][', '')
-  return nameWithoutBlock.match(/]/gi).length > 1 ? nameWithoutBlock.replace(']', '') : nameWithoutBlock.slice(0, -1)
+  return name.replace('blocks[' + id + '][', '').replace(']', '')
 }
 
-export const buildBlock = (block, rootState, isRepeater = false) => {
+export const buildBlock = (block, rootState, isRepeater = false, isInsideRepeater = isRepeater) => {
   const repeaterIds = Object.keys(rootState.repeaters.repeaters);
-  const repeaters = Object.assign({}, ...repeaterIds.filter(repeaterKey => {
-    return repeaterKey.startsWith('blocks-' + block.id + '|')
+  const prefix = 'blocks-' + block.id + '|';
+  const repeaters = repeaterIds.filter(repeaterKey => {
+    return repeaterKey.startsWith(prefix)
   })
-    .map(repeaterKey => {
-      return {
-        [repeaterKey.replace('blocks-' + block.id + '|', '')]: rootState.repeaters.repeaters[repeaterKey].map(repeaterItem => {
-          return buildBlock(repeaterItem, rootState, true)
+    .reduce((acc, repeaterKey) => {
+      acc[repeaterKey.replace(prefix, '')] = rootState.repeaters.repeaters[repeaterKey]
+        .map(repeaterItem => {
+          return buildBlock(repeaterItem, rootState, true, isRepeater)
         })
-      }
-    }))
+
+      return acc
+    }, {})
 
   const blockIds = Object.keys(rootState.blocks.blocks);
-  const blocks = Object.assign({}, ...blockIds.filter(blockKey => {
-    return blockKey.startsWith('blocks-' + block.id)
-  }).map(blockKey => {
-    return {
-      [blockKey.replace('blocks-' + block.id + '|', '')]: rootState.blocks.blocks[blockKey].map(repeaterItem => {
-        return buildBlock(repeaterItem, rootState)
-      })
-    }
-  }))
-
-  return {
-    id: block.id,
-    type: block.type,
-    is_repeater: isRepeater,
-    editor_name: block.name,
-    // retrieve all fields for this block and clean up field names
-    content: rootState.form.fields.filter((field) => {
-      return isBlockField(field.name, block.id)
-    }).map((field) => {
-      return {
-        name: stripOutBlockNamespace(field.name, block.id),
-        value: field.value
+  const blocks = blockIds.filter(blockKey => {
+    return blockKey.startsWith(prefix)
+  }).reduce((acc, blockKey) => {
+    const key = blockKey.replace(prefix, '');
+    rootState.blocks.blocks[blockKey].forEach(blockItem => {
+      const block = buildBlock(blockItem, rootState, false);
+      if (isInsideRepeater) {
+        acc.push(block);
+      } else {
+        if (!acc[key]) {
+          acc[key] = [];
+        }
+        acc[key].push(block)
       }
-    }).reduce((content, field) => {
-      content[field.name] = field.value
-      return content
-    }, {}),
+    })
+    return acc;
+  }, isInsideRepeater ? [] : {})
+
+  // retrieve all fields for this block and clean up field names
+  const content = rootState.form.fields.filter((field) => {
+    return isBlockField(field.name, block.id)
+  }).reduce((acc, field) => {
+    acc[stripOutBlockNamespace(field.name, block.id)] = field.value;
+    return acc;
+  }, {})
+
+  const base = {
+    id: block.id,
     medias: gatherSelected(rootState.mediaLibrary.selected, block),
     browsers: gatherSelected(rootState.browser.selected, block),
     // gather repeater blocks from the repeater store module
-    blocks: { ...repeaters, ...blocks }
   }
+  return isInsideRepeater
+    ? { ...content, ...base, repeater_target_id: block.repeater_target_id, blocks, repeaters}
+    : { ...base, content, is_repeater: isRepeater, type: block.type, editor_name: block.name?.split('|').pop(), blocks: {...blocks, ...repeaters} }
 }
 
 export const isBlockEmpty = (blockData) => {
@@ -84,30 +88,16 @@ export const isBlockEmpty = (blockData) => {
 }
 
 export const gatherRepeaters = (rootState) => {
-  return Object.assign({}, ...Object.keys(rootState.repeaters.repeaters).filter(repeaterKey => {
+  return Object.keys(rootState.repeaters.repeaters).filter(repeaterKey => {
     // we start by filtering out repeater blocks
     return !repeaterKey.startsWith('blocks-')
-  }).map(repeater => {
-    return {
-      [repeater]: rootState.repeaters.repeaters[repeater].map(repeaterItem => {
-        // and for each repeater we build a block for each item
-        const repeaterBlock = buildBlock(repeaterItem, rootState)
-
-        // we want to inline fields in the repeater object
-        // and we don't need the type of component used
-        const fields = repeaterBlock.content
-        delete repeaterBlock.content
-        delete repeaterBlock.type
-
-        // and lastly we want to keep the id to update existing items
-        fields.id = repeaterItem.id
-        // If the repeater has a target id we are referencing an existing item.
-        fields.repeater_target_id = repeaterItem.repeater_target_id ?? null
-
-        return Object.assign(repeaterBlock, fields)
-      })
-    }
-  }))
+  }).reduce((acc, repeater) => {
+    acc[repeater] = rootState.repeaters.repeaters[repeater].map(repeaterItem => {
+      // and for each repeater we build a block for each item
+      return buildBlock(repeaterItem, rootState, true)
+    })
+    return acc;
+  }, {})
 }
 
 export const gatherBlocks = (rootState) => {
@@ -124,7 +114,7 @@ export const gatherBlocks = (rootState) => {
 }
 
 export const getFormFields = (rootState) => {
-  const fields = rootState.form.fields.filter((field) => {
+  return rootState.form.fields.filter((field) => {
     // we start by filtering out blocks related form fields
     return !field.name.startsWith('blocks[') && !field.name.startsWith('mediaMeta[')
   }).reduce((fields, field) => {
@@ -133,12 +123,10 @@ export const getFormFields = (rootState) => {
     fields[field.name] = field.value
     return fields
   }, {})
-
-  return fields
 }
 
 export const getModalFormFields = (rootState) => {
-  const fields = rootState.form.modalFields.filter((field) => {
+  return rootState.form.modalFields.filter((field) => {
     // we start by filtering out blocks related form fields
     return !field.name.startsWith('blocks[') && !field.name.startsWith('mediaMeta[')
   }).reduce((fields, field) => {
@@ -147,8 +135,6 @@ export const getModalFormFields = (rootState) => {
     fields[field.name] = field.value
     return fields
   }, {})
-
-  return fields
 }
 
 export const getFormData = (rootState) => {
@@ -159,7 +145,7 @@ export const getFormData = (rootState) => {
   // - publication properties
   // - selected medias and browsers
   // - created blocks and repeaters
-  const data = Object.assign(fields, {
+  return Object.assign(fields, {
     cmsSaveType: rootState.form.type,
     published: rootState.publication.published,
     public: rootState.publication.visibility === 'public',
@@ -172,6 +158,4 @@ export const getFormData = (rootState) => {
     blocks: gatherBlocks(rootState),
     repeaters: gatherRepeaters(rootState)
   })
-
-  return data
 }
