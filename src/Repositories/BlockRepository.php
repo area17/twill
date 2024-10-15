@@ -42,11 +42,10 @@ class BlockRepository extends ModuleRepository
                     'related_type' => $item['endpointType'],
                     'browser_name' => $browserName,
                     'position' => $position,
-                ])
-            )
-        );
+                ])));
 
         $model->setRelation('relatedItems', $relatedItems);
+        $model->loadMissing('relatedItems.related');
 
         return parent::hydrate($model, $fields);
     }
