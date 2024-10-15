@@ -35,7 +35,7 @@ class BlockRepository extends ModuleRepository
     {
         $relatedItems = collect($fields['browsers'])
             ->flatMap(fn($items, $browserName) => collect($items)
-                ->map(fn($item, $position) => RelatedItem::make([
+                ->map(fn($item, $position) => new RelatedItem([
                     'subject_id' => $model->getKey(),
                     'subject_type' => $model->getMorphClass(),
                     'related_id' => $item['id'],
