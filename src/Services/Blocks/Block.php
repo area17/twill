@@ -131,6 +131,11 @@ class Block
     public $rulesForTranslatedFields = [];
 
     /**
+     * @var array
+     */
+    public $messages = [];
+
+    /**
      * Renderedata.
      */
     public ?RenderData $renderData = null;
@@ -161,6 +166,7 @@ class Block
         $class->hideTitlePrefix = $componentClass::shouldHidePrefix();
         $class->rulesForTranslatedFields = (new $componentClass())->getTranslatableValidationRules();
         $class->rules = (new $componentClass())->getValidationRules();
+        $class->messages = (new $componentClass())->getValidationMessages();
 
         return $class;
     }
@@ -391,6 +397,10 @@ class Block
             $this->rulesForTranslatedFields = $value ?? $this->rulesForTranslatedFields;
         });
 
+        $this->parseArrayProperty('ValidationMessages', $contents, $this->name, function ($value) {
+            $this->messages = $value ?? $this->messages;
+        });
+
         $this->parseMixedProperty('titleField', $contents, $this->name, function ($value, $options) {
             $this->titleField = $value;
             $this->hideTitlePrefix = (bool)($options['hidePrefix'] ?? false);
@@ -413,6 +423,14 @@ class Block
     public function getRulesForTranslatedFields(): array
     {
         return $this->rulesForTranslatedFields;
+    }
+
+    /**
+     * Checks both the blade file or helper class for validation rules. Returns in order the first one with data.
+     */
+    public function getMessages(): array
+    {
+        return $this->messages;
     }
 
     /**

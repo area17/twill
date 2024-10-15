@@ -123,6 +123,11 @@ abstract class TwillBlockComponent extends Component
         return [];
     }
 
+    public function getValidationMessages(): array
+    {
+        return [];
+    }
+
     abstract public function getForm(): Form;
 
     final public function renderForm(): View
