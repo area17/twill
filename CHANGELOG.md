@@ -6,7 +6,8 @@ All notable changes to `twill` will be documented in this file.
 
 ### Added
 
-- Add searchQuery method to controller for finer control over the search by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2614
+- Add `searchQuery` method to controller for finer control over the search by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2614
+- Add `clearable` method to select form field by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2581
 
 ### Improved
 
@@ -32,6 +33,7 @@ All notable changes to `twill` will be documented in this file.
 - Fix repeaters are registered without a populated item by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2605
 - Fix block previews don't update when browser items are added or changed by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2535
 - Fix weird behaviour of slugs table active column by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2531
+- Fix blocks take crop settings from parent model if name is the same by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2542
 - Use strict check for is null, as it otherwise causes empty arrays to not have any field by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2604
 - Rename moduleName variable in permissionModules loop by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2635
 - Ensure catch-all routes do not take precedence by [@ifox](https://github.com/ifox) in https://github.com/area17/twill/pull/2669
