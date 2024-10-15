@@ -341,7 +341,6 @@ class Block
             'component' => $this->component,
             'rules' => $this->getRules(),
             'rulesForTranslatedFields' => $this->getRulesForTranslatedFields(),
-            'messages' => $this->getMessages(),
             'max' => $this->type === self::TYPE_REPEATER ? $this->max : null,
         ]);
     }
