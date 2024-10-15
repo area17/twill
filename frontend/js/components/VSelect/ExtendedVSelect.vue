@@ -38,11 +38,6 @@
         mutableValue: this.value
       }
     },
-    computed: {
-      showClearButton () {
-        return false
-      }
-    },
     methods: {
       /**
        * Delete the value on Delete keypress when there is no

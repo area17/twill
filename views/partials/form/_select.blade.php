@@ -63,6 +63,7 @@
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"
         @if ($searchable) :searchable="true" @endif
+        @if ($clearable) :clearable="true" @endif
         size="large"
         in-store="inputValue"
     >
