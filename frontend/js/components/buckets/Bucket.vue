@@ -50,6 +50,7 @@
               <transition-group name="fade_scale_list" tag='tbody'>
                 <a17-bucket-item v-for="(child, index) in bucket.children" :key="`${child.id}_${index}`" :item="child"
                                  :restricted="restricted" :draggable="bucket.children.length > 1"
+                                 :sourceLabels="sourceLabels"
                                  :singleBucket="singleBucket" :singleSource="singleSource" :bucket="bucket.id"
                                  :buckets="buckets" v-on:add-to-bucket="addToBucket"
                                  v-on:remove-from-bucket="deleteFromBucket"
@@ -120,7 +121,7 @@
       // Optionnal additionnal actions showing up after the Publish button
       extraActions: {
         type: Array,
-        default: function () { return [] }
+        default() { return [] }
       }
     },
     components: {
@@ -132,7 +133,7 @@
       'a17-vselect': VSelect,
       draggable
     },
-    data: function () {
+    data() {
       return {
         currentBucketID: '',
         currentItem: '',
@@ -152,13 +153,20 @@
       ...mapGetters([
         'currentSource'
       ]),
-      singleBucket: function () {
+      sourceLabels() {
+        const labels = {};
+        this.dataSources.forEach((source) => {
+          labels[source.type] = source.label;
+        })
+        return labels;
+      },
+      singleBucket() {
         return this.buckets.length === 1
       },
-      singleSource: function () {
+      singleSource() {
         return this.dataSources.length === 1
       },
-      overrideBucketText: function () {
+      overrideBucketText() {
         const bucket = this.buckets.find(b => b.id === this.currentBucketID)
         let bucketName = ''
         let bucketSize = ''
@@ -170,7 +178,7 @@
       }
     },
     methods: {
-      addToBucket: function (item, bucket) {
+      addToBucket(item, bucket) {
         const index = this.buckets.findIndex(b => b.id === bucket)
 
         if (!item && index === -1) return
@@ -188,10 +196,10 @@
 
         if (count > -1 && count < this.buckets[index].max) {
           // Commit before dispatch to prevent ui visual effect timeout
-          this.checkRestriced(item)
+          this.checkRestricted(item)
           this.$store.commit(BUCKETS.ADD_TO_BUCKET, data)
         } else if (this.overridableMax || this.overrideItem) {
-          this.checkRestriced(item)
+          this.checkRestricted(item)
           this.$store.commit(BUCKETS.ADD_TO_BUCKET, data)
           this.$store.commit(BUCKETS.DELETE_FROM_BUCKET, { index, itemIndex: 0 })
           this.overrideItem = false
@@ -199,11 +207,11 @@
           this.$refs.overrideBucket.open()
         }
       },
-      deleteFromBucket: function (item, bucket) {
+      deleteFromBucket(item, bucket) {
         const bucketIndex = this.buckets.findIndex(b => b.id === bucket)
         if (bucketIndex === -1) return
 
-        const itemIndex = this.buckets[bucketIndex].children.findIndex(c => c.id === item.id && c.content_type.value === item.content_type.value)
+        const itemIndex = this.buckets[bucketIndex].children.findIndex(c => c.id === item.id && c.type === item.type)
 
         if (itemIndex === -1) return
 
@@ -213,11 +221,11 @@
         }
         this.$store.commit(BUCKETS.DELETE_FROM_BUCKET, data)
       },
-      toggleFeaturedInBucket: function (item, bucket) {
+      toggleFeaturedInBucket(item, bucket) {
         const bucketIndex = this.buckets.findIndex(b => b.id === bucket)
         if (bucketIndex === -1) return
 
-        const itemIndex = this.buckets[bucketIndex].children.findIndex(c => c.id === item.id && c.content_type.value === item.content_type.value)
+        const itemIndex = this.buckets[bucketIndex].children.findIndex(c => c.id === item.id && c.type === item.type)
 
         if (itemIndex === -1) return
 
@@ -228,19 +236,19 @@
 
         this.$store.commit(BUCKETS.TOGGLE_FEATURED_IN_BUCKET, data)
       },
-      checkRestriced: function (item) {
+      checkRestricted(item) {
         // Remove item from each bucket if option restricted to one bucket is active
         if (this.restricted) {
           this.buckets.forEach((bucket) => {
             bucket.children.forEach((child) => {
-              if (child.id === item.id && child.content_type.value === item.content_type.value) {
+              if (child.id === item.id && child.type === item.type) {
                 this.deleteFromBucket(item, bucket.id)
               }
             })
           })
         }
       },
-      sortBucket: function (evt, index) {
+      sortBucket(evt, index) {
         const data = {
           bucketIndex: index,
           oldIndex: evt.moved.oldIndex,
@@ -248,35 +256,35 @@
         }
         this.$store.commit(BUCKETS.REORDER_BUCKET_LIST, data)
       },
-      changeDataSource: function (value) {
+      changeDataSource(value) {
         this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATASOURCE, value)
         this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATA_PAGE, 1)
         this.$store.dispatch(ACTIONS.GET_BUCKETS)
       },
-      filterBucketsData: function (formData) {
+      filterBucketsData(formData) {
         this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATA_PAGE, 1)
         this.$store.commit(BUCKETS.UPDATE_BUCKETS_FILTER, formData || { search: '' })
         // reload datas
         this.$store.dispatch(ACTIONS.GET_BUCKETS)
       },
-      updateOffset: function (value) {
+      updateOffset(value) {
         this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATA_PAGE, 1)
         this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATA_OFFSET, value)
 
         // reload datas
         this.$store.dispatch(ACTIONS.GET_BUCKETS)
       },
-      updatePage: function (value) {
+      updatePage(value) {
         this.$store.commit(BUCKETS.UPDATE_BUCKETS_DATA_PAGE, value)
         // reload datas
         this.$store.dispatch(ACTIONS.GET_BUCKETS)
       },
-      override: function () {
+      override() {
         this.overrideItem = true
         this.addToBucket(this.currentItem, this.currentBucketID)
         this.$refs.overrideBucket.close()
       },
-      save: function () {
+      save() {
         this.$store.dispatch(ACTIONS.SAVE_BUCKETS)
       }
     }

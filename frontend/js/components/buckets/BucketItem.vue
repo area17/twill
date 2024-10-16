@@ -18,8 +18,8 @@
         <span v-else>{{ item.name }}</span>
       </h4>
     </td>
-    <td class="buckets__itemContentType" v-if="item.content_type &&!singleSource">
-      {{ item.content_type.label }}
+    <td class="buckets__itemContentType" v-if="item.type && !singleSource">
+      {{ sourceLabels[item.type] }}
     </td>
     <td class="buckets__itemOptions">
       <a17-dropdown v-if="!singleBucket" ref="bucketDropdown" class="item__dropdown bucket__action" position="bottom-right" title="Featured in" :clickable="true">
@@ -75,29 +75,26 @@
       toggleFeaturedLabels: {
         type: Array,
         default: () => []
-      }
+      },
+      sourceLabels: Object,
     },
     mixins: [bucketMixin],
     computed: {
-      inBuckets: function () {
-        const self = this
-        let find = false
-        self.buckets.forEach(function (bucket) {
-          if (bucket.children.find(function (b) {
-            return b.id === self.item.id && b.content_type.value === self.item.content_type.value
-          })) {
-            find = true
+      inBuckets() {
+        for(const bucket in this.buckets) {
+          if (bucket.children.some((b) => b.id === self.item.id && b.type === self.item.type)) {
+            return true
           }
-        })
-        return find
+        }
+        return false
       },
-      customClasses: function () {
+      customClasses() {
         return {
           ...this.bucketClasses,
           draggable: this.draggable
         }
       },
-      dropDownBuckets: function () {
+      dropDownBuckets() {
         const checkboxes = []
         const self = this
         let index = 1
@@ -116,13 +113,13 @@
       }
     },
     methods: {
-      removeFromBucket: function (bucketId = this.bucket) {
+      removeFromBucket(bucketId = this.bucket) {
         this.$emit('remove-from-bucket', this.item, bucketId)
       },
-      toggleFeatured: function () {
+      toggleFeatured() {
         this.$emit('toggle-featured-in-bucket', this.item, this.bucket)
       },
-      selectedBuckets: function () {
+      selectedBuckets() {
         const selected = []
         const self = this
         if (this.buckets.length > 0) {
@@ -135,11 +132,11 @@
         }
         return []
       },
-      slug: function (id) {
+      slug(id) {
         // Current Bucket ID + item id + bucket id
-        return 'bucket-' + this.bucket + '_item-' + this.item.id + '_type-' + this.item.content_type.value + '_inb-' + id
+        return 'bucket-' + this.bucket + '_item-' + this.item.id + '_type-' + this.item.type + '_inb-' + id
       },
-      updateBucket: function (value) {
+      updateBucket(value) {
         const pattern = 'inb-'
         const self = this
 
