@@ -210,6 +210,7 @@ return [
         'listing-empty-message' => 'There is no item here yet.',
         'paginate' => [
             'rows-per-page' => 'Rows per page:',
+            'everything' => 'Everything',
         ],
         'bulk-selected-item' => 'item selected',
         'bulk-selected-items' => 'items selected',
