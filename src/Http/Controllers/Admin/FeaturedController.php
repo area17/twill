@@ -5,6 +5,7 @@ namespace A17\Twill\Http\Controllers\Admin;
 use A17\Twill\Models\Feature;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Repositories\Behaviors\HandleTranslations;
+use A17\Twill\Services\Listings\Filters\FreeTextSearch;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\DatabaseManager as DB;
@@ -147,10 +148,13 @@ class FeaturedController extends Controller
                 $repository = $this->getRepository($module, $bucketable['repository'] ?? null);
                 $translated = classHasTrait($repository, HandleTranslations::class);
                 $withImage = classHasTrait($repository, HandleMedias::class);
+                $appliedFilters = [];
 
                 if ($search) {
-                    $searchField = $bucketable['searchField'] ?? ($translated ? 'title' : '%title');
-                    $scopes[$searchField] = $search;
+                    $searchField = $bucketable['searchField'] ?? 'title';
+                    $appliedFilters[] = FreeTextSearch::make()
+                        ->searchFor($search)
+                        ->searchColumns([$searchField]);
                 }
 
                 $items = null;
@@ -160,7 +164,8 @@ class FeaturedController extends Controller
                         ($bucketable['scopes'] ?? []) + ($scopes ?? []),
                         $bucketable['orders'] ?? [],
                         $bucketable['per_page'] ?? $request->get('offset') ?? 10,
-                        true
+                        true,
+                        $appliedFilters,
                     )->appends('bucketable', $module);
                 }
 

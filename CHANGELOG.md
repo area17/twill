@@ -2,6 +2,118 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.4.0
+
+### Added
+
+- Add `searchQuery` method to controller for finer control over the search by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2614
+- Add `clearable` method to select form field by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2581
+
+### Improved
+
+- Rethink the way the error handler works by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2612
+- Improve related save by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2599
+- Limits Access Key exposition to S3 storage by [@luislavena](https://github.com/luislavena) in https://github.com/area17/twill/pull/2611
+- Don't load relation for each column and allow dot notation in field name for index table by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2603
+- Filter - Select: expand to the longest option by [@mrdoinel](https://github.com/mrdoinel) in https://github.com/area17/twill/pull/2627
+- Preview: Update default width value for the mobile preview (to a more realistic value) by [@mrdoinel](https://github.com/mrdoinel) in https://github.com/area17/twill/pull/2624
+
+### Fixed
+
+- Fix trim function to get corresponding input by [@DCrepper](https://github.com/DCrepper) in https://github.com/area17/twill/pull/2609
+- Fix published scope by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2606
+- Fix sync of medias and files with multiple fields by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2628
+- Fix positioning of the close button in media library tags by [@mrdoinel](https://github.com/mrdoinel) in https://github.com/area17/twill/pull/2626
+- Fix search functionality for buckets by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2661
+- Fix #2650: Added parentheses to fix the order of evaluation between t… by [@HarryThe3rd](https://github.com/HarryThe3rd) in https://github.com/area17/twill/pull/2651
+- Fix deleted users causes error 500 by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2643
+- Fix wrong crops for Blocks in `twill:refresh-crops` by [@ptrckvzn](https://github.com/ptrckvzn) in https://github.com/area17/twill/pull/2642
+- Fix server error in the dashboard when a nested module has a deleted parent by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2633
+- Fix slugs are not created when saving models outside of Twill or when duplicating by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2618
+- Fix repeaters are registered without a populated item by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2605
+- Fix block previews don't update when browser items are added or changed by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2535
+- Fix weird behaviour of slugs table active column by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2531
+- Fix blocks take crop settings from parent model if name is the same by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2542
+- Use strict check for is null, as it otherwise causes empty arrays to not have any field by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2604
+- Rename moduleName variable in permissionModules loop by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2635
+- Ensure catch-all routes do not take precedence by [@ifox](https://github.com/ifox) in https://github.com/area17/twill/pull/2669
+
+### Docs
+
+- Update one-to-many docs to use correct Artisan command by [@daisonth](https://github.com/daisonth) in https://github.com/area17/twill/pull/2615
+- Fix basic page builder guide block file reference by [@amiraezz](https://github.com/amiraezz) in https://github.com/area17/twill/pull/2630
+
+### Translations
+
+- Update both Portuguese from Brazil and Portugal by [@antonioribeiro](https://github.com/antonioribeiro) in https://github.com/area17/twill/pull/2602
+- Improved i18n: added missing translation key (#2616) and improved German translations by [@C2H6-383](https://github.com/C2H6-383) in https://github.com/area17/twill/pull/2634
+
+### Chores
+
+- Upgrade GitHub Actions artefact upload to v4 by [@ifox](https://github.com/ifox)
+- Bump webpack from 5.91.0 to 5.95.0 by [@dependabot](https://github.com/dependabot) in https://github.com/area17/twill/pull/2665
+- Bump body-parser and express by [@dependabot](https://github.com/dependabot) in https://github.com/area17/twill/pull/2659
+- Bump cookie and express by [@dependabot](https://github.com/dependabot) in https://github.com/area17/twill/pull/2664
+
+## 3.3.1
+
+### Fixed
+- Fix dbal 4 conflict by [@ifox](https://github.com/ifox) in https://github.com/area17/twill/pull/2596
+
+## 3.3.0
+
+### Added
+
+- Laravel 11 support by [@ifox](https://github.com/ifox) in https://github.com/area17/twill/pull/2473
+- Add support for `medias` fields in JSON repeaters by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2554
+- Add support for multiple JSON repeaters (of the same type) in one form by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2517
+- Add support for nested module on the dashboard by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2547
+- Add `connectedTo` for inline repeater and documentation about `connectedTo` by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2565
+- Add error reporting to block rendering by [@AidasK](https://github.com/AidasK) in https://github.com/area17/twill/pull/2580
+- Allow `buttonAsLink` option on inline repeaters by [@danieldevine](https://github.com/danieldevine) in https://github.com/area17/twill/pull/2522
+- Allow singular capsules on navigation by [@antonioribeiro](https://github.com/antonioribeiro) in https://github.com/area17/twill/pull/2572
+
+### Fixed
+
+- Tags in media library are not refreshed while updating & browsing images by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2523
+- Clicking cancel in the block editor deletes all the unsaved blocks by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2578
+- Allow single deletion in form builder inline repeater by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2504
+- Allow deleting media after records bulk destroy by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2519
+- Allow case-insensitive search for translated models for postgres by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2528
+- 404 error when restoring revision in nested modules by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2541
+- Fix alt text stripping accents and single quotes by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2514
+- Changing twill user password in admin to use the laravel algo by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2582
+- Undefined variable $formBuilder error when extending form layout in custom pages by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2577
+- Error with time-picker when `allowInput` is true by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2576
+- Don't delete and recreate existing `mediables` and `fileables` by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2567
+- Make `twillTrans` exportable so it can be used in config by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2563
+- Table builder `Browser` column overrides parent module field by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2506
+- Disable heading extension if it's not in the Tiptap toolbar by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2511
+- Relation field of datatable does not allow sorting by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2526
+- Default login redirect to admin url by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2569
+- Different datetime parsing for publish date on listing and edit screen by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2510
+- Fix created at is null in slug table by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2588
+
+### Docs
+
+- Fix typo by [@k-msalehi](https://github.com/k-msalehi) in https://github.com/area17/twill/pull/2564
+- Change `admin.` route to `twill.` by [@LucaRed](https://github.com/LucaRed) in https://github.com/area17/twill/pull/2585
+- Prettify instructions and add the capsules>list array keys to improve DX by [@antonioribeiro](https://github.com/antonioribeiro) in https://github.com/area17/twill/pull/2527
+- Update twill version during installation by [@Mavv3006](https://github.com/Mavv3006) in https://github.com/area17/twill/pull/2584
+
+### Chores
+
+- Refactor form services to avoid repeating code by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2553
+- Bump express from 4.18.2 to 4.19.2 by [@dependabot](https://github.com/dependabot) in https://github.com/area17/twill/pull/2560
+- Bump webpack-dev-middleware from 5.3.3 to 5.3.4 by [@dependabot](https://github.com/dependabot) in https://github.com/area17/twill/pull/2556
+- Bump follow-redirects from 1.15.5 to 1.15.6 by [@dependabot](https://github.com/dependabot) in https://github.com/area17/twill/pull/2545
+
+## 3.2.1
+
+### Fixed
+- Fix datatable and buckets filters error caused by Axios breaking changes in 0.28.0 by @zeezo887 in https://github.com/area17/twill/pull/2520
+
+
 ## 3.2.0
 
 ### Added

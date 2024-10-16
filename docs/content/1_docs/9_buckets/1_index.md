@@ -72,7 +72,7 @@ return [
        'primary_navigation' => [
            'homepage' => [
                'title' => 'Homepage',
-               'route' => 'admin.featured.homepage',
+               'route' => 'twill.featured.homepage',
            ],
        ],
    ],

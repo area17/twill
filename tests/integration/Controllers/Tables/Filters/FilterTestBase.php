@@ -41,6 +41,11 @@ class FilterTestBase extends ModulesTestBase
                 $this->setSearchColumns(...$args);
             }
 
+            public function setSearchQueryTest(...$args): void
+            {
+                $this->setSearchQuery(...$args);
+            }
+
             public function quickFilters(): QuickFilters
             {
                 if ($this->testQuickFilters !== []) {

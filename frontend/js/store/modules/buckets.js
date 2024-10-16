@@ -66,7 +66,7 @@ const actions = {
       content_type: state.dataSources.selected.value,
       page: state.page,
       offset: state.offset,
-      filter: state.filter
+      filter: JSON.stringify(state.filter)
     }, resp => {
       commit(BUCKETS.UPDATE_BUCKETS_DATA, resp.source)
       commit(BUCKETS.UPDATE_BUCKETS_MAX_PAGE, resp.maxPage)

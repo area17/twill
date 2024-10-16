@@ -46,8 +46,8 @@
     <div class="form" v-sticky data-sticky-id="navbar" data-sticky-offset="0" data-sticky-topoffset="12">
         <div class="navbar navbar--sticky" data-sticky-top="navbar">
             @php
-                $additionalFieldsets = $additionalFieldsets ?? $formBuilder->getAdditionalFieldsets();
-                if(!$disableContentFieldset && $formBuilder->hasFieldsInBaseFieldset()) {
+                $additionalFieldsets = $additionalFieldsets ?? (isset($formBuilder) ? $formBuilder->getAdditionalFieldsets() : []);
+                if(!$disableContentFieldset && isset($formBuilder) && $formBuilder->hasFieldsInBaseFieldset()) {
                     array_unshift($additionalFieldsets, [
                         'fieldset' => 'content',
                         'label' => $contentFieldsetLabel ?? twillTrans('twill::lang.form.content')
@@ -95,7 +95,7 @@
                                           previous-url="{{ $parentPreviousUrl ?? '' }}"
                                           next-url="{{ $parentNextUrl ?? '' }}"></a17-page-nav>
 
-                            @if ($formBuilder->hasSideForm())
+                            @if (isset($formBuilder) && $formBuilder->hasSideForm())
                                 {!! $formBuilder->renderSideForm() !!}
                             @else
                                 @hasSection('sideFieldset')
@@ -111,7 +111,7 @@
                         </div>
                     </aside>
                     <section class="col col--primary" data-sticky-top="publisher">
-                        @if ($formBuilder->hasForm())
+                        @if (isset($formBuilder) && $formBuilder->hasForm())
                             {!! $formBuilder->renderBaseForm() !!}
                         @else
                             @unless($disableContentFieldset)
@@ -170,7 +170,7 @@
     baseUrl: '{{ $baseUrl ?? '' }}',
     saveUrl: '{{ $saveUrl }}',
     previewUrl: '{{ $previewUrl ?? '' }}',
-    restoreUrl: '{{ $restoreUrl ?? '' }}',
+    restoreUrl: '{!! $restoreUrl ?? ''  !!}',
     availableBlocks: {},
     blocks: {},
     blockPreviewUrl: '{{ $blockPreviewUrl ?? '' }}',
@@ -205,9 +205,9 @@
     window['{{ config('twill.js_namespace') }}'].STORE.parents = {!! json_encode($parents ?? []) !!}
 
     @if (isset($item) && classHasTrait($item, \A17\Twill\Models\Behaviors\HasMedias::class))
-        window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(($item->getMediasParams()) + \A17\Twill\Facades\TwillBlocks::getAllCropConfigs() + (config('twill.settings.crops') ?? [])) !!}
+        window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(($item->getMediasParams()) + \A17\Twill\Facades\TwillBlocks::getAllCropConfigs(true) + (config('twill.settings.crops') ?? [])) !!}
     @else
-        window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(\A17\Twill\Facades\TwillBlocks::getAllCropConfigs() + (config('twill.settings.crops') ?? [])) !!}
+        window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(\A17\Twill\Facades\TwillBlocks::getAllCropConfigs(true) + (config('twill.settings.crops') ?? [])) !!}
     @endif
     window['{{ config('twill.js_namespace') }}'].STORE.medias.selected = {}
 

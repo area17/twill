@@ -28,6 +28,7 @@ use A17\Twill\Commands\SyncLang;
 use A17\Twill\Commands\Update;
 use A17\Twill\Commands\UpdateExampleCommand;
 use A17\Twill\Commands\UpdateMorphMapReferences;
+use A17\Twill\Facades\TwillRoutes;
 use A17\Twill\Http\ViewComposers\CurrentUser;
 use A17\Twill\Http\ViewComposers\FilesUploaderConfig;
 use A17\Twill\Http\ViewComposers\Localization;
@@ -42,14 +43,20 @@ use A17\Twill\Services\MediaLibrary\ImageService;
 use Astrotomic\Translatable\TranslatableServiceProvider;
 use Cartalyst\Tags\TagsServiceProvider;
 use Exception;
+use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Contracts\Foundation\CachesConfiguration;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Support\ViewErrorBag;
+use Illuminate\Validation\ValidationException;
 use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
 use Spatie\Activitylog\ActivitylogServiceProvider;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
 class TwillServiceProvider extends ServiceProvider
 {
@@ -58,7 +65,7 @@ class TwillServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const VERSION = '3.2.0';
+    public const VERSION = '3.4.0';
 
     /**
      * Service providers to be registered.
@@ -79,8 +86,6 @@ class TwillServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->requireHelpers();
-
         $this->publishConfigs();
         $this->publishMigrations();
         $this->publishAssets();
@@ -116,8 +121,13 @@ class TwillServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigs();
+        $this->requireHelpers();
 
+        if (! ($this->app instanceof CachesConfiguration && $this->app->configurationIsCached())) {
+            $this->mergeConfigs();
+        }
+
+        $this->registerErrorHandlers();
         $this->registerProviders();
         $this->registerAliases();
         $this->registerFacades();
@@ -150,8 +160,6 @@ class TwillServiceProvider extends ServiceProvider
             'blocks' => config('twill.models.block', Block::class),
             'groups' => config('twill.models.group', Group::class),
         ]);
-
-        config(['twill.version' => $this->version()]);
     }
 
     private function registerFacades(): void
@@ -214,47 +222,6 @@ class TwillServiceProvider extends ServiceProvider
      */
     private function publishConfigs(): void
     {
-        if (config('twill.enabled.users-management')) {
-            config([
-                'auth.providers.twill_users' => [
-                    'driver' => 'eloquent',
-                    'model' => twillModel('user'),
-                ],
-            ]);
-
-            config([
-                'auth.guards.twill_users' => [
-                    'driver' => 'session',
-                    'provider' => 'twill_users',
-                ],
-            ]);
-
-            if (blank(config('auth.passwords.twill_users'))) {
-                config([
-                    'auth.passwords.twill_users' => [
-                        'provider' => 'twill_users',
-                        'table' => config('twill.password_resets_table', 'twill_password_resets'),
-                        'expire' => 60,
-                        'throttle' => 60,
-                    ],
-                ]);
-            }
-        }
-
-        config(
-            ['activitylog.enabled' => config('twill.enabled.dashboard') ? true : config('twill.enabled.activitylog')]
-        );
-        config(['activitylog.subject_returns_soft_deleted_models' => true]);
-
-        config(
-            [
-                'analytics.service_account_credentials_json' => config(
-                    'twill.dashboard.analytics.service_account_credentials_json',
-                    storage_path('app/analytics/service-account-credentials.json')
-                ),
-            ]
-        );
-
         $this->publishes([__DIR__ . '/../config/twill-publish.php' => config_path('twill.php')], 'config');
         $this->publishes([__DIR__ . '/../config/translatable.php' => config_path('translatable.php')], 'config');
     }
@@ -299,6 +266,49 @@ class TwillServiceProvider extends ServiceProvider
         }
 
         $this->mergeConfigFrom(__DIR__ . '/../config/services.php', 'services');
+
+        if (config('twill.enabled.users-management')) {
+            config([
+                'auth.providers.twill_users' => [
+                    'driver' => 'eloquent',
+                    'model' => twillModel('user'),
+                ],
+            ]);
+
+            config([
+                'auth.guards.twill_users' => [
+                    'driver' => 'session',
+                    'provider' => 'twill_users',
+                ],
+            ]);
+
+            if (blank(config('auth.passwords.twill_users'))) {
+                config([
+                    'auth.passwords.twill_users' => [
+                        'provider' => 'twill_users',
+                        'table' => config('twill.password_resets_table', 'twill_password_resets'),
+                        'expire' => 60,
+                        'throttle' => 60,
+                    ],
+                ]);
+            }
+        }
+
+        config(
+            ['activitylog.enabled' => config('twill.enabled.dashboard') ? true : config('twill.enabled.activitylog')]
+        );
+        config(['activitylog.subject_returns_soft_deleted_models' => true]);
+
+        config(
+            [
+                'analytics.service_account_credentials_json' => config(
+                    'twill.dashboard.analytics.service_account_credentials_json',
+                    storage_path('app/analytics/service-account-credentials.json')
+                ),
+            ]
+        );
+
+        config(['twill.version' => $this->version()]);
     }
 
     private function setLocalDiskUrl($type): void
@@ -623,6 +633,36 @@ class TwillServiceProvider extends ServiceProvider
             throw new Exception(
                 'Twill ERROR: As you have 2FA enabled, you also need to install a QRCode service package, please check https://github.com/antonioribeiro/google2fa-qrcode#built-in-qrcode-rendering-services'
             );
+        }
+    }
+
+    private function registerErrorHandlers(): void
+    {
+        $handler = app(ExceptionHandler::class);
+        if ($handler instanceof Handler) {
+            $handler->renderable(function (HttpExceptionInterface $e) {
+                $statusCode = $e->getStatusCode();
+                if (TwillRoutes::isTwillRequest()) {
+                    $view = "twill.errors.$statusCode";
+
+                    $view = view()->exists($view) ? $view : "twill::errors.$statusCode";
+                } else {
+                    $view = config('twill.frontend.views_path') . ".errors.$statusCode";
+
+                    $view = view()->exists($view) ? $view : null;
+                }
+                return $view ? response()->view($view, [
+                    'errors' => new ViewErrorBag(),
+                    'exception' => $e,
+                ], $e->getStatusCode(), $e->getHeaders()) : null;
+            });
+
+            $handler->renderable(function (ValidationException $exception) {
+                if (TwillRoutes::isTwillRequest() && request()->expectsJson()) {
+                    return response()->json($exception->errors(), $exception->status);
+                }
+                return null;
+            });
         }
     }
 }
