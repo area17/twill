@@ -3,45 +3,26 @@
 namespace A17\Twill\Models\Behaviors;
 
 use A17\Twill\Models\Media;
+use Illuminate\Database\Eloquent\Collection;
 
 trait HasAssets
 {
-    public function assetsObjs($role, $crop = 'default', $locale = null)
+    public function assetsObjs($role, $crop = 'default')
     {
-        $locale = $locale ?? app()->getLocale();
-
-        $medias = $this->medias->filter(function ($media) use ($role, $crop, $locale) {
-            return $media->pivot->role === $role && $media->pivot->crop === $crop && $media->pivot->locale === $locale;
-        });
-
-        $files = $this->files->filter(function ($file) use ($role, $locale) {
-            return $file->pivot->role === $role && $file->pivot->locale === $locale;
-        });
-
-        $assets = $medias->merge($files);
+        $assets = $this->getAssets($role, $crop);
         return $assets->sortBy(fn($asset) => $asset->pivot->position)->values();
     }
 
-    public function assets($role, $crop = 'default', $locale = null, $params = [])
+    public function assets($role, $crop = 'default', $params = []): array
     {
-        $locale = $locale ?? app()->getLocale();
+        $assets = $this->getAssets($role, $crop);
 
-        $medias = $this->medias->filter(function ($media) use ($role, $crop, $locale) {
-            return $media->pivot->role === $role && $media->pivot->crop === $crop && $media->pivot->locale === $locale;
-        });
-
-        $files = $this->files->filter(function ($file) use ($role, $locale) {
-            return $file->pivot->role === $role && $file->pivot->locale === $locale;
-        });
-
-        $assets = $medias->merge($files);
-
-        $urls = $assets->map(function ($asset) use ($role, $crop, $params, $locale) {
+        $urls = $assets->map(function ($asset) use ($role, $crop, $params) {
             $type = $asset instanceof Media ? 'image' : 'file';
             if ($type === 'image') {
                 $url = $this->image($role, $crop, $params, false, false, $asset);
             } else {
-                $url = $this->file($role, $locale, $asset);
+                $url = $this->file($role, null, $asset);
             }
 
             return [
@@ -52,5 +33,31 @@ trait HasAssets
         });
 
         return $urls->sortBy('position')->values()->toArray();
+    }
+
+    /**
+     * @param $role
+     * @param mixed $crop
+     * @return Collection|mixed
+     */
+    private function getAssets($role, mixed $crop): mixed
+    {
+        $medias = $this->medias->filter(function ($media) use ($role, $crop) {
+            if (config('twill.media_library.translated_asset_fields', false)) {
+                $localeScope = $media->pivot->locale === app()->getLocale();
+            }
+
+            return $media->pivot->role === $role && $media->pivot->crop === $crop && ($localeScope ?? true);
+        });
+
+        $files = $this->files->filter(function ($file) use ($role) {
+            if (config('twill.media_library.translated_asset_fields', false)) {
+                $localeScope = $file->pivot->locale === app()->getLocale();
+            }
+
+            return $file->pivot->role === $role && ($localeScope ?? true);
+        });
+
+        return $medias->merge($files);
     }
 }
