@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Facades\TwillUtil;
 use A17\Twill\Models\Behaviors\HasMedias;
@@ -174,15 +176,21 @@ trait HandleBlocks
         return $blockCreated;
     }
 
-    private function validate(array $formData, int $id, array $basicRules, array $translatedFieldRules): void
+    private function validate(array $formData, int $id, array $basicRules, array $translatedFieldRules, array $messages): void
     {
         $finalValidator = $this->blockValidator;
         foreach ($translatedFieldRules as $field => $rules) {
             foreach (config('translatable.locales') as $locale) {
-                $data = $formData[$field][$locale] ?? null;
-                $validator = Validator::make([$field => $data], [$field => $rules]);
+                $validator = Validator::make($formData, ["$field.$locale" => $rules], $messages);
                 foreach ($validator->messages()->getMessages() as $key => $errors) {
                     foreach ($errors as $error) {
+                        if ($this->errorMessageIsOnNestedBlock($key)) {
+                            $blockInfo = $this->makeValidationInfoForNestedBlocks($id, $key, $formData, true);
+
+                            $id = $blockInfo['nestedBlockId'];
+                            $key = $blockInfo['nestedField'];
+                        }
+
                         $finalValidator->getMessageBag()->add("blocks.$id" . "[$key][$locale]", $error);
                         $finalValidator->getMessageBag()->add("blocks.$locale", 'Failed');
                     }
@@ -190,9 +198,16 @@ trait HandleBlocks
             }
         }
         foreach ($basicRules as $field => $rules) {
-            $validator = Validator::make([$field => $formData[$field] ?? null], [$field => $rules]);
+            $validator = Validator::make($formData, [$field => $rules], $messages);
             foreach ($validator->messages()->getMessages() as $key => $errors) {
                 foreach ($errors as $error) {
+                    if ($this->errorMessageIsOnNestedBlock($key)) {
+                        $blockInfo = $this->makeValidationInfoForNestedBlocks($id, $key, $formData, true);
+
+                        $id = $blockInfo['nestedBlockId'];
+                        $key = $blockInfo['nestedField'];
+                    }
+
                     $finalValidator->getMessageBag()->add("blocks[$id][$key]", $error);
                 }
             }
@@ -300,7 +315,8 @@ trait HandleBlocks
             (array)$block['content'] + ($block['medias'] ?? []) + ($block['browsers'] ?? []) + ($block['blocks'] ?? []),
             $block['id'],
             $blockInstance->getRules(),
-            $handleTranslations ? $blockInstance->getRulesForTranslatedFields() : []
+            $handleTranslations ? $blockInstance->getRulesForTranslatedFields() : [],
+            $blockInstance->getMessages()
         );
     }
 
@@ -532,5 +548,28 @@ trait HandleBlocks
             static::$hasRelatedTableCache = Schema::hasTable(config('twill.related_table', 'twill_related'));
         }
         return static::$hasRelatedTableCache;
+    }
+
+    public function errorMessageIsOnNestedBlock($failedKey)
+    {
+        return strpos($failedKey, '.content.') !== false;
+    }
+
+    public function makeValidationInfoForNestedBlocks($rootBlockId, $failedKey, $formData, $translated = false)
+    {
+        $blockFilter = Str::beforeLast($failedKey, '.content.');
+
+        $blockField = Str::afterLast($failedKey, '.content.');
+
+        if ($translated) {
+            $blockField = Str::beforeLast($blockField, '.');
+        }
+
+        $block = Arr::get($formData, $blockFilter);
+
+        return [
+            'nestedBlockId' => $block['id'],
+            'nestedField' => $blockField,
+        ];
     }
 }
