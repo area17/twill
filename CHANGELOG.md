@@ -2,6 +2,17 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.4.1
+
+### Improved
+
+- Allow media and file library disk configuration using an environement variable by [@antonioribeiro](https://github.com/antonioribeiro) in https://github.com/area17/twill/pull/2676
+
+### Fixed
+
+- Fix #2671: 3.4.0 regression on related browsers previews by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2672
+- Fix #2674: 3.4.0 regression on relation column using a one-to-one relationship by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2675
+
 ## 3.4.0
 
 ### Added
