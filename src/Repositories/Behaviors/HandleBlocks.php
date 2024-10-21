@@ -13,6 +13,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
@@ -273,11 +274,11 @@ trait HandleBlocks
         $childBlocksList = Collection::make();
 
         foreach ($parentBlockFields['blocks'] ?? [] as $childKey => $childBlocks) {
-            if (strpos($childKey, '|')) {
+            if (str_contains($childKey, '|')) {
                 continue;
             }
             foreach ($childBlocks as $index => $childBlock) {
-                $childBlock = $this->buildBlock($childBlock, $object, $childBlock['is_repeater'] ?? true);
+                $childBlock = $this->buildBlock($childBlock, $object, $childBlock['is_repeater'] ?? false);
                 $this->validateBlockArray($childBlock, $childBlock['instance'], true);
                 $childBlock['child_key'] = $childKey;
                 $childBlock['position'] = $index + 1;
@@ -421,20 +422,11 @@ trait HandleBlocks
                 }
             }
 
-            if ($fields['blocksFields'] ?? false) {
-                $fields['blocksFields'] = call_user_func_array('array_merge', $fields['blocksFields'] ?? []);
-            }
 
-            if ($fields['blocksMedias'] ?? false) {
-                $fields['blocksMedias'] = call_user_func_array('array_merge', $fields['blocksMedias'] ?? []);
-            }
-
-            if ($fields['blocksFiles'] ?? false) {
-                $fields['blocksFiles'] = call_user_func_array('array_merge', $fields['blocksFiles'] ?? []);
-            }
-
-            if ($fields['blocksBrowsers'] ?? false) {
-                $fields['blocksBrowsers'] = call_user_func_array('array_merge', $fields['blocksBrowsers'] ?? []);
+            foreach (['Fields', 'Medias', 'Files', 'Browsers'] as $fieldKey) {
+                if ($fields['blocks' . $fieldKey] ?? false) {
+                    $fields['blocks' . $fieldKey] = call_user_func_array('array_merge', $fields['blocks' . $fieldKey] ?? []);
+                }
             }
         }
 
@@ -473,7 +465,7 @@ trait HandleBlocks
                 try {
                     $relationRepository = $this->getModelRepository($relation);
                     $relatedItems = $relationRepository->get([], ['id' => $ids], [], -1);
-                } catch (\Throwable $th) {
+                } catch (\Throwable) {
                     $relatedItems = collect();
                 }
                 $sortedRelatedItems = array_flip($ids);
@@ -485,6 +477,7 @@ trait HandleBlocks
                 $items = Collection::make(array_values($sortedRelatedItems))->filter(function ($value) {
                     return is_object($value);
                 })->map(function ($relatedElement) use ($relation) {
+                    // TODO this needs refactoring, it's duplicated from HandleBrowsers
                     return [
                             'id' => $relatedElement->id,
                             'name' => $relatedElement->titleInBrowser ?? $relatedElement->title,
@@ -494,6 +487,7 @@ trait HandleBlocks
                                 'edit',
                                 $relatedElement->id
                             ),
+                            'endpointType' => $relatedElement->getMorphClass(),
                         ] + (classHasTrait($relatedElement, HasMedias::class) ? [
                             'thumbnail' => $relatedElement->defaultCmsImage(['w' => 100, 'h' => 100]),
                         ] : []);
