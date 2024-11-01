@@ -207,8 +207,8 @@
         if (!this.active) return
 
         clearTimeout(this.timer)
-        document.removeEventListener('click', this.closeFromDoc, true)
-        document.removeEventListener('touchend', this.closeFromDoc, true)
+        document.removeEventListener('click', this.closeFromDoc, false)
+        document.removeEventListener('touchend', this.closeFromDoc, false)
 
         if (this.fixed) {
           window.removeEventListener('scroll', this.closeFromDoc, true)
