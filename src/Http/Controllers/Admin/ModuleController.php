@@ -1200,6 +1200,7 @@ abstract class ModuleController extends Controller
         $this->setBackLink();
 
         $controllerForm = $this->getForm($item);
+        $controllerForm->registerDynamicRepeaters();
 
         if ($controllerForm->hasForm()) {
             $view = 'twill::layouts.form';
@@ -1221,8 +1222,11 @@ abstract class ModuleController extends Controller
             }
         }
 
-        return View::make($view, $this->form($id))->with(
-            ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($item))]
+        $sideFieldsets = $this->getSideFieldsets($item);
+        $sideFieldsets->registerDynamicRepeaters();
+
+        return View::make($view, $this->form($id, $item))->with(
+            ['formBuilder' => $controllerForm->toFrontend($sideFieldsets)]
         );
     }
 
@@ -1254,8 +1258,6 @@ abstract class ModuleController extends Controller
         ])->first(function ($view) {
             return View::exists($view);
         });
-
-        View::share('form', $this->form(null));
 
         return View::make($view, $this->form(null))->with(
             ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($emptyModelInstance), true)]
@@ -1381,7 +1383,7 @@ abstract class ModuleController extends Controller
 
     /**
      * @param int $id
-     * @return \Illuminate\View\View
+     * @return \Illuminate\Contracts\View\View
      */
     public function restoreRevision($id)
     {
@@ -1416,8 +1418,6 @@ abstract class ModuleController extends Controller
                 twillTrans('twill::lang.publisher.restore-message', ['user' => $revision->byUser, 'date' => $date])
             );
         }
-
-        View::share('form', $this->form($id, $item));
 
         return View::make($view, $this->form($id, $item))->with(
             ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($item))]

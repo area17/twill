@@ -106,9 +106,10 @@ class RefreshCrops extends Command
 
         $this->roleName = $this->argument('roleName');
 
-        $mediasParams = app($this->modelName)->getMediasParams();
-        if (empty($mediasParams)) {
+        if (app($this->modelName) instanceof \A17\Twill\Models\Block) {
             $mediasParams = TwillBlocks::getAllCropConfigs();
+        } else {
+            $mediasParams = app($this->modelName)->getMediasParams();
         }
 
         if (! isset($mediasParams[$this->roleName])) {

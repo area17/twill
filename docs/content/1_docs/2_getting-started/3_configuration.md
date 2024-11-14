@@ -79,31 +79,6 @@ return [
 ];
 ```
 
-Twill registers its own exception handler in all controllers. If you need to customize it (to report errors on a 3rd party service like Sentry or Rollbar for example), you can opt-out from it in your `config/twill.php` file:
-
-```php
-<?php
-
-return [
-    'bind_exception_handler' => false,
-];
-```
-
-And then extend it from your own `app/Exceptions/Handler.php` class:
-
-```php
-<?php
-
-namespace App\Exceptions;
-
-use A17\Twill\Exceptions\Handler as ExceptionHandler;
-use Exception;
-use Illuminate\Auth\AuthenticationException;
-
-class Handler extends ExceptionHandler
-...
-```
-
 If you would like to provide custom tables names, use the following configuration options:
 
 ```php
