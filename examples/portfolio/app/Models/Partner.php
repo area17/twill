@@ -24,7 +24,7 @@ class Partner extends Model
         'description',
     ];
 
-    public $slugAttributes = [
+    protected $slugFields = [
         'title',
     ];
 

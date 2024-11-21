@@ -28,6 +28,17 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
 
     public $timestamps = true;
 
+    public static function boot(): void
+    {
+        static::saving(function (self $model) {
+            // When saving a model multiple times in a row without refresh, then the model should not be recently created anymore
+            if ($model->wasRecentlyCreated) {
+                $model->wasRecentlyCreated = false;
+            }
+        });
+        parent::boot();
+    }
+
     protected function isTranslationModel(): bool
     {
         return Str::endsWith(get_class($this), 'Translation');

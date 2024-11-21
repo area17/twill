@@ -57,7 +57,7 @@ class Article extends Model implements Sortable
 
     // #endregion fillable
 
-    public $slugAttributes = [
+    private $slugFields = [
         'title',
     ];
 

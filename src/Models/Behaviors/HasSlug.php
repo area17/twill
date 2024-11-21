@@ -5,14 +5,16 @@ namespace A17\Twill\Models\Behaviors;
 use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Models\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
+/** @property Collection<Model> $slugs */
 trait HasSlug
 {
     private int $nb_variation_slug = 3;
-    public array $twillSlugData = [];
+    public ?array $twillSlugData = null;
 
     private bool $twill_restoring = false;
 
@@ -23,9 +25,17 @@ trait HasSlug
             $model->twill_restoring = true;
         });
 
+        static::saving(function (self $model) {
+            if (!$model->twill_restoring && !isset($model->twillSlugData)) {
+                // Run this before saving because we need to know which fields are dirty
+                $model->twillSlugData = $model->getSlugParams(null, true);
+            }
+        });
+
         static::saved(function (self $model) {
             if (!$model->twill_restoring) {
-                $model->handleSlugsOnSave();
+                $model->handleSlugsSaving();
+                $model->twillSlugData = null;
             }
             $model->twill_restoring = false;
         });
@@ -119,28 +129,28 @@ trait HasSlug
     }
 
     /**
-     * When a new model is created there is more than one language, we generate the slugs where there is no locale
-     * variant yet based on the source.
+     * @deprecated This method should not be used directly and will be removed in 4.x use $model->save() instead
      */
     public function handleSlugsOnSave(): void
     {
-        $this->disableLocaleSlugs();
+        $this->handleSlugsSaving();
+    }
 
-        $slugParams = $this->twillSlugData !== [] ? $this->twillSlugData : $this->getSlugParams();
+    private function handleSlugsSaving(): void
+    {
+        if (!isset($this->twillSlugData)) {
+            $slugParams = $this->getSlugParams(null, true);
+        } else {
+            $slugParams = $this->twillSlugData;
+
+            foreach ($slugParams as $locale => $params) {
+                $slugParams[$locale] = array_merge($this->getSlugParams($locale, empty($params['slug'])) ?? [], $params);
+            }
+            $slugParams = array_filter($slugParams, fn($p) => !empty($p['slug']));
+        }
 
         foreach ($slugParams as $params) {
-            if (in_array($params['locale'], config('twill.slug_utf8_languages', []))) {
-                $params['slug'] = $this->getUtf8Slug($params['slug']);
-            } else {
-                $params['slug'] = Str::slug($params['slug']);
-            }
-
-            if (empty($params['slug'])) {
-                continue;
-            }
-            if ($this->slugs()->where('locale', $params['locale'])->where('slug', $params['slug'])->where('active', true)->doesntExist()) {
-                $this->updateOrNewSlug($params);
-            }
+            $this->updateOrNewSlug($params);
         }
     }
 
@@ -152,28 +162,34 @@ trait HasSlug
             $slugParams['slug'] = Str::slug($slugParams['slug']);
         }
 
+        if (empty($slugParams['slug'])) {
+            return;
+        }
+        $slugParams['slug'] = $this->suffixSlugIfExisting($slugParams);
+        $oldMatchingSlug = $this->getExistingSlug($slugParams, true);
+
         // Active old slug if already existing or create a new one.
-        // The first attempt is to find one without a suffix, a second attempt is done with the suffix.
-        // If both matches none, we will go to the regular creation flow.
-        if (
-            (($oldSlug = $this->getExistingSlug($slugParams, true)) !== null)
-            && ($slugParams['slug'] === $this->suffixSlugIfExisting($slugParams))
-        ) {
-            if (!$oldSlug->active && ($slugParams['active'] ?? false)) {
-                $this->getSlugModelClass()::where('id', $oldSlug->id)->update(['active' => 1]);
-                $this->disableLocaleSlugs($oldSlug->locale, $oldSlug->id);
-            }
-        } elseif (
-            $this->slugNeedsSuffix($slugParams) &&
-            (($oldSlug = $this->getExistingSlug($slugParams)) !== null) &&
-            ($slugParams['slug'] === $this->suffixSlugIfExisting($slugParams))
-        ) {
-            if (!$oldSlug->active && ($slugParams['active'] ?? false)) {
-                $this->getSlugModelClass()::where('id', $oldSlug->id)->update(['active' => 1]);
-                $this->disableLocaleSlugs($oldSlug->locale, $oldSlug->id);
+        if ($oldMatchingSlug) {
+            $isNowActive = (bool)($slugParams['active'] ?? false);
+            if ($oldMatchingSlug->active != $isNowActive) {
+                $this->slugs()->whereKey($oldMatchingSlug->getKey())->update(['active' => $isNowActive]);
+                if ($this->relationLoaded('slugs')) {
+                    // Report update to slugs so that getSlug() returns the correct value
+                    $slug = $this->slugs->whereKey($oldMatchingSlug->getKey());
+                    if ($slug) {
+                        $slug->active = $isNowActive;
+                        $slug->syncOriginalAttribute('active');
+                    } else {
+                        // The relation was loaded before the old slug even existed, unload it and let it lazy reload as needed
+                        $this->unsetRelation('slugs');
+                    }
+                }
+                if ($isNowActive) {
+                    $this->disableLocaleSlugs($oldMatchingSlug->locale, $oldMatchingSlug->getKey());
+                }
             }
         } else {
-            $this->addOneSlug($slugParams);
+            $this->addOneSlug($slugParams, true);
         }
     }
 
@@ -204,44 +220,58 @@ trait HasSlug
         return $query->first();
     }
 
-    protected function addOneSlug(array $slugParams): void
+    protected function addOneSlug(array $slugParams, $alreadySuffixed = false): void
     {
-        $datas = [];
-        foreach ($slugParams as $key => $value) {
-            $datas[$key] = $value;
+        if (!$alreadySuffixed) {
+            $slugParams['slug'] = $this->suffixSlugIfExisting($slugParams);
         }
 
-        $datas['slug'] = $this->suffixSlugIfExisting($slugParams);
+        $slugModel = \Illuminate\Database\Eloquent\Model::unguarded(fn() => $this->slugs()->create($slugParams));
 
-        $datas[$this->getForeignKey()] = $this->id;
-
-        $slugModel = \Illuminate\Database\Eloquent\Model::unguarded(fn () => $this->getSlugModelClass()::create($datas));
-
-        $this->disableLocaleSlugs($slugParams['locale'], $slugModel->getKey());
+        if ($this->relationLoaded('slugs')) {
+            // Report update to slugs so that getSlug() returns the correct value
+            $this->slugs->add($slugModel);
+        }
+        if (!$this->wasRecentlyCreated) {
+            // There will not be any old slug if the model was just created
+            $this->disableLocaleSlugs($slugParams['locale'], $slugModel->getKey());
+        }
     }
 
-    public function disableLocaleSlugs(string|array $locale = null, int $except_slug_id = 0): void
+    public function disableLocaleSlugs(string|array $locale = null, int|array $except_slug_id = 0): void
     {
-        $query = $this->getSlugModelClass()::where($this->getForeignKey(), $this->id)
-            ->where('id', '<>', $except_slug_id);
+        $query = $this->slugs()
+            ->where('active', true)
+            ->whereNotIn('id', Arr::wrap($except_slug_id));
         if ($locale !== null) {
             $query->whereIn('locale', Arr::wrap($locale));
         }
         $query->update(['active' => 0]);
+        if ($this->relationLoaded('slugs')) {
+            // Report update to slugs so that getSlug() returns the correct value after an update without needing a refresh
+            $this->slugs->where('active', true)
+                ->whereNotIn('id', Arr::wrap($except_slug_id))
+                ->whereIn('locale', Arr::wrap($locale))
+                ->each(function (Model $slug) {
+                    $slug->active = false;
+                    $slug->syncOriginalAttribute('active');
+                });
+        }
     }
 
     private function suffixSlugIfExisting(array $slugParams): string
     {
-        $idsToExclude = $this->slugs()->withTrashed()->get('id')->pluck('id', 'id')->all();
-
         $slugBackup = $slugParams['slug'];
 
         unset($slugParams['active']);
 
+
         for ($i = 2; $i <= $this->nb_variation_slug + 1; ++$i) {
+            /** @var Builder $qCheck */
             $qCheck = $this->getSlugModelClass()::query();
             $qCheck->whereNull($this->getDeletedAtColumn());
-            $qCheck->whereNotIn('id', $idsToExclude);
+            $qCheck->whereNot($this->getForeignKey(), $this->getKey());
+
             foreach ($slugParams as $key => $value) {
                 $qCheck->where($key, '=', $value);
             }
@@ -259,10 +289,13 @@ trait HasSlug
     }
 
     /**
+     * @deprecated use suffixSlugIfExisting instead
      * Checks if a slug needs a suffix due to a conflict with another model.
      */
     private function slugNeedsSuffix(array $slugParams): bool
     {
+        trigger_deprecation('area17/twill', '3.5', 'The slugNeedsSuffix method is deprecated and will be removed in 4.x use suffixSlugIfExisting instead');
+
         unset($slugParams['active']);
 
         $hasExisting = false;
@@ -325,58 +358,88 @@ trait HasSlug
         return $this->getSlug();
     }
 
-    public function getSlugParams(?string $locale = null): ?array
+    public function getSlugDeps(): array
     {
-        if (!isset($this->translations) || count(getLocales()) === 1 || $this->translations->isEmpty()) {
-            $slugParams = $this->getSingleSlugParams($locale);
-            if ($slugParams !== null && !empty($slugParams)) {
-                return $slugParams;
-            }
+        return $this->slugDeps ?? array_slice($this->slugAttributes ?? [], 1);
+    }
+    public function getSlugFields(): array
+    {
+        if (!isset($this->slugFields) && isset($this->slugAttributes)) {
+            trigger_deprecation('area17/twill', '3.5', 'The slugAttributes property has been deprecated instead define slug fields with the slugFields property and additional columns with the slugDeps property');
         }
+        return $this->slugFields ?? array_slice($this->slugAttributes ?? [], 0, 1);
+    }
 
+    public function getSlugParams(?string $locale = null, bool $skipUnchanged = false): ?array
+    {
+        $translatedAttributes = $this->getTranslatedAttributes();
         $slugParams = [];
-        foreach ($this->translations as $translation) {
-            if ($translation->locale === $locale || $locale === null) {
-                $attributes = $this->slugAttributes;
+        $deps = $this->getSlugDeps();
+        $fields = $this->getSlugFields();
+        if (empty($fields)) {
+            return $locale === null ? [] : null;
+        }
+        foreach ($locale ? [$locale] : getLocales() as $appLocale) {
+            if ($appLocale === $locale || $locale === null) {
+                $wasChanged = $this->wasRecentlyCreated;
 
-                if (!$attributes) {
+                $translation = $this->translate($appLocale, $this->usePropertyFallback());
+                $getAttributeValue = function ($attribute) use ($translatedAttributes, $appLocale, $translation, &$wasChanged) {
+                    if (in_array($attribute, $translatedAttributes)) {
+                        if (!$wasChanged && $translation?->isDirty($attribute)) {
+                            $wasChanged = true;
+                        }
+                        if (!isset($translation->$attribute) && config('translatable.use_property_fallback', false)) {
+                            $fallback = $this->getFallbackLocale($appLocale);
+                            $fallbackTranslation = $this->translate($fallback);
+                            if (!$wasChanged && $fallbackTranslation?->isDirty($attribute)) {
+                                $wasChanged = true;
+                            }
+                            return $fallbackTranslation?->$attribute;
+                        }
+                        return $translation?->$attribute;
+                    }
+                    if (!$wasChanged && $this->isDirty($attribute)) {
+                        $wasChanged = true;
+                    }
+                    return $this->$attribute;
+                };
+
+                $slugFields = array_filter(array_map($getAttributeValue, $fields));
+
+                if (empty($slugFields)) {
+                    // Skip empty slugs
                     continue;
                 }
-
-                $slugAttribute = array_shift($attributes);
-
-                $slugDependenciesAttributes = [];
-                foreach ($attributes as $attribute) {
-                    if (!isset($this->$attribute)) {
-                        throw new \Exception("You must define the field {$attribute} in your model");
-                    }
-
-                    $slugDependenciesAttributes[$attribute] = $this->$attribute;
+                $slugDependencies = array_filter(array_combine($deps, array_map($getAttributeValue, $deps)));
+                if (count($slugDependencies) !== count($deps)) {
+                    $missing = array_keys(array_diff_key(array_flip($deps), $slugDependencies));
+                    throw new \Exception('The slug dependencies ' . (Arr::join($missing, ', ', ' and ') . ' are missing'));
                 }
-
-                if (!isset($translation->$slugAttribute) && !isset($this->$slugAttribute)) {
-                    throw new \Exception("You must define the field {$slugAttribute} in your model");
-                }
-
                 $slugParam = [
-                        'active' => $translation->active ?? true,
-                        'slug' => $translation->$slugAttribute ?? $this->$slugAttribute,
-                        'locale' => $translation->locale,
-                    ] + $slugDependenciesAttributes;
+                        'active' => $translation?->active ?? true,
+                        'slug' => Arr::join($slugFields, '-'),
+                        'locale' => $appLocale,
+                    ] + $slugDependencies;
 
                 if ($locale != null) {
-                    return $slugParam;
+                    return !$skipUnchanged || $wasChanged ? $slugParam : null;
                 }
 
-                $slugParams[] = $slugParam;
+                if (!$skipUnchanged || $wasChanged) {
+                    $slugParams[$appLocale] = $slugParam;
+                }
             }
         }
 
         return $locale === null ? $slugParams : null;
     }
 
+    /** @deprecated */
     public function getSingleSlugParams(?string $locale = null): ?array
     {
+        trigger_deprecation('area17/twill', '3.5', 'The getSingleSlugParams method is deprecated and will be removed in 4.x as it is not used, use getSlugParams instead');
+
         $slugParams = [];
         foreach (getLocales() as $appLocale) {
             if ($appLocale === $locale || $locale === null) {
@@ -433,7 +496,7 @@ trait HasSlug
 
     protected function getSuffixSlug(): string|int
     {
-        return $this->id;
+        return $this->getKey();
     }
 
     /**

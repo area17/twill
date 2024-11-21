@@ -56,7 +56,7 @@ class Author extends Model implements Sortable
     public $translatedAttributes = ['name', 'description', 'bio'];
 
     // uncomment and modify this as needed if you use the HasSlug trait
-    public $slugAttributes = ['name'];
+    protected $slugFields = ['name'];
 
     // add checkbox fields names here (published toggle is itself a checkbox)
     public $checkboxes = ['published'];

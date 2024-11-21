@@ -1,9 +1,10 @@
 <?php
 
-namespace integration;
+namespace A17\Twill\Tests\Integration;
 
+use A17\Twill\Models\Behaviors\HasSlug;
+use A17\Twill\Models\Model;
 use A17\Twill\Tests\Integration\Anonymous\AnonymousModule;
-use A17\Twill\Tests\Integration\TestCase;
 
 class SlugTest extends TestCase
 {
@@ -24,6 +25,26 @@ class SlugTest extends TestCase
             ->boot();
     }
 
+    public function testMultipleSlugAttributes()
+    {
+        $module = AnonymousModule::make('usernames', $this->app)
+            ->withFields([
+                'first_name' => [],
+                'last_name' => [],
+            ])
+            ->withSlugFields([
+                'last_name', 'first_name'
+            ])
+            ->boot();
+
+        $model = $module->getRepository()->create([
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+        ]);
+
+        $this->assertEquals('doe-john', $model->getSlug());
+    }
+
     public function testBasicSlugModel(): void
     {
         $model = $this->module->getRepository()->create([
@@ -36,17 +57,21 @@ class SlugTest extends TestCase
 
     public function testBasicSlugModelDuplicate(): void
     {
+        $this->module->getRepository()->create([
+            'title' => 'Id increment',
+            'slug' => ['en' => 'Id increment'],
+        ]);
         for ($i = 0; $i < 10; $i++) {
             $model = $this->module->getRepository()->create([
                 'title' => 'My title',
                 'slug' => ['en' => 'my-title'],
             ]);
 
-            $this->assertEquals($i === 0 ? 'my-title' : 'my-title-' . $i + 1, $model->getSlug());
+            $this->assertEquals($i === 0 ? 'my-title' : 'my-title-' . ($i > 2 ? $model->id : $i + 1), $model->getSlug());
         }
     }
 
-    public function testSlugLooping(): void
+    public function testReactivateSlug(): void
     {
         $model = $this->module->getRepository()->create([
             'title' => 'My title',
@@ -55,16 +80,27 @@ class SlugTest extends TestCase
 
         $this->assertEquals('my-title', $model->getSlug());
 
-        $this->module->getRepository()->update($model->id, ['title' => 'My title 2']);
+        $this->module->getRepository()->update($model->id, ['title' => 'My title updated']);
 
-        $this->assertEquals('my-title-2', $model->fresh()->getSlug());
+        $this->assertEquals('my-title-updated', $model->fresh()->getSlug());
 
-        $this->assertCount(2, $model->slugs()->get());
+        $activeSlug = $model->slugs()->where('active', true)->get();
+        $inactiveSlug = $model->slugs()->where('active', false)->get();
+        $this->assertEquals('my-title-updated', $activeSlug->first()->slug);
+        $this->assertEquals('my-title', $inactiveSlug->first()->slug);
+        $this->assertCount(1, $activeSlug);
+        $this->assertCount(1, $inactiveSlug);
 
         $this->module->getRepository()->update($model->id, ['title' => 'My title']);
 
         $this->assertEquals('my-title', $model->fresh()->getSlug());
-        $this->assertCount(2, $model->slugs()->get());
+
+        $activeSlug = $model->slugs()->where('active', true)->get();
+        $inactiveSlug = $model->slugs()->where('active', false)->get();
+        $this->assertEquals('my-title', $activeSlug->first()->slug);
+        $this->assertEquals('my-title-updated', $inactiveSlug->first()->slug);
+        $this->assertCount(1, $activeSlug);
+        $this->assertCount(1, $inactiveSlug);
     }
 
     public function testCanReuseSoftDeletedSlug(): void
@@ -78,6 +114,9 @@ class SlugTest extends TestCase
         $this->assertEquals('my-title', $model->getSlug());
 
         $this->module->getRepository()->delete($model->id);
+
+        $this->assertEquals(1, $model->slugs()->onlyTrashed()->count());
+        $this->assertEquals(0, $model->slugs()->count());
 
         // Create a new model after the delete.
         $newModel = $this->module->getRepository()->create([
@@ -94,7 +133,7 @@ class SlugTest extends TestCase
         // Restore the deleted model.
         $this->assertTrue($this->module->getRepository()->restore($model->id));
 
-        $model = $this->module->getModelClassName()::find($model->id);
+        $model = $model->fresh();
 
         $this->assertCount(1, $model->slugs()->get());
         $this->assertEquals('my-title-2', $model->getSlug());
@@ -117,49 +156,45 @@ class SlugTest extends TestCase
         $this->module->getRepository()->delete($model->id);
 
         // Create a new model after the delete.
-        $newModel = $this->module->getRepository()->create([
+        $this->module->getRepository()->create([
             'title' => 'My title',
             'slug' => ['en' => 'slug-update'],
         ]);
 
         // Total slugs should be 3.
-        $this->assertEquals('my-title', $this->module->getSlugModelClassName()::withTrashed()->get()[0]->slug);
-        $this->assertEquals('slug-update', $this->module->getSlugModelClassName()::withTrashed()->get()[1]->slug);
-        $this->assertEquals('slug-update', $this->module->getSlugModelClassName()::withTrashed()->get()[2]->slug);
+        $slugs = $this->module->getSlugModelClassName()::withTrashed()->get();
+        $this->assertEquals('my-title', $slugs[0]->slug);
+        $this->assertEquals('slug-update', $slugs[1]->slug);
+        $this->assertEquals('slug-update', $slugs[2]->slug);
 
-        $this->assertCount(3, $this->module->getSlugModelClassName()::withTrashed()->get());
+        $this->assertCount(3, $slugs);
 
         // Restore the deleted model.
         $this->assertTrue($this->module->getRepository()->restore($model->id));
 
-        $model = $this->module->getModelClassName()::find($model->id);
+        $model = $model->fresh();
 
         $this->assertCount(2, $model->slugs()->get());
         $this->assertEquals('slug-update-2', $model->getSlug());
     }
 
-    public function testReactivateSlug(): void
+    public function testCustomSlugDoesntChangeOnUpdate(): void
     {
+        /** @var Model|HasSlug $model */
         $model = $this->module->getRepository()->create([
             'title' => 'My title',
-            'slug' => ['en' => 'my-title'],
+            'slug' => ['en' => 'my-custom-slug'],
         ]);
 
-        $this->assertEquals('my-title', $model->getSlug());
-        $this->assertCount(1, $model->slugs()->get());
+        $this->assertEquals('my-custom-slug', $model->getSlug());
+        $this->assertEquals(1, $model->slugs()->count());
 
-        $model = $this->module->getRepository()->update($model->id, [
-            'slug' => ['en' => 'slug-update'],
-        ]);
+        $model = $this->module->getRepository()->update($model->id, ['position' => 1]);
 
-        $this->assertEquals('slug-update', $model->getSlug());
-        $this->assertCount(2, $model->slugs()->get());
+        $this->assertEquals(1, $model->slugs()->count());
+        $this->assertEquals('my-custom-slug', $model->getSlug());
 
-        $model = $this->module->getRepository()->update($model->id, [
-            'slug' => ['en' => 'my-title'],
-        ]);
-
-        $this->assertEquals('my-title', $model->getSlug());
-        $this->assertCount(2, $model->slugs()->get());
+        $model = $this->module->getRepository()->update($model->id, ['title' => 'My new title']);
+        $this->assertEquals('my-new-title', $model->getSlug());
     }
 }
