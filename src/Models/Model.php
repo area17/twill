@@ -28,7 +28,7 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
 
     public $timestamps = true;
 
-    public static function boot(): void
+    public static function boot()
     {
         static::saving(function (self $model) {
             // When saving a model multiple times in a row without refresh, then the model should not be recently created anymore
