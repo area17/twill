@@ -383,7 +383,7 @@ trait HasSlug
             if ($appLocale === $locale || $locale === null) {
                 $wasChanged = $this->wasRecentlyCreated;
 
-                $translation = $this->translate($appLocale, $this->usePropertyFallback());
+                $translation = method_exists($this, 'translate') ? $this->translate($appLocale, $this->usePropertyFallback()) : null;
                 $getAttributeValue = function ($attribute) use ($translatedAttributes, $appLocale, $translation, &$wasChanged) {
                     if (in_array($attribute, $translatedAttributes)) {
                         if (!$wasChanged && $translation?->isDirty($attribute)) {
