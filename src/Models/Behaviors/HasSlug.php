@@ -175,7 +175,7 @@ trait HasSlug
                 $this->slugs()->whereKey($oldMatchingSlug->getKey())->update(['active' => $isNowActive]);
                 if ($this->relationLoaded('slugs')) {
                     // Report update to slugs so that getSlug() returns the correct value
-                    $slug = $this->slugs->whereKey($oldMatchingSlug->getKey());
+                    $slug = $this->slugs->where($this->slugs()->getModel()->getKeyName(), $oldMatchingSlug->getKey())->first();
                     if ($slug) {
                         $slug->active = $isNowActive;
                         $slug->syncOriginalAttribute('active');
