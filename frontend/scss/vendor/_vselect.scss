@@ -168,6 +168,8 @@ $multiSelectHeight: 45px;
 }
 
 .a17 ~ .vs__dropdown-menu {
+  --vs-dropdown-z-index: 9;
+
   padding:15px 0;
   border-top:1px solid $color__border--light;
   box-shadow: 0px 1px 3.5px 0px rgba(0, 0, 0, 0.30);
