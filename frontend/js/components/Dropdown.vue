@@ -161,6 +161,8 @@
         }
       },
       closeFromDoc: function (event) {
+        if (!this.active) return
+
         const target = event.target
 
         if (event.type === 'scroll') {
