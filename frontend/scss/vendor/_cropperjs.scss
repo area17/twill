@@ -1,0 +1,30 @@
+/* make hit area for cropping points larger to help touch users crop images */
+
+.cropper-crop-box {
+  container-type: inline-size;
+  container-name: cropbox;
+}
+
+.cropper-point::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+}
+
+@container cropbox (min-width: 40px) {
+  .cropper-point::after {
+    inset: -5px;
+  }
+}
+
+@container cropbox (min-width: 60px) {
+  .cropper-point::after {
+    inset: -10px;
+  }
+}
+
+@container cropbox (min-width: 100px) {
+  .cropper-point::after {
+    inset: -20px;
+  }
+}
