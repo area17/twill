@@ -172,8 +172,13 @@
           }
         }
 
-        if (!this.clickable) this.close()
-        else if (!this.$el.querySelector('[data-dropdown-content]').contains(target) && this.clickable) this.close()
+        // timeout so the click is not triggered directly
+        this.timer = setTimeout(() => {
+          this.timer = null
+
+          if (!this.clickable) this.close()
+          else if (!this.$el.querySelector('[data-dropdown-content]').contains(target) && this.clickable) this.close()
+        }, 1)
       },
       open: function (onShow) {
         if (this.active) return
