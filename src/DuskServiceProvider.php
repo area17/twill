@@ -100,10 +100,10 @@ class DuskServiceProvider extends ServiceProvider
         Browser::macro('assertVselectHasOptions', function (string $wrapperClass, array $optionLabels) {
             $this->with($wrapperClass, function (Browser $element) use ($optionLabels) {
                 $element->click('.vs__search');
-                $element->waitFor('.vs__dropdown-menu');
+                $browser->waitFor('.vs__dropdown-menu');
 
                 foreach ($optionLabels as $optionLabel) {
-                    $element->assertSeeIn('.vs__dropdown-menu', $optionLabel);
+                    $browser->assertSeeIn('.vs__dropdown-menu', $optionLabel);
                 }
             });
         });
@@ -111,9 +111,9 @@ class DuskServiceProvider extends ServiceProvider
         Browser::macro('selectVselectOption', function (string $wrapperClass, string $optionLabel) {
             $this->with($wrapperClass, function (Browser $element) use ($optionLabel, $wrapperClass) {
                 $element->click('.vs__search');
-                $element->waitFor('.vs__dropdown-menu');
+                $browser->waitFor('.vs__dropdown-menu');
 
-                $element->clickAtXPath('//li[contains(.,"' . $optionLabel . '")]');
+                $browser->clickAtXPath('//li[contains(.,"' . $optionLabel . '")]');
 
                 $this->assertVselectHasOptionSelected($wrapperClass, $optionLabel);
             });
@@ -121,7 +121,7 @@ class DuskServiceProvider extends ServiceProvider
 
         Browser::macro('assertVselectHasOptionSelected', function (string $wrapperClass, string $optionLabel) {
             $this->with($wrapperClass, function (Browser $element) use ($optionLabel) {
-                $element->assertSeeIn('.vs__selected-options', $optionLabel);
+                $browser->assertSeeIn('.vs__selected-options', $optionLabel);
             });
         });
 
