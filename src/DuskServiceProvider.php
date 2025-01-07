@@ -113,7 +113,7 @@ class DuskServiceProvider extends ServiceProvider
                 $element->click('.vs__search');
                 $this->waitFor('.vs__dropdown-menu');
 
-                $this->clickAtXPath('//.vs__dropdown-menu li[contains(.,"' . $optionLabel . '")]');
+                $this->clickAtXPath('//ul[contains(@class,"vs__dropdown-menu")]//li[contains(text(),"' . $optionLabel . '")]');
 
                 $this->assertVselectHasOptionSelected($wrapperClass, $optionLabel);
             });
