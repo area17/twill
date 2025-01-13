@@ -7,7 +7,7 @@
               ref="blockList"
               :block="block"
               :index="index"
-              :withHandle="draggable"
+              :withHandle="allowSortable && draggable"
               :size="blockSize"
               :opened="opened"
           >
@@ -107,6 +107,10 @@
         required: false,
       },
       allowCreate: {
+        type: Boolean,
+        default: true
+      },
+      allowSortable: {
         type: Boolean,
         default: true
       },
