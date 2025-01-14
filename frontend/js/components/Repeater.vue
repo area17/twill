@@ -7,8 +7,8 @@
               ref="blockList"
               :block="block"
               :index="index"
-              :withHandle="allowSortable && draggable"
-              :withActions="allowActions"
+              :withHandle="reorder && draggable"
+              :withActions="displayActions"
               :size="blockSize"
               :opened="opened"
           >
@@ -111,11 +111,7 @@
         type: Boolean,
         default: true
       },
-      allowSortable: {
-        type: Boolean,
-        default: true
-      },
-      allowActions: {
+      displayActions: {
         type: Boolean,
         default: true
       },
@@ -123,7 +119,11 @@
         type: [Number, null],
         required: false,
         default: null
-      }
+      },
+      reorder: {
+        type: Boolean,
+        default: true
+      },
     },
     data: function () {
       return {

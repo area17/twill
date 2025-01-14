@@ -9,6 +9,8 @@ use A17\Twill\Services\Forms\Contracts\CanRenderForBlocks;
 use A17\Twill\Services\Forms\Fields\Repeater;
 use A17\Twill\Services\Forms\Traits\HasSubFields;
 use A17\Twill\Services\Forms\Traits\RenderForBlocks;
+use A17\Twill\Services\Forms\Fields\Traits\CanReorder;
+use A17\Twill\Services\Forms\Fields\Traits\DisableActions;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -17,6 +19,8 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
 {
     use RenderForBlocks;
     use HasSubFields;
+    use CanReorder;
+    use DisableActions;
 
     protected function __construct(
         private ?string $name = null,
@@ -25,8 +29,6 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         private ?Collection $fields = null,
         private ?string $label = null,
         private bool $allowCreate = true,
-        private bool $allowSortable = true,
-        private bool $allowActions = true,
         private ?string $relation = null,
         private ?bool $allowBrowse = false,
         private ?array $browser = null,
@@ -34,6 +36,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         private ?string $titleField = null,
         private ?bool $hideTitlePrefix = false,
         private ?bool $buttonAsLink = false,
+        private ?bool $displayActions = true,
         protected ?array $connectedTo = null,
     ) {
     }
@@ -93,20 +96,6 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
     public function disableCreate(bool $disableCreate = true): static
     {
         $this->allowCreate = ! $disableCreate;
-
-        return $this;
-    }
-
-    public function disableSortable(bool $disableSortable = true): static
-    {
-        $this->allowSortable = ! $disableSortable;
-
-        return $this;
-    }
-
-    public function disableActions(bool $disableActions = true): static
-    {
-        $this->allowActions = ! $disableActions;
 
         return $this;
     }
@@ -223,8 +212,8 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
             ->name($this->name)
             ->type($this->getRenderName())
             ->allowCreate($this->allowCreate)
-            ->allowSortable($this->allowSortable)
-            ->allowActions($this->allowActions)
+            ->disableReorder(!$this->reorder)
+            ->disableActions(!$this->displayActions)
             ->relation($this->relation ?? null)
             ->browserModule($this->allowBrowse ? $this->browser : null);
 

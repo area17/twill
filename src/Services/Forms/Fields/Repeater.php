@@ -4,17 +4,17 @@ namespace A17\Twill\Services\Forms\Fields;
 
 use A17\Twill\Services\Forms\Fields\Traits\CanReorder;
 use A17\Twill\Services\Forms\Fields\Traits\HasMax;
+use A17\Twill\Services\Forms\Fields\Traits\DisableActions;
 
 class Repeater extends BaseFormField
 {
     use HasMax;
     use CanReorder;
+    use DisableActions;
 
     protected ?string $type = null;
     protected bool $buttonAsLink = false;
     protected bool $allowCreate = true;
-    protected bool $allowSortable = true;
-    protected bool $allowActions = true;
     protected ?string $relation = null;
     protected ?array $browserModule = null;
 
@@ -61,20 +61,6 @@ class Repeater extends BaseFormField
     public function allowCreate(bool $allowCreate = true): static
     {
         $this->allowCreate = $allowCreate;
-
-        return $this;
-    }
-
-    public function allowSortable(bool $allowSortable = true): static
-    {
-        $this->allowSortable = $allowSortable;
-
-        return $this;
-    }
-
-    public function allowActions(bool $allowActions = true): static
-    {
-        $this->allowActions = $allowActions;
 
         return $this;
     }
