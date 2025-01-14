@@ -14,6 +14,7 @@ class Repeater extends BaseFormField
     protected bool $buttonAsLink = false;
     protected bool $allowCreate = true;
     protected bool $allowSortable = true;
+    protected bool $allowActions = true;
     protected ?string $relation = null;
     protected ?array $browserModule = null;
 
@@ -67,6 +68,13 @@ class Repeater extends BaseFormField
     public function allowSortable(bool $allowSortable = true): static
     {
         $this->allowSortable = $allowSortable;
+
+        return $this;
+    }
+
+    public function allowActions(bool $allowActions = true): static
+    {
+        $this->allowActions = $allowActions;
 
         return $this;
     }

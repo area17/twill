@@ -26,6 +26,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         private ?string $label = null,
         private bool $allowCreate = true,
         private bool $allowSortable = true,
+        private bool $allowActions = true,
         private ?string $relation = null,
         private ?bool $allowBrowse = false,
         private ?array $browser = null,
@@ -99,6 +100,13 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
     public function disableSortable(bool $disableSortable = true): static
     {
         $this->allowSortable = ! $disableSortable;
+
+        return $this;
+    }
+
+    public function disableActions(bool $disableActions = true): static
+    {
+        $this->allowActions = ! $disableActions;
 
         return $this;
     }
@@ -216,6 +224,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
             ->type($this->getRenderName())
             ->allowCreate($this->allowCreate)
             ->allowSortable($this->allowSortable)
+            ->allowActions($this->allowActions)
             ->relation($this->relation ?? null)
             ->browserModule($this->allowBrowse ? $this->browser : null);
 

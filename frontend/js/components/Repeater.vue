@@ -8,6 +8,7 @@
               :block="block"
               :index="index"
               :withHandle="allowSortable && draggable"
+              :withActions="allowActions"
               :size="blockSize"
               :opened="opened"
           >
@@ -111,6 +112,10 @@
         default: true
       },
       allowSortable: {
+        type: Boolean,
+        default: true
+      },
+      allowActions: {
         type: Boolean,
         default: true
       },
