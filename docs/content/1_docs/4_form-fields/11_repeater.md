@@ -35,9 +35,9 @@ Repeater::make()
 | name           | Name of the field                            | string  | same as `type`   |
 | max            | Maximum amount that can be created           | number  | null (unlimited) |
 | buttonAsLink   | Displays the `Add` button as a centered link | boolean | false            |
-| disableCreate  | Disables ability to add new items            | boolean | false            |
-| disableActions | Removes row item actions                     | boolean | false            |
-| disableReorder | Disables reordering of repeater items        | boolean | false            |
+| disableCreate  | Disables ability to add new items            | boolean | true             |
+| disableActions | Removes row item actions                     | boolean | true             |
+| disableReorder | Disables reordering of repeater items        | boolean | true             |
 
 <br/>
 
