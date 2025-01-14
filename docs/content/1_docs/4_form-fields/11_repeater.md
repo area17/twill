@@ -29,13 +29,15 @@ Repeater::make()
 :::#tab:::
 :::#tabs:::
 
-| Option       | Description                                  | Type    | Default value    |
-|:-------------|:---------------------------------------------|:--------|:-----------------|
-| type         | Type of repeater items                       | string  |                  |
-| name         | Name of the field                            | string  | same as `type`   |
-| max          | Maximum amount that can be created           | number  | null (unlimited) |
-| buttonAsLink | Displays the `Add` button as a centered link | boolean | false            |
-| reorder      | Allow reordering of repeater items           | boolean | true             |
+| Option         | Description                                  | Type    | Default value    |
+|:---------------|:---------------------------------------------|:--------|:-----------------|
+| type           | Type of repeater items                       | string  |                  |
+| name           | Name of the field                            | string  | same as `type`   |
+| max            | Maximum amount that can be created           | number  | null (unlimited) |
+| buttonAsLink   | Displays the `Add` button as a centered link | boolean | false            |
+| disableCreate  | Disables ability to add new items            | boolean | false            |
+| disableActions | Removes row item actions                     | boolean | false            |
+| disableReorder | Disables reordering of repeater items        | boolean | false            |
 
 <br/>
 
