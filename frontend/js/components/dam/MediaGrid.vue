@@ -2,8 +2,11 @@
     <div class="mediagrid">
       <div class="mediagrid__item" v-for="item in items" :key="item.id">
         <span class="mediagrid__button s--picked">
-            <img :src="item.src" class="mediagrid__img" />
-            <span v-if="item.fileExtension" class="mediagrid__label">{{ item.fileExtension }}</span>
+            <img v-if="isImage(item.fileExtension)" :src="item.src" class="mediagrid__img" />
+            <span v-else class="mediagrid__file-icon">
+                <span v-svg :symbol="getFileIcon(item.fileExtension)"></span>
+            </span>
+            <span v-if="!isImage(item.fileExtension)" class="mediagrid__filename">{{ item.name }}</span>
             <span class="mediagrid__close__btn" @click="deleteMedia(item)">
                 <span v-svg  symbol="close_icon"></span>
             </span>
@@ -33,6 +36,41 @@
   
   <style lang="scss" scoped>
     $height_text: 17px;
+
+    .mediagrid__file-icon {
+  
+
+        :deep(.icon) {
+      width: 96px !important;
+      height: 96px !important;
+  }
+
+  :deep(.icon--pdf svg),
+  :deep(.icon--b-audio svg),
+  :deep(.icon--video svg),
+  :deep(.icon--psd svg),
+  :deep(.icon--zip svg),
+  :deep(.icon--ppt svg),
+  :deep(.icon--doc svg),
+  :deep(.icon--txt svg) {
+      width: 96px !important;
+      height: 96px !important;
+  }
+}
+
+.mediagrid__filename {
+  color: white;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 12px;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 0 5px;
+  word-break: break-word;
+  margin-left: 2px;
+  margin-right: 2px;
+}
   
     .mediagrid {
       display: block;

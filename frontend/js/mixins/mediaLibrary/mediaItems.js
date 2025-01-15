@@ -40,6 +40,38 @@ export default {
     },
     shiftToggleSelection: function (item) {
       this.$emit('shiftChange', item, true)
-    }
+    },
+    isImage: function(extension) {
+      const ext = extension.toLowerCase()
+      const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp']
+      return imageExtensions.includes(ext)
+    },
+    getFileIcon: function(extension) {
+      const ext = extension.toLowerCase()
+      switch(ext) {
+        case 'pdf':
+          return 'pdf'
+        case 'psd':
+          return 'psd'
+        case 'zip':
+          return 'zip'
+        case 'ppt':
+        case 'pptx':
+          return 'ppt'
+        case 'doc':
+        case 'docx':
+          return 'doc'
+        case 'txt':
+          return 'txt'
+        case 'mp3':
+        case 'wav':
+          return 'b-audio'
+        case 'mp4':
+        case 'mov':
+          return 'video'
+        default:
+          return 'txt'
+      }
+    },
   }
 }

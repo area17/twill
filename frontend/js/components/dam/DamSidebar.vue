@@ -33,6 +33,7 @@
                 ref="lightboxLink"
               >
                 <img
+                  v-if="firstMedia.thumbnail"
                   tabindex="0"
                   @keyup.left="handleKeyUp('previous')"
                   @keyup.right="handleKeyUp('next')"
@@ -58,9 +59,10 @@
               :aria-owns="getOwnedListItems.join(' ')"
               aria-labelledby="metaTitle"
             >
-              <li class="f--small" v-if="firstMedia.title" id="meta__title">
-                {{ $trans('dam.title', 'Title') }}:
-                {{ firstMedia.title }}
+            
+              <li class="f--small" v-if="firstMedia.name && firstMedia.title" id="meta__title">
+                {{ $trans('dam.filename', 'File name') }}:
+                {{ firstMedia.name }}
               </li>
               <li class="f--small" v-if="firstMedia.size" id="meta__size">
                 {{ $trans('dam.file-size', 'File size') }}:
@@ -746,8 +748,21 @@
       },
       getSharedItems: function() {
         return function(fieldName, key = null) {
+          let res = []
           const fieldValues = this.medias
-            .map(media => media[fieldName] || [])
+            .map(media => {
+              // Handle different tag types
+              switch(fieldName) {
+                case 'tags':
+                  return media.mediaTags || []
+                case 'sectors':
+                  return media.sectors || []
+                case 'disciplines':
+                  return media.disciplines || []
+                default:
+                  return media[fieldName] || []
+              }
+            })
             .reduce((allItems, currentItems) => {
               if (Array.isArray(allItems) && Array.isArray(currentItems)) {
                 return allItems.filter(item => {
@@ -759,19 +774,21 @@
               }
               return []
             })
+
           if (key) {
-            return fieldValues.map(item => ({
+            res = fieldValues.map(item => ({
               ...item,
-              name : item.label,
-              url : this.getTagUrl(fieldName, [item.value])
-            }) )
+              name: item.label,
+              url: this.getTagUrl(fieldName, [item.value])
+            }))
           } else {
-            return fieldValues.map(item => ({
+            res = fieldValues.map(item => ({
               ...item,
-              name : item.name,
-              url : this.getTagUrl(fieldName, [item.value]),
+              name: item.name,
+              url: this.getTagUrl(fieldName, [item.value])
             }))
           }
+          return res
         }
       },
 
@@ -942,6 +959,7 @@
         this.isOpen = false
       },
       getFormData: function(form) {
+       
         return FormDataAsObj(form)
       },
       getMediaToReplaceId: function() {

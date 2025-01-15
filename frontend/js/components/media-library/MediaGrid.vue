@@ -17,7 +17,10 @@
         @click.meta="shiftToggleSelection(item)"
         @click.ctrl="shiftToggleSelection(item)">
        
-          <img :src="item.thumbnail" class="mediagrid__img" />
+          <img v-if="isImage(item.fileExtension)" :src="item.thumbnail" class="mediagrid__img" />
+          <span v-else class="mediagrid__file-icon">
+            <span v-svg :symbol="getFileIcon(item.fileExtension)"></span>
+          </span>
           <span v-if="item.fileExtension" class="mediagrid__label">{{ item.fileExtension }}</span>
           <span v-if="variant === 'dam'" v-svg class="mediagrid__preview" symbol="preview" aria-hidden="true"></span>
         </span>
@@ -61,6 +64,28 @@
 
 <style lang="scss" scoped>
   $height_text: 17px;
+
+  .mediagrid__file-icon {
+  
+
+  :deep(.icon) {
+      width: 96px !important;
+      height: 96px !important;
+  }
+
+  :deep(.icon--pdf svg),
+  :deep(.icon--b-audio svg),
+  :deep(.icon--video svg),
+  :deep(.icon--psd svg),
+  :deep(.icon--zip svg),
+  :deep(.icon--ppt svg),
+  :deep(.icon--doc svg),
+  :deep(.icon--txt svg) {
+      width: 96px !important;
+      height: 96px !important;
+  }
+}
+
 
   .mediagrid {
     display: block;

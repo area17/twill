@@ -266,6 +266,7 @@
         const mediaItem = {
           id: this._uploader.methods.getUuid(id),
           name: sanitizeFilename(name),
+          fileExtension: file.name.split('.').pop(),
           src: imagePreviewUrl, // The preview URL
         };
 
@@ -455,4 +456,6 @@
       display: none;
     }
   }
+
+
 </style>

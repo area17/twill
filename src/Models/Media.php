@@ -98,6 +98,13 @@ class Media extends Model
                     'video' => null,
                 ],
             ],
+            'mediaTags' => $this->tags->map(function ($tag) {
+                return [
+                    'value' => $tag->name,
+                    'label' => $tag->name,
+                    'name' => $tag->name,
+                ];
+            })->toArray(),
             'browsers' => Collection::make(config('twill.media_library.browsers'))->filter(function($field){
                 return method_exists($this, $field['name']);
             })->mapWithKeys(function ($field) {
