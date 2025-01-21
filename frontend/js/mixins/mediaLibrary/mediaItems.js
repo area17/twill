@@ -42,12 +42,13 @@ export default {
       this.$emit('shiftChange', item, true)
     },
     isImage: function(extension) {
-      const ext = extension.toLowerCase()
+      if (!extension) return false
       const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp']
-      return imageExtensions.includes(ext)
+      return imageExtensions.includes(extension)
     },
     getFileIcon: function(extension) {
       const ext = extension.toLowerCase()
+      if (!ext) return 'txt'
       switch(ext) {
         case 'pdf':
           return 'pdf'
