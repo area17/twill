@@ -47,8 +47,8 @@ export default {
       return imageExtensions.includes(extension)
     },
     getFileIcon: function(extension) {
+      if (!extension) return 'txt'
       const ext = extension.toLowerCase()
-      if (!ext) return 'txt'
       switch(ext) {
         case 'pdf':
           return 'pdf'
