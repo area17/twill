@@ -6,7 +6,7 @@ A _role_ is a way to define different contexts in which an image might be placed
 
 _Crops_ are more self-explanatory. Twill comes with some pre-defined crop settings to allow you to set different variants of a given image, so crops can be used in combination with _roles,_ or they can be used on their own with a single role to define multiple cropping ratios on the same image.
 
-Using the Person example, your `cover` image could have a `square` crop for mobile screens, but could use a `16/9` crop on larger screens. Those values are editable at your convenience for each model, even if there are already some crops created in the CMS.
+Using the Person example, your `cover` image could have a `square` crop for mobile screens, but could use a `16/9` crop on larger screens. Those values are editable at your convenience for each model in the `ratio` option, even if there are already some crops created in the CMS. By specifying `0` as a `ratio`, no automatic crop will happen and you'll be able to crop freely.
 
 The only thing you have to do to make it work is to compose your model and repository with the appropriate traits, respectively `HasMedias` and `HandleMedias`, set up your `$mediasParams` configuration and use the `medias` form partial in your form view (more info in the CRUD section).
 
