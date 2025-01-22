@@ -36,7 +36,6 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         private ?string $titleField = null,
         private ?bool $hideTitlePrefix = false,
         private ?bool $buttonAsLink = false,
-        private ?bool $displayActions = true,
         protected ?array $connectedTo = null,
     ) {
     }
