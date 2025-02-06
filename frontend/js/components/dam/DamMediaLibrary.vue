@@ -29,7 +29,7 @@
                 <div class="medialibrary__list-items">
                   <a17-mediagrid :items="renderedMediaItems" :selected-items="selectedMedias"
                     @deleteMedia="deleteMedia" />
-                  <a17-spinner v-if="loading" class="medialibrary__spinner">{{ $trans('dam.loading', 'Loading') }}&hellip;</a17-spinner>
+                  
                 </div>
               </div>
             </div>
@@ -55,6 +55,7 @@
           <a17-button type="submit" name="create" variant="validate" @click="saveFiles">{{ uploadBtnLabel }}</a17-button>
         </a17-inputframe>
       </div>
+      <a17-spinner v-if="loading" class="medialibrary__spinner">{{ $trans('dam.loading', 'Loading') }}&hellip;</a17-spinner>
     </a17-modal>
   </div>
 </template>
@@ -200,6 +201,7 @@
 
       },
       saveFiles() {
+        this.loading = true;
         if (this.project && this.project.length > 0) {
           this.metadata.project = this.project[0].id;
         }
@@ -217,6 +219,7 @@
         this.$refs.modal.hide()
         this.$refs.metadataModal.hide()
         this.mediaItems = []
+        this.loading = false;
       },
       opened: function () {
       },
