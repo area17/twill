@@ -1853,7 +1853,7 @@ abstract class ModuleController extends Controller
     {
         $moduleParts = explode('.', $this->moduleName);
 
-        return Str::singular($moduleParts[count($moduleParts) - 2]) . '_id';
+        return Str::snake(Str::singular($moduleParts[count($moduleParts) - 2])) . '_id';
     }
 
     /**
