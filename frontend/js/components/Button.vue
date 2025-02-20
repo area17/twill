@@ -321,7 +321,7 @@
   .button--ghost {
     height: $height_small_btn;
     line-height: $height_small_btn - 2px;
-    border-radius: $height_small_btn / 2;
+    border-radius: calc($height_small_btn / 2);
     background-color: transparent;
     border: 1px solid $color__border--hover;
     color: $color__text--light;

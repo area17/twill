@@ -21,9 +21,6 @@ class Imgix implements ImageServiceInterface
      */
     protected $config;
 
-    /**
-     * @param Config $config
-     */
     public function __construct(Config $config)
     {
         $this->config = $config;
@@ -44,7 +41,6 @@ class Imgix implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
      * @return string
      */
     public function getUrl($id, array $params = [])
@@ -61,8 +57,6 @@ class Imgix implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $cropParams
-     * @param array $params
      * @return string
      */
     public function getUrlWithCrop($id, array $cropParams, array $params = [])
@@ -72,10 +66,8 @@ class Imgix implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $cropParams
      * @param mixed $width
      * @param mixed $height
-     * @param array $params
      * @return string
      */
     public function getUrlWithFocalCrop($id, array $cropParams, $width, $height, array $params = [])
@@ -85,7 +77,6 @@ class Imgix implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
      * @return string
      */
     public function getLQIPUrl($id, array $params = [])
@@ -101,7 +92,6 @@ class Imgix implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
      * @return string
      */
     public function getSocialUrl($id, array $params = [])
@@ -117,7 +107,6 @@ class Imgix implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
      * @return string
      */
     public function getCmsUrl($id, array $params = [])
@@ -155,7 +144,7 @@ class Imgix implements ImageServiceInterface
                 'width' => $imageMetadata['PixelWidth'],
                 'height' => $imageMetadata['PixelHeight'],
             ];
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             try {
                 list($width, $height) = getimagesize($url);
 
@@ -163,7 +152,7 @@ class Imgix implements ImageServiceInterface
                     'width' => $width,
                     'height' => $height,
                 ];
-            } catch (\Exception $e) {
+            } catch (\Exception $exception) {
                 return [
                     'width' => 0,
                     'height' => 0,

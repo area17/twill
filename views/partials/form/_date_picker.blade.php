@@ -1,16 +1,6 @@
-@php
-    $withTime = $withTime ?? true;
-    $allowInput = $allowInput ?? false;
-    $allowClear = $allowClear ?? false;
-    $note = $note ?? false;
-    $inModal = $fieldsInModal ?? false;
-    $timeOnly = $timeOnly ?? false;
-    $disabled = $disabled ?? false;
-@endphp
-
 <a17-datepicker
     label="{{ $label }}"
-    @include('twill::partials.form.utils._field_name')
+    {!! $formFieldName() !!}
     place-holder="{{ $placeholder ?? $label }}"
     @if ($disabled) disabled @endif
     @if ($withTime) enable-time @endif
@@ -29,7 +19,7 @@
     in-store="date"
 ></a17-datepicker>
 
-@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
+@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && is_null($formFieldsValue = getFormFieldsValue($form_fields, $name))))
 @push('vuexStore')
     window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
         name: '{{ $name }}',

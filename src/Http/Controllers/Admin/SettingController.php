@@ -3,10 +3,13 @@
 namespace A17\Twill\Http\Controllers\Admin;
 
 use A17\Twill\Repositories\SettingRepository;
+use A17\Twill\Services\Forms\Form;
 use Illuminate\Config\Repository as Config;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\View;
 use Illuminate\View\Factory as ViewFactory;
 
 class SettingController extends Controller
@@ -57,24 +60,32 @@ class SettingController extends Controller
      * @param string $section
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\View\View
      */
-    public function index($section)
+    public function index(string $section)
     {
-        return $this->viewFactory->exists('twill.settings.' . $section)
-        ? $this->viewFactory->make('twill.settings.' . $section, [
+        if (! $this->viewFactory->exists('twill.settings.' . $section)) {
+            return $this->redirector->back();
+        }
+
+        $formFields = $this->settings->getFormFieldsForSection($section);
+
+        View::share('form', [
+            'form_fields' => $formFields,
+        ]);
+
+        return $this->viewFactory->make('twill.settings.' . $section, [
             'customForm' => true,
             'editableTitle' => false,
             'customTitle' => ucfirst($section) . ' settings',
             'section' => $section,
-            'form_fields' => $this->settings->getFormFields($section),
-            'saveUrl' => $this->urlGenerator->route('twill.settings.update', $section),
+            'form_fields' => $formFields,
+            'formBuilder' => Form::make(),
+            'saveUrl' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'settings.update', $section),
             'translate' => true,
-        ])
-        : $this->redirector->back();
+        ]);
     }
 
     /**
      * @param mixed $section
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      */
     public function update($section, Request $request)
@@ -88,5 +99,11 @@ class SettingController extends Controller
         fireCmsEvent('cms-settings.saved');
 
         return $this->redirector->back();
+    }
+
+    public function getSubmitOptions(Model $item): ?array
+    {
+        // Use options from form template
+        return null;
     }
 }

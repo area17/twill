@@ -4,7 +4,7 @@ use Kalnoy\Nestedset\NestedSet;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCategoriesTables extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -54,4 +54,4 @@ class CreateCategoriesTables extends Migration
 
         Schema::dropIfExists('categories');
     }
-}
+};

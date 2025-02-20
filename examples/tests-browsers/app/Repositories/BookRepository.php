@@ -10,7 +10,7 @@ class BookRepository extends ModuleRepository
 {
     use HandleRevisions;
 
-    protected $relatedBrowsers = ['writers'];
+    protected $relatedBrowsers = ['writers', 'books'];
 
     public function __construct(Book $model)
     {

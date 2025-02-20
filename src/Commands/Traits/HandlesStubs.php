@@ -57,6 +57,6 @@ trait HandlesStubs
      */
     public function removeEmptyLinesWithOnlySpaces($stub)
     {
-        return preg_replace('/^ +\n/m', '', $stub);
+        return preg_replace('#^ +\n#m', '', $stub);
     }
 }

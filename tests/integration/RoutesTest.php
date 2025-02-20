@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Tests\Integration;
 
-class RoutesTest extends TestCase
+class RoutesTest extends ModulesTestBase
 {
     const ROUTES = [
         'storage/media-library/{path}',
@@ -99,20 +99,10 @@ class RoutesTest extends TestCase
         'twill/users/{user}/registration-email',
     ];
 
-    public function testCanListAllRoutes()
+    public function testCanListAllRoutes(): void
     {
         $this->getAllUris()->each(
             function($uri) { $this->assertContains($uri, collect(static::ROUTES)); }
         );
-    }
-
-    /**
-     * dd Routes
-     */
-    public function ddRoutes()
-    {
-        // This is only a helper to dump and die the current list of routes
-
-        dd($this->getAllUris()->toArray());
     }
 }

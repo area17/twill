@@ -1,7 +1,8 @@
-import revisionAPI from '../api/revision'
-import { REVISION } from '../mutations'
 import ACTIONS from '@/store/actions'
 import { getFormData } from '@/utils/getFormData.js'
+
+import revisionAPI from '../api/revision'
+import { REVISION } from '../mutations'
 
 const state = {
   loading: false,

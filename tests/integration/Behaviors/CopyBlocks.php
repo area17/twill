@@ -2,10 +2,14 @@
 
 namespace A17\Twill\Tests\Integration\Behaviors;
 
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 trait CopyBlocks
 {
+    private $files;
+
     public function copyBlocks()
     {
         $allFiles = collect([
@@ -42,5 +46,31 @@ trait CopyBlocks
         }
 
         return $directory;
+    }
+
+    /**
+     * Copy all sources to destinations.
+     */
+    public function copyFiles(Collection $files): void
+    {
+        $this->files = app()->make(Filesystem::class);
+        collect($files)->each(function ($destination, $source) {
+            collect($destination)->each(function ($destination) use ($source) {
+                $source = $this->makeFileName($source);
+
+                $destination = $this->makeFileName($destination, $source);
+
+                if (!$this->files->exists($directory = dirname($destination))) {
+                    $this->files->makeDirectory($directory, 0755, true);
+                }
+
+                if ($this->files->exists($destination)) {
+                    // @todo: Check why this removes the source file on my local environment.
+                    // $this->files->delete($destination);
+                }
+
+                $this->files->copy($source, $destination);
+            });
+        });
     }
 }

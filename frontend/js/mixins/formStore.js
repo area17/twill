@@ -1,5 +1,6 @@
 import isEqual from 'lodash/isEqual'
-import { mapState, mapGetters } from 'vuex'
+import { mapGetters,mapState } from 'vuex'
+
 import { FORM } from '@/store/mutations'
 
 export default {
@@ -77,6 +78,13 @@ export default {
     },
     allowSubmit: function () {
       this.$store.commit(FORM.ALLOW_SUBMIT)
+    },
+    destroyValue: function () {
+      if (this.inStore !== '') {
+        // Delete form field from store because the field has been removed
+        if (this.inModal) this.$store.commit(FORM.REMOVE_MODAL_FIELD, this.getFieldName())
+        else this.$store.commit(FORM.REMOVE_FORM_FIELD, this.getFieldName())
+      }
     }
   },
   beforeMount: function () {

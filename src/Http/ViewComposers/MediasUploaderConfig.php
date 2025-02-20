@@ -24,11 +24,6 @@ class MediasUploaderConfig
      */
     protected $sessionStore;
 
-    /**
-     * @param UrlGenerator $urlGenerator
-     * @param Config $config
-     * @param SessionStore $sessionStore
-     */
     public function __construct(UrlGenerator $urlGenerator, Config $config, SessionStore $sessionStore)
     {
         $this->urlGenerator = $urlGenerator;
@@ -39,7 +34,6 @@ class MediasUploaderConfig
     /**
      * Binds data to the view.
      *
-     * @param View $view
      * @return void
      */
     public function compose(View $view)
@@ -52,7 +46,7 @@ class MediasUploaderConfig
         // the execution of the appropriate implementation
         $endpointByType = [
             'local' => function () {
-                return $this->urlGenerator->route('twill.media-library.medias.store');
+                return $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'media-library.medias.store');
             },
             's3' => function () use ($libraryDisk) {
                 return s3Endpoint($libraryDisk);
@@ -64,25 +58,25 @@ class MediasUploaderConfig
 
         $signatureEndpointByType = [
             'local' => null,
-            's3' => $this->urlGenerator->route('twill.media-library.sign-s3-upload'),
-            'azure' => $this->urlGenerator->route('twill.media-library.sign-azure-upload'),
+            's3' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'media-library.sign-s3-upload'),
+            'azure' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'media-library.sign-azure-upload'),
         ];
 
         $mediasUploaderConfig = [
             'endpointType' => $endpointType,
             'endpoint' => $endpointByType[$endpointType](),
-            'successEndpoint' => $this->urlGenerator->route('twill.media-library.medias.store'),
+            'successEndpoint' => $this->urlGenerator->route(config('twill.admin_route_name_prefix') . 'media-library.medias.store'),
             'signatureEndpoint' => $signatureEndpointByType[$endpointType],
             'endpointBucket' => $this->config->get('filesystems.disks.' . $libraryDisk . '.bucket', 'none'),
             'endpointRegion' => $this->config->get('filesystems.disks.' . $libraryDisk . '.region', 'none'),
             'endpointRoot' => $endpointType === 'local' ? '' : $this->config->get('filesystems.disks.' . $libraryDisk . '.root', ''),
-            'accessKey' => $this->config->get('filesystems.disks.' . $libraryDisk . '.key', 'none'),
+            'accessKey' => $endpointType === 's3' ? $this->config->get('filesystems.disks.' . $libraryDisk . '.key', '') : '',
             'csrfToken' => $this->sessionStore->token(),
             'acl' => $this->config->get('twill.media_library.acl'),
             'filesizeLimit' => $this->config->get('twill.media_library.filesize_limit'),
             'allowedExtensions' => $allowedExtensions,
         ];
 
-        $view->with(compact('mediasUploaderConfig'));
+        $view->with(['mediasUploaderConfig' => $mediasUploaderConfig]);
     }
 }

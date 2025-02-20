@@ -15,6 +15,7 @@
 
 <script>
   import { mapState } from 'vuex'
+
   import parentTreeToOptions from '@/utils/parentTreeToOptions.js'
 
   export default {

@@ -4,7 +4,7 @@
       <h3 v-if="activeToggle" @click="onClickVisibility" role="button" :aria-expanded="visible ?  'true' : 'false'" >{{ title}} <span v-svg symbol="dropdown_module"></span></h3>
       <h3 v-else>{{ title }}</h3>
     </header>
-    <header v-else="" class="fieldset__header" :class="activeClasses">
+    <header v-else class="fieldset__header" :class="activeClasses">
       <slot name="header"></slot>
     </header>
 

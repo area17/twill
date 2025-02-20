@@ -1,9 +1,9 @@
 @extends('twill::layouts.settings')
 
 @section('contentFields')
-    @formField('input', [
-        'label' => 'Site title',
-        'name' => 'site_title',
-        'textLimit' => '80'
-    ])
+    <x-twill::input
+        label="Site title"
+        name="site_title"
+        :maxlength="80"
+    />
 @stop

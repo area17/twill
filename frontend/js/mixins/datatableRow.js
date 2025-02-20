@@ -1,8 +1,9 @@
 import { mapState } from 'vuex'
-import NOTIFICATION from '@/store/mutations/notification'
+
+import { TableCellPrefix, TableCellSpecificColumns } from '@/components/table/tableCell'
 import ACTIONS from '@/store/actions'
 import { DATATABLE, FORM, LANGUAGE, MODALEDITION } from '@/store/mutations'
-import { TableCellPrefix, TableCellSpecificColumns } from '@/components/table/tableCell'
+import NOTIFICATION from '@/store/mutations/notification'
 
 export default {
   props: {
@@ -38,8 +39,11 @@ export default {
     })
   },
   methods: {
-    currentComponent (colName) {
-      return TableCellPrefix + colName.toLowerCase()
+    currentComponent (col) {
+      if (typeof col === 'object') {
+        return TableCellPrefix + (col.specificType ?? col.name.toLowerCase())
+      }
+      return TableCellPrefix + col;
     },
     currentComponentProps (col) {
       const props = {
@@ -100,12 +104,11 @@ export default {
         [prefix + '--draggable']: col.name === 'draggable',
         [prefix + '--languages']: col.name === 'languages',
         [prefix + '--nested']: col.name === 'nested',
-        [prefix + '--nested--parent']: col.name === 'nested' && this.nestedDepth === 0,
-        [prefix + '--name']: col.name === 'name'
+        [prefix + '--nested--parent']: col.name === 'nested' && this.nestedDepth === 0
       }
     },
     isSpecificColumn: function (col) {
-      return TableCellSpecificColumns.includes(col.name)
+      return TableCellSpecificColumns.includes(col.specificType ?? col.name)
     },
     tableCellUpdate: function (data) {
       switch (data.col) {

@@ -61,8 +61,8 @@
 </template>
 
 <script>
-  import A17Textfield from '@/components/Textfield.vue'
   import A17ModalValidation from '@/components/modals/ModalValidationButtons.vue'
+  import A17Textfield from '@/components/Textfield.vue'
   import { FORM } from '@/store/mutations'
 
   export default {

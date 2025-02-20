@@ -25,6 +25,7 @@
 
 <script>
   import debounce from 'lodash/debounce'
+
   import FormDataAsObj from '@/utils/formDataAsObj.js'
 
   export default {
@@ -179,7 +180,7 @@
     div {
       display:inline-block;
 
-      button, a {
+      button:not(.button--validate), a{
         vertical-align: middle;
       }
 

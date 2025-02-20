@@ -2,35 +2,42 @@
 
 namespace A17\Twill\Commands;
 
+use Illuminate\Filesystem\Filesystem;
+
 class Update extends Command
 {
-    protected $signature = 'twill:update';
+    protected $signature = 'twill:update {--fromBuild} {--migrate}';
+    protected $description = 'Publish new updated Twill assets and optionally run database migrations';
 
-    protected $description = 'Publish new updated Twill assets';
+    public function __construct(public Filesystem $files)
+    {
+        parent::__construct();
+    }
 
-    /**
-     * Executes the console command.
-     *
-     * @return mixed
-     */
-    public function handle()
+    public function handle(): void
     {
         $this->publishAssets();
-        $this->call('cache:clear');
+        $this->call('twill:flush-manifest');
         $this->call('view:clear');
+        if ($this->option('migrate') || $this->confirm('Do you want to run any pending database migrations now?')) {
+            $this->call('migrate');
+        }
     }
 
     /**
      * Publishes the package frontend assets.
-     *
-     * @return void
      */
-    private function publishAssets()
+    private function publishAssets(): void
     {
-        $this->call('vendor:publish', [
-            '--provider' => 'A17\Twill\TwillServiceProvider',
-            '--tag' => 'assets',
-            '--force' => true,
-        ]);
+        if ($this->option('fromBuild')) {
+            // If this is from a build, we copy from dist to public.
+            $this->files->copyDirectory(__DIR__ . '/../../dist/', public_path());
+        } else {
+            $this->call('vendor:publish', [
+                '--provider' => \A17\Twill\TwillServiceProvider::class,
+                '--tag' => 'assets',
+                '--force' => true,
+            ]);
+        }
     }
 }

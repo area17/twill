@@ -30,6 +30,7 @@ class SetupDevTools extends Command
 
             return;
         }
+
         $basePath = base_path();
         $this->line('Installing php cs fixer');
         exec("cd $basePath && composer require friendsofphp/php-cs-fixer");

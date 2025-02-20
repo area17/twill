@@ -1,0 +1,9 @@
+/tests                          export-ignore
+/phpunit.xml                    export-ignore
+/.github                        export-ignore
+/phpstan.neon                   export-ignore
+/phpstan-baseline.neon          export-ignore
+/phpcs.xml                      export-ignore
+/docs                           export-ignore
+/docs-api                       export-ignore
+/examples/tests-*               export-ignore

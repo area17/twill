@@ -128,11 +128,11 @@ class ModulesAuthorsTest extends ModulesTestBase
         $this->assertEquals('1', $this->author->published);
     }
 
-    public function testCanDisplayErrorWhenPublishHasWrongData()
+    public function testCanDisplayErrorWhenPublishHasWrongData(): void
     {
-        $this->httpRequestAssert('/twill/personnel/authors/publish', 'PUT');
-
-        $this->assertSomethingWrongHappened();
+        $this->putJson('/twill/personnel/authors/publish')->assertJson(
+            ['message' => 'Author was not published. Something wrong happened!']
+        );
     }
 
     public function testCanRaiseHttpNotFoundOnAnEmptyRestoreRevision()
@@ -150,6 +150,8 @@ class ModulesAuthorsTest extends ModulesTestBase
         $data = [
             'id' => 1,
             'type' => 'a17-block-quote',
+            'editor_name' => 'default',
+            'is_repeater' => false,
             'content' => [
                 'quote' => ($quote = $this->fakeText(70)),
             ],
@@ -167,7 +169,7 @@ class ModulesAuthorsTest extends ModulesTestBase
     public function testErrorWhenPreviewIsMissing()
     {
         $author = $this->createAuthor();
-        $this->assertTrue($this->files->delete(base_path() . '/resources/views/site/author.blade.php'));
+        $this->assertTrue(unlink(base_path() . '/resources/views/site/author.blade.php'));
 
         $this->httpRequestAssert(
             "/twill/personnel/authors/preview/{$author->id}",

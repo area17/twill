@@ -1,4 +1,6 @@
 // @mixin float-clear
+@use "sass:math";
+
 @mixin float-clear() {
   &::after {
     content: '.';
@@ -90,5 +92,5 @@
 }
 
 @function strip-units($number) {
-  @return $number / ($number * 0 + 1);
+  @return math.div($number, $number * 0 + 1);
 }

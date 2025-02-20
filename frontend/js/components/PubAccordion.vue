@@ -3,7 +3,7 @@
     <span slot="accordion__title"><slot></slot></span>
     <div slot="accordion__value">
       <template v-if="startDate">
-        {{ startDate | formatDateWithFormat(dateDisplayFormat) }}
+        {{ startDateForDisplay | formatDateWithFormat(localizedDateDisplayFormat) }}
       </template>
       <template v-else>
         {{ defaultStartDate }}
@@ -18,7 +18,7 @@
         :initialValue="startDate"
         :maxDate="endDate"
         :enableTime="true"
-        :allowInput="true"
+        :allowInput="false"
         :staticMode="true"
         @open="openStartCalendar"
         @close="closeCalendar"
@@ -32,7 +32,7 @@
         :initialValue="endDate"
         :minDate="startDate"
         :enableTime="true"
-        :allowInput="true"
+        :allowInput="false"
         :staticMode="true"
         @open="openEndCalendar"
         @close="closeCalendar"
@@ -44,13 +44,15 @@
 </template>
 
 <script>
+  import parseJson from 'date-fns/parse'
   import { mapState } from 'vuex'
+
+  import VisibilityMixin from '@/mixins/toggleVisibility'
   import { PUBLICATION } from '@/store/mutations'
   import a17VueFilters from '@/utils/filters.js'
   import { getTimeFormatForCurrentLocale, isCurrentLocale24HrFormatted } from '@/utils/locale'
 
   import a17Accordion from './Accordion.vue'
-  import VisibilityMixin from '@/mixins/toggleVisibility'
 
   export default {
     name: 'A17Pubaccordion',
@@ -71,7 +73,7 @@
       },
       dateDisplayFormat: {
         type: String,
-        default: 'MMM, DD, YYYY, ' + getTimeFormatForCurrentLocale()
+        default: null
       },
       dateFormat: {
         type: String,
@@ -87,7 +89,16 @@
       ...mapState({
         startDate: state => state.publication.startDate,
         endDate: state => state.publication.endDate
-      })
+      }),
+      startDateForDisplay() {
+        return parseJson(this.startDate + 'Z').toISOString()
+      },
+      localizedDateDisplayFormat() {
+        if (this.dateDisplayFormat) {
+          return this.dateDisplayFormat
+        }
+        return 'MMM, DD, YYYY, ' + getTimeFormatForCurrentLocale(this.date_24h)
+      }
     },
     methods: {
       updateStartDate: function (newValue) {

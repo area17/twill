@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
+use A17\Twill\Facades\TwillRoutes;
 use A17\Twill\Http\Requests\Admin\OauthRequest;
 use A17\Twill\Repositories\UserRepository;
 use Carbon\Carbon;
@@ -9,6 +10,7 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Encryption\Encrypter;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\App;
@@ -18,14 +20,14 @@ use Laravel\Socialite\Facades\Socialite;
 use PragmaRX\Google2FA\Google2FA;
 
 /**
- |--------------------------------------------------------------------------
- | Login Controller
- |--------------------------------------------------------------------------
- |
- | This controller handles authenticating users for the application and
- | redirecting them to your home screen. The controller uses a trait
- | to conveniently provide its functionality to your applications.
- |
+ * |--------------------------------------------------------------------------
+ * | Login Controller
+ * |--------------------------------------------------------------------------
+ * |
+ * | This controller handles authenticating users for the application and
+ * | redirecting them to your home screen. The controller uses a trait
+ * | to conveniently provide its functionality to your applications.
+ * |
  */
 class LoginController extends Controller
 {
@@ -79,7 +81,7 @@ class LoginController extends Controller
         $this->config = $config;
 
         $this->middleware('twill_guest', ['except' => 'logout']);
-        $this->redirectTo = $config->get('twill.auth_login_redirect_path', '/');
+        $this->redirectTo = TwillRoutes::getAuthRedirectPath();
     }
 
     /**
@@ -95,6 +97,10 @@ class LoginController extends Controller
      */
     public function showLoginForm()
     {
+        if ($this->autologin()) {
+            return redirect()->back();
+        }
+
         return $this->viewFactory->make('twill::auth.login');
     }
 
@@ -106,23 +112,22 @@ class LoginController extends Controller
         return $this->viewFactory->make('twill::auth.2fa');
     }
 
-    /**
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
+        if (config('twill.dashboard.auth_activity_log.logout', false)) {
+            activity()->performedOn($this->guard()->user())->causedBy($this->guard()->user())->log('logout');
+        }
+
         $this->guard()->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
-        return $this->redirector->to(route('twill.login'));
+        return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'login'));
     }
 
     /**
-     * @param Request $request
      * @param \Illuminate\Foundation\Auth\User $user
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -131,14 +136,14 @@ class LoginController extends Controller
         return $this->afterAuthentication($request, $user);
     }
 
-    protected function afterAuthentication(Request $request, $user)
+    protected function afterAuthentication(Request $request, $user): RedirectResponse
     {
         if ($user->google_2fa_secret && $user->google_2fa_enabled) {
             $this->guard()->logout();
 
             $request->session()->put('2fa:user:id', $user->id);
 
-            return $this->redirector->to(route('twill.login-2fa.form'));
+            return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'login-2fa.form'));
         }
 
         $user->last_login_at = Carbon::now();
@@ -148,16 +153,19 @@ class LoginController extends Controller
             $this->logout($request);
             $token = Password::broker('twill_users')->getRepository()->create($user);
 
-            return $this->redirector->to(route('twill.password.reset.form', $token))->withErrors([
+            return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'password.reset.form', $token))->withErrors([
                 'error' => 'Your password needs to be reset before login',
             ]);
+        }
+
+        if (config('twill.dashboard.auth_activity_log.login', false)) {
+            activity()->performedOn($user)->causedBy($user)->log('login');
         }
 
         return $this->redirector->intended($this->redirectTo);
     }
 
     /**
-     * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
@@ -182,7 +190,7 @@ class LoginController extends Controller
             return $this->redirector->intended($this->redirectTo);
         }
 
-        return $this->redirector->to(route('twill.login-2fa.form'))->withErrors([
+        return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'login-2fa.form'))->withErrors([
             'error' => 'Your one time password is invalid.',
         ]);
     }
@@ -213,31 +221,31 @@ class LoginController extends Controller
             // If that provider has been linked
             if ($repository->oauthIsUserLinked($oauthUser, $provider)) {
                 $user = $repository->oauthUpdateProvider($oauthUser, $provider);
+                // Login and redirect
+                $this->authManager->guard('twill_users')->login($user);
+                return $this->afterAuthentication($request, $user);
+            } elseif ($user->password) {
+                // If the user has a password then redirect to a form to ask for it
+                // before linking a provider to that email
+                $request->session()->put('oauth:user_id', $user->id);
+                $request->session()->put('oauth:user', $oauthUser);
+                $request->session()->put('oauth:provider', $provider);
+                return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'login.oauth.showPasswordForm'));
+            } else {
+                $user->linkProvider($oauthUser, $provider);
 
                 // Login and redirect
                 $this->authManager->guard('twill_users')->login($user);
 
                 return $this->afterAuthentication($request, $user);
-            } else {
-                if ($user->password) {
-                    // If the user has a password then redirect to a form to ask for it
-                    // before linking a provider to that email
-
-                    $request->session()->put('oauth:user_id', $user->id);
-                    $request->session()->put('oauth:user', $oauthUser);
-                    $request->session()->put('oauth:provider', $provider);
-
-                    return $this->redirector->to(route('twill.login.oauth.showPasswordForm'));
-                } else {
-                    $user->linkProvider($oauthUser, $provider);
-
-                    // Login and redirect
-                    $this->authManager->guard('twill_users')->login($user);
-
-                    return $this->afterAuthentication($request, $user);
-                }
             }
         } else {
+            if (!config('twill.oauth.create_user_with_default_role', true)) {
+                return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'login'))->withErrors([
+                    'error' => __('auth.failed'),
+                ]);
+            }
+
             // If the user doesn't exist, create it
             $user = $repository->oauthCreateUser($oauthUser);
             $user->linkProvider($oauthUser, $provider);
@@ -289,5 +297,50 @@ class LoginController extends Controller
         } else {
             return $this->sendFailedLoginResponse($request);
         }
+    }
+
+    /**
+     * This method checks to make sure the user is published.
+     */
+    protected function credentials(Request $request): array
+    {
+        return array_merge($request->only($this->username(), 'password'), ['published' => 1]);
+    }
+
+    protected function autologin(): bool
+    {
+        if (!$this->autologinEnabled()) {
+            return false;
+        }
+
+        return $this->guard()->attempt([
+            $this->username() => $this->config->get('twill.autologin.email'),
+            'password' => $this->config->get('twill.autologin.password'),
+        ], false);
+    }
+
+    protected function autologinEnabled(): bool
+    {
+        if (!$this->config->get('twill.autologin.enabled', false)) {
+            return false;
+        }
+
+        if (blank($this->config->get('twill.autologin.email'))) {
+            return false;
+        }
+
+        if (blank($this->config->get('twill.autologin.password'))) {
+            return false;
+        }
+
+        if (blank($environments = $this->config->get('twill.autologin.environments', []))) {
+            return false;
+        }
+
+        if (!in_array(app()->environment(), $environments)) {
+            return false;
+        }
+
+        return true;
     }
 }

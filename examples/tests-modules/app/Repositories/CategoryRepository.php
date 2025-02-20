@@ -19,7 +19,7 @@ class CategoryRepository extends ModuleRepository
         $this->model = $model;
     }
 
-    public function setNewOrder($ids)
+    public function setNewOrder(array $ids): void
     {
         DB::transaction(function () use ($ids) {
             Category::saveTreeFromIds($ids);

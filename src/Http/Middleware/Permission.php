@@ -2,9 +2,9 @@
 
 namespace A17\Twill\Http\Middleware;
 
-use Auth;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class Permission
 {
@@ -12,11 +12,11 @@ class Permission
     {
         if (config('twill.enabled.permissions-management') && !Auth::user()->isSuperAdmin()) {
             if (config('twill.support_subdomain_admin_routing') && $activeSubdomain = config('twill.active_subdomain')) {
-                foreach(Auth::user()->groups as $group) {
+                foreach (Auth::user()->groups as $group) {
                     if (in_array($activeSubdomain, $group->subdomains_access)) {
                         return $next($request);
                     }
-                };
+                }
                 abort(403);
             }
         }

@@ -10,11 +10,11 @@
 
 <script>
   import { mapState } from 'vuex'
-  import { PARENTS } from '@/store/mutations'
-  import parentTreeToOptions from '@/utils/parentTreeToOptions.js'
 
   import a17Accordion from '@/components/Accordion.vue'
   import VisibilityMixin from '@/mixins/toggleVisibility'
+  import { PARENTS } from '@/store/mutations'
+  import parentTreeToOptions from '@/utils/parentTreeToOptions.js'
 
   export default {
     name: 'A17Parents',

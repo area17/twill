@@ -60,10 +60,9 @@
 
   import { mapState } from 'vuex'
 
-  import { REVISION, FORM, NOTIFICATION } from '@/store/mutations'
-  import ACTIONS from '@/store/actions'
-
   import A17PreviewerFrame from '@/components/PreviewerFrame.vue'
+  import ACTIONS from '@/store/actions'
+  import { FORM, NOTIFICATION,REVISION } from '@/store/mutations'
   import a17VueFilters from '@/utils/filters.js'
 
   export default {
@@ -71,6 +70,7 @@
     components: {
       'a17-iframe': A17PreviewerFrame
     },
+    props: ['breakpointsConfig'],
     data: function () {
       return {
         loadedCurrent: false,
@@ -78,7 +78,7 @@
         activeBreakpoint: 1280,
         lastActiveBreakpoint: 1280,
         scrollPosition: 0,
-        breakpoints: [
+        breakpoints: this.breakpointsConfig || [
           {
             size: 1280,
             name: 'preview-desktop'
@@ -92,7 +92,7 @@
             name: 'preview-tablet-v'
           },
           {
-            size: 320,
+            size: 390,
             name: 'preview-mobile'
           }
         ]
@@ -116,11 +116,12 @@
     methods: {
       open: function (previewId = 0) {
         const self = this
+        const desktopWidth = this.breakpoints.find(item => item.name === 'preview-desktop').size
 
         // reset previewer state
         this.loadedCurrent = false
-        this.activeBreakpoint = 1280
-        this.lastActiveBreakpoint = 1280
+        this.activeBreakpoint = desktopWidth || 1280
+        this.lastActiveBreakpoint = desktopWidth || 1280
 
         function initPreview () {
           if (self.$refs.overlay) self.$refs.overlay.open()
@@ -139,7 +140,9 @@
         if (rootRefs.editor) rootRefs.editor.open()
       },
       restoreRevision: function () {
-        window.location.href = this.restoreRevisionUrl + '?revisionId=' + this.currentRevision.id
+        const parsedUrl = new URL(this.restoreRevisionUrl)
+        parsedUrl.searchParams.append('revisionId', this.currentRevision.id)
+        window.location.href = parsedUrl.toString()
       },
       resizePreview: function (size) {
         this.activeBreakpoint = parseInt(size)

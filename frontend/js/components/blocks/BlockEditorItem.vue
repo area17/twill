@@ -1,20 +1,20 @@
 <template>
   <div class="block" :class="blockClasses">
     <div class="block__header" @dblclick.prevent="toggleExpand()">
-      <span class="block__handle"></span>
+      <span v-if="withHandle" class="block__handle"></span>
       <div class="block__toggle">
-        <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown" :maxHeight="270">
+        <a17-dropdown :ref="moveDropdown" class="f--small" position="bottom-left" v-if="withMoveDropdown && withActions" :maxHeight="270">
           <span class="block__counter f--tiny" @click="$refs[moveDropdown].toggle()">{{ index + 1 }}</span>
           <div slot="dropdown__content">
             <slot name="dropdown-numbers"/>
           </div>
         </a17-dropdown>
-        <span class="block__counter f--tiny" v-else>{{ index + 1 }}</span>
+        <span class="block__counter f--tiny" v-else-if="withActions">{{ index + 1 }}</span>
         <span class="block__title">{{ blockTitle }}</span>
       </div>
-      <div class="block__actions">
+      <div class="block__actions" v-if="withActions">
         <slot name="block-actions"/>
-        <a17-dropdown :ref="addDropdown" position="bottom-right" @open="hover = true" @close="hover = false" v-if="withAddDropdown">
+        <a17-dropdown :ref="addDropdown" position="bottom-right" :maxHeight="430" @open="hover = true" @close="hover = false" v-if="withAddDropdown">
           <a17-button variant="icon" data-action @click="$refs[addDropdown].toggle()"><span v-svg symbol="add"></span>
           </a17-button>
           <div slot="dropdown__content">
@@ -45,7 +45,8 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
+  import { mapGetters,mapState } from 'vuex'
+
   import a17VueFilters from '@/utils/filters.js'
 
   export default {
@@ -66,6 +67,14 @@
       block: {
         type: Object,
         default: () => {}
+      },
+      withHandle: {
+        type: Boolean,
+        default: true
+      },
+      withActions: {
+        type: Boolean,
+        default: true
       }
     },
     data () {
@@ -93,10 +102,17 @@
         const suffix = this.titleFieldValue || ''
         const separator = title && suffix ? ' — ' : ''
 
+        let fullTitle
+
         if (this.block.hideTitlePrefix) {
-          return `${suffix}`
+          fullTitle = `${suffix}`
+        } else {
+          fullTitle = `${title}${separator}${suffix}`
         }
-        return `${title}${separator}${suffix}`
+
+        const cleanup = document.createElement('div')
+        cleanup.innerHTML = fullTitle
+        return cleanup.innerText
       },
       blockClasses () {
         return [
@@ -127,7 +143,7 @@
       }
     },
     created () {
-      if (this.isNew) {
+      if (this.block.ui && this.block.ui.isNew) {
         this.toggleExpand()
       }
     },
@@ -158,10 +174,9 @@
 </script>
 
 <style lang="scss" scoped>
-
   .block__content {
     display: none;
-    padding: 35px 15px;
+    padding: 25px 15px 15px 15px;
     background: $color__background;
   }
 
@@ -205,12 +220,13 @@
     display: inline-block;
     line-height: 25px;
     margin-right: 10px;
+    flex-shrink: 0;
     background: $color__background;
     color: $color__text--light;
     @include monospaced-figures('off'); // dont use monospaced figures here
     user-select: none;
     cursor: default;
-    margin-top: (50px - 26px) / 2;
+    margin-top: calc((50px - 26px) / 2);
   }
 
   .dropdown .block__counter {
@@ -228,7 +244,11 @@
   }
 
   .block__title {
+    text-overflow: ellipsis;
     font-weight: 600;
+    overflow: hidden;
+    display: inline-block;
+    white-space: nowrap;
     height: 50px;
     line-height: 50px;
     user-select: none;
@@ -236,17 +256,26 @@
 
   .block__toggle {
     flex-grow: 1;
+    display: flex;
+    max-width: 50%;
+    padding-right: 30px;
 
     .dropdown {
       display: inline-block;
+      vertical-align: top;
+    }
+
+    .block__counter {
+      vertical-align: top;
     }
   }
 
   .block__actions {
     text-align: right;
     font-size: 0px;
-    padding-top: (50px - 26px) / 2;
-    padding-bottom: (50px - 26px) / 2;
+    padding-top: calc((50px - 26px) / 2);
+    padding-bottom: calc((50px - 26px) / 2);
+    margin-left: auto;
 
     > * {
       margin-left: 10px;
@@ -264,10 +293,11 @@
 
   .block__actions {
     button[data-action] {
-      display: none;
+      visibility: hidden;
     }
 
     .dropdown--active button[data-action] {
+      visibility: visible;
       display: inline-block;
     }
   }
@@ -282,6 +312,7 @@
     }
 
     button[data-action] {
+      visibility: visible;
       display: inline-block;
     }
   }
@@ -300,10 +331,6 @@
     > .browserField {
       margin: -15px;
       border: 0 none;
-    }
-
-    ::v-deep(.input) {
-      margin-top: 15px;
     }
 
     ::v-deep(.block__body) {

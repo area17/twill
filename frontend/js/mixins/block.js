@@ -22,7 +22,10 @@ export default {
       return this.name + '[' + id + ']' // output : nameOfBlock[UniqID][name]
     },
     repeaterName: function (id) {
-      return this.name.replace('[', '-').replace(']', '') + '_' + id // nameOfBlock-UniqID_name
+      return this.name.replace('[', '-').replace(']', '') + '|' + id // nameOfBlock-UniqID|name
+    },
+    nestedEditorName: function (id) {
+      return this.name.replace('[', '-').replace(']', '') + '|' + id // nameOfBlock-UniqID|name
     }
   }
 }

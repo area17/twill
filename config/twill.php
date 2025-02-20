@@ -20,8 +20,18 @@ return [
     | This value is the URL of your admin application.
     |
      */
-    'admin_app_url' => env('ADMIN_APP_URL', 'admin.' . env('APP_URL')),
-    'admin_app_path' => env('ADMIN_APP_PATH', ''),
+    'admin_app_url' => env('ADMIN_APP_URL', null),
+    'admin_app_path' => ltrim(env('ADMIN_APP_PATH', env('ADMIN_APP_URL', null) ? '' : 'admin'), '/'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Application strict url handling
+    |--------------------------------------------------------------------------
+    |
+    | Setting this value to true will enable strict domain handling.
+    |
+     */
+    'admin_app_strict' => env('ADMIN_APP_STRICT', false),
 
     /*
    |--------------------------------------------------------------------------
@@ -119,22 +129,22 @@ return [
     | Twill default tables naming configuration
     |--------------------------------------------------------------------------
     |
-    | TODO: In Twill 3.0, all tables will be prefixed by `twill_`.
-    |
      */
-    'users_table' => 'twill_users',
+    'blocks_table' => 'twill_blocks',
+    'features_table' => 'twill_features',
+    'fileables_table' => 'twill_fileables',
+    'files_table' => 'twill_files',
+    'mediables_table' => 'twill_mediables',
+    'medias_table' => 'twill_medias',
     'password_resets_table' => 'twill_password_resets',
+    'related_table' => 'twill_related',
+    'settings_table' => 'twill_settings',
+    'tagged_table' => 'twill_tagged',
+    'tags_table' => 'twill_tags',
     'users_oauth_table' => 'twill_users_oauth',
-    'blocks_table' => 'blocks',
-    'features_table' => 'features',
-    'settings_table' => 'settings',
-    'medias_table' => 'medias',
-    'mediables_table' => 'mediables',
-    'files_table' => 'files',
-    'fileables_table' => 'fileables',
-    'related_table' => 'related',
-    'tags_table' => 'tags',
-    'tagged_table' => 'tagged',
+    'users_table' => 'twill_users',
+    'permissions_table' => 'permissions',
+    'roles_table' => 'roles',
 
     /*
     |--------------------------------------------------------------------------
@@ -162,14 +172,13 @@ return [
     |--------------------------------------------------------------------------
     |
      */
-    'auth_login_redirect_path' => '/',
+    'auth_login_redirect_path' => null,
 
     'templates_on_frontend_domain' => false,
 
     'google_maps_api_key' => env('GOOGLE_MAPS_API_KEY'),
 
     'custom_auth_service_provider' => false,
-
 
     /*
     |--------------------------------------------------------------------------
@@ -202,16 +211,22 @@ return [
     'fallback_locale' => 'en',
     'available_user_locales' => [
         'en',
-        'fr',
-        'pl',
-        'de',
-        'nl',
-        'pt',
-        'zh-Hans',
-        'ru',
-        'tr',
+        'ar',
         'bs',
-        'ar'
+        'cs',
+        'de',
+        'es',
+        'fr',
+        'it',
+        'nl',
+        'no',
+        'pl',
+        'pt',
+        'ru',
+        'sl',
+        'tr',
+        'uk',
+        'zh-Hans',
     ],
 
     /*
@@ -219,7 +234,61 @@ return [
     | When a singleton is not seeded, you can use this flag to automatically seed it.
     |--------------------------------------------------------------------------
     */
-    'auto_seed_singletons' => false,
+    'auto_seed_singletons' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | The default crops that can be used in models. These can be extended by
+    | a model specific $mediasParams property, or by overriding the getMediasParams
+    | method.
+    |--------------------------------------------------------------------------
+    */
+    'default_crops' => [
+        'cover' => [
+            'default' => [
+                [
+                    'name' => 'default',
+                    'ratio' => 16 / 9,
+                ],
+            ],
+            'mobile' => [
+                [
+                    'name' => 'mobile',
+                    'ratio' => 1,
+                ],
+            ],
+            'flexible' => [
+                [
+                    'name' => 'free',
+                    'ratio' => 0,
+                ],
+                [
+                    'name' => 'landscape',
+                    'ratio' => 16 / 9,
+                ],
+                [
+                    'name' => 'portrait',
+                    'ratio' => 3 / 5,
+                ],
+            ],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | This parameter will enable some debug views:
+    | - Shows an error if a view is missing in the editor/front-end
+    |--------------------------------------------------------------------------
+    */
+    'debug' => env('APP_DEBUG', false),
+
+    /*
+    |--------------------------------------------------------------------------
+    | This parameter will throw errors if some error occurs instead of failing
+    | silently (eg. when rendering blocks)
+    |--------------------------------------------------------------------------
+    */
+    'strict' => env('TWILL_STRICT', false),
 
     /*
     |--------------------------------------------------------------------------

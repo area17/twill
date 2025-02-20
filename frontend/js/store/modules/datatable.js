@@ -1,8 +1,8 @@
+import ACTIONS from '@/store/actions'
+import { setStorage } from '@/utils/localeStorage.js'
+
 import api from '../api/datatable'
 import { DATATABLE, NOTIFICATION } from '../mutations'
-import ACTIONS from '@/store/actions'
-
-import { setStorage } from '@/utils/localeStorage.js'
 /* NESTED functions */
 const getObject = (container, id, callback) => {
   container.forEach((item) => {
@@ -231,7 +231,7 @@ const actions = {
         page: state.page,
         offset: state.offset,
         columns: getters.visibleColumnsNames,
-        filter: state.filter
+        filter: JSON.stringify(state.filter)
       }
 
       api.get(params, function (resp) {

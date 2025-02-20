@@ -1,55 +1,50 @@
 // mutations
-import { MEDIA_LIBRARY } from '@/store/mutations'
-
-// Generic Components
-import a17Button from '@/components/Button.vue'
-import a17Infotip from '@/components/Infotip.vue'
-import a17Select from '@/components/Select.vue'
-import a17VSelect from '@/components/VSelect.vue'
-import a17Inputframe from '@/components/InputFrame.vue'
-import a17ColorField from '@/components/ColorField.vue'
-import a17Textfield from '@/components/Textfield.vue'
-import a17HiddenField from '@/components/HiddenField.vue'
-import a17Wysiwyg from '@/components/Wysiwyg.vue'
-import a17WysiwygTipTap from '@/components/WysiwygTiptap.vue'
-import a17MediaField from '@/components/MediaField.vue'
-import a17MediaFieldTranslated from '@/components/MediaFieldTranslated.vue'
-import a17Radio from '@/components/Radio.vue'
-import a17RadioGroup from '@/components/RadioGroup.vue'
-import a17Checkbox from '@/components/Checkbox.vue'
-import a17SingleCheckbox from '@/components/SingleCheckbox.vue'
-import a17CheckboxGroup from '@/components/CheckboxGroup.vue'
-import A17SingleSelectPermissions from '@/components/SingleSelectPermissions.vue'
-import a17Multiselect from '@/components/MultiSelect.vue'
-import a17Singleselect from '@/components/SingleSelect.vue'
-import a17Dropdown from '@/components/Dropdown.vue'
-import a17Buttonbar from '@/components/ButtonBar.vue'
-import a17Locale from '@/components/LocaleField.vue'
-import a17Modal from '@/components/Modal.vue'
-import a17Dialog from '@/components/Dialog.vue'
-import a17Slideshow from '@/components/Slideshow.vue'
-import a17BrowserField from '@/components/BrowserField.vue'
-import a17FileField from '@/components/files/FileField.vue'
-import a17DatePicker from '@/components/DatePicker.vue'
-import a17Avatar from '@/components/Avatar.vue'
-
-// Media Library
-import a17MediaLibrary from '@/components/media-library/MediaLibrary.vue'
-
-// Error handler
-import { globalError } from '@/utils/errors'
-
-// Plugins
-import VueTimeago from 'vue-timeago'
+import axios from 'axios'
 import get from 'lodash/get'
 import mapValues from 'lodash/mapValues'
-import axios from 'axios'
+// Plugins
+import VueTimeago from 'vue-timeago'
 
+import a17Avatar from '@/components/Avatar.vue'
+import a17BrowserField from '@/components/BrowserField.vue'
+// Generic Components
+import a17Button from '@/components/Button.vue'
+import a17Buttonbar from '@/components/ButtonBar.vue'
+import a17Checkbox from '@/components/Checkbox.vue'
+import a17CheckboxGroup from '@/components/CheckboxGroup.vue'
+import a17ColorField from '@/components/ColorField.vue'
+import a17DatePicker from '@/components/DatePicker.vue'
+import a17Dialog from '@/components/Dialog.vue'
+import a17Dropdown from '@/components/Dropdown.vue'
+import a17FileField from '@/components/files/FileField.vue'
+import a17HiddenField from '@/components/HiddenField.vue'
+import a17Infotip from '@/components/Infotip.vue'
+import a17Inputframe from '@/components/InputFrame.vue'
+import a17Locale from '@/components/LocaleField.vue'
+// Media Library
+import a17MediaLibrary from '@/components/media-library/MediaLibrary.vue'
+import a17MediaField from '@/components/MediaField.vue'
+import a17MediaFieldTranslated from '@/components/MediaFieldTranslated.vue'
+import a17Modal from '@/components/Modal.vue'
+import a17Multiselect from '@/components/MultiSelect.vue'
+import a17Radio from '@/components/Radio.vue'
+import a17RadioGroup from '@/components/RadioGroup.vue'
+import a17Select from '@/components/Select.vue'
+import a17SingleCheckbox from '@/components/SingleCheckbox.vue'
+import a17Singleselect from '@/components/SingleSelect.vue'
+import A17SingleSelectPermissions from '@/components/SingleSelectPermissions.vue'
+import a17Slideshow from '@/components/Slideshow.vue'
+import a17Textfield from '@/components/Textfield.vue'
+import a17VSelect from '@/components/VSelect.vue'
+import a17Wysiwyg from '@/components/Wysiwyg.vue'
+import a17WysiwygTipTap from '@/components/WysiwygTiptap.vue'
+import Sticky from '@/directives/sticky'
 // Directives
 import SvgSprite from '@/directives/svg'
 import Tooltip from '@/directives/tooltip'
-import Sticky from '@/directives/sticky'
-
+import { MEDIA_LIBRARY } from '@/store/mutations'
+// Error handler
+import { globalError } from '@/utils/errors'
 import { locales } from '@/utils/locale'
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -111,7 +106,7 @@ const A17Config = {
 
     // Configurations
     Vue.config.productionTip = isProd
-    Vue.config.devtools = true
+    Vue.config.devtools = !isProd
     Vue.prototype.$http = axios
 
     window.$trans = Vue.prototype.$trans = function (key, defaultValue) {

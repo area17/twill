@@ -3,16 +3,17 @@
     <a17-dropdown ref="submitDown" position="bottom-right" width="full" :offset="0">
       <a17-button v-if="isDisabled(options[0])" type="button" variant="validate" :disabled="true">{{ options[0].text }}</a17-button>
       <a17-button v-else :type="type" @click="buttonClicked(options[0].name)" :name="options[0].name" variant="validate">{{ options[0].text }}</a17-button>
+      <template v-if="otherOptions.length">
       <button class="multibutton__trigger" type="button" @click="$refs.submitDown.toggle()" v-if="hasValidOptions"><span v-svg symbol="dropdown_module"></span></button>
-
-      <div slot="dropdown__content" v-if="otherOptions.length">
-        <ul>
-          <li v-for="option in otherOptions" :key="option.name">
-            <button v-if="isDisabled(option)" type="button" disabled>{{ option.text }}</button>
-            <button v-else @click="buttonClicked(option.name)" :type="type" :name="option.name">{{ option.text }}</button>
-          </li>
-        </ul>
-      </div>
+        <div slot="dropdown__content">
+          <ul>
+            <li v-for="option in otherOptions" :key="option.name">
+              <button v-if="isDisabled(option)" type="button" disabled>{{ option.text }}</button>
+              <button v-else @click="buttonClicked(option.name)" :type="type" :name="option.name">{{ option.text }}</button>
+            </li>
+          </ul>
+        </div>
+      </template>
     </a17-dropdown>
   </div>
 </template>

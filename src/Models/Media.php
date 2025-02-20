@@ -49,18 +49,18 @@ class Media extends Model
     {
         $filename = pathinfo($filename, PATHINFO_FILENAME);
         if (Str::endsWith($filename, '@2x')) {
-            $filename = substr($filename, 0, -2);
+            $filename = substr($filename, 0, -3);
         }
 
-        return ucwords(preg_replace('/[^a-zA-Z0-9]/', ' ', sanitizeFilename($filename)));
+        return Str::ucfirst(preg_replace('/[-_]/', ' ', $filename));
     }
 
-    public function canDeleteSafely()
+    public function canDeleteSafely(): bool
     {
-        return DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->count() === 0;
+        return !$this->isReferenced();
     }
 
-    public function isReferenced()
+    public function isReferenced(): bool
     {
         return DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->count() > 0;
     }
@@ -79,9 +79,9 @@ class Media extends Model
                 return $tag->name;
             }),
             'deleteUrl' => $this->canDeleteSafely() ? moduleRoute('medias', 'media-library', 'destroy', $this->id) : null,
-            'updateUrl' => route('twill.media-library.medias.single-update'),
-            'updateBulkUrl' => route('twill.media-library.medias.bulk-update'),
-            'deleteBulkUrl' => route('twill.media-library.medias.bulk-delete'),
+            'updateUrl' => route(config('twill.admin_route_name_prefix') . 'media-library.medias.single-update'),
+            'updateBulkUrl' => route(config('twill.admin_route_name_prefix') . 'media-library.medias.bulk-update'),
+            'deleteBulkUrl' => route(config('twill.admin_route_name_prefix') . 'media-library.medias.bulk-delete'),
             'metadatas' => [
                 'default' => [
                     'caption' => $this->caption,

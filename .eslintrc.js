@@ -5,10 +5,13 @@ module.exports = {
   },
   extends: ['plugin:vue/essential', '@vue/standard', 'prettier'],
   rules: {
+    'no-unmodified-loop-condition': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    'no-unused-vars': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    'no-unreachable': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
     // indent
     indent: ['error', 2, { SwitchCase: 1 }],
     'vue/script-indent': [
-      'error',
+      process.env.NODE_ENV === 'production' ? 'error' : 'warn',
       2,
       {
         baseIndent: 1,
@@ -27,7 +30,7 @@ module.exports = {
     'no-console':
       process.env.NODE_ENV === 'production'
         ? ['error', { allow: ['error'] }]
-        : 'off'
+        : 'warn'
   },
   overrides: [
     {
@@ -35,7 +38,7 @@ module.exports = {
       rules: {
         indent: 'off',
         'vue/script-indent': [
-          'error',
+          process.env.NODE_ENV === 'production' ? 'error' : 'warn',
           2,
           {
             baseIndent: 1,
@@ -46,6 +49,6 @@ module.exports = {
     }
   ],
   parserOptions: {
-    parser: 'babel-eslint'
+    parser: '@babel/eslint-parser'
   }
 }

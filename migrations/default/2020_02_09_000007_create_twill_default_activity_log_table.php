@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTwillDefaultActivityLogTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateTwillDefaultActivityLogTable extends Migration
     {
         if (!Schema::hasTable(config('activitylog.table_name'))) {
             Schema::create(config('activitylog.table_name'), function (Blueprint $table) {
-                $table->{twillIncrementsMethod()}('id');
+                $table->bigIncrements('id');
                 $table->string('log_name')->nullable();
                 $table->text('description');
                 $table->integer('subject_id')->nullable();
@@ -35,4 +35,4 @@ class CreateTwillDefaultActivityLogTable extends Migration
     {
         Schema::dropIfExists(config('activitylog.table_name'));
     }
-}
+};

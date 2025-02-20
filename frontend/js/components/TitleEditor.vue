@@ -42,14 +42,14 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
-  import a17VueFilters from '@/utils/filters.js'
+  import { mapGetters,mapState } from 'vuex'
+
   import A17Avatar from '@/components/Avatar.vue'
   import langManager from '@/components/LangManager.vue'
   import a17ModalValidationButtons from '@/components/modals/ModalValidationButtons.vue'
-
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
+  import a17VueFilters from '@/utils/filters.js'
 
   export default {
     name: 'A17TitleEditor',

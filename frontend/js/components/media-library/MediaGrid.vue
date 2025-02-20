@@ -22,8 +22,9 @@
 </template>
 
 <script>
-  import mediaItemsMixin from '@/mixins/mediaLibrary/mediaItems'
   import { mapState } from 'vuex'
+
+  import mediaItemsMixin from '@/mixins/mediaLibrary/mediaItems'
 
   export default {
     name: 'A17Mediagrid',
@@ -68,53 +69,53 @@
     }
 
     @media (min-width: 300px) {
-      width: (100% / 2);
-      padding-bottom: (100% / 2);
+      width: calc(100% / 2);
+      padding-bottom: calc(100% / 2);
     }
 
     @media (min-width: 600px) {
-      width: (100% / 2);
-      padding-bottom: (100% / 2);
+      width: calc(100% / 2);
+      padding-bottom: calc(100% / 2);
     }
 
     @media (min-width: 800px) {
-      width: (100% / 3);
-      padding-bottom: (100% / 3);
+      width: calc(100% / 3);
+      padding-bottom: calc(100% / 3);
     }
 
     @media (min-width: 1000px) {
-      width: (100% / 4);
-      padding-bottom: (100% / 4);
+      width: calc(100% / 4);
+      padding-bottom: calc(100% / 4);
     }
 
     @media (min-width: 1200px) {
-      width: (100% / 5);
-      padding-bottom: (100% / 5);
+      width: calc(100% / 5);
+      padding-bottom: calc(100% / 5);
     }
 
     @media (min-width: 1400px) {
-      width: (100% / 6);
-      padding-bottom: (100% / 6);
+      width: calc(100% / 6);
+      padding-bottom: calc(100% / 6);
     }
 
     @media (min-width: 1600px) {
-      width: (100% / 7);
-      padding-bottom: (100% / 7);
+      width: calc(100% / 7);
+      padding-bottom: calc(100% / 7);
     }
 
     @media (min-width: 1800px) {
-      width: (100% / 8);
-      padding-bottom: (100% / 8);
+      width: calc(100% / 8);
+      padding-bottom: calc(100% / 8);
     }
 
     @media (min-width: 2000px) {
-      width: (100% / 9);
-      padding-bottom: (100% / 9);
+      width: calc(100% / 9);
+      padding-bottom: calc(100% / 9);
     }
 
     @media (min-width: 2200px) {
-      width: (100% / 10);
-      padding-bottom: (100% / 10);
+      width: calc(100% / 10);
+      padding-bottom: calc(100% / 10);
     }
 
     &.s--hasFilename {

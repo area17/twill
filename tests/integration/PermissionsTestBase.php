@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Mail;
 
 abstract class PermissionsTestBase extends TestCase
 {
-    public $example = 'tests-permissions';
+    public ?string $example = 'tests-permissions';
 
     public function setUp(): void
     {

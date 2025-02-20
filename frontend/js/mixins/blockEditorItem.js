@@ -26,6 +26,9 @@ export default {
     moveBlock (index) {
       this.$emit('block:move', index)
     },
+    cloneBlock () {
+      this.$emit('block:clone')
+    },
     toggleBlockDropdown () {
       if (this.blocksLength > 1 && this.$refs.blockDropdown) {
         this.$refs.blockDropdown.toggle()

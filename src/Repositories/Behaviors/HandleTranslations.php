@@ -2,33 +2,24 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\Contracts\TwillModelContract;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 trait HandleTranslations
 {
-    protected $nullableFields = [];
-
-    /**
-     * @param array $fields
-     * @return array
-     */
-    public function prepareFieldsBeforeCreateHandleTranslations($fields)
+    public function prepareFieldsBeforeCreateHandleTranslations(array $fields): array
     {
         return $this->prepareFieldsBeforeSaveHandleTranslations(null, $fields);
     }
 
-    /**
-     * @param \A17\Twill\Models\Model|null $object
-     * @param array $fields
-     * @return array
-     */
-    public function prepareFieldsBeforeSaveHandleTranslations($object, $fields)
+    public function prepareFieldsBeforeSaveHandleTranslations(?TwillModelContract $object, array $fields): array
     {
         if ($this->model->isTranslatable()) {
             $locales = getLocales();
             $localesCount = count($locales);
-            $attributes = Collection::make($this->model->translatedAttributes);
+            $attributes = Collection::make($this->model->getTranslatedAttributes());
 
             $submittedLanguages = Collection::make($fields['languages'] ?? []);
 
@@ -38,28 +29,30 @@ trait HandleTranslations
 
             foreach ($locales as $index => $locale) {
                 $submittedLanguage = Arr::first($submittedLanguages->filter(function ($lang) use ($locale) {
-                    return $lang['value'] == $locale;
+                    return $lang['value'] === $locale;
                 }));
 
                 $shouldPublishFirstLanguage = ($index === 0 && !$atLeastOneLanguageIsPublished);
 
-                $activeField = $shouldPublishFirstLanguage || (isset($submittedLanguage) ? $submittedLanguage['published'] : false);
+                $fallBack = $fields[$locale]['active'] ?? false;
+
+                $activeField = $shouldPublishFirstLanguage || ($submittedLanguage['published'] ?? $fallBack);
 
                 $fields[$locale] = [
-                    'active' => $activeField,
-                ] + $attributes->mapWithKeys(function ($attribute) use (&$fields, $locale, $localesCount, $index) {
-                    $attributeValue = $fields[$attribute] ?? null;
+                        'active' => $activeField,
+                    ] + $attributes->mapWithKeys(function ($attribute) use (&$fields, $locale, $localesCount, $index) {
+                        $attributeValue = $fields[$attribute] ?? null;
 
-                    // if we are at the last locale,
-                    // let's unset this field as it is now managed by this trait
-                    if ($index + 1 === $localesCount) {
-                        unset($fields[$attribute]);
-                    }
+                        // if we are at the last locale,
+                        // let's unset this field as it is now managed by this trait
+                        if ($index + 1 === $localesCount) {
+                            unset($fields[$attribute]);
+                        }
 
-                    return [
-                        $attribute => ($attributeValue[$locale] ?? null),
-                    ];
-                })->toArray();
+                        return [
+                            $attribute => ($attributeValue[$locale] ?? $fields[$locale][$attribute] ?? null),
+                        ];
+                    })->toArray();
             }
 
             unset($fields['languages']);
@@ -68,18 +61,15 @@ trait HandleTranslations
         return $fields;
     }
 
-    /**
-     * @param \A17\Twill\Models\Model $object
-     * @param array $fields
-     * @return array
-     */
-    public function getFormFieldsHandleTranslations($object, $fields)
+    public function getFormFieldsHandleTranslations(TwillModelContract $object, array $fields): array
     {
+        // Keep a copy of the slugs to add it again after.
+        $slug = $fields['translations']['slug'] ?? null;
         unset($fields['translations']);
 
-        if ($object->translations != null && $object->translatedAttributes != null) {
+        if ($object->translations !== null && $object->getTranslatedAttributes() != null) {
             foreach ($object->translations as $translation) {
-                foreach ($object->translatedAttributes as $attribute) {
+                foreach ($object->getTranslatedAttributes() as $attribute) {
                     unset($fields[$attribute]);
                     if (array_key_exists($attribute, $this->fieldsGroups) && is_array($translation->{$attribute})) {
                         foreach ($this->fieldsGroups[$attribute] as $field_name) {
@@ -91,6 +81,7 @@ trait HandleTranslations
                                 }
                             }
                         }
+
                         unset($fields['translations'][$attribute]);
                     } else {
                         $fields['translations'][$attribute][$translation->locale] = $translation->{$attribute};
@@ -99,38 +90,17 @@ trait HandleTranslations
             }
         }
 
+        if ($slug) {
+            $fields['translations']['slug'] = $slug;
+        }
+
         return $fields;
     }
 
-    protected function filterHandleTranslations($query, &$scopes)
+    public function orderHandleTranslations(Builder $query, array &$orders): void
     {
         if ($this->model->isTranslatable()) {
-            $attributes = $this->model->translatedAttributes;
-            $query->whereHas('translations', function ($q) use ($scopes, $attributes) {
-                foreach ($attributes as $attribute) {
-                    if (isset($scopes[$attribute]) && is_string($scopes[$attribute])) {
-                        $q->where($attribute, $this->getLikeOperator(), '%' . $scopes[$attribute] . '%');
-                    }
-                }
-            });
-
-            foreach ($attributes as $attribute) {
-                if (isset($scopes[$attribute])) {
-                    unset($scopes[$attribute]);
-                }
-            }
-        }
-    }
-
-    /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param array $orders
-     * @return void
-     */
-    public function orderHandleTranslations($query, &$orders)
-    {
-        if ($this->model->isTranslatable()) {
-            $attributes = $this->model->translatedAttributes;
+            $attributes = $this->model->getTranslatedAttributes();
             $table = $this->model->getTable();
             $tableTranslation = $this->model->translations()->getRelated()->getTable();
             $foreignKeyMethod = method_exists($this->model->translations(), 'getQualifiedForeignKeyName') ? 'getQualifiedForeignKeyName' : 'getForeignKey';
@@ -149,16 +119,12 @@ trait HandleTranslations
                 $query
                     ->join($tableTranslation, $foreignKey, '=', $table . '.id')
                     ->where($tableTranslation . '.locale', '=', $orders['locale'] ?? app()->getLocale())
-                    ->select($table . '.*')
-                ;
+                    ->select($table . '.*');
             }
         }
     }
 
-    /**
-     * @return array
-     */
-    public function getPublishedScopesHandleTranslations()
+    public function getPublishedScopesHandleTranslations(): array
     {
         return ['withActiveTranslations'];
     }

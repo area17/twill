@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UpdateTwillUsersRoleFields extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -43,9 +43,15 @@ class UpdateTwillUsersRoleFields extends Migration
 
         if (Schema::hasTable($twillUsersTable)) {
             Schema::table($twillUsersTable, function (Blueprint $table) {
+                $table->string('role', 100)->nullable();
+            });
+
+            $this->revertNewRoles();
+
+            Schema::table($twillUsersTable, function (Blueprint $table) {
                 $table->dropColumn('role_id');
                 $table->dropColumn('is_superadmin');
-                $table->string('role', 100);
+                $table->string('role', 100)->change();
             });
         }
     }
@@ -78,4 +84,33 @@ class UpdateTwillUsersRoleFields extends Migration
             }
         });
     }
-}
+
+    private function revertNewRoles()
+    {
+        $ownerRole = Role::where(['name' => 'Owner'])->first();
+        $adminRole = Role::where(['name' => 'Administrator'])->first();
+        $viewOnlyRole = Role::where(['name' => 'Guest'])->first();
+
+        User::chunk(100, function ($users) use ($ownerRole, $adminRole, $viewOnlyRole) {
+            foreach ($users as $user) {
+                if ($user->role_id === $ownerRole->id) {
+                    $user->role = 'ADMIN';
+                }
+
+                if ($user->role_id === $adminRole->id) {
+                    $user->role = 'PUBLISHER';
+                }
+
+                if ($user->role_id === $viewOnlyRole->id) {
+                    $user->role = 'VIEWONLY';
+                }
+
+                if ($user->is_superadmin) {
+                    $user->role = 'SUPERADMIN';
+                }
+
+                $user->save();
+            }
+        });
+    }
+};

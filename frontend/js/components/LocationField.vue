@@ -28,10 +28,11 @@
 </template>
 
 <script>
-  import isEqual from 'lodash/isEqual'
   import debounce from 'lodash/debounce'
-  import InputMixin from '@/mixins/input'
+  import isEqual from 'lodash/isEqual'
+
   import FormStoreMixin from '@/mixins/formStore'
+  import InputMixin from '@/mixins/input'
   import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
   import { loadScript } from '@/utils/loader'
@@ -320,7 +321,7 @@
 
           // reverse geocoding
           geocoder.geocode({
-            location: location
+            location
           }, function (results, status) {
             if (status === 'OK') {
               if (results[1]) {

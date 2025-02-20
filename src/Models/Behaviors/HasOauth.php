@@ -6,7 +6,6 @@ use A17\Twill\Models\UserOauth;
 
 trait HasOauth
 {
-
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -14,7 +13,6 @@ trait HasOauth
     {
 
         return $this->hasMany(UserOauth::class, 'user_id');
-
     }
 
     /**
@@ -34,5 +32,4 @@ trait HasOauth
 
         return $this->providers()->save($provider);
     }
-
 }

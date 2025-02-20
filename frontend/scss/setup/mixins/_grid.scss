@@ -11,6 +11,8 @@
 
   NB: only works with breakpoint names, not the +/- variants
 */
+@use "sass:math";
+
 @function colspan($number-of-columns:1, $breakpoint:'xsmall', $bump:0px, $inverse:false) {
   @if map-has-key($breakpoints-with-directions, $breakpoint) {
     $this-bp-main-col-width: map-get($main-col-widths, $breakpoint);
@@ -49,7 +51,7 @@
           $this-multiplier: -1;
         }
 
-        @return #{((((($this-bp-main-col-width - ($this-bp-total-cols - 1) * $this-bp-inner-gutter) / $this-bp-total-cols) * $number-of-columns) + ($number-of-columns - 1) * $this-bp-inner-gutter) + $bump) * $this-multiplier};
+        @return #{(((math.div($this-bp-main-col-width - ($this-bp-total-cols - 1) * $this-bp-inner-gutter, $this-bp-total-cols) * $number-of-columns) + ($number-of-columns - 1) * $this-bp-inner-gutter) + $bump) * $this-multiplier};
       }
 
     }
@@ -296,7 +298,7 @@
 
   @each $name, $point in $breakpoints {
     @include breakpoint('#{$name}') {
-      margin-left: (map-get($inner-gutters, $name)/-1);
+      margin-left: math.div(map-get($inner-gutters, $name), -1);
     }
   }
 }

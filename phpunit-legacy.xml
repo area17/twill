@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" backupStaticAttributes="false"
+         bootstrap="tests/bootstrap.php" colors="true" convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false"
+         stopOnError="false" stopOnFailure="false" verbose="true"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+    <coverage processUncoveredFiles="true">
+        <include>
+            <directory suffix=".php">./src</directory>
+        </include>
+        <exclude>
+            <directory suffix=".blade.php">./tests</directory>
+        </exclude>
+        <report>
+            <clover outputFile="./.github/clover.xml"/>
+            <text outputFile="php://stdout" showUncoveredFiles="false" showOnlySummary="true"/>
+        </report>
+    </coverage>
+    <testsuites>
+        <testsuite name="Browser">
+            <directory>tests/Browser</directory>
+        </testsuite>
+        <testsuite name="Unit">
+            <directory>tests/unit</directory>
+            <directory>tests/integration</directory>
+        </testsuite>
+    </testsuites>
+    <logging/>
+    <php>
+        <env name="APP_KEY" value="base64:DV8kQN5a+4MwAIQ5uk1WNafxO+/Efab0K20uVMDJ2UE="/>
+        <env name="APP_ENV" value="testing"/>
+        <env name="APP_URL" value="127.0.0.1:8001"/>
+        <env name="APP_DEBUG" value="true"/>
+        <env name="TELESCOPE_ENABLED" value="false"/>
+        <env name="BCRYPT_ROUNDS" value="4"/>
+        <env name="CACHE_DRIVER" value="array"/>
+        <env name="CACHE_STORE" value="array"/>
+        <env name="SESSION_DRIVER" value="array"/>
+        <env name="QUEUE_DRIVER" value="sync"/>
+        <env name="MAIL_DRIVER" value="array"/>
+        <env name="DB_CONNECTION" value="mysql"/>
+        <env name="DB_DATABASE" value="twill_testing_3x"/>
+        <env name="LOG_CHANNEL" value="single"/>
+        <env name="DB_USERNAME" value="root"/>
+        <env name="DB_PASSWORD" value="root"/>
+    </php>
+</phpunit>

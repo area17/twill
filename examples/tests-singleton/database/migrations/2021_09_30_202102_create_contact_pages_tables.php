@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateContactPagesTables extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -34,4 +34,4 @@ class CreateContactPagesTables extends Migration
         Schema::dropIfExists('contact_page_slugs');
         Schema::dropIfExists('contact_pages');
     }
-}
+};

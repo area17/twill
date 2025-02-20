@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTwillDefaultRelatedTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -17,6 +17,7 @@ class CreateTwillDefaultRelatedTable extends Migration
 
         if (!Schema::hasTable($twillRelatedTable)) {
             Schema::create($twillRelatedTable, function (Blueprint $table) {
+                $table->increments('id');
                 $table->integer('subject_id')->nullable()->unsigned();
                 $table->string('subject_type', 255);
                 $table->integer('related_id')->nullable()->unsigned();
@@ -43,4 +44,4 @@ class CreateTwillDefaultRelatedTable extends Migration
 
         Schema::dropIfExists($twillRelatedTable);
     }
-}
+};

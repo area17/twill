@@ -17,7 +17,8 @@
                    :withCaption="withCaption"
                    :altTextMaxLength="altTextMaxLength"
                    :captionMaxLength="captionMaxLength"
-                   :extraMetadatas="extraMetadatas">
+                   :extraMetadatas="extraMetadatas"
+                   :disabled="disabled">
       <slot />
     </a17-slideshow>
     <a17-mediafield v-else
@@ -29,15 +30,16 @@
                     :withCaption="withCaption"
                     :altTextMaxLength="altTextMaxLength"
                     :captionMaxLength="captionMaxLength"
-                    :extraMetadatas="extraMetadatas">
+                    :extraMetadatas="extraMetadatas"
+                    :disabled="disabled">
       <slot />
     </a17-mediafield>
   </a17-inputframe>
 </template>
 
 <script>
-  import localeMixin from '@/mixins/locale'
   import inputframeMixin from '@/mixins/inputFrame'
+  import localeMixin from '@/mixins/locale'
   import mediaFieldMixin from '@/mixins/mediaField.js'
 
   export default {

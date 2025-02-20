@@ -25,7 +25,10 @@ abstract class TwillPackageServiceProvider extends ServiceProvider
 
         $namespace .= '\\Twill\\Capsules\\' . $name;
 
-        $dir = $this->getPackageDirectory() . '/src/Twill/Capsules/' . $name;
+        $dir = $this->getPackageDirectory() . DIRECTORY_SEPARATOR .
+            'src' . DIRECTORY_SEPARATOR .
+            'Twill' . DIRECTORY_SEPARATOR .
+            'Capsules' . DIRECTORY_SEPARATOR . $name;
 
         \A17\Twill\Facades\TwillCapsules::registerPackageCapsule($name, $namespace, $dir);
     }
@@ -34,7 +37,7 @@ abstract class TwillPackageServiceProvider extends ServiceProvider
     {
         $storage = Storage::build([
             'driver' => 'local',
-            'root' => $this->getPackageDirectory() . '/src/' . $directory,
+            'root' => $this->getPackageDirectory() . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . $directory,
         ]);
 
         foreach ($storage->directories() as $capsuleName) {
@@ -61,10 +64,10 @@ abstract class TwillPackageServiceProvider extends ServiceProvider
     {
         $class = new ReflectionClass(get_class($this));
 
-        $path = Str::replaceLast('/' . $this->getClassName() . '.php', '', $class->getFileName());
+        $path = Str::replaceLast(DIRECTORY_SEPARATOR . $this->getClassName() . '.php', '', $class->getFileName());
 
-        if (Str::endsWith($path, '/src')) {
-            $path = Str::replaceLast('/src', '', $path);
+        if (Str::endsWith($path, DIRECTORY_SEPARATOR . 'src')) {
+            $path = Str::replaceLast(DIRECTORY_SEPARATOR . 'src', '', $path);
         }
 
         return $path;

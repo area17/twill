@@ -26,6 +26,7 @@ return [
         'reset-password' => 'Passwort zurücksetzen',
         'reset-send' => 'Link zum Zurücksetzen des Passworts senden',
         'verify-login' => 'Anmeldung bestätigen',
+        'auth-causer' => 'Authentifikation',
     ],
     'buckets' => [
         'intro' => 'Was würden Sie heute gerne vorstellen?',
@@ -56,6 +57,9 @@ return [
             'unfeatured' => 'Hervorhebung aufgehoben',
             'restored' => 'Wiederhergestellt',
             'deleted' => 'Gelöscht',
+            'login' => 'Anmeldung',
+            'logout' => 'Abmeldung',
+            'duplicated' => 'Dupliziert',
         ],
         'activity-row' => [
             'edit' => 'Bearbeiten',
@@ -92,6 +96,8 @@ return [
             'open-in-editor' => 'In Editor öffnen',
             'preview' => 'Vorschau',
             'add-item' => 'Neu hinzufügen',
+            'clone-block' => 'Block klonen',
+            'select-existing' => 'Vorhandene auswählen',
         ],
         'browser' => [
             'add-label' => 'Hinzufügen',
@@ -143,6 +149,7 @@ return [
             ],
         ],
         'editor' => 'Editor',
+        'options' => 'Optionen',
     ],
     'lang-manager' => [
         'published' => 'Veröffentlicht',
@@ -187,11 +194,17 @@ return [
             'unpublish' => 'Veröffentlichung aufheben',
         ],
         'filter' => [
+            'no' => 'Nein',
+            'yes' => 'Ja',
             'all-items' => 'Alle',
             'draft' => 'Entwürfe',
             'mine' => 'Meine',
             'published' => 'Veröffentlicht',
             'trash' => 'Papierkorb',
+            'not-set' => 'Ohne Wert',
+        ],
+        'filters' => [
+            'all-label' => 'Alle :label',
         ],
         'languages' => 'Sprachen',
         'listing-empty-message' => 'Noch keine Einträge vorhanden.',
@@ -327,11 +340,12 @@ return [
     'nav' => [
         'admin' => 'Admin',
         'cms-users' => 'CMS Benutzer',
-        'profile' => 'Profile',
         'logout' => 'Abmelden',
         'media-library' => 'Medien',
         'settings' => 'Einstellungen',
         'close-menu' => 'Menü schließen',
+        'profile' => 'Profile',
+        'open-live-site' => 'Live-Site öffnen',
     ],
     'notifications' => [
         'reset' => [
@@ -396,6 +410,14 @@ return [
         'parent-page' => 'Übergeordnete Seite',
         'review-status' => 'Review-Status',
         'visibility' => 'Sichtbarkeit',
+        'scheduled' => 'Geplant',
+        'expired' => 'Abgelaufen',
+        'unsaved-changes' => 'Es gibt nicht gespeicherte Änderungen',
+        'draft-revision' => 'Als Entwurfs-Revision abspeichern',
+        'draft-revision-close' => 'Als Entwurfs-Revision abspeichern und schließen',
+        'draft-revision-new' => 'Als Entwurfs-Revision abspeichern und weiteren erstellen',
+        'draft-revisions-available' => 'Sie betrachten die aktuell veröffentlichte Version des Inhalts. Es gibt neuere Entwurfs-Revisionen.',
+        'editing-draft-revision' => 'Sie bearbeiten aktuell eine Entwurfs-Revision dieses Inhalts. Speichern Sie die Änderungen oder Veröffentlichen Sie diese.',
     ],
     'select' => [
         'empty-text' => 'Leider keine passenden Optionen gefunden',
@@ -436,10 +458,27 @@ return [
         'update-disabled-user-and-create-new' => 'Deaktivierten Benutzer aktualisieren und weiteren erstellen',
         'user-image' => 'Bild',
         'users' => 'Benutzer',
+        'force-2fa-disable' => '2FA deaktivieren',
+        'force-2fa-disable-description' => 'Geben Sie den im Feld angezeigten Text ein, um die 2FA für diesen Benutzer zu deaktivieren',
+        'force-2fa-disable-challenge' => '2FA für :user deaktivieren',
+        'pending' => 'Ausstehend',
+        'activation-pending' => 'Ausstehende Aktivierung',
     ],
     'settings' => [
         'update' => 'Speichern',
         'cancel' => 'Abbrechen',
         'fieldset-label' => 'Einstellungen',
+    ],
+    'permissions' => [
+        'groups' => [
+            'title' => 'Gruppen',
+            'published' => 'Aktiviert',
+            'draft' => 'Deaktiviert',
+        ],
+        'roles' => [
+            'title' => 'Rollen',
+            'published' => 'Aktiviert',
+            'draft' => 'Deaktiviert',
+        ],
     ],
 ];

@@ -1,6 +1,7 @@
+import ACTIONS from '@/store/actions'
+
 import bucketsAPI from '../api/buckets'
 import { BUCKETS, NOTIFICATION } from '../mutations'
-import ACTIONS from '@/store/actions'
 
 const state = {
   saveUrl: window[process.env.VUE_APP_NAME].STORE.buckets.saveUrl || '',
@@ -65,7 +66,7 @@ const actions = {
       content_type: state.dataSources.selected.value,
       page: state.page,
       offset: state.offset,
-      filter: state.filter
+      filter: JSON.stringify(state.filter)
     }, resp => {
       commit(BUCKETS.UPDATE_BUCKETS_DATA, resp.source)
       commit(BUCKETS.UPDATE_BUCKETS_MAX_PAGE, resp.maxPage)
@@ -86,7 +87,7 @@ const actions = {
       buckets[bucket.id] = children
     })
 
-    bucketsAPI.save(state.saveUrl, { buckets: buckets }, (successResponse) => {
+    bucketsAPI.save(state.saveUrl, { buckets }, (successResponse) => {
       commit(NOTIFICATION.SET_NOTIF, {
         message: 'Features saved. All good!',
         variant: 'success'

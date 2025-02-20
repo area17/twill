@@ -1,0 +1,45 @@
+@layer components {
+  .card {
+    @apply relative p-12 md:p-20 xl:p-28 pb-80 lg:pr-40 xl:pr-64 rounded border border-primary md:aspect-square;
+  }
+
+  /* create some space for metadata */
+  .card--w-metadata {
+    @apply pb-100;
+  }
+
+  .card p {
+    @apply !mt-0;
+  }
+
+  .card a {
+    @apply f-h2 block mb-16;
+    text-decoration: none !important;
+    font-weight: 600;
+  }
+
+  .card a::before {
+    @apply absolute inset-0;
+    content: '';
+    z-index: 2;
+  }
+
+  .card a:hover {
+    @apply text-primary;
+  }
+
+  .card__tag {
+    @apply f-ui-1 inline-block text-tag border border-tag absolute left-12 md:left-16 lg:left-20 xl:left-28 bottom-12 lg:bottom-20 xl:bottom-28 not-italic px-8 py-4;
+  }
+
+  .card__tag::before {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 0;
+  }
+
+  .card__date {
+    @apply f-ui-1 absolute left-12 md:left-auto md:right-12 lg:right-20 xl:right-28 bottom-52 md:bottom-12 lg:bottom-20 xl:bottom-28 font-normal md:py-5;
+  }
+}

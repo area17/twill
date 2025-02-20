@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class CloudfrontCacheService
 {
-    protected $client = null;
+    protected $client;
 
     /**
      * @var Config
@@ -43,7 +43,7 @@ class CloudfrontCacheService
      */
     public static function getClient()
     {
-        $cloudFront = new CloudFrontClient([
+        return new CloudFrontClient([
             'region' => self::getRegion(),
             'version' => self::getSdkVersion(),
             'credentials' => [
@@ -51,13 +51,8 @@ class CloudfrontCacheService
                 'secret' => config('services.cloudfront.secret'),
             ],
         ]);
-
-        return $cloudFront;
     }
 
-    /**
-     * @param Config $config
-     */
     public function __construct(Config $config)
     {
         $this->config = $config;
@@ -77,7 +72,7 @@ class CloudfrontCacheService
         if (! $this->hasInProgressInvalidation()) {
             try {
                 $this->createInvalidationRequest($urls);
-            } catch (\Exception $e) {
+            } catch (\Exception $exception) {
                 Log::debug('Cloudfront invalidation request failed');
             }
         } else {
@@ -100,7 +95,7 @@ class CloudfrontCacheService
 
     private function createInvalidationRequest(array $paths = []): ?Result
     {
-        if (is_object($this->client) && count($paths) > 0) {
+        if (is_object($this->client) && $paths !== []) {
             try {
                 return $this->client->createInvalidation([
                     'DistributionId' => $this->config->get('services.cloudfront.distribution'),

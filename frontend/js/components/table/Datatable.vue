@@ -37,7 +37,7 @@
           <a17-tablehead :columns="visibleColumns" ref="thead"/>
           </thead>
           <template v-if="draggable">
-            <draggable class="datatable__drag" :tag="'tbody'" v-model="rows" :options="dragOptions">
+            <draggable class="datatable__drag" :tag="'tbody'" v-model="rows" v-bind="dragOptions">
               <template v-for="(row, index) in rows">
                 <a17-tablerow :row="row" :index="index" :columns="visibleColumns" :key="row.id"/>
               </template>
@@ -66,19 +66,19 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-  import { DATATABLE } from '@/store/mutations'
-  import ACTIONS from '@/store/actions'
-
-  import draggable from 'vuedraggable'
   import debounce from 'lodash/debounce'
+  import draggable from 'vuedraggable'
+  import { mapState } from 'vuex'
 
+  import a17Spinner from '@/components/Spinner.vue'
+  import { DatatableMixin, DraggableMixin } from '@/mixins'
+  import ACTIONS from '@/store/actions'
+  import { DATATABLE } from '@/store/mutations'
+
+  import a17Paginate from './Paginate.vue'
   import a17Table from './Table.vue'
   import a17Tablehead from './TableHead.vue'
   import a17Tablerow from './TableRow.vue'
-  import a17Paginate from './Paginate.vue'
-  import a17Spinner from '@/components/Spinner.vue'
-  import { DatatableMixin, DraggableMixin } from '@/mixins'
 
   export default {
     name: 'A17Datatable',

@@ -17,7 +17,6 @@ class TwicPics implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
      * @return string
      */
     public function getUrl($id, array $params = [])
@@ -30,7 +29,6 @@ class TwicPics implements ImageServiceInterface
     /**
      * @param string $id
      * @param array $crop_params
-     * @param array $params
      * @return string
      */
     public function getUrlWithCrop($id, array $cropParams, array $params = [])
@@ -40,21 +38,17 @@ class TwicPics implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $cropParams
      * @param int $width
      * @param int $height
-     * @param array $params
      * @return string
      */
     public function getUrlWithFocalCrop($id, array $cropParams, $width, $height, array $params = [])
     {
         return $this->getUrl($id, $this->getFocalPointCrop($cropParams, $width, $height) + $params);
-
     }
 
     /**
      * @param string $id
-     * @param array $params
      * @return string
      */
     public function getLQIPUrl($id, array $params = [])
@@ -66,7 +60,6 @@ class TwicPics implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
      * @return string
      */
     public function getSocialUrl($id, array $params = [])
@@ -78,7 +71,6 @@ class TwicPics implements ImageServiceInterface
 
     /**
      * @param string $id
-     * @param array $params
      * @return string
      */
     public function getCmsUrl($id, array $params = [])

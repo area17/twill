@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreateBiosTablesForBrowsers extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -25,4 +25,4 @@ class CreateBiosTablesForBrowsers extends Migration
         Schema::dropIfExists('bio_revisions');
         Schema::dropIfExists('bios');
     }
-}
+};

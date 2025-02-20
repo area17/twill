@@ -1,16 +1,31 @@
 @php
-    $colClassAttr = (isset($middle)) ? 'col--third col--third-wrap' : 'col--double col--double-wrap';
+    $colClassAttr = (isset($middle) || isset($middleFields)) ? 'col--third col--third-wrap' : 'col--double col--double-wrap';
 @endphp
 <div class="wrapper">
     <div class="{{ $colClassAttr }}">
+      @isset($leftFields)
+        @foreach($leftFields as $field)
+            {!! $field->render() !!}
+        @endforeach
+      @endisset
       {{ $left }}
     </div>
-    @isset($middle)
+    @if(isset($middle) || isset($middleFields))
     <div class="{{ $colClassAttr }}">
+      @isset($middleFields)
+        @foreach($middleFields as $field)
+            {!! $field->render() !!}
+        @endforeach
+      @endisset
       {{ $middle }}
     </div>
-    @endisset
+    @endif
     <div class="{{ $colClassAttr }}">
+      @isset($rightFields)
+        @foreach($rightFields as $field)
+          {!! $field->render() !!}
+        @endforeach
+      @endisset
       {{ $right }}
     </div>
 </div>

@@ -12,14 +12,19 @@ export function localStoreSupport () {
 export function setStorage (name, value) {
   const expires = ''
 
-  if (localStoreSupport()) {
-    localStorage.setItem(name, value)
-  } else {
-    document.cookie = name + '=' + value + expires + '; path=/'
+  if (!window.TWILL.debug) {
+    if (localStoreSupport()) {
+      localStorage.setItem(name, value)
+    } else {
+      document.cookie = name + '=' + value + expires + '; path=/'
+    }
   }
 }
 
 export function getStorage (name) {
+  if (window.TWILL.debug) {
+    return null
+  }
   if (localStoreSupport()) {
     return localStorage.getItem(name)
   } else {

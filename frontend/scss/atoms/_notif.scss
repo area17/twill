@@ -43,8 +43,8 @@ Self destructing notification showing at the bottom of the page
 .notif__close {
   @include btn-reset;
   position:absolute;
-  right:(60px - 46px) / 2;
-  top:(60px - 46px) / 2;
+  right:(60px - 46px) * 0.5;
+  top:(60px - 46px) * 0.5;
   background:transparent;
   height:16px + 30px;
   width:16px + 30px;

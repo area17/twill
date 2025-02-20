@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Cache;
 
 class Twill
 {
-    function asset($file)
+    public static $cache = [];
+
+    public function asset($file)
     {
         return $this->devAsset($file) ?? $this->twillAsset($file);
     }
@@ -49,13 +51,12 @@ class Twill
         try {
             $manifest = $this->readJson(
                 $devServerUrl .
-                    '/' .
-                    config('twill.manifest_file', 'twill-manifest.json')
+                '/' .
+                // During dev mode and webpack 5 this is the valid path.
+                'assets/twill/twill-manifest.json'
             );
-        } catch (\Exception $e) {
-            throw new \Exception(
-                'Twill dev assets manifest is missing. Make sure you are running the npm run serve command inside Twill.'
-            );
+        } catch (\Exception $exception) {
+            throw new \Exception('Twill dev assets manifest is missing. Make sure you are running the npm run serve command inside Twill.', $exception->getCode(), $exception);
         }
 
         return $devServerUrl . ($manifest[$file] ?? '/' . $file);
@@ -70,16 +71,30 @@ class Twill
             return Cache::rememberForever('twill-manifest', function () {
                 return $this->readJson($this->getManifestFilename());
             });
-        } catch (\Exception $e) {
-            throw new \Exception(
-                'Twill assets manifest is missing. Make sure you published/updated Twill assets using the "php artisan twill:update" command.'
-            );
+        } catch (\Exception $exception) {
+            throw new \Exception('Twill assets manifest is missing. Make sure you published/updated Twill assets using the "php artisan twill:update" command.', $exception->getCode(), $exception);
         }
     }
 
     private function readJson($fileName)
     {
-        return json_decode(file_get_contents($fileName), true);
+        $requestOptionsIgnoreSsl = [
+            "ssl" => [
+                "verify_peer" => false,
+                "verify_peer_name" => false,
+            ],
+        ];
+
+        if (self::$cache === []) {
+            self::$cache = json_decode(
+                file_get_contents($fileName, false, stream_context_create($requestOptionsIgnoreSsl)),
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
+        }
+
+        return self::$cache;
     }
 
     private function devMode()

@@ -1,3 +1,4 @@
+{{-- @todo: Deprecate, this is only used for custom components now. --}}
 @if ($renderForBlocks)
     @if ($asAttributes ?? false)
         name: fieldName('{{ $name }}'),

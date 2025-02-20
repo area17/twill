@@ -6,7 +6,7 @@
         <a17-button type="submit" name="create-another" v-on:click.native="$event.currentTarget.focus()" v-if="!isDisabled" variant="aslink-grey"><span>{{ $trans('modal.create.create-another', 'Create and add another') }}</span></a17-button>
       </template>
       <a17-button type="submit" name="update" v-else-if="mode === 'update'" variant="validate" :disabled="isDisabled">{{ $trans('modal.update.button', 'Update') }}</a17-button>
-      <a17-button type="submit" name="done" v-else="" variant="validate" :disabled="isDisabled">{{ $trans('modal.done.button', 'Done') }}</a17-button>
+      <a17-button type="submit" name="done" v-else variant="validate" :disabled="isDisabled">{{ $trans('modal.done.button', 'Done') }}</a17-button>
     </a17-inputframe>
     <label v-if="activePublishState" :for="publishedName" class="switcher__button" :class="switcherClasses">
       <span v-if="isChecked" class="switcher__label">{{ textEnabled }}</span>
@@ -68,7 +68,7 @@
       published: function (value) {
         this.$store.commit(FORM.UPDATE_FORM_FIELD, {
           name: 'published',
-          value: value
+          value
         })
       }
     },
@@ -91,6 +91,19 @@
       }
     },
     methods: {
+      addListeners () {
+        this.$nextTick(() => {
+          this.fields.forEach((field) => {
+            field.removeEventListener('input', this.disable)
+          })
+          this.fields = [...this.$parent.$el.querySelectorAll('input, textarea, select')]
+          this.fields.forEach((field) => {
+            field.addEventListener('input', () => {
+              this.disable()
+            })
+          })
+        })
+      },
       disable: function () {
         if (!this.fields) {
           this.isDisabled = true
@@ -134,9 +147,7 @@
 
       if (!this.fields.length) return
 
-      this.fields.forEach(function (field) {
-        field.addEventListener('input', self.disable)
-      })
+      this.addListeners()
     },
     beforeDestroy: function () {
       const self = this

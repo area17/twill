@@ -1,4 +1,5 @@
 import axios from 'axios'
+
 import { globalError } from '@/utils/errors'
 
 const component = 'MEDIA-LIBRARY'
@@ -11,7 +12,7 @@ export default {
     // Form datas : query, page
 
     // Set endpoint in global config
-    axios.get(endpoint, { params: params }).then(function (resp) {
+    axios.get(endpoint, { params }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       // error callback

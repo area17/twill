@@ -1,0 +1,152 @@
+@layer components {
+  .markdown {
+    @apply f-body text-primary;
+
+  }
+
+  .markdown h1 {
+    @apply f-h1 mt-68;
+  }
+
+  body[class*="page--blog"]:not([class~="page--blog-index"]) .markdown h1 {
+    @apply f-headline;
+  }
+
+  .markdown h2 {
+    @apply f-h2 mt-68;
+    scroll-margin-top: 5rem;
+  }
+
+  .markdown h3 {
+    @apply f-h3 mt-52;
+  }
+
+  .markdown h4 {
+    @apply f-h4 mt-20 font-bold;
+  }
+
+  .markdown h5 {
+    @apply f-h4 mt-20 font-bold;
+  }
+
+  .markdown p {
+    @apply f-body;
+  }
+
+  .markdown .markdown blockquote + p,
+  .markdown ul + p,
+  .markdown ol + p {
+    @apply mt-20;
+  }
+
+  .markdown h2 + *,
+  .markdown h3 + * {
+    @apply mt-20;
+  }
+
+  .markdown p,
+  .markdown ul,
+  .markdown ol {
+    @apply mt-20;
+    font-variant-numeric: lining-nums;
+  }
+
+  .markdown strong {
+    @apply font-medium;
+  }
+
+  .markdown p a,
+  .markdown li a {
+    @apply underline;
+  }
+
+  a {
+    @apply underline;
+  }
+
+  .markdown a {
+    @apply text-link no-underline;
+    text-decoration: none;
+  }
+
+  .markdown a:hover {
+    @apply text-primary underline;
+    text-decoration: underline;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    position: relative;
+  }
+
+  .markdown ul {
+    margin-left: 1.2em;
+    list-style-type: disc;
+  }
+
+  .markdown ol {
+    margin-left: 1.2em;
+    list-style-type: dot;
+  }
+
+  h1:hover .heading-permalink,
+  h2:hover .heading-permalink,
+  h3:hover .heading-permalink {
+    opacity: 1;
+  }
+  .heading-permalink {
+    @apply text-link font-medium pr-10;
+    position: absolute;
+    opacity: 0;
+    transform: translateX(calc(-100%));
+    text-decoration: none !important;
+    scroll-margin-top: 7rem;
+  }
+
+  .heading-permalink:hover {
+    text-decoration: none;
+  }
+
+  table {
+    @apply mt-20;
+  }
+
+  thead tr {
+    @apply font-medium;
+  }
+
+  tr {
+    @apply text-left;
+  }
+
+  th,
+  td {
+    @apply py-16 px-8 text-left;
+  }
+
+  td,
+  th {
+    @apply border border-primary;
+  }
+
+  tr:nth-child(2n) {
+    @apply bg-secondary;
+  }
+
+  /* content block specific */
+  .content.markdown {
+    @apply pb-60;
+  }
+
+  .content.markdown > *:first-child {
+    @apply mt-0;
+  }
+
+  /* content block specific */
+  .file.markdown > *,
+  .file.markdown > *:first-child {
+    @apply mt-0;
+  }
+}

@@ -77,7 +77,7 @@ class PasswordsTest extends TestCase
             'token' => Notification::token(),
         ]);
 
-        $this->assertSee('Your password has been reset!');
+        $this->assertSee('You don&#039;t have any activity yet.');
     }
 
     public function testCanExpireResetPasswordToken()

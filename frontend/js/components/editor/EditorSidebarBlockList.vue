@@ -1,9 +1,10 @@
 <template>
   <div class="editorSidebar__listItems">
+    <!-- eslint-disable vue/no-mutating-props -->
     <draggable class="editorSidebar__blocks"
-              :class="editorSidebarClasses"
-              v-model="blocks"
-              :options="{
+               :class="editorSidebarClasses"
+               v-model="blocks"
+               :options="{
                     group: {
                       name: 'editorBlocks',
                       pull: 'clone',
@@ -11,13 +12,14 @@
                     },
                     handle: '.editorSidebar__button'
                     }">
+      <!--eslint-enable-->
       <div
-        class="editorSidebar__button"
-        :data-title="block.title"
-        :data-icon="block.icon"
-        :data-component="block.component"
-        v-for="block in blocks"
-        :key="block.component"
+          class="editorSidebar__button"
+          :data-title="block.title"
+          :data-icon="block.icon"
+          :data-component="block.component"
+          v-for="block in blocks"
+          :key="block.component"
       >
         <span v-svg :symbol="iconSymbol(block.icon)"></span>
         <span class="editorSidebar__buttonLabel">{{ block.title }}</span>
@@ -28,6 +30,7 @@
 
 <script>
   import draggable from 'vuedraggable'
+
   import { DraggableMixin } from '@/mixins'
 
   export default {

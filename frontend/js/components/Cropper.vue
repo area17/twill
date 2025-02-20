@@ -21,13 +21,14 @@
 </template>
 
 <script>
+  import 'cropperjs/dist/cropper.min.css'
+
+  import CropperJs from 'cropperjs'
   import { mapState } from 'vuex'
 
-  import a17VueFilters from '@/utils/filters.js'
-  import CropperJs from 'cropperjs'
-  import 'cropperjs/dist/cropper.min.css'
   import cropperMixin from '@/mixins/cropper'
   import { cropConversion } from '@/utils/cropper'
+  import a17VueFilters from '@/utils/filters.js'
 
   export default {
     name: 'a17Cropper',
@@ -180,7 +181,21 @@
       },
       initCrop: function () {
         const crop = this.toNaturalCrop(this.crop)
-        this.cropper.setData(crop)
+        // Mike (mike@area17.com) --
+        //
+        // it seems due to rounding errors(?) that sometimes
+        // the x position can be reset incorrectly
+        // see: https://github.com/fengyuanchen/cropperjs/issues/1057
+        //
+        // from my testing it seems to be a little inconsistent and unpredictable
+        // I guess you just need for the rounding error to happen
+        // But, it seems setting the properties individually avoids this...
+        //
+        // -- Mike (mike@area17.com)
+        this.cropper.setData({ x: crop.x })
+        this.cropper.setData({ y: crop.y })
+        this.cropper.setData({ width: crop.width })
+        this.cropper.setData({ height: crop.height })
       },
       test: function () {
         const crop = this.toNaturalCrop({ x: 0, y: 0, width: 380, height: 475 })
@@ -259,7 +274,7 @@
       color: $color__link;
       cursor: pointer;
       margin: 0 20px;
-      border-radius: $height_li / 2;
+      border-radius: calc($height_li / 2);
 
       &.s--active {
         color: $color__text;

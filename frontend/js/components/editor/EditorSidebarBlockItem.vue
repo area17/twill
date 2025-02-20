@@ -82,7 +82,16 @@
     padding: 15px;
 
     ::v-deep(.input) {
-      margin-top: 15px;
+      margin-top: 25px;
+    }
+
+    ::v-deep(.input:first-child) {
+      margin-top: 35px;
+    }
+
+
+    ::v-deep(.blocks:first-child) {
+      margin-top: 35px;
     }
 
     ::v-deep(.block__body) {

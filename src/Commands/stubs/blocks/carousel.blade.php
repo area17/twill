@@ -2,14 +2,14 @@
 @twillBlockIcon('flex-grid')
 @twillBlockGroup('twill')
 
-@formField('select', [
-    'name' => 'variation',
-    'label' => 'Carousel variation',
-    'options' => [
+<x-twill::select
+    name="variation"
+    label="Carousel variation"
+    :options="[
         [ 'value' => 'fixed-width', 'label' => 'Fixed width' ],
         [ 'value' => 'variable-width', 'label' => 'Variable width' ]
-    ],
-    'default' => 0
-])
+    ]"
+    default="fixed-width"
+/>
 
-@formField('repeater', ['type' => 'carousel-item'])
+<x-twill::repeater type="carousel-item"/>

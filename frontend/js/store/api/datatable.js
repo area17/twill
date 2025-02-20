@@ -1,6 +1,7 @@
 import axios from 'axios'
-import { replaceState } from '@/utils/pushState.js'
+
 import { globalError } from '@/utils/errors'
+import { replaceState } from '@/utils/pushState.js'
 
 const component = 'DATATABLE'
 
@@ -18,7 +19,7 @@ export default {
   *
   */
   get (params, callback) {
-    axios.get(window[process.env.VUE_APP_NAME].CMS_URLS.index, { params: params }).then(function (resp) {
+    axios.get(window[process.env.VUE_APP_NAME].CMS_URLS.index, { params }).then(function (resp) {
       if (resp.data.replaceUrl) {
         const url = resp.request.responseURL
         replaceState(url)
@@ -116,7 +117,7 @@ export default {
   },
 
   reorder (ids, callback) {
-    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.reorder, { ids: ids }).then(function (resp) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.reorder, { ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
@@ -152,7 +153,7 @@ export default {
   },
 
   bulkDelete (ids, callback) {
-    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkDelete, { ids: ids }).then(function (resp) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkDelete, { ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
@@ -164,7 +165,7 @@ export default {
   },
 
   bulkRestore (ids, callback) {
-    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkRestore, { ids: ids }).then(function (resp) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkRestore, { ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {
@@ -176,7 +177,7 @@ export default {
   },
 
   bulkDestroy (ids, callback) {
-    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkForceDelete, { ids: ids }).then(function (resp) {
+    axios.post(window[process.env.VUE_APP_NAME].CMS_URLS.bulkForceDelete, { ids }).then(function (resp) {
       if (callback && typeof callback === 'function') callback(resp)
     }, function (resp) {
       const error = {

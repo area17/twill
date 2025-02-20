@@ -14,13 +14,12 @@ use Illuminate\Support\Facades\Config;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests;
+    use DispatchesJobs;
+    use ValidatesRequests;
 
     public function __construct()
     {
-        if (Config::get('twill.bind_exception_handler', true)) {
-            App::singleton(ExceptionHandler::class, TwillHandler::class);
-        }
     }
 
     /**

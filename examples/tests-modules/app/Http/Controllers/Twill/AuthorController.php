@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Twill;
 
-use Illuminate\Http\Request;
-use Illuminate\Contracts\Foundation\Application;
 use A17\Twill\Http\Controllers\Admin\ModuleController;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Request;
 
 class AuthorController extends ModuleController
 {
@@ -30,7 +30,6 @@ class AuthorController extends ModuleController
     protected $indexColumns = [
         'avatar' => [
             'thumb' => true,
-
             'variant' => [
                 'role' => 'featured',
                 'crop' => 'default',
@@ -42,6 +41,12 @@ class AuthorController extends ModuleController
             'title' => 'Name',
             'sort' => true,
             'visible' => true,
+        ],
+
+        'year' => [
+            'field' => 'year',
+            'title' => 'Year',
+            'sort' => true,
         ],
 
         'birthday' => [
@@ -63,7 +68,10 @@ class AuthorController extends ModuleController
     {
         parent::__construct($app, $request);
 
+        $this->routePrefix = 'personnel';
         $this->indexOptions['editInModal'] = env('EDIT_IN_MODAL', false);
+
+        $this->enableDraftRevisions = env('ENABLE_DRAFT_REVISIONS', false);
     }
 
     public function getIndexOptions()

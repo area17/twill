@@ -26,6 +26,7 @@ return [
         'reset-password' => 'Reset password',
         'reset-send' => 'Send password reset link',
         'verify-login' => 'Verify login',
+        'auth-causer' => 'Authentication',
     ],
     'buckets' => [
         'intro' => 'What would you like to feature today?',
@@ -56,6 +57,9 @@ return [
             'unfeatured' => 'Unfeatured',
             'restored' => 'Restored',
             'deleted' => 'Deleted',
+            'login' => 'Login action',
+            'logout' => 'Logout action',
+            'duplicated' => 'Duplicated',
         ],
         'activity-row' => [
             'edit' => 'Edit',
@@ -93,6 +97,7 @@ return [
             'preview' => 'Preview',
             'add-item' => 'Add item',
             'clone-block' => 'Clone block',
+            'select-existing' => 'Select existing',
         ],
         'browser' => [
             'add-label' => 'Add',
@@ -144,6 +149,7 @@ return [
             ],
         ],
         'editor' => 'Editor',
+        'options' => 'Options',
     ],
     'lang-manager' => [
         'published' => 'Live',
@@ -188,11 +194,17 @@ return [
             'unpublish' => 'Unpublish',
         ],
         'filter' => [
+            'no' => 'No',
+            'yes' => 'Yes',
             'all-items' => 'All items',
             'draft' => 'Draft',
             'mine' => 'Mine',
             'published' => 'Published',
             'trash' => 'Trash',
+            'not-set' => 'Without value',
+        ],
+        'filters' => [
+            'all-label' => 'All :label',
         ],
         'languages' => 'Languages',
         'listing-empty-message' => 'There is no item here yet.',
@@ -328,11 +340,12 @@ return [
     'nav' => [
         'admin' => 'Admin',
         'cms-users' => 'CMS Users',
-        'profile' => 'Profile',
         'logout' => 'Logout',
         'media-library' => 'Media Library',
         'settings' => 'Settings',
         'close-menu' => 'Close menu',
+        'profile' => 'Profile',
+        'open-live-site' => 'Open live site',
     ],
     'notifications' => [
         'reset' => [
@@ -349,18 +362,6 @@ return [
     ],
     'overlay' => [
         'close' => 'Close',
-    ],
-    'permissions' => [
-        'groups' => [
-            'title' => 'Groups',
-            'published' => 'Enabled',
-            'draft' => 'Disabled',
-        ],
-        'roles' => [
-            'title' => 'Roles',
-            'published' => 'Enabled',
-            'draft' => 'Disabled',
-        ],
     ],
     'previewer' => [
         'compare-view' => 'Compare view',
@@ -385,8 +386,6 @@ return [
         'last-edit' => 'Last edited',
         'preview' => 'Preview changes',
         'publish' => 'Publish',
-        'scheduled' => 'Scheduled',
-        'expired' => 'Expired',
         'publish-close' => 'Publish and close',
         'publish-new' => 'Publish and create new',
         'published-on' => 'Published on',
@@ -411,7 +410,14 @@ return [
         'parent-page' => 'Parent page',
         'review-status' => 'Review status',
         'visibility' => 'Visibility',
+        'scheduled' => 'Scheduled',
+        'expired' => 'Expired',
         'unsaved-changes' => 'There are unsaved changes',
+        'draft-revision' => 'Save as draft revision',
+        'draft-revision-close' => 'Save as draft revision and close',
+        'draft-revision-new' => 'Save as draft revision and create new',
+        'draft-revisions-available' => 'You are currently viewing the published version of this content. There are newer draft revisions available.',
+        'editing-draft-revision' => 'You are currently editing a draft revision of this content. Make changes if needed and click Save as revision or Publish.',
     ],
     'select' => [
         'empty-text' => 'Sorry, no matching options.',
@@ -425,11 +431,8 @@ return [
         '2fa-description' => 'Please scan this QR code with a Google Authenticator compatible application and enter your one time password below before submitting. See a list of compatible applications <a href=":link" target="_blank" rel="noopener">here</a>.',
         '2fa-disable' => 'Enter your one time password to disable the 2-factor authentication',
         'active' => 'Active',
-        'pending' => 'Pending',
-        'activation-pending' => 'Pending activation',
-        'user-image' => 'Image',
-        'content-fieldset-label' => 'Account',
         'cancel' => 'Cancel',
+        'content-fieldset-label' => 'Account',
         'description' => 'Description',
         'disabled' => 'Disabled',
         'edit-modal-title' => 'Edit user name',
@@ -455,10 +458,27 @@ return [
         'update-disabled-user-and-create-new' => 'Update disabled user and create new',
         'user-image' => 'Image',
         'users' => 'Users',
+        'force-2fa-disable' => 'Disable 2FA',
+        'force-2fa-disable-description' => 'Type text shown in the field to disable 2FA for this user',
+        'force-2fa-disable-challenge' => 'Disable 2FA for :user',
+        'pending' => 'Pending',
+        'activation-pending' => 'Pending activation',
     ],
     'settings' => [
         'update' => 'Update',
         'cancel' => 'Cancel',
         'fieldset-label' => 'Edit settings',
+    ],
+    'permissions' => [
+        'groups' => [
+            'title' => 'Groups',
+            'published' => 'Enabled',
+            'draft' => 'Disabled',
+        ],
+        'roles' => [
+            'title' => 'Roles',
+            'published' => 'Enabled',
+            'draft' => 'Disabled',
+        ],
     ],
 ];

@@ -12,8 +12,9 @@
 </template>
 
 <script>
-  import LocaleMixin from '@/mixins/locale'
   import { mapGetters } from 'vuex'
+
+  import LocaleMixin from '@/mixins/locale'
   import { LANGUAGE } from '@/store/mutations'
 
   export default {

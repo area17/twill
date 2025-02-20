@@ -2,8 +2,10 @@
 
 namespace A17\Twill\Helpers;
 
+use A17\Twill\Facades\TwillNavigation;
 use A17\Twill\Facades\TwillRoutes;
 use A17\Twill\Http\Controllers\Admin\SingletonModuleController;
+use A17\Twill\View\Components\Navigation\NavigationLink;
 use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Support\Facades\App;
@@ -14,56 +16,19 @@ use Illuminate\Support\Str;
 
 class Capsule
 {
-    /**
-     * @var string
-     */
-    public $name;
+    public bool $loaded = false;
 
-    /**
-     * @var string
-     */
-    public $path;
-
-    /**
-     * @var bool
-     */
-    public $enabled;
-
-    /**
-     * @var bool
-     */
-    public $packageCapsule = false;
-
-    /**
-     * @var bool
-     */
-    public $loaded = false;
-
-    /**
-     * @var string|null
-     */
-    private $singular;
-
-    /**
-     * @var string
-     */
-    private $namespace;
+    protected ?string $cachedViewPrefix = null;
 
     public function __construct(
-        string $name,
-        string $namespace,
-        string $path,
-        string $singular = null,
-        bool $enabled = true,
-        bool $packageCapsule = false
+        public string $name,
+        public string $namespace,
+        public string $path,
+        public ?string $singular = null,
+        public bool $enabled = true,
+        public bool $packageCapsule = false,
+        protected bool $automaticNavigation = true
     ) {
-        $this->name = $name;
-        $this->path = $path;
-        $this->enabled = $enabled;
-        $this->namespace = $namespace;
-        $this->singular = $singular;
-        $this->packageCapsule = $packageCapsule;
-
         $this->boot();
     }
 
@@ -75,7 +40,7 @@ class Capsule
         $this->loadMigrations();
 
         if ($this->packageCapsule) {
-            $this->registerConfig();
+            $this->registerNavigation();
         }
 
         $this->registerRoutes();
@@ -88,7 +53,7 @@ class Capsule
     {
         $serviceProviderName = $this->name . 'CapsuleServiceProvider';
 
-        if (File::exists($this->path . '/' . $serviceProviderName . '.php')) {
+        if (File::exists($this->path . DIRECTORY_SEPARATOR . $serviceProviderName . '.php')) {
             App::register($this->namespace . '\\' . $serviceProviderName);
         }
     }
@@ -110,7 +75,9 @@ class Capsule
 
     public function registerViews(): void
     {
-        View::addLocation(Str::replaceLast('/' . $this->name, '', $this->path));
+        View::addLocation(Str::replaceLast(DIRECTORY_SEPARATOR . $this->name, '', $this->path));
+
+        $this->registerBlocksAndRepeatersViewPaths();
     }
 
     public function loadMigrations(): void
@@ -134,7 +101,7 @@ class Capsule
     public function loadTranslations(): void
     {
         $callback = function (Translator $translator) {
-            $translator->addNamespace($this->getLanguagesPath(), 'twill:capsules:' . $this->getModule());
+            $translator->addNamespace('twill:capsules:' . $this->getModule(), $this->getLanguagesPath());
         };
 
         App()->afterResolving('translator', $callback);
@@ -142,13 +109,6 @@ class Capsule
         if (app()->resolved('translator')) {
             $callback(App::make('translator'));
         }
-    }
-
-    public function getBasePath(string $path): string
-    {
-        $exploded = explode('/', $path);
-
-        return implode('/', array_pop($exploded));
     }
 
     public function getModule(): string
@@ -175,7 +135,7 @@ class Capsule
     {
         $explodedNamespace = explode('\\', $this->namespace);
 
-        return implode('\\', array_pop($explodedNamespace));
+        return implode('\\', array_slice($explodedNamespace, 0, -1));
     }
 
     public function getDatabaseNamespace(): string
@@ -185,7 +145,15 @@ class Capsule
 
     public function getDatabasePsr4Path(): string
     {
-        return $this->path . '/Database';
+        if (File::exists($this->path . DIRECTORY_SEPARATOR . 'Database')) {
+            return $this->path . DIRECTORY_SEPARATOR . 'Database';
+        }
+
+        if (File::exists($this->path . DIRECTORY_SEPARATOR . 'database')) {
+            return $this->path . DIRECTORY_SEPARATOR . 'database';
+        }
+
+        return $this->path . DIRECTORY_SEPARATOR . 'Database';
     }
 
     public function getSeedsNamespace(): string
@@ -195,27 +163,27 @@ class Capsule
 
     public function getSeedsPsr4Path(): string
     {
-        return $this->getDatabasePsr4Path() . '/Seeds';
+        return $this->getDatabasePsr4Path() . DIRECTORY_SEPARATOR . 'Seeds';
     }
 
     public function getMigrationsPath(): string
     {
-        return $this->getDatabasePsr4Path() . '/migrations';
+        return $this->getDatabasePsr4Path() . DIRECTORY_SEPARATOR . 'migrations';
     }
 
     public function getResourcesPath(): string
     {
-        return $this->getPsr4Path() . '/resources';
+        return $this->getPsr4Path() . DIRECTORY_SEPARATOR . 'resources';
     }
 
     public function getLanguagesPath(): string
     {
-        return $this->getResourcesPath() . '/lang';
+        return $this->getResourcesPath() . DIRECTORY_SEPARATOR . 'lang';
     }
 
     public function getViewsPath(): string
     {
-        return $this->getResourcesPath() . '/views';
+        return $this->getResourcesPath() . DIRECTORY_SEPARATOR . 'views';
     }
 
     public function getModelNamespace(): string
@@ -226,7 +194,7 @@ class Capsule
 
     public function getModelsDir(): string
     {
-        return $this->getPsr4Path() . '/Models';
+        return $this->getPsr4Path() . DIRECTORY_SEPARATOR . 'Models';
     }
 
     public function getRepositoriesNamespace(): string
@@ -237,7 +205,7 @@ class Capsule
 
     public function getRepositoriesDir(): string
     {
-        return $this->getPsr4Path() . '/Repositories';
+        return $this->getPsr4Path() . DIRECTORY_SEPARATOR . 'Repositories';
     }
 
     public function getControllersNamespace(): string
@@ -248,7 +216,7 @@ class Capsule
 
     public function getControllersDir(): string
     {
-        return $this->getPsr4Path() . '/Http/Controllers';
+        return $this->getPsr4Path() . DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Controllers';
     }
 
     public function getRequestsNamespace(): string
@@ -259,7 +227,7 @@ class Capsule
 
     public function getRequestsDir(): string
     {
-        return $this->getPsr4Path() . '/Http/Requests';
+        return $this->getPsr4Path() . DIRECTORY_SEPARATOR . 'Http' . DIRECTORY_SEPARATOR . 'Requests';
     }
 
     public function getPsr4Path(): string
@@ -270,17 +238,40 @@ class Capsule
 
     public function getViewPrefix(): string
     {
-        return "{$this->getModule()}.resources.views.admin";
+        if (! $this->cachedViewPrefix) {
+            $name = Str::studly($this->name);
+            // This is for backwards compatability.
+            if (File::exists($this->getViewsPath() . DIRECTORY_SEPARATOR . 'twill')) {
+                $this->cachedViewPrefix = "{$name}.resources.views.twill";
+            } else {
+                $this->cachedViewPrefix = "{$name}.resources.views.admin";
+            }
+        }
+
+        return $this->cachedViewPrefix;
     }
 
     public function getRoutesFile(): string
     {
-        return $this->getPsr4Path() . '/routes/twill.php';
+        return $this->getPsr4Path() . DIRECTORY_SEPARATOR . 'routes' . DIRECTORY_SEPARATOR . 'twill.php';
     }
 
-    public function routesFileExists(): bool
+    public function getLegacyRoutesFile(): string
     {
-        return file_exists($this->getRoutesFile());
+        return $this->getPsr4Path() . DIRECTORY_SEPARATOR . 'routes' . DIRECTORY_SEPARATOR . 'admin.php';
+    }
+
+    public function getRoutesFileIfExists(): ?string
+    {
+        if (file_exists($this->getRoutesFile())) {
+            return $this->getRoutesFile();
+        }
+
+        if (file_exists($this->getLegacyRoutesFile())) {
+            return $this->getLegacyRoutesFile();
+        }
+
+        return null;
     }
 
     public function getModel(): string
@@ -320,7 +311,7 @@ class Capsule
 
     public function getConfigFile(): string
     {
-        return $this->path . '/config.php';
+        return $this->path . DIRECTORY_SEPARATOR . 'config.php';
     }
 
     public function getConfig(): array
@@ -332,23 +323,40 @@ class Capsule
         return [];
     }
 
-    public function registerConfig(): void
+    public function registerNavigation(): void
     {
-        $config = Config::get('twill-navigation', []);
-
-        if ($this->isSingleton()) {
-            $config[lcfirst($this->getSingular())] = [
-                'title' => $this->name,
-                'singleton' => true,
-            ];
-        } else {
-            $config[$this->name] = [
-                'title' => $this->name,
-                'module' => true,
-            ];
+        if (! $this->automaticNavigation) {
+            return;
         }
 
-        Config::set('twill-navigation', $config);
+        $config = Config::get('twill-navigation', []);
+
+        if ($config === []) {
+            if ($this->isSingleton()) {
+                TwillNavigation::addLink(
+                    NavigationLink::make()->forSingleton(lcfirst($this->getSingular()))->title($this->name)
+                );
+            } else {
+                TwillNavigation::addLink(
+                    NavigationLink::make()->forModule($this->name)->title($this->name)
+                );
+            }
+        } else {
+            // @todo: Deprecated in twill 4.x?
+            if ($this->isSingleton()) {
+                $config[lcfirst($this->getSingular())] = [
+                    'title' => $this->name,
+                    'singleton' => true,
+                ];
+            } else {
+                $config[$this->name] = [
+                    'title' => $this->name,
+                    'module' => true,
+                ];
+            }
+
+            Config::set('twill-navigation', $config);
+        }
     }
 
     public function isSingleton(): bool
@@ -359,5 +367,23 @@ class Capsule
     public function getType(): string
     {
         return '';
+    }
+
+    public function registerBlocksAndRepeatersViewPaths(): void
+    {
+        $resourcePath = $this->getConfig()['views_path'] ?? 'resources/views/admin';
+
+        foreach (['blocks', 'repeaters'] as $type) {
+            if (file_exists($path = "{$this->path}/$resourcePath/$type")) {
+                $paths = config("twill.block_editor.directories.source.$type");
+
+                $paths[] = [
+                    'path' => $path,
+                    'source' => 'capsule::' . $this->name
+                ];
+
+                config(["twill.block_editor.directories.source.$type" => $paths]);
+            }
+        }
     }
 }

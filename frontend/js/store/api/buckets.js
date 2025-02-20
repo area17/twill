@@ -1,6 +1,7 @@
 import axios from 'axios'
-import { getURLWithoutQuery } from '@/utils/pushState.js'
+
 import { globalError } from '@/utils/errors'
+import { getURLWithoutQuery } from '@/utils/pushState.js'
 
 const component = 'BUCKETS'
 
@@ -8,7 +9,7 @@ export default {
 
   get: function (params, callback, errorCallback) {
     axios.get(getURLWithoutQuery(), {
-      params: params
+      params
     })
       .then((resp) => {
         if (callback && typeof callback === 'function') callback(resp.data)

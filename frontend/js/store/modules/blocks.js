@@ -6,10 +6,12 @@
  */
 
 import Vue from 'vue'
-import api from '../api/blocks'
-import { BLOCKS } from '../mutations'
+
 import ACTIONS from '@/store/actions'
 import { buildBlock, isBlockEmpty } from '@/utils/getFormData.js'
+
+import api from '../api/blocks'
+import { BLOCKS } from '../mutations'
 
 const state = {
   /**
@@ -57,12 +59,16 @@ const getters = {
   blockIndex: (state, getters) => (block, editorName) => getters.blocks(editorName).findIndex(b => b.id === block.id)
 }
 
-const setBlockID = () => Date.now()
+const setBlockID = () => Date.now() + Math.floor(Math.random() * 1000)
 
 const mutations = {
   [BLOCKS.ADD_BLOCK] (state, { block, index, editorName }) {
     const updated = state.blocks[editorName] || []
     const newBlock = { ...block, id: setBlockID(), name: editorName }
+
+    // Metadata for rendering
+    newBlock.twillUi = {}
+    newBlock.twillUi.isNew = true
 
     if (index > -1) {
       updated.splice(index, 0, newBlock) // add after a certain position

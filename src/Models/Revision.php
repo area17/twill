@@ -3,6 +3,7 @@
 namespace A17\Twill\Models;
 
 use Illuminate\Database\Eloquent\Model as BaseModel;
+use Illuminate\Support\Str;
 
 abstract class Revision extends BaseModel
 {
@@ -28,11 +29,20 @@ abstract class Revision extends BaseModel
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(twillModel('user'));
     }
 
     public function getByUserAttribute()
     {
         return isset($this->user) ? $this->user->name : 'System';
+    }
+
+    public function isDraft(): bool
+    {
+        $data = json_decode($this->payload, true);
+
+        $cmsSaveType = $data['cmsSaveType'] ?? '';
+
+        return Str::startsWith($cmsSaveType, 'draft-revision');
     }
 }

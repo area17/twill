@@ -13,10 +13,11 @@
 </template>
 
 <script>
+  import compareAsc from 'date-fns/compare_asc'
   import { mapState } from 'vuex'
+
   import { PUBLICATION } from '@/store/mutations'
   import a17VueFilters from '@/utils/filters.js'
-  import compareAsc from 'date-fns/compare_asc'
 
   export default {
     name: 'A17Toggle',

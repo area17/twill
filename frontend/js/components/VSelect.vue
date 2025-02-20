@@ -11,9 +11,10 @@
               :value="value"
               :options="currentOptions"
               :searchable="searchable"
+              :selectable="selectable"
               :clearSearchOnSelect="clearSearchOnSelect"
+              :clearable="clearable"
               :label="optionsLabel"
-              :on-search="getOptions"
               :taggable="taggable"
               :pushTags="pushTags"
               :transition="transition"
@@ -21,6 +22,7 @@
               :maxHeight="maxHeight"
               :disabled="disabled"
               @input="updateValue"
+              @search="getOptions"
           >
             <span slot="no-options">{{ emptyText }}</span>
           </v-select>
@@ -37,14 +39,13 @@
 
 <script>
   import debounce from 'lodash/debounce'
-  import randKeyMixin from '@/mixins/randKey'
+
+  // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
+  import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue'
+  import AttributesMixin from '@/mixins/addAttributes'
   import FormStoreMixin from '@/mixins/formStore'
   import InputframeMixin from '@/mixins/inputFrame'
-  import AttributesMixin from '@/mixins/addAttributes'
-  import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue'
-  // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
-  // import vSelect from 'vue-select' // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
-
+  import randKeyMixin from '@/mixins/randKey'
   export default {
     name: 'A17VueSelect',
     mixins: [randKeyMixin, InputframeMixin, FormStoreMixin, AttributesMixin],
@@ -80,6 +81,14 @@
       searchable: {
         type: Boolean,
         default: false
+      },
+      clearable: {
+        type: Boolean,
+        default: false
+      },
+      selectable: {
+        type: Function,
+        default: option => option.selectable ?? true,
       },
       clearSearchOnSelect: {
         type: Boolean,
@@ -150,7 +159,6 @@
                 if (typeof this.value[0] === 'object') {
                   return this.value.map(e => e.value)
                 }
-
                 return this.value.join(',')
               }
             }
@@ -164,13 +172,25 @@
             if (this.taggable) {
               this.value = value
             } else {
-              this.value = this.options.filter(o => value.includes(o.value))
+              this.value = []
+              for (const v in value) {
+                const matches = this.options.filter(o => {
+                  return o.value === value[v]
+                })
+
+                if (matches[0]) {
+                  this.value.push(matches[0])
+                }
+              }
             }
           } else {
             this.value = this.options.find(o => {
               // Try to always compare to the same type. But we only check for a numeric value. Because it can only be
-              // a string or a number for now.
+              // a string or a number (int or float) for now.
               if (typeof o.value === 'number') {
+                if (o.value % 1 !== 0) {
+                  return o.value === parseFloat(value)
+                }
                 return o.value === parseInt(value)
               }
               return o.value === String(value)
@@ -196,15 +216,26 @@
         return this.ajaxUrl !== ''
       },
       updateValue: function (value) {
-        // see formStore mixin
-        this.value = value
-        this.saveIntoStore()
+        // Filter out duplicate values
+        if (this.multiple) {
+          // For multiple selection
+          this.value = [...new Set(value)];
+        } else {
+          // For single selection
+          if (!value) {
+            const allOption = this.options.find((o) => o.value === 'all');
+            this.value = allOption ?? undefined
+          } else {
+            this.value = value
+          }
+        }
 
+        // see formStore mixin
+        this.saveIntoStore()
         this.$emit('change', value)
       },
       getOptions: debounce(function (search, loading) {
         if (!this.isAjax()) return true
-
         loading(true)
         this.$http.get(this.ajaxUrl, { params: { q: search } }).then((resp) => {
           if (resp.data.items && resp.data.items.length) {

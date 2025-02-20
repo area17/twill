@@ -16,7 +16,14 @@ class MakeSingleton extends ModuleMake
         {--M|hasMedias}
         {--F|hasFiles}
         {--R|hasRevisions}
-        {--all}';
+        {--E|generatePreview}
+        {--bladeForm}
+        {--all}
+        {--force}
+        {--factory}
+        {--packageDirectory=}
+        {--packageNamespace=}
+        {--parentModel=}';
 
     /**
      * The console command description.

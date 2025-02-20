@@ -1,13 +1,21 @@
 <template>
-  <span class="tablecell__raw" v-html="row[colName]"></span>
+  <span class="tablecell__raw" ref="cell" v-html="row[colName]"></span>
 </template>
 
 <script>
-  import { TableCellMixin } from '@/mixins'
+  import TableCellMixin from '@/mixins/tableCell'
 
   export default {
     name: 'A1TableCellHtml',
-    mixins: [TableCellMixin]
+    mixins: [TableCellMixin],
+    mounted () {
+      const editlink = this.$refs.cell
+        .querySelector('a[data-edit="true"]')
+
+      if (editlink) {
+        editlink.addEventListener('click', this.preventEditInPlace)
+      }
+    }
   }
 </script>
 
@@ -17,6 +25,6 @@
   .tablecell__raw a {
     text-decoration: none;
     cursor: pointer;
-    @include bordered;
+    color: $color__link;
   }
 </style>

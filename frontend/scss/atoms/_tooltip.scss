@@ -55,15 +55,15 @@ $arrowSize:6px;
   height:$arrowSize;
   overflow:hidden;
   position: absolute;
-  margin-left:- $arrowWidth / 2;
+  margin-left:- $arrowWidth * 0.5;
 
   &::after {
     border: solid transparent;
     content: "";
     left:50%;
     display:block;
-    margin-top:$arrowSize / 2;
-    margin-left:- $arrowSize / 2;
+    margin-top:$arrowSize * 0.5;
+    margin-left:- $arrowSize * 0.5;
     position: absolute;
     width:$arrowSize;
     height:$arrowSize;

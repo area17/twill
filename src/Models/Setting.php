@@ -8,7 +8,8 @@ use Illuminate\Support\Str;
 
 class Setting extends Model
 {
-    use HasTranslation, HasMedias;
+    use HasTranslation;
+    use HasMedias;
 
     public $useTranslationFallback = true;
 
@@ -20,7 +21,6 @@ class Setting extends Model
     public $translatedAttributes = [
         'value',
         'locale',
-        'active',
     ];
 
     public function getTranslationModelNameDefault()

@@ -5,6 +5,7 @@
  */
 
 import Vue from 'vue'
+
 import { ATTRIBUTES } from '../mutations'
 
 const state = {

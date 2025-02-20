@@ -1,4 +1,4 @@
-@if (isset($breadcrumb))
+@if ($breadcrumb !== [])
     <nav class="breadcrumb">
         <div class="container">
             <ul class="breadcrumb__items">

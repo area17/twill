@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Repositories;
 
+use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\Group;
 use A17\Twill\Repositories\Behaviors\HandleGroupPermissions;
 
@@ -14,7 +15,7 @@ class GroupRepository extends ModuleRepository
         $this->model = $model;
     }
 
-    public function getFormFields($group)
+    public function getFormFields(TwillModelContract $group): array
     {
         $fields = parent::getFormFields($group);
 
@@ -23,14 +24,14 @@ class GroupRepository extends ModuleRepository
         return $fields;
     }
 
-    public function afterSave($group, $fields)
+    public function afterSave(TwillModelContract $group, array $fields): void
     {
         $this->updateBrowser($group, $fields, 'users');
 
         parent::afterSave($group, $fields);
     }
 
-    public function delete($id)
+    public function delete(int|string $id): bool
     {
         if ($this->model->find($id)->is_everyone_group) {
             return false;
@@ -39,7 +40,7 @@ class GroupRepository extends ModuleRepository
         return parent::delete($id);
     }
 
-    public function bulkDelete($ids)
+    public function bulkDelete(array $ids): bool
     {
         $includes_everyone_group = $this->model->whereIn('id', $ids)
             ->where('is_everyone_group', true)
@@ -50,12 +51,5 @@ class GroupRepository extends ModuleRepository
         }
 
         return parent::bulkDelete($ids);
-    }
-
-    public function filter($query, array $scopes = [])
-    {
-        $this->searchIn($query, $scopes, 'search', ['name']);
-
-        return parent::filter($query, $scopes);
     }
 }

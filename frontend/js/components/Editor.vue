@@ -11,7 +11,7 @@
               {{ currentEditorLabel }} <span v-svg symbol="dropdown_module"></span>
             </a17-button>
             <div slot="dropdown__content">
-              <button type="button" class="editorDropdown" @click="updateEditorName(editorName.value)" v-for="editorName in editorNames"  :key="editorName.value">
+              <button type="button" class="editorDropdown" @click="updateEditorName(editorName.value)" v-for="editorName in editorNames" :key="editorName.value">
                 {{ editorName.label }}
               </button>
             </div>
@@ -22,7 +22,6 @@
       hasBlockActive,
       savedBlocks,
       editorNames,
-      reorderBlocks,
       moveBlock
     }">
       <div class="editor">
@@ -71,12 +70,11 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
+  import { mapGetters,mapState } from 'vuex'
 
-  import A17EditorSidebar from '@/components/editor/EditorSidebar.vue'
-  import A17EditorPreview from '@/components/editor/EditorPreview.vue'
   import A17BlocksList from '@/components/blocks/BlocksList'
-
+  import A17EditorPreview from '@/components/editor/EditorPreview.vue'
+  import A17EditorSidebar from '@/components/editor/EditorSidebar.vue'
   import htmlClasses from '@/utils/htmlClasses'
 
   export default {
@@ -110,11 +108,14 @@
       },
       ...mapState({
         revisions: state => state.revision.all,
-        editorNames: state => state.blocks.editorNames
+        editorNamesBase: state => state.blocks.editorNames
       }),
       ...mapGetters([
         'blocks'
-      ])
+      ]),
+      editorNames() {
+        return this.editorNamesBase.filter(editor => editor.nested === false)
+      }
     },
     provide () {
       return {

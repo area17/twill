@@ -62,13 +62,18 @@
       <!-- Metadatas options -->
       <div class="media__metadatas--options" :class="{ 's--active' : metadatas.active }" v-if="hasMedia && withAddInfo">
         <a17-mediametadata :name='metadataName' :label="$trans('fields.medias.alt-text', 'Alt Text')" id="altText" :media="media" :maxlength="altTextMaxLength" @change="updateMetadata"/>
-        <a17-mediametadata v-if="withCaption" :name='metadataName' :label="$trans('fields.medias.caption', 'Caption')" id="caption" :media="media" :maxlength="captionMaxLength" @change="updateMetadata"/>
+
+        <a17-mediametadata v-if="withCaption" :wysiwyg="useWysiwyg" :wysiwyg-options="wysiwygOptions" type='text' :name='metadataName' :label="$trans('fields.medias.caption', 'Caption')" id="caption" :media="media" :maxlength="captionMaxLength" @change="updateMetadata"/>
+
         <a17-mediametadata v-if="withVideoUrl" :name='metadataName' :label="$trans('fields.medias.video-url', 'Video URL (optional)')" id="video" :media="media" @change="updateMetadata"/>
+
         <template v-for="field in extraMetadatas">
           <a17-mediametadata v-if="extraMetadatas.length > 0"
                              :key="field.name"
                              :type="field.type"
                              :name='metadataName'
+                             :wysiwyg='field.wysiwyg || false'
+                             :wysiwyg-options='field.wysiwygOptions || wysiwygOptions'
                              :label="field.label"
                              :id="field.name"
                              :media="media"
@@ -89,18 +94,16 @@
 </template>
 
 <script>
+  import smartCrop from 'smartcrop'
   import { mapState } from 'vuex'
-
-  import { MEDIA_LIBRARY } from '@/store/mutations'
 
   import a17Cropper from '@/components/Cropper.vue'
   import a17MediaMetadata from '@/components/MediaMetadata.vue'
-  import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
   import mediaFieldMixin from '@/mixins/mediaField.js'
-
-  import a17VueFilters from '@/utils/filters.js'
+  import mediaLibrayMixin from '@/mixins/mediaLibrary/mediaLibrary.js'
+  import { MEDIA_LIBRARY } from '@/store/mutations'
   import { cropConversion } from '@/utils/cropper'
-  import smartCrop from 'smartcrop'
+  import a17VueFilters from '@/utils/filters.js'
 
   const IS_SAFARI = navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1
 
@@ -189,6 +192,10 @@
     },
     filters: a17VueFilters,
     computed: {
+      ...mapState({
+        useWysiwyg: state => state.mediaLibrary.config.useWysiwyg,
+        wysiwygOptions: state => state.mediaLibrary.config.wysiwygOptions
+      }),
       cropThumbnailStyle: function () {
         if (this.showImg) return {}
         if (!this.hasMedia) return {}
@@ -514,6 +521,10 @@
       metadatasInfos: function () {
         this.metadatas.active = !this.metadatas.active
         this.metadatas.text = this.metadatas.active ? this.metadatas.textClose : this.metadatas.textOpen
+      },
+      destroyValue: function () {
+        if (this.isSlide) return // for Slideshows : the medias are deleted when the slideshow component is destroyed (so no need to do it here)
+        if (!this.isDestroyed) this.deleteMedia()
       }
     },
     beforeMount: function () {

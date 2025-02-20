@@ -185,8 +185,8 @@
           this.timer = null
           this.active = true
 
-          document.addEventListener('click', this.closeFromDoc, true)
-          document.addEventListener('touchend', this.closeFromDoc, true)
+          document.addEventListener('click', this.closeFromDoc, false)
+          document.addEventListener('touchend', this.closeFromDoc, false)
 
           if (this.fixed) {
             window.addEventListener('scroll', this.closeFromDoc, true)

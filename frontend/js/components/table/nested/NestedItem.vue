@@ -2,7 +2,7 @@
   <div class="nested-item">
     <span v-for="col in columns" :key="col.name" class="nested-item__cell" :class="cellClasses(col, 'nested-item__cell')">
       <template v-if="isSpecificColumn(col)">
-        <component :is="currentComponent(col.name)"
+        <component :is="currentComponent(col)"
                    v-bind="currentComponentProps(col)"
                    @update="tableCellUpdate"
                    @editInPlace="editInPlace"/>
@@ -16,8 +16,8 @@
 </template>
 
 <script>
-  import { DatatableRowMixin } from '@/mixins'
   import TableCellComponents from '@/components/table/tableCell'
+  import { DatatableRowMixin } from '@/mixins'
 
   export default {
     name: 'A17-nested-item',

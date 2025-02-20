@@ -1,54 +1,7 @@
-@php
-    $translated = $translated ?? false;
-    $required = $required ?? false;
-    $maxlength = $maxlength ?? false;
-    $options = $options ?? false;
-    $placeholder = $placeholder ?? false;
-    $note = $note ?? false;
-    $disabled = $disabled ?? false;
-    $readonly = $readonly ?? false;
-    $editSource = $editSource ?? false;
-    $toolbarOptions = $toolbarOptions ?? false;
-    $inModal = $fieldsInModal ?? false;
-    $default = $default ?? false;
-    $hideCounter = $hideCounter ?? false;
-    $type = $type ?? 'quill';
-    $limitHeight = $limitHeight ?? false;
-
-    // quill.js options
-    $activeSyntax = $syntax ?? false;
-    $theme = $customTheme ?? 'github';
-    if ($toolbarOptions) {
-        $toolbarOptions = array_map(function ($option) {
-            if ($option == 'list-unordered') {
-                return (object) ['list' => 'bullet'];
-            }
-            if ($option == 'list-ordered') {
-                return (object) ['list' => 'ordered'];
-            }
-            if ($option == 'h1') {
-                return (object) ['header' => 1];
-            }
-            if ($option == 'h2') {
-                return (object) ['header' => 2];
-            }
-            return $option;
-        }, $toolbarOptions);
-
-        $toolbarOptions = [
-            'modules' => [
-                'toolbar' => $toolbarOptions,
-                'syntax' => $activeSyntax
-            ]
-        ];
-    }
-    $options = $customOptions ?? $toolbarOptions ?? false;
-@endphp
-
 @if($activeSyntax)
-    @pushonce('extra_css:wysiwyg')
+    @pushOnce('extra_css', 'form:wysiwyg')
         <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.12.0/build/styles/{{$theme}}.min.css">
-    @endpushonce
+    @endPushOnce
 @endif
 
 @if($type === 'tiptap')
@@ -57,18 +10,21 @@
             type="a17-wysiwyg-tiptap"
             :attributes="{
             label: '{{ $label }}',
-            @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
+            {!! $formFieldName(true) !!},
             @if ($note) note: '{{ $note }}', @endif
             @if ($required) required: true, @endif
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
-            @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
+            @if ($placeholder) placeholder: '{{ addslashes($placeholder) }}', @endif
+            @if ($direction) direction: '{{ $direction }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($hideCounter) showCounter: false, @endif
             @if ($disabled) disabled: true, @endif
-            @if ($readonly) readonly: true, @endif
+            @if ($readOnly) readonly: true, @endif
             @if ($editSource) editSource: true, @endif
             @if ($inModal) inModal: true, @endif
             @if ($limitHeight) limitHeight: true, @endif
+            @if ($endpoints) browserEndpoints: {!! e(json_encode($endpoints)) !!}, @endif
+            @if ($classList) classList: {!! e(json_encode($classList)) !!}, @endif
             @if ($default)
                 initialValue: '{{ $default }}',
                 hasDefaultStore: true,
@@ -79,17 +35,20 @@
     @else
         <a17-wysiwyg-tiptap
             label="{{ $label }}"
-            @include('twill::partials.form.utils._field_name')
+            {!! $formFieldName() !!}
             @if ($note) note="{{ $note }}" @endif
             @if ($required) :required="true" @endif
             @if ($options) :options='{!! json_encode($options) !!}' @endif
             @if ($placeholder) placeholder='{{ $placeholder }}' @endif
+            @if ($direction) direction="{{ $direction }}" @endif
             @if ($maxlength) :maxlength='{{ $maxlength }}' @endif
             @if ($hideCounter) :showCounter='false' @endif
             @if ($disabled) disabled @endif
-            @if ($readonly) readonly @endif
+            @if ($readOnly) readonly @endif
             @if ($editSource) :edit-source='true' @endif
             @if ($limitHeight) :limit-height='true' @endif
+            @if ($endpoints) :browser-endpoints='{!! json_encode($endpoints) !!}' @endif
+            @if ($classList) :class-list='{!! json_encode($classList) !!}' @endif
             @if ($default)
             :initial-value="'{{ $default }}'"
             :has-default-store="true"
@@ -104,15 +63,16 @@
             type="a17-wysiwyg"
             :attributes="{
             label: '{{ $label }}',
-            @include('twill::partials.form.utils._field_name', ['asAttributes' => true])
+            {!! $formFieldName(true) !!},
             @if ($note) note: '{{ $note }}', @endif
             @if ($required) required: true, @endif
             @if ($options) options: {!! e(json_encode($options)) !!}, @endif
-            @if ($placeholder) placeholder: '{{ $placeholder }}', @endif
+            @if ($placeholder) placeholder: '{{ addslashes($placeholder) }}', @endif
+            @if ($direction) direction: '{{ $direction }}', @endif
             @if ($maxlength) maxlength: {{ $maxlength }}, @endif
             @if ($hideCounter) showCounter: false, @endif
             @if ($disabled) disabled: true, @endif
-            @if ($readonly) readonly: true, @endif
+            @if ($readOnly) readonly: true, @endif
             @if ($editSource) editSource: true, @endif
             @if ($inModal) inModal: true, @endif
             @if ($limitHeight) limitHeight: true, @endif
@@ -126,15 +86,16 @@
     @else
         <a17-wysiwyg
             label="{{ $label }}"
-            @include('twill::partials.form.utils._field_name')
+            {!! $formFieldName() !!}
             @if ($note) note="{{ $note }}" @endif
             @if ($required) :required="true" @endif
             @if ($options) :options='{!! json_encode($options) !!}' @endif
             @if ($placeholder) placeholder='{{ $placeholder }}' @endif
+            @if ($direction) direction="{{ $direction }}" @endif
             @if ($maxlength) :maxlength='{{ $maxlength }}' @endif
             @if ($hideCounter) :showCounter='false' @endif
             @if ($disabled) disabled @endif
-            @if ($readonly) readonly @endif
+            @if ($readOnly) readonly @endif
             @if ($editSource) :edit-source='true' @endif
             @if ($limitHeight) :limit-height='true' @endif
             @if ($default)

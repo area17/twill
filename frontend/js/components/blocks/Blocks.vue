@@ -5,8 +5,8 @@
                  :value="savedBlocks"
                  group="blocks"
                  :move="handleOnMove"
-                 @end="e => handleOnEnd(moveBlock, moveBlockToEditor)"
-                 :options="dragOptions">
+                 @end="handleOnEnd(moveBlock, moveBlockToEditor)"
+                 v-bind="dragOptions">
         <transition-group name="draggable_list"
                           tag='div'>
           <div class="blocks__item"
@@ -19,6 +19,8 @@
                               :block="block"
                               :index="blockIndex"
                               :opened="opened"
+                              :with-handle="!isSettings"
+                              :with-actions="!isSettings"
                               @expand="setOpened"
                               v-if="availableBlocks.length">
                 <template v-for="availableBlock in availableBlocks">
@@ -49,7 +51,7 @@
                           {{ $trans('fields.block-editor.expand-all', 'Expand all') }}
                   </button>
                   <button type="button"
-                          v-if="editor"
+                          v-if="editor && !editorName.includes('|')"
                           @click="openInEditor(edit, blockIndex, editorName)">
                           {{ $trans('fields.block-editor.open-in-editor', 'Open in editor') }}
                   </button>
@@ -78,7 +80,7 @@
         </transition-group>
       </draggable>
 
-      <div class="blocks__actions">
+      <div class="blocks__actions" v-if="!isSettings">
         <a17-dropdown ref="blocksDropdown"
                       position="top-center"
                       v-if="availableBlocks.length"
@@ -114,7 +116,7 @@
             </template>
           </div>
         </a17-dropdown>
-        <div class="blocks__secondaryActions">
+        <div class="blocks__secondaryActions" v-if="!editorName.includes('|')">
           <a href="#"
              class="f--link f--link-underlined--o"
              v-if="editor"
@@ -128,12 +130,13 @@
 </template>
 
 <script>
-  import { mapState, mapGetters } from 'vuex'
-  import { DraggableMixin, EditorMixin } from '@/mixins/index'
   import draggable from 'vuedraggable'
+  import { mapGetters,mapState } from 'vuex'
+
   import BlockEditorItem from '@/components/blocks/BlockEditorItem.vue'
-  import BlocksList from '@/components/blocks/BlocksList'
   import BlockEditorModel from '@/components/blocks/BlockEditorModel'
+  import BlocksList from '@/components/blocks/BlocksList'
+  import { DraggableMixin, EditorMixin } from '@/mixins/index'
 
   export default {
     name: 'A17Blocks',
@@ -148,6 +151,10 @@
       trigger: {
         type: String,
         default: ''
+      },
+      isSettings: {
+        type: Boolean,
+        required: true
       },
       title: {
         type: String,
@@ -190,7 +197,9 @@
         this.opened = true
       },
       checkExpandBlocks () {
-        this.$refs.blockList[this.$refs.blockList.length - 1].toggleExpand()
+        if (this.$refs.blockList[this.$refs.blockList.length - 1] !== undefined) {
+          this.$refs.blockList[this.$refs.blockList.length - 1].toggleExpand()
+        }
       },
       handleOnMove (e) {
         const { draggedContext, relatedContext } = e
@@ -205,6 +214,7 @@
         }
       },
       handleOnEnd (moveFn, moveBlockToEditorFn) {
+        if (!this.nextMove) return
         const {
           block,
           editorName,
@@ -222,6 +232,9 @@
       },
       handleClone (cloneFn, blockIndex, block) {
         cloneFn && cloneFn({ block, index: blockIndex + 1 })
+        this.$nextTick(() => {
+          this.checkExpandBlocks()
+        })
       },
       handleBlockAdd (fn, block, index = -1) {
         fn(block, index)
@@ -265,9 +278,11 @@
     mounted () {
       // if there are blocks, these should be all collapse by default
       this.$nextTick(function () {
-        if (this.blocks(this.editorName) && this.blocks(this.editorName).length < 4) {
+        if (this.$refs.blockList && this.blocks(this.editorName) && this.blocks(this.editorName).length < 4) {
           this.$refs.blockList.forEach((block) => block.toggleExpand())
         }
+
+        this.setOpened()
       })
     }
   }
@@ -275,7 +290,7 @@
 
 <style lang="scss" scoped>
   .blocks {
-    margin-top: 20px; // margin-top:35px;
+    margin-top: 20px;
   }
 
   .blocks__container {
@@ -303,6 +318,10 @@
 
     &.sortable-ghost {
       opacity: 0.5;
+    }
+
+    .blocks:first-child {
+      margin-top: 35px;
     }
   }
 

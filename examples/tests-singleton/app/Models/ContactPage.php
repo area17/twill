@@ -23,7 +23,6 @@ class ContactPage extends Model
     public $translatedAttributes = [
         'title',
         'description',
-        'active',
     ];
 
     public $slugAttributes = [

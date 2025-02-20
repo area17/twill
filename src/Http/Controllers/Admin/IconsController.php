@@ -40,7 +40,7 @@ class IconsController extends Controller
 
                 return [
                     'name' => Str::before($file->getFilename(), '.svg'),
-                    'url' => route('twill.icons.show', [
+                    'url' => route(config('twill.admin_route_name_prefix') . 'icons.show', [
                         'file' => $file->getFilename(),
                     ]),
                 ];
@@ -49,7 +49,7 @@ class IconsController extends Controller
             return $keep->merge($files);
         }, collect());
 
-        return view('twill::blocks.icons', compact('icons'));
+        return view('twill::blocks.icons', ['icons' => $icons]);
     }
 
     public function show($file)

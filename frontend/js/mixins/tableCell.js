@@ -34,7 +34,7 @@ export default {
       this.editInPlace()
     },
     editInPlace: function (event, lang) {
-      this.$emit('editInPlace', { event: event, lang: lang })
+      this.$emit('editInPlace', { event, lang })
     },
     restoreRow: function () {
       this.$emit('restoreRow', this.row)

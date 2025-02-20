@@ -26,9 +26,10 @@
 
 <script>
   import { DatatableMixin, DraggableMixin, NestedDraggableMixin } from '@/mixins/index'
+  import { DATATABLE } from '@/store/mutations/index'
+
   import a17Table from './../Table.vue'
   import a17Tablehead from './../TableHead.vue'
-  import { DATATABLE } from '@/store/mutations/index'
   import NestedList from './NestedList'
 
   export default {

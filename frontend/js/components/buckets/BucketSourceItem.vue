@@ -19,7 +19,7 @@
         <span v-svg symbol="add"></span></a17-button>
       <a17-button v-else-if="singleBucket" icon="add" :disabled="true"><span v-svg symbol="add"></span></a17-button>
 
-      <template v-else="" v-for="(b, index) in buckets">
+      <template v-else v-for="(b, index) in buckets">
         <a17-button :key="b.id" v-if="!inBucketById(b.id) && restrictedBySource(b.id)" class="bucket__action" :icon="'bucket--'+(index+1)" @click="addToBucket(b.id)">{{ index + 1 }}</a17-button>
         <a17-button :key="b.id" v-else-if="restrictedBySource(b.id)" class="bucket__action selected" :icon="'bucket--'+(index+1)" :disabled="true">{{ index + 1 }}</a17-button>
       </template>
@@ -29,8 +29,8 @@
 </template>
 
 <script>
-  import bucketMixin from '@/mixins/buckets'
   import { TableCellLanguages } from '@/components/table/tableCell'
+  import bucketMixin from '@/mixins/buckets'
 
   export default {
     mixins: [bucketMixin],

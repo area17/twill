@@ -18,7 +18,6 @@ class ForgotPasswordController extends Controller
     | your application to your users. Feel free to explore this trait.
     |
      */
-
     use SendsPasswordResetEmails;
 
     /**
@@ -43,7 +42,6 @@ class ForgotPasswordController extends Controller
     }
 
     /**
-     * @param ViewFactory $viewFactory
      * @return \Illuminate\Contracts\View\View
      */
     public function showLinkRequestForm(ViewFactory $viewFactory)

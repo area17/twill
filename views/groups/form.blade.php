@@ -1,106 +1,81 @@
 @extends('twill::layouts.form')
 
 @section('contentFields')
-    @formField('input', [
-        'name' => 'description',
-        'label' => 'Description',
-        'maxlength' => 250,
-        'placeholder' => 'Enter the description for the group',
-        'type' => 'textarea',
-        'rows' => 3
-    ])
+    <x-twill::input
+        name="description"
+        label="Description"
+        :maxlength="250"
+        placeholder="Enter the description for the group"
+        type="textarea"
+        :rows="3"
+    />
 
-    @formField('browser', [
-        'moduleName' => 'users',
-        'name' => 'users',
-        'label' => 'Users',
-        'note' => '',
-        'max' => 999
-    ])
+    <x-twill::browser
+        module-name="users"
+        name="users"
+        label="Users"
+        :max="999"
+    />
 
-    @if(config('twill.permissions.level') == 'roleGroup')
-        @component('twill::partials.form.utils._field_rows', [
-            'title' => 'Content permissions'
-        ])
-            @formField('checkbox', [
-                'name' => 'manage-modules',
-                'label' => 'Manage All Modules'
-            ])
+    @if(\A17\Twill\Facades\TwillPermissions::levelIs(\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP))
+        <x-twill::fieldRows title="Content permissions">
+            <x-twill::checkbox
+                name="manage-modules"
+                label="Manage all modules"
+            />
 
-            @component('twill::partials.form.utils._connected_fields', [
-                'fieldName' => 'manage-modules',
-                'fieldValues' => false,
-            ])
-                @foreach($permissionModules as $moduleName => $moduleItems)
-                    @formField('select', [
-                        'name' => 'module_' . $moduleName . '_permissions',
-                        'label' => ucfirst($moduleName) . ' permissions',
-                        'placeholder' => 'Select a permission',
-                        'options' => [
+            <x-twill::formConnectedFields field-name="manage-modules"
+                                          :fieldValues="false"
+            >
+                @foreach($permissionModules as $permissionModuleName => $moduleItems)
+                    <x-twill::select
+                        :name="'module_' . $permissionModuleName . '_permissions'"
+                        :label="ucfirst($permissionModuleName) . ' permissions'"
+                        placeholder="Select a permission"
+                        :options="[
                             [
                                 'value' => 'none',
                                 'label' => 'None'
                             ],
                             [
                                 'value' => 'view-module',
-                                'label' => 'View ' . $moduleName
+                                'label' => 'View ' . $permissionModuleName
                             ],
                             [
                                 'value' => 'edit-module',
-                                'label' => 'Edit ' . $moduleName
+                                'label' => 'Edit ' . $permissionModuleName
                             ]
-                        ]
-                    ])
+                        ]"
+                    />
                 @endforeach
-            @endcomponent
-        @endcomponent
+            </x-twill::formConnectedFields>
+        </x-twill::fieldRows>
     @endif
 
     @if(config('twill.support_subdomain_admin_routing'))
-        @component('twill::partials.form.utils._field_rows', [
-            'title' => 'Subdomain Access'
-        ])
+        <x-twill::fieldRows title="Subdomain access">
             @foreach(config('twill.app_names') as $subdomain => $subdomainTitle)
-                @formField('checkbox', [
-                    'name' => 'subdomain_access_' . $subdomain,
-                    'label' => $subdomainTitle
-                ])
+                <x-twill::checkbox
+                    :name="'subdomain_access_' . $subdomain"
+                    :label="$subdomainTitle"
+                />
             @endforeach
-        @endcomponent
+        </x-twill::fieldRows>
     @endif
 @stop
 
-@if(config('twill.permissions.level') == 'roleGroupItem')
-  @can('edit-user-groups')
-      @section('fieldsets')
-          @foreach($permissionModules as $moduleName => $moduleItems)
-              <a17-fieldset title='{{ ucfirst($moduleName) . " Permissions"}}' id='{{ $moduleName }}'>
-                  @formField('select_permissions', [
-                      'itemsInSelectsTables' => $moduleItems,
-                      'labelKey' => 'title',
-                      'namePattern' => $moduleName . '_%id%_permission',
-                      'options' => [
-                          [
-                              'value' => '',
-                              'label' => 'None'
-                          ],
-                          [
-                              'value' => 'view-item',
-                              'label' => 'View'
-                          ],
-                          [
-                              'value' => 'edit-item',
-                              'label' => 'Edit'
-                          ],
-                          [
-                              'value' => 'manage-item',
-                              'label' => 'Manage'
-                          ],
-                      ]
-                  ])
-              </a17-fieldset>
-          @endforeach
-      @stop
-  @endcan
-
+@if(\A17\Twill\Facades\TwillPermissions::levelIs(\A17\Twill\Enums\PermissionLevel::LEVEL_ROLE_GROUP_ITEM))
+    @can('edit-user-groups')
+        @section('fieldsets')
+            @foreach($permissionModules as $permissionModuleName => $moduleItems)
+                <a17-fieldset title='{{ ucfirst($permissionModuleName) . " Permissions"}}' id='{{ $permissionModuleName }}'>
+                    <x-twill::select-permissions
+                        :items-in-selects-tables="$moduleItems"
+                        label-key="title"
+                        :name-pattern="$permissionModuleName . '_%id%_permission'"
+                    />
+                </a17-fieldset>
+            @endforeach
+        @stop
+    @endcan
 @endif

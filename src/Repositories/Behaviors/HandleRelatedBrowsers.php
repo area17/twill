@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Repositories\Behaviors;
 
+use A17\Twill\Models\Contracts\TwillModelContract;
+
 /**
  * Mimic HandleBrowsers, but when the relation uses
  * HasRelated instead of being a proper model relation.
@@ -53,7 +55,11 @@ trait HandleRelatedBrowsers
     public function getFormFieldsHandleRelatedBrowsers($object, $fields)
     {
         foreach ($this->getRelatedBrowsers() as $browser) {
-            $fields['browsers'][$browser['browserName']] = $this->getFormFieldsForRelatedBrowser($object, $browser['relation'], $browser['titleKey']);
+            $fields['browsers'][$browser['browserName']] = $this->getFormFieldsForRelatedBrowser(
+                $object,
+                $browser['relation'],
+                $browser['titleKey']
+            );
         }
 
         return $fields;
@@ -69,14 +75,36 @@ trait HandleRelatedBrowsers
     {
         return collect($this->relatedBrowsers)->map(function ($browser, $key) {
             $browserName = is_string($browser) ? $browser : $key;
-            $moduleName = !empty($browser['moduleName']) ? $browser['moduleName'] : $this->inferModuleNameFromBrowserName($browserName);
+            $moduleName = empty($browser['moduleName']) ? $this->inferModuleNameFromBrowserName(
+                $browserName
+            ) : $browser['moduleName'];
 
             return [
-                'relation' => !empty($browser['relation']) ? $browser['relation'] : $this->inferRelationFromBrowserName($browserName),
-                'model' => !empty($browser['model']) ? $browser['model'] : $this->inferModelFromModuleName($moduleName),
+                'relation' => empty($browser['relation']) ? $this->inferRelationFromBrowserName(
+                    $browserName
+                ) : $browser['relation'],
+                'model' => empty($browser['model']) ? $this->inferModelFromModuleName($moduleName) : $browser['model'],
                 'browserName' => $browserName,
                 'titleKey' => $browser['titleKey'] ?? 'title',
             ];
         })->values();
+    }
+
+    /**
+     * Called from afterReplicate in ModuleRepository.
+     */
+    public function afterDuplicateHandleRelatedBrowsers(TwillModelContract $old, TwillModelContract $new): void
+    {
+        foreach ($old->relatedItems?->groupBy('browser_name') ?? [] as $browserName => $group) {
+            $new->saveRelated(
+                $group->map(function ($item) {
+                    return [
+                        'id' => $item->related->id,
+                        'endpointType' => $item->related->getMorphClass(),
+                    ];
+                })->toArray(),
+                $browserName
+            );
+        }
     }
 }

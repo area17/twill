@@ -17,6 +17,7 @@
 
 <script>
   import { mapState } from 'vuex'
+
   import htmlClasses from '@/utils/htmlClasses'
 
   const html = document.documentElement
@@ -211,7 +212,7 @@
     background:transparent;
     height:$height__header;
     color:$color__text--light;
-    padding:#{($height__header - 16px) / 2 } 20px;
+    padding:#{calc(($height__header - 16px) / 2)} 20px;
     text-align:left;
 
     &:hover,

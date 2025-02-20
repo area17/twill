@@ -2,26 +2,25 @@
 @twillBlockIcon('editor')
 @twillBlockGroup('twill')
 
-@formField('select', [
-    'name' => 'variation',
-    'label' => 'Gallery variation',
-    'options' => [
+<x-twill::select
+    name="variation"
+    label="Gallery variation"
+    :options="[
         [ 'value' => 'fixed-width', 'label' => 'Fixed width' ],
         [ 'value' => 'variable-width', 'label' => 'Variable width' ]
-    ],
-    'default' => 0
-])
+    ]"
+    default="fixed-width"
+/>
 
-@formField('medias', [
-    'name' => 'image',
-    'label' => 'Images',
-    'max' => 20,
-    'withVideoUrl' => false,
-    'extraMetadatas' => [
+<x-twill::medias
+    name="image"
+    label="Images"
+    :max="20"
+    :extra-metadatas="[
         [
             'name' => 'show_info',
             'label' => 'Show info',
             'type' => 'checkbox'
         ],
-    ],
-])
+    ]"
+/>

@@ -2,12 +2,10 @@
 
 namespace A17\Twill\Models;
 
-use A17\Twill\Models\User;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class UserOauth extends BaseModel
 {
-
     protected $fillable = [
         'token',
         'provider',
@@ -25,7 +23,6 @@ class UserOauth extends BaseModel
 
     public function user()
     {
-        $this->belongsTo(User::class, 'user_id');
+        $this->belongsTo(twillModel('user'), 'user_id');
     }
-
 }

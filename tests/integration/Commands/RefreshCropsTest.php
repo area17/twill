@@ -15,13 +15,11 @@ class RefreshCropsTest extends TestCase
      */
     protected $db;
 
-    public $example = 'tests-modules';
+    public ?string $example = 'tests-modules';
 
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->migrate();
 
         $this->db = app(DatabaseManager::class);
     }

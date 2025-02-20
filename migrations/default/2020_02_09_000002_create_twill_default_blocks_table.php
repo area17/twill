@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTwillDefaultBlocksTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -17,7 +17,7 @@ class CreateTwillDefaultBlocksTable extends Migration
 
         if (!Schema::hasTable($twillBlocksTable)) {
             Schema::create($twillBlocksTable, function (Blueprint $table) {
-                $table->{twillIncrementsMethod()}('id');
+                $table->bigIncrements('id');
                 $table->integer('blockable_id')->nullable()->unsigned();
                 $table->string('blockable_type')->nullable();
                 $table->integer('position')->unsigned();
@@ -41,4 +41,4 @@ class CreateTwillDefaultBlocksTable extends Migration
 
         Schema::dropIfExists($twillBlocksTable);
     }
-}
+};

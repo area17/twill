@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Http\Middleware;
 
+use A17\Twill\Facades\TwillRoutes;
 use Closure;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
@@ -35,13 +36,12 @@ class RedirectIfAuthenticated
      * Handles an incoming request.
      *
      * @param \Illuminate\Http\Request $request
-     * @param Closure $next
      * @return mixed
      */
     public function handle($request, Closure $next, $guard = 'twill_users')
     {
         if ($this->authFactory->guard($guard)->check()) {
-            return $this->redirector->to($this->config->get('twill.auth_login_redirect_path', '/'));
+            return $this->redirector->to(TwillRoutes::getAuthRedirectPath());
         }
 
         return $next($request);

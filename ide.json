@@ -1,0 +1,54 @@
+{
+  "$schema": "https://laravel-ide.com/schema/laravel-ide-v2.json",
+  "blade": {
+    "directives":
+    [
+      {
+        "name": "formField",
+        "prefix": "<?php [",
+        "suffix": "]; ?>"
+      },
+      {
+        "name": "twillBlockTitle",
+        "prefix": "<?php [",
+        "suffix": "]; ?>"
+      },
+      {
+        "name": "twillBlockIcon",
+        "prefix": "<?php [",
+        "suffix": "]; ?>"
+      },
+      {
+        "name": "twillBlockGroup",
+        "prefix": "<?php [",
+        "suffix": "]; ?>"
+      },
+      {
+        "name": "formConnectedFields",
+        "prefix": "<?php [",
+        "suffix": "]; ?>"
+      },
+      {
+        "name": "endformConnectedFields"
+      }
+    ]
+  },
+  "completions": [
+    {
+      "complete": "routeName",
+      "condition": [
+        {
+          "methodNames": [
+            "forRoute"
+          ],
+          "classFqn": [
+            "\\A17\\Twill\\View\\Components\\Navigation\\NavigationLink"
+          ],
+          "parameters": [
+            1
+          ]
+        }
+      ]
+    }
+  ]
+}

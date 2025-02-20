@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTwillDefaultFeaturesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -17,7 +17,7 @@ class CreateTwillDefaultFeaturesTable extends Migration
 
         if (!Schema::hasTable($twillFeaturesTable)) {
             Schema::create($twillFeaturesTable, function (Blueprint $table) use ($twillFeaturesTable) {
-                $table->{twillIncrementsMethod()}('id');
+                $table->bigIncrements('id');
                 $table->string('featured_id', 36);
                 $table->string('featured_type', 255);
                 $table->string('bucket_key')->index();
@@ -40,4 +40,4 @@ class CreateTwillDefaultFeaturesTable extends Migration
 
         Schema::dropIfExists($twillFeaturesTable);
     }
-}
+};

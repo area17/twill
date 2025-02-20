@@ -19,12 +19,12 @@
 </template>
 
 <script>
-  import randKeyMixin from '@/mixins/randKey'
-  import InputMixin from '@/mixins/input'
-  import FormStoreMixin from '@/mixins/formStore'
-  import InputframeMixin from '@/mixins/inputFrame'
   import AttributesMixin from '@/mixins/addAttributes'
+  import FormStoreMixin from '@/mixins/formStore'
+  import InputMixin from '@/mixins/input'
+  import InputframeMixin from '@/mixins/inputFrame'
   import LocaleMixin from '@/mixins/locale'
+  import randKeyMixin from '@/mixins/randKey'
 
   export default {
     name: 'A17Select',

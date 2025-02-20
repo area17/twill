@@ -12,6 +12,10 @@ export default {
       type: String,
       default: ''
     },
+    direction: {
+      type: String,
+      default: 'auto'
+    },
     name: {
       default: ''
     },

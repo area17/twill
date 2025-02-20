@@ -6,7 +6,7 @@ export default {
     },
     withVideoUrl: {
       type: Boolean,
-      default: true
+      default: false
     },
     withCaption: {
       type: Boolean,

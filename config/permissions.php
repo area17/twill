@@ -16,6 +16,6 @@ return [
     |
      */
 
-    'level' => 'role',
+    'level' => \A17\Twill\Enums\PermissionLevel::LEVEL_ROLE,
     'modules' => [], // List of the modules the application have to manage access
 ];

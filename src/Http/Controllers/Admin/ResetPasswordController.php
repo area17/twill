@@ -2,7 +2,7 @@
 
 namespace A17\Twill\Http\Controllers\Admin;
 
-use A17\Twill\Models\User;
+use A17\Twill\Facades\TwillRoutes;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
@@ -26,7 +26,6 @@ class ResetPasswordController extends Controller
     | explore this trait and override any methods you wish to tweak.
     |
      */
-
     use ResetsPasswords {
         sendResetResponse as traitSendResetResponse;
     }
@@ -61,7 +60,7 @@ class ResetPasswordController extends Controller
         $this->viewFactory = $viewFactory;
         $this->config = $config;
 
-        $this->redirectTo = $this->config->get('twill.auth_login_redirect_path', '/');
+        $this->redirectTo = TwillRoutes::getAuthRedirectPath();
         $this->middleware('twill_guest');
     }
 
@@ -83,7 +82,7 @@ class ResetPasswordController extends Controller
 
     protected function sendResetResponse(Request $request, $response)
     {
-        $user = User::where('email', $request->input('email'))->first();
+        $user = twillModel('user')::where('email', $request->input('email'))->first();
         if (!$user->isActivated()) {
             $user->registered_at = Carbon::now();
             $user->save();
@@ -115,7 +114,7 @@ class ResetPasswordController extends Controller
             ]);
         }
 
-        return $this->redirector->to(route('twill.password.reset.link'))->withErrors([
+        return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'password.reset.link'))->withErrors([
             'token' => 'Your password reset token has expired or could not be found, please retry.',
         ]);
     }
@@ -138,7 +137,7 @@ class ResetPasswordController extends Controller
             ]);
         }
 
-        return $this->redirector->to(route('twill.password.reset.link'))->withErrors([
+        return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'password.reset.link'))->withErrors([
             'token' => 'Your password reset token has expired or could not be found, please retry.',
         ]);
     }
@@ -157,12 +156,12 @@ class ResetPasswordController extends Controller
         $clearToken = DB::table($this->config->get('auth.passwords.twill_users.table', 'twill_password_resets'))->where('token', $token)->first();
 
         if ($clearToken) {
-            return User::where('email', $clearToken->email)->first();
+            return twillModel('user')::where('email', $clearToken->email)->first();
         }
 
         foreach (DB::table($this->config->get('auth.passwords.twill_users.table', 'twill_password_resets'))->get() as $passwordReset) {
             if (Hash::check($token, $passwordReset->token)) {
-                return User::where('email', $passwordReset->email)->first();
+                return twillModel('user')::where('email', $passwordReset->email)->first();
             }
         }
 

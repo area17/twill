@@ -25,7 +25,7 @@
   import { mapGetters } from 'vuex'
 
   export default {
-    name: 'A17editoriframe',
+    name: 'A17editorIframe',
     props: {
       block: {
         type: Object,

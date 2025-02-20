@@ -1,7 +1,9 @@
 <?php
 
+use A17\Twill\Facades\TwillRoutes;
+
 Route::group(['prefix' => 'personnel'], function () {
-    Route::module('authors');
+    TwillRoutes::module('authors');
 });
 
-Route::module('categories');
+TwillRoutes::module('categories');

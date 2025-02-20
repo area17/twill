@@ -21,9 +21,10 @@
 </template>
 
 <script>
-  import a17VueFilters from '@/utils/filters.js'
   import compareAsc from 'date-fns/compare_asc'
-  import { TableCellMixin } from '@/mixins'
+
+  import TableCellMixin from '@/mixins/tableCell'
+  import a17VueFilters from '@/utils/filters.js'
 
   export default {
     name: 'A17TableCellDates',

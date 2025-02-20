@@ -2,19 +2,24 @@
 
 namespace A17\Twill\Models;
 
+use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Behaviors\HasPresenter;
 use A17\Twill\Models\Behaviors\IsTranslatable;
-use A17\Twill\Models\Permission;
-use Auth;
+use A17\Twill\Models\Contracts\TwillLinkableModel;
+use A17\Twill\Models\Contracts\TwillModelContract;
+use A17\Twill\Models\Contracts\TwillSchedulableModel;
 use Carbon\Carbon;
 use Cartalyst\Tags\TaggableInterface;
 use Cartalyst\Tags\TaggableTrait;
+use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
-abstract class Model extends BaseModel implements TaggableInterface
+abstract class Model extends BaseModel implements TaggableInterface, TwillModelContract, TwillSchedulableModel, TwillLinkableModel
 {
     use HasPresenter;
     use SoftDeletes;
@@ -23,24 +28,27 @@ abstract class Model extends BaseModel implements TaggableInterface
 
     public $timestamps = true;
 
-    protected function isTranslationModel()
+    protected function isTranslationModel(): bool
     {
         return Str::endsWith(get_class($this), 'Translation');
     }
 
-    public function scopePublished($query)
+    public function scopePublished(Builder $query): Builder
     {
-        return $query->where("{$this->getTable()}.published", true);
+        if ($this->isFillable('published')) {
+            return $query->where($query->qualifyColumn('published'), true);
+        }
+        return $query;
     }
 
-    public function scopeAccessible($query)
+    public function scopeAccessible(Builder $query): Builder
     {
-        if (! config('twill.enabled.permissions-management')) {
+        if (! TwillPermissions::enabled()) {
             return $query;
         }
 
         $model = get_class($query->getModel());
-        $moduleName = isPermissionableModule(getModuleNameByModel($model));
+        $moduleName = TwillPermissions::getPermissionModule(getModuleNameByModel($model));
 
         if ($moduleName && ! Auth::user()->isSuperAdmin()) {
             // Get all permissions the logged in user has regards to the model.
@@ -48,8 +56,12 @@ abstract class Model extends BaseModel implements TaggableInterface
             $allModelPermissions = (clone $allPermissions)->ofModel($model);
 
             // If the user has any module permissions, or global manage all modules permissions, all items will be return
-            if ((clone $allModelPermissions)->module()->whereIn('name', Permission::available(Permission::SCOPE_MODULE))->exists()
-                || (clone $allPermissions)->global()->where('name', 'manage-modules')->exists()) {
+            if (
+                (clone $allModelPermissions)->module()
+                    ->whereIn('name', Permission::available(Permission::SCOPE_MODULE))
+                    ->exists()
+                || (clone $allPermissions)->global()->where('name', 'manage-modules')->exists()
+            ) {
                 return $query;
             }
 
@@ -66,25 +78,37 @@ abstract class Model extends BaseModel implements TaggableInterface
         return $query;
     }
 
-    public function scopePublishedInListings($query)
+    public function scopePublishedInListings(Builder $query): Builder
     {
+        // @todo: Remove? Seems unused.
         if ($this->isFillable('public')) {
-            $query->where("{$this->getTable()}.public", true);
+            $query->where($query->qualifyColumn('public'), true);
         }
 
         return $query->published()->visible();
     }
 
-    public function scopeVisible($query)
+    /**
+     * @todo: Document
+     */
+    public function scopeVisible(Builder $query): Builder
     {
         if ($this->isFillable('publish_start_date')) {
             $query->where(function ($query) {
-                $query->whereNull("{$this->getTable()}.publish_start_date")->orWhere("{$this->getTable()}.publish_start_date", '<=', Carbon::now());
+                $query->whereNull($query->qualifyColumn('publish_start_date'))->orWhere(
+                    $query->qualifyColumn('publish_start_date'),
+                    '<=',
+                    Carbon::now()
+                );
             });
 
             if ($this->isFillable('publish_end_date')) {
                 $query->where(function ($query) {
-                    $query->whereNull("{$this->getTable()}.publish_end_date")->orWhere("{$this->getTable()}.publish_end_date", '>=', Carbon::now());
+                    $query->whereNull($query->qualifyColumn('publish_end_date'))->orWhere(
+                        $query->qualifyColumn('publish_end_date'),
+                        '>=',
+                        Carbon::now()
+                    );
                 });
             }
         }
@@ -92,22 +116,25 @@ abstract class Model extends BaseModel implements TaggableInterface
         return $query;
     }
 
-    public function setPublishStartDateAttribute($value)
+    public function setPublishStartDateAttribute($value): void
     {
         $this->attributes['publish_start_date'] = $value ?? Carbon::now();
     }
 
-    public function scopeDraft($query)
+    public function scopeDraft(Builder $query): Builder
     {
-        return $query->where("{$this->getTable()}.published", false);
+        if ($this->isFillable('published')) {
+            return $query->where($query->qualifyColumn('published'), false);
+        }
+        return $query;
     }
 
-    public function scopeOnlyTrashed($query)
+    public function scopeOnlyTrashed(Builder $query): Builder
     {
-        return $query->whereNotNull("{$this->getTable()}.deleted_at");
+        return $query->onlyTrashed();
     }
 
-    public function getFillable()
+    public function getFillable(): array
     {
         // If the fillable attribute is filled, just use it
         $fillable = $this->fillable;
@@ -135,12 +162,14 @@ abstract class Model extends BaseModel implements TaggableInterface
         return $fillable;
     }
 
-    public function getTranslatedAttributes()
+    public function getTranslatedAttributes(): array
     {
-        return $this->translatedAttributes ?? [];
+        return $this->translatedAttributes
+            ? [...$this->translatedAttributes, 'active']
+            : [];
     }
 
-    protected static function bootTaggableTrait()
+    protected static function bootTaggableTrait(): void
     {
         static::$tagsModel = Tag::class;
     }
@@ -156,6 +185,31 @@ abstract class Model extends BaseModel implements TaggableInterface
             config('twill.tagged_table', 'tagged'),
             'taggable_id',
             'tag_id'
+        );
+    }
+
+    public function getFullUrl(): string
+    {
+        if (! method_exists($this, 'getSlug')) {
+            return '#';
+        }
+
+        // @phpstan-ignore-next-line
+        if (method_exists($this, 'getUrlWithoutSlug') && $this->urlWithoutSlug) {
+            return rtrim($this->urlWithoutSlug, '/') . '/' . $this->getSlug();
+        }
+
+        try {
+            $controller = getModelController($this);
+        } catch (Exception) {
+            // Fallback to never crash on production.
+            return '#';
+        }
+
+        return Str::replace(
+            ['/{preview}', '{language}'],
+            ['', app()->getLocale()],
+            rtrim($controller->getPermalinkBaseUrl(), '/') . '/' . $this->getSlug()
         );
     }
 }

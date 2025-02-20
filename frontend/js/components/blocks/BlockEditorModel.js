@@ -1,5 +1,7 @@
-import { BLOCKS } from '@/store/mutations'
 import { mapGetters, mapState } from 'vuex'
+
+import ACTIONS from '@/store/actions'
+import { BLOCKS } from '@/store/mutations'
 
 export default {
   props: {
@@ -36,13 +38,13 @@ export default {
           icon: block.icon,
           attributes: block.attributes
         },
-        index: index
+        index
       })
     },
     edit (index = this.blockIndex) {
       this.$store.commit(BLOCKS.ACTIVATE_BLOCK, {
         editorName: this.editorName,
-        index: index
+        index
       })
     },
     unEdit () {
@@ -56,7 +58,7 @@ export default {
       this.$store.commit(BLOCKS.MOVE_BLOCK, {
         editorName: this.editorName,
         oldIndex: this.blockIndex,
-        newIndex: newIndex
+        newIndex
       })
     },
     duplicate () {
@@ -64,7 +66,7 @@ export default {
       this.$store.commit(BLOCKS.DUPLICATE_BLOCK, {
         editorName: this.editorName,
         index: this.blockIndex,
-        block: block,
+        block,
         id: this.setBlockID()
       })
     },
@@ -75,8 +77,16 @@ export default {
         index: this.blockIndex
       })
     },
+    cloneBlock () {
+      this.$store.dispatch(ACTIONS.DUPLICATE_BLOCK, {
+        editorName: this.editorName,
+        futureIndex: this.blockIndex + 1,
+        block: this.block,
+        id: Date.now() + Math.floor(Math.random() * 1000)
+      })
+    },
     setBlockID () {
-      return Date.now()
+      return Date.now() + Math.floor(Math.random() * 1000)
     }
   },
   render () {
@@ -89,7 +99,8 @@ export default {
       isActive: this.isActive,
       remove: this.remove,
       move: this.move,
-      duplicate: this.duplicate
+      duplicate: this.duplicate,
+      cloneBlock: this.cloneBlock
     })
   }
 }

@@ -1,7 +1,6 @@
 <!--
   Thanks for opening a PR! Your contribution is much appreciated.
-  Do you have any questions? Check out the contributing docs at https://github.com/area17/twill/blob/2.x/CONTRIBUTING.md, 
-  or ask in this Pull Request and a Twill maintainer will be happy to help :)
+  Do you have any questions? Check out the contributing docs at https://github.com/area17/twill/blob/3.x/CONTRIBUTING.md, or ask in this Pull Request and a Twill maintainer will be happy to help :)
 -->
 
 ## Description

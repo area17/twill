@@ -5,7 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
-class CreateTwillDefaultSettingsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -18,7 +18,7 @@ class CreateTwillDefaultSettingsTable extends Migration
 
         if (!Schema::hasTable($twillSettingsTable)) {
             Schema::create($twillSettingsTable, function (Blueprint $table) {
-                $table->{twillIncrementsMethod()}('id');
+                $table->bigIncrements('id');
                 $table->timestamps();
                 $table->softDeletes();
                 $table->string('key')->nullable()->index();
@@ -46,4 +46,4 @@ class CreateTwillDefaultSettingsTable extends Migration
         Schema::dropIfExists(Str::singular($twillSettingsTable) . '_translations');
         Schema::dropIfExists($twillSettingsTable);
     }
-}
+};

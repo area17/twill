@@ -4,7 +4,6 @@ namespace A17\Twill\Repositories\Behaviors;
 
 trait HandleOauth
 {
-
     /**
      * @param \Laravel\Socialite\Contracts\User $oauthUser
      * @return \A17\Twill\Models\User
@@ -69,7 +68,5 @@ trait HandleOauth
         $user->save();
 
         return $user;
-
     }
-
 }

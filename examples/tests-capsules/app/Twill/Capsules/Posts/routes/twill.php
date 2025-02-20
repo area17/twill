@@ -1,3 +1,5 @@
 <?php
 
-Route::module('posts');
+use A17\Twill\Facades\TwillRoutes;
+
+TwillRoutes::module('posts');

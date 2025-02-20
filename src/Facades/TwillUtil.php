@@ -8,6 +8,6 @@ class TwillUtil extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return 'twill_util';
+        return \A17\Twill\TwillUtil::class;
     }
 }

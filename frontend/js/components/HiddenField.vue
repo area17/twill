@@ -5,9 +5,9 @@
 </template>
 
 <script>
-  import randKeyMixin from '@/mixins/randKey'
-  import InputMixin from '@/mixins/input'
   import FormStoreMixin from '@/mixins/formStore'
+  import InputMixin from '@/mixins/input'
+  import randKeyMixin from '@/mixins/randKey'
 
   export default {
     name: 'A17HiddenField',

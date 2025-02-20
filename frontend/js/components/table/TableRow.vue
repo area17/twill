@@ -2,7 +2,7 @@
   <tr class="tablerow">
     <td v-for="col in columns" :key="col.name" class="tablecell" :class="cellClasses(col, 'tablecell')" :style="nestedStyle(col)">
       <template v-if="isSpecificColumn(col)">
-        <component :is="currentComponent(col.name)"
+        <component :is="currentComponent(col)"
                    v-bind="currentComponentProps(col)"
                    :row="row"
                    @update="tableCellUpdate"
