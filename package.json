@@ -25,6 +25,8 @@
     "@tiptap/extension-table-row": "^2.2.1",
     "@tiptap/extension-text-align": "^2.2.1",
     "@tiptap/extension-underline": "^2.2.1",
+    "@tiptap/extension-subscript": "^2.11.5",
+    "@tiptap/extension-superscript": "^2.11.5",
     "@tiptap/pm": "^2.2.1",
     "@tiptap/starter-kit": "^2.2.1",
     "@tiptap/vue-2": "^2.2.1",

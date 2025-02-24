@@ -26,6 +26,8 @@ class Wysiwyg extends BaseFormField
         'bold',
         'italic',
         'underline',
+        'subscript',
+        'superscript',
         'strike',
         'blockquote',
         "code-block",
