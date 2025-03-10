@@ -200,7 +200,7 @@ public function sectors() {
 - In your repository, make sure to sync the association when saving:
 
 ```php
-public function afterSave($object, $fields)
+public function afterSave($object, $fields): void
 {
     $object->sectors()->sync($fields['sectors'] ?? []);
 
@@ -208,13 +208,30 @@ public function afterSave($object, $fields)
 }
 ```
 
+:::tabs=currenttab.FormBuilder&items.FormBuilder|FormView:::
+:::tab=name.FormBuilder:::
+
+```php
+        $form->add(
+            MultiSelect::make()
+            ->name('sectors')
+            ->options(
+                Options::fromArray(app()->make(SectorsRepository::class)->listAll()->toArray())
+              )
+        );
+```
+
+:::#tab:::
+
+:::tab=name.FormView:::
+
 - In your controller, add to the formData the collection of options:
 
 ```php
 protected function formData($request)
 {
     return [
-        'sectors' => app()->make(SectorRepository::class)->listAll()
+        'sectors' => app()->make(SectorRepository::class)->listAll()->toArray()
     ];
 }
 ```
@@ -228,6 +245,9 @@ protected function formData($request)
     :options="$sectors"
 />
 ```
+
+:::#tab:::
+:::#tabs:::
 
 When used in a [block](../5_block-editor), no migration is needed.
 

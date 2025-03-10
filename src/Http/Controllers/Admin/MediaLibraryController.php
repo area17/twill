@@ -185,7 +185,12 @@ class MediaLibraryController extends ModuleController implements SignUploadListe
 
         $uploadedFile = $request->file('qqfile');
 
-        [$w, $h] = getimagesize($uploadedFile->path());
+        if ($request->input('width') && $request->input('height')) {
+            $w = $request->input('width');
+            $h = $request->input('height');
+        } else {
+            [$w, $h] = getimagesize($uploadedFile->path());
+        }
 
         $uploadedFile->storeAs($fileDirectory, $filename, $disk);
 
