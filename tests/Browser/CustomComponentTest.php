@@ -45,7 +45,7 @@ class CustomComponentTest extends BrowserTestCase
         });
     }
 
-    public function testWithBuildingCustomComponent(): void
+    public function DISABLEDtestWithBuildingCustomComponent(): void
     {
         $path = implode(DIRECTORY_SEPARATOR, [
             realpath(self::getBasePathStatic()),

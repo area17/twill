@@ -16,7 +16,7 @@ Often you might want to add some mandatory fields to the create modal of your mo
 In our module controller we can override the `getCreateForm` method and add the fields to render:
 
 :::filename:::
-`app/Http/Controllers/Twill/YourModuleController.php`
+`app/Http/Controllers/Twill/BlogController.php`
 :::#filename:::
 
 ```phptorch
@@ -168,3 +168,88 @@ Result:
 
 :::#tab:::
 :::#tabs:::
+
+# Removing publish switch from create modal
+
+In our module controller we can override the `indexData` to remove publish switch from modal. We can also override `setUpController` method to disable language select box used for making a translation active.
+
+:::filename:::
+`app/Http/Controllers/Twill/BlogController.php`
+:::#filename:::
+
+```phptorch
+##CODE##
+<?php
+
+namespace App\Http\Controllers\Twill;
+
+use A17\Twill\Http\Controllers\Admin\NestedModuleController as BaseModuleController;
+use A17\Twill\Services\Forms\Fields\Input;
+use A17\Twill\Services\Forms\Fields\Wysiwyg;
+use A17\Twill\Services\Forms\Form;
+
+class BlogController extends BaseModuleController
+{
+    protected $moduleName = 'blogs';
+
+    public function getCreateForm(): Form
+    {
+        ...
+    }
+
+    protected function setUpController(): void
+    {
+        $this->disablePublish();
+        $this->disableBulkPublish();
+        // $this->disableEditor(); # uncomment this to disable full editor
+        // $this->enableEditInModal(); # uncomment this to enable editing in modal
+
+    }
+
+    protected function formData($request) 
+    { 
+        return [ 'controlLanguagesPublication' => false ]; # disable select box to make language active
+    }
+}
+```
+
+If we also want to make all languages active by default, we can override `prepareFieldsBeforeCreate` function in our module repository:
+
+:::filename:::
+`app/Repositories/BlogRepository.php`
+:::#filename:::
+
+```phptorch
+##CODE##
+<?php
+
+namespace App\Repositories;
+
+use A17\Twill\Repositories\Behaviors\HandleTranslations;
+use A17\Twill\Repositories\Behaviors\HandleSlugs;
+use A17\Twill\Repositories\ModuleRepository;
+use App\Models\Category;
+
+class BlogRepository extends ModuleRepository
+{
+    use HandleTranslations, HandleSlugs;
+
+    public function __construct(Category $model)
+    {
+        $this->model = $model;
+    }
+
+    ### make all languages active for this model
+    public function prepareFieldsBeforeCreate($fields): array
+    {
+        foreach ($fields['languages'] as $key => $language) {
+            $fields['languages'][$key]['published'] = true;
+        }
+
+        return parent::prepareFieldsBeforeCreate($fields); // @phpstan-ignore-line
+    }
+
+}
+```
+
+![Customized create modal without publish switch](./assets/customized-without-publish-switch.png)
