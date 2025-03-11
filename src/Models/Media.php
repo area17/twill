@@ -168,6 +168,6 @@ class Media extends Model
 
     public function getTable()
     {
-        return config('twill.medias_table', 'twill_medias');
+        return $this->table ?? config('twill.medias_table', 'twill_medias');
     }
 }
