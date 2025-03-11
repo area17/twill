@@ -36,6 +36,6 @@ class Feature extends BaseModel
 
     public function getTable(): string
     {
-        return config('twill.features_table', 'twill_features');
+        return $this->table ?? config('twill.features_table', 'twill_features');
     }
 }
