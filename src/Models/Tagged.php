@@ -8,6 +8,6 @@ class Tagged extends IlluminateTagged
 {
     public function getTable()
     {
-        return config('twill.tagged_table', 'tagged');
+        return $this->table ?? config('twill.tagged_table', 'tagged');
     }
 }
