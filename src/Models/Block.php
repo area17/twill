@@ -112,7 +112,7 @@ class Block extends BaseModel implements TwillModelContract
 
     public function getTable()
     {
-        return config('twill.blocks_table', 'twill_blocks');
+        return $this->table ?? config('twill.blocks_table', 'twill_blocks');
     }
 
     public function scopePublished(Builder $query): Builder
