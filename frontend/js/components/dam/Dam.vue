@@ -13,6 +13,7 @@
         :initial-search-value="initialSearchValue"
         :edit-url="editUrl"
         :update-url="updateUrl"
+        :index-breadcrumb="indexBreadcrumb"
       ></a17-dam-header>
 
       <div class="dam__page">
@@ -56,6 +57,10 @@
       customTitle: {
         type: String,
         default: null
+      },
+      indexBreadcrumb: {
+        type: Object,
+        default: () => {}
       },
       currentUser: {
         type: String,

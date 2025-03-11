@@ -33,6 +33,18 @@
             name="edit-media-library"
             label="Upload to media library"
         />
+
+         <x-twill::checkbox
+            name="manage-dam-assets"
+            label="Manage DAM assets"
+        />
+
+        <x-twill::checkbox
+            name="delete-dam-assets"
+            label="Delete DAM assets"
+        />
+
+
     </x-twill::fieldRows>
 
     <x-twill::fieldRows title="Content permissions">

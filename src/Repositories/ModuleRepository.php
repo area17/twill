@@ -61,10 +61,11 @@ abstract class ModuleRepository
         array $appliedFilters = []
     ): LengthAwarePaginator|Collection {
         $query = $this->model->with($with);
-
+        
         $query = $this->filter($query, $scopes);
+       
         $query = $this->order($query, $orders);
-
+        
         foreach ($appliedFilters as $filter) {
             $query = $filter->applyFilter($query);
         }
@@ -76,7 +77,7 @@ abstract class ModuleRepository
         if ($perPage == -1) {
             return $query->get();
         }
-
+        
         return $query->paginate($perPage);
     }
 
@@ -558,6 +559,7 @@ abstract class ModuleRepository
     public function filter(Builder $query, array $scopes = []): Builder
     {
         $likeOperator = getLikeOperator();
+      
 
         foreach ($this->traitsMethods(__FUNCTION__) as $method) {
             $this->$method($query, $scopes);
@@ -569,7 +571,7 @@ abstract class ModuleRepository
             $query->whereNotIn($this->model->getTable() . '.id', $scopes['exceptIds']);
             unset($scopes['exceptIds']);
         }
-
+       
         foreach ($scopes as $column => $value) {
             if (method_exists($this->model, 'scope' . ucfirst($column))) {
                 $query->$column();
@@ -587,7 +589,7 @@ abstract class ModuleRepository
                 $query->where($column, $value);
             }
         }
-
+        
         return $query;
     }
 

@@ -161,14 +161,14 @@
             v-if="hasMedia"
           >
             <!-- Actions -->
-            <a
+            <a v-if="hasEditPermissions"
               :href="firstMedia.editUrl"
               :aria-label="$trans('dam.edit', 'Edit')"
             >
               <span v-svg symbol="edit" aria-hidden="true"></span>
             </a>
             <a
-              v-if="isImage && hasPreview"
+              v-if="isImage && hasPreview "
               :href="firstMedia.original"
               :data-pswp-width="firstMedia.width"
               :data-pswp-height="firstMedia.height"
@@ -343,7 +343,7 @@
             <div class="dam-sidebar__editable" v-bind:key="field.name">
               <div class="dam-sidebar__editable-header">
                 <h3 class="f--small">{{ field.label }}</h3>
-                <a17-button variant="aslink" @click="openBrowser(field)">
+                <a17-button variant="aslink" @click="openBrowser(field)" v-if="hasEditPermissions">
                   <span class="f--small">{{ $trans('dam.add', 'Add') }}</span>
                 </a17-button>
               </div>
@@ -380,7 +380,7 @@
               <template v-if="!editTagsOpen">
                 <div class="dam-sidebar__editable-header">
                   <h3 class="f--small">{{ $trans('dam.tags', 'Tags') }}</h3>
-                  <a17-button variant="aslink" @click="editTagsOpen = true">
+                  <a17-button variant="aslink" @click="editTagsOpen = true" v-if="hasEditPermissions">
                     <span class="f--small">{{
                       $trans('dam.edit', 'Edit')
                     }}</span>
@@ -874,7 +874,8 @@
         tagEndpoints: state => state.mediaLibrary.tagEndpoints,
         currentBrowser: state => state.browser.connector,
         browserFields: state => state.mediaLibrary.browserFields,
-        tagFields: state => state.mediaLibrary.tagFields
+        tagFields: state => state.mediaLibrary.tagFields,
+        hasEditPermissions: state => state.permissions.hasEditPermissions
       })
     },
     methods: {

@@ -82,6 +82,20 @@ class PermissionAuthServiceProvider extends ServiceProvider
             });
         });
 
+        $this->define('manage-dam-assets', function ($user) {
+            return $this->authorize($user, function ($user) {
+                return $user->role->permissions()->global()->where('name', 'manage-dam-assets')->exists();
+            });
+        });
+
+        $this->define('delete-dam-assets', function ($user) {
+            return $this->authorize($user, function ($user) {
+                return $user->role->permissions()->global()->where('name', 'delete-dam-assets')->exists();
+            });
+        });
+        
+        
+
         $this->define('edit-user-groups', function ($user) {
             if (
                 !TwillPermissions::levelIsOneOf([

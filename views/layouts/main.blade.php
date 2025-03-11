@@ -102,6 +102,7 @@
         publishDateDisplayFormat: '{{ config('twill.publish_date_display_format') }}',
     }
     window['{{ config('twill.js_namespace') }}'].STORE.medias = {}
+    window['{{ config('twill.js_namespace') }}'].STORE.permissions = {}
     window['{{ config('twill.js_namespace') }}'].STORE.medias.types = []
     window['{{ config('twill.js_namespace') }}'].STORE.medias.config = {
         useWysiwyg: {{ config('twill.media_library.media_caption_use_wysiwyg') ? 'true' : 'false' }},

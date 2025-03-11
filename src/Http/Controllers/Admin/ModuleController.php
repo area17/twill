@@ -1844,7 +1844,7 @@ abstract class ModuleController extends Controller
                     ->searchColumns($this->searchColumns);
             }
         }
-
+        
         return $this->transformIndexItems(
             $this->repository->get(
                 with: $this->indexWith,

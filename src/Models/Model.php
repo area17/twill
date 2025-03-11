@@ -46,7 +46,7 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
 
         $model = get_class($query->getModel());
         $moduleName = TwillPermissions::getPermissionModule(getModuleNameByModel($model));
-
+       
         if ($moduleName && ! Auth::user()->isSuperAdmin()) {
             // Get all permissions the logged in user has regards to the model.
             $allPermissions = Auth::user()->allPermissions();

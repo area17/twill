@@ -9,11 +9,10 @@
           <span v-else>{{ customTitle ? customTitle : title }}</span>
         </h1>
         <nav v-else class="breadcrumb">
-          <ul class="breadcrumb__items">
-            <!-- TODO: Pass in url instead of hard coding -->
-            <li class="breadcrumb__item"><a href="/admin/dam/collections">Collections</a></li>
+          <ul class="breadcrumb__items" v-if="indexBreadcrumb">
+            <li class="breadcrumb__item"><a :href="indexBreadcrumb.url">{{ indexBreadcrumb.label }}</a></li>
             <li class="breadcrumb__item">
-              <a17-dropdown
+              <a17-dropdown v-if="hasEditPermissions"
                 ref="infoDropdown"
                 position="bottom-left"
                 :offset="8"
@@ -45,6 +44,7 @@
                   </div>
                 </div>
               </a17-dropdown>
+              <span v-else>{{ customTitle ? customTitle : title }}</span>
             </li>
           </ul>
       </nav>
@@ -53,7 +53,7 @@
         <div ref="form">
           <a17-filter @submit="submitSearch" ref="filters" @searchInput="setSearch" :initial-search-value="initialSearchValue" > </a17-filter>
         </div>
-        <a17-button variant="validate" size="small" @click="openModal">{{
+        <a17-button v-if="hasEditPermissions" variant="validate" size="small" @click="openModal">{{
           $trans('dam.add-new', 'Add new')
         }}</a17-button>
         <div v-if="userData && usersManagement">
@@ -123,6 +123,10 @@
         type: String,
         default: null
       },
+      indexBreadcrumb: {
+        type: Object,
+        default: () => {}
+      },
       currentUser: {
         type: String,
         default: null
@@ -152,7 +156,8 @@
       ...mapState({
         damView : state => state.mediaLibrary.damView,
         filters: state => state.mediaLibrary.filters,
-        userInfo: state => state.publication.userInfo
+        userInfo: state => state.publication.userInfo,
+        hasEditPermissions: state => state.permissions.hasEditPermissions
       }),
       title() {
         // Get the title from the store
@@ -167,7 +172,7 @@
         return JSON.parse(this.currentUser)
       },
       showBreadcrumb() {
-        return this.updateUrl.includes('collections')
+        return ['collections', 'works'].some(str => this.updateUrl.includes(str))
       },
       partner() {
         // TODO: Get creator of current item
