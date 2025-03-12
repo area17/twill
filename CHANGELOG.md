@@ -2,6 +2,36 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.5.0
+
+### Added
+
+- Add a `ModuleController::setPreviewView()` method by @zachgarwood in https://github.com/area17/twill/pull/2724
+- Add a `disableCrop()` method to `medias` fields by @ifox in https://github.com/area17/twill/pull/2686
+
+### Fixed
+
+- Fix position management in `medias` and `files` fields by @zeezo887 in https://github.com/area17/twill/pull/2694
+- Fix issues with touch actions by @13twelve in https://github.com/area17/twill/pull/2713
+- Fix issue with `Relation` column by @zachgarwood in https://github.com/area17/twill/pull/2720
+- Fix endpoints initialization for `Browser` component by @zeezo887 in https://github.com/area17/twill/pull/2722
+- Fix image cropper for erroneous EXIF orientation: Use JS to read image dimensions on upload by @13twelve in https://github.com/area17/twill/pull/2705
+- Fix square crops having mismatching width/height values by @13twelve in https://github.com/area17/twill/pull/2706
+- Fix `hideActiveCrop()` not working for medias form field when max is greater than 1 by @zeezo887 in https://github.com/area17/twill/pull/2686
+- Fix #2641: `InlineRepeater` updates by @13twelve in https://github.com/area17/twill/pull/2714
+- Fix Vue dropdown console warnings: update useCapture param for removeEventListener to match addEventListener by @zeezo887 in https://github.com/area17/twill/pull/2687
+- Fix #2657: adds missing Vue draggable deprecations by @13twelve in https://github.com/area17/twill/pull/2707
+
+### Docs
+
+- Added instructions to disable publish switch in create modal by @ordigital in https://github.com/area17/twill/pull/2698
+- Added instructions for `MultiSelect` field with dynamic values in form builder by @ordigital in https://github.com/area17/twill/pull/2699
+- Added instructions for free cropping with `null` or `0` ratio value by @LucaRed in https://github.com/area17/twill/pull/2715
+
+### Translations
+
+- Fix #2619: adds missing iso languages by @13twelve in https://github.com/area17/twill/pull/2708
+
 ## 3.4.1
 
 ### Improved
