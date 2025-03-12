@@ -381,8 +381,6 @@
             bold: true,
             italic: true,
             underline: true,
-            subscript: true,
-            superscript: true,
             link: true
           },
         headingOptions: [],
