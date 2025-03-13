@@ -78,7 +78,7 @@ trait HandleMedias
                 $locale = $locale ?? config('app.locale');
 
                 if ($this->hasRole($role) || $this->hasJsonRepeaterRole($role)) {
-                    Collection::make($mediasForRole)->each(function ($media) use (&$medias, $role, $locale) {
+                    Collection::make($mediasForRole)->each(function ($media, $index) use (&$medias, $role, $locale) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
                         if (isset($media['crops']) && !empty($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
@@ -93,6 +93,7 @@ trait HandleMedias
                                     'crop_x' => $cropData['x'],
                                     'crop_y' => $cropData['y'],
                                     'metadatas' => json_encode($customMetadatas),
+                                    'position' => $index + 1,
                                 ];
                             }
                         } else {
@@ -108,6 +109,7 @@ trait HandleMedias
                                     'crop_x' => null,
                                     'crop_y' => null,
                                     'metadatas' => json_encode($customMetadatas),
+                                    'position' => $index + 1,
                                 ];
                             }
                         }
