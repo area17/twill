@@ -7,12 +7,13 @@
               ref="blockList"
               :block="block"
               :index="index"
-              :withHandle="draggable"
+              :withHandle="reorder && draggable"
+              :withActions="displayActions"
               :size="blockSize"
               :opened="opened"
           >
             <a17-button slot="block-actions" variant="icon" data-action @click="duplicateBlock(index)"
-                        v-if="hasRemainingBlocks">
+                        v-if="hasRemainingBlocks && allowCreate">
               <span v-svg symbol="add"></span>
             </a17-button>
             <div slot="dropdown-action">
@@ -110,11 +111,19 @@
         type: Boolean,
         default: true
       },
+      displayActions: {
+        type: Boolean,
+        default: true
+      },
       max: {
         type: [Number, null],
         required: false,
         default: null
-      }
+      },
+      reorder: {
+        type: Boolean,
+        default: true
+      },
     },
     data: function () {
       return {

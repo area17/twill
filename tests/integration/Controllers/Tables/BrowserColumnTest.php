@@ -27,12 +27,7 @@ class BrowserColumnTest extends ModulesTestBase
         $category = $this->createCategory();
 
         $this->author->saveRelated(
-            [
-                [
-                    'id' => $category->id,
-                    'endpointType' => Category::class,
-                ],
-            ],
+            $category,
             'categories'
         );
 

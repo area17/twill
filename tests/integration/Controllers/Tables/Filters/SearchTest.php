@@ -2,6 +2,8 @@
 
 namespace A17\Twill\Tests\Integration\Controllers\Tables\Filters;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
+
 class SearchTest extends FilterTestBase
 {
     public function setUp(): void
@@ -41,7 +43,8 @@ class SearchTest extends FilterTestBase
 
         // Set the search columns.
         $controller = $this->controllerWithFiltersAndQuickFilters(active: ['search' => '2022']);
-        $controller->setSearchColumnsTest(['name', 'year']);
+        $controller->setSearchColumnsTest(['name']);
+        $controller->setSearchQueryTest(fn (Builder $q, string $search) => $q->orWhere('year', $search));
 
         $data = $controller->index()->getData();
         $this->assertCount(1, $data['tableData']);

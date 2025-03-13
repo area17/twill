@@ -6,6 +6,7 @@ use A17\Twill\Facades\TwillCapsules;
 use A17\Twill\Models\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 trait HasSlug
@@ -13,14 +14,24 @@ trait HasSlug
     private int $nb_variation_slug = 3;
     public array $twillSlugData = [];
 
+    private bool $twill_restoring = false;
+
     protected static function bootHasSlug(): void
     {
-        static::restoring(function ($model) {
+        static::restoring(function (self $model) {
             $model->restoreSlugs();
+            $model->twill_restoring = true;
         });
 
-        static::saved(function ($model) {
-            $model->handleSlugsOnSave();
+        static::saved(function (self $model) {
+            if (!$model->twill_restoring) {
+                $model->handleSlugsOnSave();
+            }
+            $model->twill_restoring = false;
+        });
+
+        static::deleting(function (self $model) {
+            $model->slugs()->delete();
         });
     }
 
@@ -90,15 +101,19 @@ trait HasSlug
 
     public function restoreSlugs(): void
     {
-        $activeSlugs = $this->slugs()->withTrashed()->where('active', true)->get();
+        $activeSlugs = $this->slugs()->withTrashed()->get();
 
-        $activeSlugs->each(function ($slug) {
-            $slug->slug = $this->suffixSlugIfExisting(['locale' => $slug->locale, 'slug' => $slug->slug]);
+        $hasActive = false;
+        $activeSlugs->each(function ($slug) use (&$hasActive) {
+            if ($slug->active) {
+                $hasActive = true;
+                $slug->slug = $this->suffixSlugIfExisting(['locale' => $slug->locale, 'slug' => $slug->slug]);
+            }
             $slug->deleted_at = null;
             $slug->save();
         });
 
-        if ($activeSlugs->isEmpty()) {
+        if (!$hasActive) {
             $this->setSlugs();
         }
     }
@@ -109,13 +124,7 @@ trait HasSlug
      */
     public function handleSlugsOnSave(): void
     {
-        if ($this->twillSlugData === []) {
-            return;
-        }
-
-        foreach (getLocales() as $locale) {
-            $this->disableLocaleSlugs($locale);
-        }
+        $this->disableLocaleSlugs();
 
         $slugParams = $this->twillSlugData !== [] ? $this->twillSlugData : $this->getSlugParams();
 
@@ -126,6 +135,9 @@ trait HasSlug
                 $params['slug'] = Str::slug($params['slug']);
             }
 
+            if (empty($params['slug'])) {
+                continue;
+            }
             if ($this->slugs()->where('locale', $params['locale'])->where('slug', $params['slug'])->where('active', true)->doesntExist()) {
                 $this->updateOrNewSlug($params);
             }
@@ -203,17 +215,19 @@ trait HasSlug
 
         $datas[$this->getForeignKey()] = $this->id;
 
-        $id = $this->getSlugModelClass()::insertGetId($datas);
+        $slugModel = \Illuminate\Database\Eloquent\Model::unguarded(fn () => $this->getSlugModelClass()::create($datas));
 
-        $this->disableLocaleSlugs($slugParams['locale'], $id);
+        $this->disableLocaleSlugs($slugParams['locale'], $slugModel->getKey());
     }
 
-    public function disableLocaleSlugs(string $locale, int $except_slug_id = 0): void
+    public function disableLocaleSlugs(string|array $locale = null, int $except_slug_id = 0): void
     {
-        $this->getSlugModelClass()::where($this->getForeignKey(), $this->id)
-            ->where('id', '<>', $except_slug_id)
-            ->where('locale', $locale)
-            ->update(['active' => 0]);
+        $query = $this->getSlugModelClass()::where($this->getForeignKey(), $this->id)
+            ->where('id', '<>', $except_slug_id);
+        if ($locale !== null) {
+            $query->whereIn('locale', Arr::wrap($locale));
+        }
+        $query->update(['active' => 0]);
     }
 
     private function suffixSlugIfExisting(array $slugParams): string
@@ -345,7 +359,7 @@ trait HasSlug
                 }
 
                 $slugParam = [
-                        'active' => $translation->active,
+                        'active' => $translation->active ?? true,
                         'slug' => $translation->$slugAttribute ?? $this->$slugAttribute,
                         'locale' => $translation->locale,
                     ] + $slugDependenciesAttributes;

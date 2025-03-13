@@ -33,12 +33,15 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
         return Str::endsWith(get_class($this), 'Translation');
     }
 
-    public function scopePublished($query): Builder
+    public function scopePublished(Builder $query): Builder
     {
-        return $query->where("{$this->getTable()}.published", true);
+        if ($this->isFillable('published')) {
+            return $query->where($query->qualifyColumn('published'), true);
+        }
+        return $query;
     }
 
-    public function scopeAccessible($query): Builder
+    public function scopeAccessible(Builder $query): Builder
     {
         if (! TwillPermissions::enabled()) {
             return $query;
@@ -75,11 +78,11 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
         return $query;
     }
 
-    public function scopePublishedInListings($query): Builder
+    public function scopePublishedInListings(Builder $query): Builder
     {
         // @todo: Remove? Seems unused.
         if ($this->isFillable('public')) {
-            $query->where("{$this->getTable()}.public", true);
+            $query->where($query->qualifyColumn('public'), true);
         }
 
         return $query->published()->visible();
@@ -88,12 +91,12 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
     /**
      * @todo: Document
      */
-    public function scopeVisible($query): Builder
+    public function scopeVisible(Builder $query): Builder
     {
         if ($this->isFillable('publish_start_date')) {
             $query->where(function ($query) {
-                $query->whereNull("{$this->getTable()}.publish_start_date")->orWhere(
-                    "{$this->getTable()}.publish_start_date",
+                $query->whereNull($query->qualifyColumn('publish_start_date'))->orWhere(
+                    $query->qualifyColumn('publish_start_date'),
                     '<=',
                     Carbon::now()
                 );
@@ -101,8 +104,8 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
 
             if ($this->isFillable('publish_end_date')) {
                 $query->where(function ($query) {
-                    $query->whereNull("{$this->getTable()}.publish_end_date")->orWhere(
-                        "{$this->getTable()}.publish_end_date",
+                    $query->whereNull($query->qualifyColumn('publish_end_date'))->orWhere(
+                        $query->qualifyColumn('publish_end_date'),
                         '>=',
                         Carbon::now()
                     );
@@ -118,12 +121,15 @@ abstract class Model extends BaseModel implements TaggableInterface, TwillModelC
         $this->attributes['publish_start_date'] = $value ?? Carbon::now();
     }
 
-    public function scopeDraft($query): Builder
+    public function scopeDraft(Builder $query): Builder
     {
-        return $query->where("{$this->getTable()}.published", false);
+        if ($this->isFillable('published')) {
+            return $query->where($query->qualifyColumn('published'), false);
+        }
+        return $query;
     }
 
-    public function scopeOnlyTrashed($query): Builder
+    public function scopeOnlyTrashed(Builder $query): Builder
     {
         return $query->onlyTrashed();
     }

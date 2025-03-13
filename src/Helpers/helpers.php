@@ -268,3 +268,10 @@ if (! function_exists('str_after_last')) {
         return Str::afterLast($subject, $search);
     }
 }
+
+if (! function_exists('getJsonRepeaterMediaRole')) {
+    function getJsonRepeaterMediaRole($role, $repeaterName, $index): string
+    {
+        return "$repeaterName|$index|$role";
+    }
+}

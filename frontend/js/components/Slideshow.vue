@@ -15,6 +15,7 @@
                             :index="index"
                             :mediaContext="name"
                             :cropContext="cropContext"
+                            :activeCrop="activeCrop"
                             :hover="hoverable"
                             :isSlide="true"
                             :withAddInfo="withAddInfo"
@@ -70,6 +71,10 @@
       disabled: {
         type: Boolean,
         default: false
+      },
+      activeCrop: {
+        type: Boolean,
+        default: true
       }
     },
     data: function () {

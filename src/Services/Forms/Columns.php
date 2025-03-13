@@ -4,6 +4,7 @@ namespace A17\Twill\Services\Forms;
 
 use A17\Twill\Services\Forms\Contracts\CanHaveSubfields;
 use A17\Twill\Services\Forms\Contracts\CanRenderForBlocks;
+use A17\Twill\Services\Forms\Traits\HasSubFields;
 use A17\Twill\Services\Forms\Traits\RenderForBlocks;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\View as ViewFacade;
 class Columns implements CanHaveSubfields, CanRenderForBlocks
 {
     use RenderForBlocks;
+    use HasSubFields;
 
     protected function __construct(
         public ?Collection $left = null,
@@ -66,37 +68,8 @@ class Columns implements CanHaveSubfields, CanRenderForBlocks
 
     public function registerDynamicRepeaters(): void
     {
-        if ($this->left) {
-            foreach ($this->left as $field) {
-                if ($field instanceof InlineRepeater) {
-                    $field->register();
-                }
-                if ($field instanceof CanHaveSubfields) {
-                    $field->registerDynamicRepeaters();
-                }
-            }
-        }
-
-        if ($this->middle) {
-            foreach ($this->middle as $field) {
-                if ($field instanceof InlineRepeater) {
-                    $field->register();
-                }
-                if ($field instanceof CanHaveSubfields) {
-                    $field->registerDynamicRepeaters();
-                }
-            }
-        }
-
-        if ($this->right) {
-            foreach ($this->right as $field) {
-                if ($field instanceof InlineRepeater) {
-                    $field->register();
-                }
-                if ($field instanceof CanHaveSubfields) {
-                    $field->registerDynamicRepeaters();
-                }
-            }
-        }
+        $this->registerDynamicRepeatersFor($this->left);
+        $this->registerDynamicRepeatersFor($this->middle);
+        $this->registerDynamicRepeatersFor($this->right);
     }
 }

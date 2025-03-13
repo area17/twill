@@ -3,6 +3,7 @@
 namespace A17\Twill;
 
 use A17\Twill\Models\Contracts\TwillLinkableModel;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Session;
 
@@ -102,5 +103,78 @@ class TwillUtil
         $sessionData[$key] = $keyData;
 
         Session::put(self::SESSION_FIELD, $sessionData);
+    }
+
+    public function syncUsingPrimaryKey(BelongsToMany $relation, $ids, $detaching = true): array
+    {
+        return (function ($ids, $detaching = true) {
+            $changes = [
+                'attached' => [], 'detached' => [], 'updated' => [],
+            ];
+
+            // First we need to attach any of the associated models that are not currently
+            // in this joining table. We'll spin through the given IDs, checking to see
+            // if they exist in the array of current ones, and if not we will insert.
+            $current = $this->getCurrentlyAttachedPivots()
+                ->pluck('id')->all();
+
+            $records = $this->formatRecordsList($this->parseIds($ids));
+
+            // Next, we will take the differences of the currents and given IDs and detach
+            // all of the entities that exist in the "current" array but are not in the
+            // array of the new IDs given to the method which will complete the sync.
+            if ($detaching) {
+                $detach = array_diff($current, array_keys($records));
+
+                if (count($detach) > 0) {
+                    $this->newPivotQuery()->whereIn('id', $detach)->delete();
+
+                    $changes['detached'] = $this->castKeys($detach);
+                }
+            }
+
+            // Now we are finally ready to attach the new records. Note that we'll disable
+            // touching until after the entire operation is complete so we don't fire a
+            // ton of touch operations until we are totally done syncing the records.
+            foreach ($records as $id => $attributes) {
+                // If the ID is not in the list of existing pivot IDs, we will insert a new pivot
+                // record, otherwise, we will just update this existing record on this joining
+                // table, so that the developers will easily update these records pain free.
+                if (!in_array($id, $current)) {
+                    $this->attach($id, $attributes, false);
+
+                    $changes['attached'][] = $this->castKey($id);
+                } elseif (count($attributes) > 0) {
+                    // Now we'll try to update an existing pivot record with the attributes that were
+                    // given to the method. If the model is actually updated we will add it to the
+                    // list of updated pivot records so we return them back out to the consumer.
+                    if ($this->hasPivotColumn($this->updatedAt())) {
+                        $attributes = $this->addTimestampsToAttachment($attributes, true);
+                    }
+
+                    $updated = $this->newPivotQuery()->whereIn('id', $this->parseIds($id))->update(
+                        $this->castAttributes($attributes)
+                    );
+
+                    if ($updated) {
+                        $changes['updated'][] = $this->castKey($id);
+                    }
+                }
+            }
+
+
+            // Once we have finished attaching or detaching the records, we will see if we
+            // have done any attaching or detaching, and if we have we will touch these
+            // relationships if they are configured to touch on any database updates.
+            if (
+                count($changes['attached']) ||
+                count($changes['updated']) ||
+                count($changes['detached'])
+            ) {
+                $this->touchIfTouching();
+            }
+
+            return $changes;
+        })->call($relation, $ids, $detaching);
     }
 }

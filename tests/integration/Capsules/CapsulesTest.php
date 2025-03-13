@@ -224,7 +224,7 @@ class CapsulesTest extends TestCase
 
         $this->assertSee('Title');
 
-        $this->assertSee($model->title);
+        $this->assertSee(htmlspecialchars($model->title, ENT_QUOTES, 'UTF-8'));
     }
 
     public function testCanPublishModel()

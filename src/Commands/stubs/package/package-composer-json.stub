@@ -4,7 +4,7 @@
   "homepage": "{{homepage}}",
   "license": "{{licence}}",
   "require": {
-    "area17/twill": "^3.0"
+    "area17/twill": "^3.4"
   },
   "autoload": {
     "psr-4": {
