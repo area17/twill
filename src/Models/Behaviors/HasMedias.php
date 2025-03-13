@@ -56,7 +56,9 @@ trait HasMedias
             'ratio',
             'metadatas',
             'locale',
-        ])->withTimestamps()->orderBy(config('twill.mediables_table', 'twill_mediables') . '.id', 'asc');
+        ])->withTimestamps()
+            ->orderBy(config('twill.mediables_table', 'twill_mediables') . '.position')
+            ->orderBy(config('twill.mediables_table', 'twill_mediables') . '.id');
     }
 
     private function findMedia($role, $crop = 'default')

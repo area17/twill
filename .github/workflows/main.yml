@@ -108,7 +108,7 @@ jobs:
         id: composer-cache
         run: |
           echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ matrix.os }}-${{ matrix.laravel }}-${{ matrix.php }}-${{ matrix.dbal }}-composer-${{ hashFiles('**/composer.lock') }}

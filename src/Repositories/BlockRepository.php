@@ -5,14 +5,12 @@ namespace A17\Twill\Repositories;
 use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Models\Block;
 use A17\Twill\Models\Contracts\TwillModelContract;
+use A17\Twill\Models\RelatedItem;
 use A17\Twill\Repositories\Behaviors\HandleFiles;
 use A17\Twill\Repositories\Behaviors\HandleMedias;
 use A17\Twill\Services\Blocks\Block as BlockConfig;
 use Illuminate\Config\Repository as Config;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Schema;
-use ReflectionException;
 
 class BlockRepository extends ModuleRepository
 {
@@ -35,42 +33,36 @@ class BlockRepository extends ModuleRepository
 
     public function hydrate(TwillModelContract $model, array $fields): TwillModelContract
     {
-        if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
-            $relatedItems = Collection::make();
+        $relatedItems = collect($fields['browsers'])
+            ->flatMap(fn($items, $browserName) => collect($items)
+                ->map(fn($item, $position) => new RelatedItem([
+                    'subject_id' => $model->getKey(),
+                    'subject_type' => $model->getMorphClass(),
+                    'related_id' => $item['id'],
+                    'related_type' => $item['endpointType'],
+                    'browser_name' => $browserName,
+                    'position' => $position,
+                ])));
 
-            Collection::make($fields['browsers'])->each(function ($items, $browserName) use (&$relatedItems) {
-                Collection::make($items)->each(function ($item) use ($browserName, &$relatedItems) {
-                    try {
-                        // @todo: Repository could be null.
-                        $repository = $this->getModelRepository($item['endpointType'] ?? $browserName);
-                        $relatedItems->push(
-                            (object) [
-                                'related' => $repository->getById($item['id']),
-                                'browser_name' => $browserName,
-                            ]
-                        );
-                    } catch (ReflectionException $reflectionException) {
-                        Log::error($reflectionException);
-                    }
-                });
-            });
-
-            $model->setRelation('relatedItems', $relatedItems);
-        }
+        $model->setRelation('relatedItems', $relatedItems);
+        $model->loadMissing('relatedItems.related');
 
         return parent::hydrate($model, $fields);
     }
 
+    /** @param Block $model */
     public function afterSave(TwillModelContract $model, array $fields): void
     {
-        if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
-            $model->clearAllRelated();
+        if (!empty($fields['browsers'])) {
+            $browserNames = collect($fields['browsers'])->each(function ($items, $browserName) use ($model) {
+                // This will create items or delete them if they are missing
+                $model->saveRelated($items, $browserName);
+            })->keys();
 
-            if (isset($fields['browsers'])) {
-                Collection::make($fields['browsers'])->each(function ($items, $browserName) use ($model) {
-                    $model->saveRelated($items, $browserName);
-                });
-            }
+            // Delete all the related items that were emptied
+            RelatedItem::query()->whereMorphedTo('subject', $model)->whereNotIn('browser_name', $browserNames)->delete();
+        } else {
+            $model->clearAllRelated();
         }
 
         parent::afterSave($model, $fields);
@@ -82,9 +74,7 @@ class BlockRepository extends ModuleRepository
         $object->medias()->detach();
         $object->files()->detach();
 
-        if (Schema::hasTable(config('twill.related_table', 'twill_related'))) {
-            $object->clearAllRelated();
-        }
+        $object->clearAllRelated();
     }
 
     public function buildFromCmsArray(array $block, bool $repeater = false): array
