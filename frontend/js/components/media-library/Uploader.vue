@@ -197,53 +197,61 @@
         this.uploadProgress(0)
       },
       _onSubmitCallback (id, name) {
+        const file = this._uploader.methods.getFile(id)
+
+        if (!file.type.startsWith('image/')) {
+          this.prepareUpload(id, name)
+          return
+        }
+
         return new Promise((resolve, reject) => {
           // halt fine uploader upload until image is loaded
           // so we can send image dimensions with the upload
           const img = new Image()
           img.onload = () => {
-            this.$emit('clear')
-            // each upload session will add upload files with original filenames in a folder named using a uuid
-            this.unique_folder_name = this.unique_folder_name || (this.uploaderConfig.endpointRoot + qq.getUniqueId())
-
-            // determine the image dimensions and add it to params sent on upload success
-            this._uploader.methods.setParams({
+            this.prepareUpload(id, name, {
               width: img.width,
-              height: img.height,
-              unique_folder_name: this.unique_folder_name,
-              media_to_replace_id: this.media_to_replace_id
-            }, id)
-
-            this.media_to_replace_id = null
-
-            const media = {
-              id: this._uploader.methods.getUuid(id),
-              name: sanitizeFilename(name),
-              progress: 0,
-              error: false,
-              errorMessage: null,
-              isReplacement: !!this.media_to_replace_id,
-              replacementId: this.media_to_replace_id
-            }
-
-            if (this.type.value === 'file') {
-              this.media_to_replace_id = null
-            }
-
-            this.loadingMedias.push(media)
-            this.loadingProgress(media)
-
+              height: img.height
+            })
             // resolve the promise, allow the upload to continue
             resolve(img)
           }
-
           img.onerror = (err) => {
             console.error(err) // eslint-disable-line
-            reject(err);
+            reject(err)
           }
+          img.src = URL.createObjectURL(file)
+        })
+      },
 
-          img.src = URL.createObjectURL(this._uploader.methods.getFile(id))
-        });
+      prepareUpload(id, name, additionalParams = {}) {
+        this.$emit('clear')
+
+        // each upload session will place uploaded files with original
+        // filenames in a single folder named using a uuid
+        this.unique_folder_name = this.unique_folder_name ||
+          (this.uploaderConfig.endpointRoot + qq.getUniqueId())
+
+        this._uploader.methods.setParams({
+          unique_folder_name: this.unique_folder_name,
+          media_to_replace_id: this.media_to_replace_id,
+          ...additionalParams
+        }, id)
+
+        const media = {
+          id: this._uploader.methods.getUuid(id),
+          name: sanitizeFilename(name),
+          progress: 0,
+          error: false,
+          errorMessage: null,
+          isReplacement: !!this.media_to_replace_id,
+          replacementId: this.media_to_replace_id
+        }
+
+        this.media_to_replace_id = null
+
+        this.loadingMedias.push(media)
+        this.loadingProgress(media)
       },
       _onProgressCallback (id, name, uploadedBytes, totalBytes) {
         const index = this.loadingMedias.findIndex((m) => m.id === this._uploader.methods.getUuid(id))
