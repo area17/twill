@@ -1,0 +1,114 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_bump_type:
+        description: 'Type of version bump (patch, minor, major)'
+        required: true
+        default: 'patch'
+
+jobs:
+  build-and-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: 3.x
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Copy build artifacts
+        run: |
+          mkdir -p twill-assets/assets
+          rm -rf twill-assets/assets/*
+          cp -r dist/assets/* twill-assets/assets/
+
+      - name: Bump version
+        id: bump_version
+        run: |
+          npm version ${{ github.event.inputs.version_bump_type }} --no-git-tag-version
+          echo "::set-output name=new_version::$(node -p "require('./package.json').version")"
+      
+      - name: Update version in PHP file
+        run: |
+          NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
+          sed -i "s/\(public const VERSION = '\)[^']*\(';\)/\1${NEW_VERSION}\2/" src/TwillServiceProvider.php
+
+      - name: Generate changelog entry
+        id: generate_changelog
+        run: |
+          NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
+          LAST_TAG=$(git describe --tags --abbrev=0)
+          echo "Fetching pull requests merged since ${LAST_TAG}..."
+          PRS=$(gh pr list --state merged --search "merged:>${LAST_TAG}" --json title,number,url,author,labels)
+
+          ADDED=""
+          FIXED=""
+          IMPROVED=""
+
+          for pr in $(echo "${PRS}" | jq -c '.[]'); do
+            TITLE=$(echo "${pr}" | jq -r '.title')
+            URL=$(echo "${pr}" | jq -r '.url')
+            AUTHOR=$(echo "${pr}" | jq -r '.author.login')
+            NUMBER=$(echo "${pr}" | jq -r '.number')
+
+            ENTRY="- ${TITLE} by [@${AUTHOR}](${URL}) in [#${NUMBER}](${URL})"
+
+            if echo "${pr}" | jq -r '.labels[].name' | grep -q 'enhancement'; then
+              ADDED="${ADDED}\n${ENTRY}"
+            elif echo "${pr}" | jq -r '.labels[].name' | grep -q 'bug'; then
+              FIXED="${FIXED}\n${ENTRY}"
+            else
+              IMPROVED="${IMPROVED}\n${ENTRY}"
+            fi
+          done
+
+          if [ -n "${ADDED}" ]; then
+            ADDED_SECTION="### Added\n${ADDED}\n"
+          fi
+          if [ -n "${FIXED}" ]; then
+            FIXED_SECTION="### Fixed\n${FIXED}\n"
+          fi
+          if [ -n "${IMPROVED}" ]; then
+            IMPROVED_SECTION="### Improved\n${IMPROVED}\n"
+          fi
+
+          NEW_CHANGELOG="## ${NEW_VERSION}\n\n${ADDED_SECTION}${FIXED_SECTION}${IMPROVED_SECTION}"
+
+          awk -v new_changelog="$NEW_CHANGELOG" '/^## /{print new_changelog; new_changelog=""}1' CHANGELOG.md > temp && mv temp CHANGELOG.md
+
+      - name: Create PR branch
+        run: |
+          NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
+          PR_BRANCH_NAME="release-${NEW_VERSION}"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git checkout -b ${PR_BRANCH_NAME}
+          git add twill-assets/assets
+          git add package.json package-lock.json src/TwillServiceProvider.php CHANGELOG.md
+          git commit -m "Update twill assets and bump version to ${NEW_VERSION}"
+          git push --set-upstream origin ${PR_BRANCH_NAME}
+      
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update assets and bump version to ${NEW_VERSION}"
+          title: "Update assets and bump version to ${NEW_VERSION}"
+          body: |
+            This PR updates the build and bumps the version number to ${{ steps.bump_version.outputs.new_version }}.
+          branch: release-${{ steps.bump_version.outputs.new_version }}
+          base: 3.x
