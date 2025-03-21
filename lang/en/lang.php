@@ -59,6 +59,7 @@ return [
             'deleted' => 'Deleted',
             'login' => 'Login action',
             'logout' => 'Logout action',
+            'duplicated' => 'Duplicated',
         ],
         'activity-row' => [
             'edit' => 'Edit',

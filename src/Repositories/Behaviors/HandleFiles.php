@@ -73,11 +73,12 @@ trait HandleFiles
                     in_array($role, $this->model->filesParams ?? [])
                     || in_array($role, config('twill.block_editor.files', []))
                 ) {
-                    Collection::make($filesForRole)->each(function ($file) use (&$files, $role, $locale) {
+                    Collection::make($filesForRole)->each(function ($file, $index) use (&$files, $role, $locale) {
                         $files[$file['pivot_id'] ?? uniqid('file')] = [
                             'file_id' => $file['id'],
                             'role' => $role,
                             'locale' => $locale,
+                            'position' => $index + 1
                         ];
                     });
                 }

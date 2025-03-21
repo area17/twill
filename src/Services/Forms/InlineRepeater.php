@@ -9,6 +9,8 @@ use A17\Twill\Services\Forms\Contracts\CanRenderForBlocks;
 use A17\Twill\Services\Forms\Fields\Repeater;
 use A17\Twill\Services\Forms\Traits\HasSubFields;
 use A17\Twill\Services\Forms\Traits\RenderForBlocks;
+use A17\Twill\Services\Forms\Fields\Traits\CanReorder;
+use A17\Twill\Services\Forms\Fields\Traits\DisableActions;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -17,6 +19,8 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
 {
     use RenderForBlocks;
     use HasSubFields;
+    use CanReorder;
+    use DisableActions;
 
     protected function __construct(
         private ?string $name = null,
@@ -207,6 +211,8 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
             ->name($this->name)
             ->type($this->getRenderName())
             ->allowCreate($this->allowCreate)
+            ->disableReorder(!$this->reorder)
+            ->disableActions(!$this->displayActions)
             ->relation($this->relation ?? null)
             ->browserModule($this->allowBrowse ? $this->browser : null);
 

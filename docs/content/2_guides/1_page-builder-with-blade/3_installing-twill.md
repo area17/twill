@@ -4,7 +4,7 @@ Twill is a standard Laravel package, that means, we only have to require it (and
 
 So, before we get to the process of building our CMS, let's install Twill.
 
-We can do this using `composer require area17/twill:"^3.2"`.
+We can do this using `composer require area17/twill:"^3.4"`.
 
 This will install Twill 3 alongside all other required packages.
 

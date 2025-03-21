@@ -13,6 +13,7 @@
               :searchable="searchable"
               :selectable="selectable"
               :clearSearchOnSelect="clearSearchOnSelect"
+              :clearable="clearable"
               :label="optionsLabel"
               :taggable="taggable"
               :pushTags="pushTags"
@@ -78,6 +79,10 @@
         default: false
       },
       searchable: {
+        type: Boolean,
+        default: false
+      },
+      clearable: {
         type: Boolean,
         default: false
       },

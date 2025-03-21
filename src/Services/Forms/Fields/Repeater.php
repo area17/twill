@@ -4,11 +4,13 @@ namespace A17\Twill\Services\Forms\Fields;
 
 use A17\Twill\Services\Forms\Fields\Traits\CanReorder;
 use A17\Twill\Services\Forms\Fields\Traits\HasMax;
+use A17\Twill\Services\Forms\Fields\Traits\DisableActions;
 
 class Repeater extends BaseFormField
 {
     use HasMax;
     use CanReorder;
+    use DisableActions;
 
     protected ?string $type = null;
     protected bool $buttonAsLink = false;

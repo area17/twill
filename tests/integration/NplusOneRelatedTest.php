@@ -35,7 +35,7 @@ class NplusOneRelatedTest extends TestCase
                 'published' => true,
             ]);
 
-            $storeArray[] = ['endpointType' => Writer::class, 'id' => $writer->id];
+            $storeArray[] = $writer;
         }
 
         $letter->saveRelated($storeArray, 'dummyBrowser');
