@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Commands\Traits;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Schema;
 
 /* @mixin \Illuminate\Console\Command */
@@ -13,8 +14,13 @@ trait HandlesPotentialBreakingChangesWarnings
             return;
         }
 
-        $mediablesHasPosition = Schema::hasColumn(config('twill.mediables_table', 'twill_mediables'), 'position');
-        $fileablesHasPosition = Schema::hasColumn(config('twill.fileables_table', 'twill_fileables'), 'position');
+        try {
+            $mediablesHasPosition = Schema::hasColumn(config('twill.mediables_table', 'twill_mediables'), 'position');
+            $fileablesHasPosition = Schema::hasColumn(config('twill.fileables_table', 'twill_fileables'), 'position');
+        } catch (QueryException) {
+            // If no database configured abort
+            return;
+        }
 
         if ($mediablesHasPosition && $fileablesHasPosition) {
             return;
