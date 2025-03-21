@@ -2,6 +2,124 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.5.2
+
+### Fixed
+
+- Fix cropper regression (likely a from a recent browser update) by [@13twelve](https://github.com/13twelve) in [#2744](https://github.com/area17/twill/pull/2744)
+
+
+## 3.5.1
+
+### Fixed
+
+- Fix file library uploader regression by [@joyceverheije](https://github.com/joyceverheije) in https://github.com/area17/twill/pull/2740
+- Fix `timeOnly` variant of the `Datepicker` field by [@MamlukiSn](https://github.com/MamlukiSn) in https://github.com/area17/twill/pull/2739 
+
+### Improved
+
+- Add a warning during the `twill:update` and `twill:build` commands for developers that have `twill.load_default_migrations` set to false by [@ifox](https://github.com/ifox) in [de274175](https://github.com/area17/twill/commit/de274175)
+
+## 3.5.0
+
+### Added
+
+- Add a `ModuleController::setPreviewView()` method by @zachgarwood in https://github.com/area17/twill/pull/2724
+- Add a `disableCrop()` method to `medias` fields by @ifox in https://github.com/area17/twill/pull/2686
+
+### Fixed
+
+- Fix position management in `medias` and `files` fields by @zeezo887 in https://github.com/area17/twill/pull/2694
+- Fix issues with touch actions by @13twelve in https://github.com/area17/twill/pull/2713
+- Fix issue with `Relation` column by @zachgarwood in https://github.com/area17/twill/pull/2720
+- Fix endpoints initialization for `Browser` component by @zeezo887 in https://github.com/area17/twill/pull/2722
+- Fix image cropper for erroneous EXIF orientation: Use JS to read image dimensions on upload by @13twelve in https://github.com/area17/twill/pull/2705
+- Fix square crops having mismatching width/height values by @13twelve in https://github.com/area17/twill/pull/2706
+- Fix `hideActiveCrop()` not working for medias form field when max is greater than 1 by @zeezo887 in https://github.com/area17/twill/pull/2686
+- Fix #2641: `InlineRepeater` updates by @13twelve in https://github.com/area17/twill/pull/2714
+- Fix Vue dropdown console warnings: update useCapture param for removeEventListener to match addEventListener by @zeezo887 in https://github.com/area17/twill/pull/2687
+- Fix #2657: adds missing Vue draggable deprecations by @13twelve in https://github.com/area17/twill/pull/2707
+
+### Docs
+
+- Added instructions to disable publish switch in create modal by @ordigital in https://github.com/area17/twill/pull/2698
+- Added instructions for `MultiSelect` field with dynamic values in form builder by @ordigital in https://github.com/area17/twill/pull/2699
+- Added instructions for free cropping with `null` or `0` ratio value by @LucaRed in https://github.com/area17/twill/pull/2715
+
+### Translations
+
+- Fix #2619: adds missing iso languages by @13twelve in https://github.com/area17/twill/pull/2708
+
+## 3.4.1
+
+### Improved
+
+- Allow media and file library disk configuration using an environement variable by [@antonioribeiro](https://github.com/antonioribeiro) in https://github.com/area17/twill/pull/2676
+
+### Fixed
+
+- Fix #2671: 3.4.0 regression on related browsers previews by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2672
+- Fix #2674: 3.4.0 regression on relation column using a one-to-one relationship by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2675
+
+## 3.4.0
+
+### Added
+
+- Add `searchQuery` method to controller for finer control over the search by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2614
+- Add `clearable` method to select form field by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2581
+
+### Improved
+
+- Rethink the way the error handler works by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2612
+- Improve related save by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2599
+- Limits Access Key exposition to S3 storage by [@luislavena](https://github.com/luislavena) in https://github.com/area17/twill/pull/2611
+- Don't load relation for each column and allow dot notation in field name for index table by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2603
+- Filter - Select: expand to the longest option by [@mrdoinel](https://github.com/mrdoinel) in https://github.com/area17/twill/pull/2627
+- Preview: Update default width value for the mobile preview (to a more realistic value) by [@mrdoinel](https://github.com/mrdoinel) in https://github.com/area17/twill/pull/2624
+
+### Fixed
+
+- Fix trim function to get corresponding input by [@DCrepper](https://github.com/DCrepper) in https://github.com/area17/twill/pull/2609
+- Fix published scope by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2606
+- Fix sync of medias and files with multiple fields by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2628
+- Fix positioning of the close button in media library tags by [@mrdoinel](https://github.com/mrdoinel) in https://github.com/area17/twill/pull/2626
+- Fix search functionality for buckets by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2661
+- Fix #2650: Added parentheses to fix the order of evaluation between t… by [@HarryThe3rd](https://github.com/HarryThe3rd) in https://github.com/area17/twill/pull/2651
+- Fix deleted users causes error 500 by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2643
+- Fix wrong crops for Blocks in `twill:refresh-crops` by [@ptrckvzn](https://github.com/ptrckvzn) in https://github.com/area17/twill/pull/2642
+- Fix server error in the dashboard when a nested module has a deleted parent by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2633
+- Fix slugs are not created when saving models outside of Twill or when duplicating by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2618
+- Fix repeaters are registered without a populated item by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2605
+- Fix block previews don't update when browser items are added or changed by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2535
+- Fix weird behaviour of slugs table active column by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2531
+- Fix blocks take crop settings from parent model if name is the same by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2542
+- Use strict check for is null, as it otherwise causes empty arrays to not have any field by [@Tofandel](https://github.com/Tofandel) in https://github.com/area17/twill/pull/2604
+- Rename moduleName variable in permissionModules loop by [@zeezo887](https://github.com/zeezo887) in https://github.com/area17/twill/pull/2635
+- Ensure catch-all routes do not take precedence by [@ifox](https://github.com/ifox) in https://github.com/area17/twill/pull/2669
+
+### Docs
+
+- Update one-to-many docs to use correct Artisan command by [@daisonth](https://github.com/daisonth) in https://github.com/area17/twill/pull/2615
+- Fix basic page builder guide block file reference by [@amiraezz](https://github.com/amiraezz) in https://github.com/area17/twill/pull/2630
+
+### Translations
+
+- Update both Portuguese from Brazil and Portugal by [@antonioribeiro](https://github.com/antonioribeiro) in https://github.com/area17/twill/pull/2602
+- Improved i18n: added missing translation key (#2616) and improved German translations by [@C2H6-383](https://github.com/C2H6-383) in https://github.com/area17/twill/pull/2634
+
+### Chores
+
+- Upgrade GitHub Actions artefact upload to v4 by [@ifox](https://github.com/ifox)
+- Bump webpack from 5.91.0 to 5.95.0 by [@dependabot](https://github.com/dependabot) in https://github.com/area17/twill/pull/2665
+- Bump body-parser and express by [@dependabot](https://github.com/dependabot) in https://github.com/area17/twill/pull/2659
+- Bump cookie and express by [@dependabot](https://github.com/dependabot) in https://github.com/area17/twill/pull/2664
+
+## 3.3.2
+ 
+### Fixed
+ 
+- Backport fix from 3.5.1: `timeOnly` variant of the `Datepicker` field by [@MamlukiSn](https://github.com/MamlukiSn) in https://github.com/area17/twill/pull/2739
+
 ## 3.3.1
 
 ### Fixed

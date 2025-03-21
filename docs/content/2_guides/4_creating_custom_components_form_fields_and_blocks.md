@@ -409,7 +409,7 @@ npm install vue-numeric --save
 ### Blade view
 
 :::filename:::
-`resources/views/admin/partials/form/_custom_number.blade.php`
+`resources/views/twill/partials/form/_custom_number.blade.php`
 :::#filename:::
 
 ```blade

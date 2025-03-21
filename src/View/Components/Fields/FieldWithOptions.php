@@ -30,6 +30,7 @@ abstract class FieldWithOptions extends TwillFormComponent
         public bool $unpack = false,
         public int $columns = 0,
         public bool $searchable = false,
+        public bool $clearable = false,
         public ?string $placeholder = null,
         public bool $addNew = false,
         public ?string $moduleName = null,

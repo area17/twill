@@ -197,29 +197,46 @@
         this.uploadProgress(0)
       },
       _onSubmitCallback (id, name) {
-        this.$emit('clear')
-        // each upload session will add upload files with original filenames in a folder named using a uuid
-        this.unique_folder_name = this.unique_folder_name || (this.uploaderConfig.endpointRoot + qq.getUniqueId())
-        this._uploader.methods.setParams({
-          unique_folder_name: this.unique_folder_name,
-          media_to_replace_id: this.media_to_replace_id
-        }, id)
+        const file = this._uploader.methods.getFile(id)
 
-        // determine the image dimensions and add it to params sent on upload success
-        const imageUrl = URL.createObjectURL(this._uploader.methods.getFile(id))
-        const img = new Image()
-
-        img.onload = () => {
-          this._uploader.methods.setParams({
-            width: img.width,
-            height: img.height,
-            unique_folder_name: this.unique_folder_name,
-            media_to_replace_id: this.media_to_replace_id
-          }, id)
-          this.media_to_replace_id = null
+        if (!file.type.startsWith('image/')) {
+          this.prepareUpload(id, name)
+          return
         }
 
-        img.src = imageUrl
+        return new Promise((resolve, reject) => {
+          // halt fine uploader upload until image is loaded
+          // so we can send image dimensions with the upload
+          const img = new Image()
+          img.onload = () => {
+            this.prepareUpload(id, name, {
+              width: img.width,
+              height: img.height
+            })
+            // resolve the promise, allow the upload to continue
+            resolve(img)
+          }
+          img.onerror = (err) => {
+            console.error(err) // eslint-disable-line
+            reject(err)
+          }
+          img.src = URL.createObjectURL(file)
+        })
+      },
+
+      prepareUpload(id, name, additionalParams = {}) {
+        this.$emit('clear')
+
+        // each upload session will place uploaded files with original
+        // filenames in a single folder named using a uuid
+        this.unique_folder_name = this.unique_folder_name ||
+          (this.uploaderConfig.endpointRoot + qq.getUniqueId())
+
+        this._uploader.methods.setParams({
+          unique_folder_name: this.unique_folder_name,
+          media_to_replace_id: this.media_to_replace_id,
+          ...additionalParams
+        }, id)
 
         const media = {
           id: this._uploader.methods.getUuid(id),
@@ -231,9 +248,7 @@
           replacementId: this.media_to_replace_id
         }
 
-        if (this.type.value === 'file') {
-          this.media_to_replace_id = null
-        }
+        this.media_to_replace_id = null
 
         this.loadingMedias.push(media)
         this.loadingProgress(media)

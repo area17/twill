@@ -161,6 +161,8 @@
         }
       },
       closeFromDoc: function (event) {
+        if (!this.active) return
+
         const target = event.target
 
         if (event.type === 'scroll') {
@@ -172,8 +174,13 @@
           }
         }
 
-        if (!this.clickable) this.close()
-        else if (!this.$el.querySelector('[data-dropdown-content]').contains(target) && this.clickable) this.close()
+        // timeout so the click is not triggered directly
+        this.timer = setTimeout(() => {
+          this.timer = null
+
+          if (!this.clickable) this.close()
+          else if (!this.$el.querySelector('[data-dropdown-content]').contains(target) && this.clickable) this.close()
+        }, 1)
       },
       open: function (onShow) {
         if (this.active) return
@@ -207,8 +214,8 @@
         if (!this.active) return
 
         clearTimeout(this.timer)
-        document.removeEventListener('click', this.closeFromDoc, true)
-        document.removeEventListener('touchend', this.closeFromDoc, true)
+        document.removeEventListener('click', this.closeFromDoc, false)
+        document.removeEventListener('touchend', this.closeFromDoc, false)
 
         if (this.fixed) {
           window.removeEventListener('scroll', this.closeFromDoc, true)

@@ -205,9 +205,9 @@
     window['{{ config('twill.js_namespace') }}'].STORE.parents = {!! json_encode($parents ?? []) !!}
 
     @if (isset($item) && classHasTrait($item, \A17\Twill\Models\Behaviors\HasMedias::class))
-        window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(($item->getMediasParams()) + \A17\Twill\Facades\TwillBlocks::getAllCropConfigs() + (config('twill.settings.crops') ?? [])) !!}
+        window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(($item->getMediasParams()) + \A17\Twill\Facades\TwillBlocks::getAllCropConfigs(true) + (config('twill.settings.crops') ?? [])) !!}
     @else
-        window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(\A17\Twill\Facades\TwillBlocks::getAllCropConfigs() + (config('twill.settings.crops') ?? [])) !!}
+        window['{{ config('twill.js_namespace') }}'].STORE.medias.crops = {!! json_encode(\A17\Twill\Facades\TwillBlocks::getAllCropConfigs(true) + (config('twill.settings.crops') ?? [])) !!}
     @endif
     window['{{ config('twill.js_namespace') }}'].STORE.medias.selected = {}
 

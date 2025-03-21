@@ -414,7 +414,7 @@ class TwillRoutes
                 Str::startsWith($requestHost, config('twill.admin_app_subdomain', 'admin') . '.') && Str::endsWith($requestHost, '.' . $adminAppUrl)
                 : !config('twill.admin_app_strict') || $requestHost === $adminAppUrl;
 
-        $matchesPath = empty(config('twill.admin_app_path')) || request()->is(config('twill.admin_app_path', '') . '*');
+        $matchesPath = empty(config('twill.admin_app_path')) || request()->is(config('twill.admin_app_path', '') . '/*');
 
         return $matchesDomain && $matchesPath;
     }
