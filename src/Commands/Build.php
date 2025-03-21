@@ -3,12 +3,14 @@
 namespace A17\Twill\Commands;
 
 use A17\Twill\Commands\Traits\ExecutesInTwillDir;
+use A17\Twill\Commands\Traits\HandlesPotentialBreakingChangesWarnings;
 use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Process\Process;
 
 class Build extends Command
 {
     use ExecutesInTwillDir;
+    use HandlesPotentialBreakingChangesWarnings;
 
     /**
      * The name and signature of the console command.
@@ -37,6 +39,8 @@ class Build extends Command
      */
     public function handle(): void
     {
+        $this->warnAboutNewPositionColumns();
+
         if ($this->option('copyOnly')) {
             $this->copyCustoms();
 

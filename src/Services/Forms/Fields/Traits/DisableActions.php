@@ -9,9 +9,9 @@ trait DisableActions
     /**
      * Adds a border around the options.
      */
-    public function disableActions(bool $displayActions = true): static
+    public function disableActions(bool $disableActions = true): static
     {
-        $this->displayActions = !$displayActions;
+        $this->displayActions = !$disableActions;
 
         return $this;
     }
