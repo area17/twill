@@ -26,7 +26,7 @@ class Post extends Model implements Sortable
 
     public $translatedAttributes = ['title', 'description'];
 
-    public $slugAttributes = ['title'];
+    public $slugFields = ['title'];
 
     public $mediasParams = [
         'cover' => [

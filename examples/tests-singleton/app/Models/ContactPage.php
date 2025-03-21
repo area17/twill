@@ -25,7 +25,7 @@ class ContactPage extends Model
         'description',
     ];
 
-    public $slugAttributes = [
+    protected $slugFields = [
         'title',
     ];
 

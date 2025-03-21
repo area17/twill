@@ -28,9 +28,9 @@ trait HandleTranslations
             });
 
             foreach ($locales as $index => $locale) {
-                $submittedLanguage = Arr::first($submittedLanguages->filter(function ($lang) use ($locale) {
+                $submittedLanguage = $submittedLanguages->first(function ($lang) use ($locale) {
                     return $lang['value'] === $locale;
-                }));
+                });
 
                 $shouldPublishFirstLanguage = ($index === 0 && !$atLeastOneLanguageIsPublished);
 
@@ -52,7 +52,7 @@ trait HandleTranslations
                         return [
                             $attribute => ($attributeValue[$locale] ?? $fields[$locale][$attribute] ?? null),
                         ];
-                    })->toArray();
+                    })->all();
             }
 
             unset($fields['languages']);

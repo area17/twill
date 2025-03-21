@@ -25,7 +25,7 @@ class Category extends Model
     public $translatedAttributes = ['title'];
 
     // uncomment and modify this as needed if you use the HasSlug trait
-    public $slugAttributes = ['title'];
+    protected $slugFields = ['title'];
 
     // add checkbox fields names here (published toggle is itself a checkbox)
     public $checkboxes = ['published'];

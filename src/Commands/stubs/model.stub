@@ -21,8 +21,9 @@ class {{modelClassName}} extends Model {{modelImplements}}
         'description',
     ];
     {{/hasTranslation}}{{hasSlug}}
-    public $slugAttributes = [
+    protected $slugFields = [
         'title',
     ];
+    protected $slugDeps = [];
     {{/hasSlug}}
 }

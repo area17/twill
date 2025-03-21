@@ -94,6 +94,12 @@ class AnonymousModule
     /** @var string[] */
     private array $slugAttributes = [];
 
+    /** @var string[] */
+    private array $slugFields = [];
+
+    /** @var string[] */
+    private array $slugDeps = [];
+
     protected function __construct(public string $namePlural, public Application $app)
     {
         $this->classPrinter = new PsrPrinter();
@@ -202,6 +208,22 @@ class AnonymousModule
 
         return $this;
     }
+
+
+    public function withSlugFields(array $fields): self
+    {
+        $this->slugFields = $fields;
+
+        return $this;
+    }
+
+    public function withSlugDeps(array $fields): self
+    {
+        $this->slugDeps = $fields;
+
+        return $this;
+    }
+
 
     /**
      * Boots the anonymous module and returns the model class.
@@ -624,6 +646,18 @@ class AnonymousModule
             $class->addProperty(
                 'slugAttributes',
                 $this->slugAttributes
+            );
+        }
+        if ($this->slugDeps !== []) {
+            $class->addProperty(
+                'slugDeps',
+                $this->slugDeps
+            );
+        }
+        if ($this->slugFields !== []) {
+            $class->addProperty(
+                'slugFields',
+                $this->slugFields
             );
         }
 

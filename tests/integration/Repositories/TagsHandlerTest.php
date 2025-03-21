@@ -1,6 +1,6 @@
 <?php
 
-namespace integration\Repositories;
+namespace A17\Twill\Tests\Integration\Repositories;
 
 use A17\Twill\Tests\Integration\ModulesTestBase;
 use App\Repositories\AuthorRepository;

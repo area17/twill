@@ -168,7 +168,7 @@ class Page extends Model
         'description',
     ];
 
-    public $slugAttributes = [
+    protected $slugFields = [
         'title',
     ];
 

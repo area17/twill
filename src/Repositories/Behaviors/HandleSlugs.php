@@ -11,38 +11,32 @@ trait HandleSlugs
 {
     public function beforeSaveHandleSlugs(TwillModelContract $object, array $fields): void
     {
-        if (property_exists($this->model, 'slugAttributes')) {
+        if (method_exists($this->model, 'getSlugFields')) {
             $object->twillSlugData = [];
             $submittedLanguages = Collection::make($fields['languages'] ?? []);
 
-            foreach (getLocales() as $locale) {
-                $submittedLanguage = Arr::first($submittedLanguages->filter(function ($lang) use ($locale) {
+            $atLeastOneLanguageIsPublished = $submittedLanguages->contains(function ($language) {
+                return $language['published'];
+            });
+            foreach (getLocales() as $index => $locale) {
+                $submittedLanguage = $submittedLanguages->first(function ($lang) use ($locale) {
                     return $lang['value'] === $locale;
-                }));
+                });
 
-                if (isset($fields['slug'][$locale]) && !empty($fields['slug'][$locale])) {
-                    $currentSlug = [];
+                $shouldPublishFirstLanguage = ($index === 0 && !$atLeastOneLanguageIsPublished);
+
+                $fallBack = $fields[$locale]['active'] ?? false;
+
+                // Copy active fallback behavior from HandleTranslations
+                $activeField = $shouldPublishFirstLanguage || ($submittedLanguage['published'] ?? $fallBack);
+
+                $currentSlug = [];
+                $currentSlug['locale'] = $locale;
+                $currentSlug['active'] = $activeField;
+                if (!empty($fields['slug'][$locale])) {
                     $currentSlug['slug'] = $fields['slug'][$locale];
-                    $currentSlug['locale'] = $locale;
-                    $currentSlug['active'] = $submittedLanguage['published'] ?? true;
-                    $currentSlug = $this->getSlugParameters($object, $fields, $currentSlug);
-                    $object->twillSlugData[] = $currentSlug;
-                } else {
-                    $slugParams = $this->model->slugAttributes;
-                    $slugData = [];
-
-                    foreach ($slugParams as $param) {
-                        $slugData[] = $fields[$param][$locale] ?? '';
-                    }
-
-                    if (!empty(Arr::join($slugData, '-'))) {
-                        $object->twillSlugData[] = [
-                            'slug' => Str::slug(Arr::join($slugData, '-')),
-                            'active' => $submittedLanguage['published'] ?? 1,
-                            'locale' => $locale
-                        ];
-                    }
                 }
+                $object->twillSlugData[$locale] = $currentSlug;
             }
         }
     }
@@ -62,8 +56,11 @@ trait HandleSlugs
         return $fields;
     }
 
-    public function getSlugParameters(TwillModelContract $object, array $fields, array $slug): array
+    /** @deprecated We merge twillSlugData with getSlugParams on save, to avoid getting outdated data */
+    public function getSlugParameters(TwillModelContract $object, array $fields, array $slug): ?array
     {
+        trigger_deprecation('area17/twill', '3.5', 'The getSlugParameters method is deprecated as it returns data before fields are applied and will be removed in 4.x');
+
         $slugParams = $object->getSlugParams($slug['locale']);
 
         foreach ($object->slugAttributes as $param) {
@@ -73,7 +70,6 @@ trait HandleSlugs
                 $slug[$param] = $slugParams[$param];
             }
         }
-
         return $slug;
     }
 
