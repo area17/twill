@@ -2,10 +2,13 @@
 
 namespace A17\Twill\Commands;
 
+use A17\Twill\Commands\Traits\HandlesPotentialBreakingChangesWarnings;
 use Illuminate\Filesystem\Filesystem;
 
 class Update extends Command
 {
+    use HandlesPotentialBreakingChangesWarnings;
+
     protected $signature = 'twill:update {--fromBuild} {--migrate}';
     protected $description = 'Publish new updated Twill assets and optionally run database migrations';
 
@@ -19,6 +22,9 @@ class Update extends Command
         $this->publishAssets();
         $this->call('twill:flush-manifest');
         $this->call('view:clear');
+
+        $this->warnAboutNewPositionColumns();
+
         if ($this->option('migrate') || $this->confirm('Do you want to run any pending database migrations now?')) {
             $this->call('migrate');
         }
