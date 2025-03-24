@@ -30,6 +30,7 @@ class Capsule
         protected bool $automaticNavigation = true
     ) {
         $this->boot();
+        $this->singular = $this->singular ?? Str::singular($this->name);
     }
 
     public function boot(): void
@@ -128,7 +129,7 @@ class Capsule
 
     public function getSingular(): string
     {
-        return $this->singular ?? Str::singular($this->name);
+        return $this->singular;
     }
 
     public function getBaseNamespace(): string
