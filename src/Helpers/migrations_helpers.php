@@ -1,17 +1,10 @@
 <?php
 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Str;
 
 if (!function_exists('createDefaultFields')) {
-    /**
-     * @param \Illuminate\Database\Schema\Blueprint $table
-     * @param bool $softDeletes
-     * @param bool $published
-     * @param bool $publishDates
-     * @param bool $visibility
-     * @return void
-     */
-    function createDefaultTableFields($table, $softDeletes = true, $published = true, $publishDates = false, $visibility = false)
+    function createDefaultTableFields(Blueprint $table, bool $softDeletes = true, bool $published = true, bool $publishDates = false, bool $visibility = false): void
     {
         $table->bigIncrements('id');
 
@@ -37,13 +30,7 @@ if (!function_exists('createDefaultFields')) {
 }
 
 if (!function_exists('createDefaultTranslationsTableFields')) {
-    /**
-     * @param \Illuminate\Database\Schema\Blueprint $table
-     * @param string $tableNameSingular
-     * @param string|null $tableNamePlural
-     * @return void
-     */
-    function createDefaultTranslationsTableFields($table, $tableNameSingular, $tableNamePlural = null)
+    function createDefaultTranslationsTableFields(Blueprint $table, string $tableNameSingular, string $tableNamePlural = null): void
     {
         if (!$tableNamePlural) {
             $tableNamePlural = Str::plural($tableNameSingular);
@@ -63,13 +50,7 @@ if (!function_exists('createDefaultTranslationsTableFields')) {
 }
 
 if (!function_exists('createDefaultSlugsTableFields')) {
-    /**
-     * @param \Illuminate\Database\Schema\Blueprint $table
-     * @param string $tableNameSingular
-     * @param string|null $tableNamePlural
-     * @return void
-     */
-    function createDefaultSlugsTableFields($table, $tableNameSingular, $tableNamePlural = null)
+    function createDefaultSlugsTableFields(Blueprint $table, string $tableNameSingular, string $tableNamePlural = null): void
     {
         if (!$tableNamePlural) {
             $tableNamePlural = Str::plural($tableNameSingular);
@@ -88,15 +69,7 @@ if (!function_exists('createDefaultSlugsTableFields')) {
 }
 
 if (!function_exists('createDefaultRelationshipTableFields')) {
-    /**
-     * @param \Illuminate\Database\Schema\Blueprint $table
-     * @param string $table1NameSingular
-     * @param string $table2NameSingular
-     * @param string|null $table1NamePlural
-     * @param string|null $table2NamePlural
-     * @return void
-     */
-    function createDefaultRelationshipTableFields($table, $table1NameSingular, $table2NameSingular, $table1NamePlural = null, $table2NamePlural = null)
+    function createDefaultRelationshipTableFields(Blueprint $table, string $table1NameSingular, string $table2NameSingular, string $table1NamePlural = null, string $table2NamePlural = null): void
     {
         if (!$table1NamePlural) {
             $table1NamePlural = Str::plural($table1NameSingular);
@@ -116,13 +89,7 @@ if (!function_exists('createDefaultRelationshipTableFields')) {
 }
 
 if (!function_exists('createDefaultRevisionsTableFields')) {
-    /**
-     * @param \Illuminate\Database\Schema\Blueprint $table
-     * @param string $tableNameSingular
-     * @param string|null $tableNamePlural
-     * @return void
-     */
-    function createDefaultRevisionsTableFields($table, $tableNameSingular, $tableNamePlural = null)
+    function createDefaultRevisionsTableFields(Blueprint $table, string $tableNameSingular, string $tableNamePlural = null): void
     {
         if (!$tableNamePlural) {
             $tableNamePlural = Str::plural($tableNameSingular);

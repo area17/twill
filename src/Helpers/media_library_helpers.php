@@ -6,11 +6,7 @@ use Aws\S3\PostObjectV4;
 use Illuminate\Support\Str;
 
 if (!function_exists('s3Endpoint')) {
-    /**
-     * @param string $disk
-     * @return string
-     */
-    function s3Endpoint($disk = 'libraries')
+    function s3Endpoint(string $disk = 'libraries'): string
     {
         $diskInstance = Storage::disk($disk);
 
@@ -33,7 +29,7 @@ if (!function_exists('azureEndpoint')) {
      * @param string $disk
      * @return string
      */
-    function azureEndpoint($disk = 'libraries')
+    function azureEndpoint(string $disk = 'libraries'): string
     {
         $scheme = config("filesystems.disks.{$disk}.use_https") ? 'https://' : '';
         return $scheme . config("filesystems.disks.{$disk}.name") . '.blob.' . config("filesystems.disks.{$disk}.endpoint-suffix") . '/' . config("filesystems.disks.{$disk}.container");
@@ -41,11 +37,7 @@ if (!function_exists('azureEndpoint')) {
 }
 
 if (!function_exists('bytesToHuman')) {
-    /**
-     * @param float $bytes
-     * @return string
-     */
-    function bytesToHuman($bytes)
+    function bytesToHuman(float|int $bytes): string
     {
         $units = ['B', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb'];
 
@@ -59,22 +51,16 @@ if (!function_exists('bytesToHuman')) {
 
 if (!function_exists('replaceAccents')) {
     /**
-     * @param string $str
-     * @return bool|string
      * @deprecated Use Str::ascii instead
      */
-    function replaceAccents($str)
+    function replaceAccents(string $str): bool|string
     {
         return Str::ascii($str);
     }
 }
 
 if (!function_exists('sanitizeFilename')) {
-    /**
-     * @param string $filename
-     * @return string
-     */
-    function sanitizeFilename($filename)
+    function sanitizeFilename(string $filename): string
     {
         $sanitizedFilename = Str::ascii($filename);
 

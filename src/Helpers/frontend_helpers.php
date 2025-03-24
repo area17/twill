@@ -6,11 +6,7 @@ use Illuminate\Support\Facades\Cache;
 use A17\Twill\Services\Assets\Twill as TwillAssets;
 
 if (!function_exists('revAsset')) {
-    /**
-     * @param string $file
-     * @return string
-     */
-    function revAsset($file)
+    function revAsset(string $file): string
     {
         if (!app()->environment('local', 'development')) {
             try {
@@ -31,11 +27,7 @@ if (!function_exists('revAsset')) {
 }
 
 if (!function_exists('twillAsset')) {
-    /**
-     * @param string $file
-     * @return string
-     */
-    function twillAsset($file)
+    function twillAsset(string $file): string
     {
         return app(TwillAssets::class)->asset($file);
     }
@@ -44,12 +36,8 @@ if (!function_exists('twillAsset')) {
 if (!function_exists('icon')) {
     /**
      * ARIA roles memo: 'presentation' means merely decoration. Otherwise, use role="img".
-     *
-     * @param string $name
-     * @param array $opts
-     * @return string
      */
-    function icon($name, $opts = [])
+    function icon(string $name, array|ArrayAccess $opts = []): string
     {
         $title = isset($opts['title']) ? ' title="' . htmlentities($opts['title'], ENT_QUOTES, 'UTF-8') . '" ' : '';
         $role = isset($opts['role']) ? ' role="' . htmlentities(
@@ -66,22 +54,22 @@ if (!function_exists('icon')) {
 }
 
 if (!function_exists('twillViewName')) {
-    function twillViewName($module, $suffix)
+    function twillViewName(?string $module, string $suffix): string
     {
-        $view = "twill.{$module}.{$suffix}";
+        // No module is set.
+        if (!$module) {
+            return "twill.$suffix";
+        }
+
+        $view = "twill.$module.$suffix";
 
         if (view()->exists($view)) {
             return $view;
         }
 
-        // No module is set.
-        if (!$module) {
-            return ".$suffix";
-        }
-
         try {
             $prefix = TwillCapsules::getCapsuleForModule($module)->getViewPrefix();
-        } catch (NoCapsuleFoundException $noCapsuleFoundException) {
+        } catch (NoCapsuleFoundException) {
             $prefix = null;
         }
 
