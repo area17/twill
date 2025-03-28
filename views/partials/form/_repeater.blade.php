@@ -7,6 +7,7 @@
     @if ($buttonAsLink) :button-as-link="true" @endif
     @if ($relation) relation="{{$relation}}" @endif
     :allow-create="{{$allowCreate ? 'true' : 'false'}}"
+    :display-actions="{{$displayActions ? 'true' : 'false'}}"
 ></a17-repeater>
 
 @unless($renderForBlocks)

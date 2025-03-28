@@ -2,6 +2,54 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.5.2
+
+### Fixed
+
+- Fix cropper regression (likely a from a recent browser update) by [@13twelve](https://github.com/13twelve) in [#2744](https://github.com/area17/twill/pull/2744)
+
+
+## 3.5.1
+
+### Fixed
+
+- Fix file library uploader regression by [@joyceverheije](https://github.com/joyceverheije) in https://github.com/area17/twill/pull/2740
+- Fix `timeOnly` variant of the `Datepicker` field by [@MamlukiSn](https://github.com/MamlukiSn) in https://github.com/area17/twill/pull/2739 
+
+### Improved
+
+- Add a warning during the `twill:update` and `twill:build` commands for developers that have `twill.load_default_migrations` set to false by [@ifox](https://github.com/ifox) in [de274175](https://github.com/area17/twill/commit/de274175)
+
+## 3.5.0
+
+### Added
+
+- Add a `ModuleController::setPreviewView()` method by @zachgarwood in https://github.com/area17/twill/pull/2724
+- Add a `disableCrop()` method to `medias` fields by @ifox in https://github.com/area17/twill/pull/2686
+
+### Fixed
+
+- Fix position management in `medias` and `files` fields by @zeezo887 in https://github.com/area17/twill/pull/2694
+- Fix issues with touch actions by @13twelve in https://github.com/area17/twill/pull/2713
+- Fix issue with `Relation` column by @zachgarwood in https://github.com/area17/twill/pull/2720
+- Fix endpoints initialization for `Browser` component by @zeezo887 in https://github.com/area17/twill/pull/2722
+- Fix image cropper for erroneous EXIF orientation: Use JS to read image dimensions on upload by @13twelve in https://github.com/area17/twill/pull/2705
+- Fix square crops having mismatching width/height values by @13twelve in https://github.com/area17/twill/pull/2706
+- Fix `hideActiveCrop()` not working for medias form field when max is greater than 1 by @zeezo887 in https://github.com/area17/twill/pull/2686
+- Fix #2641: `InlineRepeater` updates by @13twelve in https://github.com/area17/twill/pull/2714
+- Fix Vue dropdown console warnings: update useCapture param for removeEventListener to match addEventListener by @zeezo887 in https://github.com/area17/twill/pull/2687
+- Fix #2657: adds missing Vue draggable deprecations by @13twelve in https://github.com/area17/twill/pull/2707
+
+### Docs
+
+- Added instructions to disable publish switch in create modal by @ordigital in https://github.com/area17/twill/pull/2698
+- Added instructions for `MultiSelect` field with dynamic values in form builder by @ordigital in https://github.com/area17/twill/pull/2699
+- Added instructions for free cropping with `null` or `0` ratio value by @LucaRed in https://github.com/area17/twill/pull/2715
+
+### Translations
+
+- Fix #2619: adds missing iso languages by @13twelve in https://github.com/area17/twill/pull/2708
+
 ## 3.4.1
 
 ### Improved
@@ -65,6 +113,12 @@ All notable changes to `twill` will be documented in this file.
 - Bump webpack from 5.91.0 to 5.95.0 by [@dependabot](https://github.com/dependabot) in https://github.com/area17/twill/pull/2665
 - Bump body-parser and express by [@dependabot](https://github.com/dependabot) in https://github.com/area17/twill/pull/2659
 - Bump cookie and express by [@dependabot](https://github.com/dependabot) in https://github.com/area17/twill/pull/2664
+
+## 3.3.2
+ 
+### Fixed
+ 
+- Backport fix from 3.5.1: `timeOnly` variant of the `Datepicker` field by [@MamlukiSn](https://github.com/MamlukiSn) in https://github.com/area17/twill/pull/2739
 
 ## 3.3.1
 
