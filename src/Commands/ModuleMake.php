@@ -388,7 +388,7 @@ class ModuleMake extends Command
     'list' => [
         ...
         [
-            
+
             'name' => '$name',
             'enabled' => true,
         ],
@@ -420,7 +420,7 @@ use A17\Twill\View\Components\Navigation\NavigationLink;
 public function boot()
 {
     ...
-    
+
     TwillNavigation::addLink(
         NavigationLink::make()->forModule('$key')
     );
@@ -434,7 +434,7 @@ use A17\Twill\View\Components\Navigation\NavigationLink;
 public function boot()
 {
     ...
-    
+
     TwillNavigation::addLink(
         NavigationLink::make()->forSingleton('$key')
     );
@@ -666,7 +666,7 @@ PHP;
             '{{baseModel}}',
         ], [
             $modelName,
-            $activeModelTraits->whenNotEmpty(fn ($t) => 'use ' . $t->join(', ') . ';'),
+            $activeModelTraits->whenNotEmpty(fn ($t) => 'use ' . $t->join(', ') . ';', fn () => ''),
             $activeModelTraitsImports->join("\n"),
             $activeModelImplements,
             $this->namespace('models', 'Models'),
