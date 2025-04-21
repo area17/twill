@@ -311,7 +311,8 @@ class TwillBlocks
     public function getAllCropConfigs($prefixKey = false): array
     {
         if (! $this->cropConfigs) {
-            $this->cropConfigs = config()->get('twill.block_editor.crops');
+            $this->cropConfigs = config()->get('twill.block_editor.crops')
+                + (config()->get('twill.repeaters.crops') ?? []);
 
             /** @var Block $block */
             foreach ($this->getBlockCollection() as $block) {
