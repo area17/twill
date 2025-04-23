@@ -157,6 +157,7 @@ abstract class ModuleRepository
     {
         $searchFilter = new FreeTextSearch();
         $searchFilter->queryString($search);
+        $searchFilter->searchFor($search);
         $searchFilter->searchColumns($fields);
         $searchFilter->searchQuery($query);
 
