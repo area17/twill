@@ -332,6 +332,10 @@ abstract class ModuleController extends Controller
     protected $viewPrefix;
 
     /**
+     * The template to use for previewing.
+     *
+     * Do not modify this directly but use the method setPreviewView().
+     *
      * @var string
      */
     protected $previewView;
@@ -746,6 +750,14 @@ abstract class ModuleController extends Controller
     protected function setBreadcrumbs(Breadcrumbs $breadcrumbs): void
     {
         $this->breadcrumbs = $breadcrumbs;
+    }
+
+    /**
+     * Set the template for the preview view.
+     */
+    protected function setPreviewView(string $previewView): void
+    {
+        $this->previewView = $previewView;
     }
 
     /**

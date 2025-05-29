@@ -393,6 +393,8 @@ See also [Default Configuration](./11_default-configuration.md).
 
 If the `resource_path('assets/admin/icons')` directory contains a `my-custom-icon.svg` file, you can use this icon in your block by using its basename: `@twillBlockIcon('my-custom-icon')`.
 
+In order to make the icons appear in the CMS, you'll need to run `php artisan twill:build`
+
 ## Use Block traits in your Model and Repository
 
 Now, to handle the block data you must integrate it with your module. *Use* the *Blocks* traits in the Model and Repository associated with your module.

@@ -132,7 +132,7 @@
           wrap: true,
           altInput: true,
           altFormat: self.altFormatComputed,
-          dateFormat: self.enableTime ? 'Z' : 'Y-m-d', // This is the universal format that will be parsed by the back-end.
+          dateFormat: (self.enableTime && self.noCalendar) ? 'H:i:S' : (self.enableTime ? 'Z' : 'Y-m-d'), // This is the universal format that will be parsed by the back-end.
           static: self.staticMode,
           appendTo: self.staticMode ? self.$refs[self.refs.flatPicker] : undefined,
           enableTime: self.enableTime,
@@ -217,7 +217,8 @@
       },
       isValidTime: function (string) {
         const timeRegex = /^(0?[1-9]|1[0-2]):[0-5][0-9](?: (AM|PM))?$/i;
-        return timeRegex.test(string);
+        const time24HrRegex = /^([01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/;
+        return timeRegex.test(string) || time24HrRegex.test(string);
       }
     },
     mounted: function () {

@@ -137,4 +137,11 @@ class Medias extends BaseFormField
 
         return $this;
     }
+
+    public function withoutCrop(bool $withoutCrop = true): static
+    {
+        $this->activeCrop = !$withoutCrop;
+
+        return $this;
+    }
 }
