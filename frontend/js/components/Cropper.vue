@@ -189,13 +189,12 @@
         //
         // from my testing it seems to be a little inconsistent and unpredictable
         // I guess you just need for the rounding error to happen
-        // But, it seems setting the properties individually avoids this...
+        // But, it seems re-setting the properties individually avoids this...
         //
         // -- Mike (mike@area17.com)
+        this.cropper.setData(crop)
         this.cropper.setData({ x: crop.x })
         this.cropper.setData({ y: crop.y })
-        this.cropper.setData({ width: crop.width })
-        this.cropper.setData({ height: crop.height })
       },
       test: function () {
         const crop = this.toNaturalCrop({ x: 0, y: 0, width: 380, height: 475 })

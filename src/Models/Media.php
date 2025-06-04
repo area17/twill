@@ -55,12 +55,12 @@ class Media extends Model
         return Str::ucfirst(preg_replace('/[-_]/', ' ', $filename));
     }
 
-    public function canDeleteSafely()
+    public function canDeleteSafely(): bool
     {
-        return DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->count() === 0;
+        return !$this->isReferenced();
     }
 
-    public function isReferenced()
+    public function isReferenced(): bool
     {
         return DB::table(config('twill.mediables_table', 'twill_mediables'))->where('media_id', $this->id)->count() > 0;
     }

@@ -70,7 +70,7 @@ class MediasUploaderConfig
             'endpointBucket' => $this->config->get('filesystems.disks.' . $libraryDisk . '.bucket', 'none'),
             'endpointRegion' => $this->config->get('filesystems.disks.' . $libraryDisk . '.region', 'none'),
             'endpointRoot' => $endpointType === 'local' ? '' : $this->config->get('filesystems.disks.' . $libraryDisk . '.root', ''),
-            'accessKey' => $this->config->get('filesystems.disks.' . $libraryDisk . '.key', 'none'),
+            'accessKey' => $endpointType === 's3' ? $this->config->get('filesystems.disks.' . $libraryDisk . '.key', '') : '',
             'csrfToken' => $this->sessionStore->token(),
             'acl' => $this->config->get('twill.media_library.acl'),
             'filesizeLimit' => $this->config->get('twill.media_library.filesize_limit'),

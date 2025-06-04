@@ -24,7 +24,7 @@
     @endif
 </a17-singleselect>
 
-@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name, $default)))
+@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && is_null($formFieldsValue = getFormFieldsValue($form_fields, $name, $default))))
 @push('vuexStore')
     @include('twill::partials.form.utils._selector_input_store')
 @endpush

@@ -18,7 +18,7 @@ abstract class SingletonModuleController extends ModuleController
 
     public function editSingleton()
     {
-        $model = "App\\Models\\{$this->getModelName()}";
+        $model = $this->getRepository()->getBaseModel()::class;
 
         if (!class_exists($model)) {
             $model = TwillCapsules::getCapsuleForModel($this->modelName)->getModel();

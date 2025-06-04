@@ -46,6 +46,27 @@ class SlugTest extends TestCase
         }
     }
 
+    public function testSlugLooping(): void
+    {
+        $model = $this->module->getRepository()->create([
+            'title' => 'My title',
+            'slug' => ['en' => 'my-title'],
+        ]);
+
+        $this->assertEquals('my-title', $model->getSlug());
+
+        $this->module->getRepository()->update($model->id, ['title' => 'My title 2']);
+
+        $this->assertEquals('my-title-2', $model->fresh()->getSlug());
+
+        $this->assertCount(2, $model->slugs()->get());
+
+        $this->module->getRepository()->update($model->id, ['title' => 'My title']);
+
+        $this->assertEquals('my-title', $model->fresh()->getSlug());
+        $this->assertCount(2, $model->slugs()->get());
+    }
+
     public function testCanReuseSoftDeletedSlug(): void
     {
         $model = $this->module->getRepository()->create([

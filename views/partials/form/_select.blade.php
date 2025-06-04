@@ -63,6 +63,7 @@
         @if ($addNew) add-new='{{ $storeUrl }}' @elseif ($note) note='{{ $note }}' @endif
         :has-default-store="true"
         @if ($searchable) :searchable="true" @endif
+        @if ($clearable) :clearable="true" @endif
         size="large"
         in-store="inputValue"
     >
@@ -77,7 +78,7 @@
     </a17-vselect>
 @endif
 
-@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && null == $formFieldsValue = getFormFieldsValue($form_fields, $name)))
+@unless($renderForBlocks || $renderForModal || (!isset($item->$name) && is_null($formFieldsValue = getFormFieldsValue($form_fields, $name))))
 @push('vuexStore')
     @include('twill::partials.form.utils._selector_input_store')
 @endpush

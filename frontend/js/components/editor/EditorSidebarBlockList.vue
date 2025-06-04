@@ -4,7 +4,7 @@
     <draggable class="editorSidebar__blocks"
                :class="editorSidebarClasses"
                v-model="blocks"
-               :options="{
+               v-bind="{
                     group: {
                       name: 'editorBlocks',
                       pull: 'clone',

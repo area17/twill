@@ -8,6 +8,7 @@ use Illuminate\Config\Repository as Config;
 use Illuminate\Contracts\Auth\Factory as AuthFactory;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -120,7 +121,11 @@ class DashboardController extends Controller
         })->map(function ($module) use ($request) {
             $repository = $this->getRepository($module['name'], $module['repository'] ?? null);
 
-            $found = $repository->cmsSearch($request->get('search'), $module['search_fields'] ?? ['title'])->take(10);
+            $found = $repository->cmsSearch(
+                $request->get('search'),
+                $module['search_fields'] ?? ['title'],
+                isset($module['parentRelationship']) ? fn($q) => $q->whereHas($module['parentRelationship']) : null
+            )->take(10);
 
             return $found->map(function ($item) use ($module) {
                 try {
@@ -136,8 +141,11 @@ class DashboardController extends Controller
                     $date = $item->created_at->toIso8601String();
                 }
 
-                $parentRelationship = $module['parentRelationship'] ?? null;
-                $parent = $item->$parentRelationship;
+                if (isset($module['parentRelationship'])) {
+                    /** @var BelongsTo $parent */
+                    $parent = call_user_func([$item, $module['parentRelationship']]);
+                    $parent_id = $parent->getParentKey();
+                }
 
                 return [
                     'id' => $item->id,
@@ -145,7 +153,7 @@ class DashboardController extends Controller
                         $module['name'],
                         $module['routePrefix'] ?? null,
                         'edit',
-                        array_merge($parentRelationship ? [$parent->id] : [], [$item->id])
+                        array_filter([$parent_id ?? null, $item->id])
                     ),
                     'thumbnail' => method_exists($item, 'defaultCmsImage') ? $item->defaultCmsImage(['w' => 100, 'h' => 100]) : null,
                     'published' => $item->published,
@@ -233,6 +241,10 @@ class DashboardController extends Controller
 
     private function formatActivity(Activity $activity): ?array
     {
+        if (is_null($activity->subject)) {
+            return null;
+        }
+
         if ($activity->subject_type === config('twill.auth_activity_causer', 'users')) {
             return $this->formatAuthActivity($activity);
         }
@@ -243,16 +255,20 @@ class DashboardController extends Controller
             return null;
         }
 
-        if (is_null($activity->subject)) {
-            return null;
-        }
-
         if (auth('twill_users')->user()->cannot('view-item', $activity->subject)) {
             return null;
         }
 
-        $parentRelationship = $dashboardModule['parentRelationship'] ?? null;
-        $parent = $activity->subject->$parentRelationship;
+        if (isset($dashboardModule['parentRelationship'])) {
+            /** @var BelongsTo $parent */
+            $parent = call_user_func([$activity->subject, $dashboardModule['parentRelationship']]);
+            $parent_id = $parent->getParentKey();
+
+            if (empty($parent_id)) {
+                // Prevent module route error
+                return null;
+            }
+        }
 
         // @todo: Improve readability of what is happening here.
         return [
@@ -269,7 +285,7 @@ class DashboardController extends Controller
                 $dashboardModule['name'],
                 $dashboardModule['routePrefix'] ?? null,
                 'edit',
-                array_merge($parentRelationship ? [$parent->id] : [], [$activity->subject_id])
+                array_filter([$parent_id ?? null, $activity->subject_id])
             ),
         ] : []) + (! is_null($activity->subject->published) ? [
             'published' => $activity->description === 'published' ? true : ($activity->description === 'unpublished' ? false : $activity->subject->published),
@@ -554,10 +570,15 @@ class DashboardController extends Controller
             if ($repository->hasBehavior('revisions')) {
                 $query->mine();
             }
-            $parentRelationship = $module['parentRelationship'] ?? null;
 
-            return $query->get()->map(function ($draft) use ($module, $parentRelationship) {
-                $parent = $draft->$parentRelationship;
+            if (isset($module['parentRelationship'])) {
+                $query->whereHas($module['parentRelationship']);
+            }
+
+            return $query->get()->map(function ($draft) use ($module) {
+                if (isset($module['parentRelationship'])) {
+                    $parent_id = call_user_func([$draft, $module['parentRelationship']])->getParentKey();
+                }
 
                 return [
                     'type' => ucfirst($module['label_singular'] ?? Str::singular($module['name'])),
@@ -566,7 +587,7 @@ class DashboardController extends Controller
                         $module['name'],
                         $module['routePrefix'] ?? null,
                         'edit',
-                        array_merge($parentRelationship ? [$parent->id] : [], [$draft->id])
+                        array_filter([$parent_id ?? null, $draft->id])
                     )
                 ];
             });
