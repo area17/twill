@@ -27,6 +27,7 @@ return [
         'users-2fa' => false,
         'users-oauth' => false,
         'permissions-management' => false,
+        'uuid-models-key-support' => false,
     ],
 ];
 ```
