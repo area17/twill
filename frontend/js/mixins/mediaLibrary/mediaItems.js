@@ -43,7 +43,7 @@ export default {
     },
     isImage: function(extension) {
       if (!extension) return false
-      const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp']
+      const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'tif', 'tiff', 'psd']
       return imageExtensions.includes(extension)
     },
     getFileIcon: function(extension) {
