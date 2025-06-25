@@ -405,6 +405,7 @@ return [
         'close-menu' => 'Close menu',
         'profile' => 'Profile',
         'open-live-site' => 'Open live site',
+        'cms-dashboard' => 'CMS Dashboard',
     ],
     'notifications' => [
         'reset' => [

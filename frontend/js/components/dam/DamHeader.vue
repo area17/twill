@@ -84,6 +84,11 @@
             </button>
             <div slot="dropdown__content">
               <a
+                v-if="userData.cms_dashboard_route"
+                :href="userData.cms_dashboard_route"
+                >{{ $trans('nav.cms-dashboard')}}
+              </a>
+              <a
                 v-if="userData.can_access_user_management"
                 :href="userData.user_management_route"
                 >{{ $trans('nav.cms-users') }}</a
