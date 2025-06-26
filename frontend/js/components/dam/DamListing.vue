@@ -748,7 +748,6 @@
     }
 
     .mediagrid__button {
-      position: relative;
       top: auto;
       left: auto;
       right: auto;
