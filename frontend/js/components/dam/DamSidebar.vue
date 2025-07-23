@@ -59,7 +59,7 @@
               :aria-owns="getOwnedListItems.join(' ')"
               aria-labelledby="metaTitle"
             >
-            
+
               <li class="f--small" v-if="firstMedia.name && firstMedia.title" id="meta__title">
                 {{ $trans('dam.filename', 'File name') }}:
                 {{ firstMedia.name }}
@@ -843,7 +843,7 @@
       },
       getDownloadLink: function() {
         if (this.hasMultipleMedias) {
-          return 'zip file url here'
+          return this.bulkDownloadEndpoint + '?ids=' + this.mediasIds
         } else if (this.firstMedia) {
           return this.firstMedia.original
         }
@@ -875,7 +875,8 @@
         currentBrowser: state => state.browser.connector,
         browserFields: state => state.mediaLibrary.browserFields,
         tagFields: state => state.mediaLibrary.tagFields,
-        hasEditPermissions: state => state.permissions.hasEditPermissions
+        hasEditPermissions: state => state.permissions.hasEditPermissions,
+        bulkDownloadEndpoint: state => state.mediaLibrary.bulkDownloadEndpoint
       })
     },
     methods: {
@@ -960,7 +961,7 @@
         this.isOpen = false
       },
       getFormData: function(form) {
-       
+
         return FormDataAsObj(form)
       },
       getMediaToReplaceId: function() {

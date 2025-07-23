@@ -112,6 +112,7 @@ const state = {
   forUploadSectors: window[process.env.VUE_APP_NAME].STORE.medias.forUploadSectors || [],
   projectBrowserUrl: window[process.env.VUE_APP_NAME].STORE.medias.projectBrowserUrl || '',
   filterSearchEndpoint: window[process.env.VUE_APP_NAME].STORE.medias.filterSearchEndpoint || '',
+  bulkDownloadEndpoint: window[process.env.VUE_APP_NAME].STORE.medias.bulkDownloadEndpoint || '',
 }
 
 // getters
