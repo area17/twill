@@ -343,7 +343,7 @@
             <div class="dam-sidebar__editable" v-bind:key="field.name">
               <div class="dam-sidebar__editable-header">
                 <h3 class="f--small">{{ field.label }}</h3>
-                <a17-button variant="aslink" @click="openBrowser(field)" v-if="hasEditPermissions">
+                <a17-button variant="aslink" @click="openBrowser(field)" v-if="hasEditPermissions && !field.disabled">
                   <span class="f--small">{{ $trans('dam.add', 'Add') }}</span>
                 </a17-button>
               </div>
