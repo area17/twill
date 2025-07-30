@@ -41,10 +41,11 @@
         $mediaBrowsers = [];
         foreach (config('twill.media_library.browsers') as $browser) {
             $scope = $browser['name'] == 'people' ? "partners" : "forUser";
+            $moduleName = $browser['module'] ?? $browser['name'];
             $mediaBrowsers[] = array_merge(
                 $browser,
                 [
-                    'endpoint' => moduleRoute($browser['name'], $browser['prefix'] ?? null, 'browser', ['scopes'=> ["{$scope}"=> true]], false),
+                    'endpoint' => moduleRoute($moduleName, $browser['prefix'] ?? null, 'browser', ['scopes'=> ["{$scope}"=> true]], false),
                 ]
             );
         }
