@@ -100,6 +100,8 @@ const state = {
 
   searchData : window[process.env.VUE_APP_NAME].STORE.medias.searchData || {},
 
+  archiveData : window[process.env.VUE_APP_NAME].STORE.medias.archiveData || {},
+
   initialFilterData: window[process.env.VUE_APP_NAME].STORE.medias.initialFilterData || {},
 
   damView : window[process.env.VUE_APP_NAME].STORE.medias.damView || 'landing',
@@ -312,6 +314,9 @@ const mutations = {
   },
   [MEDIA_LIBRARY.SET_DAM_SEARCH](state, searchPayload){
     state.searchData = searchPayload
+  },
+  [MEDIA_LIBRARY.SET_DAM_ARCHIVE_SEARCH](state, archivePayload){
+    state.archiveData = archivePayload
   },
   [MEDIA_LIBRARY.SET_SEARCH_VALUE](state, searchValue){
     state.searchValue = searchValue

@@ -259,7 +259,8 @@
         endpoint: state => state.mediaLibrary.endpoint,
         filterData: state => state.mediaLibrary.filterData,
         initialFilterData: state => state.mediaLibrary.initialFilterData,
-        searchData : state => state.mediaLibrary.searchData
+        searchData : state => state.mediaLibrary.searchData,
+        archiveData : state => state.mediaLibrary.archiveData
       }),
     },
     watch: {
@@ -522,7 +523,8 @@
             ...formdata,
             ...this.filterData,
             ...this.initialFilterData,
-            ...this.searchData
+            ...this.searchData,
+            ...this.archiveData
           },
           resp => {
             // add medias here

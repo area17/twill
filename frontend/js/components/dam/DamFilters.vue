@@ -57,6 +57,11 @@
               $trans('dam.hide-advanced', 'hide advanced')
             }}</template>
           </a17-button>
+
+          <div class="dam-filters__wrap">
+            <a17-checkbox ref="archive" name="archive" :initial-value="0" :value="1" :label="$trans('media-library.search-in-archive-label', 'Search in archives (AI mode)')" @change="setIsArchiveSearchValue"/>
+          </div>
+
         </div>
         <div class="dam-filters__modal-footer">
           <a17-button variant="ghost" @click="clearFilters">{{
@@ -358,6 +363,11 @@
           return filter.value
         })
         this.$refs.appliedCheckboxGroup.updateValue(filterValues)
+      },
+      setIsArchiveSearchValue(archiveSearchValue) {
+        this.$store.commit(MEDIA_LIBRARY.SET_DAM_ARCHIVE_SEARCH, {
+          archive: archiveSearchValue ? '1' : '0'
+        })
       }
     },
     mounted() {
@@ -407,6 +417,15 @@
       padding: rem-calc(20);
     }
   }
+
+  .dam-filters__wrap {
+    > span {
+      display: flex;
+      align-items: center;
+      padding: 0.5rem 1rem;
+    }
+  }
+
 
   .dam-filters__mobileToggle {
     display: flex;

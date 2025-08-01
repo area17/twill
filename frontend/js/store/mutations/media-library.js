@@ -27,6 +27,7 @@ export const ADD_MEDIAS = 'addMedias'
 export const SET_FILTER_DATA = 'setFilterData'
 export const SET_FILTERS = 'setFilters'
 export const SET_DAM_SEARCH = 'setDamSearchValue'
+export const SET_DAM_ARCHIVE_SEARCH = 'setDamArchiveSearchValue'
 
 export default {
   UPDATE_MEDIA_TYPE_TOTAL,
@@ -57,4 +58,5 @@ export default {
   SET_FILTER_DATA,
   SET_FILTERS,
   SET_DAM_SEARCH,
+  SET_DAM_ARCHIVE_SEARCH,
 }

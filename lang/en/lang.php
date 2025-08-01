@@ -379,6 +379,7 @@ return [
                 'file' => 'files',
             ],
         ],
+        'search-in-archive-label' => 'Search in archives (AI mode)',
     ],
     'modal' => [
         'create' => [
