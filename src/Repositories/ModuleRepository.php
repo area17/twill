@@ -156,7 +156,6 @@ abstract class ModuleRepository
     public function cmsSearch(string $search, array $fields = [], callable $query = null): Collection
     {
         $searchFilter = new FreeTextSearch();
-        $searchFilter->queryString($search);
         $searchFilter->searchFor($search);
         $searchFilter->searchColumns($fields);
         $searchFilter->searchQuery($query);
