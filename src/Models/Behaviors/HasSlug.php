@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 trait HasSlug
 {
     private int $nb_variation_slug = 3;
+
     public array $twillSlugData = [];
 
     private bool $twill_restoring = false;
@@ -24,7 +25,7 @@ trait HasSlug
         });
 
         static::saved(function (self $model) {
-            if (!$model->twill_restoring) {
+            if (! $model->twill_restoring) {
                 $model->handleSlugsOnSave();
             }
             $model->twill_restoring = false;
@@ -63,7 +64,7 @@ trait HasSlug
 
     protected function getSlugClassName(): string
     {
-        return class_basename($this) . "Slug";
+        return class_basename($this) . 'Slug';
     }
 
     public function scopeForSlug(Builder $query, string $slug): Builder
@@ -113,7 +114,7 @@ trait HasSlug
             $slug->save();
         });
 
-        if (!$hasActive) {
+        if (! $hasActive) {
             $this->setSlugs();
         }
     }
@@ -159,7 +160,7 @@ trait HasSlug
             (($oldSlug = $this->getExistingSlug($slugParams, true)) !== null)
             && ($slugParams['slug'] === $this->suffixSlugIfExisting($slugParams))
         ) {
-            if (!$oldSlug->active && ($slugParams['active'] ?? false)) {
+            if (! $oldSlug->active && ($slugParams['active'] ?? false)) {
                 $this->getSlugModelClass()::where('id', $oldSlug->id)->update(['active' => 1]);
                 $this->disableLocaleSlugs($oldSlug->locale, $oldSlug->id);
             }
@@ -168,7 +169,7 @@ trait HasSlug
             (($oldSlug = $this->getExistingSlug($slugParams)) !== null) &&
             ($slugParams['slug'] === $this->suffixSlugIfExisting($slugParams))
         ) {
-            if (!$oldSlug->active && ($slugParams['active'] ?? false)) {
+            if (! $oldSlug->active && ($slugParams['active'] ?? false)) {
                 $this->getSlugModelClass()::where('id', $oldSlug->id)->update(['active' => 1]);
                 $this->disableLocaleSlugs($oldSlug->locale, $oldSlug->id);
             }
@@ -189,9 +190,9 @@ trait HasSlug
                 $query->where(function ($query) use ($value, $forRecreate) {
                     $query->orWhere('slug', $value);
 
-                    if (!$forRecreate) {
+                    if (! $forRecreate) {
                         $query->orWhere('slug', $value . '-' . $this->getSuffixSlug());
-                        for ($i = 2; $i <= $this->nb_variation_slug; ++$i) {
+                        for ($i = 2; $i <= $this->nb_variation_slug; $i++) {
                             $query->orWhere('slug', $value . '-' . $i);
                         }
                     }
@@ -220,7 +221,7 @@ trait HasSlug
         $this->disableLocaleSlugs($slugParams['locale'], $slugModel->getKey());
     }
 
-    public function disableLocaleSlugs(string|array $locale = null, int $except_slug_id = 0): void
+    public function disableLocaleSlugs(string|array|null $locale = null, int $except_slug_id = 0): void
     {
         $query = $this->getSlugModelClass()::where($this->getForeignKey(), $this->id)
             ->where('id', '<>', $except_slug_id);
@@ -238,7 +239,7 @@ trait HasSlug
 
         unset($slugParams['active']);
 
-        for ($i = 2; $i <= $this->nb_variation_slug + 1; ++$i) {
+        for ($i = 2; $i <= $this->nb_variation_slug + 1; $i++) {
             $qCheck = $this->getSlugModelClass()::query();
             $qCheck->whereNull($this->getDeletedAtColumn());
             $qCheck->whereNotIn('id', $idsToExclude);
@@ -250,8 +251,8 @@ trait HasSlug
                 break;
             }
 
-            if (!empty($slugParams['slug'])) {
-                $slugParams['slug'] = $slugBackup . (($i > $this->nb_variation_slug) ? "-" . $this->getSuffixSlug() : "-{$i}");
+            if (! empty($slugParams['slug'])) {
+                $slugParams['slug'] = $slugBackup . (($i > $this->nb_variation_slug) ? '-' . $this->getSuffixSlug() : "-{$i}");
             }
         }
 
@@ -317,7 +318,7 @@ trait HasSlug
             return $slug->slug;
         }
 
-        return "";
+        return '';
     }
 
     public function getSlugAttribute(): string
@@ -327,9 +328,9 @@ trait HasSlug
 
     public function getSlugParams(?string $locale = null): ?array
     {
-        if (!isset($this->translations) || count(getLocales()) === 1 || $this->translations->isEmpty()) {
+        if (! isset($this->translations) || count(getLocales()) === 1 || $this->translations->isEmpty()) {
             $slugParams = $this->getSingleSlugParams($locale);
-            if ($slugParams !== null && !empty($slugParams)) {
+            if ($slugParams !== null && ! empty($slugParams)) {
                 return $slugParams;
             }
         }
@@ -339,7 +340,7 @@ trait HasSlug
             if ($translation->locale === $locale || $locale === null) {
                 $attributes = $this->slugAttributes;
 
-                if (!$attributes) {
+                if (! $attributes) {
                     continue;
                 }
 
@@ -347,14 +348,14 @@ trait HasSlug
 
                 $slugDependenciesAttributes = [];
                 foreach ($attributes as $attribute) {
-                    if (!isset($this->$attribute)) {
+                    if (! isset($this->$attribute)) {
                         throw new \Exception("You must define the field {$attribute} in your model");
                     }
 
                     $slugDependenciesAttributes[$attribute] = $this->$attribute;
                 }
 
-                if (!isset($translation->$slugAttribute) && !isset($this->$slugAttribute)) {
+                if (! isset($translation->$slugAttribute) && ! isset($this->$slugAttribute)) {
                     throw new \Exception("You must define the field {$slugAttribute} in your model");
                 }
 
@@ -381,20 +382,20 @@ trait HasSlug
         foreach (getLocales() as $appLocale) {
             if ($appLocale === $locale || $locale === null) {
                 $attributes = $this->slugAttributes;
-                if (!$attributes) {
+                if (! $attributes) {
                     continue;
                 }
                 $slugAttribute = array_shift($attributes);
                 $slugDependenciesAttributes = [];
                 foreach ($attributes as $attribute) {
-                    if (!isset($this->$attribute)) {
+                    if (! isset($this->$attribute)) {
                         throw new \Exception("You must define the field {$attribute} in your model");
                     }
 
                     $slugDependenciesAttributes[$attribute] = $this->$attribute;
                 }
 
-                if (!isset($this->$slugAttribute)) {
+                if (! isset($this->$slugAttribute)) {
                     throw new \Exception("You must define the field {$slugAttribute} in your model");
                 }
 
@@ -428,7 +429,7 @@ trait HasSlug
      */
     public function getForeignKey(): string
     {
-        return Str::snake(class_basename(get_class($this))) . "_id";
+        return Str::snake(class_basename(get_class($this))) . '_id';
     }
 
     protected function getSuffixSlug(): string|int
@@ -442,7 +443,7 @@ trait HasSlug
     public function getUtf8Slug(string $str, array $options = []): string
     {
         // Make sure string is in UTF-8 and strip invalid UTF-8 characters
-        $str = mb_convert_encoding((string)$str, 'UTF-8', mb_list_encodings());
+        $str = mb_convert_encoding((string) $str, 'UTF-8', mb_list_encodings());
 
         $defaults = [
             'delimiter' => '-',

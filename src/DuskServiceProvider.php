@@ -14,7 +14,7 @@ class DuskServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        if (!class_exists(Browser::class)) {
+        if (! class_exists(Browser::class)) {
             return;
         }
         Browser::macro('setBrowserLocationToParis', function () {
@@ -237,7 +237,7 @@ class DuskServiceProvider extends ServiceProvider
             }
         );
 
-        /**
+        /*
          * Example:
          * ```php
          *      $browser->setDateTimeInDatePicker('.datePicker__field .form-control', Carbon::now());
@@ -249,7 +249,7 @@ class DuskServiceProvider extends ServiceProvider
                 string $fieldSelector,
                 Carbon $dateTime,
                 string $dateFormat = 'F j, Y H:i',
-                string $staticWrapper = null
+                ?string $staticWrapper = null
             ) {
                 $this->waitFor($fieldSelector);
 

@@ -17,18 +17,21 @@ class Link extends TableColumn
     public function url(Closure $urlFunction): static
     {
         $this->url = $urlFunction;
+
         return $this;
     }
 
     public function content(Closure|string $contentFunction): static
     {
         $this->content = $contentFunction;
+
         return $this;
     }
 
     public function shouldOpenInNewWindow(bool $shouldOpenInNewWindow = true): static
     {
         $this->targetBlank = $shouldOpenInNewWindow;
+
         return $this;
     }
 

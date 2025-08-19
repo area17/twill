@@ -6,11 +6,11 @@ use A17\Twill\Facades\TwillBlocks;
 use A17\Twill\Services\Forms\InlineRepeater;
 use A17\Twill\View\Components\Blocks\TwillBlockComponent;
 use Exception;
+use Illuminate\Container\Container;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
-use Illuminate\Container\Container;
 
 class Block
 {
@@ -176,7 +176,7 @@ class Block
      *   Mainly for packages, but this will get the preview/render view file from that namespace.
      * @return static
      */
-    public static function make($file, $type, $source, $name = null, string $renderNamespace = null): self
+    public static function make($file, $type, $source, $name = null, ?string $renderNamespace = null): self
     {
         $name = $name ?? Str::before(
             $file->getFilename(),
@@ -251,7 +251,7 @@ class Block
      * @param string $renderNamespace
      *   Mainly for packages, but this will get the preview/render view file from that namespace.
      * @param InlineRepeater $inlineRepeater used when registering dynamic repeaters.
-     * @throws \Exception
+     * @throws Exception
      */
     final public function __construct(
         $file,
@@ -356,7 +356,7 @@ class Block
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function parse(): self
     {
@@ -375,10 +375,10 @@ class Block
             $this->name,
             $this->type === self::TYPE_REPEATER ? twillTrans('twill::lang.fields.block-editor.select-existing') : null
         );
-        $this->max = (int)$this->parseProperty('max', $contents, $this->name, 999);
+        $this->max = (int) $this->parseProperty('max', $contents, $this->name, 999);
         $this->group = $this->parseProperty('group', $contents, $this->name, 'app');
         $this->icon = $this->parseProperty('icon', $contents, $this->name, 'text');
-        $this->compiled = (bool)$this->parseProperty('compiled', $contents, $this->name, false);
+        $this->compiled = (bool) $this->parseProperty('compiled', $contents, $this->name, false);
         $this->component = $this->parseProperty('component', $contents, $this->name, "a17-block-{$this->name}");
         $this->isNewFormat = $this->isNewFormat($contents);
         $this->contents = $contents;
@@ -393,7 +393,7 @@ class Block
 
         $this->parseMixedProperty('titleField', $contents, $this->name, function ($value, $options) {
             $this->titleField = $value;
-            $this->hideTitlePrefix = (bool)($options['hidePrefix'] ?? false);
+            $this->hideTitlePrefix = (bool) ($options['hidePrefix'] ?? false);
         });
 
         return $this;
@@ -423,7 +423,7 @@ class Block
      * @param string $blockName
      * @param string|null $default
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function parseProperty(
         $property,
@@ -467,7 +467,7 @@ class Block
      * @param string $blockName
      * @param callable $callback Should have the following signature: `function (array $value)`
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function parseArrayProperty(
         $property,
@@ -489,7 +489,7 @@ class Block
      * @param string $blockName
      * @param callable $callback Should have the following signature: `function ($value, $options)`
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     public function parseMixedProperty(
         $property,
@@ -527,7 +527,7 @@ class Block
      * @param $blockName
      * @param null $default
      * @return mixed
-     * @throws \Exception
+     * @throws Exception
      */
     private function parsePropertyFallback(
         $property,
@@ -667,7 +667,7 @@ class Block
         bool $inEditor = false
     ): string {
         if (! $this->renderData) {
-            throw new \Exception('Cannot render without renderData');
+            throw new Exception('Cannot render without renderData');
         }
 
         $data['inEditor'] = $inEditor;

@@ -146,7 +146,7 @@ class ModuleMake extends Command
     protected $moduleBasePath;
 
     /**
-     * @var \A17\Twill\Helpers\Capsule
+     * @var Capsule
      */
     protected $capsule;
 
@@ -407,7 +407,7 @@ PHP;
         // If the file does not exist, or it is empty, we explain how to use the navigation builder.
         $navigationFileExists = File::exists($navigationFile);
 
-        /** @phpstan-ignore-next-line */
+        /* @phpstan-ignore-next-line */
         if (! $navigationFileExists || (($navigation = require($navigationFile)) && empty($navigation))) {
             // Instructions here.
             $this->warn('To add a navigation entry add the following to your AppServiceProvider BOOT method.');
@@ -442,6 +442,7 @@ public function boot()
 PHP;
             }
             $this->box($message ?? '');
+
             return;
         }
 
@@ -452,15 +453,16 @@ PHP;
     }
 
     /**
-     * https://www.php.net/manual/en/function.var-export.php#122853
+     * https://www.php.net/manual/en/function.var-export.php#122853.
      */
     private function getFormattedArray(array $array): string
     {
         $export = var_export($array, true);
-        $export = preg_replace("/^([ ]*)(.*)/m", '$1$1$2', $export);
+        $export = preg_replace('/^([ ]*)(.*)/m', '$1$1$2', $export);
         $array = preg_split("/\r\n|\n|\r/", $export);
         $array = preg_replace(["/\s*array\s\($/", "/\)(,)?$/", "/\s=>\s$/"], [null, ']$1', ' => ['], $array);
-        $export = implode(PHP_EOL, array_filter(["["] + $array));
+        $export = implode(PHP_EOL, array_filter(['['] + $array));
+
         return $export;
     }
 
@@ -473,7 +475,7 @@ PHP;
 
         File::append($routeFilePath, $entry);
 
-        $this->warn("The following snippet has been added to routes/twill.php:");
+        $this->warn('The following snippet has been added to routes/twill.php:');
         $this->box($entry);
     }
 
@@ -664,7 +666,7 @@ PHP;
             '{{baseModel}}',
         ], [
             $modelName,
-            $activeModelTraits->whenNotEmpty(fn($t) => 'use ' . $t->join(', ') . ';'),
+            $activeModelTraits->whenNotEmpty(fn ($t) => 'use ' . $t->join(', ') . ';'),
             $activeModelTraitsImports->join("\n"),
             $activeModelImplements,
             $this->namespace('models', 'Models'),
@@ -806,11 +808,11 @@ PHP;
         $reorderOption = '';
 
         if (! $this->sluggable) {
-            $permalinkOption = "\$this->disablePermalink();";
+            $permalinkOption = '$this->disablePermalink();';
         }
 
         if ($this->nestable) {
-            $reorderOption = "\$this->enableReorder();";
+            $reorderOption = '$this->enableReorder();';
 
             $stub = str_replace(['{{hasNesting}}', '{{/hasNesting}}'], '', $stub);
         } else {

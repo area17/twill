@@ -32,7 +32,7 @@ class ServeDocsCommand extends ServeCommand
         $status = $process->getExitCode();
 
         if ($status && $this->canTryAnotherPort()) {
-            ++$this->portOffset;
+            $this->portOffset++;
 
             return $this->handle();
         }

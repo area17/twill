@@ -50,7 +50,7 @@ class AuthServiceProvider extends ServiceProvider
 
     protected function authorize($user, $callback)
     {
-        if (!$user->isPublished()) {
+        if (! $user->isPublished()) {
             return false;
         }
 
@@ -159,13 +159,14 @@ class AuthServiceProvider extends ServiceProvider
         $this->define('publish-user', function ($user) {
             return $this->authorize($user, function ($user) {
                 $editedUserObject = twillModel('user')::find(request('id'));
+
                 return $this->userHasRole(
                     $user,
                     [TwillPermissions::roles()::ADMIN]
                 ) && (
-                        $editedUserObject && $user->id !== $editedUserObject->id &&
-                        $editedUserObject->role !== self::SUPERADMIN
-                    );
+                    $editedUserObject && $user->id !== $editedUserObject->id &&
+                    $editedUserObject->role !== self::SUPERADMIN
+                );
             });
         });
 

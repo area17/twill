@@ -93,7 +93,7 @@ trait HandleBrowsers
         $pivotAttributes = []
     ) {
         $browserName = $browserName ?? $relationship;
-        $fieldsHasElements = isset($fields['browsers'][$browserName]) && !empty($fields['browsers'][$browserName]);
+        $fieldsHasElements = isset($fields['browsers'][$browserName]) && ! empty($fields['browsers'][$browserName]);
         $relatedElements = $fieldsHasElements ? $fields['browsers'][$browserName] : [];
 
         $relatedElementsWithPosition = [];
@@ -193,7 +193,7 @@ trait HandleBrowsers
         if ($fields->isNotEmpty()) {
             return $fields->map(
                 function ($relatedElement) use ($titleKey, $routePrefix, $relation, $moduleName, $isMorphTo) {
-                    if ($isMorphTo && !$moduleName) {
+                    if ($isMorphTo && ! $moduleName) {
                         // @todo: Maybe there is an existing helper for this?
                         $moduleName = Str::plural(Arr::last(explode('\\', get_class($relatedElement))));
                     }

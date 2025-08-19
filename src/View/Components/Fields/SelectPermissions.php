@@ -45,7 +45,7 @@ class SelectPermissions extends TwillFormComponent
             ];
 
         $this->isUserForm = get_class($this->item) === twillModel('user');
-        $this->fctUpdatePermissionOptions = $this->item instanceof Group ? "updatePermissionGroupOptions" : "updatePermissionOptions";
+        $this->fctUpdatePermissionOptions = $this->item instanceof Group ? 'updatePermissionGroupOptions' : 'updatePermissionOptions';
     }
 
     public function render(): View

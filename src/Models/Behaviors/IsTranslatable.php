@@ -17,7 +17,7 @@ trait IsTranslatable
     public function isTranslatable(null|array|string $columns = null): bool
     {
         // Model must have the trait
-        if (! classHasTrait($this, \A17\Twill\Models\Behaviors\HasTranslation::class)) {
+        if (! classHasTrait($this, HasTranslation::class)) {
             return false;
         }
 

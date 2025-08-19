@@ -26,7 +26,7 @@ trait HasMedias
     public static function bootHasMedias(): void
     {
         self::deleted(static function (Model $model) {
-            if (!method_exists($model, 'isForceDeleting') || $model->isForceDeleting()) {
+            if (! method_exists($model, 'isForceDeleting') || $model->isForceDeleting()) {
                 /* @var \A17\Twill\Models\Behaviors\HasMedias $model */
                 $model->medias()->detach();
             }
@@ -71,7 +71,7 @@ trait HasMedias
             return $media->pivot->role === $role && $media->pivot->crop === $crop && ($localeScope ?? true);
         });
 
-        if (!$media && config('twill.media_library.translated_form_fields', false)) {
+        if (! $media && config('twill.media_library.translated_form_fields', false)) {
             $media = $this->medias->first(function ($media) use ($role, $crop) {
                 return $media->pivot->role === $role && $media->pivot->crop === $crop;
             });
@@ -91,7 +91,7 @@ trait HasMedias
     {
         $media = $this->findMedia($role, $crop);
 
-        return !empty($media);
+        return ! empty($media);
     }
 
     /**
@@ -113,7 +113,7 @@ trait HasMedias
         $cms = false,
         Media|null|bool $media = null
     ) {
-        if (!$media) {
+        if (! $media) {
             $media = $this->findMedia($role, $crop);
         }
 
@@ -339,7 +339,7 @@ trait HasMedias
         }
 
         if ($media) {
-            $metadatas = (object)json_decode($media->pivot->metadatas);
+            $metadatas = (object) json_decode($media->pivot->metadatas);
             $language = app()->getLocale();
 
             return $metadatas->video->$language ?? (is_object($metadatas->video) ? '' : ($metadatas->video ?? ''));

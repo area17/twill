@@ -1,11 +1,11 @@
 <?php
 
-use Illuminate\Support\Facades\Storage;
-use Aws\S3\S3Client;
 use Aws\S3\PostObjectV4;
+use Aws\S3\S3Client;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-if (!function_exists('s3Endpoint')) {
+if (! function_exists('s3Endpoint')) {
     /**
      * @param string $disk
      * @return string
@@ -28,7 +28,7 @@ if (!function_exists('s3Endpoint')) {
     }
 }
 
-if (!function_exists('azureEndpoint')) {
+if (! function_exists('azureEndpoint')) {
     /**
      * @param string $disk
      * @return string
@@ -36,11 +36,12 @@ if (!function_exists('azureEndpoint')) {
     function azureEndpoint($disk = 'libraries')
     {
         $scheme = config("filesystems.disks.{$disk}.use_https") ? 'https://' : '';
+
         return $scheme . config("filesystems.disks.{$disk}.name") . '.blob.' . config("filesystems.disks.{$disk}.endpoint-suffix") . '/' . config("filesystems.disks.{$disk}.container");
     }
 }
 
-if (!function_exists('bytesToHuman')) {
+if (! function_exists('bytesToHuman')) {
     /**
      * @param float $bytes
      * @return string
@@ -49,7 +50,7 @@ if (!function_exists('bytesToHuman')) {
     {
         $units = ['B', 'Kb', 'Mb', 'Gb', 'Tb', 'Pb'];
 
-        for ($i = 0; $bytes > 1024; ++$i) {
+        for ($i = 0; $bytes > 1024; $i++) {
             $bytes /= 1024;
         }
 
@@ -57,7 +58,7 @@ if (!function_exists('bytesToHuman')) {
     }
 }
 
-if (!function_exists('replaceAccents')) {
+if (! function_exists('replaceAccents')) {
     /**
      * @param string $str
      * @return bool|string
@@ -69,7 +70,7 @@ if (!function_exists('replaceAccents')) {
     }
 }
 
-if (!function_exists('sanitizeFilename')) {
+if (! function_exists('sanitizeFilename')) {
     /**
      * @param string $filename
      * @return string
@@ -78,11 +79,11 @@ if (!function_exists('sanitizeFilename')) {
     {
         $sanitizedFilename = Str::ascii($filename);
 
-        $invalid = array(
+        $invalid = [
             ' ' => '-',
             '%20' => '-',
             '_' => '-',
-        );
+        ];
 
         $sanitizedFilename = str_replace(array_keys($invalid), array_values($invalid), $sanitizedFilename);
 

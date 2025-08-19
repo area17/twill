@@ -34,8 +34,8 @@ class BlockRepository extends ModuleRepository
     public function hydrate(TwillModelContract $model, array $fields): TwillModelContract
     {
         $relatedItems = collect($fields['browsers'])
-            ->flatMap(fn($items, $browserName) => collect($items)
-                ->map(fn($item, $position) => new RelatedItem([
+            ->flatMap(fn ($items, $browserName) => collect($items)
+                ->map(fn ($item, $position) => new RelatedItem([
                     'subject_id' => $model->getKey(),
                     'subject_type' => $model->getMorphClass(),
                     'related_id' => $item['id'],
@@ -53,7 +53,7 @@ class BlockRepository extends ModuleRepository
     /** @param Block $model */
     public function afterSave(TwillModelContract $model, array $fields): void
     {
-        if (!empty($fields['browsers'])) {
+        if (! empty($fields['browsers'])) {
             $browserNames = collect($fields['browsers'])->each(function ($items, $browserName) use ($model) {
                 // This will create items or delete them if they are missing
                 $model->saveRelated($items, $browserName);

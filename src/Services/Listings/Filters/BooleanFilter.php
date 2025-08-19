@@ -9,6 +9,7 @@ class BooleanFilter extends BasicFilter
     protected string $field;
 
     public const TRUE = 'yes';
+
     public const FALSE = 'no';
 
     public static function make(): static
@@ -20,6 +21,7 @@ class BooleanFilter extends BasicFilter
                 self::FALSE => twillTrans('twill::lang.listing.filter.no'),
             ])
         );
+
         return $filter;
     }
 
