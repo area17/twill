@@ -45,6 +45,7 @@ trait HasOptions
     {
         if ($this->options instanceof Closure) {
             $execute = $this->options;
+
             return $execute();
         }
 

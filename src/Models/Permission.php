@@ -5,12 +5,12 @@ namespace A17\Twill\Models;
 use A17\Twill\Enums\PermissionLevel;
 use A17\Twill\Exceptions\ModuleNotFoundException;
 use A17\Twill\Facades\TwillPermissions;
-use Illuminate\Support\Str;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Str;
 
 class Permission extends BaseModel
 {
@@ -105,7 +105,7 @@ class Permission extends BaseModel
     public static function permissionableParentModuleItems()
     {
         return self::permissionableModules()->filter(function ($module) {
-            return !strpos($module, '.');
+            return ! strpos($module, '.');
         })->mapWithKeys(function ($module) {
             try {
                 return [$module => getRepositoryByModuleName($module)->get([], [], [], -1)];
@@ -126,7 +126,7 @@ class Permission extends BaseModel
     }
 
     /**
-     * User model relationship
+     * User model relationship.
      *
      * @return BelongsToMany|Collection|User[]
      */
@@ -136,7 +136,7 @@ class Permission extends BaseModel
     }
 
     /**
-     * Role model relationship
+     * Role model relationship.
      *
      * @return BelongsToMany|Collection|BaseModel[]
      */
@@ -146,7 +146,7 @@ class Permission extends BaseModel
     }
 
     /**
-     * Group model relationship
+     * Group model relationship.
      *
      * @return BelongsToMany|Collection|BaseModel[]
      */
@@ -235,7 +235,7 @@ class Permission extends BaseModel
     }
 
     /**
-     * Get the permissionable module type of current permission
+     * Get the permissionable module type of current permission.
      *
      * @return string
      */

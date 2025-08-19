@@ -22,7 +22,7 @@ if (! function_exists('getLikeOperator')) {
     function getLikeOperator(): string
     {
         return once(function () {
-            if (DB::connection()->getPDO()->getAttribute(\PDO::ATTR_DRIVER_NAME) === 'pgsql') {
+            if (DB::connection()->getPDO()->getAttribute(PDO::ATTR_DRIVER_NAME) === 'pgsql') {
                 return 'ILIKE';
             }
 
@@ -97,8 +97,7 @@ if (! function_exists('fireCmsEvent')) {
      */
     function fireCmsEvent($eventName, $input = [])
     {
-        $method = method_exists(\Illuminate\Events\Dispatcher::class, 'dispatch') ? 'dispatch' : 'fire';
-        Event::$method($eventName, [$eventName, $input]);
+        Event::dispatch($eventName, [$eventName, $input]);
     }
 }
 
@@ -148,7 +147,7 @@ if (! function_exists('make_twill_directory')) {
     /**
      * @param string $path
      * @param bool $recursive
-     * @param \Illuminate\Filesystem\Filesystem|null $fs
+     * @param Filesystem|null $fs
      */
     function make_twill_directory($path, $recursive = true, $fs = null)
     {
@@ -168,7 +167,7 @@ if (! function_exists('twill_put_stub')) {
     /**
      * @param string $path
      * @param bool $recursive
-     * @param \Illuminate\Filesystem\Filesystem|null $fs
+     * @param Filesystem|null $fs
      */
     function twill_put_stub($path, $stub, $fs = null)
     {
@@ -232,17 +231,17 @@ if (! function_exists('generate_list_of_available_blocks')) {
         }
 
         $appBlocksList = $blockList->filter(function (Block $block) {
-            return $block->source !== A17\Twill\Services\Blocks\Block::SOURCE_TWILL;
+            return $block->source !== Block::SOURCE_TWILL;
         });
 
         $finalBlockList = $blockList->filter(
             function (Block $block) use ($blocks, $groups, $appBlocksList, $excludeBlocks) {
-                if ($block->group === A17\Twill\Services\Blocks\Block::SOURCE_TWILL) {
+                if ($block->group === Block::SOURCE_TWILL) {
                     if (! collect(config('twill.block_editor.use_twill_blocks'))->contains($block->name)) {
                         return false;
                     }
 
-                    /** @var \Illuminate\Support\Collection<Block> $appBlocksList */
+                    /** @var Illuminate\Support\Collection<Block> $appBlocksList */
                     if (
                         count($appBlocksList) > 0 && $appBlocksList->contains(
                             function ($appBlock) use ($block) {

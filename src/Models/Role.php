@@ -4,15 +4,15 @@ namespace A17\Twill\Models;
 
 use A17\Twill\Models\Behaviors\HasMedias;
 use A17\Twill\Models\Behaviors\HasPermissions;
-use A17\Twill\Models\Behaviors\IsTranslatable;
 use A17\Twill\Models\Behaviors\HasPosition;
+use A17\Twill\Models\Behaviors\IsTranslatable;
 use A17\Twill\Models\Behaviors\Sortable;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Model as BaseModel;
 
 class Role extends BaseModel implements Sortable, TwillModelContract
 {
@@ -35,7 +35,7 @@ class Role extends BaseModel implements Sortable, TwillModelContract
 
     protected $casts = [
         'in_everyone_group' => 'boolean',
-        'deleted_at' => 'datetime'
+        'deleted_at' => 'datetime',
     ];
 
     public function __construct(array $attributes = [])
@@ -83,7 +83,7 @@ class Role extends BaseModel implements Sortable, TwillModelContract
     }
 
     /**
-     * Return the formatted number of users in this group
+     * Return the formatted number of users in this group.
      */
     public function getUsersCountAttribute($value): string
     {
@@ -91,7 +91,7 @@ class Role extends BaseModel implements Sortable, TwillModelContract
     }
 
     /**
-     * Return the roles that are considered accessible for this role
+     * Return the roles that are considered accessible for this role.
      */
     public function getAccessibleRolesAttribute(): Collection
     {

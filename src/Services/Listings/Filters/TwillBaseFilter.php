@@ -8,8 +8,11 @@ use Illuminate\Support\Str;
 abstract class TwillBaseFilter
 {
     protected ?string $label = null;
+
     protected ?string $queryString = null;
+
     protected bool $enabled = true;
+
     protected ?\Closure $apply = null;
 
     abstract public function applyFilter(Builder $builder): Builder;
@@ -39,7 +42,7 @@ abstract class TwillBaseFilter
     }
 
     /**
-     * Set the query string to use in the url
+     * Set the query string to use in the url.
      */
     public function queryString(string $queryString): static
     {
@@ -73,7 +76,7 @@ abstract class TwillBaseFilter
      */
     public function disable(bool $disable = true): static
     {
-        $this->enabled = !$disable;
+        $this->enabled = ! $disable;
 
         return $this;
     }

@@ -38,7 +38,7 @@ class LegacyTableConfig extends LaravelAwareRectorRule
         // Keep tables that cannot be found in the DB.
         $tables = [];
         foreach ($this->tables as $name => $table) {
-            if (!Schema::hasTable(Config::get('twill.' . $name))) {
+            if (! Schema::hasTable(Config::get('twill.' . $name))) {
                 $tables[$name] = $table;
             }
         }

@@ -20,6 +20,7 @@ class FieldSelectFilter extends BasicFilter
     public const OPTION_NOT_SET = 'null';
 
     protected string $field;
+
     private bool $addWithoutValueOption = false;
 
     public function applyFilter(Builder $builder): Builder

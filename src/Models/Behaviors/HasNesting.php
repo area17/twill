@@ -56,7 +56,7 @@ trait HasNesting
             $nodeModel = $nodeModels->where('id', $nodeArray['id'])->first();
 
             if ($nodeArray['parent_id'] === null) {
-                if (!$nodeModel->isRoot() || $nodeModel->position !== $nodeArray['position']) {
+                if (! $nodeModel->isRoot() || $nodeModel->position !== $nodeArray['position']) {
                     $nodeModel->position = $nodeArray['position'];
                     $nodeModel->saveAsRoot();
                 }
@@ -68,7 +68,7 @@ trait HasNesting
         }
     }
 
-    public static function flattenTree(array $nodeTree, int $parentId = null)
+    public static function flattenTree(array $nodeTree, ?int $parentId = null)
     {
         $nodeArrays = [];
         $position = 0;
@@ -90,7 +90,7 @@ trait HasNesting
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function newCollection(array $models = [])
     {

@@ -4,12 +4,12 @@ namespace A17\Twill\Jobs;
 
 use A17\Twill\Facades\TwillConfig;
 use A17\Twill\Models\Behaviors\HasRevisions;
+use A17\Twill\Models\Model;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\DB;
-use A17\Twill\Models\Model;
 
 class CleanupRevisions implements ShouldQueue
 {
@@ -18,6 +18,7 @@ class CleanupRevisions implements ShouldQueue
     use Queueable;
 
     protected int $maxAttempts = 3;
+
     private Model $model;
 
     public function __construct(Model $model)
@@ -27,7 +28,7 @@ class CleanupRevisions implements ShouldQueue
 
     public function handle(): void
     {
-        if (!classHasTrait($this->model, HasRevisions::class)) {
+        if (! classHasTrait($this->model, HasRevisions::class)) {
             return;
         }
 

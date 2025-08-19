@@ -151,7 +151,7 @@ class TwicPics implements ImageServiceInterface
         $cropX = $cropParams['crop_x'] ?? null;
         $cropY = $cropParams['crop_y'] ?? null;
 
-        if (!filled($cropW) || !filled($cropH)) {
+        if (! filled($cropW) || ! filled($cropH)) {
             return [];
         }
 

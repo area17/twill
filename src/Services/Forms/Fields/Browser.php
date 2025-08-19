@@ -160,7 +160,7 @@ class Browser extends BaseFormField
                 if (isset($module['name'])) {
                     $this->modules[] = [
                         'name' => getModuleNameByModel($module['name']),
-                        'label' => $module['label']
+                        'label' => $module['label'],
                     ];
                 } else {
                     $this->modules[] = [

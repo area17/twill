@@ -310,9 +310,9 @@ abstract class TestCase extends OrchestraTestCase
             $routes = $routes->get($method);
         }
 
-        return collect($routes)->filter(function ($route) {
-            return is_callable($route->action['uses']) || Str::startsWith($route->action['uses'], 'A17\Twill') ||
-                Str::startsWith($route->action['uses'], 'App\\');
+        return collect($routes)->filter(function (\Illuminate\Routing\Route $route) {
+            return ($route->action['as'] ?? '') !== 'storage.local' && (is_callable($route->action['uses']) || Str::startsWith($route->action['uses'], 'A17\Twill') ||
+                Str::startsWith($route->action['uses'], 'App\\'));
         });
     }
 

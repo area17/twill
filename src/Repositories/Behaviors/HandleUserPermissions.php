@@ -22,8 +22,8 @@ trait HandleUserPermissions
     public function getFormFieldsHandleUserPermissions($object, $fields)
     {
         if (
-            !config('twill.enabled.permissions-management') ||
-            !TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)
+            ! config('twill.enabled.permissions-management') ||
+            ! TwillPermissions::levelIs(PermissionLevel::LEVEL_ROLE_GROUP_ITEM)
         ) {
             return $fields;
         }
@@ -52,7 +52,7 @@ trait HandleUserPermissions
      */
     public function afterSaveHandleUserPermissions($object, $fields)
     {
-        if (!config('twill.enabled.permissions-management')) {
+        if (! config('twill.enabled.permissions-management')) {
             return;
         }
 
@@ -112,7 +112,7 @@ trait HandleUserPermissions
      */
     protected function getUserPermissionsFields($user, $fields)
     {
-        if (!config('twill.enabled.permissions-management')) {
+        if (! config('twill.enabled.permissions-management')) {
             return $fields;
         }
 
@@ -124,7 +124,7 @@ trait HandleUserPermissions
             foreach ($group->permissions()->moduleItem()->get() as $permission) {
                 $model = $permission->permissionable()->first();
 
-                if (!$model) {
+                if (! $model) {
                     continue;
                 }
 
@@ -153,7 +153,7 @@ trait HandleUserPermissions
 
         // looking for role module permission
         $globalPermissions = [];
-        if (!$isManageAllModules) {
+        if (! $isManageAllModules) {
             foreach ($user->role->permissions()->module()->get() as $permission) {
                 if ($permission->permissionable_type) {
                     $permissionName = str_replace('-module', '-item', $permission->name);
@@ -170,7 +170,7 @@ trait HandleUserPermissions
 
                 foreach ($moduleItems as $moduleItem) {
                     $index = $moduleName . '_' . $moduleItem->id . '_permission';
-                    if (!isset($fields[$index])) {
+                    if (! isset($fields[$index])) {
                         $fields[$index] = "{$permission}";
                     } else {
                         $current = array_search($fields[$index], $itemScopes);

@@ -71,7 +71,7 @@ class TwillUtil
 
                     $model = $modelClass::published()->where('id', $id)->first();
 
-                    if (!$model) {
+                    if (! $model) {
                         return url('404');
                     }
 
@@ -140,7 +140,7 @@ class TwillUtil
                 // If the ID is not in the list of existing pivot IDs, we will insert a new pivot
                 // record, otherwise, we will just update this existing record on this joining
                 // table, so that the developers will easily update these records pain free.
-                if (!in_array($id, $current)) {
+                if (! in_array($id, $current)) {
                     $this->attach($id, $attributes, false);
 
                     $changes['attached'][] = $this->castKey($id);
@@ -161,7 +161,6 @@ class TwillUtil
                     }
                 }
             }
-
 
             // Once we have finished attaching or detaching the records, we will see if we
             // have done any attaching or detaching, and if we have we will touch these

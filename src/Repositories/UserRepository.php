@@ -66,6 +66,7 @@ class UserRepository extends ModuleRepository
         } else {
             $query->where('role', '<>', 'SUPERADMIN');
         }
+
         return parent::filter($query, $scopes);
     }
 
@@ -90,6 +91,7 @@ class UserRepository extends ModuleRepository
                 }
             }
         }
+
         return $browserFields;
     }
 
@@ -101,14 +103,14 @@ class UserRepository extends ModuleRepository
 
     public function prepareFieldsBeforeSave(TwillModelContract|User $user, array $fields): array
     {
-        /** @var \A17\Twill\Models\User $editor */
+        /** @var User $editor */
         $editor = $this->authFactory->guard('twill_users')->user();
         $with2faSettings = $this->config->get('twill.enabled.users-2fa', false) && $editor?->id === $user->id;
 
         if (
             $with2faSettings
             && $user->google_2fa_enabled
-            && !($fields['google_2fa_enabled'] ?? false)
+            && ! ($fields['google_2fa_enabled'] ?? false)
         ) {
             $fields['google_2fa_secret'] = null;
         }
@@ -124,18 +126,18 @@ class UserRepository extends ModuleRepository
         return parent::prepareFieldsBeforeSave($user, $fields);
     }
 
-    public function afterSave(TwillModelContract|user $user, array $fields): void
+    public function afterSave(TwillModelContract|User $user, array $fields): void
     {
         $this->sendWelcomeEmail($user);
 
-        if (!empty($fields['reset_password']) && !empty($fields['new_password'])) {
+        if (! empty($fields['reset_password']) && ! empty($fields['new_password'])) {
             $user->password = Hash::make($fields['new_password']);
 
-            if (!$user->isActivated()) {
+            if (! $user->isActivated()) {
                 $user->registered_at = Carbon::now();
             }
 
-            if (!empty($fields['require_password_change'])) {
+            if (! empty($fields['require_password_change'])) {
                 $user->require_new_password = true;
                 $user->sendTemporaryPasswordNotification($fields['new_password']);
             } else {
@@ -157,7 +159,7 @@ class UserRepository extends ModuleRepository
         if (
             empty($user->password)
             && $user->published
-            && !$this->db
+            && ! $this->db
                 ->table($this->config->get('twill.password_resets_table', 'twill_password_resets'))
                 ->where('email', $user->email)
                 ->exists()

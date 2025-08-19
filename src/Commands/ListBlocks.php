@@ -94,7 +94,6 @@ class ListBlocks extends Command
 
         $list = [];
 
-
         /** @var Block $block */
         foreach ($filteredList as $block) {
             $data = $this->colorize(

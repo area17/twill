@@ -9,6 +9,6 @@ class Boolean extends TableColumn
 {
     protected function getRenderValue(TwillModelContract $model): string
     {
-        return parent::getRenderValue($model) ? "✅" : "❌";
+        return parent::getRenderValue($model) ? '✅' : '❌';
     }
 }

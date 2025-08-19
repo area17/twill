@@ -60,7 +60,7 @@ trait HandleMedias
 
     /**
      * @param array $fields
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     private function getMedias($fields)
     {
@@ -80,7 +80,7 @@ trait HandleMedias
                 if ($this->hasRole($role) || $this->hasJsonRepeaterRole($role)) {
                     Collection::make($mediasForRole)->each(function ($media, $index) use (&$medias, $role, $locale) {
                         $customMetadatas = $media['metadatas']['custom'] ?? [];
-                        if (isset($media['crops']) && !empty($media['crops'])) {
+                        if (isset($media['crops']) && ! empty($media['crops'])) {
                             foreach ($media['crops'] as $cropName => $cropData) {
                                 $medias[$cropData['pivot_id'] ?? uniqid('media')] = [
                                     'media_id' => $media['id'],
@@ -225,6 +225,7 @@ trait HandleMedias
         }
 
         $role = last(explode('|', $role));
+
         return $this->hasRole($role);
     }
 }

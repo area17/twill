@@ -54,7 +54,7 @@ class BlockEditor extends BaseFormField
     }
 
     /**
-     * Use this method if you want to exclude any block types
+     * Use this method if you want to exclude any block types.
      */
     public function excludeBlocks(array $blocks): static
     {

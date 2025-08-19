@@ -53,7 +53,7 @@ class Hidden extends TwillFormComponent
         return view(
             'twill::partials.form._hidden',
             array_merge($this->data(), [
-                'onChangeFullAttribute' => $this->onChangeAttribute ? "('" . $this->onChangeAttribute . "', ...arguments)" : "",
+                'onChangeFullAttribute' => $this->onChangeAttribute ? "('" . $this->onChangeAttribute . "', ...arguments)" : '',
             ])
         );
     }

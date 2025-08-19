@@ -140,6 +140,7 @@ class UserController extends ModuleController
                     if (TwillPermissions::enabled()) {
                         return Str::title($user->role->name);
                     }
+
                     return Str::title($user->role);
                 })
                 ->sortable()
@@ -242,17 +243,17 @@ class UserController extends ModuleController
                 ->label(twillTrans('twill::lang.user-management.active'))
                 ->queryString('activated')
                 ->scope('activated')
-                ->amount(fn() => $this->repository->getCountByStatusSlug('activated', [$roleScope])),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('activated', [$roleScope])),
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.user-management.pending'))
                 ->queryString('pending')
                 ->scope('pending')
-                ->amount(fn() => $this->repository->getCountByStatusSlug('pending', [$roleScope])),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('pending', [$roleScope])),
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.user-management.disabled'))
                 ->queryString('draft')
                 ->scope('draft')
-                ->amount(fn() => $this->repository->getCountByStatusSlug('draft', [$roleScope])),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('draft', [$roleScope])),
         ]);
 
         if ($this->getIndexOption('restore')) {
@@ -261,7 +262,7 @@ class UserController extends ModuleController
                     ->label(twillTrans('twill::lang.user-management.trash'))
                     ->queryString('trash')
                     ->scope('onlyTrashed')
-                    ->amount(fn() => $this->repository->getCountByStatusSlug('trash', [$roleScope])),
+                    ->amount(fn () => $this->repository->getCountByStatusSlug('trash', [$roleScope])),
             );
         }
 

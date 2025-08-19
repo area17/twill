@@ -12,8 +12,11 @@ class BasicFilter extends TwillBaseFilter
     public const OPTION_ALL = 'all';
 
     protected ?Collection $options = null;
+
     protected mixed $appliedValue = null;
+
     protected bool $includeAll = true;
+
     protected mixed $default = null;
 
     /**
@@ -33,7 +36,7 @@ class BasicFilter extends TwillBaseFilter
      */
     public function withoutIncludeAll(bool $removeIncludeAll = true): static
     {
-        $this->includeAll = !$removeIncludeAll;
+        $this->includeAll = ! $removeIncludeAll;
 
         return $this;
     }
@@ -93,6 +96,7 @@ class BasicFilter extends TwillBaseFilter
         if ($this->includeAll) {
             $this->options->prepend('All', self::OPTION_ALL);
         }
+
         return $this->options;
     }
 }

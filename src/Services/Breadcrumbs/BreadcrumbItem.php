@@ -7,10 +7,13 @@ use Illuminate\Contracts\Support\Arrayable;
 class BreadcrumbItem implements Arrayable
 {
     public const ON_LISTING = 'on_listing';
+
     public const ON_FORM = 'on_form';
 
     private string $label;
+
     private ?string $url = null;
+
     private ?array $displayOn = null;
 
     public static function make(): self

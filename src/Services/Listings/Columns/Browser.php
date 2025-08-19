@@ -13,6 +13,7 @@ class Browser extends TableColumn
     public function browser(string $browser): static
     {
         $this->browser = $browser;
+
         return $this;
     }
 
@@ -22,7 +23,7 @@ class Browser extends TableColumn
             throw new ColumnMissingPropertyException('Browser column missing browser value: ' . $this->field);
         }
 
-        /** @var \A17\Twill\Models\Behaviors\HasRelated $model */
+        /* @var \A17\Twill\Models\Behaviors\HasRelated $model */
         return $model->getRelated($this->browser)
             ->pluck($this->field)
             ->join(', ');
