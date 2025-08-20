@@ -19,7 +19,8 @@ class TwillTransString implements \Stringable, \JsonSerializable
     public function __toString()
     {
         $locale = config('twill.locale', config('twill.fallback_locale', 'en'));
-        return (string)trans($this->key, $this->replace, $locale);
+
+        return (string) trans($this->key, $this->replace, $locale);
     }
 
     public static function __set_state(array $state)
@@ -29,6 +30,6 @@ class TwillTransString implements \Stringable, \JsonSerializable
 
     public function jsonSerialize(): string
     {
-        return (string)$this;
+        return (string) $this;
     }
 }

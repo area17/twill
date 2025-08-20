@@ -11,7 +11,7 @@ trait DisableActions
      */
     public function disableActions(bool $disableActions = true): static
     {
-        $this->displayActions = !$disableActions;
+        $this->displayActions = ! $disableActions;
 
         return $this;
     }

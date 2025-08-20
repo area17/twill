@@ -12,11 +12,11 @@ trait HasPresenter
      */
     public function present($presenter = 'presenter')
     {
-        if (!$this->$presenter || !class_exists($this->$presenter)) {
+        if (! $this->$presenter || ! class_exists($this->$presenter)) {
             throw new \Exception('Please set the Presenter path to your Presenter :' . $presenter . ' FQN');
         }
 
-        if (!$this->presenterInstance) {
+        if (! $this->presenterInstance) {
             $this->presenterInstance = new $this->$presenter($this);
         }
 
@@ -38,7 +38,7 @@ trait HasPresenter
      */
     public function setPresenter($presenter, $presenterProperty = 'presenter')
     {
-        if (!$this->$presenterProperty) {
+        if (! $this->$presenterProperty) {
             $this->$presenterProperty = $presenter;
         }
 

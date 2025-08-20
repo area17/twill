@@ -51,7 +51,7 @@ class Medias extends BaseFormField
      */
     public function withoutAddInfo(bool $withoutAddInfo = true): static
     {
-        $this->withAddInfo = !$withoutAddInfo;
+        $this->withAddInfo = ! $withoutAddInfo;
 
         return $this;
     }
@@ -61,7 +61,7 @@ class Medias extends BaseFormField
      */
     public function withoutVideoUrl(bool $withoutVideoUrl = true): static
     {
-        $this->withVideoUrl = !$withoutVideoUrl;
+        $this->withVideoUrl = ! $withoutVideoUrl;
 
         return $this;
     }
@@ -71,7 +71,7 @@ class Medias extends BaseFormField
      */
     public function withoutCaption(bool $withoutCaption = true): static
     {
-        $this->withCaption = !$withoutCaption;
+        $this->withCaption = ! $withoutCaption;
 
         return $this;
     }
@@ -133,14 +133,14 @@ class Medias extends BaseFormField
      */
     public function hideActiveCrop(bool $hideActiveCrop = true): static
     {
-        $this->activeCrop = !$hideActiveCrop;
+        $this->activeCrop = ! $hideActiveCrop;
 
         return $this;
     }
 
     public function withoutCrop(bool $withoutCrop = true): static
     {
-        $this->activeCrop = !$withoutCrop;
+        $this->activeCrop = ! $withoutCrop;
 
         return $this;
     }

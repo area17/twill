@@ -101,8 +101,10 @@ class FeaturedController extends Controller
     private function getFeaturedItemsByBucket($featuredSection, $featuredSectionKey)
     {
         $bucketRouteConfig = $this->config->get('twill.bucketsRoutes') ?? [$featuredSectionKey => 'featured'];
+
         return Collection::make($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use ($featuredSectionKey, $bucketRouteConfig) {
             $routePrefix = $bucketRouteConfig[$featuredSectionKey];
+
             return [
                 'id' => $bucketKey,
                 'name' => $bucket['name'],
@@ -149,7 +151,6 @@ class FeaturedController extends Controller
 
         Collection::make($featuredSection['buckets'])->map(function ($bucket, $bucketKey) use (&$fetchedModules, $search, $request) {
             return Collection::make($bucket['bucketables'])->mapWithKeys(function ($bucketable) use (&$fetchedModules, $search, $request) {
-
                 $module = $bucketable['module'];
                 $repository = $this->getRepository($module, $bucketable['repository'] ?? null);
                 $translated = classHasTrait($repository, HandleTranslations::class);
@@ -238,6 +239,6 @@ class FeaturedController extends Controller
      */
     private function getRepository($bucketable, $forModule = null)
     {
-        return $this->app->make($forModule ?: $this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($bucketable)) . "Repository");
+        return $this->app->make($forModule ?: $this->config->get('twill.namespace') . "\Repositories\\" . ucfirst(Str::singular($bucketable)) . 'Repository');
     }
 }

@@ -50,7 +50,7 @@ class Browser extends TwillFormComponent
             default: $default
         );
 
-        if (!$this->endpoints && isset($this->modules)) {
+        if (! $this->endpoints && !empty($this->modules)) {
             $this->endpoints = collect($this->modules)->map(function ($module) {
                 return [
                     'label' => $module['label'] ?? ucfirst($module['name']),
@@ -62,7 +62,7 @@ class Browser extends TwillFormComponent
                         false
                     ),
                 ];
-            })->toArray();
+            })->all();
         }
 
         if (empty($this->endpoints)) {
@@ -71,7 +71,7 @@ class Browser extends TwillFormComponent
                 : $this->moduleName;
 
             $this->endpoint = $this->endpoint ?? (empty($endpoints) ? moduleRoute(
-            // Remove the route prefix from the moduleName.
+                // Remove the route prefix from the moduleName.
                 $routeEndpoint,
                 $routePrefix,
                 'browser',

@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Builder;
 class QuickFilter extends TwillBaseFilter
 {
     protected ?\Closure $amount = null;
+
     protected ?string $scope = null;
+
     protected bool $isDefaultQuickFilter = false;
 
     /**
@@ -56,6 +58,7 @@ class QuickFilter extends TwillBaseFilter
     public function toArray(): array
     {
         $callback = $this->amount;
+
         return [
             'name' => $this->getLabel(),
             'slug' => $this->getQueryString(),

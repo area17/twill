@@ -51,9 +51,9 @@ class RenameViews extends LaravelAwareRectorRule
         }
 
         if (
-            !($arg = $node->getArgs()[0] ?? null)
-            || !property_exists($arg->value, 'value')
-            || !Str::startsWith($arg->value->value, 'admin.')
+            ! ($arg = $node->getArgs()[0] ?? null)
+            || ! property_exists($arg->value, 'value')
+            || ! Str::startsWith($arg->value->value, 'admin.')
         ) {
             return null;
         }

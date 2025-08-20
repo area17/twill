@@ -22,15 +22,15 @@ trait ShowWithPreview
         ViewFactory $viewFactory,
         Config $config
     ) {
-        if (!isset($this->moduleName) || !isset($this->repository)) {
-            throw new \Exception("You should at least provide a module name and inject a repository.");
+        if (! isset($this->moduleName) || ! isset($this->repository)) {
+            throw new \Exception('You should at least provide a module name and inject a repository.');
         }
 
-        if (!isset($this->routeName)) {
+        if (! isset($this->routeName)) {
             $this->routeName = $this->moduleName;
         }
 
-        if (!isset($this->showViewName)) {
+        if (! isset($this->showViewName)) {
             $this->showViewName = $config->get('twill.frontend.views_path', 'site') . '.' . Str::singular($this->moduleName);
         }
 
@@ -40,7 +40,7 @@ trait ShowWithPreview
 
         $item = ($item ?? $this->getItem($slug));
 
-        if (!$item) {
+        if (! $item) {
             throw new NotFoundHttpException(ucfirst($this->moduleName) . ' not found');
         }
 

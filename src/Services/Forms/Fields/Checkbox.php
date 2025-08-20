@@ -31,7 +31,7 @@ class Checkbox extends BaseFormField
     {
         $this->confirmMessageText = $confirmMessageText;
 
-        if (!$this->requireConfirmation) {
+        if (! $this->requireConfirmation) {
             $this->requireConfirmation();
         }
 
@@ -45,7 +45,7 @@ class Checkbox extends BaseFormField
     {
         $this->confirmTitleText = $confirmTitleText;
 
-        if (!$this->requireConfirmation) {
+        if (! $this->requireConfirmation) {
             $this->requireConfirmation();
         }
 

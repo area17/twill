@@ -18,7 +18,7 @@ trait HasPosition
 
     protected function getCurrentLastPosition()
     {
-        return ((int) static::max("{$this->getTable()}.position"));
+        return (int) static::max("{$this->getTable()}.position");
     }
 
     /**
@@ -37,7 +37,7 @@ trait HasPosition
      */
     public static function setNewOrder($ids, $startOrder = 1)
     {
-        if (!is_array($ids)) {
+        if (! is_array($ids)) {
             throw new \Exception('You must pass an array to setNewOrder');
         }
 

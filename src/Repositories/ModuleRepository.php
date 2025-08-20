@@ -153,10 +153,10 @@ abstract class ModuleRepository
         return $query->get()->pluck($column, $pluckBy);
     }
 
-    public function cmsSearch(string $search, array $fields = [], callable $query = null): Collection
+    public function cmsSearch(string $search, array $fields = [], ?callable $query = null): Collection
     {
         $searchFilter = new FreeTextSearch();
-        $searchFilter->queryString($search);
+        $searchFilter->searchFor($search);
         $searchFilter->searchColumns($fields);
         $searchFilter->searchQuery($query);
 
@@ -651,7 +651,7 @@ abstract class ModuleRepository
             } else {
                 if (is_array($item)) {
                     // if it's an array of pivot fields and no position is set, set the position
-                    if (!isset($item['position'])) {
+                    if (! isset($item['position'])) {
                         $item['position'] = $position;
                     }
                 }
@@ -761,7 +761,7 @@ abstract class ModuleRepository
 
             return App::make($capsule->getRepositoryClass());
         } catch (NoCapsuleFoundException) {
-            throw new \Exception("Repository class not found for model '$modelOrRepository'");
+            throw new Exception("Repository class not found for model '$modelOrRepository'");
         }
     }
 

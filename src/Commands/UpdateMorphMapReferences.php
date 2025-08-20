@@ -3,9 +3,9 @@
 namespace A17\Twill\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 class UpdateMorphMapReferences extends Command
 {

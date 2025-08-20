@@ -39,7 +39,7 @@ class DatePicker extends BaseFormField
      */
     public function withoutTime(bool $withoutTime = true): static
     {
-        $this->withTime = !$withoutTime;
+        $this->withTime = ! $withoutTime;
 
         return $this;
     }
@@ -88,7 +88,7 @@ class DatePicker extends BaseFormField
 
     /**
      * If 24h format should be used.
-     * Added for docs and backwards compatibility
+     * Added for docs and backwards compatibility.
      */
     public function time24hr(bool $time24hr = true): static
     {

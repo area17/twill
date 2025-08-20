@@ -63,15 +63,16 @@ class RefreshLQIP extends Command
 
                 $lqip_width = $this->config->get('lqip.' . $attached_media->mediable_type . '.' . $attached_media->role . '.' . $attached_media->crop, 30);
 
-                if ($lqip_width && (!$attached_media->lqip_data || $this->option('all'))) {
+                if ($lqip_width && (! $attached_media->lqip_data || $this->option('all'))) {
                     $crop_params = Arr::only((array) $attached_media, $this->cropParamsKeys);
 
                     $imageService = config('twill.media_library.image_service');
 
                     $url = ImageService::getLQIPUrl($uuid, $crop_params + ['w' => $lqip_width]);
 
-                    if (($imageService === Glide::class) && !config('twill.glide.base_url')) {
+                    if (($imageService === Glide::class) && ! config('twill.glide.base_url')) {
                         $this->error('Cannot generate LQIP. Missing glide base url. Please set GLIDE_BASE_URL in your .env');
+
                         return;
                     }
 

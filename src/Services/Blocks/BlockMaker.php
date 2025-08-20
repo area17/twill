@@ -17,12 +17,12 @@ class BlockMaker
     protected $files;
 
     /**
-     * @var \Illuminate\Console\Command
+     * @var Command
      */
     protected $command;
 
     /**
-     * @var \A17\Twill\Services\Blocks\Block
+     * @var Block
      */
     protected $blockBase;
 
@@ -55,9 +55,9 @@ class BlockMaker
         $this->info('Creating block...');
 
         if (
-            !$this->checkBlockStub($baseName) ||
-            !$this->checkIconFile($iconName) ||
-            !$this->checkBlockBaseFormat(
+            ! $this->checkBlockStub($baseName) ||
+            ! $this->checkIconFile($iconName) ||
+            ! $this->checkBlockBaseFormat(
                 $stubFileName = $this->blockBase->file->getPathName()
             )
         ) {
@@ -65,7 +65,7 @@ class BlockMaker
         }
 
         if (
-            !$this->checkBlockFile(
+            ! $this->checkBlockFile(
                 $blockFile = $this->makeBlockPath(
                     $blockIdentifier = $this->makeBlockIdentifier($blockName)
                 )
@@ -81,7 +81,7 @@ class BlockMaker
         );
 
         if (
-            !$this->checkRepeaters(
+            ! $this->checkRepeaters(
                 $repeaters = $this->generateRepeaters(
                     $baseName,
                     $blockIdentifier,
@@ -151,7 +151,7 @@ class BlockMaker
 
     protected function checkBlockBaseFormat($stubFileName)
     {
-        if (!$this->blockBase->isNewFormat) {
+        if (! $this->blockBase->isNewFormat) {
             $this->error(
                 "The block file '{$stubFileName}' format is the old one."
             );
@@ -245,7 +245,7 @@ class BlockMaker
                 "/@twillBlockCompiled\('(.*)'\)\n/",
                 "/@twillRepeaterCompiled\('(.*)'\)\n/",
             ],
-            "",
+            '',
             $stub
         );
 
@@ -255,7 +255,7 @@ class BlockMaker
                 "/@twillBlockComponent\('(.*)'\)\n/",
                 "/@twillRepeaterComponent\('(.*)'\)\n/",
             ],
-            "",
+            '',
             $stub
         );
     }
@@ -284,9 +284,9 @@ class BlockMaker
             "twill.block_editor.directories.destination.{$type}s"
         );
 
-        if (!$this->files->exists($destination)) {
+        if (! $this->files->exists($destination)) {
             if (
-                !config('twill.block_editor.directories.destination.make_dir')
+                ! config('twill.block_editor.directories.destination.make_dir')
             ) {
                 throw new Exception(
                     "Destination directory does not exists: {$destination}"
@@ -340,7 +340,7 @@ class BlockMaker
                 return $keep;
             }
 
-            if (!$this->files->exists($path)) {
+            if (! $this->files->exists($path)) {
                 return null;
             }
 
@@ -465,7 +465,7 @@ class BlockMaker
     {
         $directory = dirname($filePath);
 
-        if (!$this->files->exists($directory)) {
+        if (! $this->files->exists($directory)) {
             $this->files->makeDirectory($directory, 0755, true);
         }
 

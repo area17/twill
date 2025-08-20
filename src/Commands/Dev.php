@@ -16,7 +16,7 @@ class Dev extends Command
      *
      * @var string
      */
-    protected $description = "Hot reload Twill assets with custom Vue components/blocks";
+    protected $description = 'Hot reload Twill assets with custom Vue components/blocks';
 
     /*
      * Executes the console command.

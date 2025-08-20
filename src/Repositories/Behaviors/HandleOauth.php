@@ -16,7 +16,7 @@ trait HandleOauth
     /**
      * @param \Laravel\Socialite\Contracts\User $oauthUser
      * @param string $provider
-     * @return boolean
+     * @return bool
      */
     public function oauthIsUserLinked($oauthUser, $provider)
     {

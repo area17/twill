@@ -17,7 +17,7 @@ class Welcome extends ResetPassword
     {
         return (new MailMessage())
             ->subject(twillTrans('twill::lang.notifications.welcome.subject', [
-                'appName' => config('app.name')
+                'appName' => config('app.name'),
             ]))
             ->markdown('twill::emails.html.email', [
                 'url' => route(config('twill.admin_route_name_prefix') . 'password.reset.welcome.form', $this->token),

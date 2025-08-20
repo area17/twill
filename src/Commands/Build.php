@@ -56,7 +56,7 @@ class Build extends Command
         $progressBar->setFormat('%current%/%max% [%bar%] %message%');
 
         // Check if the node_modules folder is missing, if it is not there we enforce the installation.
-        $npmInstall = !file_exists(__DIR__ . '/../../node_modules') || $this->option('install');
+        $npmInstall = ! file_exists(__DIR__ . '/../../node_modules') || $this->option('install');
 
         $progressBar->setMessage(($npmInstall ? 'Installing' : 'Reusing') . " npm dependencies...\n\n");
 
@@ -74,7 +74,7 @@ class Build extends Command
         sleep(1);
 
         $this->info('');
-        if (!$this->option('customComponentsSource')) {
+        if (! $this->option('customComponentsSource')) {
             $progressBar->setMessage("Copying custom components...\n\n");
         } else {
             $progressBar->setMessage("Loading components from custom directory...\n\n");
@@ -206,7 +206,7 @@ class Build extends Command
         );
         $twillCustomBlocksPath = base_path(config('twill.vendor_path')) . '/frontend/js/components/blocks/customs';
 
-        if (!$this->filesystem->exists($twillCustomBlocksPath)) {
+        if (! $this->filesystem->exists($twillCustomBlocksPath)) {
             $this->filesystem->makeDirectory($twillCustomBlocksPath, 0755, true);
         }
 
@@ -224,7 +224,7 @@ class Build extends Command
         );
         $twillCustomComponentsPath = base_path(config('twill.vendor_path')) . '/frontend/js/components/customs';
 
-        if (!$this->filesystem->exists($twillCustomComponentsPath)) {
+        if (! $this->filesystem->exists($twillCustomComponentsPath)) {
             $this->filesystem->makeDirectory($twillCustomComponentsPath, 0755, true);
         }
 
@@ -241,7 +241,7 @@ class Build extends Command
         $targetDirectory = base_path('vendor/area17/twill/frontend/icons-custom');
         $originalIcons = config('twill.block_editor.core_icons');
 
-        if (!file_exists($targetDirectory)) {
+        if (! file_exists($targetDirectory)) {
             mkdir($targetDirectory);
         }
 
@@ -264,7 +264,7 @@ class Build extends Command
         );
         $twillVendorComponentsPath = base_path(config('twill.vendor_path')) . '/frontend/js/components/customs-vendor';
 
-        if (!$this->filesystem->exists($twillVendorComponentsPath)) {
+        if (! $this->filesystem->exists($twillVendorComponentsPath)) {
             $this->filesystem->makeDirectory($twillVendorComponentsPath, 0755, true);
         }
 

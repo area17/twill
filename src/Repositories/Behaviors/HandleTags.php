@@ -24,13 +24,13 @@ trait HandleTags
             $object->setSlugGenerator('Illuminate\Support\Str::slug');
         }
 
-        if (!isset($fields['bulk_tags']) && !isset($fields['previous_common_tags'])) {
-            if (!$this->shouldIgnoreFieldBeforeSave('tags')) {
+        if (! isset($fields['bulk_tags']) && ! isset($fields['previous_common_tags'])) {
+            if (! $this->shouldIgnoreFieldBeforeSave('tags')) {
                 $object->setTags($fields['tags'] ?? []);
             }
-        } elseif (!$this->shouldIgnoreFieldBeforeSave('bulk_tags')) {
+        } elseif (! $this->shouldIgnoreFieldBeforeSave('bulk_tags')) {
             $previousCommonTags = $fields['previous_common_tags']->pluck('name')->toArray();
-            if (!empty($previousCommonTags) && !empty($difference = array_diff($previousCommonTags, $fields['bulk_tags'] ?? []))) {
+            if (! empty($previousCommonTags) && ! empty($difference = array_diff($previousCommonTags, $fields['bulk_tags'] ?? []))) {
                 $object->untag($difference);
             }
             $object->tag($fields['bulk_tags'] ?? []);
@@ -46,7 +46,7 @@ trait HandleTags
     {
         $tagQuery = $this->getTagsQuery();
 
-        if (!empty($query)) {
+        if (! empty($query)) {
             $tagQuery->where('slug', getLikeOperator(), '%' . $query . '%');
         }
 

@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 class GenerateBlockComponent extends ComponentMakeCommand
 {
     protected $signature = 'twill:make:componentBlock {name : class name of the block} {namespace? : Twill/Blocks/ by default, this namespace is relative to the App/View namespace} {--force}';
+
     protected $description = 'Generates a twill block as a component';
 
     public function handle(): bool
