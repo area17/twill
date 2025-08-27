@@ -113,7 +113,7 @@ class Media extends Model
                         return [
                             'id' => $item->id,
                             'name' => $item->title,
-                            'edit' => moduleRoute(
+                            'edit' => $item->damEditUrl ?? $item->adminEditUrl ?? moduleRoute(
                                 $field['name'],
                                 $field['prefix'] ?? null,
                                 'edit',
