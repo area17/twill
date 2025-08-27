@@ -138,6 +138,10 @@
     // border:1px solid grey;
     padding: 15px 0px 15px 0px;
 
+    &:first-child {
+      padding-bottom: 0px;
+    }
+
     * {
       will-change: auto;
     }

@@ -4,9 +4,12 @@
         {{ $trans('listing.paginate.rows-per-page') }}
         <template v-if="availableOffsets.length > 1">
           <a17-dropdown ref="paginateDropdown" position="bottom-right">
-            <button @click="$refs.paginateDropdown.toggle()" class="paginate__button">{{ newOffset }}</button>
+            <button @click="$refs.paginateDropdown.toggle()" class="paginate__button">{{ newOffset !== -1 ? newOffset : $trans('listing.paginate.everything') }}</button>
             <div slot="dropdown__content">
               <button type="button" v-for="availableOffset in availableOffsets" :key="availableOffset" :class="{ 'dropdown__active' : availableOffset === newOffset }" @click="changeOffset(availableOffset)">{{ availableOffset }}</button>
+              <button type="button" v-if="isShowEverythingEnabled" :class="{ 'dropdown__active' : availableOffset === newOffset }" @click="changeOffset(-1)">
+                {{ $trans('listing.paginate.everything') }}
+              </button>
             </div>
           </a17-dropdown>
         </template>
@@ -33,6 +36,10 @@
       offset: {
         type: Number,
         default: 60
+      },
+      isShowEverythingEnabled: {
+        type: Boolean,
+        default: false
       },
       availableOffsets: {
         type: Array,
