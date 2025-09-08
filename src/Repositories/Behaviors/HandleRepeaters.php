@@ -143,7 +143,7 @@ trait HandleRepeaters
         }
 
         foreach ($object->$relation()->pluck('id') as $id) {
-            if (! in_array($id, $currentIdList, true)) {
+            if (! in_array($id, $currentIdList)) {
                 $relationRepository->updateBasic(null, [
                     'deleted_at' => Carbon::now(),
                 ], [
@@ -213,7 +213,7 @@ trait HandleRepeaters
 
                 // The id here is the one of the pivot column. From there we can update the correct target.
                 $currentRelation = $currentRelations->first(function (Model $model) use ($pivotRowId) {
-                    return $pivotRowId === $model->pivot->id;
+                    return $pivotRowId == $model->pivot->id;
                 });
 
                 $relationRepository->update($currentRelation->id, $relationField);
@@ -254,7 +254,7 @@ trait HandleRepeaters
         $current = $object->{$relation}()->withPivot('id')->get();
         if ($current->isNotEmpty()) {
             foreach ($current as $existingRelation) {
-                if (! in_array($existingRelation->pivot->id, $currentIdList, true)) {
+                if (! in_array($existingRelation->pivot->id, $currentIdList)) {
                     // The pivot table is treated differently.
                     $object->{$relation}()->detach($existingRelation->id);
                 }
@@ -333,7 +333,7 @@ trait HandleRepeaters
         }
 
         foreach ($object->{$relation}()->pluck('id') as $id) {
-            if (! in_array($id, $currentIdList, true)) {
+            if (! in_array($id, $currentIdList)) {
                 // The pivot table is treated differently.
                 $relationRepository->updateBasic(null, [
                     'deleted_at' => Carbon::now(),
