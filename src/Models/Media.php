@@ -100,7 +100,7 @@ class Media extends Model
             ],
             'mediaTags' => $this->tags->map(function ($tag) {
                 return [
-                    'value' => $tag->name,
+                    'value' => $tag->id,
                     'label' => $tag->name,
                     'name' => $tag->name,
                 ];
