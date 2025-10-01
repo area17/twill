@@ -25,12 +25,12 @@ class BlockMake extends Command
     protected $description = 'Create a new block';
 
     /**
-     * @var \A17\Twill\Services\Blocks\BlockMaker
+     * @var BlockMaker
      */
     protected $blockMaker;
 
     /**
-     * @param \A17\Twill\Services\Blocks\BlockMaker
+     * @param BlockMaker
      */
     public function __construct(BlockMaker $blockMaker)
     {
@@ -39,7 +39,7 @@ class BlockMake extends Command
         $this->blockMaker = $blockMaker;
     }
 
-    public function getBlockMaker(): \A17\Twill\Services\Blocks\BlockMaker
+    public function getBlockMaker(): BlockMaker
     {
         return $this->blockMaker;
     }

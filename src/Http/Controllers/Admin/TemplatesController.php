@@ -53,6 +53,7 @@ class TemplatesController extends Controller
             'data' => $this->viewFactory->make('templates.' . $view)->render(),
             'has_more' => (rand(0, 10) > 5),
         ];
+
         return $this->responseFactory->json($response);
     }
 }

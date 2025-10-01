@@ -57,7 +57,7 @@ class Media extends Model
 
     public function canDeleteSafely(): bool
     {
-        return !$this->isReferenced();
+        return ! $this->isReferenced();
     }
 
     public function isReferenced(): bool

@@ -11,7 +11,7 @@ class QuickFilters extends Collection
         $result = [];
 
         foreach ($this->items as $statusFilter) {
-            if (!$statusFilter->isEnabled()) {
+            if (! $statusFilter->isEnabled()) {
                 continue;
             }
             $result[] = $statusFilter->toArray();

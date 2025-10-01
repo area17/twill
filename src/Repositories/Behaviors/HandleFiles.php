@@ -6,8 +6,8 @@ use A17\Twill\Facades\TwillUtil;
 use A17\Twill\Models\Behaviors\HasFiles;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\File;
-use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 
 trait HandleFiles
 {
@@ -53,7 +53,7 @@ trait HandleFiles
 
     /**
      * @param array $fields
-     * @return \Illuminate\Support\Collection
+     * @return Collection
      */
     private function getFiles($fields)
     {
@@ -78,7 +78,7 @@ trait HandleFiles
                             'file_id' => $file['id'],
                             'role' => $role,
                             'locale' => $locale,
-                            'position' => $index + 1
+                            'position' => $index + 1,
                         ];
                     });
                 }

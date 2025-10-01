@@ -27,7 +27,7 @@ use PragmaRX\Google2FA\Google2FA;
  * | This controller handles authenticating users for the application and
  * | redirecting them to your home screen. The controller uses a trait
  * | to conveniently provide its functionality to your applications.
- * |
+ * |.
  */
 class LoginController extends Controller
 {
@@ -129,7 +129,7 @@ class LoginController extends Controller
 
     /**
      * @param \Illuminate\Foundation\Auth\User $user
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     protected function authenticated(Request $request, $user)
     {
@@ -166,7 +166,7 @@ class LoginController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
      * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
@@ -197,7 +197,7 @@ class LoginController extends Controller
 
     /**
      * @param string $provider Socialite provider
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function redirectToProvider($provider, OauthRequest $request)
     {
@@ -209,7 +209,7 @@ class LoginController extends Controller
 
     /**
      * @param string $provider Socialite provider
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function handleProviderCallback($provider, OauthRequest $request)
     {
@@ -223,6 +223,7 @@ class LoginController extends Controller
                 $user = $repository->oauthUpdateProvider($oauthUser, $provider);
                 // Login and redirect
                 $this->authManager->guard('twill_users')->login($user);
+
                 return $this->afterAuthentication($request, $user);
             } elseif ($user->password) {
                 // If the user has a password then redirect to a form to ask for it
@@ -230,6 +231,7 @@ class LoginController extends Controller
                 $request->session()->put('oauth:user_id', $user->id);
                 $request->session()->put('oauth:user', $oauthUser);
                 $request->session()->put('oauth:provider', $provider);
+
                 return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'login.oauth.showPasswordForm'));
             } else {
                 $user->linkProvider($oauthUser, $provider);
@@ -240,7 +242,7 @@ class LoginController extends Controller
                 return $this->afterAuthentication($request, $user);
             }
         } else {
-            if (!config('twill.oauth.create_user_with_default_role', true)) {
+            if (! config('twill.oauth.create_user_with_default_role', true)) {
                 return $this->redirector->to(route(config('twill.admin_route_name_prefix') . 'login'))->withErrors([
                     'error' => __('auth.failed'),
                 ]);
@@ -273,7 +275,7 @@ class LoginController extends Controller
 
     /**
      * @param string $provider Socialite provider
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function linkProvider(Request $request)
     {
@@ -309,7 +311,7 @@ class LoginController extends Controller
 
     protected function autologin(): bool
     {
-        if (!$this->autologinEnabled()) {
+        if (! $this->autologinEnabled()) {
             return false;
         }
 
@@ -321,7 +323,7 @@ class LoginController extends Controller
 
     protected function autologinEnabled(): bool
     {
-        if (!$this->config->get('twill.autologin.enabled', false)) {
+        if (! $this->config->get('twill.autologin.enabled', false)) {
             return false;
         }
 
@@ -337,7 +339,7 @@ class LoginController extends Controller
             return false;
         }
 
-        if (!in_array(app()->environment(), $environments)) {
+        if (! in_array(app()->environment(), $environments)) {
             return false;
         }
 

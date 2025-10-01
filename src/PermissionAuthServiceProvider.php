@@ -3,10 +3,10 @@
 namespace A17\Twill;
 
 use A17\Twill\Enums\PermissionLevel;
+use A17\Twill\Facades\TwillPermissions;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Gate;
-use A17\Twill\Facades\TwillPermissions;
 
 class PermissionAuthServiceProvider extends ServiceProvider
 {
@@ -15,7 +15,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
     protected static $useCache = true;
 
     /**
-     * Disable gate caching for integration tests
+     * Disable gate caching for integration tests.
      */
     public static function disableCache()
     {
@@ -23,7 +23,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
     }
 
     /**
-     * For compatibility with legacy AuthServiceProvider
+     * For compatibility with legacy AuthServiceProvider.
      */
     protected function define($ability, $callback)
     {
@@ -36,7 +36,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
             return true;
         }
 
-        if (!$user->published) {
+        if (! $user->published) {
             return false;
         }
 
@@ -84,7 +84,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
 
         $this->define('edit-user-groups', function ($user) {
             if (
-                !TwillPermissions::levelIsOneOf([
+                ! TwillPermissions::levelIsOneOf([
                 PermissionLevel::LEVEL_ROLE_GROUP,
                 PermissionLevel::LEVEL_ROLE_GROUP_ITEM,
                 ])
@@ -99,7 +99,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
 
         $this->define('edit-group', function ($user, $editedGroup) {
             return $this->authorize($user, function ($user) use ($editedGroup) {
-                return !$editedGroup->isEveryoneGroup() && $user->can('edit-user-groups');
+                return ! $editedGroup->isEveryoneGroup() && $user->can('edit-user-groups');
             });
         });
 
@@ -202,7 +202,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
             return self::$cache['manage-module-' . $moduleName] = $this->authorize(
                 $user,
                 function ($user) use ($moduleName) {
-                    if (!TwillPermissions::getPermissionModule($moduleName)) {
+                    if (! TwillPermissions::getPermissionModule($moduleName)) {
                         return true;
                     }
 
@@ -223,7 +223,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
          ***/
 
         $this->define('view-item', function ($user, $item) {
-            $key = 'view-item-' . str_replace("\\", "-", get_class($item)) . '-' . $item->id;
+            $key = 'view-item-' . str_replace('\\', '-', get_class($item)) . '-' . $item->id;
             if (self::$useCache && isset(self::$cache[$key])) {
                 return self::$cache[$key];
             }
@@ -238,7 +238,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
         });
 
         $this->define('edit-item', function ($user, $item) {
-            $key = 'edit-item-' . str_replace("\\", "-", get_class($item)) . '-' . $item->id;
+            $key = 'edit-item-' . str_replace('\\', '-', get_class($item)) . '-' . $item->id;
             if (self::$useCache && isset(self::$cache[$key])) {
                 return self::$cache[$key];
             }
@@ -252,7 +252,7 @@ class PermissionAuthServiceProvider extends ServiceProvider
         });
 
         $this->define('manage-item', function ($user, $item) {
-            $key = 'manage-item-' . str_replace("\\", "-", get_class($item)) . '-' . $item->id;
+            $key = 'manage-item-' . str_replace('\\', '-', get_class($item)) . '-' . $item->id;
             if (self::$useCache && isset(self::$cache[$key])) {
                 return self::$cache[$key];
             }

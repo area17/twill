@@ -162,6 +162,43 @@ class ProjectController extends BaseModuleController
     }
 }
 ```
+### Medias
+
+If your json repeater contains media formField, you need to define the
+`mediasParams` at `config/twill.php` under `repeaters.crops` or `block_editor.crops`.
+
+```
+'repeaters' => [
+  'crops' => [
+     ‘your-media-field-name’ => [
+       …
+     ]
+  ],
+]
+```
+
+OR
+```
+'block_editor' => [
+  'crops' => [
+     ‘your-media-field-name’ => [
+       …
+     ]
+  ],
+]
+
+```
+
+| Option         | Description                                  | Type    | Default value    |
+|:---------------|:---------------------------------------------|:--------|:-----------------|
+| type           | Type of repeater items                       | string  |                  |
+| name           | Name of the field                            | string  | same as `type`   |
+| max            | Maximum amount that can be created           | number  | null (unlimited) |
+| buttonAsLink   | Displays the `Add` button as a centered link | boolean | false            |
+| disableCreate  | Disables ability to add new items            | boolean | false            |
+| disableActions | Removes row item actions                     | boolean | false            |
+| disableReorder | Disables reordering of repeater items        | boolean | false            |
+
 
 ## Blade repeater fields
 

@@ -7,6 +7,8 @@ use A17\Twill\Services\Blocks\Block;
 use A17\Twill\Services\Forms\Contracts\CanHaveSubfields;
 use A17\Twill\Services\Forms\Contracts\CanRenderForBlocks;
 use A17\Twill\Services\Forms\Fields\Repeater;
+use A17\Twill\Services\Forms\Fields\Traits\CanReorder;
+use A17\Twill\Services\Forms\Fields\Traits\DisableActions;
 use A17\Twill\Services\Forms\Traits\HasSubFields;
 use A17\Twill\Services\Forms\Traits\RenderForBlocks;
 use Illuminate\Contracts\View\View;
@@ -17,6 +19,8 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
 {
     use RenderForBlocks;
     use HasSubFields;
+    use CanReorder;
+    use DisableActions;
 
     protected function __construct(
         private ?string $name = null,
@@ -68,6 +72,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
     {
         $self = new self();
         $self->fields = collect();
+
         return $self;
     }
 
@@ -116,6 +121,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
     public function allowBrowser(bool $allowBrowse = true): static
     {
         $this->allowBrowse = $allowBrowse;
+
         return $this;
     }
 
@@ -163,7 +169,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
     public function renderForm(): View
     {
         return view('twill::partials.form.renderer.block_form', [
-            'fields' => Form::make($this->fields)->renderForBlocks()
+            'fields' => Form::make($this->fields)->renderForBlocks(),
         ]);
     }
 
@@ -207,6 +213,8 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
             ->name($this->name)
             ->type($this->getRenderName())
             ->allowCreate($this->allowCreate)
+            ->disableReorder(! $this->reorder)
+            ->disableActions(! $this->displayActions)
             ->relation($this->relation ?? null)
             ->browserModule($this->allowBrowse ? $this->browser : null);
 
@@ -222,6 +230,7 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         }
 
         $repeater->renderForBlocks = $this->renderForBlocks ?? false;
+
         return $repeater->render();
     }
 
@@ -230,7 +239,6 @@ class InlineRepeater implements CanHaveSubfields, CanRenderForBlocks
         $this->register();
         $this->registerDynamicRepeatersFor($this->fields);
     }
-
 
     public function connectedTo(string $fieldName, mixed $fieldValues, array $options = []): static
     {

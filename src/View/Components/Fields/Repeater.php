@@ -11,6 +11,7 @@ class Repeater extends TwillFormComponent
         public string $type,
         public bool $buttonAsLink = false,
         public bool $reorder = true,
+        public bool $displayActions = true,
         public ?int $max = null,
         public bool $allowCreate = true,
         public ?string $relation = null,
@@ -30,7 +31,7 @@ class Repeater extends TwillFormComponent
 
         $this->browserModule = $browserModule ? [
             'label' => $browserModule['label'] ?? ucfirst($browserModule['name']),
-            'value' => moduleRoute($browserModule['name'], $browserModule['routePrefix'] ?? null, 'browser', $browserModule['params'] ?? [], false)
+            'value' => moduleRoute($browserModule['name'], $browserModule['routePrefix'] ?? null, 'browser', $browserModule['params'] ?? [], false),
         ] : null;
     }
 

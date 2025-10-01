@@ -763,7 +763,7 @@
   }
 
   .media__actions {
-    min-width:45px * 3;
+    flex-shrink: 0;
 
     @media screen and (max-width: 1140px) {
       display: none !important;

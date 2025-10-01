@@ -49,11 +49,11 @@ trait HasTranslation
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param Builder $query
      * @param string $orderField
      * @param string $orderType
      * @param string|null $locale
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public function scopeOrderByTranslation($query, $orderField, $orderType = 'ASC', $locale = null)
     {
@@ -76,11 +76,11 @@ trait HasTranslation
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param Builder $query
      * @param string $orderRawString
      * @param string $groupByField
      * @param string|null $locale
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public function scopeOrderByRawByTranslation($query, $orderRawString, $groupByField, $locale = null)
     {
@@ -88,7 +88,7 @@ trait HasTranslation
         $table = $this->getTable();
         $locale = $locale == null ? app()->getLocale() : $locale;
 
-        return $query->join("{$translationTable} as t", "t.{$this->getRelationKey()}", "=", "{$table}.id")
+        return $query->join("{$translationTable} as t", "t.{$this->getRelationKey()}", '=', "{$table}.id")
             ->where($this->getLocaleKey(), $locale)
             ->groupBy("{$table}.id")
             ->groupBy("t.{$groupByField}")

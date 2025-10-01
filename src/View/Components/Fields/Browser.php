@@ -50,8 +50,8 @@ class Browser extends TwillFormComponent
             default: $default
         );
 
-        if (!$this->endpoints) {
-            $endpointsFromModules = isset($this->modules) ? collect($this->modules)->map(function ($module) {
+        if (! $this->endpoints && !empty($this->modules)) {
+            $this->endpoints = collect($this->modules)->map(function ($module) {
                 return [
                     'label' => $module['label'] ?? ucfirst($module['name']),
                     'value' => moduleRoute(
@@ -62,18 +62,16 @@ class Browser extends TwillFormComponent
                         false
                     ),
                 ];
-            })->toArray() : null;
+            })->all();
         }
 
-        $this->endpoints = $this->endpoints === [] ? $endpointsFromModules ?? [] : [];
-
         if (empty($this->endpoints)) {
-            $routeEndpoint = $this->moduleName;
-            if ($this->routePrefix) {
-                $routeEndpoint = Str::replaceFirst($this->routePrefix . '.', '', $this->moduleName);
-            }
+            $routeEndpoint = $this->routePrefix
+                ? Str::replaceFirst($this->routePrefix . '.', '', $this->moduleName)
+                : $this->moduleName;
+
             $this->endpoint = $this->endpoint ?? (empty($endpoints) ? moduleRoute(
-            // Remove the route prefix from the moduleName.
+                // Remove the route prefix from the moduleName.
                 $routeEndpoint,
                 $routePrefix,
                 'browser',

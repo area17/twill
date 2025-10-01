@@ -5,6 +5,7 @@ namespace A17\Twill\Services\Listings\Columns;
 use A17\Twill\Exceptions\ColumnMissingPropertyException;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Services\Listings\TableColumn;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 
 class Relation extends TableColumn
@@ -35,6 +36,7 @@ class Relation extends TableColumn
     public function relation(string $relation): static
     {
         $this->relation = $relation;
+
         return $this;
     }
 
@@ -44,9 +46,9 @@ class Relation extends TableColumn
             throw new ColumnMissingPropertyException('Relation column missing relation value: ' . $this->field);
         }
 
-        /** @var \Illuminate\Database\Eloquent\Collection $relation */
         $model->loadMissing($this->relation);
-        $relation = collect($model->getRelation($this->relation));
+        /** @var Collection $relation */
+        $relation = Collection::wrap($model->getRelation($this->relation));
 
         return $relation->pluck($this->field)->join(', ');
     }

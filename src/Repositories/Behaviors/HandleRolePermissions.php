@@ -3,14 +3,14 @@
 namespace A17\Twill\Repositories\Behaviors;
 
 use A17\Twill\Models\Contracts\TwillModelContract;
+use A17\Twill\Models\Permission;
 use A17\Twill\Models\Role;
 use Illuminate\Support\Str;
-use A17\Twill\Models\Permission;
 
 trait HandleRolePermissions
 {
     /**
-     * Retrieve role permissions fields
+     * Retrieve role permissions fields.
      *
      * @param TwillModelContract|Role $object
      * @param array $fields
@@ -37,7 +37,7 @@ trait HandleRolePermissions
     }
 
     /**
-     * Function executed after save on role form
+     * Function executed after save on role form.
      *
      * @param TwillModelContract|Role $object
      * @param array $fields
@@ -81,7 +81,7 @@ trait HandleRolePermissions
                     ->whereIn('name', $modulePermissions)
                     ->first();
 
-                if (!$currentPermission || $permissionName != $currentPermission->name) {
+                if (! $currentPermission || $permissionName != $currentPermission->name) {
                     $role->revokeAllModulePermission($model);
                     if (in_array($permissionName, $modulePermissions)) {
                         $role->grantModulePermission($permissionName, $model);

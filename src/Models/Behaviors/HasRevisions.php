@@ -35,7 +35,7 @@ trait HasRevisions
 
         return $this->revisions
             ->map(function ($revision, $index) use (&$currentRevision) {
-                if (!$currentRevision && !$revision->isDraft()) {
+                if (! $currentRevision && ! $revision->isDraft()) {
                     $currentRevision = $revision;
                 }
 
@@ -51,7 +51,7 @@ trait HasRevisions
 
     /**
      * Deletes revisions from specific collection position
-     * Used to keep max revision on specific Twill's module
+     * Used to keep max revision on specific Twill's module.
      */
     public function deleteSpecificRevisions(int $maxRevisions): void
     {

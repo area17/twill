@@ -44,10 +44,10 @@ class BlockEditor extends TwillFormComponent
             'twill::partials.form._block_editor',
             array_merge($this->data(), [
                 'allowedBlocks' => generate_list_of_available_blocks(
-                    $this->blocks ?? null,
+                    $this->blocks,
                     $groups,
                     $this->isSettings,
-                    $this->excludeBlocks ?? null,
+                    $this->excludeBlocks,
                 ),
                 'editorName' => [
                     'label' => $this->label,

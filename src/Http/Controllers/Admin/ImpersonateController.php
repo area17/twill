@@ -40,6 +40,7 @@ class ImpersonateController extends Controller
     public function stopImpersonate()
     {
         $this->authManager->guard('twill_users')->user()->stopImpersonating();
+
         return back();
     }
 }

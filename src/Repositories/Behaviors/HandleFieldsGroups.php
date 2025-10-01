@@ -17,7 +17,7 @@ trait HandleFieldsGroups
         foreach ($this->fieldsGroups as $group => $groupFields) {
             if ($object->$group) {
                 $casts = $this->getModelCasts($object);
-                if (!array_key_exists($group, $casts) || (array_key_exists($group, $casts) && $casts[$group] !== 'array')) {
+                if (! array_key_exists($group, $casts) || (array_key_exists($group, $casts) && $casts[$group] !== 'array')) {
                     $object->$group = json_encode($object->$group);
                 }
             }
@@ -67,7 +67,7 @@ trait HandleFieldsGroups
                         $decoded_fields[$group . $this->fieldsGroupsFormFieldNameSeparator . $field_name] = $field_value;
                         unset($decoded_fields[$field_name]);
 
-                        if (!is_array($field_value)) {
+                        if (! is_array($field_value)) {
                             $object->setAttribute($group . $this->fieldsGroupsFormFieldNameSeparator . $field_name, $field_value);
                         }
                     } else {
@@ -92,7 +92,7 @@ trait HandleFieldsGroups
             }
 
             $fields[$group] = Arr::where(Arr::only($fields, $groupFields), function ($value, $key) {
-                return !empty($value);
+                return ! empty($value);
             });
 
             if ($this->fieldsGroupsFormFieldNamesAutoPrefix) {
@@ -119,7 +119,7 @@ trait HandleFieldsGroups
                 $fields[$group] = null;
             }
 
-            $fields = array_filter($fields, fn($key) => !in_array($key, $groupFields), ARRAY_FILTER_USE_KEY);
+            $fields = array_filter($fields, fn ($key) => ! in_array($key, $groupFields), ARRAY_FILTER_USE_KEY);
         }
 
         return $fields;

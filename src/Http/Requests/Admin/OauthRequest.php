@@ -7,13 +7,12 @@ use Illuminate\Validation\Rule;
 class OauthRequest extends Request
 {
     /**
-     * Include route parameters for validation
+     * Include route parameters for validation.
      *
      * @return array
      */
     public function all($keys = null)
     {
-
         $data = parent::all();
         $data['provider'] = $this->input('provider', $this->route('provider'));
 
@@ -27,7 +26,6 @@ class OauthRequest extends Request
      */
     public function rules()
     {
-
         return [
             'provider' => [
                 'required',

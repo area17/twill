@@ -1,8 +1,10 @@
 includes:
-  - ./vendor/nunomaduro/larastan/extension.neon
+  - ./vendor/larastan/larastan/extension.neon
   - phpstan-baseline.neon
 
 parameters:
+  configDirectories:
+    - config
 
   paths:
     - src
@@ -24,8 +26,6 @@ parameters:
 
   excludePaths:
     - tests/*
-    # Fixed with new capsule manager.
-    - src/Services/Capsules/HasCapsules.php
     # Fatal errors due to socialite and key missing.
     - src/Http/Controllers/Admin/LoginController.php
     - src/Models/User.php

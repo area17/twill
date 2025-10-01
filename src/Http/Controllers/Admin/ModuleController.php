@@ -332,6 +332,10 @@ abstract class ModuleController extends Controller
     protected $viewPrefix;
 
     /**
+     * The template to use for previewing.
+     *
+     * Do not modify this directly but use the method setPreviewView().
+     *
      * @var string
      */
     protected $previewView;
@@ -369,9 +373,8 @@ abstract class ModuleController extends Controller
      */
     protected ?array $searchColumns = null;
 
-
     /**
-     * If you need more fine control over the search query
+     * If you need more fine control over the search query.
      *
      * Do not modify this directly but use the method setSearchQuery().
      */
@@ -416,7 +419,7 @@ abstract class ModuleController extends Controller
             return $next($request);
         });
 
-        if (!$this instanceof AppSettingsController) {
+        if (! $this instanceof AppSettingsController) {
             $this->getForm($this->repository->getBaseModel())->registerDynamicRepeaters();
             $this->getSideFieldsets($this->repository->getBaseModel())->registerDynamicRepeaters();
         }
@@ -636,7 +639,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * If you need finer control over the search query, you may provide a callback
+     * If you need finer control over the search query, you may provide a callback.
      * @param callable $query With the following signature: fn (Builder $query, string $searchString, array $translatedAttributes): void => $query
      */
     protected function setSearchQuery(callable $query): void
@@ -746,6 +749,14 @@ abstract class ModuleController extends Controller
     protected function setBreadcrumbs(Breadcrumbs $breadcrumbs): void
     {
         $this->breadcrumbs = $breadcrumbs;
+    }
+
+    /**
+     * Set the template for the preview view.
+     */
+    protected function setPreviewView(string $previewView): void
+    {
+        $this->previewView = $previewView;
     }
 
     /**
@@ -1090,7 +1101,7 @@ abstract class ModuleController extends Controller
 
     /**
      * @param int|null $parentModuleId
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function store($parentModuleId = null)
     {
@@ -1151,7 +1162,7 @@ abstract class ModuleController extends Controller
      * @param Request $request
      * @param int|$id
      * @param int|null $submoduleId
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     public function show($id, $submoduleId = null)
     {
@@ -1230,7 +1241,7 @@ abstract class ModuleController extends Controller
         );
     }
 
-    public function create(int $parentModuleId = null): JsonResponse|RedirectResponse|IlluminateView
+    public function create(?int $parentModuleId = null): JsonResponse|RedirectResponse|IlluminateView
     {
         if (! $this->getIndexOption('skipCreateModal')) {
             return Redirect::to(
@@ -1383,7 +1394,7 @@ abstract class ModuleController extends Controller
 
     /**
      * @param int $id
-     * @return \Illuminate\Contracts\View\View
+     * @return IlluminateView
      */
     public function restoreRevision($id)
     {
@@ -1551,7 +1562,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function bulkDelete()
     {
@@ -1569,7 +1580,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function forceDelete()
     {
@@ -1587,7 +1598,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function bulkForceDelete()
     {
@@ -1605,7 +1616,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function restore()
     {
@@ -1624,7 +1635,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function bulkRestore()
     {
@@ -1642,7 +1653,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function feature()
     {
@@ -1684,7 +1695,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function bulkFeature()
     {
@@ -1712,7 +1723,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function reorder()
     {
@@ -1731,7 +1742,7 @@ abstract class ModuleController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function tags()
     {
@@ -1837,7 +1848,7 @@ abstract class ModuleController extends Controller
         // Get the applied quick filter..
         if (array_key_exists('status', $requestFilters)) {
             $filter = $this->quickFilters()->filter(
-                fn(TwillBaseFilter $filter) => $filter->getQueryString() === $requestFilters['status']
+                fn (TwillBaseFilter $filter) => $filter->getQueryString() === $requestFilters['status']
             )->first();
 
             if ($filter !== null) {
@@ -1850,7 +1861,7 @@ abstract class ModuleController extends Controller
         // Get other filters that need to applied.
         foreach ($requestFilters as $filterKey => $filterValue) {
             $filter = $this->filters()->filter(
-                fn(BasicFilter $filter) => $filter->getQueryString() === $filterKey
+                fn (BasicFilter $filter) => $filter->getQueryString() === $filterKey
             )->first();
 
             if ($filter !== null) {
@@ -1984,31 +1995,31 @@ abstract class ModuleController extends Controller
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.listing.filter.all-items'))
                 ->queryString('all')
-                ->amount(fn() => $this->repository->getCountByStatusSlug('all', $scope)),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('all', $scope)),
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.listing.filter.mine'))
                 ->queryString('mine')
                 ->scope('mine')
                 ->onlyEnableWhen($this->moduleHas('revisions') && $this->getIndexOption('create'))
-                ->amount(fn() => $this->repository->getCountByStatusSlug('mine', $scope)),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('mine', $scope)),
             QuickFilter::make()
                 ->label($this->getTransLabel('listing.filter.published'))
                 ->queryString('published')
                 ->scope('published')
                 ->onlyEnableWhen($this->getIndexOption('publish'))
-                ->amount(fn() => $this->repository->getCountByStatusSlug('published', $scope)),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('published', $scope)),
             QuickFilter::make()
                 ->label($this->getTransLabel('listing.filter.draft'))
                 ->queryString('draft')
                 ->scope('draft')
                 ->onlyEnableWhen($this->getIndexOption('publish'))
-                ->amount(fn() => $this->repository->getCountByStatusSlug('draft', $scope)),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('draft', $scope)),
             QuickFilter::make()
                 ->label(twillTrans('twill::lang.listing.filter.trash'))
                 ->queryString('trash')
                 ->scope('onlyTrashed')
                 ->onlyEnableWhen($this->getIndexOption('restore'))
-                ->amount(fn() => $this->repository->getCountByStatusSlug('trash', $scope)),
+                ->amount(fn () => $this->repository->getCountByStatusSlug('trash', $scope)),
         ]);
     }
 
@@ -2103,7 +2114,7 @@ abstract class ModuleController extends Controller
                     } else {
                         // @todo: In php 8.1 this is an int by itself. In php8.1 it is not.
                         if ($field === 'published') {
-                            $repeaterFields[$field] = (int)$item->{$field};
+                            $repeaterFields[$field] = (int) $item->{$field};
                             continue;
                         }
                         $repeaterFields[$field] = $item->{$field};
@@ -2174,7 +2185,7 @@ abstract class ModuleController extends Controller
             }
         }
 
-        /** @var \A17\Twill\Services\Listings\Filters\BasicFilter $filter */
+        /** @var BasicFilter $filter */
         foreach ($this->filters() as $filter) {
             if (
                 ! isset($filters[$filter->getQueryString()]) &&
@@ -2199,7 +2210,7 @@ abstract class ModuleController extends Controller
             }
 
             if (isset($sortKey)) {
-                /** @var \A17\Twill\Services\Listings\TableColumn $indexColumn */
+                /** @var TableColumn $indexColumn */
                 $indexColumn = $this->getIndexTableColumns()->first(function (TableColumn $column) use ($sortKey) {
                     return $column->getKey() === $sortKey;
                 });
@@ -2638,7 +2649,7 @@ abstract class ModuleController extends Controller
     /**
      * @param int $id
      * @param array $params
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
     protected function redirectToForm($id, $params = [])
     {
@@ -2656,7 +2667,7 @@ abstract class ModuleController extends Controller
 
     /**
      * @param string $message
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     protected function respondWithSuccess($message)
     {
@@ -2665,7 +2676,7 @@ abstract class ModuleController extends Controller
 
     /**
      * @param string $redirectUrl
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     protected function respondWithRedirect($redirectUrl)
     {
@@ -2676,7 +2687,7 @@ abstract class ModuleController extends Controller
 
     /**
      * @param string $message
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     protected function respondWithError($message)
     {
@@ -2686,7 +2697,7 @@ abstract class ModuleController extends Controller
     /**
      * @param string $message
      * @param mixed $variant
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     protected function respondWithJson($message, $variant)
     {

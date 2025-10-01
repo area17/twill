@@ -49,7 +49,7 @@ trait HandleJsonRepeaters
                 $fields[$repeater] = $fields['repeaters'][$repeater];
 
                 foreach ($fields['repeaters'][$repeater] as $index => $repeaterItem) {
-                    if (isset($repeaterItem['medias']) && !empty($repeaterItem['medias'])) {
+                    if (isset($repeaterItem['medias']) && ! empty($repeaterItem['medias'])) {
                         foreach ($repeaterItem['medias'] as $role => $medias) {
                             $fields['medias'][getJsonRepeaterMediaRole($role, $repeater, $index)] = $medias;
                         }
@@ -94,7 +94,7 @@ trait HandleJsonRepeaters
                 ?? $repeatersList[$this->jsonRepeaters[$repeaterName] ?? null]
                 ?? null;
 
-            if (!$repeater) {
+            if (! $repeater) {
                 // There is no repeater found. This can be due to code removal but a database left-over.
                 // In that case, we cannot do anything so we simply return the fields.
                 return $fields;
@@ -123,7 +123,7 @@ trait HandleJsonRepeaters
                 ];
             }
 
-            if (isset($repeaterItem['medias']) && !empty($repeaterItem['medias'])) {
+            if (isset($repeaterItem['medias']) && ! empty($repeaterItem['medias'])) {
                 $mediaKeys = array_keys($repeaterItem['medias']);
 
                 foreach ($mediaKeys as $mediaKey) {

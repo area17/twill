@@ -18,17 +18,18 @@ abstract class SingletonModuleController extends ModuleController
 
     public function editSingleton()
     {
-        $model = "App\\Models\\{$this->getModelName()}";
+        $model = $this->getRepository()->getBaseModel()::class;
 
-        if (!class_exists($model)) {
+        if (! class_exists($model)) {
             $model = TwillCapsules::getCapsuleForModel($this->modelName)->getModel();
         }
 
         $item = app($model)->first();
 
-        if (!$item) {
+        if (! $item) {
             if (config('twill.auto_seed_singletons', false)) {
                 $this->seed();
+
                 return $this->editSingleton();
             }
 
@@ -57,13 +58,13 @@ abstract class SingletonModuleController extends ModuleController
         $seederName = $this->getModelName() . 'Seeder';
         $seederNamespace = '\\Database\\Seeders\\';
 
-        if (!class_exists($seederNamespace . $seederName)) {
+        if (! class_exists($seederNamespace . $seederName)) {
             $seederNamespace = TwillCapsules::getCapsuleForModel($this->modelName)->getSeedsNamespace() . '\\';
         }
 
         $seederClass = $seederNamespace . $seederName;
 
-        if (!class_exists($seederClass)) {
+        if (! class_exists($seederClass)) {
             throw new \Exception("$seederClass is missing");
         }
 

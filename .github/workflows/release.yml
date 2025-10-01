@@ -1,0 +1,61 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version_bump_type:
+        description: 'Type of version bump (patch, minor, major)'
+        required: true
+        default: 'patch'
+
+jobs:
+  build-and-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: 3.x
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build
+
+      - name: Copy build artifacts
+        run: |
+          mkdir -p twill-assets/assets
+          rm -rf twill-assets/assets/*
+          cp -r dist/assets/* twill-assets/assets/
+
+      - name: Bump version
+        id: bump_version
+        run: |
+          npm version ${{ github.event.inputs.version_bump_type }} --no-git-tag-version
+          echo "::set-output name=new_version::$(node -p "require('./package.json').version")"
+      
+      - name: Update version in PHP file
+        run: |
+          NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
+          sed -i "s/\(public const VERSION = '\)[^']*\(';\)/\1${NEW_VERSION}\2/" src/TwillServiceProvider.php
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            Update assets and bump version to ${{ steps.bump_version.outputs.new_version }}
+          title: |
+            Twill ${{ steps.bump_version.outputs.new_version }} release
+          body: |
+            This PR updates the build and bumps the version number to ${{ steps.bump_version.outputs.new_version }}.
+          branch: release-${{ steps.bump_version.outputs.new_version }}
+          base: 3.x

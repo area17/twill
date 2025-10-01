@@ -65,8 +65,8 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: [8.3, 8.2, 8.1]
-        laravel: [10.*, 11.*]
+        php: [8.4, 8.3, 8.2, 8.1]
+        laravel: [10.*, 11.*, 12.*]
         dbal: [3.*, 4.*]
         exclude:
           - laravel: 10.*
@@ -75,11 +75,15 @@ jobs:
             php: 8.1
           - laravel: 11.*
             dbal: 3.*
+          - laravel: 12.*
+            php: 8.1
         include:
           - laravel: 10.*
             testbench: 8.*
           - laravel: 11.*
             testbench: 9.*
+          - laravel: 12.*
+            testbench: 10.*
 
     steps:
       - name: Set timezone?
@@ -108,7 +112,7 @@ jobs:
         id: composer-cache
         run: |
           echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - uses: actions/cache@v2
+      - uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ matrix.os }}-${{ matrix.laravel }}-${{ matrix.php }}-${{ matrix.dbal }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -128,10 +132,6 @@ jobs:
       - name: Build npm dependencies.
         run: |
           npm ci
-
-      - name: Create blocks dir
-        run: |
-          mkdir ./frontend/js/components/blocks/customs
 
       - name: Build twill.
         run: ./vendor/bin/testbench twill:build --forTesting
