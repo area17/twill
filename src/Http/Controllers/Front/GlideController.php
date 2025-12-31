@@ -7,6 +7,7 @@ use Illuminate\Config\Repository as Config;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use League\Glide\Filesystem\FileNotFoundException;
 
 class GlideController
 {
@@ -23,6 +24,10 @@ class GlideController
             return Storage::disk($disk)->response($path);
         }
 
-        return $app->make(Glide::class)->render($path);
+        try {
+            return $app->make(Glide::class)->render($path);
+        } catch (FileNotFoundException) {
+            abort(404);
+        }
     }
 }
