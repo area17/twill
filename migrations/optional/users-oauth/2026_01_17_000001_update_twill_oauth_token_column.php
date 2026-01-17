@@ -40,7 +40,7 @@ return new class extends Migration
 
             if (Schema::hasTable($twillOauthTable) && Schema::hasColumn($twillOauthTable, 'token')) {
                 // Check if any tokens exceed 255 characters before rolling back
-                $longTokensCount = \DB::table($twillOauthTable)
+                $longTokensCount = DB::table($twillOauthTable)
                     ->whereRaw('LENGTH(token) > 255')
                     ->count();
 
