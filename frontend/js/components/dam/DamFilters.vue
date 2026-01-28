@@ -49,7 +49,7 @@
           >
           </a17-dam-filter-dropdown>
 
-          <a17-button variant="ghost" @click="toggleAdvanced">
+          <a17-button v-if="hasAdvancedFilters" variant="ghost" @click="toggleAdvanced">
             <template v-if="!showAdvanced">{{
               $trans('dam.show-advanced', 'Show advanced')
             }}</template>
@@ -59,7 +59,7 @@
           </a17-button>
 
           <div class="dam-filters__wrap">
-            <a17-checkbox ref="archive" name="archive" :initial-value="0" :value="1" :label="$trans('media-library.search-in-archive-label', 'Search in archives (AI mode)')" @change="setIsArchiveSearchValue"/>
+            <a17-checkbox v-if="enableArchiveSearch" ref="archive" name="archive" :initial-value="0" :value="1" :label="$trans('media-library.search-in-archive-label', 'Search in archives (AI mode)')" @change="setIsArchiveSearchValue"/>
           </div>
 
         </div>
@@ -162,8 +162,15 @@
 
         return flattenedFilters
       },
+      hasAdvancedFilters() {
+        return this.filters.some(item => item.advanced === true)
+      },
+      enableArchiveSearch() {
+        return this.damView === 'landing'
+      },
       ...mapState({
         filterData: state => state.mediaLibrary.filterData,
+        damView : state => state.mediaLibrary.damView,
         filters: state => state.mediaLibrary.filters,
         searchEndpoint: state => state.mediaLibrary.filterSearchEndpoint
       })
