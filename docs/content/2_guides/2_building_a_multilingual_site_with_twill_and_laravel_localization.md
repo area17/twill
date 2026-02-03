@@ -87,7 +87,7 @@ If you are using Laravel 11+, you may register them in the `bootstrap/app.php` f
         ->withMiddleware(function (Middleware $middleware) {
             $middleware->alias([
                 /**** OTHER MIDDLEWARE ALIASES ****/
-                'localize'                => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRoutes::class,
+                'localize' => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRoutes::class,
                 'localizationRedirect'    => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter::class,
                 'localeSessionRedirect'   => \Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect::class,
                 'localeCookieRedirect'    => \Mcamara\LaravelLocalization\Middleware\LocaleCookieRedirect::class,
