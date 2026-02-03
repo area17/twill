@@ -119,6 +119,7 @@ We'll create a basic index page to list all the news articles. Let's start with 
 ```php
 use App\Models\Article;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Illuminate\Support\Facades\Route;
 
 Route::group([
     'prefix' => LaravelLocalization::setLocale(),
