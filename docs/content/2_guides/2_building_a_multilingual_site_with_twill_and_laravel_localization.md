@@ -80,7 +80,7 @@ For this example, nothing else needs to be customized in this file.
 To enable the various localization features such as route translations, language detection and redirect, register the
 package's middleware.
 
-If you are using Laravel 11+, you may register in `bootstrap/app.php` file in closure withMiddleware:
+If you are using Laravel 11+, you may register them in the `bootstrap/app.php` file, using `withMiddleware`:
 ```php
     return Application::configure(basePath: dirname(__DIR__))
         // Other application configurations
