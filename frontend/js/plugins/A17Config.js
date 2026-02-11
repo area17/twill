@@ -44,6 +44,8 @@ import a17Dam from '@/components/dam/Dam.vue'
 import a17DamListing from '@/components/dam/DamListing.vue'
 import a17DamBrowser from '@/components/dam/DamBrowser.vue'
 import a17DamMedialibrary from '@/components/dam/DamMediaLibrary.vue'
+import a17DamFilteredDatatable from '@/components/dam/DamFilteredDatatable.vue'
+
 // Directives
 import SvgSprite from '@/directives/svg'
 import Tooltip from '@/directives/tooltip'
@@ -95,6 +97,7 @@ const A17Config = {
     Vue.component('a17-dam', a17Dam)
     Vue.component('a17-dam-listing', a17DamListing)
     Vue.component('a17-dam-medialibrary', a17DamMedialibrary)
+    Vue.component('a17-dam-filtered-datatable', a17DamFilteredDatatable)
 
     Vue.component('a17-dambrowser', a17DamBrowser)
 
