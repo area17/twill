@@ -218,6 +218,7 @@ return [
         'es',
         'fr',
         'it',
+        'ja',
         'nl',
         'no',
         'pl',
