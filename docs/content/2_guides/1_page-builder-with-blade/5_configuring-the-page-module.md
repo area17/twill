@@ -209,7 +209,7 @@ always have a crop config for your field name!
 ```phptorch
 {
     "collapseMethods": null,
-    "focusMethods": "getForm",
+    "focusMethods": ["getForm"],
     "diffImports": "A17\\Twill\\Services\\Forms\\Fields\\Medias",
     "focusImports": "A17\\Twill\\Services\\Forms\\Fields\\Medias",
     "diffInMethod": {
@@ -274,7 +274,7 @@ method.
 ```phptorch
 {
     "collapseMethods": null,
-    "focusMethods": "getForm",
+    "focusMethods": ["getForm"],
     "diffImports": "A17\\Twill\\Services\\Forms\\Fields\\BlockEditor",
     "focusImports": "A17\\Twill\\Services\\Forms\\Fields\\BlockEditor",
     "diffInMethod": {

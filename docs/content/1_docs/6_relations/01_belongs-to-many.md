@@ -39,7 +39,7 @@ In the **Partner** migration we add a relational table that we will use for our 
 {
   "file": "../../../../examples/portfolio/database/migrations/2022_04_01_071748_create_partners_tables.php",
   "collapseAll": "",
-  "focusMethods": "up",
+  "focusMethods": ["up"],
   "focusImports": ["App\\Models\\Partner", "App\\Models\\Project"],
   "diffImports": ["App\\Models\\Partner", "App\\Models\\Project"],
   "diffInMethod": {
@@ -66,7 +66,7 @@ Now with the migration setup we can set up our relation in the `Project` model:
 {
   "file": "../../../../examples/portfolio/app/Models/Project.php",
   "collapseAll": "",
-  "focusMethods": "partners"
+  "focusMethods": ["partners"]
 }
 ```
 
@@ -84,7 +84,7 @@ To expose the relation in the ui, we will use an inline repeater. We will name t
   "collapseAll": "",
   "focusImports": ["A17\\Twill\\Services\\Forms\\InlineRepeater"],
   "diffImports": ["A17\\Twill\\Services\\Forms\\InlineRepeater"],
-  "focusMethods": "getForm",
+  "focusMethods": ["getForm"],
   "diffInMethod": {
     "method": "getForm",
     "start": 6,

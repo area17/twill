@@ -226,7 +226,7 @@ model to find the appropriate article by slug:
 ```phptorch
 {
   "file": "./building_a_multilingual_site_with_twill_and_laravel_localization/Article.php",
-  "focusMethods": "resolveRouteBinding"
+  "focusMethods": ["resolveRouteBinding"]
 }
 ```
 
@@ -332,7 +332,7 @@ the `LocalizedUrlRoutable` interface from Laravel Localization in our model. For
 ```phptorch
 {
   "file": "./building_a_multilingual_site_with_twill_and_laravel_localization/Article.php",
-  "focusMethods": "getLocalizedRouteKey"
+  "focusMethods": ["getLocalizedRouteKey"]
 }
 ```
 

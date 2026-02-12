@@ -21,7 +21,7 @@ In our module controller we can override the `getCreateForm` method and add the 
 
 ```phptorch
 {
-  "focusMethods": "getCreateForm"
+  "focusMethods": ["getCreateForm"]
 }
 ##CODE##
 <?php
@@ -178,6 +178,7 @@ In our module controller we can override the `indexData` to remove publish switc
 :::#filename:::
 
 ```phptorch
+{}
 ##CODE##
 <?php
 
@@ -220,6 +221,7 @@ If we also want to make all languages active by default, we can override `prepar
 :::#filename:::
 
 ```phptorch
+{}
 ##CODE##
 <?php
 

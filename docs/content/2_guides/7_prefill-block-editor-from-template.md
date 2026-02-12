@@ -33,7 +33,7 @@ We'll add the `template` field to the generated migration:
 {
   "file": "./prefill-block-editor-from-template/2021_09_19_131244_create_articles_tables.php",
   "collapseAll": "",
-  "focusMethods": "up",
+  "focusMethods": ["up"],
   "diffInMethod": {
     "method": "up",
     "start": 7,
@@ -235,7 +235,7 @@ Then, we'll hook into the repository's `afterSave()`:
 {
   "file": "./prefill-block-editor-from-template/ArticleRepository.php",
   "collapseAll": "",
-  "focusMethods": "afterSave"
+  "focusMethods": ["afterSave"]
 }
 ```
 

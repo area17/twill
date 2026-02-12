@@ -23,7 +23,7 @@ change the title to make a bit more sense.
 ```phptorch
 {
   "collapseAll": "",
-  "focusMethods": "boot",
+  "focusMethods": ["boot"],
   "diffInMethod": {
     "method": "boot",
     "start": 4,
@@ -242,7 +242,7 @@ In our menu link module controller we now add the form field:
   "collapseAll": "",
   "diffImports": "A17\\Twill\\Services\\Forms\\Fields\\Browser",
   "focusImports": "A17\\Twill\\Services\\Forms\\Fields\\Browser",
-  "focusMethods": "getForm",
+  "focusMethods": ["getForm"],
   "diffInMethod": {
     "method": "getForm",
     "start": 3,

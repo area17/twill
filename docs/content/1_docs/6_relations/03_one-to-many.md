@@ -27,7 +27,7 @@ In the **Link** migration we add a column to hold the `project_id` that we are c
 ```phptorch
 {
   "file": "../../../../examples/portfolio/database/migrations/2022_05_30_074255_create_links_tables.php",
-  "focusMethods": "up",
+  "focusMethods": ["up"],
   "diffInMethod": {
     "method": "up",
     "start": 5,
@@ -48,7 +48,7 @@ Now with the migration setup we can set up our relation in the `Project` model:
 {
   "file": "../../../../examples/portfolio/app/Models/Project.php",
   "collapseAll": "",
-  "focusMethods": "links"
+  "focusMethods": ["links"]
 }
 ```
 
@@ -66,7 +66,7 @@ In our project form we can now create an inline repeater.
   "collapseAll": "",
   "focusImports": ["A17\\Twill\\Services\\Forms\\InlineRepeater"],
   "diffImports": ["A17\\Twill\\Services\\Forms\\InlineRepeater"],
-  "focusMethods": "getForm",
+  "focusMethods": ["getForm"],
   "diffInMethod": {
     "method": "getForm",
     "start": 23,
