@@ -15,7 +15,6 @@
 <script>
   import 'flatpickr/dist/flatpickr.css'
 
-  import parse from 'date-fns/parse'
   import FlatPickr from 'flatpickr'
 
   import FormStoreMixin from '@/mixins/formStore'
@@ -147,26 +146,54 @@
           altInputClass: 'flatpickr-input form-control',
           maxDate: self.maxDate,
           parseDate: function (date, format) {
-            const fullFormat = 'yyyy-MM-dd HH:mm:ss';
-            if (date.length === fullFormat.length) {
-              return parse(date + 'Z', fullFormat + 'X', Date.UTC());
-            }
-            const fullFormatNoSeconds = 'yyyy-MM-dd HH:mm';
-            if (date.length === fullFormatNoSeconds.length) {
-              return parse(date + 'Z', fullFormat + 'X', Date.UTC());
-            }
-            const fullFormatNoTime = 'yyyy-MM-dd';
-            if (date.length === fullFormatNoTime.length) {
-              return parse(date, fullFormatNoTime, Date.UTC());
+            // 1. ISO 8601 with timezone: "2026-01-15T13:00:00+00:00" or "2026-01-15T13:00:00Z"
+            if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[Z+-]/.test(date)) {
+              return new Date(date)
             }
 
+            // 2. ISO without timezone: "yyyy-MM-dd HH:mm:ss" or "yyyy-MM-dd HH:mm" → treat as UTC
+            if (/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}(:\d{2})?$/.test(date)) {
+              return new Date(date.replace(' ', 'T') + 'Z')
+            }
+
+            // 3. Date only ISO: "yyyy-MM-dd"
+            if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+              return new Date(date + 'T00:00:00Z')
+            }
+
+            // 4. European dot-separated: "dd.MM.yyyy HH:mm:ss" / "dd.MM.yyyy HH:mm" / "dd.MM.yyyy"
+            //    Used by: de, fr, it, pl, cs, sl, bs, no, ru, tr, uk
+            const euroMatch = date.match(/^(\d{2})\.(\d{2})\.(\d{4})(?:\s+(\d{2}):(\d{2})(?::(\d{2}))?)?$/)
+            if (euroMatch) {
+              const day = parseInt(euroMatch[1], 10)
+              const month = parseInt(euroMatch[2], 10) - 1
+              const year = parseInt(euroMatch[3], 10)
+              if (euroMatch[4] !== undefined) {
+                return new Date(year, month, day, parseInt(euroMatch[4], 10), parseInt(euroMatch[5], 10), parseInt(euroMatch[6] || '0', 10))
+              }
+              return new Date(year, month, day)
+            }
+
+            // 5. US slash-separated: "MM/dd/yyyy HH:mm" / "MM/dd/yyyy"
+            const usMatch = date.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{2}):(\d{2})(?::(\d{2}))?)?$/)
+            if (usMatch) {
+              const usMonth = parseInt(usMatch[1], 10) - 1
+              const usDay = parseInt(usMatch[2], 10)
+              const usYear = parseInt(usMatch[3], 10)
+              if (usMatch[4] !== undefined) {
+                return new Date(usYear, usMonth, usDay, parseInt(usMatch[4], 10), parseInt(usMatch[5], 10), parseInt(usMatch[6] || '0', 10))
+              }
+              return new Date(usYear, usMonth, usDay)
+            }
+
+            // 6. Time only (for timeOnly mode)
             if (self.isValidTime(date)) {
-              const currentDate = new Date();
-              date = `${currentDate.toDateString()} ${date}`;
+              const currentDate = new Date()
+              date = currentDate.toDateString() + ' ' + date
             }
 
-            // Hope for the best..
-            return new Date(date);
+            // 7. Fallback
+            return new Date(date)
           },
           onOpen: function () {
             setTimeout(function () {

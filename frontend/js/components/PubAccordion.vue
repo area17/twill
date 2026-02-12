@@ -44,7 +44,6 @@
 </template>
 
 <script>
-  import parseJson from 'date-fns/parse'
   import { mapState } from 'vuex'
 
   import VisibilityMixin from '@/mixins/toggleVisibility'
@@ -90,8 +89,12 @@
         startDate: state => state.publication.startDate,
         endDate: state => state.publication.endDate
       }),
-      startDateForDisplay() {
-        return parseJson(this.startDate + 'Z').toISOString()
+      startDateForDisplay () {
+        const dateStr = this.startDate
+        if (/T.*[Z+-]/.test(dateStr)) {
+          return new Date(dateStr).toISOString()
+        }
+        return new Date(dateStr + 'Z').toISOString()
       },
       localizedDateDisplayFormat() {
         if (this.dateDisplayFormat) {

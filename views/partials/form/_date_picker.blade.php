@@ -21,9 +21,15 @@
 
 @unless($renderForBlocks || $renderForModal || (!isset($item->$name) && is_null($formFieldsValue = getFormFieldsValue($form_fields, $name))))
 @push('vuexStore')
+    @php
+        $dateValue = $item->$name ?? $formFieldsValue;
+        if ($dateValue instanceof \Carbon\Carbon) {
+            $dateValue = $dateValue->utc()->toIso8601String();
+        }
+    @endphp
     window['{{ config('twill.js_namespace') }}'].STORE.form.fields.push({
         name: '{{ $name }}',
-        value: {!! json_encode(e($item->$name ?? $formFieldsValue)) !!}
+        value: {!! json_encode($dateValue) !!}
     })
 @endpush
 @endunless
