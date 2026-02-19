@@ -100,10 +100,10 @@ class DuskServiceProvider extends ServiceProvider
         Browser::macro('assertVselectHasOptions', function (string $wrapperClass, array $optionLabels) {
             $this->with($wrapperClass, function (Browser $element) use ($optionLabels) {
                 $element->click('.vs__search');
-                $element->waitFor('.vs__dropdown-menu');
+                $this->waitFor('.vs__dropdown-menu');
 
                 foreach ($optionLabels as $optionLabel) {
-                    $element->assertSeeIn('.vs__dropdown-menu', $optionLabel);
+                    $this->assertSeeIn('.vs__dropdown-menu', $optionLabel);
                 }
             });
         });
@@ -111,9 +111,9 @@ class DuskServiceProvider extends ServiceProvider
         Browser::macro('selectVselectOption', function (string $wrapperClass, string $optionLabel) {
             $this->with($wrapperClass, function (Browser $element) use ($optionLabel, $wrapperClass) {
                 $element->click('.vs__search');
-                $element->waitFor('.vs__dropdown-menu');
+                $this->waitFor('.vs__dropdown-menu');
 
-                $element->clickAtXPath('//li[contains(.,"' . $optionLabel . '")]');
+                $this->clickAtXPath('//ul[contains(@class,"vs__dropdown-menu")]//li[contains(text(),"' . $optionLabel . '")]');
 
                 $this->assertVselectHasOptionSelected($wrapperClass, $optionLabel);
             });

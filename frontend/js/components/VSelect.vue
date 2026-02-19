@@ -21,6 +21,8 @@
               :requiredValue="required"
               :maxHeight="maxHeight"
               :disabled="disabled"
+              :calculate-position="withPopper"
+              append-to-body
               @input="updateValue"
               @search="getOptions"
           >
@@ -39,6 +41,7 @@
 
 <script>
   import debounce from 'lodash/debounce'
+  import { createPopper } from '@popperjs/core'
 
   // check full options of the vueSelect here : http://sagalbot.github.io/vue-select/
   import extendedVSelect from '@/components/VSelect/ExtendedVSelect.vue'
@@ -135,7 +138,8 @@
       return {
         value: this.selected,
         currentOptions: this.options,
-        ajaxUrl: this.endpoint
+        ajaxUrl: this.endpoint,
+        placement: 'bottom',
       }
     },
     watch: {
@@ -254,7 +258,34 @@
           // error callback
           loading(false)
         })
-      }, 500)
+      }, 500),
+      withPopper(dropdownList, component, { width }) {
+        // position top/bottom taken from https://vue-select.org/guide/positioning.html#popper-js-integration
+        dropdownList.style.width = width
+        const popper = createPopper(component.$refs.toggle, dropdownList, {
+          placement: this.placement,
+          modifiers: [
+            {
+              name: 'offset',
+              options: {
+                offset: [0, -1],
+              },
+            },
+            {
+              name: 'toggleClass',
+              enabled: true,
+              phase: 'write',
+              fn({ state }) {
+                component.$el.classList.toggle(
+                  'drop-up',
+                  state.placement === 'top'
+                )
+              },
+            },
+          ],
+        })
+        return () => popper.destroy()
+      },
     }
   }
 </script>

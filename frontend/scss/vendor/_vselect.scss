@@ -13,71 +13,17 @@ $multiSelectHeight: 45px;
       margin: 0;
     }
 
-    .spinner {
-      top: 15px;
-      right: 15px;
+    .vs__spinner {
+      align-self: flex-start;
       width: 18px;
       height: 18px;
+      margin-top: 9px;
+      margin-right: 1px;
       border-top: 2px solid rgba($color__icons,.2);
       border-right: 2px solid rgba($color__icons,.2);
       border-bottom: 2px solid rgba($color__icons,.2);
       border-left: 2px solid rgba($color__icons,.8);
     }
-
-    .vs__dropdown-menu {
-      // make sure the content expand to the longest option
-      --vs-dropdown-min-width: fit-content;
-      padding:15px 0;
-      border-top:1px solid $color__border--light;
-      box-shadow: 0px 1px 3.5px 0px rgba(0, 0, 0, 0.30);
-      border-bottom-right-radius: 2px;
-      border-bottom-left-radius: 2px;
-
-      li.vs__no-options {
-        color:$color__text--light;
-        text-align:left;
-        padding:0 15px;
-      }
-
-      .vs__dropdown-option {
-        padding:0 15px;
-        background:$color__background;
-        color:$color__text--light;
-
-        &:hover,
-        &:focus {
-          color:$color__text;
-          background:$color__light;
-        }
-
-        &--highlight {
-          color:$color__text;
-          background:$color__light;
-
-          &:hover,
-          &:focus {
-            color:$color__text;
-            background:$color__light;
-          }
-        }
-
-        &--selected {
-          color:$color__text;
-          background:$color__background;
-
-          &:hover,
-          &:focus {
-            color:$color__text;
-            background:$color__light;
-          }
-        }
-      }
-    }
-  }
-
-  .v-select .vs__dropdown-menu .vs__dropdown-option {
-    height:$singleSelectHeight;
-    line-height:$singleSelectHeight;
   }
 
   .v-select {
@@ -132,11 +78,6 @@ $multiSelectHeight: 45px;
       padding-left: 0;
     }
 
-    .vs__clear {
-      margin-right: 35px;
-      margin-top: 2px;
-    }
-
     .vs__selected-options {
       padding: 0 30px 0 15px;
     }
@@ -174,7 +115,6 @@ $multiSelectHeight: 45px;
       padding:0 0 0 15px;
       margin:0;
       color:$color__f--text;
-
       button {
         position: absolute;
         background-color: $color__black--35;
@@ -225,7 +165,72 @@ $multiSelectHeight: 45px;
       @include font-regular;
     }
   }
+}
 
+.a17 ~ .vs__dropdown-menu {
+  --vs-dropdown-z-index: 9;
+
+  padding:15px 0;
+  border-top:1px solid $color__border--light;
+  box-shadow: 0px 1px 3.5px 0px rgba(0, 0, 0, 0.30);
+  border-bottom-right-radius: 2px;
+  border-bottom-left-radius: 2px;
+  transition: none;
+
+  &[data-popper-placement='top'] {
+    border-radius: 2px 2px 0 0;
+    border-top: 0 none;
+    border-bottom: 1px solid $color__border--light;
+    box-shadow: 0px -1px 3.5px 0px rgba(0, 0, 0, 0.30);
+  }
+
+  li.vs__no-options {
+    color:$color__text--light;
+    text-align:left;
+    padding:0 15px;
+  }
+
+  .vs__dropdown-option {
+    padding:0 15px;
+    background:$color__background;
+    color:$color__text--light;
+
+    &:hover,
+    &:focus {
+      color:$color__text;
+      background:$color__light;
+    }
+
+    &--highlight {
+      color:$color__text;
+      background:$color__light;
+
+      &:hover,
+      &:focus {
+        color:$color__text;
+        background:$color__light;
+      }
+    }
+
+    &--selected {
+      color:$color__text;
+      background:$color__background;
+
+      &:hover,
+      &:focus {
+        color:$color__text;
+        background:$color__light;
+      }
+    }
+  }
+}
+
+.a17 ~ .vs__dropdown-menu .vs__dropdown-option {
+  height:$singleSelectHeight;
+  line-height:$singleSelectHeight;
+}
+
+.a17 {
   /*
   Variant : Large vselect
   This is the style that should be used in Regular Forms
@@ -306,9 +311,8 @@ $multiSelectHeight: 45px;
     .vs__dropdown-toggle {
       min-height:$multiSelectHeight;
       height:auto;
-      padding-bottom:0px;
       @include defaultState;
-      flex-wrap: wrap;
+      padding-bottom: 5px;
 
       &:hover {
         @include hoverState;
@@ -381,7 +385,7 @@ $multiSelectHeight: 45px;
 
   /*
   Variant : Small variant for multiple vselect
-  used for tags in the media library
+  used for tags in the media library (1 of 2)
   */
   .vselect--small {
     .dropdown-toggle {
@@ -392,17 +396,17 @@ $multiSelectHeight: 45px;
       flex-basis: 27px;
     }
 
-    .spinner {
+    .spinner,
+    .vs__spinner {
       align-self: flex-start;
-      margin-top: 8px;
-      margin-right: 1px;
-    }
-
-    .vs__dropdown-menu li.vs__no-options {
-      font-size: 13px;
+      margin-top: 3px;
     }
 
     &.vselect--multiple {
+      .vs__dropdown-toggle {
+        padding-bottom: 7px;
+      }
+
       .vs__selected {
         height: 21px;
         line-height: 21px;
@@ -416,14 +420,14 @@ $multiSelectHeight: 45px;
         .vs__deselect {
           top:2px;
           right:2px;
-          transform: none;
           background-color:transparent;
           background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgdmlld0JveD0iMCAwIDEwIDEwIj48cGF0aCBmaWxsPSJub25lIiBzdHJva2U9IiNhNmE2YTYiIGQ9Ik0yIDJsNiA2TTggMkwyIDgiLz48L3N2Zz4=);
-          color: $color__fborder--hover;
+          color:$color__fborder--hover;
+          transform: none;
 
           span,
           svg {
-            display: none
+            display:none
           }
         }
       }
@@ -451,4 +455,12 @@ $multiSelectHeight: 45px;
       }
     }
   }
+}
+
+/*
+Variant: Small variant for multiple vselect
+used for tags in the media library (2 of 2)
+*/
+.a17 ~ .vs__dropdown-menu--small.vs__no-options {
+  font-size: 13px;
 }
