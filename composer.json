@@ -1,112 +1,112 @@
 {
-  "name": "area17/twill",
-  "type": "library",
-  "license": "Apache-2.0",
-  "description": "Twill is an open source CMS toolkit for Laravel that helps developers rapidly create a custom admin console that is intuitive, powerful and flexible.",
-  "keywords": [
-    "A17",
-    "twill",
-    "laravel",
-    "cms"
-  ],
-  "homepage": "https://twillcms.com",
-  "authors": [
-    {
-      "name": "AREA 17",
-      "email": "hello@twill.io",
-      "homepage": "https://area17.com"
-    }
-  ],
-  "support": {
-    "issues": "https://github.com/area17/twill/issues/",
-    "docs": "https://twillcms.com/docs/",
-    "chat": "https://discord.gg/cnWk7EFv8R"
-  },
-  "require": {
-    "php": "^8.0",
-    "ext-json": "*",
-    "ext-pdo": "*",
-    "astrotomic/laravel-translatable": "^v11.16",
-    "cartalyst/tags": "^12.0 || ^13.0 || ^14.0 || ^15.0",
-    "doctrine/dbal": "^3.0 || ^4.0",
-    "guzzlehttp/guzzle": "^7.0",
-    "imgix/imgix-php": "^3.0",
-    "kalnoy/nestedset": "^6.0",
-    "laravel/framework": "^9.0 || ^10.0 || ^11.0 || ^12.0",
-    "laravel/socialite": "^5.3",
-    "laravel/ui": "^4.0",
-    "league/flysystem-aws-s3-v3": "^3.0",
-    "league/glide-symfony": "^1.0 || ^2.0",
-    "matthewbdaly/laravel-azure-storage": "^2.0",
-    "myclabs/php-enum": "^1.5",
-    "pragmarx/google2fa-qrcode": "^3.0",
-    "spatie/laravel-activitylog": "^4.0",
-    "spatie/laravel-analytics": "^4.0 || ^5.0",
-    "spatie/once": "^3.0"
-  },
-  "require-dev": {
-    "area17/phptorch": "dev-main",
-    "chillerlan/php-qrcode": "~4.0",
-    "friendsofphp/php-cs-fixer": "^3.0",
-    "larastan/larastan": "^2.9 | ^3.0",
-    "nette/php-generator": "^4.0.3",
-    "nunomaduro/collision": "^6.0 || ^7.0 || ^8.0",
-    "orchestra/testbench": "^7.8 || ^8.0 || ^9.0 || ^10.0",
-    "orchestra/testbench-dusk": "^7.8 || ^8.0 || ^9.0 || ^10.0",
-    "phpunit/php-invoker": "^3.1 || ^4.0 || ^5.0",
-    "phpunit/phpunit": "~9.0 || ~10.0 || ~11.0",
-    "rector/rector": "^0.19.2 || ^1.0 || ^2.0",
-    "spatie/invade": "^1.1",
-    "squizlabs/php_codesniffer": "*"
-  },
-  "autoload": {
-    "psr-4": {
-      "A17\\Twill\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "A17\\Twill\\Tests\\Unit\\": "tests/unit",
-      "A17\\Twill\\Tests\\Integration\\": "tests/integration",
-      "A17\\Twill\\Tests\\Browser\\": "tests/Browser",
-      "A17\\Docs\\": "docs/generator",
-      "App\\": "vendor/orchestra/testbench-dusk/laravel/app"
-    }
-  },
-  "scripts": {
-    "test:phpunit": "vendor/bin/phpunit",
-    "test:analyse": "php -d memory_limit=-1 vendor/bin/phpstan analyse",
-    "test:syntax": "vendor/bin/php-cs-fixer --dry-run fix src",
-    "test": [
-      "@test:syntax",
-      "@test:phpunit"
+    "name": "area17/twill",
+    "type": "library",
+    "license": "Apache-2.0",
+    "description": "Twill is an open source CMS toolkit for Laravel that helps developers rapidly create a custom admin console that is intuitive, powerful and flexible.",
+    "keywords": [
+        "A17",
+        "twill",
+        "laravel",
+        "cms"
     ],
-    "post-autoload-dump": [
-      "@php ./vendor/bin/testbench package:discover --ansi"
-    ]
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "A17\\Twill\\TwillServiceProvider"
-      ],
-      "aliases": {
-        "TwillCapsules": "A17\\Twill\\Facades\\TwillCapsules",
-        "TwillRoutes": "A17\\Twill\\Facades\\TwillRoutes",
-        "TwillBlocks": "A17\\Twill\\Facades\\TwillBlocks",
-        "TwillUtil": "A17\\Twill\\Facades\\TwillUtil",
-        "TwillAppSettings": "A17\\Twill\\Facades\\TwillAppSettings",
-        "TwillNavigation": "A17\\Twill\\Facades\\TwillNavigation",
-        "TwillPermissions": "A17\\Twill\\Facades\\TwillPermissions"
-      }
+    "homepage": "https://twillcms.com",
+    "authors": [
+        {
+            "name": "AREA 17",
+            "email": "hello@twill.io",
+            "homepage": "https://area17.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/area17/twill/issues/",
+        "docs": "https://twillcms.com/docs/",
+        "chat": "https://discord.gg/cnWk7EFv8R"
+    },
+    "require": {
+        "php": "^8.0",
+        "ext-json": "*",
+        "ext-pdo": "*",
+        "astrotomic/laravel-translatable": "^v11.16",
+        "cartalyst/tags": "^12.0 || ^13.0 || ^14.0 || ^15.0",
+        "doctrine/dbal": "^3.0 || ^4.0",
+        "guzzlehttp/guzzle": "^7.0",
+        "imgix/imgix-php": "^3.0 || ^4.1",
+        "kalnoy/nestedset": "^6.0",
+        "laravel/framework": "^9.0 || ^10.0 || ^11.0 || ^12.0 || ^13.0",
+        "laravel/socialite": "^5.3",
+        "laravel/ui": "^4.0",
+        "league/flysystem-aws-s3-v3": "^3.0",
+        "league/glide-symfony": "^1.0 || ^2.0",
+        "matthewbdaly/laravel-azure-storage": "^2.0",
+        "myclabs/php-enum": "^1.5",
+        "pragmarx/google2fa-qrcode": "^3.0",
+        "spatie/laravel-activitylog": "^4.0",
+        "spatie/laravel-analytics": "^4.0 || ^5.0",
+        "spatie/once": "^3.0"
+    },
+    "require-dev": {
+        "area17/phptorch": "dev-main",
+        "chillerlan/php-qrcode": "~4.0 || ^5.0",
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "larastan/larastan": "^2.9 | ^3.0 || dev-l13",
+        "nette/php-generator": "^4.0.3",
+        "nunomaduro/collision": "^6.0 || ^7.0 || ^8.0",
+        "orchestra/testbench": "^7.8 || ^8.0 || ^9.0 || ^10.0 || ^11.0",
+        "orchestra/testbench-dusk": "^7.8 || ^8.0 || ^9.0 || ^10.0",
+        "phpunit/php-invoker": "^3.1 || ^4.0 || ^5.0 || ^7.0",
+        "phpunit/phpunit": "~9.0 || ~10.0 || ~11.0 || ^12.5.12",
+        "rector/rector": "^0.19.2 || ^1.0 || ^2.0",
+        "spatie/invade": "^1.1 || ^2.1",
+        "squizlabs/php_codesniffer": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "A17\\Twill\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "A17\\Twill\\Tests\\Unit\\": "tests/unit",
+            "A17\\Twill\\Tests\\Integration\\": "tests/integration",
+            "A17\\Twill\\Tests\\Browser\\": "tests/Browser",
+            "A17\\Docs\\": "docs/generator",
+            "App\\": "vendor/orchestra/testbench-dusk/laravel/app"
+        }
+    },
+    "scripts": {
+        "test:phpunit": "vendor/bin/phpunit",
+        "test:analyse": "php -d memory_limit=-1 vendor/bin/phpstan analyse",
+        "test:syntax": "vendor/bin/php-cs-fixer --dry-run fix src",
+        "test": [
+            "@test:syntax",
+            "@test:phpunit"
+        ],
+        "post-autoload-dump": [
+            "@php ./vendor/bin/testbench package:discover --ansi"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "A17\\Twill\\TwillServiceProvider"
+            ],
+            "aliases": {
+                "TwillCapsules": "A17\\Twill\\Facades\\TwillCapsules",
+                "TwillRoutes": "A17\\Twill\\Facades\\TwillRoutes",
+                "TwillBlocks": "A17\\Twill\\Facades\\TwillBlocks",
+                "TwillUtil": "A17\\Twill\\Facades\\TwillUtil",
+                "TwillAppSettings": "A17\\Twill\\Facades\\TwillAppSettings",
+                "TwillNavigation": "A17\\Twill\\Facades\\TwillNavigation",
+                "TwillPermissions": "A17\\Twill\\Facades\\TwillPermissions"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "cweagans/composer-patches": true
+        }
     }
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "config": {
-    "sort-packages": true,
-    "allow-plugins": {
-      "cweagans/composer-patches": true
-    }
-  }
 }
