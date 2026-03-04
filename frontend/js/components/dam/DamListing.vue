@@ -103,6 +103,8 @@
   import a17Spinner from '@/components/Spinner.vue'
   import {replaceState} from "@/utils/pushState";
 
+  const SESSION_KEY = 'dam-listing-state'
+
   export default {
     name: 'A17DAMListing',
     components: {
@@ -267,6 +269,7 @@
       type: function() {
         this.clearMediaItems()
         this.gridLoaded = false
+        this.clearSessionState()
       },
       gridView(newVal) {
         localStorage.setItem('gridView', JSON.stringify(newVal))
@@ -279,6 +282,35 @@
       }
     },
     methods: {
+      saveSessionState() {
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+          scrollTop: this.$refs.list ? this.$refs.list.scrollTop : 0,
+          selectedIds: this.selectedMedias.map(m => m.id)
+        }))
+      },
+
+      restoreSessionState() {
+        const raw = sessionStorage.getItem(SESSION_KEY)
+        if (!raw) return
+
+        const { scrollTop, selectedIds } = JSON.parse(raw)
+
+        if (selectedIds && selectedIds.length) {
+          const toReselect = this.mediaItems.filter(m => selectedIds.includes(m.id))
+          if (toReselect.length) this.selectedMedias = toReselect
+        }
+
+        if (scrollTop && this.$refs.list) {
+          this.$nextTick(() => {
+            this.$refs.list.scrollTop = scrollTop
+          })
+        }
+      },
+
+      clearSessionState() {
+        sessionStorage.removeItem(SESSION_KEY)
+      },
+
       setCurrentMedia: function(direction) {
         const currentIndex = this.selectedMedias.length
           ? this.mediaItems.findIndex(media => media.id === this.selectedMedias[0].id)
@@ -545,6 +577,7 @@
             this.loading = false
             this.listenScrollPosition()
             this.gridLoaded = true
+            this.restoreSessionState()
 
             const url = new URL(window.location.href);
 
@@ -669,8 +702,13 @@
     },
     mounted() {
       this.getMediaQuery()
-
+      
       window.addEventListener('resize', this.getMediaQuery)
+      window.addEventListener('beforeunload', this.saveSessionState)
+    },
+    destroyed() {
+      window.removeEventListener('resize', this.getMediaQuery)
+      window.removeEventListener('beforeunload', this.saveSessionState)
     },
     created() {
       if (!this.gridLoaded) this.reloadGrid()
