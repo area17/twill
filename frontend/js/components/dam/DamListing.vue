@@ -285,7 +285,7 @@
       saveSessionState() {
         sessionStorage.setItem(SESSION_KEY, JSON.stringify({
           scrollTop: this.$refs.list ? this.$refs.list.scrollTop : 0,
-          selectedIds: this.selectedMedias.map(m => m.id)
+          selectedIds: this.gridView ? this.selectedMedias.map(m => m.id) : null
         }))
       },
 
@@ -689,6 +689,7 @@
       },
       updateLayout: function() {
         this.gridView = !this.gridView
+        this.saveSessionState()
       },
       getMediaQuery() {
         if (typeof window !== 'undefined') {
