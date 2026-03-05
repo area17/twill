@@ -115,6 +115,14 @@
     @include breakpoint('medium+') {
       height: 100vh;
       padding-top: 0;
+      flex-shrink: 1;
+      width: calc(100vw - rem-calc(76));
+    }
+  }
+
+  body:has(.dam--nav-open) .dam__content {
+    @include breakpoint('xlarge') {
+      width: calc(100vw - rem-calc(312));
     }
   }
 

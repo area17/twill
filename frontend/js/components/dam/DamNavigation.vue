@@ -17,6 +17,7 @@
       ></a17-button>
     </div>
     <div
+      v-if="isOpen !== null"
       class="dam-nav__wrapper"
       :class="[{ 'dam-nav__wrapper--open': isOpen }]"
       @click="onClickOutside"
@@ -218,7 +219,7 @@
     data() {
       return {
         expandedSections: [],
-        isOpen: true,
+        isOpen: null,
         isScrolledToBottom: false,
         searchValue: this.initialSearchValue
       }
@@ -283,7 +284,9 @@
         sessionStorage.setItem('sideNavOpen', 'true')
         this.isOpen = true
       } else {
-        this.isOpen = JSON.parse(sideNavOpen)
+        this.$nextTick(() => {
+          this.isOpen = JSON.parse(sideNavOpen)
+        })
       }
     }
   }
