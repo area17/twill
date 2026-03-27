@@ -30,10 +30,33 @@ return [
         'source-title' => 'Доступные варианты',
     ],
     'dashboard' => [
+        'activities' => [
+            'created' => 'Создано',
+            'updated' => 'Обновлено',
+            'unpublished' => 'Снято с публикации',
+            'published' => 'Опубликовано',
+            'featured' => 'Featured',
+            'unfeatured' => 'Unfeatured',
+            'restored' => 'Восстановлено',
+            'deleted' => 'Удалено',
+            'login' => 'Login action',
+            'logout' => 'Logout action',
+            'duplicated' => 'Скопировано',
+        ],
+        'activity-row' => [
+            'edit' => 'Редактировать',
+            'view-permalink' => 'Показать ссылку',
+            'by' => '. Редактор - ',
+        ],
         'all-activity' => 'Вся активность',
         'create-new' => 'Создать',
         'empty-message' => 'У вас еще нет активности.',
         'my-activity' => 'Моя активность',
+        'search' => [
+            'loading' => 'Поиск…',
+            'no-result' => 'Ничего не найдено',
+            'last-edit' => 'Последнее редактирование',
+        ],
         'my-drafts' => 'Мои черновики',
         'search-placeholder' => 'Поиск всего...',
         'statitics' => 'Статистика',
@@ -44,8 +67,10 @@ return [
         'title' => 'Отправить в корзину',
     ],
     'editor' => [
-        'cancel' => 'Отмена',
+        'cancel' => 'Закрыть',
         'delete' => 'Удалить',
+        'done' => 'Готово',
+        'title' => 'Редактор контента',
     ],
     'emails' => [
         'all-rights-reserved' => 'Все права защищены.',
@@ -56,10 +81,11 @@ return [
     'fields' => [
         'block-editor' => [
             'add-content' => 'Добавить содержимое',
-            'collapse-all' => 'Раскрыть все',
+            'clone-block' => 'Клонировать',
+            'collapse-all' => 'Свернуть всё',
             'create-another' => 'Создать другой',
             'delete' => 'Удалить',
-            'expand-all' => 'Скрыть',
+            'expand-all' => 'Раскрыть всё',
             'loading' => 'Загрузка',
             'open-in-editor' => 'Открыть в редакторе',
             'preview' => 'Предварительный просмотр',
@@ -82,7 +108,7 @@ return [
             'btn-label' => 'Прикрепить изображение',
             'crop' => 'Кадрировать',
             'crop-edit' => 'Изменить кадрирование картинки',
-            'crop-list' => 'кадрировать',
+            'crop-list' => 'кадрирование',
             'crop-save' => 'Обновить',
             'delete' => 'Удалить',
             'download' => 'Скачать',
@@ -114,7 +140,23 @@ return [
     ],
     'listing' => [
         'add-new-button' => 'Добавить',
+        'bulk-actions' => 'Выберите действие',
         'bulk-clear' => 'Очистить',
+        'bulk-delete' => [
+            'success' => 'Выбранные сущности успешно удалены',
+        ],
+        'bulk-force-delete' => [
+            'success' => 'Выбранные записи удалены навсегда',
+        ],
+        'bulk-publish' => [
+            'published' => 'Успешно опубликовано',
+            'unpublished' => 'Успешно снято с публикации',
+        ],
+        'bulk-restore' => [
+            'success' => 'Выбранные сущности успешно восстановлены',
+        ],
+        'bulk-selected-item' => 'выбрано',
+        'bulk-selected-items' => 'выбрано',
         'columns' => [
             'name' => 'Название',
             'published' => 'Опубликовано',
@@ -153,10 +195,30 @@ return [
             'published' => 'Опубликованные',
             'trash' => 'Удаленные',
         ],
+        'filters' => [
+            'all-label' => 'Все',
+        ],
         'languages' => 'Языки',
         'listing-empty-message' => 'Ничего нет.',
         'paginate' => [
             'rows-per-page' => 'Строк на странице:',
+        ],
+        'delete' => [
+            'success' => 'Успешно удалено',
+        ],
+        'force-delete' => [
+            'success' => 'Запись удалена навсегда',
+        ],
+        'publish' => [
+            'published' => 'Успешно опубликовано',
+            'unpublished' => 'Успешно снято с публикации',
+        ],
+        'reorder' => [
+            'success' => 'Порядок изменён',
+            'error' => 'Не удалось изменить порядок',
+        ],
+        'restore' => [
+            'success' => 'Успешно восстановлено',
         ],
     ],
     'main' => [
@@ -167,20 +229,36 @@ return [
         'update' => 'Обновить',
     ],
     'media-library' => [
+        'dialogs' => [
+            'delete' => [
+                'delete-media-title' => 'Вы уверены что хотите удалить этот объект?',
+                'delete-media-desc' => '<br>Объект будет удалён навсегда',
+                'delete-media-confirm' => 'Удалить',
+            ],
+        ],
         'files' => 'Файлы',
         'filter-select-label' => 'Фильтровать по тегу',
         'images' => 'Изображения',
         'sidebar' => [
             'alt-text' => 'Alt',
             'clear' => 'Снять выделение',
-            'dimensions' => 'Уровни',
+            'dimensions' => 'Размеры',
             'empty-text' => 'Файлы не выделены',
             'files-selected' => 'файлов выделено',
             'tags' => 'Теги',
         ],
         'title' => 'Медиа библиотека',
+        'types' => [
+            'single' => [
+                'video' => 'видео',
+            ],
+            'multiple' => [
+                'video' => 'видео',
+            ],
+        ],
         'update' => 'Обновить',
         'unused-filter-label' => 'Показать только неиспользуемые',
+        'video' => 'Видео',
     ],
     'modal' => [
         'create' => [
@@ -202,7 +280,7 @@ return [
         'media-library' => 'Медиа библиотека',
         'settings' => 'Настройки',
         'close-menu' => 'Закрыть меню',
-        'profile' => 'Profile',
+        'profile' => 'Профиль',
     ],
     'notifications' => [
         'reset' => [
@@ -220,6 +298,7 @@ return [
     'previewer' => [
         'compare-view' => 'Сравнить',
         'current-revision' => 'Текущий',
+        'drag-and-drop' => 'Перетаскивайте сюда блоки из панели слева',
         'editor' => 'Редактор',
         'last-edit' => 'Последняя редакция',
         'restore' => 'Восстановить',
@@ -237,6 +316,7 @@ return [
         'publish' => 'Опубликовать',
         'publish-close' => 'Опубликовать и закрыть',
         'publish-new' => 'Опубликовать и создать еще',
+        'revisions' => 'Предыдущие версии',
         'save' => 'Сохранить как черновик',
         'save-close' => 'Сохранить как черновик и закрыть',
         'save-new' => 'Сохранить как черновик и создать еще',
@@ -271,6 +351,7 @@ return [
         'language-placeholder' => 'Выберите язык',
         'name' => 'Имя',
         'otp' => 'Одноразовый пароль',
+        'pending' => 'Ожидают активации',
         'profile-image' => 'Изображение профиля',
         'role' => 'Роль',
         'role-placeholder' => 'Выберите роль',
@@ -284,5 +365,20 @@ return [
         'update-disabled-user-and-create-new' => 'Обновить отключенного пользователя и создать еще',
         'user-image' => 'Изображение',
         'users' => 'Пользователи',
+    ],
+    'wysiwyg' => [
+        'link_window' => [
+            'open_in_new_window' => 'Открыть в новом окне',
+            'text' => 'Текст',
+            'title' => 'Редактировать ссылку',
+            'link' => 'Ссылка',
+        ],
+    ],
+    'permissions' => [
+        'roles' => [
+            'title' => 'Роли',
+            'published' => 'Роль опубликована',
+            'draft' => 'Черновик',
+        ],
     ],
 ];
