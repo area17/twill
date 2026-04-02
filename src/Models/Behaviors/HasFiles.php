@@ -32,7 +32,7 @@ trait HasFiles
             return $file->pivot->role === $role && $file->pivot->locale === $locale;
         });
 
-        if (!$file && config('translatable.use_property_fallback', false)) {
+        if (! $file && config('translatable.use_property_fallback', false)) {
             $file = $this->files->first(function ($file) use ($role) {
                 return $file->pivot->role === $role && $file->pivot->locale === config('translatable.fallback_locale');
             });
@@ -51,7 +51,6 @@ trait HasFiles
      */
     public function file($role, $locale = null, $file = null)
     {
-
         if ($file === null) {
             $file = $this->findFile($role, $locale);
         }

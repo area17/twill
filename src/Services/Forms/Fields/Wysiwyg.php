@@ -3,10 +3,10 @@
 namespace A17\Twill\Services\Forms\Fields;
 
 use A17\Twill\Services\Forms\Fields\Helpers\TiptapWrapper;
+use A17\Twill\Services\Forms\Fields\Traits\HasDirection;
 use A17\Twill\Services\Forms\Fields\Traits\HasMaxlength;
 use A17\Twill\Services\Forms\Fields\Traits\HasOnChange;
 use A17\Twill\Services\Forms\Fields\Traits\HasPlaceholder;
-use A17\Twill\Services\Forms\Fields\Traits\HasDirection;
 use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
 class Wysiwyg extends BaseFormField
@@ -28,7 +28,7 @@ class Wysiwyg extends BaseFormField
         'underline',
         'strike',
         'blockquote',
-        "code-block",
+        'code-block',
         'ordered',
         'bullet',
         'hr',
@@ -108,7 +108,7 @@ class Wysiwyg extends BaseFormField
     }
 
     /**
-     * The type of editor to use, defaults to quill, options are: tiptap
+     * The type of editor to use, defaults to quill, options are: tiptap.
      */
     public function type(string $type): static
     {
@@ -176,7 +176,7 @@ class Wysiwyg extends BaseFormField
                 $wrapperList[] = $wrapper->toArray();
             }
             $base[] = [
-                'wrappers' => $wrapperList
+                'wrappers' => $wrapperList,
             ];
         }
 
@@ -190,14 +190,14 @@ class Wysiwyg extends BaseFormField
     {
         if (count($modules) === 1 && is_string(current($modules))) {
             $this->browserModules[] = [
-                'name' => getModuleNameByModel(array_pop($modules))
+                'name' => getModuleNameByModel(array_pop($modules)),
             ];
         } else {
             foreach ($modules as $module) {
                 if (isset($module['name'])) {
                     $this->browserModules[] = [
                         'name' => getModuleNameByModel($module['name']),
-                        'label' => $module['label']
+                        'label' => $module['label'],
                     ];
                 } else {
                     $this->browserModules[] = [
@@ -213,11 +213,12 @@ class Wysiwyg extends BaseFormField
     /**
      * Assosiative array ['class' => 'Label'] of classes
      * than will be available to editor in the form of checkboxes
-     * when creating new link in modal
+     * when creating new link in modal.
      */
     public function classList(array $list): static
     {
-        $this->classList = array_map(fn($value, $label) => ['value' => $value, 'label' => $label, 'selected' => false], array_keys($list), $list);
+        $this->classList = array_map(fn ($value, $label) => ['value' => $value, 'label' => $label, 'selected' => false], array_keys($list), $list);
+
         return $this;
     }
 }

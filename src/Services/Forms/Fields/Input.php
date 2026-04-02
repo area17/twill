@@ -2,12 +2,12 @@
 
 namespace A17\Twill\Services\Forms\Fields;
 
+use A17\Twill\Services\Forms\Fields\Traits\HasDirection;
 use A17\Twill\Services\Forms\Fields\Traits\HasMax;
 use A17\Twill\Services\Forms\Fields\Traits\HasMaxlength;
 use A17\Twill\Services\Forms\Fields\Traits\HasMin;
 use A17\Twill\Services\Forms\Fields\Traits\HasOnChange;
 use A17\Twill\Services\Forms\Fields\Traits\HasPlaceholder;
-use A17\Twill\Services\Forms\Fields\Traits\HasDirection;
 use A17\Twill\Services\Forms\Fields\Traits\HasReadOnly;
 use A17\Twill\Services\Forms\Fields\Traits\IsTranslatable;
 
@@ -90,7 +90,7 @@ class Input extends BaseFormField
 
     /**
      * Apply a mask to field based on alpinjs mask.
-     * This only works with Input::TYPE_TEXT
+     * This only works with Input::TYPE_TEXT.
      *
      * @see https://alpinejs.dev/plugins/mask
      */

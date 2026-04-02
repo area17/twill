@@ -32,7 +32,7 @@ trait HandleTranslations
                     return $lang['value'] === $locale;
                 }));
 
-                $shouldPublishFirstLanguage = ($index === 0 && !$atLeastOneLanguageIsPublished);
+                $shouldPublishFirstLanguage = ($index === 0 && ! $atLeastOneLanguageIsPublished);
 
                 $fallBack = $fields[$locale]['active'] ?? false;
 

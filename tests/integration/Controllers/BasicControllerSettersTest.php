@@ -8,12 +8,11 @@ use App\Http\Controllers\Twill\CategoryController;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class BasicControllerSettersTest extends ModulesTestBase
 {
-    /**
-     * @dataProvider simplePropertyOptions
-     */
+    #[DataProvider('simplePropertyOptions')]
     public function testIndexDataProperties(
         string $indexOption,
         string $method,

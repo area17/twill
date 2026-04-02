@@ -29,7 +29,7 @@ class Map extends BaseFormField
      */
     public function hideMap(bool $hideMap = true): static
     {
-        $this->showMap = !$hideMap;
+        $this->showMap = ! $hideMap;
 
         return $this;
     }

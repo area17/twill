@@ -2,12 +2,12 @@
 
 namespace A17\Twill\Jobs;
 
+use A17\Twill\Models\Model;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\DB;
-use A17\Twill\Models\Model;
 
 class ReorderNestedModuleItems implements ShouldQueue
 {

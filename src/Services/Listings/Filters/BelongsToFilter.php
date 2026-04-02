@@ -13,8 +13,10 @@ use Illuminate\Support\Collection;
 class BelongsToFilter extends BasicFilter
 {
     protected string $field;
-    /** @var \Illuminate\Database\Eloquent\Model $model */
+
+    /** @var \Illuminate\Database\Eloquent\Model */
     protected ?string $model = null;
+
     private string $valueLabelField = 'title';
 
     public function applyFilter(Builder $builder): Builder
@@ -84,7 +86,7 @@ class BelongsToFilter extends BasicFilter
 
     public function getModel(): string
     {
-        if (!$this->model) {
+        if (! $this->model) {
             throw new MissingModelForFilterException('Model is not set for BelongsToFilter ' . $this->field);
         }
 

@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       - name: Checking for prtodo's.
         run: |
@@ -65,14 +65,16 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        php: [8.3, 8.2, 8.1]
-        laravel: [10.*, 11.*]
+        php: [8.5, 8.4, 8.3, 8.2]
+        laravel: [10.*, 11.*, 12.*]
         dbal: [3.*, 4.*]
         exclude:
           - laravel: 10.*
             dbal: 4.*
+          - laravel: 10.*
+            php: 8.5
           - laravel: 11.*
-            php: 8.1
+            php: 8.5
           - laravel: 11.*
             dbal: 3.*
         include:
@@ -80,15 +82,17 @@ jobs:
             testbench: 8.*
           - laravel: 11.*
             testbench: 9.*
+          - laravel: 12.*
+            testbench: 10.*
 
     steps:
       - name: Set timezone?
-        uses: szenius/set-timezone@v1.0
+        uses: szenius/set-timezone@v2.0
         with:
-          timezoneLinux: "Europe/Paris"
+          timezoneLinux: 'Europe/Paris'
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -107,8 +111,8 @@ jobs:
       - name: Get Composer Cache Directory
         id: composer-cache
         run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - uses: actions/cache@v4
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v5
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ matrix.os }}-${{ matrix.laravel }}-${{ matrix.php }}-${{ matrix.dbal }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -121,9 +125,9 @@ jobs:
           composer install --prefer-dist --no-interaction --no-plugins
 
       - name: Setup Node.js
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v6
         with:
-          node-version: '20.x'
+          node-version: '24.x'
 
       - name: Build npm dependencies.
         run: |
@@ -135,7 +139,7 @@ jobs:
           CACHE_STORE: array
 
       - name: Upgrade Chrome
-        uses: browser-actions/setup-chrome@latest
+        uses: browser-actions/setup-chrome@v2
 
       - name: Upgrade Chrome Driver
         run: ./vendor/bin/testbench dusk:chrome-driver --detect
@@ -148,9 +152,11 @@ jobs:
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
 
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v6
         with:
           files: .github/clover.xml
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Replace asterisks in Laravel
         run: echo "REPLACED_LARAVEL=${MATRIX_LARAVEL//\*/_}" >> $GITHUB_ENV
@@ -164,7 +170,7 @@ jobs:
           MATRIX_DBAL: ${{ matrix.dbal }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: screenshots-${{ matrix.os }}-${{ matrix.php }}-${{ env.REPLACED_LARAVEL }}-${{ env.REPLACED_DBAL }}
           path: |

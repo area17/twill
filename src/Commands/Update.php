@@ -10,6 +10,7 @@ class Update extends Command
     use HandlesPotentialBreakingChangesWarnings;
 
     protected $signature = 'twill:update {--fromBuild} {--migrate}';
+
     protected $description = 'Publish new updated Twill assets and optionally run database migrations';
 
     public function __construct(public Filesystem $files)

@@ -30,7 +30,7 @@ abstract class TwillPackageServiceProvider extends ServiceProvider
             'Twill' . DIRECTORY_SEPARATOR .
             'Capsules' . DIRECTORY_SEPARATOR . $name;
 
-        \A17\Twill\Facades\TwillCapsules::registerPackageCapsule($name, $namespace, $dir);
+        Facades\TwillCapsules::registerPackageCapsule($name, $namespace, $dir);
     }
 
     protected function registerCapsules(string $directory): void
@@ -99,12 +99,12 @@ abstract class TwillPackageServiceProvider extends ServiceProvider
      *   ]);
      * ```
      */
-    protected function registerBlocksDirectory($path, string $renderNamespace = null)
+    protected function registerBlocksDirectory($path, ?string $renderNamespace = null)
     {
         TwillBlocks::registerPackageBlocksDirectory($path, $renderNamespace);
     }
 
-    protected function registerRepeatersDirectory($path, string $renderNamespace = null)
+    protected function registerRepeatersDirectory($path, ?string $renderNamespace = null)
     {
         TwillBlocks::registerPackageRepeatersDirectory($path, $renderNamespace);
     }

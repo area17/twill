@@ -97,12 +97,12 @@ class TwillRoutes
         if (isset($options['only'])) {
             $customRoutes = array_intersect(
                 $defaults,
-                (array)$options['only']
+                (array) $options['only']
             );
         } elseif (isset($options['except'])) {
             $customRoutes = array_diff(
                 $defaults,
-                (array)$options['except']
+                (array) $options['except']
             );
         }
 
@@ -325,7 +325,7 @@ class TwillRoutes
                 $capsule->getControllersNamespace(),
                 $routesFile,
                 // When it is not a package capsule we can register it immediately.
-                !$capsule->packageCapsule
+                ! $capsule->packageCapsule
             );
         }
     }
@@ -366,8 +366,8 @@ class TwillRoutes
 
     public function moduleShowWithPreview(
         string $moduleName,
-        string $routePrefix = null,
-        string $controllerName = null
+        ?string $routePrefix = null,
+        ?string $controllerName = null
     ): void {
         if ($routePrefix === null) {
             $routePrefix = $moduleName;
@@ -398,7 +398,6 @@ class TwillRoutes
             ->middleware(['web', 'twill_auth:twill_users', 'can:list']);
     }
 
-
     public function getAuthRedirectPath(): string
     {
         return config('twill.auth_login_redirect_path')
@@ -412,7 +411,7 @@ class TwillRoutes
 
         $matchesDomain = config('twill.support_subdomain_admin_routing') ?
                 Str::startsWith($requestHost, config('twill.admin_app_subdomain', 'admin') . '.') && Str::endsWith($requestHost, '.' . $adminAppUrl)
-                : !config('twill.admin_app_strict') || $requestHost === $adminAppUrl;
+                : ! config('twill.admin_app_strict') || $requestHost === $adminAppUrl;
 
         $matchesPath = empty(config('twill.admin_app_path')) || request()->is(config('twill.admin_app_path', '') . '/*');
 

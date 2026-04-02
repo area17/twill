@@ -17,6 +17,7 @@ class Select extends BaseFormField
     use Unpackable;
 
     protected bool $searchable = false;
+
     protected bool $clearable = false;
 
     public static function make(): static

@@ -30,7 +30,7 @@ class Group extends BaseModel implements TwillModelContract
 
     protected $casts = [
         'subdomains_access' => 'array',
-        'deleted_at' => 'datetime'
+        'deleted_at' => 'datetime',
     ];
 
     /**
@@ -99,7 +99,7 @@ class Group extends BaseModel implements TwillModelContract
      */
     public function getCanEditAttribute(): bool
     {
-        return !$this->isEveryoneGroup();
+        return ! $this->isEveryoneGroup();
     }
 
     /**
@@ -107,7 +107,7 @@ class Group extends BaseModel implements TwillModelContract
      */
     public function getCanPublishAttribute(): bool
     {
-        return !$this->isEveryoneGroup();
+        return ! $this->isEveryoneGroup();
     }
 
     /**

@@ -58,11 +58,11 @@ abstract class TableColumn
     public function field(string $field): static
     {
         $this->field = $field;
-        if (!$this->key) {
+        if (! $this->key) {
             $this->key = $field;
         }
 
-        if (!$this->title) {
+        if (! $this->title) {
             $this->title = Str::headline($field);
         }
 
@@ -80,6 +80,7 @@ abstract class TableColumn
     public function title(?string $title): static
     {
         $this->title = $title;
+
         return $this;
     }
 
@@ -89,6 +90,7 @@ abstract class TableColumn
     public function sortable(bool $sortable = true): static
     {
         $this->sortable = $sortable;
+
         return $this;
     }
 
@@ -99,6 +101,7 @@ abstract class TableColumn
     {
         $this->defaultSort = $defaultSort;
         $this->defaultSortDirection = $direction;
+
         return $this;
     }
 
@@ -109,9 +112,10 @@ abstract class TableColumn
 
     public function getDefaultSortDirection(): string
     {
-        if (!in_array($this->defaultSortDirection, ['ASC', 'DESC', 'asc', 'desc'], true)) {
+        if (! in_array($this->defaultSortDirection, ['ASC', 'DESC', 'asc', 'desc'], true)) {
             throw new \Exception('Sort can only be ASC or DESC');
         }
+
         return $this->defaultSortDirection;
     }
 
@@ -121,6 +125,7 @@ abstract class TableColumn
     public function optional(bool $optional = true): static
     {
         $this->optional = $optional;
+
         return $this;
     }
 
@@ -130,6 +135,7 @@ abstract class TableColumn
     public function hide(bool $visible = false): static
     {
         $this->visible = $visible;
+
         return $this;
     }
 
@@ -139,6 +145,7 @@ abstract class TableColumn
     public function renderHtml(bool $html = true): static
     {
         $this->html = $html;
+
         return $this;
     }
 
@@ -148,6 +155,7 @@ abstract class TableColumn
     public function linkCell(Closure|string $link): static
     {
         $this->link = $link;
+
         return $this;
     }
 
@@ -169,6 +177,7 @@ abstract class TableColumn
     public function sortKey(?string $sortKey): static
     {
         $this->sortKey = $sortKey;
+
         return $this;
     }
 
@@ -185,13 +194,14 @@ abstract class TableColumn
      * Please note that when you are having a belongsToMany you have to carefully write your
      * join because otherwise you may end up with duplicate rows.
      */
-    public function order(\Closure $sortFunction): static
+    public function order(Closure $sortFunction): static
     {
         $this->sortFunction = $sortFunction;
+
         return $this;
     }
 
-    public function getOrderFunction(): ?\Closure
+    public function getOrderFunction(): ?Closure
     {
         return $this->sortFunction;
     }
@@ -204,6 +214,7 @@ abstract class TableColumn
     public function customRender(Closure $renderFunction): static
     {
         $this->render = $renderFunction;
+
         return $this;
     }
 
@@ -211,7 +222,7 @@ abstract class TableColumn
     {
         $visible = $this->visible;
 
-        if (!empty($visibleColumns) && !in_array($this->key, $visibleColumns, true)) {
+        if (! empty($visibleColumns) && ! in_array($this->key, $visibleColumns, true)) {
             $visible = false;
         }
 

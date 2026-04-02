@@ -40,7 +40,7 @@ class Seo
      */
     public function setTitle($title)
     {
-        if (!empty($title)) {
+        if (! empty($title)) {
             $this->title = $title;
         }
     }
@@ -51,7 +51,7 @@ class Seo
      */
     public function setDescription($description)
     {
-        if (!empty($description)) {
+        if (! empty($description)) {
             $this->description = $description;
         }
     }

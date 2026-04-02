@@ -34,11 +34,11 @@ class Files extends BaseFormField
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function label(string $label): static
     {
-        if (!$this->itemLabel) {
+        if (! $this->itemLabel) {
             $this->itemLabel = strtolower($label);
         }
 

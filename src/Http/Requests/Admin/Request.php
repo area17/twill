@@ -106,7 +106,7 @@ abstract class Request extends FormRequest
                 });
 
                 // @TODO: Can be replaced with doesntContain in twill 3.x
-                if ($hasRequiredRule && !in_array($fieldRules, $fieldRules->toArray())) {
+                if ($hasRequiredRule && ! in_array($fieldRules, $fieldRules->toArray())) {
                     $fieldRules->add('nullable');
                 }
             }

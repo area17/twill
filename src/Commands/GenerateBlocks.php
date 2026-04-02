@@ -62,7 +62,7 @@ class GenerateBlocks extends Command
      */
     public function handle()
     {
-        if (!$this->filesystem->exists($path = resource_path('views/twill/blocks'))) {
+        if (! $this->filesystem->exists($path = resource_path('views/twill/blocks'))) {
             $this->error(self::NO_BLOCKS_DEFINED);
 
             return;
