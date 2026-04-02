@@ -17,6 +17,7 @@ public/
 tests/coverage
 tests/storage
 .phpunit.result.cache
+.phpunit.cache/
 .php-cs-fixer.cache
 .env.local
 .env.*.local
