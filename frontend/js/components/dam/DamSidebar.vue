@@ -157,18 +157,17 @@
 
           <a17-buttonbar
             class="dam-sidebar__buttonbar"
-            :class="{ 'dam-sidebar__buttonbar--hidden': hasMultipleMedias }"
             v-if="hasMedia"
           >
             <!-- Actions -->
-            <a v-if="hasEditPermissions"
+            <a v-if="hasSingleMedia && hasEditPermissions"
               :href="firstMedia.editUrl"
               :aria-label="$trans('dam.edit', 'Edit')"
             >
               <span v-svg symbol="edit" aria-hidden="true"></span>
             </a>
             <a
-              v-if="isImage && hasPreview "
+              v-if="hasSingleMedia && isImage && hasPreview "
               :href="firstMedia.original"
               :data-pswp-width="firstMedia.width"
               :data-pswp-height="firstMedia.height"
@@ -184,6 +183,9 @@
             <a v-if="hasSingleMedia" :href="firstMedia.original" download
               ><span v-svg symbol="download"></span
             ></a>
+            <button v-if="allowDelete && authorized" type="button" @click="deleteSelectedMediasValidation">
+              <span v-svg symbol="trash"></span>
+            </button>
           </a17-buttonbar>
         </div>
 
@@ -691,15 +693,7 @@
         return this.mediasIdsToDelete.join(',')
       },
       allowDelete: function() {
-        return (
-          this.medias.every(media => {
-            return media.deleteUrl
-          }) ||
-          (this.hasMultipleMedias &&
-            !this.medias.every(media => {
-              return !media.deleteUrl
-            }))
-        )
+        return this.medias.length > 0 && this.medias.every(media => media.deleteUrl)
       },
       warningDeleteMessage: function() {
         if (this.allowDelete) {
