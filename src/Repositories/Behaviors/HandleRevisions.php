@@ -7,6 +7,7 @@ use A17\Twill\Jobs\CleanupRevisions;
 use A17\Twill\Models\Behaviors\HasRelated;
 use A17\Twill\Models\Contracts\TwillModelContract;
 use A17\Twill\Models\RelatedItem;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -116,6 +117,17 @@ trait HandleRevisions
         string $positionAttribute = 'position',
         null|TwillModelContract|string $model = null
     ): void {
+        if (method_exists($object, $relationship) && $object->$relationship() instanceof BelongsTo) {
+            $fieldsHasElements = isset($fields['browsers'][$relationship]) && ! empty($fields['browsers'][$relationship]);
+            $relatedElements = $fieldsHasElements ? $fields['browsers'][$relationship] : [];
+
+            $relationRepository = $this->getModelRepository($relationship, $model);
+            $relatedItem = ! empty($relatedElements) ? $relationRepository->getById($relatedElements[0]['id']) : null;
+            $object->setRelation($relationship, $relatedItem);
+
+            return;
+        }
+
         $this->hydrateOrderedBelongsToMany($object, $fields, $relationship, $positionAttribute, $model);
     }
 

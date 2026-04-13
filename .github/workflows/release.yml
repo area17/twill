@@ -14,12 +14,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
         with:
           ref: 3.x
-      
+
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
           node-version: '20'
           cache: 'npm'
@@ -40,15 +40,15 @@ jobs:
         id: bump_version
         run: |
           npm version ${{ github.event.inputs.version_bump_type }} --no-git-tag-version
-          echo "::set-output name=new_version::$(node -p "require('./package.json').version")"
-      
+          echo "new_version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
       - name: Update version in PHP file
         run: |
           NEW_VERSION="${{ steps.bump_version.outputs.new_version }}"
           sed -i "s/\(public const VERSION = '\)[^']*\(';\)/\1${NEW_VERSION}\2/" src/TwillServiceProvider.php
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v5
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: |

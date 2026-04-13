@@ -78,9 +78,24 @@ For this example, nothing else needs to be customized in this file.
 ## Configure Middleware
 
 To enable the various localization features such as route translations, language detection and redirect, register the
-package's middleware:
+package's middleware.
 
-`app/Http/Kernel.php`
+If you are using Laravel 11+, you may register them in the `bootstrap/app.php` file, using `withMiddleware`:
+```php
+    return Application::configure(basePath: dirname(__DIR__))
+        // Other application configurations
+        ->withMiddleware(function (Middleware $middleware) {
+            $middleware->alias([
+                /**** OTHER MIDDLEWARE ALIASES ****/
+                'localize' => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRoutes::class,
+                'localizationRedirect' => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter::class,
+                'localeSessionRedirect' => \Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect::class,
+                'localeCookieRedirect' => \Mcamara\LaravelLocalization\Middleware\LocaleCookieRedirect::class,
+                'localeViewPath' => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath::class,
+            ]);
+        })
+```
+For older Laravel versions, register the package's middleware in the `app/Http/Kernel.php` file.
 
 ```php
     protected $routeMiddleware = [
@@ -103,6 +118,8 @@ We'll create a basic index page to list all the news articles. Let's start with 
 
 ```php
 use App\Models\Article;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use Illuminate\Support\Facades\Route;
 
 Route::group([
     'prefix' => LaravelLocalization::setLocale(),
@@ -180,7 +197,7 @@ Add the `/news/article-slug` route to the translated routes group defined earlie
 
 ```php
 use App\Models\Article;
-use Illuminate\Support\Facades\Route;
+use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Illuminate\Support\Facades\Route;
 
 Route::group([
