@@ -94,7 +94,7 @@ class DuskServiceProvider extends ServiceProvider
 
             $this->press('Create');
 
-            $this->waitForReload();
+            $this->waitFor('.fieldset__content');
         });
 
         Browser::macro('assertVselectHasOptions', function (string $wrapperClass, array $optionLabels) {
@@ -166,11 +166,16 @@ class DuskServiceProvider extends ServiceProvider
                 $mediaField->press('Attach image');
                 $mediaField->elsewhere('.medialibrary', function (Browser $mediaManager) use ($imagePath) {
                     $mediaManager->attach('.uploader__dropzone input', $imagePath);
-                    $mediaManager->pause(150);
-                    $mediaManager->waitFor('.mediagrid__item');
-                    $mediaManager->click('.mediagrid__item:nth-of-type(1)');
-                    $mediaManager->waitFor('.medialibrary__footer');
+
+                    $mediaManager->waitUsing(10, 100, function () use ($mediaManager) {
+                        return $mediaManager->element('.mediagrid__button:not(.s--loading)') !== null;
+                    }, 'Uploaded media item did not become selectable.');
+
+                    $mediaManager->click('.mediagrid__button:not(.s--loading)');
+
+                    $mediaManager->waitFor('.medialibrary__footer', 10);
                     $mediaManager->press('Insert image');
+                    $mediaManager->waitUntilMissing('.medialibrary', 10);
                 });
             });
         });
