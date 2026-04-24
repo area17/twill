@@ -5,14 +5,14 @@ namespace A17\Twill\Repositories\Behaviors;
 use A17\Twill\Enums\PermissionLevel;
 use A17\Twill\Facades\TwillPermissions;
 use A17\Twill\Models\Contracts\TwillModelContract;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Session;
 use A17\Twill\Models\Permission;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
 
 trait HandlePermissions
 {
     /**
-     * Retrieve user-item permissions fields
+     * Retrieve user-item permissions fields.
      *
      * @param TwillModelContract $object
      * @param array $fields
@@ -22,7 +22,7 @@ trait HandlePermissions
     {
         $moduleName = getModuleNameByModel($object);
 
-        if (!$this->shouldProcessPermissions($moduleName)) {
+        if (! $this->shouldProcessPermissions($moduleName)) {
             return $fields;
         }
 
@@ -83,7 +83,7 @@ trait HandlePermissions
 
         foreach ($permissionNames as $name) {
             if (isset($itemScopes[$name])) {
-                ++$itemScopes[$name];
+                $itemScopes[$name]++;
             }
         }
 
@@ -97,7 +97,7 @@ trait HandlePermissions
     }
 
     /**
-     * Function executed after save on module form
+     * Function executed after save on module form.
      *
      * @param Model $object
      * @param array $fields
@@ -106,14 +106,14 @@ trait HandlePermissions
     {
         $moduleName = getModuleNameByModel($object);
 
-        if (!$this->shouldProcessPermissions($moduleName)) {
+        if (! $this->shouldProcessPermissions($moduleName)) {
             return;
         }
 
         $oldItemPermissions = $this->recallPermissionFields($moduleName, $object);
 
         foreach ($fields as $key => $value) {
-            if (!Str::endsWith($key, '_permission')) {
+            if (! Str::endsWith($key, '_permission')) {
                 continue;
             }
 

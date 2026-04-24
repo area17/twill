@@ -37,7 +37,7 @@ trait HandlesStubs
             $start = "{$delimiters[0]}{$key}{$delimiters[1]}";
             $end = "{$delimiters[0]}\/{$key}{$delimiters[1]}";
 
-            if ((bool)$value) {
+            if ((bool) $value) {
                 // replace delimiters only
                 $stub = preg_replace("/$start/", '', $stub);
                 $stub = preg_replace("/$end/", '', $stub);

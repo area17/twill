@@ -30,7 +30,7 @@ class SignAzureUpload
         try {
             $blobUri = $request->input('bloburi');
             $method = $request->input('_method');
-            $permissions = '' ;
+            $permissions = '';
             if (strtolower($method) === 'put') {
                 $permissions = 'w';
             } elseif (strtolower($method) === 'delete') {
@@ -42,11 +42,12 @@ class SignAzureUpload
                 $this->config->get('filesystems.disks.' . $disk . '.key')
             );
 
-            $now = new DateTime("now", new DateTimeZone("UTC"));
+            $now = new DateTime('now', new DateTimeZone('UTC'));
             $expire = $now->modify('+15 min');
 
             $path = $this->config->get('filesystems.disks.' . $disk . '.container') . str_replace(azureEndpoint($disk), '', $blobUri);
             $sasUrl = $blobUri . '?' . $this->blobSharedAccessSignatureHelper->generateBlobServiceSharedAccessSignatureToken('b', $path, $permissions, $expire);
+
             return $listener->uploadIsSigned($sasUrl, false);
         } catch (\Exception $exception) {
             return $listener->uploadIsNotValid();

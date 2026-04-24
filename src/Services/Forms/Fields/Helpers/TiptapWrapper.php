@@ -7,7 +7,9 @@ use Illuminate\Support\Str;
 class TiptapWrapper
 {
     public const ELEMENT_UL = 'ul';
+
     public const ELEMENT_OL = 'ol';
+
     public const ELEMENT_NONE = null;
 
     private const SUPPORTED_ELEMENTS = ['ul', 'ol', null];

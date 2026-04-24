@@ -88,11 +88,11 @@ class Install extends Command
     {
         $routesPath = base_path('routes');
 
-        if (!$this->files->exists($routesPath)) {
+        if (! $this->files->exists($routesPath)) {
             $this->files->makeDirectory($routesPath, 0755, true);
         }
 
-        if (!$this->files->exists($routesPath . '/twill.php')) {
+        if (! $this->files->exists($routesPath . '/twill.php')) {
             $stub = $this->files->get(__DIR__ . '/stubs/admin.stub');
             $this->files->put($routesPath . '/twill.php', $stub);
         }
@@ -102,11 +102,11 @@ class Install extends Command
     {
         $layoutsDirectory = base_path('resources/views/site/layouts');
 
-        if (!$this->files->exists($layoutsDirectory)) {
+        if (! $this->files->exists($layoutsDirectory)) {
             $this->files->makeDirectory($layoutsDirectory, 0755, true);
         }
 
-        if (!$this->files->exists($layoutsDirectory . '/block.blade.php')) {
+        if (! $this->files->exists($layoutsDirectory . '/block.blade.php')) {
             $stub = $this->files->get(__DIR__ . '/stubs/block.blade.php');
             $this->files->put($layoutsDirectory . '/block.blade.php', $stub);
         }
@@ -117,7 +117,7 @@ class Install extends Command
      */
     private function createSuperAdmin(): void
     {
-        if (!$this->option('no-interaction')) {
+        if (! $this->option('no-interaction')) {
             $this->call('twill:superadmin');
         }
     }

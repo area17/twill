@@ -51,7 +51,7 @@ trait HandlesPresets
         $this->checkMeetsRequirementsForPreset($preset);
 
         // First publish the config as we overwrite it later.
-        if (!$fromTests) {
+        if (! $fromTests) {
             // @phpstan-ignore-next-line
             $this->publishConfig();
         }
@@ -123,8 +123,8 @@ trait HandlesPresets
             $fileName = trim(substr($file['to'], strrpos($file['to'], DIRECTORY_SEPARATOR) + 1));
             $dir = str_replace($fileName, '', $file['to']);
 
-            if (!file_exists($dir)) {
-                if (!mkdir($dir, 0777, true) && !is_dir($dir)) {
+            if (! file_exists($dir)) {
+                if (! mkdir($dir, 0777, true) && ! is_dir($dir)) {
                     throw new \RuntimeException(sprintf('Directory "%s" was not created', $dir));
                 }
             }
@@ -143,7 +143,7 @@ trait HandlesPresets
     private function recurseCopy(string $from, string $to): void
     {
         $dir = opendir($from);
-        if (!is_dir($to)) {
+        if (! is_dir($to)) {
             mkdir($to);
         }
         while (false !== ($file = readdir($dir))) {
@@ -166,11 +166,11 @@ trait HandlesPresets
         if (is_dir($dir)) {
             $objects = scandir($dir);
             foreach ($objects as $object) {
-                if ($object !== "." && $object !== "..") {
-                    if (filetype($dir . "/" . $object) === "dir") {
-                        $this->rrmdir($dir . "/" . $object);
+                if ($object !== '.' && $object !== '..') {
+                    if (filetype($dir . '/' . $object) === 'dir') {
+                        $this->rrmdir($dir . '/' . $object);
                     } else {
-                        unlink($dir . "/" . $object);
+                        unlink($dir . '/' . $object);
                     }
                 }
             }
@@ -222,13 +222,13 @@ trait HandlesPresets
                     $message = "This preset will replace the following FE files if they exist: \n";
 
                     foreach ($feOverride['files'] as $file) {
-                        $message .= "- " . $file . "\n";
+                        $message .= '- ' . $file . "\n";
                     }
 
                     $message .= 'Do you want to replace these files?';
 
                     // if ignoring the fe files, get files array
-                    if (!$this->confirm($message)) {
+                    if (! $this->confirm($message)) {
                         $ignore = $feOverride['files'];
                     }
                 }

@@ -7,8 +7,8 @@ use Illuminate\Config\Repository as Config;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use League\Flysystem\Filesystem;
 use League\Glide\Responses\SymfonyResponseFactory;
 use League\Glide\ServerFactory;
@@ -64,7 +64,7 @@ class Glide implements ImageServiceInterface
             ltrim($this->config->get('twill.glide.base_path'), '/'),
         ]);
 
-        if (!empty($baseUrlHost) && !Str::startsWith($baseUrl, ['http://', 'https://'])) {
+        if (! empty($baseUrlHost) && ! Str::startsWith($baseUrl, ['http://', 'https://'])) {
             $baseUrl = $this->request->getScheme() . '://' . $baseUrl;
         }
 
@@ -94,7 +94,7 @@ class Glide implements ImageServiceInterface
             'cache_path_prefix' => $this->config->get('twill.glide.cache_path_prefix'),
             'base_url' => $baseUrl,
             'presets' => $this->config->get('twill.glide.presets', []),
-            'driver' => $this->config->get('twill.glide.driver')
+            'driver' => $this->config->get('twill.glide.driver'),
         ]);
 
         $this->urlBuilder = UrlBuilderFactory::create(
@@ -246,9 +246,8 @@ class Glide implements ImageServiceInterface
      */
     protected function getCrop($crop_params)
     {
-        if (!empty($crop_params)) {
-            return ['crop' =>
-                $crop_params['crop_w'] . ',' .
+        if (! empty($crop_params)) {
+            return ['crop' => $crop_params['crop_w'] . ',' .
                 $crop_params['crop_h'] . ',' .
                 $crop_params['crop_x'] . ',' .
                 $crop_params['crop_y'],
@@ -266,7 +265,7 @@ class Glide implements ImageServiceInterface
      */
     protected function getFocalPointCrop($crop_params, $width, $height)
     {
-        if (!empty($crop_params)) {
+        if (! empty($crop_params)) {
             // determine center coordinates of user crop and express it in term of original image width and height percentage
             $fpX = 100 * ($crop_params['crop_w'] / 2 + $crop_params['crop_x']) / $width;
             $fpY = 100 * ($crop_params['crop_h'] / 2 + $crop_params['crop_y']) / $height;
@@ -278,9 +277,9 @@ class Glide implements ImageServiceInterface
                 $fpZ = $height / ($crop_params['crop_h'] ?? $height);
             }
 
-            $fpX = number_format($fpX, 0, ".", "");
-            $fpY = number_format($fpY, 0, ".", "");
-            $fpZ = number_format($fpZ, 4, ".", "");
+            $fpX = number_format($fpX, 0, '.', '');
+            $fpY = number_format($fpY, 0, '.', '');
+            $fpZ = number_format($fpZ, 4, '.', '');
 
             return ['fit' => 'crop-' . $fpX . '-' . $fpY . '-' . $fpZ];
         }
@@ -297,7 +296,7 @@ class Glide implements ImageServiceInterface
         $originalMediaForExtensions = $this->config->get('twill.glide.original_media_for_extensions');
         $addParamsToSvgs = $this->config->get('twill.glide.add_params_to_svgs', false);
 
-        if ((Str::endsWith($id, '.svg') && $addParamsToSvgs) || !Str::endsWith($id, $originalMediaForExtensions)) {
+        if ((Str::endsWith($id, '.svg') && $addParamsToSvgs) || ! Str::endsWith($id, $originalMediaForExtensions)) {
             return null;
         }
 

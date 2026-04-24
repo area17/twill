@@ -6,12 +6,11 @@ use A17\Twill\Services\Forms\Fields\DatePicker;
 use A17\Twill\Services\Forms\Form;
 use Carbon\Carbon;
 use Laravel\Dusk\Browser;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class FrontendDateConversionTest extends BrowserTestCase
 {
-    /**
-     * @dataProvider timesDataProvider
-     */
+    #[DataProvider('timesDataProvider')]
     public function testWithDateTime(Carbon $targetDate, array $expectedTime, bool $use24h): void
     {
         $class = null;

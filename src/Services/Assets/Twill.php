@@ -42,7 +42,7 @@ class Twill
 
     public function devAsset($file)
     {
-        if (!$this->devMode()) {
+        if (! $this->devMode()) {
             return null;
         }
 
@@ -79,9 +79,9 @@ class Twill
     private function readJson($fileName)
     {
         $requestOptionsIgnoreSsl = [
-            "ssl" => [
-                "verify_peer" => false,
-                "verify_peer_name" => false,
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
             ],
         ];
 

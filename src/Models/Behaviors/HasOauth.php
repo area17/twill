@@ -11,7 +11,6 @@ trait HasOauth
      */
     public function providers()
     {
-
         return $this->hasMany(UserOauth::class, 'user_id');
     }
 
@@ -22,7 +21,6 @@ trait HasOauth
      */
     public function linkProvider($oauthUser, $provider)
     {
-
         $provider = new UserOauth([
             'token'    => $oauthUser->token,
             'avatar'   => $oauthUser->avatar,

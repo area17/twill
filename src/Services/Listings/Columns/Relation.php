@@ -36,6 +36,7 @@ class Relation extends TableColumn
     public function relation(string $relation): static
     {
         $this->relation = $relation;
+
         return $this;
     }
 
@@ -46,7 +47,7 @@ class Relation extends TableColumn
         }
 
         $model->loadMissing($this->relation);
-        /** @var \Illuminate\Database\Eloquent\Collection $relation */
+        /** @var Collection $relation */
         $relation = Collection::wrap($model->getRelation($this->relation));
 
         return $relation->pluck($this->field)->join(', ');

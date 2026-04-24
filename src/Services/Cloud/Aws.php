@@ -41,16 +41,17 @@ class Aws
 
     public function config($disk, $key, $default = null)
     {
+        if (filled($value = config("filesystems.disks.{$disk}.{$key}"))) {
+            return $value;
+        }
         $env1 = Str::upper(Str::snake($disk));
 
         $env2 = $env1 === 'AWS' ? 'S3' : 'AWS';
 
         $envSuffix = Str::upper($key);
 
-        if (filled($value = config("filesystems.disks.{$disk}.{$key}"))) {
-            return $value;
-        }
 
+        /** @phpstan-ignore-next-line larastan.noEnvCallsOutsideOfConfig */
         return env("{$env1}_{$envSuffix}", env("{$env2}_{$envSuffix}", $default));
     }
 }

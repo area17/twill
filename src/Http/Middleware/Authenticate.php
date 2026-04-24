@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\URL;
 class Authenticate extends Middleware
 {
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function handle($request, Closure $next, ...$guards)
     {
@@ -19,11 +19,12 @@ class Authenticate extends Middleware
 
         if (
             (
-                !$request->user() ||
-                !$request->user()->published
+                ! $request->user() ||
+                ! $request->user()->published
             ) && $request->route()?->getName() !== (config('twill.admin_route_name_prefix') . 'login.form')
         ) {
             Auth::logout();
+
             return $request->expectsJson()
                 ? abort(403, 'Your account is not verified.')
                 : Redirect::guest(URL::route(config('twill.admin_route_name_prefix') . 'login.form'));
@@ -33,7 +34,7 @@ class Authenticate extends Middleware
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     protected function redirectTo($request)
     {

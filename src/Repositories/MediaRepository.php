@@ -38,7 +38,7 @@ class MediaRepository extends ModuleRepository
         }
 
         // if we were not able to determine dimensions with the browser File API, let's ask the Image service
-        if (!isset($fields['width'], $fields['height'])) {
+        if (! isset($fields['width'], $fields['height'])) {
             $dimensions = ImageService::getDimensions($fields['uuid']);
             $fields['width'] = $dimensions['width'] ?? 0;
             $fields['height'] = $dimensions['height'] ?? 0;

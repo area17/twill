@@ -4,6 +4,7 @@ namespace integration\Repositories;
 
 use A17\Twill\Tests\Integration\ModulesTestBase;
 use App\Repositories\AuthorRepository;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class TagsHandlerTest extends ModulesTestBase
 {
@@ -24,9 +25,7 @@ class TagsHandlerTest extends ModulesTestBase
         $this->assertEquals('tag-at-c', $author->tags()->get()[2]->slug);
     }
 
-    /**
-     * @dataProvider slugExamples
-     */
+    #[DataProvider('slugExamples')]
     public function testTagSlugsCharacters(string $string, string $slug): void
     {
         $author = app(AuthorRepository::class)
