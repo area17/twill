@@ -1,6 +1,6 @@
 # One to Many
 
-[One to Many](https://laravel.com/docs/10.x/eloquent-relationships#one-to-many) can be used for having child models that are referred to by your main model.
+[One to Many](https://laravel.com/docs/eloquent-relationships#one-to-many) can be used for having child models that are referred to by your main model.
 
 An example could be:
 

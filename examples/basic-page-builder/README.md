@@ -27,7 +27,7 @@ You will need a MySQL or SQLite database set up for this example.
 
 Open up the `.env` file in the root of the project, and fill in your database details. 
 
-The [Laravel documentation](https://laravel.com/docs/10.x) is far more extensive about the setup procedure, if this guide went too quick, make sure to give those a read.
+The [Laravel documentation](https://laravel.com/docs/) is far more extensive about the setup procedure, if this guide went too quick, make sure to give those a read.
 
 ## Twill and this example
 

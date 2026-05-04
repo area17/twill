@@ -1,6 +1,6 @@
 # One to Many (Polymorphic)
 
-[One to Many (Polymorphic)](https://laravel.com/docs/10.x/eloquent-relationships#one-to-many-polymorphic-relations) can be used to refer to a model that may not necessarily always be the same.
+[One to Many (Polymorphic)](https://laravel.com/docs/eloquent-relationships#one-to-many-polymorphic-relations) can be used to refer to a model that may not necessarily always be the same.
 
 A great example of this would be having `blogs` and `news` models, and a `comment` model that references either the `blog` or `news` model.
 
@@ -33,7 +33,7 @@ The `_id` will hold the model id we are referencing. `_type` will hold the type 
 
 ## Define the relation
 
-Now that our migration is in place we can move onward to our model setup. Here we will follow the Laravel documentation for the [model structure](https://laravel.com/docs/10.x/eloquent-relationships#one-to-many-polymorphic-model-structure).
+Now that our migration is in place we can move onward to our model setup. Here we will follow the Laravel documentation for the [model structure](https://laravel.com/docs/eloquent-relationships#one-to-many-polymorphic-model-structure).
 
 :::filename:::
 `app/Models/Comment.php`

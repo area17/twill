@@ -10,7 +10,7 @@ return [
     | This array allows you to enable/disable Oauth providers
     |
     | Possible values (from socialite): facebook, twitter, linkedin, google, github, gitlab and bitbucket
-    | See https://laravel.com/docs/6.x/socialite
+    | See https://laravel.com/docs/socialite
     |
      */
     'providers' => ['google'],
