@@ -2,6 +2,37 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.6.0
+
+### Added
+
+- Add Laravel 13 support by [@ifox](https://github.com/ifox) in [#2831](https://github.com/area17/twill/pull/2831)
+- Internalize `cartalyst/tags` package (abandoned upstream) for Laravel 13 compatibility without breaking changes by [@ifox](https://github.com/ifox) in [859c4c57](https://github.com/area17/twill/commit/859c4c57)
+
+### Fixed
+
+- Fix BelongsTo relationships in preview hydration by [@ifox](https://github.com/ifox) in [fc2858b7](https://github.com/area17/twill/commit/fc2858b713e602e18f73f16a9baad7bfac71e04c)
+- Mitigate Axios supply-chain compromise by pinning axios by [@zachgarwood](https://github.com/zachgarwood) in [#2822](https://github.com/area17/twill/pull/2822)
+
+### Improved
+
+- Add `array` return type for `rulesForCreate` and `rulesForUpdate` in module request stub by [@tamdaz](https://github.com/tamdaz) in [#2801](https://github.com/area17/twill/pull/2801)
+
+### Docs
+
+- Revise middleware setup for Laravel localization by [@sjardim](https://github.com/sjardim) in [#2797](https://github.com/area17/twill/pull/2797)
+- Update page builder guide with Laravel 12.x links and `storage:link` by [@rvyhvn](https://github.com/rvyhvn) in [#2796](https://github.com/area17/twill/pull/2796)
+
+### Chores
+
+- Setup paratest for unit and integration tests parallelization by [@ifox](https://github.com/ifox) in [b4d38fe6](https://github.com/area17/twill/commit/b4d38fe6)
+- Update GitHub Actions versions by [@ifox](https://github.com/ifox) in [803373a1](https://github.com/area17/twill/commit/803373a1) and [f57490b4](https://github.com/area17/twill/commit/f57490b4)
+- Update PHP_CodeSniffer repository link in `composer.json` by [@rodrigoprimo](https://github.com/rodrigoprimo) in [199c0082](https://github.com/area17/twill/commit/199c0082)
+- Fix PHPUnit deprecations by [@ifox](https://github.com/ifox) in [7cf5a911](https://github.com/area17/twill/commit/7cf5a911)
+- Fix flaky tests by [@ifox](https://github.com/ifox) in [4240a7a0](https://github.com/area17/twill/commit/4240a7a0), [e5878b25](https://github.com/area17/twill/commit/e5878b25), and [64a20392](https://github.com/area17/twill/commit/64a20392)
+- Fix storage route check in tests for Laravel 12.52.0 by [@ifox](https://github.com/ifox) in [6a08d87c](https://github.com/area17/twill/commit/6a08d87c)
+- Fix tests in CI by [@ifox](https://github.com/ifox) in [de0397aa](https://github.com/area17/twill/commit/de0397aa), [9a00a57e](https://github.com/area17/twill/commit/9a00a57e), and [00db901d](https://github.com/area17/twill/commit/00db901d)
+
 ## 3.5.3
 
 ### Added
