@@ -1,8 +1,26 @@
 # Twill docs
 
-## Install
+## Prerequisites
 
-To compile and serve the docs site at `http://localhost:8000/` run at the ROOT of `/twill`
+You must already have installed node & php dependencies:
+```
+npm i
+composer install
+```
+
+## View in browser
+
+To compile and serve the docs site, run:
+```
+npm run docs
+```
+
+then go to `http://localhost:8000/docs`
+
+
+## Other commands
+
+To serve docs:
 ```
 ./vendor/bin/testbench twill:staticdocs:serve
 ```

@@ -18,7 +18,7 @@ We will go back to the `AppServiceProvider` that we used before and register the
 ```phptorch
 {
   "collapseAll": "",
-  "focusMethods": "boot",
+  "focusMethods": ["boot"],
   "diffInMethod": {
     "method": "boot",
     "start": 7,
@@ -105,7 +105,7 @@ Then we add the `home` method in the `PageDisplayController` which will get the 
 ```phptorch
 {
   "collapseAll": "",
-  "focusMethods": "home",
+  "focusMethods": ["home"],
   "diffMethods": "home"
 }
 ##CODE##

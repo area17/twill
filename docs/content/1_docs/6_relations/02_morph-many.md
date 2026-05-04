@@ -22,7 +22,7 @@ The `_id` will hold the model id we are referencing. `_type` will hold the type 
 {
   "file": "../../../../examples/portfolio/database/migrations/2022_04_06_070334_create_comments_tables.php",
   "collapseAll": "",
-  "focusMethods": "up",
+  "focusMethods": ["up"],
   "diffInMethod": {
     "method": "up",
     "start": 5,
@@ -43,7 +43,7 @@ Now that our migration is in place we can move onward to our model setup. Here w
 {
   "file": "../../../../examples/portfolio/app/Models/Comment.php",
   "collapseAll": "",
-  "focusMethods": "commentable"
+  "focusMethods": ["commentable"]
 }
 ```
 
@@ -61,7 +61,7 @@ In the example we allow comments on `Partners` and `Projects`, so what we need t
 {
   "file": "../../../../examples/portfolio/app/Models/Partner.php",
   "collapseAll": "",
-  "focusMethods": "comments"
+  "focusMethods": ["comments"]
 }
 ```
 
@@ -73,7 +73,7 @@ In the example we allow comments on `Partners` and `Projects`, so what we need t
 {
   "file": "../../../../examples/portfolio/app/Models/Project.php",
   "collapseAll": "",
-  "focusMethods": "comments"
+  "focusMethods": ["comments"]
 }
 ```
 

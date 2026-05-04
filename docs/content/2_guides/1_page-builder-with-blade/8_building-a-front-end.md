@@ -133,7 +133,7 @@ We will dive back into the `PageDisplayController` that we created before and we
 
 ```phptorch
 {
-    "focusMethods": "show"
+    "focusMethods": ["show"]
 }
 ##CODE##
 <?php

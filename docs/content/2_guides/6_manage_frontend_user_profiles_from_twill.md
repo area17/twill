@@ -33,7 +33,7 @@ Update the generated migration to add the required fields:
 ```phptorch
 {
   "file": "./manage_frontend_user_profiles_from_twill/2021_08_01_204153_create_profiles_tables.php",
-  "focusMethods": "up"
+  "focusMethods": ["up"]
 }
 ```
 
@@ -54,7 +54,7 @@ Edit the fillable fields to match the new schema and add the `Profile > User` re
 ```phptorch
 {
   "file": "./manage_frontend_user_profiles_from_twill/Profile.php",
-  "focusMethods": "user",
+  "focusMethods": ["user"],
   "focusProperties": "fillable"
 }
 ```
