@@ -59,6 +59,9 @@
     "spatie/invade": "^1.1",
     "squizlabs/php_codesniffer": "*"
   },
+  "conflict": {
+    "kalnoy/nestedset": "7.0.1"
+  },
   "autoload": {
     "psr-4": {
       "A17\\Twill\\": "src/",
