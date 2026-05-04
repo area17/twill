@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 if (! function_exists('moduleRoute')) {
@@ -14,6 +14,9 @@ if (! function_exists('moduleRoute')) {
     ): string {
         // Fix module name case
         $moduleName = Str::camel($moduleName);
+
+        // Wrap scalar parameters in an array
+        $parameters = Arr::wrap($parameters);
 
         // Nested module, pass in current parameters for deeply nested modules
         if (Str::contains($moduleName, '.')) {

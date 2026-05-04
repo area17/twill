@@ -31,7 +31,7 @@
     "doctrine/dbal": "^3.0 || ^4.0",
     "guzzlehttp/guzzle": "^7.0",
     "imgix/imgix-php": "^3.0",
-    "kalnoy/nestedset": "^6.0",
+    "kalnoy/nestedset": "^6.0 <6.0.7",
     "laravel/framework": "^9.0 || ^10.0 || ^11.0 || ^12.0",
     "laravel/socialite": "^5.3",
     "laravel/ui": "^4.0",
@@ -46,6 +46,7 @@
   },
   "require-dev": {
     "area17/phptorch": "dev-main",
+    "brianium/paratest": "^6.0 | ^7.0",
     "chillerlan/php-qrcode": "~4.0",
     "friendsofphp/php-cs-fixer": "^3.0",
     "larastan/larastan": "^2.9 | ^3.0",
@@ -74,12 +75,14 @@
     }
   },
   "scripts": {
-    "test:phpunit": "vendor/bin/phpunit",
+    "test:phpunit": "vendor/bin/paratest --testsuite Unit,Integration --stop-on-error --no-coverage",
+    "test:browser": "vendor/bin/phpunit --testsuite Browser --stop-on-error --no-coverage",
     "test:analyse": "php -d memory_limit=-1 vendor/bin/phpstan analyse",
     "test:syntax": "vendor/bin/php-cs-fixer --dry-run fix src",
     "test": [
       "@test:syntax",
-      "@test:phpunit"
+      "@test:phpunit",
+      "@test:browser"
     ],
     "post-autoload-dump": [
       "@php ./vendor/bin/testbench package:discover --ansi"

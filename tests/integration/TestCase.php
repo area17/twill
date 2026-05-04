@@ -69,7 +69,10 @@ abstract class TestCase extends OrchestraTestCase
 
     public static function setUpBeforeClass(): void
     {
+        self::prepareParallelTestbenchApplication();
+        self::configureParallelDatabase();
         cleanupTestState(self::applicationBasePath());
+        self::copyTestBlockStubs(self::applicationBasePath());
         parent::setUpBeforeClass();
     }
 
@@ -101,12 +104,13 @@ abstract class TestCase extends OrchestraTestCase
         }
 
         $loader = new ClassLoader();
-        $loader->addPsr4('App\\', 'vendor/orchestra/testbench-core/laravel/app');
+        $loader->addPsr4('App\\', $this->getBasePath() . '/app');
         $loader->register();
 
         // Enforce the url for testing to be 'http://twill.test' for certain assertions.
         // This is different from the one in phpunit.xml because that one is used for laravel dusk.
-        $_ENV['APP_URL'] = 'http://twill.test';
+        $_ENV['APP_URL'] = $_SERVER['APP_URL'] = 'http://twill.test';
+        putenv('APP_URL=http://twill.test');
         $_ENV['MEDIA_LIBRARY_LOCAL_PATH'] = "media-library";
         $_ENV["FILE_LIBRARY_LOCAL_PATH"] = "file-library";
         $_ENV["FILE_LIBRARY_ENDPOINT_TYPE"] = "local";
@@ -149,6 +153,7 @@ abstract class TestCase extends OrchestraTestCase
      */
     public function configTwill($app): void
     {
+        $app['config']->set('app.url', 'http://twill.test');
         $app['config']->set('twill.admin_app_url', '');
         $app['config']->set('twill.admin_app_path', 'twill');
         $app['config']->set('twill.auth_login_redirect_path', '/twill');
@@ -311,7 +316,7 @@ abstract class TestCase extends OrchestraTestCase
         }
 
         return collect($routes)->filter(function (\Illuminate\Routing\Route $route) {
-            return ($route->action['as'] ?? '') !== 'storage.local' && (is_callable($route->action['uses']) || Str::startsWith($route->action['uses'], 'A17\Twill') ||
+            return !in_array($route->action['as'] ?? '', ['storage.local', 'storage.local.upload']) && (is_callable($route->action['uses']) || Str::startsWith($route->action['uses'], 'A17\Twill') ||
                 Str::startsWith($route->action['uses'], 'App\\'));
         });
     }
@@ -556,7 +561,13 @@ abstract class TestCase extends OrchestraTestCase
 
     protected static function getBasePathStatic(): string
     {
-        return __DIR__ . '/../../vendor/orchestra/testbench-core/laravel';
+        $basePath = __DIR__ . '/../../vendor/orchestra/testbench-core/laravel';
+
+        if ($token = self::parallelTestingToken()) {
+            return $basePath . '_' . $token;
+        }
+
+        return $basePath;
     }
 
     public static function applicationBasePath(): string
@@ -566,6 +577,97 @@ abstract class TestCase extends OrchestraTestCase
 
     protected function getBasePath(): string
     {
-        return __DIR__ . '/../../vendor/orchestra/testbench-core/laravel';
+        return self::getBasePathStatic();
+    }
+
+    protected static function parallelTestingToken(): ?string
+    {
+        return $_SERVER['TEST_TOKEN'] ?? $_ENV['TEST_TOKEN'] ?? null;
+    }
+
+    protected static function prepareParallelTestbenchApplication(): void
+    {
+        if (! self::parallelTestingToken()) {
+            return;
+        }
+
+        $source = __DIR__ . '/../../vendor/orchestra/testbench-core/laravel';
+        $target = self::getBasePathStatic();
+
+        if (! is_dir($target)) {
+            self::copyDirectory($source, $target);
+        }
+    }
+
+    protected static function configureParallelDatabase(): void
+    {
+        if (! self::parallelTestingToken() || self::env('DB_CONNECTION') !== 'mysql') {
+            return;
+        }
+
+        $database = preg_replace('/_\d+$/', '', self::env('DB_DATABASE')) . '_' . self::parallelTestingToken();
+        $_ENV['DB_DATABASE'] = $_SERVER['DB_DATABASE'] = $database;
+        putenv("DB_DATABASE={$database}");
+
+        $host = self::env('DB_HOST', '127.0.0.1');
+        $port = self::env('DB_PORT', '3306');
+        $username = self::env('DB_USERNAME', 'root');
+        $password = self::env('DB_PASSWORD', '');
+
+        $pdo = new \PDO("mysql:host={$host};port={$port}", $username, $password);
+        $pdo->exec("DROP DATABASE IF EXISTS `{$database}`");
+        $pdo->exec("CREATE DATABASE `{$database}`");
+    }
+
+    protected static function env(string $key, ?string $default = null): ?string
+    {
+        return getenv($key) ?: $_SERVER[$key] ?? $_ENV[$key] ?? $default;
+    }
+
+    protected static function copyDirectory(string $source, string $target): void
+    {
+        mkdir($target, 0777, true);
+
+        foreach (scandir($source) as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            $sourcePath = $source . DIRECTORY_SEPARATOR . $item;
+            $targetPath = $target . DIRECTORY_SEPARATOR . $item;
+
+            if (is_dir($sourcePath) && ! is_link($sourcePath)) {
+                self::copyDirectory($sourcePath, $targetPath);
+            } else {
+                copy($sourcePath, $targetPath);
+            }
+        }
+    }
+
+    protected static function copyTestBlockStubs(string $basePath): void
+    {
+        $blockPath = $basePath . '/resources/views/twill/blocks';
+        $repeaterPath = $basePath . '/resources/views/twill/repeaters';
+
+        foreach (['carousel', 'footnote', 'gallery', 'image', 'quote'] as $block) {
+            self::copyTestStub(
+                __DIR__ . "/../../src/Commands/stubs/blocks/{$block}.blade.php",
+                "{$blockPath}/{$block}.blade.php"
+            );
+        }
+
+        self::copyTestStub(
+            __DIR__ . '/../../src/Commands/stubs/repeaters/carousel-item.blade.php',
+            "{$repeaterPath}/carousel-item.blade.php"
+        );
+    }
+
+    protected static function copyTestStub(string $source, string $target): void
+    {
+        if (! is_dir(dirname($target))) {
+            mkdir(dirname($target), 0755, true);
+        }
+
+        copy($source, $target);
     }
 }

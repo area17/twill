@@ -4,12 +4,11 @@ namespace A17\Twill\Tests\Browser;
 
 use Carbon\Carbon;
 use Laravel\Dusk\Browser;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class ScheduleDatesTest extends BrowserTestCase
 {
-    /**
-     * @dataProvider timesDataProvider
-     */
+    #[DataProvider('timesDataProvider')]
     public function testWithDateTime(Carbon $from, Carbon $to, array $expectedTime, bool $time24h): void
     {
         $class = null;

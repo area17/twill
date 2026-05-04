@@ -55,7 +55,7 @@ For PHP auto-formatting on save, you can use the [phpcsfixer](https://marketplac
 },
 ```
 
-For PHP contextual linting, you can use the [phpcs](https://marketplace.visualstudio.com/items?itemName=ikappas.phpcs) extension and then install [PHP_CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) globally.
+For PHP contextual linting, you can use the [phpcs](https://marketplace.visualstudio.com/items?itemName=ikappas.phpcs) extension and then install [PHP_CodeSniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer) globally.
 
 ```
 composer global require "squizlabs/php_codesniffer=*"

@@ -4,7 +4,7 @@ Twill is a standard Laravel package, that means, we only have to require it (and
 
 So, before we get to the process of building our CMS, let's install Twill.
 
-We can do this using `composer require area17/twill:"^3.4"`.
+We can do this using `composer require area17/twill:"^3.5"`.
 
 This will install Twill 3 alongside all other required packages.
 
@@ -62,6 +62,10 @@ As you can see from the output, it:
 - Publishes the twill.php and translatable.php configuration files
 - Publishes the assets
 - Prompts you to create a super admin
+
+Finally, run the `storage:link` command to create the symbolic link for the storage directory:
+
+`php artisan storage:link`
 
 Once you have filled everything in, we can refresh our browser. We now see a proper login screen:
 

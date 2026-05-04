@@ -5,6 +5,7 @@ namespace A17\Twill\Tests\Unit\Services\Forms;
 use A17\Twill\Services\Forms\Option;
 use A17\Twill\Services\Forms\Options;
 use A17\Twill\Tests\Unit\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class OptionsTest extends TestCase
 {
@@ -44,9 +45,7 @@ class OptionsTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider inputs
-     */
+    #[DataProvider('inputs')]
     public function testFromArray(array $options, bool $barShouldBeSelectable): void
     {
         $options = Options::fromArray($options);

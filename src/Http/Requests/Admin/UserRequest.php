@@ -37,7 +37,7 @@ class UserRequest extends Request
                             'twill.users_table',
                             'twill_users'
                         ) . ',email,' . $this->route('user'),
-                        'new_password' => (!empty($this->get('reset_password')) && !empty($this->get('new_password')) ? Password::defaults() : ''),
+                        'new_password' => (! empty($this->get('reset_password')) && ! empty($this->get('new_password')) ? Password::defaults() : ''),
                         'verify-code' => function ($attribute, $value, $fail) {
                             $user = Auth::guard('twill_users')->user();
                             $with2faSettings = config('twill.enabled.users-2fa') && $user->id == $this->route('user');

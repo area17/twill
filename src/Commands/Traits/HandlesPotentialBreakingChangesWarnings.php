@@ -2,6 +2,7 @@
 
 namespace A17\Twill\Commands\Traits;
 
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Schema;
 
 /* @mixin \Illuminate\Console\Command */
@@ -13,17 +14,46 @@ trait HandlesPotentialBreakingChangesWarnings
             return;
         }
 
-        $mediablesHasPosition = Schema::hasColumn(config('twill.mediables_table', 'twill_mediables'), 'position');
-        $fileablesHasPosition = Schema::hasColumn(config('twill.fileables_table', 'twill_fileables'), 'position');
+        try {
+            $mediablesHasPosition = Schema::hasColumn(config('twill.mediables_table', 'twill_mediables'), 'position');
+            $fileablesHasPosition = Schema::hasColumn(config('twill.fileables_table', 'twill_fileables'), 'position');
+        } catch (QueryException) {
+            // If no database configured abort
+            return;
+        }
 
         if ($mediablesHasPosition && $fileablesHasPosition) {
             return;
         }
 
-        $this->warn('⚠️  Twill 3.5.0 introduced 2 new database migrations to fix a bug with the medias and files fields position management, make sure to add them to your project.');
-        $this->warn("\nAdd position field to the twill_mediables table:");
-        $this->info('🔗 https://github.com/area17/twill/blob/3.5.0/migrations/default/2020_02_09_000015_add_position_to_twill_default_mediables_table.php');
-        $this->warn("\nAdd position field to the twill_fileables table:");
-        $this->info('🔗 https://github.com/area17/twill/blob/3.5.0/migrations/default/2020_02_09_000016_add_position_to_twill_default_fileables_table.php');
+        $this->warn("⚠️  Twill 3.5.0 introduced 2 new database migrations to fix a bug with the medias and files fields position management, make sure to add them to your project.\n");
+
+        if ($this->confirm('Would you like to add the migrations to your project?')) {
+            if (! $mediablesHasPosition) {
+                copy(
+                    __DIR__ . '/../../../migrations/default/2020_02_09_000015_add_position_to_twill_default_mediables_table.php',
+                    $added = database_path() . '/migrations/' . date('Y_m_d_His') . '_add_position_to_twill_default_mediables_table.php'
+                );
+                $this->info('Added migration ' . str_replace(base_path(), '', $added));
+            }
+            if (! $fileablesHasPosition) {
+                copy(
+                    __DIR__ . '/../../../migrations/default/2020_02_09_000016_add_position_to_twill_default_fileables_table.php',
+                    $added = database_path() . '/migrations/' . date('Y_m_d_His') . '_add_position_to_twill_default_fileables_table.php'
+                );
+                $this->info('Added migration ' . str_replace(base_path(), '', $added));
+            }
+            $this->newLine();
+            $this->info("Don't forget to run <warning>php artisan migrate</warning>");
+        } else {
+            $this->info('You can find the migrations source there:');
+            if (! $mediablesHasPosition) {
+                $this->info('🔗 https://raw.githubusercontent.com/area17/twill/refs/tags/3.5.0/migrations/default/2020_02_09_000015_add_position_to_twill_default_mediables_table.php');
+            }
+            if (! $fileablesHasPosition) {
+                $this->info('🔗 https://raw.githubusercontent.com/area17/twill/refs/tags/3.5.0/migrations/default/2020_02_09_000016_add_position_to_twill_default_fileables_table.php');
+            }
+        }
+        $this->info('');
     }
 }
