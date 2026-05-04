@@ -50,7 +50,7 @@ class Browser extends TwillFormComponent
             default: $default
         );
 
-        if (! $this->endpoints && !empty($this->modules)) {
+        if (! $this->endpoints && ! empty($this->modules)) {
             $this->endpoints = collect($this->modules)->map(function ($module) {
                 return [
                     'label' => $module['label'] ?? ucfirst($module['name']),

@@ -50,8 +50,7 @@ class Aws
 
         $envSuffix = Str::upper($key);
 
-
-        /** @phpstan-ignore-next-line larastan.noEnvCallsOutsideOfConfig */
+        /* @phpstan-ignore-next-line larastan.noEnvCallsOutsideOfConfig */
         return env("{$env1}_{$envSuffix}", env("{$env2}_{$envSuffix}", $default));
     }
 }

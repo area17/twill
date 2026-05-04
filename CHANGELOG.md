@@ -2,12 +2,43 @@
 
 All notable changes to `twill` will be documented in this file.
 
+## 3.5.3
+
+### Added
+
+- Add Laravel 12 support by [@Tofandel](https://github.com/Tofandel) and [@Braunson](https://github.com/Braunson) in [#2765](https://github.com/area17/twill/pull/2765)
+- Add support for repeaters crops configuration by [@zeezo887](https://github.com/zeezo887) in [#2760](https://github.com/area17/twill/pull/2760)
+
+### Fixed
+
+- Fix global search not setting search string properly by [@nikhiltri](https://github.com/nikhiltri) in [#2763](https://github.com/area17/twill/pull/2763)
+- Fix slug encoding issue by preventing `HasSlug::getUtf8Slug()` from guessing encoding by default by [@zachgarwood](https://github.com/zachgarwood) in [#2771](https://github.com/area17/twill/pull/2771)
+- Fix malformed model when creating a module with no traits selected by [@zeezo887](https://github.com/zeezo887) in [#2759](https://github.com/area17/twill/pull/2759)
+- Fix hardcoded namespace for singleton models by [@phyce](https://github.com/phyce) in [#2742](https://github.com/area17/twill/pull/2742)
+
+### Improved
+
+- Add validation on new password field in profile page by [@iedex](https://github.com/iedex) in [#2767](https://github.com/area17/twill/pull/2767)
+
+### Docs
+
+- Update custom form field instructions with correct path by [@phyce](https://github.com/phyce) in [#2736](https://github.com/area17/twill/pull/2736)
+- Update instructions on using custom icons by [@phyce](https://github.com/phyce) in [#2735](https://github.com/area17/twill/pull/2735)
+
+### Chores
+
+- Add PHP 8.4 and 8.5 support to CI test matrix by [@ifox](https://github.com/ifox) in [#2790](https://github.com/area17/twill/pull/2790) and [e5f0cd](https://github.com/area17/twill/commit/e5f0cd)
+- Update npm dependencies by [@ifox](https://github.com/ifox) in [d58c16a](https://github.com/area17/twill/commit/d58c16a) and [81a57b3](https://github.com/area17/twill/commit/81a57b3)
+- Bump http-proxy-middleware from 2.0.7 to 2.0.9 by [@dependabot](https://github.com/dependabot) in [#2764](https://github.com/area17/twill/pull/2764)
+- Bump on-headers and compression by [@dependabot](https://github.com/dependabot) in [#2772](https://github.com/area17/twill/pull/2772)
+- Bump nanoid from 3.3.7 to 3.3.8 by [@dependabot](https://github.com/dependabot) in [#2711](https://github.com/area17/twill/pull/2711)
+- Bump axios from 0.28.1 to 0.30.2 by [@dependabot](https://github.com/dependabot) in [#2779](https://github.com/area17/twill/pull/2779)
+
 ## 3.5.2
 
 ### Fixed
 
 - Fix cropper regression (likely a from a recent browser update) by [@13twelve](https://github.com/13twelve) in [#2744](https://github.com/area17/twill/pull/2744)
-
 
 ## 3.5.1
 

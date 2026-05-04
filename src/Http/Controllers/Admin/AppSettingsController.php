@@ -96,7 +96,7 @@ class AppSettingsController extends ModuleController
 
     public function getFormRequestClass(): string
     {
-        $class = new class extends Request {
+        $class = new class () extends Request {
         };
 
         return $class::class;

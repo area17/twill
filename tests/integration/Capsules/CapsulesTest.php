@@ -8,6 +8,7 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use A17\Twill\Tests\Integration\TestCase;
+use PHPUnit\Framework\Attributes\Group;
 
 class CapsulesTest extends TestCase
 {
@@ -82,9 +83,7 @@ class CapsulesTest extends TestCase
         return parent::getPackageProviders($app);
     }
 
-    /**
-     * @group capsule
-     */
+    #[Group('capsule')]
     public function testCapsuleProviderWasRegistered()
     {
         $capsule = TwillCapsules::getCapsuleForModule($this->capsuleName);
@@ -94,9 +93,7 @@ class CapsulesTest extends TestCase
         $this->assertEquals("App\\Twill\\Capsules\\".$this->capsuleClassName, $capsule->namespace);
     }
 
-    /**
-     * @group capsule
-     */
+    #[Group('capsule')]
     public function testCanMigrateDatabase()
     {
         $this->assertTrue(Schema::hasTable($this->capsuleName));
@@ -111,9 +108,7 @@ class CapsulesTest extends TestCase
         );
     }
 
-    /**
-     * @group capsule
-     */
+    #[Group('capsule')]
     public function testCanBootRoutes()
     {
         $routes = [
@@ -146,9 +141,7 @@ class CapsulesTest extends TestCase
         });
     }
 
-    /**
-     * @group capsule
-     */
+    #[Group('capsule')]
     public function testCanDisplayDashboard()
     {
         $this->request('/twill')->assertStatus(200);
