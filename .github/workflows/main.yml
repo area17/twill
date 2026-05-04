@@ -81,6 +81,8 @@ jobs:
             dbal: 3.*
           - laravel: 13.*
             dbal: 3.*
+          - laravel: 13.*
+            php: 8.2
         include:
           - laravel: 10.*
             testbench: 8.*
