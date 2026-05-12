@@ -120,7 +120,8 @@ trait HandleFiles
                 return [
                     $file->id => Collection::make($object->files()->getPivotColumns())->mapWithKeys(
                         function ($attribute) use ($file) {
-                            return [$attribute => $file->pivot->$attribute];
+                            $value = $attribute == 'id' ? null : $file->pivot->$attribute;
+                            return [$attribute => $value];
                         }
                     )->toArray(),
                 ];
