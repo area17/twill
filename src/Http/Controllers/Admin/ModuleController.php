@@ -1841,8 +1841,23 @@ abstract class ModuleController extends Controller
             $scopes += ['accessible' => true];
         }
 
-        $appliedFilters = [];
+        $appliedFilters = $this->getIndexFilters();
 
+        return $this->transformIndexItems(
+            $this->repository->get(
+                with: $this->indexWith,
+                scopes: $scopes,
+                orders: $this->orderScope(),
+                perPage: $this->request->get('offset') ?? $this->perPage ?? 50,
+                forcePagination: $forcePagination,
+                appliedFilters: $appliedFilters
+            )
+        );
+    }
+
+    protected function getIndexFilters(): array
+    {
+        $appliedFilters = [];
         $requestFilters = $this->getRequestFilters();
 
         // Get the applied quick filter..
@@ -1874,16 +1889,7 @@ abstract class ModuleController extends Controller
             }
         }
 
-        return $this->transformIndexItems(
-            $this->repository->get(
-                with: $this->indexWith,
-                scopes: $scopes,
-                orders: $this->orderScope(),
-                perPage: $this->request->get('offset') ?? $this->perPage ?? 50,
-                forcePagination: $forcePagination,
-                appliedFilters: $appliedFilters
-            )
-        );
+        return $appliedFilters;
     }
 
     protected function transformIndexItems(Collection|LengthAwarePaginator $items): Collection|LengthAwarePaginator
