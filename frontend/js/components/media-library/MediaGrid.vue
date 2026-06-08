@@ -18,6 +18,7 @@
         @click.ctrl="shiftToggleSelection(item)">
        
           <img v-if="isImage(item.fileExtension)" :src="item.thumbnail" class="mediagrid__img" />
+          <img v-else-if="variant === 'dam' && item.damThumbnail" :src="item.damThumbnail" class="mediagrid__img" />
           <span v-else class="mediagrid__file-icon">
             <span v-svg :symbol="getFileIcon(item.fileExtension)"></span>
           </span>
