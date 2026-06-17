@@ -1045,7 +1045,8 @@ abstract class ModuleController extends Controller
             throw new \Exception('Create forms do not support repeaters and blocks');
         }
 
-        if ($form->isNotEmpty()) {
+        if(! $view = $this->getIndexViewOverride()){
+            if ($form->isNotEmpty()) {
             $view = 'twill::layouts.listing';
         } else {
             $view = Collection::make([
@@ -1056,8 +1057,13 @@ abstract class ModuleController extends Controller
                 return View::exists($view);
             });
         }
+        }
+        
 
-        return View::make($view, $indexData + ['repository' => $this->repository])
+        return View::make($view, array_merge(
+            $indexData + ['repository' => $this->repository],
+            $this->getSharedViewData()
+        ))
             ->with(['formBuilder' => $form->toFrontend(isCreate: true)]);
     }
 
@@ -1070,6 +1076,22 @@ abstract class ModuleController extends Controller
     {
         return Response::json($this->getBrowserData());
     }
+
+    public function getIndexViewOverride():?string
+    {
+        return null;
+    }
+
+    public function getEditViewOverride():?string
+    {
+        return null;
+    }
+
+    public function getSharedViewData():array
+    {
+        return [];
+    }
+
 
     /**
      * @param int|null $parentModuleId
@@ -1184,7 +1206,8 @@ abstract class ModuleController extends Controller
 
         $controllerForm = $this->getForm($item);
 
-        if ($controllerForm->hasForm()) {
+        if(! $view = $this->getEditViewOverride()){
+            if ($controllerForm->hasForm()) {
             $view = 'twill::layouts.form';
         } else {
             $view = Collection::make([
@@ -1195,6 +1218,8 @@ abstract class ModuleController extends Controller
                 return View::exists($view);
             });
         }
+        }
+       
 
         if ($this->moduleHas('revisions')) {
             $latestRevision = $item->revisions->first();
@@ -1203,8 +1228,11 @@ abstract class ModuleController extends Controller
                 Session::flash('status', twillTrans('twill::lang.publisher.draft-revisions-available'));
             }
         }
-
-        return View::make($view, $this->form($id))->with(
+        
+        return View::make($view, array_merge(
+            $this->form($id),
+            $this->getSharedViewData()
+        ))->with(
             ['formBuilder' => $controllerForm->toFrontend($this->getSideFieldsets($item))]
         );
     }

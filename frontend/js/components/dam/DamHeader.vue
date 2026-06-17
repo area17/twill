@@ -50,12 +50,7 @@
       </nav>
       </div>
       <div class="dam-header__action">
-        <div ref="form">
-          <a17-filter @submit="submitSearch" ref="filters" @searchInput="setSearch" :initial-search-value="initialSearchValue" > </a17-filter>
-        </div>
-        <a17-button v-if="hasEditPermissions" variant="validate" size="small" @click="openModal">{{
-          $trans('dam.add-new', 'Add new')
-        }}</a17-button>
+        <div class="dam-header__search-placeholder" aria-hidden="true"></div>
         <div v-if="userData && usersManagement">
           <a17-dropdown ref="userDropdown" position="bottom-right" :offset="8">
             <button
@@ -102,7 +97,6 @@
         </div>
       </div>
     </div>
-    <a17-dam-filters v-if="filters.length > 0" @resetFilters="clearSearch" ref="damFilters"></a17-dam-filters>
   </div>
 </template>
 
@@ -110,8 +104,6 @@
   import { mapGetters, mapState } from 'vuex'
 
   import A17Avatar from '@/components/Avatar.vue'
-  import a17Filter from '@/components/Filter.vue'
-  import A17DamFilters from '@/components/dam/DamFilters.vue'
   import {FORM, MEDIA_LIBRARY, MODALEDITION} from "@/store/mutations";
   import ACTIONS from "@/store/actions";
   import NOTIFICATION from "@/store/mutations/notification";
@@ -120,8 +112,6 @@
     name: 'A17DamHeader',
     components: {
       'a17-avatar': A17Avatar,
-      'a17-filter': a17Filter,
-      'a17-dam-filters': A17DamFilters
     },
     props: {
       customTitle: {
@@ -139,10 +129,6 @@
       usersManagement: {
         type: Boolean,
         default: true
-      },
-      initialSearchValue: {
-        type: String,
-        default: ''
       },
       editUrl: {
         type: String,
@@ -177,7 +163,7 @@
         return JSON.parse(this.currentUser)
       },
       showBreadcrumb() {
-        return ['collections', 'works'].some(str => this.updateUrl.includes(str))
+        return ['collections', 'works', 'projects'].some(str => this.updateUrl.includes(str))
       },
       partner() {
         // TODO: Get creator of current item
@@ -210,15 +196,8 @@
             })
           })
       },
-      submitSearch() {
-        this.$refs.damFilters.applyFilters()
-      },
-      setSearch(searchValue){
-        this.$store.commit(MEDIA_LIBRARY.SET_DAM_SEARCH, { search: searchValue})
-      },
       clearSearch(){
         this.$store.commit(MEDIA_LIBRARY.SET_DAM_SEARCH, {})
-        this.$refs.filters.searchValue = ''
       },
       openModal() {
         this.damView === 'landing' ? this.$root.$refs.damMediaLibrary.open() : this.$root.$refs.editionModal.open()
@@ -360,6 +339,12 @@
     @include breakpoint('medium+') {
       display: flex;
     }
+  }
+
+  .dam-header__search-placeholder {
+    flex: 0 0 auto;
+    width: rem-calc(220);
+    min-height: rem-calc(60);
   }
 
   .dam-header__dropdown {

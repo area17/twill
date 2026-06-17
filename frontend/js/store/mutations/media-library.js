@@ -25,6 +25,7 @@ export const DESTROY_MEDIA_CONNECTOR = 'destroyMediaConnector'
 export const UPDATE_REPLACE_INDEX = 'updateReplaceIndex'
 export const ADD_MEDIAS = 'addMedias'
 export const SET_FILTER_DATA = 'setFilterData'
+export const SET_FILTER_ENTRY = 'setFilterEntry'
 export const SET_FILTERS = 'setFilters'
 export const SET_DAM_SEARCH = 'setDamSearchValue'
 export const SET_DAM_ARCHIVE_SEARCH = 'setDamArchiveSearchValue'
@@ -56,6 +57,7 @@ export default {
   UPDATE_MEDIAS,
   ADD_MEDIAS,
   SET_FILTER_DATA,
+  SET_FILTER_ENTRY,
   SET_FILTERS,
   SET_DAM_SEARCH,
   SET_DAM_ARCHIVE_SEARCH,

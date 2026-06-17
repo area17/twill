@@ -166,11 +166,12 @@
         return this.filters.some(item => item.advanced === true)
       },
       enableArchiveSearch() {
-        return this.damView === 'landing'
+        return this.damView === 'landing' && !this.hideArchiveSearch
       },
       ...mapState({
         filterData: state => state.mediaLibrary.filterData,
         damView : state => state.mediaLibrary.damView,
+        hideArchiveSearch: state => state.mediaLibrary.hideArchiveSearch,
         filters: state => state.mediaLibrary.filters,
         searchEndpoint: state => state.mediaLibrary.filterSearchEndpoint
       })
@@ -230,6 +231,7 @@
 
         this.appliedFilters = { ...this.appliedFilters }
         this.$store.commit(MEDIA_LIBRARY.SET_FILTER_DATA, this.appliedFilters)
+        this.$emit('applyFilters')
       },
       applyFilters() {
         this.$refs.filterDropdown.forEach(el => {
@@ -237,6 +239,7 @@
         })
 
         this.closeFiltersModal()
+        this.$emit('applyFilters')
       },
       clearFilters() {
         this.$refs.filterDropdown.forEach(el => {
@@ -283,8 +286,8 @@
       resetFilters() {
         this.appliedFilters = {}
         this.clearFilters()
-        this.$emit('resetFilters')
         this.clearQueryStrings()
+        this.$emit('resetFilters')
       },
       clearQueryStrings(){
         const url  = new URL(window.location.href)

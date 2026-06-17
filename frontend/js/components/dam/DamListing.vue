@@ -279,6 +279,9 @@
       },
       filterData(newData) {
         this.submitFilter()
+      },
+      searchData(newData) {
+        this.submitFilter()
       }
     },
     methods: {
@@ -415,6 +418,7 @@
           )
           // select it
           this.updateSelectedMedias(media.id)
+          this.totalItems += 1
         }
       },
       updateSelectedMedias: function(item, shift = false, ctrlKey  = false) {

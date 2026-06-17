@@ -106,6 +106,8 @@ const state = {
 
   damView : window[process.env.VUE_APP_NAME].STORE.medias.damView || 'landing',
 
+  hideArchiveSearch: window[process.env.VUE_APP_NAME].STORE.medias.hideArchiveSearch || false,
+
   attachedRelationship:  window[process.env.VUE_APP_NAME].STORE.medias.attachedRelationship || {},
 
   filters: window[process.env.VUE_APP_NAME].STORE.medias.filters || [],
@@ -341,6 +343,17 @@ const mutations = {
       }
     }
     state.filterData = filters;
+  },
+  [MEDIA_LIBRARY.SET_FILTER_ENTRY] (state, { key, value }) {
+    const filters = { ...state.filterData }
+
+    if (value === null || value === undefined || value === '' || value === false || value === 'all') {
+      delete filters[key]
+    } else {
+      filters[key] = value
+    }
+
+    state.filterData = filters
   },
   [MEDIA_LIBRARY.SET_FILTERS] (state, payload) {
     state.filters = payload;
