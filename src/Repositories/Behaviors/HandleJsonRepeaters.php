@@ -17,8 +17,8 @@ use Illuminate\Support\Arr;
  * Names must be the same as the ones you added in your `repeaters` attribute on `config\twill.php`
  * or the actual filename for self-contained repeaters introduced in 2.1.
  *
- * Supported: Input, WYSIWYG, textarea, browsers.
- * Not supported: Medias, Files, repeaters.
+ * Supported: Input, WYSIWYG, textarea, browsers, Medias, Files.
+ * Not supported: repeaters.
  */
 trait HandleJsonRepeaters
 {
