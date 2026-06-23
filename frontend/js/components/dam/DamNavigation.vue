@@ -641,6 +641,10 @@
       margin-left: rem-calc(24);
       flex-shrink: 0;
     }
+
+    .envlabel {
+      background: #38ACFB;
+    }
   }
 
   .dam-nav__controls {
