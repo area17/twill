@@ -353,7 +353,8 @@ const actions = {
         commit(NOTIFICATION.SET_NOTIF, { message: 'Your submission could not be processed.', variant: 'error' })
       } else {
         dispatch(ACTIONS.HANDLE_ERRORS, errorResponse.response.data)
-        commit(NOTIFICATION.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
+        const message = errorResponse.response.data.message || 'Your submission could not be validated, please fix and retry'
+        commit(NOTIFICATION.SET_NOTIF, { message, variant: 'error' })
       }
     })
   },
