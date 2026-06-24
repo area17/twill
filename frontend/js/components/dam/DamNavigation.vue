@@ -32,20 +32,25 @@
               </span>
             </component>
           </h1>
-          <a17-button
-            :aria-label="
-              isOpen
-                ? $trans('dam.close-nav', 'Close navigation')
-                : $trans('dam.expand-nav', 'Expand navigation')
-            "
-            class="dam-nav__toggle"
-            @click="togglePanel"
-            ><span
-              aria-hidden="true"
-              v-svg
-              :symbol="isOpen ? 'pagination_left' : 'pagination_right'"
-            ></span
-          ></a17-button>
+          <div class="dam-nav__controls">
+            <a17-button
+              :aria-label="
+                isOpen
+                  ? $trans('dam.close-nav', 'Close navigation')
+                  : $trans('dam.expand-nav', 'Expand navigation')
+              "
+              class="dam-nav__toggle"
+              @click="togglePanel"
+              ><span
+                aria-hidden="true"
+                v-svg
+                :symbol="isOpen ? 'pagination_left' : 'pagination_right'"
+              ></span
+            ></a17-button>
+            <span class="envlabel" v-if="!isOpen">
+              {{ envLabel }}
+            </span>
+          </div>
           <a17-button
             :aria-label="$trans('dam.close-nav', 'Close navigation')"
             class="dam-nav__close"
@@ -415,6 +420,10 @@
       text-decoration: none;
     }
 
+    .envlabel {
+      background: #38ACFB;
+    }
+
     .dam-nav__toggle {
       width: rem-calc(36);
       height: rem-calc(36);
@@ -423,8 +432,6 @@
       line-height: normal;
       padding: 0;
       line-height: normal;
-      position: absolute;
-      right: rem-calc(20);
       display: none;
       align-items: center;
       justify-content: center;
@@ -633,6 +640,25 @@
       margin-right: rem-calc(-10);
       margin-left: rem-calc(24);
       flex-shrink: 0;
+    }
+
+    .envlabel {
+      background: #38ACFB;
+    }
+  }
+
+  .dam-nav__controls {
+    display: flex;
+    row-gap: rem-calc(16);
+    align-items: center;
+    flex-flow: column;
+    position: absolute;
+    right: rem-calc(20);
+    top: rem-calc(20);
+
+    .envlabel {
+      margin: 0;
+      top: 0;
     }
   }
 </style>
