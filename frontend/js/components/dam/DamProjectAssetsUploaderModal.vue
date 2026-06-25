@@ -29,24 +29,13 @@
       </div>
     </a17-dam-modal>
     <a17-modal ref="visibilityModal" :title="$trans('dam.assign_visibility', 'Assign visibility')">
-        <h3 class="visibility__header">{{ $trans('dam.visibility', 'Visibility') }}</h3>
+      <h3 class="visibility__header">{{ $trans('dam.visibility', 'Visibility') }}</h3>
       <div class="modal__metadata__content">
-        <button
-          v-for="toggle in visibilityToggles"
-          :key="toggle.key"
-          type="button"
-          class="visibility-toggle"
-          :class="{
-            'visibility-toggle--active': metadata[toggle.key],
-            'visibility-toggle--dam': toggle.key === 'showInDam'
-          }"
-          @click="toggleVisibility(toggle.key)"
-        >
-          <span class="visibility-toggle__label">{{ toggle.label }}</span>
-          <span class="visibility-toggle__switch" aria-hidden="true">
-            <span class="visibility-toggle__handle"></span>
-          </span>
-        </button>
+        <div class="dam-asset__modal">
+          <a17-switcher v-for="toggle in visibilityToggles" :key="toggle.key" :name="toggle.key.replace(/\s+/g, '')"
+            :title="toggle.label" :textEnabled="null" :textDisabled="null" :value="metadata[toggle.key]"
+            @change="toggleVisibility(toggle.key, $event)"></a17-switcher>
+        </div>
         <a17-inputframe>
           <a17-button type="submit" name="create" variant="validate"  @click="saveFiles">{{ uploadBtnLabel }}</a17-button>
         </a17-inputframe>
@@ -64,13 +53,15 @@
   import a17MediaGrid from './MediaGrid.vue'
   import a17Uploader from './Uploader.vue'
   import a17DamModal from './Modal.vue'
+  import a17Switcher from '@/components/Switcher.vue'
   export default {
     name: 'A17DamProjectAssetsUploaderModal',
     components: {
       'a17-uploader': a17Uploader,
       'a17-mediagrid': a17MediaGrid,
       'a17-spinner': a17Spinner,
-      'a17-dam-modal': a17DamModal
+      'a17-dam-modal': a17DamModal,
+      'a17-switcher': a17Switcher,
     },
     props: {
       title: {
@@ -220,8 +211,8 @@
       openMetadataModal: function () {
         this.$refs.visibilityModal.open()
       },
-      toggleVisibility: function (key) {
-        this.metadata[key] = !this.metadata[key]
+      toggleVisibility: function (key, value) {
+        this.metadata[key] = value
       },
       buildUploadMetadata: function () {
         const uploadMetadata = {
@@ -361,11 +352,8 @@
 }
 
 .modal__metadata__content {
-  display: flex;
-  flex-flow: column;
-  gap: rem-calc(16);
-  padding-bottom: 1rem;
-  padding-top: 1rem;
+  margin-top: rem-calc(12);
+  padding-bottom: rem-calc(20);
 }
 
 
@@ -378,65 +366,8 @@
 }
 
 .visibility__header {
-  margin-top: rem-calc(40);
-  margin-bottom: rem-calc(5);
-  color: $color__text;
-  font-size: rem-calc(18);
-  font-weight: 400;
-}
-
-.visibility-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: rem-calc(15) rem-calc(40);
-  border: 0;
-  border-radius: rem-calc(999);
-  background: $color__black--5;
-  color: $color__text;
-  text-align: left;
-  transition: background-color .2s ease, color .2s ease;
-}
-
-.visibility-toggle--dam {
-  background: rgba($color__publish, .18);
-  color: $color__publish;
-}
-
-
-.visibility-toggle__label {
-  font-size: rem-calc(18);
-  line-height: 1.3;
-}
-
-.visibility-toggle__switch {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  width: rem-calc(50);
-  height: rem-calc(12);
-  padding: rem-calc(3);
-  border-radius: rem-calc(999);
-  background: $color__grey--54;
-  transition: background-color .2s ease;
-}
-
-.visibility-toggle--active .visibility-toggle__switch {
-  background: $color__publish;
-}
-
-.visibility-toggle__handle {
-  width: rem-calc(20);
-  height: rem-calc(20);
-  border-radius: 50%;
-  background: $color__white;
-  box-shadow: 0 1px 3px rgba($color__black, .2);
-  transition: transform .2s ease;
-}
-
-.visibility-toggle--active .visibility-toggle__handle {
-  transform: translateX(rem-calc(30));
+  @include sans-serif();
+  margin-top: rem-calc(36);
 }
 
 .mediagrid {
@@ -587,5 +518,38 @@
     // TODO: move to colors
     border-color: #077FD7;
   }
+}
+
+.dam-asset__modal {
+  display: flex;
+  flex-flow: column;
+  gap: rem-calc(12);
+
+  .switcher {
+    background: $color__light;
+    color: $color__text;
+    border-radius: 130px;
+    line-height: normal;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    min-height: rem-calc(44);
+  }
+
+  .switcher.switcher--active {
+    background:$color__lightGreen;
+    color:$color__publish;
+  }
+
+  .switcher__title {
+    @include sans-serif();
+    font-weight: 400;
+  }
+
+  .switcher__button {
+    top: 0;
+  }
+
 }
 </style>
