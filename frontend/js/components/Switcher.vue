@@ -22,6 +22,10 @@
   export default {
     name: 'A17Toggle',
     props: {
+      value: {
+        type: Boolean,
+        default: undefined
+      },
       name: {
         type: String,
         default: ''
@@ -59,7 +63,10 @@
         ]
       },
       isChecked: function () {
-        return this.published
+        return this.currentValue
+      },
+      currentValue: function () {
+        return typeof this.value === 'boolean' ? this.value : this.published
       },
       formatTextEnabled: function () {
         const scoreStart = compareAsc(this.startDate, new Date())
@@ -74,10 +81,14 @@
       },
       checkedValue: {
         get: function () {
-          return this.published
+          return this.currentValue
         },
         set: function (value) {
-          this.$store.commit(PUBLICATION.UPDATE_PUBLISH_STATE, value)
+          if (typeof this.value === 'boolean') {
+            this.$emit('input', value)
+          } else {
+            this.$store.commit(PUBLICATION.UPDATE_PUBLISH_STATE, value)
+          }
           this.$emit('change', value)
         }
       },
