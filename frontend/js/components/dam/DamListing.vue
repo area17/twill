@@ -262,7 +262,8 @@
         filterData: state => state.mediaLibrary.filterData,
         initialFilterData: state => state.mediaLibrary.initialFilterData,
         searchData : state => state.mediaLibrary.searchData,
-        archiveData : state => state.mediaLibrary.archiveData
+        archiveData : state => state.mediaLibrary.archiveData,
+        currentStatus: state => state.mediaLibrary.currentStatus,
       }),
     },
     watch: {
@@ -278,6 +279,9 @@
         // TODO: Set showFileName in store
       },
       filterData(newData) {
+        this.submitFilter()
+      },
+      currentStatus(newVal) {
         this.submitFilter()
       },
       searchData(newData) {
@@ -559,6 +563,7 @@
             ...formdata,
             ...this.filterData,
             ...this.initialFilterData,
+            status: this.currentStatus || 'all',
             ...this.searchData,
             ...this.archiveData
           },
@@ -587,8 +592,15 @@
 
             // Loop through the params object and set the query parameters
             Object.keys(this.filterData).forEach(key => {
-              url.searchParams.set(key, JSON.stringify(this.filterData[key]));
+              const value = this.filterData[key]
+
+              url.searchParams.set(
+                key,
+                typeof value === 'string' ? value : JSON.stringify(value)
+              )
             });
+
+            url.searchParams.set('status', this.currentStatus || 'all')
 
             // Update the URL without reloading the page
             replaceState(url)

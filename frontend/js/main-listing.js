@@ -18,7 +18,7 @@ import { mapState } from 'vuex'
 // components
 import a17Fieldset from '@/components/Fieldset.vue'
 import a17Datatable from '@/components/table/Datatable.vue'
-import a17DamFilteredDatatable from '@/components/dam/DamFilteredDatatable.vue'
+import a17DamResultsTable from '@/components/dam/DamResultsTable.vue'
 import a17NestedDatatable from '@/components/table/nested/NestedDatatable'
 import a17Filter from '@/components/Filter.vue'
 import a17TableFilters from '@/components/table/TableFilters.vue'
@@ -61,7 +61,8 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
     'a17-filter': a17Filter,
     'a17-table-filters': a17TableFilters,
     'a17-datatable': a17Datatable,
-    'a17-dam-filtered-datatable': a17DamFilteredDatatable,
+    'a17-dam-results-table': a17DamResultsTable,
+    'a17-dam-filtered-datatable': a17DamResultsTable,
     'a17-nested-datatable': a17NestedDatatable,
     'a17-bulk': a17BulkEdit,
     'a17-langmanager': a17LangManager,
@@ -79,6 +80,9 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
     })
   },
   methods: {
+    usesDamResultsTable: function () {
+      return Boolean(document.querySelector('#app a17-dam-results-table, #app a17-dam-filtered-datatable'))
+    },
     create: function () {
       if (this.$refs.editionModal) {
         this.$store.commit(MODALEDITION.UPDATE_MODAL_ACTION, '')
@@ -88,6 +92,7 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
       }
     },
     reloadDatas: function () {
+      if (this.usesDamResultsTable()) return
       // reload datas
       this.$store.dispatch(ACTIONS.GET_DATATABLE)
     },
@@ -133,6 +138,7 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
     }
 
     if (reload) {
+      if (this.usesDamResultsTable()) return
       this.reloadDatas()
     }
   }

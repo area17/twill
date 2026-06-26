@@ -1,5 +1,5 @@
 <template>
-  <form :class="formClasses" @submit.prevent="submitFilters">
+  <div :class="formClasses">
     <div class="filter__inner">
       <div class="filter__navigation">
         <ul v-if="navigationItems.length" class="secondarynav secondarynav--desktop">
@@ -24,6 +24,7 @@
           type="search"
           class="form__input form__input--small"
           :placeholder="$trans('filter.search-placeholder')"
+          @keyup.enter="submitSearch"
         />
 
         <a17-button
@@ -65,7 +66,7 @@
     </div>
 
     <div v-show="expanded" class="filter__more">
-      <div class="filter__moreInner">
+      <div class="filter__moreHidden">
         <div class="dam-filter-wrapper__hidden-filters">
           <slot name="hidden-filters">
             <a17-dam-filters
@@ -77,15 +78,13 @@
         </div>
       </div>
     </div>
-  </form>
+  </div>
 </template>
 
 <script>
   import { mapState } from 'vuex'
-
-  import ACTIONS from '@/store/actions'
   import A17DamFilters from '@/components/dam/DamFilters.vue'
-  import { DATATABLE, MEDIA_LIBRARY } from '@/store/mutations'
+  import { MEDIA_LIBRARY } from '@/store/mutations'
 
   export default {
     name: 'A17DamFilterWrapper',
@@ -146,8 +145,7 @@
 
     computed: {
       ...mapState({
-        mediaFilters: state => state.mediaLibrary.filters,
-        filterData: state => state.mediaLibrary.filterData
+        mediaFilters: state => state.mediaLibrary.filters
       }),
       formClasses () {
         return {
@@ -180,48 +178,11 @@
         )
       },
 
-      getDatatableFilterPayload () {
-        const filterPayload = {
-          ...this.filterData,
-        }
-
-        if (this.activeStatus && this.activeStatus !== 'all') {
-          filterPayload.status = this.activeStatus
-        } else {
-          delete filterPayload.status
-        }
-
-        if (this.searchValue) {
-          filterPayload.search = this.searchValue
-        }
-
-        return filterPayload
-      },
-
-      syncDatatableFilters () {
-        if (!this.syncDatatable) {
-          return
-        }
-
-        this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
-        this.$store.commit(DATATABLE.CLEAR_DATATABLE_FILTER)
-        this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER, this.getDatatableFilterPayload())
-      },
-
       syncMediaFilters () {
-        this.$store.commit(MEDIA_LIBRARY.SET_FILTER_ENTRY, {
+        this.$store.commit(MEDIA_LIBRARY.SET_DAM_STATUS_FILTER, {
           key: 'status',
           value: this.activeStatus
         })
-      },
-
-      applyDatatableFilters () {
-        if (!this.syncDatatable) {
-          return
-        }
-
-        this.syncDatatableFilters()
-        this.$store.dispatch(ACTIONS.GET_DATATABLE)
       },
 
       clearSearch () {
@@ -239,18 +200,7 @@
       },
 
       applyFilters () {
-        if (this.syncDatatable) {
-          this.applyDatatableFilters()
-          return
-        }
-
         this.syncMediaFilters()
-      },
-
-      submitFilters () {
-        this.submitSearch()
-        this.applyFilters()
-        this.expanded = false
       },
 
       selectStatus (status) {
@@ -262,14 +212,8 @@
         this.activeStatus = 'all'
         this.expanded = false
         this.clearSearch()
+        this.syncMediaFilters()
         this.$refs.damFilters?.resetFilters?.()
-
-        if (this.syncDatatable) {
-          this.$store.commit(DATATABLE.UPDATE_DATATABLE_PAGE, 1)
-          this.$store.commit(DATATABLE.CLEAR_DATATABLE_FILTER)
-          this.$store.commit(DATATABLE.UPDATE_DATATABLE_FILTER_STATUS, this.activeStatus)
-          this.$store.dispatch(ACTIONS.GET_DATATABLE)
-        }
       },
 
       handleCreate () {
@@ -328,7 +272,7 @@
     width: 100%;
   }
 
-  .filter__moreInner {
+  .filter__moreHidden {
     border-top: 1px solid $color__border;
     padding-top: rem-calc(16);
     width: 100%;

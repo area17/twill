@@ -100,6 +100,8 @@ const state = {
 
   searchData : window[process.env.VUE_APP_NAME].STORE.medias.searchData || {},
 
+  currentStatus : window[process.env.VUE_APP_NAME].STORE.medias.currentStatus || 'all',
+
   archiveData : window[process.env.VUE_APP_NAME].STORE.medias.archiveData || {},
 
   initialFilterData: window[process.env.VUE_APP_NAME].STORE.medias.initialFilterData || {},
@@ -344,16 +346,8 @@ const mutations = {
     }
     state.filterData = filters;
   },
-  [MEDIA_LIBRARY.SET_FILTER_ENTRY] (state, { key, value }) {
-    const filters = { ...state.filterData }
-
-    if (value === null || value === undefined || value === '' || value === false || value === 'all') {
-      delete filters[key]
-    } else {
-      filters[key] = value
-    }
-
-    state.filterData = filters
+  [MEDIA_LIBRARY.SET_DAM_STATUS_FILTER] (state, { key, value }) {
+    state.currentStatus = value
   },
   [MEDIA_LIBRARY.SET_FILTERS] (state, payload) {
     state.filters = payload;

@@ -84,10 +84,10 @@
           {{ $trans('nav.applied-filters', 'Applied filters') }}
         </h2>
         <div class="dam-filters-action">
-          <button class="f--link-underlined--o" @click="resetFilters">
+          <button class="f--link-underlined--o" @click.prevent="resetFilters">
             {{ $trans('nav.reset', 'Reset') }}
           </button>
-          <button class="f--link-underlined--o" @click="applyAppliedFilters">
+          <button class="f--link-underlined--o" @click.prevent="applyAppliedFilters">
             {{ $trans('nav.apply', 'Apply') }}
           </button>
         </div>
@@ -183,9 +183,48 @@
         } else {
           document.documentElement.classList.remove('s--modal')
         }
+      },
+      filters: {
+        handler() {
+          this.syncAppliedFiltersFromStore()
+        },
+        deep: true
+      },
+      filterData: {
+        handler() {
+          this.syncAppliedFiltersFromStore()
+        },
+        deep: true
       }
     },
     methods: {
+      syncAppliedFiltersFromStore() {
+        if (!this.filters || this.filters.length === 0) {
+          return
+        }
+
+        this.setAppliedFilters()
+
+        this.$nextTick(() => {
+          if (this.$refs.appliedCheckboxGroup) {
+            this.applyFilterValues()
+          }
+
+          if (this.customColorValue && this.$refs.filterDropdown) {
+            const colorDropdown = this.$refs.filterDropdown.find(
+              component => component.customColorCheckbox
+            )
+
+            if (
+              colorDropdown &&
+              colorDropdown.$refs &&
+              colorDropdown.$refs.colorField
+            ) {
+              colorDropdown.$refs.colorField.updateValue(this.customColorValue)
+            }
+          }
+        })
+      },
       openFiltersModal() {
         this.filtersModalOpen = true
 
@@ -231,7 +270,6 @@
 
         this.appliedFilters = { ...this.appliedFilters }
         this.$store.commit(MEDIA_LIBRARY.SET_FILTER_DATA, this.appliedFilters)
-        this.$emit('applyFilters')
       },
       applyFilters() {
         this.$refs.filterDropdown.forEach(el => {
@@ -315,10 +353,23 @@
       setAppliedFilters() {
         const appliedFilters = {}
         for (const key in this.filterData) {
-          if (Array.isArray(this.filterData[key])) {
+          let normalizedValue = this.filterData[key]
+
+          if (typeof normalizedValue === 'string') {
+            try {
+              normalizedValue = JSON.parse(normalizedValue)
+            } catch (e) {}
+          }
+
+          if (Array.isArray(normalizedValue)) {
             const matchedItems = [];
             const filter = this.filters.find(filter => filter.name === key);
-            this.filterData[key].forEach(value => {
+
+            if (!filter || !filter.items) {
+              continue
+            }
+
+            normalizedValue.forEach(value => {
               let item
               let isCustomColor = false
               if (key === 'colors') {
@@ -328,6 +379,10 @@
                 })
               } else {
                 item = filter.items.find(item => item.value.toString() === value.toString())
+              }
+
+              if (!item) {
+                return
               }
 
               const newItem = {
@@ -346,14 +401,26 @@
             })
 
             appliedFilters[key] = matchedItems
-          } else {
+          } else if (normalizedValue && typeof normalizedValue === 'object') {
             const matchedItems = {}
             const filters = this.filters.find(filter => filter.name === key);
-            for (const deepKey in this.filterData[key]) {
+            if (!filters || !filters.items) {
+              continue
+            }
+            for (const deepKey in normalizedValue) {
               const filter = filters.items.find(filter => filter.name === deepKey)
               const newFilters = [];
-              this.filterData[key][deepKey].forEach(value => {
+              if (!filter || !filter.items) {
+                continue
+              }
+              if (!Array.isArray(normalizedValue[deepKey])) {
+                continue
+              }
+              normalizedValue[deepKey].forEach(value => {
                 const item = filter.items.find(item => item.value.toString() === value.toString())
+                if (!item) {
+                  return
+                }
                 newFilters.push({
                   value: `${deepKey}-${item.value}`,
                   label: item.label
@@ -384,17 +451,11 @@
       this.getMediaQuery()
       this.bindInputs()
 
-      this.setAppliedFilters()
-      this.applyFilterValues()
+      this.syncAppliedFiltersFromStore()
 
       window.addEventListener('resize', this.getMediaQuery)
 
-      this.$nextTick(() => {
-        if (this.customColorValue) {
-          this.$refs.filterDropdown.find(component => component.customColorCheckbox)
-            .$refs.colorField.updateValue(this.customColorValue)
-        }
-      })
+      this.$nextTick(() => this.syncAppliedFiltersFromStore())
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.getMediaQuery)
