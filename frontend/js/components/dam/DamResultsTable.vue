@@ -126,10 +126,14 @@
                 <template v-else-if="col.name === 'published'">
                   <button
                     type="button"
-                    class="tablecell__pubstate"
-                    :class="{ 'tablecell__pubstate--live': Boolean(row.published) }"
+                    class="tablecell__pubbutton"
                     @click="togglePublished(row)"
-                  ></button>
+                  >
+                    <span
+                      class="tablecell__pubstate"
+                      :class="{ 'tablecell__pubstate--live': Boolean(row.published) }"
+                    ></span>
+                  </button>
                 </template>
 
                 <template v-else-if="col.name === 'featured'">
@@ -644,7 +648,7 @@
         })
       },
       shouldShowHeaderLabel (column) {
-        return !['bulk', 'thumbnail', 'published', 'featured', 'starred'].includes(column.name)
+        return !['bulk', 'published', 'featured', 'starred'].includes(column.name)
       },
       shouldRenderHtmlCell (column, row) {
         return Boolean(column.html || this.looksLikeHtml(row[column.name]))
@@ -862,7 +866,7 @@
   .datatable__setupButton,
   .tablehead__bulkToggle,
   .tablecell__bulkToggle,
-  .tablecell__pubstate,
+  .tablecell__pubbutton,
   .tablecell__flag,
   .tablecell__starbutton {
     @include btn-reset;
@@ -1043,12 +1047,19 @@
     text-decoration: none;
   }
 
+  .tablecell__pubbutton {
+    align-items: center;
+    display: inline-flex;
+    justify-content: center;
+    min-height: 16px;
+    min-width: 16px;
+  }
+
   .tablecell__pubstate {
     background: $color__grey--54;
-    border-radius: 50%;
-    display: inline-block;
+    border-radius: 999px;
+    display: block;
     height: 10px;
-    margin-top: 4px;
     width: 10px;
   }
 
