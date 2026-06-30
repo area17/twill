@@ -199,9 +199,6 @@
       clearSearch(){
         this.$store.commit(MEDIA_LIBRARY.SET_DAM_SEARCH, {})
       },
-      openModal() {
-        this.damView === 'landing' ? this.$root.$refs.damMediaLibrary.open() : this.$root.$refs.editionModal.open()
-      },
       openEditModal() {
         const endpoint = this.editUrl
         this.$store.commit(MODALEDITION.UPDATE_MODAL_MODE, 'update')

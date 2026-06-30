@@ -18,8 +18,9 @@
         </ul>
       </div>
 
-      <div class="filter__search dam-filters__search">
+      <div class="filter__controls dam-filters__controls">
         <input
+          v-if="showSearch"
           v-model="searchValue"
           type="search"
           class="form__input form__input--small"
@@ -28,6 +29,7 @@
         />
 
         <a17-button
+          v-if="showFiltersToggle"
           class="filter__toggle"
           variant="ghost"
           type="button"
@@ -38,16 +40,16 @@
           <span v-svg symbol="dropdown_module"></span>
         </a17-button>
 
-        <div v-if="showCreate || filterLinks.length" class="dam-filters__actions">
+        <div v-if="showTopActions" class="dam-filters__actions">
           <a17-button
             v-if="showCreate"
             variant="validate"
             size="small"
             :href="skipCreateModal ? createUrl : null"
             :el="skipCreateModal ? 'a' : 'button'"
-            @click="handleCreate"
+            @click="openModal"
           >
-            {{ $trans('listing.add-new-button') }}
+            {{ uploadBtnLabel && uploadBtnLabel.trim()  ? uploadBtnLabel : $trans('listing.add-new-button') }}
           </a17-button>
           <a17-button
             v-for="link in filterLinks"
@@ -65,16 +67,50 @@
       </div>
     </div>
 
-    <div v-show="expanded" class="filter__more">
+    <div v-if="showFiltersSection" class="filter__more">
       <div class="filter__moreHidden">
-        <div class="dam-filter-wrapper__hidden-filters">
-          <slot name="hidden-filters">
-            <a17-dam-filters
-              ref="damFilters"
-              @applyFilters="handleHiddenFiltersApply"
-              @resetFilters="handleHiddenFiltersReset"
-            />
-          </slot>
+        <div class="dam-filter-wrapper__filters-row">
+          <div :class="filtersContentClasses">
+            <slot v-if="$slots.filters" name="filters">
+              <a17-dam-filters
+                ref="damFilters"
+                @applyFilters="handleFiltersApply"
+                @resetFilters="handleFiltersReset"
+              />
+            </slot>
+            <slot v-else name="hidden-filters">
+              <a17-dam-filters
+                ref="damFilters"
+                @applyFilters="handleFiltersApply"
+                @resetFilters="handleFiltersReset"
+              />
+            </slot>
+          </div>
+
+          <div v-if="showInlineActions" class="dam-filters__actions dam-filters__actions--inline">
+            <a17-button
+              v-if="showCreate"
+              variant="validate"
+              size="small"
+              :href="skipCreateModal ? createUrl : null"
+              :el="skipCreateModal ? 'a' : 'button'"
+              @click="openModal"
+            >
+              {{ uploadBtnLabel && uploadBtnLabel.trim()  ? uploadBtnLabel : $trans('listing.add-new-button') }}
+            </a17-button>
+            <a17-button
+              v-for="link in filterLinks"
+              :key="link.url || link.label"
+              el="a"
+              :href="link.url || '#'"
+              :download="link.download || ''"
+              :rel="link.rel || ''"
+              :target="link.target || ''"
+              variant="small secondary"
+            >
+              {{ link.label }}
+            </a17-button>
+          </div>
         </div>
       </div>
     </div>
@@ -93,6 +129,10 @@
     },
 
     props: {
+      damView: {
+        type: String,
+        default: 'landing'
+      },
       navigationItems: {
         type: Array,
         default: () => []
@@ -108,6 +148,14 @@
       hiddenFilters: {
         type: Array,
         default: () => []
+      },
+      showSearch: {
+        type: Boolean,
+        default: true
+      },
+      alwaysShowFilters: {
+        type: Boolean,
+        default: false
       },
       showCreate: {
         type: Boolean,
@@ -132,6 +180,10 @@
       syncDatatable: {
         type: Boolean,
         default: false
+      },
+      uploadBtnLabel: {
+        type: String,
+        default: () => ''
       }
     },
 
@@ -150,14 +202,47 @@
       formClasses () {
         return {
           filter: true,
-          'filter--single': !this.hasHiddenFilters,
-          'filter--withHiddenFilters': this.hasHiddenFilters,
-          'filter--opened': this.expanded
+          'filter--single': !this.hasFiltersContent,
+          'filter--withHiddenFilters': this.hasFiltersContent,
+          'filter--opened': this.expanded || this.alwaysShowFilters,
+          'filter--alwaysVisible': this.alwaysShowFilters,
+          'filter--withoutSearch': !this.showSearch
         }
       },
 
-      hasHiddenFilters () {
-        return Boolean(this.$slots['hidden-filters']) || this.hiddenFilters.length > 0 || this.mediaFilters.length > 0
+      hasFiltersSlot () {
+        return Boolean(this.$slots.filters) || Boolean(this.$slots['hidden-filters'])
+      },
+
+      hasFiltersContent () {
+        return this.hasFiltersSlot || this.hiddenFilters.length > 0 || this.mediaFilters.length > 0
+      },
+
+      showFiltersToggle () {
+        return this.hasFiltersContent && !this.alwaysShowFilters
+      },
+
+      showFiltersSection () {
+        return this.hasFiltersContent && (this.alwaysShowFilters || this.expanded)
+      },
+
+      filtersContentClasses () {
+        return {
+          'dam-filter-wrapper__filters-content': true,
+          'dam-filter-wrapper__filters-content--always-visible': this.alwaysShowFilters
+        }
+      },
+
+      hasActions () {
+        return this.showCreate || this.filterLinks.length > 0
+      },
+
+      showTopActions () {
+        return this.hasActions && !this.alwaysShowFilters
+      },
+
+      showInlineActions () {
+        return this.hasActions && this.alwaysShowFilters
       }
     },
 
@@ -190,12 +275,15 @@
         this.$store.commit(MEDIA_LIBRARY.SET_DAM_SEARCH, {})
       },
 
-      handleHiddenFiltersReset () {
+      handleFiltersReset () {
         this.clearSearch()
         this.applyFilters()
       },
+      openModal() {
+        this.damView === 'landing' ? this.$root.$refs.damMediaLibrary.open() : this.$root.$refs.editionModal.open()
+      },
 
-      handleHiddenFiltersApply () {
+      handleFiltersApply () {
         this.applyFilters()
       },
 
@@ -210,7 +298,9 @@
 
       clearFilters () {
         this.activeStatus = 'all'
-        this.expanded = false
+        if (!this.alwaysShowFilters) {
+          this.expanded = false
+        }
         this.clearSearch()
         this.syncMediaFilters()
         this.$refs.damFilters?.resetFilters?.()
@@ -246,7 +336,7 @@
     min-width: 0;
   }
 
-  .dam-filters__search {
+  .dam-filters__controls {
     align-items: center;
     display: flex;
     flex: 1 1 auto;
@@ -256,7 +346,7 @@
     min-width: 0;
   }
 
-  .dam-filters__search .form__input {
+  .dam-filters__controls .form__input {
     flex: 0 1 rem-calc(220);
     margin-bottom: 0;
   }
@@ -278,7 +368,33 @@
     width: 100%;
   }
 
-  .dam-filter-wrapper__hidden-filters {
+  .filter--alwaysVisible .filter__moreHidden {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .dam-filter-wrapper__filters-content {
+    flex: 1 1 auto;
+    min-width: 0;
     width: 100%;
   }
+
+  .dam-filter-wrapper__filters-content--always-visible {
+    width: auto;
+  }
+
+  .dam-filter-wrapper__filters-row {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: rem-calc(12);
+    width: 100%;
+  }
+
+  .dam-filters__actions--inline {
+    flex: 0 0 auto;
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+
 </style>

@@ -116,6 +116,26 @@ const state = {
   forUploadCollections: window[process.env.VUE_APP_NAME].STORE.medias.forUploadCollections || [],
   forUploadDisciplines: window[process.env.VUE_APP_NAME].STORE.medias.forUploadDisciplines || [],
   forUploadSectors: window[process.env.VUE_APP_NAME].STORE.medias.forUploadSectors || [],
+  visibilityToggles: window[process.env.VUE_APP_NAME].STORE.medias.visibilityToggles || [
+    {
+      key: 'pushToArchive',
+      metadataKey: 'push_to_archive',
+      labelKey: 'dam.push-to-archive',
+      fallbackLabel: 'Publish to Archive'
+    },
+    {
+      key: 'showInCmsMediaLibrary',
+      metadataKey: 'show_in_cms',
+      labelKey: 'dam.show-in-cms-media-library',
+      fallbackLabel: 'Show in CMS media library'
+    },
+    {
+      key: 'showInDam',
+      metadataKey: 'show_in_dam',
+      labelKey: 'dam.show-in-dam-only',
+      fallbackLabel: 'Show in DAM only'
+    }
+  ],
   projectBrowserUrl: window[process.env.VUE_APP_NAME].STORE.medias.projectBrowserUrl || '',
   filterSearchEndpoint: window[process.env.VUE_APP_NAME].STORE.medias.filterSearchEndpoint || '',
   bulkDownloadEndpoint: window[process.env.VUE_APP_NAME].STORE.medias.bulkDownloadEndpoint || '',

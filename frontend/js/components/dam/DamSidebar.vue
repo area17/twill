@@ -341,36 +341,74 @@
             </template>
           </template>
 
-          <template v-for="field in browserFields">
-            <div class="dam-sidebar__editable" v-bind:key="field.name">
-              <div class="dam-sidebar__editable-header">
-                <h3 class="f--small">{{ field.label }}</h3>
-                <a17-button variant="aslink" @click="openBrowser(field)" v-if="hasEditPermissions && !field.disabled">
-                  <span class="f--small">{{ $trans('dam.add', 'Add') }}</span>
-                </a17-button>
-              </div>
-              <ul>
-                <li
-                  v-for="(link, i) in getSharedBrowserItems(field.name)"
-                  :key="i"
-                  class="f--small"
-                >
-                  <a17-button
-                    el="a"
-                    variant="aslink"
-                    :href="link.edit"
-                    target="_blank"
-                    ><span>{{ link.name }}</span></a17-button
-                  >
-                  <!--                    <a17-button variant="aslink-grey"-->
-                  <!--                      ><span>{{-->
-                  <!--                        $trans('dam.remove', 'Remove')-->
-                  <!--                      }}</span></a17-button-->
-                  <!--                    >-->
-                </li>
-              </ul>
+          <div
+            v-if="isImage && resolvedVisibilityToggles.length"
+            class="dam-sidebar__editable dam-sidebar__visibility"
+          >
+            <div class="dam-sidebar__editable-header">
+              <h3 class="f--small">{{ $trans('dam.visibility', 'Visibility') }}</h3>
             </div>
-          </template>
+
+            <div class="dam-sidebar__visibility-list dam-asset__modal">
+              <div
+                v-for="toggle in resolvedVisibilityToggles"
+                :key="toggle.key"
+                class="dam-sidebar__visibility-item"
+              >
+                <a17-switcher
+                  :name="`visibility_ui_${toggle.metadataKey}`"
+                  :title="toggle.label"
+                  :textEnabled="null"
+                  :textDisabled="null"
+                  :value="visibilityValues[toggle.metadataKey]"
+                  @change="handleVisibilityToggleChange(toggle.metadataKey, $event)"
+                ></a17-switcher>
+                <input
+                  v-if="hasSingleMedia || visibilityTouched[toggle.metadataKey]"
+                  :name="toggle.metadataKey"
+                  :value="visibilityValues[toggle.metadataKey] ? 1 : 0"
+                  type="hidden"
+                  class="dam-sidebar__visibility-input"
+                  tabindex="-1"
+                  aria-hidden="true"
+                />
+              </div>
+            </div>
+          </div>
+          
+
+          <div
+            v-for="field in browserFields"
+            :key="field.name"
+            class="dam-sidebar__editable"
+          >
+            <div class="dam-sidebar__editable-header">
+              <h3 class="f--small">{{ field.label }}</h3>
+              <a17-button variant="aslink" @click="openBrowser(field)" v-if="hasEditPermissions && !field.disabled">
+                <span class="f--small">{{ $trans('dam.add', 'Add') }}</span>
+              </a17-button>
+            </div>
+            <ul>
+              <li
+                v-for="(link, i) in getSharedBrowserItems(field.name)"
+                :key="i"
+                class="f--small"
+              >
+                <a17-button
+                  el="a"
+                  variant="aslink"
+                  :href="link.edit"
+                  target="_blank"
+                  ><span>{{ link.name }}</span></a17-button
+                >
+                <!--                    <a17-button variant="aslink-grey"-->
+                <!--                      ><span>{{-->
+                <!--                        $trans('dam.remove', 'Remove')-->
+                <!--                      }}</span></a17-button-->
+                <!--                    >-->
+              </li>
+            </ul>
+          </div>
 
           <template>
             <div
@@ -402,8 +440,8 @@
                   </template>
                 </ul>
               </template>
-              <template v-else v-for="field in tagFields">
-                <div v-bind:key="field.name">
+              <template v-else>
+                <div v-for="field in tagFields" v-bind:key="field.name">
                   <a17-vselect
                     :label="field.label"
                     :name="field.name"
@@ -547,6 +585,7 @@
 
   import a17Langswitcher from '@/components/LangSwitcher'
   import a17MediaSidebarUpload from '@/components/media-library/MediaSidebarUpload'
+  import a17Switcher from '@/components/Switcher.vue'
   import api from '@/store/api/media-library'
   import { BROWSER, NOTIFICATION } from '@/store/mutations'
   import a17VueFilters from '@/utils/filters.js'
@@ -557,7 +596,8 @@
     name: 'A17DamSidebar',
     components: {
       'a17-mediasidebar-upload': a17MediaSidebarUpload,
-      'a17-langswitcher': a17Langswitcher
+      'a17-langswitcher': a17Langswitcher,
+      'a17-switcher': a17Switcher
     },
     props: {
       medias: {
@@ -607,13 +647,16 @@
         previousSavedData: {},
         fieldsRemovedFromBulkEditing: [],
         editTagsOpen: false,
-        isOpen: true
+        isOpen: true,
+        visibilityValues: {},
+        visibilityTouched: {}
       }
     },
     filters: a17VueFilters,
     watch: {
       medias: function() {
         this.fieldsRemovedFromBulkEditing = []
+        this.initializeVisibilityState()
       },
       firstMedia(val) {
         if (this.lightbox) {
@@ -824,6 +867,12 @@
       sharedDiscipline: function() {
         return this.getSharedItems('discipline')
       },
+      resolvedVisibilityToggles: function() {
+        return this.visibilityToggles.map(toggle => ({
+          ...toggle,
+          label: this.$trans(toggle.labelKey, toggle.fallbackLabel)
+        }))
+      },
       getOwnedListItems() {
         const itemClass = 'meta__'
         const allowedKeys = this.metaItems
@@ -869,6 +918,7 @@
         currentBrowser: state => state.browser.connector,
         browserFields: state => state.mediaLibrary.browserFields,
         tagFields: state => state.mediaLibrary.tagFields,
+        visibilityToggles: state => state.mediaLibrary.visibilityToggles,
         hasEditPermissions: state => state.permissions.hasEditPermissions,
         bulkDownloadEndpoint: state => state.mediaLibrary.bulkDownloadEndpoint
       })
@@ -964,6 +1014,80 @@
       removeFieldFromBulkEditing: function(name) {
         this.fieldsRemovedFromBulkEditing.push(name)
       },
+      getMediaVisibilityValue: function(media, metadataKey) {
+        const value = media?.vissibility?.[metadataKey]
+          ?? media?.visibility?.[metadataKey]
+          ?? media?.metadatas?.default?.[metadataKey]
+
+        return value === true || value === 1 || value === '1'
+      },
+      setMediaVisibilityValue: function(media, metadataKey, value) {
+        const normalizedValue = value ? 1 : 0
+
+        if (!media.vissibility) {
+          this.$set(media, 'vissibility', {})
+        }
+
+        this.$set(media.vissibility, metadataKey, normalizedValue)
+
+        if (media.visibility) {
+          this.$set(media.visibility, metadataKey, normalizedValue)
+        }
+
+        if (media.metadatas?.default) {
+          this.$set(media.metadatas.default, metadataKey, normalizedValue)
+        }
+      },
+      initializeVisibilityState: function() {
+        const values = {}
+        const touched = {}
+
+        this.resolvedVisibilityToggles.forEach(toggle => {
+          values[toggle.metadataKey] = this.hasMultipleMedias
+            ? false
+            : this.getMediaVisibilityValue(this.firstMedia, toggle.metadataKey)
+          touched[toggle.metadataKey] = false
+        })
+
+        this.visibilityValues = values
+        this.visibilityTouched = touched
+      },
+      handleVisibilityToggleChange: function(metadataKey, value) {
+        this.visibilityValues = {
+          ...this.visibilityValues,
+          [metadataKey]: value
+        }
+        this.visibilityTouched = {
+          ...this.visibilityTouched,
+          [metadataKey]: true
+        }
+        this.blur()
+      },
+      syncVisibilityFieldsRemovedFromBulkEditing: function(data) {
+        this.resolvedVisibilityToggles.forEach(toggle => {
+          const shouldApply = this.hasSingleMedia || this.visibilityTouched[toggle.metadataKey]
+          const fieldIndex = this.fieldsRemovedFromBulkEditing.indexOf(toggle.metadataKey)
+
+          delete data[`visibility_ui_${toggle.metadataKey}`]
+
+          if (this.hasSingleMedia) {
+            if (fieldIndex > -1) {
+              this.fieldsRemovedFromBulkEditing.splice(fieldIndex, 1)
+            }
+            return
+          }
+
+          if (shouldApply) {
+            if (fieldIndex > -1) {
+              this.fieldsRemovedFromBulkEditing.splice(fieldIndex, 1)
+            }
+          } else if (fieldIndex === -1) {
+            if (!this.hasSingleMedia) {
+              this.fieldsRemovedFromBulkEditing.push(toggle.metadataKey)
+            }
+          }
+        })
+      },
       focus: function() {
         this.focused = true
       },
@@ -1000,6 +1124,23 @@
             }
           })
         }
+
+        this.resolvedVisibilityToggles.forEach(toggle => {
+          const shouldApply = this.hasSingleMedia || this.visibilityTouched[toggle.metadataKey]
+
+          if (!shouldApply) {
+            return
+          }
+
+          if (this.hasSingleMedia) {
+            this.setMediaVisibilityValue(this.firstMedia, toggle.metadataKey, this.visibilityValues[toggle.metadataKey])
+            return
+          }
+
+          this.medias.forEach(media => {
+            this.setMediaVisibilityValue(media, toggle.metadataKey, this.visibilityValues[toggle.metadataKey])
+          })
+        })
       },
       save: function() {
         this.$nextTick(() => {
@@ -1024,6 +1165,7 @@
         this.loading = true
 
         const data = this.getFormData(form)
+        this.syncVisibilityFieldsRemovedFromBulkEditing(data)
         data.fieldsRemovedFromBulkEditing = this.fieldsRemovedFromBulkEditing
 
         const url = this.hasMultipleMedias
@@ -1125,6 +1267,7 @@
       }
     },
     mounted() {
+      this.initializeVisibilityState()
       if (!this.lightbox) {
         this.lightbox = new PhotoSwipeLightbox({
           gallery: '.dam-sidebar__inner .pswp-lightbox',
@@ -1179,6 +1322,53 @@
       margin-top: rem-calc(4);
       padding: 0 rem-calc(10);
     }
+  }
+
+  .dam-sidebar__visibility {
+    padding-bottom: rem-calc(16);
+  }
+
+  .dam-sidebar__visibility-list {
+    margin-top: rem-calc(8);
+  }
+
+  .dam-sidebar__visibility-item {
+    position: relative;
+  }
+
+  .dam-sidebar__visibility-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .dam-sidebar__visibility .switcher {
+    background: $color__light;
+    color: $color__text;
+    border-radius: 130px;
+    line-height: normal;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    min-height: rem-calc(44);
+  }
+
+  .dam-sidebar__visibility .switcher.switcher--active {
+    background: $color__lightGreen;
+    color: $color__publish;
+  }
+
+  .dam-sidebar__visibility .switcher__title {
+    @include sans-serif();
+    font-weight: 400;
+  }
+
+  .dam-sidebar__visibility .switcher__button {
+    top: 0;
   }
 
   .pswp__button--zoom {

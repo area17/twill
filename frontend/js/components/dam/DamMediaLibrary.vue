@@ -1,17 +1,8 @@
 <template>
   <div>
-    <a17-dam-modal title="DAM Media Library" mode="wide" ref="modal" @open="opened" class="modal--upload">
+    <a17-dam-modal :title="title" mode="wide" ref="modal" @open="opened" class="modal--upload">
       <template #header>
         <div class="medialibrary__header">
-          <div class="medialibrary__collections">
-            <label>{{ $trans('dam.add-collection-uploads-text', 'Add files to') }}</label>
-            <div class="collection__dropdown">
-              <v-select :options="collections" :searchable="true"
-                :placeholder="$trans('dam.select-collection', 'Select collection')"
-                @input="updateMetadata($event, 'collection')">
-              </v-select>
-            </div>
-          </div>
           <div class="medialibrary__actions">
             <a17-button variant="outline" @click="close" class="modal__close">{{ $trans('dam.cancel', 'Cancel') }}</a17-button>
             <a17-button v-if="mediaItems.length > 0" variant="validate" @click="openMetadataModal" :disabled="disabled">{{ btnLabel }}</a17-button>
@@ -37,20 +28,58 @@
         </div>
       </div>
     </a17-dam-modal>
-    <a17-modal ref="metadataModal" :title="$trans('dam.assign-metadata', 'Assign metadata')">
+    <a17-modal ref="visibilityModal" :title="settingsModalTitle">
+      <h3 class="visibility__header">{{ $trans('dam.visibility', 'Visibility') }}</h3>
       <div class="modal__metadata__content">
-        <a17-vselect label="Tags" name="tags" :multiple="true" :searchable="true" :taggable="true" :push-tags="true"
-          in-store="inputValue" @change="updateMetadata($event, 'tags')"></a17-vselect>
-        <a17-vselect label="Disciplines" name="disciplines" :options="disciplines" :in-modal="true" :multiple="true"
-          in-store="inputValue" @change="updateMetadata($event, 'disciplines')">
-        </a17-vselect>
-        <a17-vselect label="Sectors" :options="sectors" name="sectors" :in-modal="true" :multiple="true"
-          in-store="inputValue" @change="updateMetadata($event, 'sectors')">
-        </a17-vselect>
-        <a17-inputframe label="Project" name="browsers.projects">
-          <a17-browserfield name="project" itemLabel="project" browserNote="project" :endpoint="endpoint"
-            :max="1"></a17-browserfield>
-        </a17-inputframe>
+        <div class="dam-asset__modal">
+          <a17-switcher v-for="toggle in visibilityToggles" :key="toggle.key" :name="toggle.key.replace(/\s+/g, '')"
+            :title="toggle.label" :textEnabled="null" :textDisabled="null" :value="metadata[toggle.key]"
+            @change="toggleVisibility(toggle.key, $event)"></a17-switcher>
+        </div>
+
+        <div v-if="showMetadataFields" class="modal__metadata__content modal__metadata__content--stacked">
+          <h3 class="modal__metadata__title">{{ $trans('dam.metadata', 'Metadata') }}</h3>
+          <a17-vselect
+            label="Tags"
+            name="tags"
+            :multiple="true"
+            :searchable="true"
+            :taggable="true"
+            :push-tags="true"
+            in-store="inputValue"
+            @change="updateMetadata($event, 'tags')"
+          ></a17-vselect>
+          <a17-vselect
+            label="Disciplines"
+            name="disciplines"
+            :options="disciplines"
+            :in-modal="true"
+            :multiple="true"
+            in-store="inputValue"
+            @change="updateMetadata($event, 'disciplines')"
+          >
+          </a17-vselect>
+          <a17-vselect
+            label="Sectors"
+            :options="sectors"
+            name="sectors"
+            :in-modal="true"
+            :multiple="true"
+            in-store="inputValue"
+            @change="updateMetadata($event, 'sectors')"
+          >
+          </a17-vselect>
+          <a17-inputframe label="Project" name="browsers.projects">
+            <a17-browserfield
+              name="project"
+              itemLabel="project"
+              browserNote="project"
+              :endpoint="endpoint"
+              :max="1"
+            ></a17-browserfield>
+          </a17-inputframe>
+        </div>
+
         <a17-inputframe>
           <a17-button type="submit" name="create" variant="validate" @click="saveFiles">{{ uploadBtnLabel }}</a17-button>
         </a17-inputframe>
@@ -68,17 +97,50 @@
   import a17MediaGrid from './MediaGrid.vue'
   import a17Uploader from './Uploader.vue'
   import a17DamModal from './Modal.vue'
-  import vSelect from "vue-select";
+  import a17Switcher from '@/components/Switcher.vue'
   export default {
-    name: 'A17DAMMedialibrary',
+    name: 'A17DamMediaLibrary',
     components: {
       'a17-uploader': a17Uploader,
       'a17-mediagrid': a17MediaGrid,
       'a17-spinner': a17Spinner,
       'a17-dam-modal': a17DamModal,
-      'v-select': vSelect
+      'a17-switcher': a17Switcher,
     },
     props: {
+      title: {
+        type: String,
+        default() {
+          return this.$trans('dam.add-files', 'Add files')
+        }
+      },
+      projectId: {
+        type: [Number, String],
+        default: null
+      },
+      projectKey: {
+        type: String,
+        default: 'project'
+      },
+      mode: {
+        type: String,
+        default: 'landing',
+        validator(value) {
+          return ['landing', 'project'].includes(value)
+        }
+      },
+      metadataKeys: {
+        type: Object,
+        default: () => ({
+          damProject: 'dam_project',
+          pushToArchive: 'push_to_archive',
+          showInCmsMediaLibrary: 'show_in_cms',
+          showInDam: 'show_in_dam',
+          tags: 'tags',
+          disciplines: 'disciplines',
+          sectors: 'sectors'
+        })
+      },
       initialPage: {
         type: Number,
         default: 1
@@ -115,7 +177,14 @@
         tags: [],
         lastScrollTop: 0,
         gridLoaded: false,
-        metadata: {},
+        metadata: {
+          pushToArchive: false,
+          showInCmsMediaLibrary: false,
+          showInDam: true,
+          tags: [],
+          disciplines: [],
+          sectors: []
+        },
       }
     },
     computed: {
@@ -131,9 +200,6 @@
         return this.types.find((type) => {
           return type.value === this.type
         })
-      },
-      endpoint: function () {
-        return this.currentTypeObject.endpoint
       },
       btnLabel: function () {
         if (this.mediaItems.length === 1) {
@@ -154,6 +220,43 @@
       disabled: function () {
         return this.mediaItems.length < 1;
       },
+      isLandingMode: function () {
+        return this.mode === 'landing'
+      },
+      showMetadataFields: function () {
+        return this.isLandingMode
+      },
+      resolvedProjectId: function () {
+        if (this.project && this.project.length > 0) {
+          return this.project[0].id
+        }
+
+        return this.mode === 'project' ? this.project : null
+      },
+      resolvedProjectMetadataKey: function () {
+        return this.metadataKeys.damProject || 'dam_project'
+      },
+      settingsModalTitle: function () {
+        return this.showMetadataFields
+          ? this.$trans('dam.assign-asset-settings', 'Assign asset settings')
+          : this.$trans('dam.assign_visibility', 'Assign visibility')
+      },
+      visibilityToggles: function () {
+        return [
+          {
+            key: 'pushToArchive',
+            label: this.$trans('dam.push-to-archive', 'Publish to Archive')
+          },
+          {
+            key: 'showInCmsMediaLibrary',
+            label: this.$trans('dam.show-in-cms-media-library', 'Show in CMS media library')
+          },
+          {
+            key: 'showInDam',
+            label: this.$trans('dam.show-in-dam-only', 'Show in DAM only')
+          }
+        ]
+      },
 
       ...mapState({
         connector: state => state.mediaLibrary.connector,
@@ -165,7 +268,6 @@
         types: state => state.mediaLibrary.types,
         strict: state => state.mediaLibrary.strict,
         selected: state => state.mediaLibrary.selected,
-        collections: state => state.mediaLibrary.forUploadCollections,
         sectors: state => state.mediaLibrary.forUploadSectors,
         disciplines: state => state.mediaLibrary.forUploadDisciplines,
         endpoint: state => state.mediaLibrary.projectBrowserUrl,
@@ -173,9 +275,7 @@
 
       })
     },
-    watch: {
-
-    },
+    watch: {},
     methods: {
       deleteMedia: function (media) {
         const index = this.mediaItems.findIndex(function (m) {
@@ -189,23 +289,57 @@
       },
 
       openMetadataModal: function () {
-        this.$refs.metadataModal.open()
+        this.$refs.visibilityModal.open()
+      },
+      toggleVisibility: function (key, value) {
+        this.metadata[key] = value
       },
       updateMetadata(event, type) {
         if (type === 'tags') {
           this.metadata[type] = event
-        } else {
-          const ids = Array.isArray(event) ? event.map(item => item.id) : [event.id]
-          this.metadata[type] = ids;
+          return
         }
 
+        if (!event) {
+          this.metadata[type] = []
+          return
+        }
+
+        const items = Array.isArray(event) ? event : [event]
+        this.metadata[type] = items.map(item => item.id)
+      },
+      buildUploadMetadata: function () {
+        const uploadMetadata = {
+          [this.metadataKeys.pushToArchive]: this.metadata.pushToArchive ? 1 : 0,
+          [this.metadataKeys.showInCmsMediaLibrary]: this.metadata.showInCmsMediaLibrary ? 1 : 0,
+          [this.metadataKeys.showInDam]: this.metadata.showInDam ? 1 : 0
+        }
+
+        if (this.showMetadataFields) {
+          uploadMetadata[this.metadataKeys.tags] = this.metadata.tags
+          uploadMetadata[this.metadataKeys.disciplines] = this.metadata.disciplines
+          uploadMetadata[this.metadataKeys.sectors] = this.metadata.sectors
+        }
+
+        if (this.resolvedProjectId) {
+          uploadMetadata[this.resolvedProjectMetadataKey] = this.resolvedProjectId
+        }
+
+        return uploadMetadata
+      },
+      resetMetadata: function () {
+        this.metadata = {
+          pushToArchive: false,
+          showInCmsMediaLibrary: false,
+          showInDam: true,
+          tags: [],
+          disciplines: [],
+          sectors: []
+        }
       },
       saveFiles() {
         this.loading = true;
-        if (this.project && this.project.length > 0) {
-          this.metadata.project = this.project[0].id;
-        }
-        this.$refs.uploader.uploadFiles(this.metadata)
+        this.$refs.uploader.uploadFiles(this.buildUploadMetadata())
       },
       open: function () {
         this.$refs.modal.open()
@@ -213,18 +347,18 @@
       close: function () {
         this.$refs.uploader.cancelAll()
         this.mediaItems = []
+        this.resetMetadata()
+        this.$refs.visibilityModal.hide()
         this.$refs.modal.hide()
       },
       uploadSuccess() {
         this.$refs.modal.hide()
-        this.$refs.metadataModal.hide()
+        this.$refs.visibilityModal.hide()
         this.mediaItems = []
+        this.resetMetadata()
         this.loading = false;
       },
       opened: function () {
-      },
-      updateType: function (newType) {
-
       },
       addSavedMedia: function (media) {
         this.$emit('media-added', media)
@@ -266,12 +400,11 @@
 
   @include breakpoint('small+') {
     flex-flow: row;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
   }
 }
 
-.medialibrary__collections,
 .medialibrary__actions {
   display: flex;
   flex-direction: row;
@@ -279,6 +412,8 @@
   align-items: center;
   justify-content: center;
 }
+
+
 
 .medialibrary__actions .button--outline {
   color: $color__grey--54;
@@ -318,9 +453,22 @@
 }
 
 .modal__metadata__content {
-  display: flex;
-  flex-flow: column;
-  padding-bottom: 1rem;
+  margin-top: rem-calc(12);
+  padding-bottom: rem-calc(20);
+}
+
+
+
+.modal__metadata__title {
+  margin: 0 0 rem-calc(4);
+  color: $color__text;
+  font-size: rem-calc(18);
+  font-weight: 600;
+}
+
+.visibility__header {
+  @include sans-serif();
+  margin-top: rem-calc(36);
 }
 
 .mediagrid {
@@ -471,5 +619,38 @@
     // TODO: move to colors
     border-color: #077FD7;
   }
+}
+
+.dam-asset__modal {
+  display: flex;
+  flex-flow: column;
+  gap: rem-calc(12);
+
+  .switcher {
+    background: $color__light;
+    color: $color__text;
+    border-radius: 130px;
+    line-height: normal;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    min-height: rem-calc(44);
+  }
+
+  .switcher.switcher--active {
+    background:$color__lightGreen;
+    color:$color__publish;
+  }
+
+  .switcher__title {
+    @include sans-serif();
+    font-weight: 400;
+  }
+
+  .switcher__button {
+    top: 0;
+  }
+
 }
 </style>
