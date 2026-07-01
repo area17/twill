@@ -349,7 +349,7 @@
               <h3 class="f--small">{{ $trans('dam.visibility', 'Visibility') }}</h3>
             </div>
 
-            <div class="dam-sidebar__visibility-list dam-asset__modal">
+            <div class="dam-sidebar__visibility-list">
               <div
                 v-for="toggle in resolvedVisibilityToggles"
                 :key="toggle.key"
@@ -1325,11 +1325,14 @@
   }
 
   .dam-sidebar__visibility {
-    padding-bottom: rem-calc(16);
+    padding-bottom: rem-calc(20);
   }
 
   .dam-sidebar__visibility-list {
     margin-top: rem-calc(8);
+    display: flex;
+    flex-flow: column;
+    row-gap: rem-calc(12);
   }
 
   .dam-sidebar__visibility-item {
@@ -1354,12 +1357,8 @@
     align-items: center;
     justify-content: space-between;
     height: auto;
-    min-height: rem-calc(44);
-  }
-
-  .dam-sidebar__visibility .switcher.switcher--active {
-    background: $color__lightGreen;
-    color: $color__publish;
+    min-height: rem-calc(20);
+    padding: 0;
   }
 
   .dam-sidebar__visibility .switcher__title {
