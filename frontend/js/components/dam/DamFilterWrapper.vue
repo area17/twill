@@ -395,6 +395,7 @@
     flex: 0 0 auto;
     justify-content: flex-end;
     margin-left: auto;
+    padding-right: rem-calc(8);
   }
 
 </style>

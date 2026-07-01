@@ -40,6 +40,7 @@
         <div v-if="showMetadataFields" class="modal__metadata__content modal__metadata__content--stacked">
           <h3 class="modal__metadata__title">{{ $trans('dam.metadata', 'Metadata') }}</h3>
           <a17-vselect
+            v-if="showTagFields"
             label="Tags"
             name="tags"
             :multiple="true"
@@ -49,35 +50,37 @@
             in-store="inputValue"
             @change="updateMetadata($event, 'tags')"
           ></a17-vselect>
-          <a17-vselect
-            label="Disciplines"
-            name="disciplines"
-            :options="disciplines"
-            :in-modal="true"
-            :multiple="true"
-            in-store="inputValue"
-            @change="updateMetadata($event, 'disciplines')"
-          >
-          </a17-vselect>
-          <a17-vselect
-            label="Sectors"
-            :options="sectors"
-            name="sectors"
-            :in-modal="true"
-            :multiple="true"
-            in-store="inputValue"
-            @change="updateMetadata($event, 'sectors')"
-          >
-          </a17-vselect>
-          <a17-inputframe label="Project" name="browsers.projects">
-            <a17-browserfield
-              name="project"
-              itemLabel="project"
-              browserNote="project"
-              :endpoint="endpoint"
-              :max="1"
-            ></a17-browserfield>
-          </a17-inputframe>
+          <template v-if="showExtendedMetadataFields">
+            <a17-vselect
+              label="Disciplines"
+              name="disciplines"
+              :options="disciplines"
+              :in-modal="true"
+              :multiple="true"
+              in-store="inputValue"
+              @change="updateMetadata($event, 'disciplines')"
+            >
+            </a17-vselect>
+            <a17-vselect
+              label="Sectors"
+              :options="sectors"
+              name="sectors"
+              :in-modal="true"
+              :multiple="true"
+              in-store="inputValue"
+              @change="updateMetadata($event, 'sectors')"
+            >
+            </a17-vselect>
+            <a17-inputframe label="Project" name="browsers.projects">
+              <a17-browserfield
+                name="project"
+                itemLabel="project"
+                browserNote="project"
+                :endpoint="endpoint"
+                :max="1"
+              ></a17-browserfield>
+            </a17-inputframe>
+          </template>
         </div>
 
         <a17-inputframe>
@@ -113,14 +116,6 @@
         default() {
           return this.$trans('dam.add-files', 'Add files')
         }
-      },
-      projectId: {
-        type: [Number, String],
-        default: null
-      },
-      projectKey: {
-        type: String,
-        default: 'project'
       },
       mode: {
         type: String,
@@ -224,6 +219,12 @@
         return this.mode === 'landing'
       },
       showMetadataFields: function () {
+        return this.showTagFields || this.showExtendedMetadataFields
+      },
+      showTagFields: function () {
+        return this.mode === 'landing' || this.mode === 'project'
+      },
+      showExtendedMetadataFields: function () {
         return this.isLandingMode
       },
       resolvedProjectId: function () {
@@ -315,8 +316,11 @@
           [this.metadataKeys.showInDam]: this.metadata.showInDam ? 1 : 0
         }
 
-        if (this.showMetadataFields) {
+        if (this.showTagFields) {
           uploadMetadata[this.metadataKeys.tags] = this.metadata.tags
+        }
+
+        if (this.showExtendedMetadataFields) {
           uploadMetadata[this.metadataKeys.disciplines] = this.metadata.disciplines
           uploadMetadata[this.metadataKeys.sectors] = this.metadata.sectors
         }
@@ -457,17 +461,25 @@
   padding-bottom: rem-calc(20);
 }
 
+.modal__metadata__content--stacked {
+  margin-top: rem-calc(24);
+}
 
 
-.modal__metadata__title {
-  margin: 0 0 rem-calc(4);
+
+.modal__metadata__title,
+.visibility__header {
+  @include sans-serif();
   color: $color__text;
   font-size: rem-calc(18);
   font-weight: 600;
 }
 
+.modal__metadata__title {
+  margin: 0 0 rem-calc(4);
+}
+
 .visibility__header {
-  @include sans-serif();
   margin-top: rem-calc(36);
 }
 
