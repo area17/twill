@@ -470,7 +470,34 @@
         return languages.map(language => language.label || language.value || language).join(', ')
       },
       getColumnWidth () {
-        this.columnsWidth = []
+        if (!this.$refs.headRow) {
+          return
+        }
+
+        const tds = this.$refs.headRow.children
+        const measuredWidths = []
+
+        for (let index = 0; index < tds.length; index++) {
+          measuredWidths.push(tds[index].offsetWidth)
+        }
+
+        const totalWidth = measuredWidths.reduce((sum, width) => sum + width, 0)
+
+        if (totalWidth <= 0) {
+          return
+        }
+
+        this.columnsWidth = measuredWidths.map((width, index) => {
+          if (index === measuredWidths.length - 1) {
+            const usedWidth = measuredWidths
+              .slice(0, -1)
+              .reduce((sum, currentWidth) => sum + (currentWidth / totalWidth) * 100, 0)
+
+            return `${Math.max(0, 100 - usedWidth).toFixed(4)}%`
+          }
+
+          return `${((width / totalWidth) * 100).toFixed(4)}%`
+        })
       },
       handleSort (column) {
         if (!column.sortable) {
@@ -1102,5 +1129,9 @@
         background: linear-gradient(to right, rgba($color__border--light, 0) 0%, $color__border--light 25%);
       }
     }
+  }
+
+  :deep(colgroup col:nth-child(2)) {
+    min-width: 100px;
   }
 </style>

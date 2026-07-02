@@ -33,6 +33,10 @@
     computed: {
       colWidths: function () {
         return this.columnsWidth.map(function (width) {
+          if (typeof width === 'string') {
+            return { width }
+          }
+
           return { width: width ? width + 'px' : '' }
         })
       }
