@@ -22,7 +22,17 @@
           <span v-else class="mediagrid__file-icon">
             <span v-svg :symbol="getFileIcon(item.fileExtension)"></span>
           </span>
-          <span v-if="item.fileExtension" class="mediagrid__label">{{ item.fileExtension }}</span>
+          <span
+            v-if="item.fileExtension || (variant === 'dam' && item.isLive)"
+            class="mediagrid__meta"
+          >
+            <span v-if="item.fileExtension" class="mediagrid__label">{{ item.fileExtension }}</span>
+            <span
+              v-if="variant === 'dam' && item.isLive"
+              class="mediagrid__live-dot"
+              aria-hidden="true"
+            ></span>
+          </span>
           <span v-if="variant === 'dam'" v-svg class="mediagrid__preview" symbol="preview" aria-hidden="true"></span>
         </span>
         <p v-if="showFileName ? showFileName : !hideNames" :title="item.name" class="mediagrid__name">{{ item.name }}</p>
@@ -325,24 +335,36 @@
     color:$color__error;
   }
 
+  .mediagrid__meta {
+    position: absolute;
+    top: rem-calc(8);
+    left: rem-calc(8);
+    display: inline-flex;
+    align-items: center;
+    gap: rem-calc(6);
+  }
+
   .mediagrid__label {
-      border-radius: 2px;
-      display: inline-block;
-      height: rem-calc(16);
-      font-size: rem-calc(11);
-      color: $color__background;
-      text-transform: uppercase;
-      background: $color__icons;
-      padding: 0 rem-calc(5);
-      position: relative;
-      user-select: none;
-      letter-spacing: 0;
-      display: flex;
-      align-items: center;
-      position: absolute;
-      top: rem-calc(8);
-      left: rem-calc(8);
-    }
+    border-radius: 2px;
+    display: inline-flex;
+    align-items: center;
+    min-height: rem-calc(16);
+    font-size: rem-calc(11);
+    color: $color__background;
+    text-transform: uppercase;
+    background: $color__icons;
+    padding: 0 rem-calc(5);
+    user-select: none;
+    letter-spacing: 0;
+  }
+
+  .mediagrid__live-dot {
+    width: rem-calc(8);
+    height: rem-calc(8);
+    border-radius: 50%;
+    background: $color__publish;
+    flex: 0 0 auto;
+  }
 
     .mediagrid__preview {
       position: absolute;
