@@ -470,18 +470,30 @@
         return languages.map(language => language.label || language.value || language).join(', ')
       },
       getColumnWidth () {
-        if (!this.$refs.headRow) {
-          return
+        // if (!this.$refs.headRow) {
+        //   return
+        // }
+
+        // const widths = []
+        // const cells = this.$refs.headRow.children
+
+        // for (let index = 0; index < cells.length; index++) {
+        //   widths.push(cells[index].offsetWidth)
+        // }
+
+        // this.columnsWidth = widths
+        const newColumnsWidth = []
+        const tds = this.$refs.thead.querySelectorAll('td')
+        const colgroup = this.$refs.tableWrapper.querySelector('colgroup')
+
+        if(colgroup) {
+          colgroup.querySelectorAll('col').forEach((col) => col.removeAttribute('style'))
         }
 
-        const widths = []
-        const cells = this.$refs.headRow.children
-
-        for (let index = 0; index < cells.length; index++) {
-          widths.push(cells[index].offsetWidth)
+        for (let index = 0; index < tds.length; index++) {
+          newColumnsWidth.push(tds[index].offsetWidth)
         }
-
-        this.columnsWidth = widths
+        this.columnsWidth = newColumnsWidth
       },
       handleSort (column) {
         if (!column.sortable) {
