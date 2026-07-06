@@ -76,40 +76,69 @@
                 ref="damFilters"
                 @applyFilters="handleFiltersApply"
                 @resetFilters="handleFiltersReset"
-              />
+              >
+                <template #action>
+                  <div v-if="showInlineActions" class="dam-filters__actions dam-filters__actions--inline">
+                    <a17-button
+                      v-if="showCreate"
+                      variant="validate"
+                      size="small"
+                      :href="skipCreateModal ? createUrl : null"
+                      :el="skipCreateModal ? 'a' : 'button'"
+                      @click="openModal"
+                    >
+                      {{ uploadBtnLabel && uploadBtnLabel.trim()  ? uploadBtnLabel : $trans('listing.add-new-button') }}
+                    </a17-button>
+                    <a17-button
+                      v-for="link in filterLinks"
+                      :key="link.url || link.label"
+                      el="a"
+                      :href="link.url || '#'"
+                      :download="link.download || ''"
+                      :rel="link.rel || ''"
+                      :target="link.target || ''"
+                      variant="small secondary"
+                    >
+                      {{ link.label }}
+                    </a17-button>
+                  </div>
+                </template>
+              </a17-dam-filters>
             </slot>
             <slot v-else name="hidden-filters">
               <a17-dam-filters
                 ref="damFilters"
                 @applyFilters="handleFiltersApply"
                 @resetFilters="handleFiltersReset"
-              />
+              >
+                <template #action>
+                  <div v-if="showInlineActions" class="dam-filters__actions dam-filters__actions--inline">
+                    <a17-button
+                      v-if="showCreate"
+                      variant="validate"
+                      size="small"
+                      :href="skipCreateModal ? createUrl : null"
+                      :el="skipCreateModal ? 'a' : 'button'"
+                      @click="openModal"
+                    >
+                      {{ uploadBtnLabel && uploadBtnLabel.trim()  ? uploadBtnLabel : $trans('listing.add-new-button') }}
+                    </a17-button>
+                    <a17-button
+                      v-for="link in filterLinks"
+                      :key="link.url || link.label"
+                      el="a"
+                      :href="link.url || '#'"
+                      :download="link.download || ''"
+                      :rel="link.rel || ''"
+                      :target="link.target || ''"
+                      variant="small secondary"
+                    >
+                      {{ link.label }}
+                    </a17-button>
+                  </div>
+                </template>
+              </a17-dam-filters>
             </slot>
-          </div>
-
-          <div v-if="showInlineActions" class="dam-filters__actions dam-filters__actions--inline">
-            <a17-button
-              v-if="showCreate"
-              variant="validate"
-              size="small"
-              :href="skipCreateModal ? createUrl : null"
-              :el="skipCreateModal ? 'a' : 'button'"
-              @click="openModal"
-            >
-              {{ uploadBtnLabel && uploadBtnLabel.trim()  ? uploadBtnLabel : $trans('listing.add-new-button') }}
-            </a17-button>
-            <a17-button
-              v-for="link in filterLinks"
-              :key="link.url || link.label"
-              el="a"
-              :href="link.url || '#'"
-              :download="link.download || ''"
-              :rel="link.rel || ''"
-              :target="link.target || ''"
-              variant="small secondary"
-            >
-              {{ link.label }}
-            </a17-button>
           </div>
         </div>
       </div>
@@ -395,7 +424,6 @@
     flex: 0 0 auto;
     justify-content: flex-end;
     margin-left: auto;
-    padding-right: rem-calc(8);
   }
 
 </style>

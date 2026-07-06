@@ -72,6 +72,9 @@
           }}</a17-button>
         </div>
       </div>
+      <div class="dam-filters__action" v-if="$slots.action">
+        <slot name="action"></slot>
+      </div>
     </div>
     <div
       class="dam-filters dam-filters__applied"
@@ -641,5 +644,10 @@
 
   .input-wrapper-appliedFilters {
     margin-top: 0;
+  }
+
+  .dam-filters:has(.dam-filters__action) {
+    flex-flow: row;
+    justify-content: space-between;
   }
 </style>
