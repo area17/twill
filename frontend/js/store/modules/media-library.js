@@ -131,7 +131,7 @@ const state = {
     },
     {
       key: 'showInDam',
-      metadataKey: 'show_in_dam',
+      metadataKey: 'private',
       labelKey: 'dam.show-in-dam-only',
       fallbackLabel: 'Show in DAM only'
     }

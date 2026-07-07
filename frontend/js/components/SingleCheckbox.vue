@@ -60,7 +60,8 @@
       },
       wrapperClasses: function () {
         return [
-          this.border ? 'singleCheckbox--border' : ''
+          this.border ? 'singleCheckbox--border' : '',
+          this.note ? 'singleCheckbox--withNote' : ''
         ]
       },
       checkboxClasses: function () {
@@ -244,6 +245,25 @@
     .checkbox__icon {
       top: 50%;
       margin-top: -9px;
+    }
+  }
+
+  .singleCheckbox--border.singleCheckbox--withNote {
+    .checkbox__label {
+      height: auto;
+      min-height: 50px;
+      line-height: 1.4;
+      white-space: normal;
+      text-overflow: clip;
+      overflow: visible;
+      padding-top: 8px;
+      padding-bottom: 8px;
+    }
+
+    .checkbox__label::before,
+    .checkbox__icon {
+      top: 12px;
+      margin-top: 0;
     }
   }
 </style>

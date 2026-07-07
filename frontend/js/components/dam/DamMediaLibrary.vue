@@ -130,7 +130,7 @@
           damProject: 'dam_project',
           pushToArchive: 'push_to_archive',
           showInCmsMediaLibrary: 'show_in_cms',
-          showInDam: 'show_in_dam',
+          showInDam: 'private',
           tags: 'tags',
           disciplines: 'disciplines',
           sectors: 'sectors'

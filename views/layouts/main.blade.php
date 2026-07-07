@@ -114,8 +114,8 @@
         window['{{ config('twill.js_namespace') }}'].STORE.medias.types.push({
             value: 'image',
             text: '{{ twillTrans('twill::lang.media-library.images') }}',
-            total: {{ \A17\Twill\Models\Media::count() }},
-            endpoint: '{{ route(config('twill.admin_route_name_prefix') . 'media-library.medias.index') }}',
+            total: {{ $mediaLibraryCount ??  \A17\Twill\Models\Media::count() }},
+            endpoint: '{{ route(config('twill.admin_route_name_prefix') . 'media-library.medias.index') }}?status=on-website',
             tagsEndpoint: '{{ route(config('twill.admin_route_name_prefix') . 'media-library.medias.tags') }}',
             uploaderConfig: {!! json_encode($mediasUploaderConfig) !!}
         })

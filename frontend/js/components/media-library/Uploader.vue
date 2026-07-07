@@ -202,7 +202,8 @@
         this.unique_folder_name = this.unique_folder_name || (this.uploaderConfig.endpointRoot + qq.getUniqueId())
         this._uploader.methods.setParams({
           unique_folder_name: this.unique_folder_name,
-          media_to_replace_id: this.media_to_replace_id
+          media_to_replace_id: this.media_to_replace_id,
+          upload_source: 'media-library'
         }, id)
 
         // determine the image dimensions and add it to params sent on upload success
