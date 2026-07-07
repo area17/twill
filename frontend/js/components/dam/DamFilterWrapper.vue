@@ -358,6 +358,7 @@
     gap: rem-calc(16);
     justify-content: space-between;
     width: 100%;
+    padding: 0 rem-calc(20);
   }
 
   .filter__navigation {
@@ -393,7 +394,6 @@
 
   .filter__moreHidden {
     border-top: 1px solid $color__border;
-    padding-top: rem-calc(16);
     width: 100%;
   }
 
@@ -425,5 +425,4 @@
     justify-content: flex-end;
     margin-left: auto;
   }
-
 </style>

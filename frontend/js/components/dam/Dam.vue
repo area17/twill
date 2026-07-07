@@ -169,6 +169,10 @@
       width: 100%;
     }
   }
+
+  .dam__page .listing__nav {
+      margin-bottom: 0;
+  }
 </style>
 
 <style lang="scss" scoped>
