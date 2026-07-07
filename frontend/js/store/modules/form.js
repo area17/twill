@@ -81,7 +81,13 @@ const state = {
    * Determines if the form should prevent submitting before an input value is pushed into the store
    * @type {Boolean}
    */
-  isSubmitPrevented: false
+  isSubmitPrevented: false,
+
+  /**
+   * Determines if the form should track unsaved changes used on dam to help listing pages avoid tracking unsaved changes
+   * @type {Boolean}
+   */
+  trackUnsavedChanges: window[process.env.VUE_APP_NAME].STORE.form.trackUnsavedChanges || false
 }
 
 // getters

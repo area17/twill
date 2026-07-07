@@ -196,6 +196,9 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
         else event.cancelBubble = true
       } else { return 'message' }
     },
+    shouldTrackFormUpdates: function () {
+      return Boolean(this.$store.state.form.trackUnsavedChanges)
+    },
     mutationsSubscribe: function () {
       // Subscribe to store mutation
       this.unSubscribe = this.$store.subscribe((mutation, state) => {
@@ -248,6 +251,10 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
     }
   },
   mounted: function () {
+    if (!this.shouldTrackFormUpdates()) {
+      return
+    }
+
     // Hook up the confirmation popup.
     window.onbeforeunload = this.confirmExit
 
@@ -262,6 +269,10 @@ window[process.env.VUE_APP_NAME].vm = window.vm = new Vue({
     })
   },
   beforeDestroy: function () {
+    if (window.onbeforeunload === this.confirmExit) {
+      window.onbeforeunload = null
+    }
+
     this.unSubscribe()
   },
   created: function () {
