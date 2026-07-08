@@ -215,7 +215,8 @@
             width: img.width,
             height: img.height,
             unique_folder_name: this.unique_folder_name,
-            media_to_replace_id: this.media_to_replace_id
+            media_to_replace_id: this.media_to_replace_id,
+            upload_source: 'media-library'
           }, id)
           this.media_to_replace_id = null
         }
