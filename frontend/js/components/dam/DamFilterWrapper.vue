@@ -384,6 +384,11 @@
     @include breakpoint('medium+') {
       justify-content: flex-end;
     }
+
+    &:empty {
+      padding: 0;
+      display: none;
+    }
   }
 
   .dam-filters__controls .form__input {
