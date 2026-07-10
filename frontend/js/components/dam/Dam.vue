@@ -173,6 +173,11 @@
   .dam__page .listing__nav {
       margin-bottom: 0;
   }
+
+  .dam__page .icon--edit, 
+  .dam__page .icon--edit svg {
+    height: 24px;
+  }
 </style>
 
 <style lang="scss" scoped>

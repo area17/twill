@@ -2,7 +2,7 @@
   <div :class="formClasses">
     <div class="filter__inner">
       <div class="filter__navigation">
-        <ul v-if="navigationItems.length" class="secondarynav secondarynav--desktop">
+        <ul v-if="navigationItems.length" class="secondarynav">
           <li
             v-for="item in navigationItems"
             :key="item.slug || item.name"
@@ -354,11 +354,14 @@
   .filter__inner {
     align-items: center;
     display: flex;
-    flex-wrap: wrap;
-    gap: rem-calc(16);
+    gap: 0;
     justify-content: space-between;
     width: 100%;
     padding: 0 rem-calc(20);
+
+    @include breakpoint('small-') {
+      flex-wrap: wrap;
+    }
   }
 
   .filter__navigation {
@@ -370,10 +373,22 @@
     align-items: center;
     display: flex;
     flex: 1 1 auto;
-    flex-wrap: wrap;
     gap: rem-calc(12);
-    justify-content: flex-end;
     min-width: 0;
+    padding: rem-calc(20) 0;
+
+    @include breakpoint('small-') {
+      flex-wrap: wrap;
+    }
+
+    @include breakpoint('medium+') {
+      justify-content: flex-end;
+    }
+
+    &:empty {
+      padding: 0;
+      display: none;
+    }
   }
 
   .dam-filters__controls .form__input {
