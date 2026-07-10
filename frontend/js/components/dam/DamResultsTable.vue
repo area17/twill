@@ -803,6 +803,11 @@
         request()
       },
       deleteRow (row) {
+        if (Object.prototype.hasOwnProperty.call(row, 'can_delete') && !row.can_delete) {
+          this.commitNotification(this.$trans('listing.error.cannot-delete', 'You cannot delete a project that is linked to a case study.'), 'error')
+          return
+        }
+
         const request = () => this.runRowRequest(axios.delete(row.delete))
 
         if (this.$root.$refs.warningDeleteRow) {
