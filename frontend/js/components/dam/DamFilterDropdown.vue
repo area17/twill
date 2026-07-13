@@ -124,6 +124,10 @@
       hasNestedItems: {
         type: Boolean,
         default: false
+      },
+      initialSelectedFilters: {
+        type: [Array, Object],
+        default: null
       }
     },
     data: function() {
@@ -195,8 +199,35 @@
             : ''
       }
     },
-    watch: {},
+    watch: {
+      initialSelectedFilters: {
+        handler (newValue) {
+          if (newValue && !this.isOpen) {
+            this.selectedFilters = JSON.parse(JSON.stringify(newValue))
+            this.$nextTick(this.syncInternalCheckboxes)
+          }
+        },
+        immediate: true,
+        deep: true
+      }
+    },
     methods: {
+      syncInternalCheckboxes () {
+        if (this.hasNestedItems) {
+          if (this.$refs.checkboxAccordion) {
+            this.$refs.checkboxAccordion.forEach(accordion => {
+              const name = accordion.name
+              const values = (this.selectedFilters[name] || []).map(f => f.value)
+              accordion.updateValue(values)
+            })
+          }
+        } else {
+          if (this.$refs.checkboxGroup) {
+            const values = this.selectedFilters.map(f => f.value)
+            this.$refs.checkboxGroup.updateValue(values)
+          }
+        }
+      },
       searchFilters(opt = { page: 1, append: false }) {
         const self = this
         const reqData = {
@@ -234,13 +265,18 @@
           const index = this.selectedFilters.findIndex(
             filter => filter.value === 'colors-custom'
           )
-          this.selectedFilters[index].hex =
-            'custom-' + this.$refs.colorField.value
+          if (index > -1) {
+            this.selectedFilters[index].hex =
+              'custom-' + this.$refs.colorField.value
+          }
         }
         this.$emit('filtersApplied', this.selectedFilters, this.uid)
 
         if (this.selectedFilters.length > 0) {
-          this.searchParams.set(this.filterName, this.selectedFilters.join('|'))
+          const values = this.hasNestedItems
+            ? Object.values(this.selectedFilters).flat().map(f => f.value)
+            : this.selectedFilters.map(f => f.value)
+          this.searchParams.set(this.filterName, values.join('|'))
         } else {
           this.searchParams.delete(this.filterName)
         }
@@ -345,6 +381,8 @@
         // Find corresponding object from items array
         const selectedFilters = selectedItems.map(selectedItem => {
           let matchedItem
+
+          // 1. Try to find in current filterItems (the visible list)
           if (this.hasNestedItems) {
             this.filterItems.forEach(list => {
               if (!matchedItem && list.items) {
@@ -358,6 +396,26 @@
               item => item.value === selectedItem
             )
           }
+
+          // 2. If not found in current list, try to find in existing selectedFilters
+          if (!matchedItem) {
+            if (this.hasNestedItems) {
+              for (const key in this.selectedFilters) {
+                const existing = this.selectedFilters[key].find(item => item.value === selectedItem)
+                if (existing) {
+                  matchedItem = existing
+                  break
+                }
+              }
+            } else {
+              matchedItem = this.selectedFilters.find(item => item.value === selectedItem)
+            }
+          }
+
+          if (!matchedItem) {
+            return null
+          }
+
           const item = {
             label: matchedItem.label,
             value: matchedItem.value
@@ -367,7 +425,7 @@
             item.hex = matchedItem.hex
           }
           return item
-        })
+        }).filter(item => item !== null)
 
         if (this.hasNestedItems) {
           this.$set(this.selectedFilters, name, selectedFilters)

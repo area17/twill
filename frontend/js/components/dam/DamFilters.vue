@@ -43,6 +43,7 @@
             :hasSearch="item.searchable"
             :searchEndpoint="searchEndpoint"
             :advanced="item.advanced"
+            :initial-selected-filters="appliedFilters[item.name]"
             ref="filterDropdown"
             :isMobile="isMobile"
             @filtersApplied="updateAppliedFilters"
@@ -385,6 +386,10 @@
               }
 
               if (!item) {
+                const existingItem = (this.appliedFilters[key] || []).find(i => i.value === `${key}-${value}`)
+                if (existingItem) {
+                  matchedItems.push(existingItem)
+                }
                 return
               }
 
@@ -422,6 +427,10 @@
               normalizedValue[deepKey].forEach(value => {
                 const item = filter.items.find(item => item.value.toString() === value.toString())
                 if (!item) {
+                  const existingItem = (this.appliedFilters[key]?.[deepKey] || []).find(i => i.value === `${deepKey}-${value}`)
+                  if (existingItem) {
+                    newFilters.push(existingItem)
+                  }
                   return
                 }
                 newFilters.push({
