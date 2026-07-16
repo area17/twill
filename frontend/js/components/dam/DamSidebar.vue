@@ -342,7 +342,7 @@
           </template>
 
           <div
-            v-if="isImage && resolvedVisibilityToggles.length"
+            v-if="resolvedVisibilityToggles.length"
             class="dam-sidebar__editable dam-sidebar__visibility"
           >
             <div class="dam-sidebar__editable-header">
@@ -354,6 +354,7 @@
                 v-for="toggle in resolvedVisibilityToggles"
                 :key="toggle.key"
                 class="dam-sidebar__visibility-item"
+                :class="{ 'dam-sidebar__visibility-item--disabled': isToggleDisabled(toggle) }"
               >
                 <a17-switcher
                   :name="`visibility_ui_${toggle.metadataKey}`"
@@ -361,10 +362,11 @@
                   :textEnabled="null"
                   :textDisabled="null"
                   :value="visibilityValues[toggle.metadataKey]"
+                  :disabled="isToggleDisabled(toggle)"
                   @change="handleVisibilityToggleChange(toggle.metadataKey, $event)"
                 ></a17-switcher>
                 <input
-                  v-if="hasSingleMedia || visibilityTouched[toggle.metadataKey]"
+                  v-if="(hasSingleMedia || visibilityTouched[toggle.metadataKey]) && !isToggleDisabled(toggle)"
                   :name="toggle.metadataKey"
                   :value="visibilityValues[toggle.metadataKey] ? 1 : 0"
                   type="hidden"
@@ -910,6 +912,12 @@
           .toLowerCase()
         return Extensions.vid.extensions.includes(extension)
       },
+      isLive: function() {
+        if (this.hasMultipleMedias) {
+          return this.medias.some(m => m.isLive)
+        }
+        return this.firstMedia?.isLive || false
+      },
       ...mapState({
         mediasLoading: state => state.mediaLibrary.loading,
         useWysiwyg: state => state.mediaLibrary.config.useWysiwyg,
@@ -1062,6 +1070,24 @@
           [metadataKey]: true
         }
         this.blur()
+      },
+      isToggleDisabled: function(toggle) {
+        const checkIsImage = (media) => {
+          return media.isImage
+        }
+
+        if (toggle.metadataKey === 'push_to_archive') {
+          if (this.hasMultipleMedias) {
+            return this.medias.some(m => !checkIsImage(m))
+          }
+          return !checkIsImage(this.firstMedia)
+        }
+
+        if (toggle.metadataKey === 'private') {
+          return this.isLive
+        }
+
+        return false
       },
       syncVisibilityFieldsRemovedFromBulkEditing: function(data) {
         this.resolvedVisibilityToggles.forEach(toggle => {
@@ -1337,6 +1363,12 @@
 
   .dam-sidebar__visibility-item {
     position: relative;
+
+    &--disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      filter: grayscale(100%);
+    }
   }
 
   .dam-sidebar__visibility-input {
