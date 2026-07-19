@@ -7,16 +7,17 @@ All notable changes to `twill` will be documented in this file.
 ### Added
 
 - Add Laravel 13 support by [@ifox](https://github.com/ifox) in [#2831](https://github.com/area17/twill/pull/2831)
-- Internalize `cartalyst/tags` package (abandoned upstream) for Laravel 13 compatibility without breaking changes by [@ifox](https://github.com/ifox) in [859c4c57](https://github.com/area17/twill/commit/859c4c57)
+- Internalize `cartalyst/tags` package (abandoned upstream) for Laravel 13 compatibility without breaking changes by [@ifox](https://github.com/ifox) in [cbee121](https://github.com/area17/twill/commit/cbee121) and [7f4f0369](https://github.com/area17/twill/commit/7f4f0369)
 
 ### Fixed
 
 - Fix BelongsTo relationships in preview hydration by [@ifox](https://github.com/ifox) in [fc2858b7](https://github.com/area17/twill/commit/fc2858b713e602e18f73f16a9baad7bfac71e04c)
-- Mitigate Axios supply-chain compromise by pinning axios by [@zachgarwood](https://github.com/zachgarwood) in [#2822](https://github.com/area17/twill/pull/2822)
 
 ### Improved
 
 - Add `array` return type for `rulesForCreate` and `rulesForUpdate` in module request stub by [@tamdaz](https://github.com/tamdaz) in [#2801](https://github.com/area17/twill/pull/2801)
+- Mitigate Axios supply-chain compromise by pinning axios by [@zachgarwood](https://github.com/zachgarwood) in [#2822](https://github.com/area17/twill/pull/2822)
+- Update Axios to 0.33.0, which backports a comprehensive set of security and hardening fixes from the v1.x branch into v0.x by [@ifox](https://github.com/ifox) in [d127ad51](https://github.com/area17/twill/commit/d127ad51)
 
 ### Docs
 
