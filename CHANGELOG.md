@@ -33,6 +33,7 @@ All notable changes to `twill` will be documented in this file.
 - Fix flaky tests by [@ifox](https://github.com/ifox) in [4240a7a0](https://github.com/area17/twill/commit/4240a7a0), [e5878b25](https://github.com/area17/twill/commit/e5878b25), and [64a20392](https://github.com/area17/twill/commit/64a20392)
 - Fix storage route check in tests for Laravel 12.52.0 by [@ifox](https://github.com/ifox) in [6a08d87c](https://github.com/area17/twill/commit/6a08d87c)
 - Fix tests in CI by [@ifox](https://github.com/ifox) in [de0397aa](https://github.com/area17/twill/commit/de0397aa), [9a00a57e](https://github.com/area17/twill/commit/9a00a57e), and [00db901d](https://github.com/area17/twill/commit/00db901d)
+- Update npm dependencies by [@ifox](https://github.com/ifox) in [169b9a35](https://github.com/area17/twill/commit/169b9a35), [b165e4fd](https://github.com/area17/twill/commit/b165e4fd), [474a862e](https://github.com/area17/twill/commit/474a862e), [f322043b](https://github.com/area17/twill/commit/f322043b), and [c7047c0c](https://github.com/area17/twill/commit/c7047c0c)
 
 ## 3.5.3
 
