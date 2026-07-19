@@ -63,6 +63,9 @@
   "conflict": {
     "kalnoy/nestedset": "7.0.1"
   },
+  "replace": {
+    "cartalyst/tags": "*"
+  },
   "autoload": {
     "psr-4": {
       "A17\\Twill\\": "src/",
