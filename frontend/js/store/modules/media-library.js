@@ -110,6 +110,8 @@ const state = {
 
   hideArchiveSearch: window[process.env.VUE_APP_NAME].STORE.medias.hideArchiveSearch || false,
 
+  showAddProjectAssetBtn: window[process.env.VUE_APP_NAME].STORE.medias.hideArchiveSearch || false,
+
   attachedRelationship:  window[process.env.VUE_APP_NAME].STORE.medias.attachedRelationship || {},
 
   filters: window[process.env.VUE_APP_NAME].STORE.medias.filters || [],
@@ -139,6 +141,7 @@ const state = {
   projectBrowserUrl: window[process.env.VUE_APP_NAME].STORE.medias.projectBrowserUrl || '',
   filterSearchEndpoint: window[process.env.VUE_APP_NAME].STORE.medias.filterSearchEndpoint || '',
   bulkDownloadEndpoint: window[process.env.VUE_APP_NAME].STORE.medias.bulkDownloadEndpoint || '',
+  attachBulkProjectAssetsEndpoint: window[process.env.VUE_APP_NAME].STORE.medias.attachBulkProjectAssetsEndpoint || '',
 }
 
 // getters

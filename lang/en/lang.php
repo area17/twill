@@ -88,6 +88,7 @@ return [
         'upload-date' => 'Upload date',
         'user-nav' => 'Toggle user menu',
         'view' => 'View',
+        'add-project-asset'=> 'Browse existing assets',
     ],
     'dashboard' => [
         'all-activity' => 'All activity',

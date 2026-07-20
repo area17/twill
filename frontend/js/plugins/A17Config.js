@@ -46,6 +46,9 @@ import a17DamBrowser from '@/components/dam/DamBrowser.vue'
 import a17DamMedialibrary from '@/components/dam/DamMediaLibrary.vue'
 import a17DamResultsTable from '@/components/dam/DamResultsTable.vue'
 import a17DamFilterWrapper from '@/components/dam/DamFilterWrapper.vue'
+import a17DamSelectExistingAssetModal from '@/components/dam/DamSelectExistingAssetModal.vue'
+
+
 
 // Directives
 import SvgSprite from '@/directives/svg'
@@ -101,6 +104,7 @@ const A17Config = {
     Vue.component('a17-dam-results-table', a17DamResultsTable)
     Vue.component('a17-dam-filtered-datatable', a17DamResultsTable)
     Vue.component('a17-dam-filter-wrapper', a17DamFilterWrapper)
+    Vue.component('a17-dam-select-existing-asset-modal', a17DamSelectExistingAssetModal)
 
     Vue.component('a17-dambrowser', a17DamBrowser)
 

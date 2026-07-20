@@ -113,6 +113,16 @@
               >
                 <template #action>
                   <div v-if="showInlineActions" class="dam-filters__actions dam-filters__actions--inline">
+                     <a17-button
+                      v-if="showCreate && showAddProjectAssetBtn"
+                      variant="validate"
+                      size="small"
+                      :href="'#'"
+                      :el="'button'"
+                      @click="openSelectExistingAssetModal"
+                    >
+                      {{ $trans('dam.add-project-asset') }}
+                    </a17-button>
                     <a17-button
                       v-if="showCreate"
                       variant="validate"
@@ -226,7 +236,8 @@
 
     computed: {
       ...mapState({
-        mediaFilters: state => state.mediaLibrary.filters
+        mediaFilters: state => state.mediaLibrary.filters,
+        showAddProjectAssetBtn: state => state.mediaLibrary.showAddProjectAssetBtn
       }),
       formClasses () {
         return {
@@ -310,6 +321,9 @@
       },
       openModal() {
         this.damView === 'landing' ? this.$root.$refs.damMediaLibrary.open() : this.$root.$refs.editionModal.open()
+      },
+      openSelectExistingAssetModal() {
+        this.$root.$refs.selectExistingAssetModal.open()
       },
 
       handleFiltersApply () {
