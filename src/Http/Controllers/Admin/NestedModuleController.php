@@ -48,12 +48,15 @@ abstract class NestedModuleController extends ModuleController
             return $this->getIndexItems($scopes, true);
         }
 
+        $appliedFilters = $this->getIndexFilters();
+
         return $this->repository->get(
             $this->indexWith,
             $scopes,
             $this->orderScope(),
             request('offset') ?? $this->perPage ?? 50,
-            true
+            true,
+            $appliedFilters
         );
     }
 }
