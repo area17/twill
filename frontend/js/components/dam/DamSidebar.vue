@@ -1051,9 +1051,17 @@
         const touched = {}
 
         this.resolvedVisibilityToggles.forEach(toggle => {
-          values[toggle.metadataKey] = this.hasMultipleMedias
+          let value = this.hasMultipleMedias
             ? false
             : this.getMediaVisibilityValue(this.firstMedia, toggle.metadataKey)
+
+          // Rule: If asset project has CASE STUDY (isLive), show_in_cms is TRUE and private is FALSE
+          if (this.isLive) {
+            if (toggle.metadataKey === 'private') value = false
+            if (toggle.metadataKey === 'show_in_cms') value = true
+          }
+
+          values[toggle.metadataKey] = value
           touched[toggle.metadataKey] = false
         })
 
@@ -1061,10 +1069,23 @@
         this.visibilityTouched = touched
       },
       handleVisibilityToggleChange: function(metadataKey, value) {
-        this.visibilityValues = {
+        const newValues = {
           ...this.visibilityValues,
           [metadataKey]: value
         }
+
+        // Rule: If Publish to Archive or Show in CMS is TRUE, Private is FALSE
+        if ((metadataKey === 'push_to_archive' || metadataKey === 'show_in_cms') && value === true) {
+          newValues.private = false
+        }
+        // Rule: If Private is TRUE, both Publish to Archive and Show in CMS are FALSE
+        else if (metadataKey === 'private' && value === true) {
+          newValues.push_to_archive = false
+          newValues.show_in_cms = false
+        }
+
+        this.visibilityValues = newValues
+
         this.visibilityTouched = {
           ...this.visibilityTouched,
           [metadataKey]: true
@@ -1072,6 +1093,16 @@
         this.blur()
       },
       isToggleDisabled: function(toggle) {
+        // Rule: Show in CMS can not be set to FALSE if ASSET PROJECT has CASE STUDY (isLive)
+        if (toggle.metadataKey === 'show_in_cms') {
+          return this.isLive
+        }
+
+        // Rule: Private can not be set to TRUE if ASSET PROJECT has CASE STUDY (isLive)
+        if (toggle.metadataKey === 'private') {
+          return this.isLive
+        }
+
         const checkIsImage = (media) => {
           return media.isImage
         }
@@ -1081,10 +1112,6 @@
             return this.medias.some(m => !checkIsImage(m))
           }
           return !checkIsImage(this.firstMedia)
-        }
-
-        if (toggle.metadataKey === 'private') {
-          return this.isLive
         }
 
         return false

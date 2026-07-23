@@ -254,7 +254,7 @@
           },
           {
             key: 'showInDam',
-            label: this.$trans('dam.show-in-dam-only', 'Show in DAM only')
+            label: this.$trans('dam.private', 'Show in DAM only')
           }
         ]
       },
