@@ -607,7 +607,7 @@
           },
           error => {
             this.$store.commit(NOTIFICATION.SET_NOTIF, {
-              message: error.data.message,
+              message: error.response.data.message,
               variant: 'error'
             })
           }
