@@ -15,6 +15,11 @@ export default {
       default: 0
     }
   },
+  provide() {
+    return {
+      inContentEditor: true,
+    }
+  },
   methods: {
     addAndEditBlock (add, edit, { block, index }) {
       window[process.env.VUE_APP_NAME].PREVSTATE = cloneDeep(this.$store.state)

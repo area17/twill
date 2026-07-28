@@ -20,7 +20,7 @@ export default {
       return this.blocks(this.editorName)
     },
     allSavedBlocks () {
-      return this.used && Object.keys(this.used).reduce((acc, editorName) => acc.concat(this.used[editorName]), [])
+      return this.used && Object.values(this.used).flat()
     },
     hasBlockActive () {
       return Object.keys(this.activeBlock).length > 0

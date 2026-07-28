@@ -24,6 +24,7 @@ class BlockChildrenTest extends TestCase
         $blocks = [
             'blocks' => [
                 [
+                    'editor_name' => 'description',
                     'browsers' => [],
                     'medias' => [],
                     'blocks' => [
@@ -50,7 +51,7 @@ class BlockChildrenTest extends TestCase
                                     'quote' => 'This is the nested quote at position 1.',
                                     'author' => 'This is the nested author at position 1.',
                                 ],
-                                'id' => time() + 1,
+                                'id' => time() + 2,
                             ],
                         ],
                     ],
