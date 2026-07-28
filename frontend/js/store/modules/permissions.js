@@ -1,7 +1,8 @@
 const state = {
   groups: window[process.env.VUE_APP_NAME].STORE.groups || [],
   groupUserMapping: window[process.env.VUE_APP_NAME].STORE.groupUserMapping || [],
-  hasEditPermissions: window[process.env.VUE_APP_NAME].STORE.permissions.hasEditPermissions || false
+  hasEditPermissions: window[process.env.VUE_APP_NAME].STORE.permissions.hasEditPermissions || false,
+  hasDeletePermissions: window[process.env.VUE_APP_NAME].STORE.permissions.hasDeletePermissions || false
 }
 
 export default {

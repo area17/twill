@@ -32,6 +32,7 @@ import language from '@/store/modules/language'
 import form from '@/store/modules/form'
 import modalEdition from '@/store/modules/modal-edition'
 import attributes from '@/store/modules/attributes'
+import permissions from '@/store/modules/permissions'
 
 // LocalStorage
 import { getStorage } from '@/utils/localeStorage.js'
@@ -48,6 +49,7 @@ store.registerModule('language', language)
 store.registerModule('form', form)
 store.registerModule('modalEdition', modalEdition)
 store.registerModule('attributes', attributes)
+store.registerModule('permissions', permissions)
 
 registerCustomComponents()
 

@@ -183,7 +183,7 @@
             <a v-if="hasSingleMedia" :href="firstMedia.original" download
               ><span v-svg symbol="download"></span
             ></a>
-            <button v-if="allowDelete && authorized" type="button" @click="deleteSelectedMediasValidation">
+            <button v-if="allowDelete && authorized && hasDeletePermissions" type="button" @click="deleteSelectedMediasValidation">
               <span v-svg symbol="trash"></span>
             </button>
           </a17-buttonbar>
@@ -928,6 +928,7 @@
         tagFields: state => state.mediaLibrary.tagFields,
         visibilityToggles: state => state.mediaLibrary.visibilityToggles,
         hasEditPermissions: state => state.permissions.hasEditPermissions,
+        hasDeletePermissions: state => state.permissions.hasDeletePermissions,
         bulkDownloadEndpoint: state => state.mediaLibrary.bulkDownloadEndpoint
       })
     },
@@ -1093,6 +1094,10 @@
         this.blur()
       },
       isToggleDisabled: function(toggle) {
+        if (!this.hasEditPermissions) {
+          return true
+        }
+
         // Rule: Show in CMS can not be set to FALSE if ASSET PROJECT has CASE STUDY (isLive)
         if (toggle.metadataKey === 'show_in_cms') {
           return this.isLive

@@ -42,7 +42,7 @@
 
         <div v-if="showTopActions" class="dam-filters__actions">
           <a17-button
-            v-if="showCreate"
+            v-if="showCreate && hasEditPermissions"
             variant="validate"
             size="small"
             :href="skipCreateModal ? createUrl : null"
@@ -80,7 +80,7 @@
                 <template #action>
                   <div v-if="showInlineActions" class="dam-filters__actions dam-filters__actions--inline">
                     <a17-button
-                      v-if="showCreate"
+                      v-if="showCreate && hasEditPermissions"
                       variant="validate"
                       size="small"
                       :href="skipCreateModal ? createUrl : null"
@@ -114,7 +114,7 @@
                 <template #action>
                   <div v-if="showInlineActions" class="dam-filters__actions dam-filters__actions--inline">
                      <a17-button
-                      v-if="showCreate && showAddProjectAssetBtn"
+                      v-if="showCreate && showAddProjectAssetBtn && hasEditPermissions"
                       variant="validate"
                       size="small"
                       :href="'#'"
@@ -124,7 +124,7 @@
                       {{ $trans('dam.add-project-asset') }}
                     </a17-button>
                     <a17-button
-                      v-if="showCreate"
+                      v-if="showCreate && hasEditPermissions"
                       variant="validate"
                       size="small"
                       :href="skipCreateModal ? createUrl : null"
@@ -237,7 +237,8 @@
     computed: {
       ...mapState({
         mediaFilters: state => state.mediaLibrary.filters,
-        showAddProjectAssetBtn: state => state.mediaLibrary.showAddProjectAssetBtn
+        showAddProjectAssetBtn: state => state.mediaLibrary.showAddProjectAssetBtn,
+        hasEditPermissions: state => state.permissions.hasEditPermissions
       }),
       formClasses () {
         return {
