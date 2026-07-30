@@ -34,6 +34,7 @@
         <div class="dam-asset__modal">
           <a17-switcher v-for="toggle in visibilityToggles" :key="toggle.key" :name="toggle.key.replace(/\s+/g, '')"
             :title="toggle.label" :textEnabled="null" :textDisabled="null" :value="metadata[toggle.key]"
+            :disabled="!hasEditPermissions"
             @change="toggleVisibility(toggle.key, $event)"></a17-switcher>
         </div>
 
@@ -272,8 +273,8 @@
         sectors: state => state.mediaLibrary.forUploadSectors,
         disciplines: state => state.mediaLibrary.forUploadDisciplines,
         endpoint: state => state.mediaLibrary.projectBrowserUrl,
-        project: state => state.browser.selected.project
-
+        project: state => state.browser.selected.project,
+        hasEditPermissions: state => state.permissions.hasEditPermissions
       })
     },
     watch: {},
@@ -294,6 +295,13 @@
       },
       toggleVisibility: function (key, value) {
         this.metadata[key] = value
+
+        if ((key === 'pushToArchive' || key === 'showInCmsMediaLibrary') && value === true) {
+          this.metadata.showInDam = false
+        } else if (key === 'showInDam' && value === true) {
+          this.metadata.pushToArchive = false
+          this.metadata.showInCmsMediaLibrary = false
+        }
       },
       updateMetadata(event, type) {
         if (type === 'tags') {

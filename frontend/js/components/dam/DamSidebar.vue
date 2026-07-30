@@ -918,6 +918,12 @@
         }
         return this.firstMedia?.isLive || false
       },
+      isProcessed: function() {
+        if (this.hasMultipleMedias) {
+          return this.medias.every(m => m.isProcessed !== false)
+        }
+        return this.firstMedia?.isProcessed !== false
+      },
       ...mapState({
         mediasLoading: state => state.mediaLibrary.loading,
         useWysiwyg: state => state.mediaLibrary.config.useWysiwyg,
@@ -1094,7 +1100,7 @@
         this.blur()
       },
       isToggleDisabled: function(toggle) {
-        if (!this.hasEditPermissions) {
+        if (!this.hasEditPermissions || !this.isProcessed) {
           return true
         }
 
