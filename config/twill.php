@@ -12,6 +12,8 @@ return [
      */
     'namespace' => 'App',
 
+    'env_label' => env('TWILL_ENV_LABEL', null),
+
     /*
     |--------------------------------------------------------------------------
     | Application Admin URL

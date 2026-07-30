@@ -2,7 +2,7 @@
     <a href={{ config('twill.enabled.dashboard') ? route(config('twill.admin_route_name_prefix') . 'dashboard') : '#' }}>
         {{ config('app.name') }}
         <span class="envlabel">
-            {{ app()->environment() === 'production' ? 'prod' : app()->environment() }}
+            @if(config('twill.env_label')) {{ config('twill.env_label') }} @else {{ app()->environment() === 'production' ? 'prod' : app()->environment() }} @endif
         </span>
     </a>
 </h1>
