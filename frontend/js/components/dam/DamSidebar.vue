@@ -1118,11 +1118,15 @@
           return media.isImage
         }
 
+        const checkIsVideoThumbnail = (media) => {
+          return media.isVideoThumbnail === true || media.isVideoThumbnail === 1 || media.isVideoThumbnail === '1'
+        }
+
         if (toggle.metadataKey === 'push_to_archive') {
           if (this.hasMultipleMedias) {
-            return this.medias.some(m => !checkIsImage(m))
+            return this.medias.some(m => !checkIsImage(m) || checkIsVideoThumbnail(m))
           }
-          return !checkIsImage(this.firstMedia)
+          return !checkIsImage(this.firstMedia) || checkIsVideoThumbnail(this.firstMedia)
         }
 
         return false
