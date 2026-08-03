@@ -125,9 +125,9 @@ trait HasSlug
      */
     public function handleSlugsOnSave(): void
     {
-        $this->disableLocaleSlugs();
-
         $slugParams = $this->twillSlugData !== [] ? $this->twillSlugData : $this->getSlugParams();
+
+        $this->disableLocaleSlugs();
 
         foreach ($slugParams as $params) {
             if (in_array($params['locale'], config('twill.slug_utf8_languages', []))) {
@@ -359,9 +359,13 @@ trait HasSlug
                     throw new \Exception("You must define the field {$slugAttribute} in your model");
                 }
 
+                $slug = $this->getSlugValue($slugAttribute, $translation->locale)
+                    ?? $translation->$slugAttribute
+                    ?? $this->$slugAttribute;
+
                 $slugParam = [
                         'active' => $translation->active ?? true,
-                        'slug' => $translation->$slugAttribute ?? $this->$slugAttribute,
+                        'slug' => $slug,
                         'locale' => $translation->locale,
                     ] + $slugDependenciesAttributes;
 
@@ -401,7 +405,7 @@ trait HasSlug
 
                 $slugParam = [
                         'active' => 1,
-                        'slug' => $this->$slugAttribute,
+                        'slug' => $this->getSlugValue($slugAttribute, $appLocale) ?? $this->$slugAttribute,
                         'locale' => $appLocale,
                     ] + $slugDependenciesAttributes;
 
@@ -414,6 +418,21 @@ trait HasSlug
         }
 
         return $locale === null ? $slugParams : null;
+    }
+
+    /**
+     * Returns changed value of slugAttribute field or previous slug value
+     *
+     * @param $slugAttribute
+     * @param $locale
+     * @return mixed|null
+     */
+    private function getSlugValue($slugAttribute, $locale): mixed
+    {
+        return $this->wasChanged($slugAttribute)
+            ? $this->$slugAttribute
+            : $this->slugs()->where('locale', $locale)
+                ->where('active', true)->value('slug');
     }
 
     /**
