@@ -47,6 +47,6 @@ class File extends Model
 
     public function getTable()
     {
-        return config('twill.files_table', 'twill_files');
+        return $this->table ?? config('twill.files_table', 'twill_files');
     }
 }

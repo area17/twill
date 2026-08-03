@@ -10,6 +10,6 @@ class Tag extends IlluminateTag
 
     public function getTable()
     {
-        return config('twill.tags_table', 'tags');
+        return $this->table ?? config('twill.tags_table', 'tags');
     }
 }
