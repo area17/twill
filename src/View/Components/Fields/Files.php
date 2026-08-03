@@ -19,6 +19,7 @@ class Files extends TwillFormComponent
         public bool $buttonOnTop = false,
         public ?string $itemLabel = null,
         public ?string $fieldNote = null,
+        public bool $disableTranslate = false
     ) {
         $itemLabel = $itemLabel ?? strtolower($label);
         $this->itemLabel = $itemLabel;
@@ -28,12 +29,17 @@ class Files extends TwillFormComponent
             label: $label,
             note: $note ?? 'Add' . ($max > 1 ? " up to $max $itemLabel" : ' one ' . Str::singular($itemLabel)),
             renderForBlocks: $renderForBlocks,
-            renderForModal: $renderForModal
+            renderForModal: $renderForModal,
         );
     }
 
     public function render(): View
     {
         return view('twill::partials.form._files', $this->data());
+    }
+
+    public function getExtraName(): string
+    {
+        return $this->disableTranslate ? '[' . config('app.locale') . ']' : '';
     }
 }
