@@ -1807,7 +1807,7 @@ abstract class ModuleController extends Controller
         // @todo: use $this->filters instead of indexData.
         $indexDataWithoutFilters = $this->indexData($this->request);
         foreach ($indexDataWithoutFilters as $key => $value) {
-            if (Str::endsWith($key, 'List')) {
+            if ($key !== 'roleList' && Str::endsWith($key, 'List')) {
                 unset($indexDataWithoutFilters[$key]);
             }
         }
@@ -1952,7 +1952,7 @@ abstract class ModuleController extends Controller
         $tableFilters = TableFilters::make();
 
         foreach ($this->indexData($this->request) as $key => $value) {
-            if (Str::endsWith($key, 'List')) {
+            if ($key !== 'roleList' && Str::endsWith($key, 'List')) {
                 $queryString = Str::beforeLast($key, 'List');
 
                 if ($filterKey = ($this->filters[$queryString] ?? false)) {
