@@ -30,7 +30,8 @@ class Medias extends TwillFormComponent
         public int $widthMin = 0,
         public int $heightMin = 0,
         public bool $buttonOnTop = false,
-        public bool $activeCrop = true
+        public bool $activeCrop = true,
+        public bool $disableTranslate = false
     ) {
         parent::__construct(
             name: $name,
@@ -58,5 +59,13 @@ class Medias extends TwillFormComponent
                 ]
             )
         );
+    }
+
+    public function getExtraName(): string
+    {
+        return config('twill.media_library.translated_form_fields', false)
+            && $this->disableTranslate
+            && !$this->translated
+            ? '[' . config('app.locale') . ']' : '';
     }
 }

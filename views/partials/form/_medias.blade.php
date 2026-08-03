@@ -57,7 +57,9 @@
 
     @unless($renderForBlocks)
     @push('vuexStore')
-        @if (isset($form_fields['medias']) && isset($form_fields['medias'][$name]))
+        @if(config('twill.media_library.translated_form_fields', false) && ($disableTranslate ?? false) && isset($form_fields['medias']) && isset($form_fields['medias'][config('app.locale')]) && isset($form_fields['medias'][config('app.locale')][$name]))
+            window['{{ config('twill.js_namespace') }}'].STORE.medias.selected["{{ $name }}"] = {!! json_encode($form_fields['medias'][config('app.locale')][$name]) !!}
+        @elseif(isset($form_fields['medias']) && isset($form_fields['medias'][$name]))
             window['{{ config('twill.js_namespace') }}'].STORE.medias.selected["{{ $name }}"] = {!! json_encode($form_fields['medias'][$name]) !!}
         @endif
     @endpush
