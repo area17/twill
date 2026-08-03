@@ -178,6 +178,7 @@
           },
           onClose: function (selectedDates, dateStr, instance) {
             self.$nextTick(function () { // wait for the datepicker to properly update the UI
+              self.date = dateStr;
               self.$emit('input', self.date)
               self.$emit('close', self.date)
 
