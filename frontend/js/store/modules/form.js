@@ -4,8 +4,6 @@
  * Save all the fields of the form. Submit the form. Display errors.
  */
 
-import cloneDeep from 'lodash/cloneDeep'
-
 import ACTIONS from '@/store/actions'
 import { getFormData, getFormFields, getModalFormFields } from '@/utils/getFormData.js'
 
@@ -156,7 +154,7 @@ const mutations = {
     fields.forEach(field => {
       newFields.push({
         name: field.name.replace(oldId, newId),
-        value: cloneDeep(field.value)
+        value: JSON.parse(JSON.stringify(field.value))
       })
     })
     state.fields = [...state.fields, ...newFields]
@@ -356,10 +354,6 @@ const actions = {
         commit(NOTIFICATION.SET_NOTIF, { message: 'Your submission could not be validated, please fix and retry', variant: 'error' })
       }
     })
-  },
-  async [ACTIONS.DUPLICATE_BLOCK] ({ commit, getters }, { block, id }) {
-    const fields = getters.fieldsByBlockId(block.id)
-    commit(FORM.DUPLICATE_BLOCK_FORM_FIELDS, { fields, oldId: block.id, newId: id })
   }
 }
 

@@ -1,7 +1,5 @@
 import Vue from 'vue'
 
-import ACTIONS from '@/store/actions'
-
 import { BROWSER } from '../mutations'
 
 const state = {
@@ -107,21 +105,8 @@ const mutations = {
   }
 }
 
-const actions = {
-  async [ACTIONS.DUPLICATE_BLOCK] ({ commit, getters }, { block, id }) {
-    // copy browsers and update with the provided id
-    const browsers = { ...getters.browsersByBlockId(block.id) }
-    const browserIds = Object.keys(browsers)
-    const duplicates = {}
-    browserIds.forEach(browserId => (duplicates[browserId.replace(block.id, id)] = [...browsers[browserId]]))
-
-    commit(BROWSER.ADD_BROWSERS, { browsers: duplicates })
-  }
-}
-
 export default {
   state,
   getters,
   mutations,
-  actions
 }

@@ -7,8 +7,6 @@
 import cloneDeep from 'lodash/cloneDeep'
 import Vue from 'vue'
 
-import ACTIONS from '@/store/actions'
-
 import { MEDIA_LIBRARY } from '../mutations'
 
 const state = {
@@ -286,21 +284,8 @@ const mutations = {
   }
 }
 
-const actions = {
-  async [ACTIONS.DUPLICATE_BLOCK] ({ commit, getters }, { block, id }) {
-    // copy medias and update with the provided id
-    const medias = { ...getters.mediasByBlockId(block.id) }
-    const mediaIds = Object.keys(medias)
-    const duplicates = {}
-    mediaIds.forEach(mediaId => (duplicates[mediaId.replace(block.id, id)] = [...medias[mediaId]]))
-
-    commit(MEDIA_LIBRARY.ADD_MEDIAS, { medias: duplicates })
-  }
-}
-
 export default {
   state,
   getters,
   mutations,
-  actions
 }

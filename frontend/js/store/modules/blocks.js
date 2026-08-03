@@ -11,7 +11,7 @@ import ACTIONS from '@/store/actions'
 import { buildBlock, isBlockEmpty } from '@/utils/getFormData.js'
 
 import api from '../api/blocks'
-import { BLOCKS } from '../mutations'
+import { BLOCKS, BROWSER, FORM, MEDIA_LIBRARY } from '../mutations'
 
 const state = {
   /**
@@ -107,7 +107,7 @@ const mutations = {
   [BLOCKS.DUPLICATE_BLOCK] (state, { editorName, index, block, id }) {
     const updated = state.blocks[editorName] || []
 
-    updated.splice(index, 0, { ...block, id, name: editorName })
+    updated.splice(index, 0, { ...JSON.parse(JSON.stringify(block)), id, name: editorName })
 
     Vue.set(state.blocks, editorName, updated)
   },
@@ -188,7 +188,81 @@ const actions = {
     }
   },
   async [ACTIONS.DUPLICATE_BLOCK] ({ commit, state, rootState }, { editorName, futureIndex, block, id }) {
+    const clone = (v) => v == null ? v : JSON.parse(JSON.stringify(v))
+
+    const repeaters = (rootState.repeaters && rootState.repeaters.repeaters) || {}
+    const nestedBlocks = (rootState.blocks && rootState.blocks.blocks) || {}
+    const fields = (rootState.form && rootState.form.fields) || []
+    const mediaSelected = (rootState.mediaLibrary && rootState.mediaLibrary.selected) || {}
+    const browserSelected = (rootState.browser && rootState.browser.selected) || {}
+
+    const idMap = { [block.id]: id }
+    const queue = [block.id]
+    while (queue.length) {
+      const currentId = queue.shift()
+      const prefix = `blocks-${currentId}|`
+      ;[repeaters, nestedBlocks].forEach(bucket => {
+        Object.keys(bucket).forEach(key => {
+          if (!key.startsWith(prefix)) return
+          ;(bucket[key] || []).forEach(item => {
+            if (!item || item.id == null || idMap[item.id] != null) return
+            idMap[item.id] = setBlockID()
+            queue.push(item.id)
+          })
+        })
+      })
+    }
+
+    const rewrite = (str, before, after) => Object.keys(idMap).reduce(
+      (acc, oldId) => acc.split(`${before}${oldId}${after}`).join(`${before}${idMap[oldId]}${after}`), str
+    )
+    const inSubtree = (key) => Object.keys(idMap).some(oldId => key.startsWith(`blocks-${oldId}|`))
+
     commit(BLOCKS.DUPLICATE_BLOCK, { editorName, index: futureIndex, block, id })
+
+    Object.keys(nestedBlocks).forEach(key => {
+      if (!inSubtree(key)) return
+      const newKey = rewrite(key, 'blocks-', '|')
+      const cloned = (nestedBlocks[key] || []).map(nested => {
+        if (!nested || nested.id == null || idMap[nested.id] == null) return null
+        return { ...clone(nested), id: idMap[nested.id], name: newKey }
+      }).filter(Boolean)
+      if (!cloned.length) return
+      const existing = state.blocks[newKey] || []
+      commit(BLOCKS.REORDER_BLOCKS, { editorName: newKey, value: [...existing, ...cloned] })
+    })
+
+    const clonedRepeaters = {}
+    Object.keys(repeaters).forEach(key => {
+      if (!inSubtree(key)) return
+      clonedRepeaters[rewrite(key, 'blocks-', '|')] = (repeaters[key] || []).map(item => {
+        const c = clone(item)
+        if (c && c.id != null && idMap[c.id] != null) c.id = idMap[c.id]
+        if (c) c.twillUi = { isNew: true }
+        return c
+      })
+    })
+    if (Object.keys(clonedRepeaters).length) commit(FORM.ADD_REPEATERS, { repeaters: clonedRepeaters })
+
+    const fieldCopies = []
+    const clonedMedias = {}
+    const clonedBrowsers = {}
+    Object.keys(idMap).forEach(oldId => {
+      const fp = `blocks[${oldId}]`
+      fields.forEach(f => {
+        if (typeof f.name !== 'string' || !f.name.startsWith(fp)) return
+        fieldCopies.push({ name: rewrite(f.name, 'blocks[', ']'), value: clone(f.value) })
+      })
+      Object.keys(mediaSelected).forEach(k => {
+        if (k.startsWith(fp)) clonedMedias[rewrite(k, 'blocks[', ']')] = clone(mediaSelected[k])
+      })
+      Object.keys(browserSelected).forEach(k => {
+        if (k.startsWith(fp)) clonedBrowsers[rewrite(k, 'blocks[', ']')] = clone(browserSelected[k])
+      })
+    })
+    if (fieldCopies.length) commit(FORM.ADD_FORM_FIELDS, fieldCopies)
+    if (Object.keys(clonedMedias).length) commit(MEDIA_LIBRARY.ADD_MEDIAS, { medias: clonedMedias })
+    if (Object.keys(clonedBrowsers).length) commit(BROWSER.ADD_BROWSERS, { browsers: clonedBrowsers })
   },
   async [ACTIONS.MOVE_BLOCK_TO_EDITOR] ({ commit, dispatch }, { editorName, index, block, futureIndex, id }) {
     await dispatch(ACTIONS.DUPLICATE_BLOCK, {
