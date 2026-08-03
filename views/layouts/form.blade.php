@@ -192,8 +192,8 @@
     expiredLabel: '{{twillTrans('twill::lang.publisher.expired')}}',
     scheduledLabel: '{{twillTrans('twill::lang.publisher.scheduled')}}',
     submitDisableMessage: '{{ $submitDisableMessage ?? '' }}',
-    startDate: '{{ $item?->publish_start_date ?? '' }}',
-    endDate: '{{ $item?->publish_end_date ?? '' }}',
+    startDate: '{{ ($item?->publish_start_date instanceof \Carbon\Carbon) ? $item->publish_start_date->utc()->toIso8601String() : ($item?->publish_start_date ?? '') }}',
+    endDate: '{{ ($item?->publish_end_date instanceof \Carbon\Carbon) ? $item->publish_end_date->utc()->toIso8601String() : ($item?->publish_end_date ?? '') }}',
     visibility: '{{ $item?->isFillable('public') ? ($item?->public ? 'public' : 'private') : false }}',
     reviewProcess: {!! isset($reviewProcess) ? json_encode($reviewProcess) : '[]' !!},
     submitOptions: {!! isset($submitOptions) ? json_encode($submitOptions) : 'null' !!}
