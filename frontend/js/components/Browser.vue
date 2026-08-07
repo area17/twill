@@ -95,6 +95,7 @@
         endpoint: state => state.browser.endpoint,
         endpointName: state => state.browser.endpointName,
         endpoints: state => state.browser.endpoints,
+        params: state => state.browser.params,
         browserTitle: state => state.browser.title,
         browserNote: state => state.browser.note,
         selected: state => state.browser.selected
@@ -150,7 +151,7 @@
 
         const form = this.$refs.form
         const list = this.$refs.list
-        const formdata = this.getFormData(form)
+        const formdata = { ...this.getFormData(form), ...this.params }
 
         this.$http.get(this.endpoint, { params: formdata }).then((resp) => {
           // add items here

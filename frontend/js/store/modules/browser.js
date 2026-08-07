@@ -11,6 +11,7 @@ const state = {
   endpoint: '',
   endpointName: '',
   endpoints: [],
+  params: [],
   max: 0,
   selected: window[process.env.VUE_APP_NAME].STORE.browser.selected || {}
 }
@@ -101,6 +102,13 @@ const mutations = {
   },
   [BROWSER.DESTROY_BROWSER_ENDPOINTS] (state) {
     state.endpoints = []
+  },
+  [BROWSER.UPDATE_BROWSER_PARAMS] (state, params) {
+    if (!params && !params.length > 0) return
+    state.params = params
+  },
+  [BROWSER.DESTROY_BROWSER_PARAMS] (state) {
+    state.params = []
   },
   [BROWSER.ADD_BROWSERS] (state, { browsers }) {
     state.selected = Object.assign({}, state.selected, browsers)

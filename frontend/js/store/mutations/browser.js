@@ -12,6 +12,8 @@ export const UPDATE_BROWSER_ENDPOINT = 'updateBrowserEndpoint'
 export const UPDATE_BROWSER_ENDPOINTS = 'updateBrowserEndpoints'
 export const DESTROY_BROWSER_ENDPOINT = 'destroyBrowserEndpoint'
 export const DESTROY_BROWSER_ENDPOINTS = 'destroyBrowserEndpoints'
+export const UPDATE_BROWSER_PARAMS = 'updateBrowserParams'
+export const DESTROY_BROWSER_PARAMS = 'destroyBrowserParams'
 export const ADD_BROWSERS = 'addBrowsers'
 
 export default {
@@ -28,5 +30,7 @@ export default {
   DESTROY_BROWSER_ENDPOINT,
   UPDATE_BROWSER_ENDPOINTS,
   DESTROY_BROWSER_ENDPOINTS,
+  UPDATE_BROWSER_PARAMS,
+  DESTROY_BROWSER_PARAMS,
   ADD_BROWSERS
 }

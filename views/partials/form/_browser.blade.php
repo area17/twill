@@ -6,6 +6,7 @@
         :wide="{{ json_encode($wide) }}"
         endpoint="{{ $endpoint }}"
         :endpoints="{{ json_encode($endpoints) }}"
+        :params="{{ json_encode($params) }}"
         modal-title="{{ twillTrans('twill::lang.fields.browser.attach') . ' ' . strtolower($label) }}"
         :draggable="{{ json_encode($sortable) }}"
         browser-note="{{ $browserNote }}"

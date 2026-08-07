@@ -77,6 +77,10 @@
         type: Array,
         default: () => []
       },
+      params: {
+        type: Array,
+        default: () => []
+      },
       draggable: {
         type: Boolean,
         default: true
@@ -187,6 +191,7 @@
             label: this.name
           })
         }
+        this.$store.commit(BROWSER.UPDATE_BROWSER_PARAMS, this.params)
         this.$store.commit(BROWSER.UPDATE_BROWSER_MAX, this.max)
         this.$store.commit(BROWSER.UPDATE_BROWSER_TITLE, this.browserTitle)
         this.$store.commit(BROWSER.UPDATE_BROWSER_NOTE, this.browserNote)
