@@ -1922,7 +1922,7 @@ abstract class ModuleController extends Controller
                     'editInModal' => $this->getModuleRoute($itemId, 'edit'),
                     'updateUrl' => $this->getModuleRoute($itemId, 'update'),
                 ] : []) + ($this->getIndexOption('publish') && ($item->canPublish ?? true) ? [
-                    'published' => $publishable ? $item->published : null,
+                    'published' => $item->isFillable('published') ? $item->published : null,
                 ] : []) + ($this->getIndexOption('feature', $item) && ($item->canFeature ?? true) ? [
                     'featured' => $item->{$this->featureField},
                 ] : []) + (($this->getIndexOption('restore', $item) && $itemIsTrashed) ? [
