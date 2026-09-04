@@ -3,6 +3,7 @@
 namespace A17\Twill\Tests\Integration;
 
 use A17\Twill\Models\User;
+use Illuminate\Support\Facades\DB;
 use PragmaRX\Google2FA\Google2FA;
 
 class LoginTest extends TestCase
@@ -27,6 +28,39 @@ class LoginTest extends TestCase
         $this->assertSee('Settings');
 
         $this->assertSee('Logout');
+    }
+
+    public function testCanLoginWithDifferentEmailCase(): void
+    {
+        // Force a case-sensitive collation so this test doesn't pass by
+        // accident on a DB whose default collation already happens to be
+        // case-insensitive (e.g. MySQL's utf8mb4_0900_ai_ci).
+        $usersTable = (new User())->getTable();
+        $passwordResetsTable = config('twill.password_resets_table', 'twill_password_resets');
+
+        $originalCollation = DB::selectOne(
+            'SELECT COLLATION_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?',
+            [$usersTable, 'email']
+        )->COLLATION_NAME;
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        DB::statement("ALTER TABLE {$usersTable} MODIFY email VARCHAR(255) COLLATE utf8mb4_bin");
+        DB::statement("ALTER TABLE {$passwordResetsTable} MODIFY email VARCHAR(255) COLLATE utf8mb4_bin");
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+
+        try {
+            $this->loginAs(
+                strtoupper($this->superAdmin()->email),
+                $this->superAdmin()->unencrypted_password
+            );
+
+            $this->assertAuthenticated();
+        } finally {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0');
+            DB::statement("ALTER TABLE {$usersTable} MODIFY email VARCHAR(255) COLLATE {$originalCollation}");
+            DB::statement("ALTER TABLE {$passwordResetsTable} MODIFY email VARCHAR(255) COLLATE {$originalCollation}");
+            DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        }
     }
 
     public function testCannotLoginWhenUserDisabled(): void
