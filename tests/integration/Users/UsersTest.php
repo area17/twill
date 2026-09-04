@@ -48,6 +48,35 @@ class UsersTest extends TestCase
         $this->assertJson($this->content());
     }
 
+    public function testCanPublishUser(): void
+    {
+        $user = $this->createUser();
+
+        $user->published = true;
+        $user->registered_at = now();
+        $user->save();
+
+        $listing = json_decode(
+            $this->ajax(
+                '/twill/users?sortKey=email&sortDir=asc&page=1&offset=20&columns[]=bulk&columns[]=published&columns[]=name&columns[]=email&columns[]=role_value&filter=%7B%22status%22:%22activated%22%7D'
+            )->content(),
+            true
+        );
+
+        $row = collect($listing['tableData'])->firstWhere('id', $user->id);
+
+        $this->assertTrue($row['published']);
+
+        $this->ajax('/twill/users/publish', 'PUT', [
+            'id' => $user->id,
+            'active' => $row['published'],
+        ])->assertStatus(200);
+
+        $user->refresh();
+
+        $this->assertFalse((bool) $user->published);
+    }
+
     public function testCanUpdateUser(): void
     {
         $user = $this->createUser(
