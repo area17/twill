@@ -18,7 +18,10 @@
         @click.ctrl="shiftToggleSelection(item)">
        
           <img v-if="isImage(item.fileExtension)" :src="item.thumbnail" class="mediagrid__img" />
-          <img v-else-if="variant === 'dam' && item.damThumbnail" :src="item.damThumbnail" class="mediagrid__img" />
+          <template v-else-if="variant === 'dam' && item.damThumbnail">
+            <img :src="item.damThumbnail" class="mediagrid__img" />
+            <span v-if="isVideoPoster(item)" class="mediagrid__playIcon" aria-hidden="true"></span>
+          </template>
           <span v-else class="mediagrid__file-icon">
             <span v-svg :symbol="getFileIcon(item.fileExtension)"></span>
           </span>
@@ -382,4 +385,30 @@
         }
       }
     }
+
+  .mediagrid__playIcon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    pointer-events: none;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 7px 0 7px 12px;
+      border-color: transparent transparent transparent #fff;
+      transform: translate(-35%, -50%);
+    }
+  }
 </style>

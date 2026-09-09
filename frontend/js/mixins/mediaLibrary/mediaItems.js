@@ -46,6 +46,17 @@ export default {
       const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'tif', 'tiff', 'psd']
       return imageExtensions.includes(extension)
     },
+    isVideo: function(extension) {
+      if (!extension) return false
+      const videoExtensions = ['mp4', 'mov', 'webm', 'avi', 'm4v', 'wmv', 'mkv']
+      return videoExtensions.includes(extension.toLowerCase())
+    },
+    isVideoPoster: function(item) {
+      if (item.isVideoThumbnail === true || item.isVideoThumbnail === 1 || item.isVideoThumbnail === '1') {
+        return true
+      }
+      return this.isVideo(item.fileExtension)
+    },
     getFileIcon: function(extension) {
       if (!extension) return 'txt'
       const ext = extension.toLowerCase()

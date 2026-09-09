@@ -28,7 +28,7 @@
                 :data-pswp-type="isVideo ? 'video' : 'image'"
                 target="_blank"
                 rel="noreferrer"
-                class="pswp-lightbox"
+                class="pswp-lightbox dam-sidebar__mediaLink"
                 :aria-label="$trans('dam.view', 'View')"
                 ref="lightboxLink"
               >
@@ -41,6 +41,7 @@
                   class="dam-sidebar__img"
                   :alt="firstMedia.name"
                 />
+                <span v-if="isVideo" class="dam-sidebar__playIcon" aria-hidden="true"></span>
               </a>
             </template>
           </div>
@@ -1528,6 +1529,36 @@
     height: auto;
     display: block;
     margin-bottom: rem-calc(12);
+  }
+
+  .dam-sidebar__mediaLink {
+    position: relative;
+    display: block;
+  }
+
+  .dam-sidebar__playIcon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.55);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 7px 0 7px 12px;
+      border-color: transparent transparent transparent #fff;
+      transform: translate(-35%, -50%);
+    }
   }
 
   .dam-sidebar__name {
