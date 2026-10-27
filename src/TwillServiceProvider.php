@@ -130,6 +130,8 @@ class TwillServiceProvider extends ServiceProvider
         $this->registerAliases();
         $this->registerFacades();
 
+        // Application configuration registered through this facade must survive queue-worker scope resets.
+        $this->app->singleton(TwillAppSettings::class);
         $this->app->bind(TwillCapsules::class);
 
         Facades\TwillBlocks::registerComponentBlocks(
