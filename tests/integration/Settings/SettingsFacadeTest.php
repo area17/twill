@@ -82,6 +82,22 @@ class SettingsFacadeTest extends TestCase
         $this->assertEquals('Non translated.', TwillAppSettings::get('test.test.label'));
     }
 
+    public function testSettingsGroupsSurviveQueueWorkerFacadeReset(): void
+    {
+        // Remove this test class's facade mock so the real container binding is exercised.
+        $this->app->forgetInstance(TwillAppSettings::class);
+        \Illuminate\Support\Facades\Facade::clearResolvedInstances();
+
+        TwillAppSettings::registerSettingsGroup(SettingsGroup::make()->name('queue-reset-test'));
+
+        \Illuminate\Support\Facades\Facade::clearResolvedInstances();
+
+        $this->assertSame(
+            'queue-reset-test',
+            TwillAppSettings::getGroupForName('queue-reset-test')->getName()
+        );
+    }
+
     public function testCanRenderNestedSettingsBlock(): void
     {
         $output = TwillAppSettings::getBlockServiceForGroupAndSection('test', 'test')
